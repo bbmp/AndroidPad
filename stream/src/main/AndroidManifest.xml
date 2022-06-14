@@ -3,5 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.robam.stream">
 
+    <application>
+        <activity
+            android:name=".ui.activity.BleActivity"
+            android:exported="false" />
+    </application>
 
 </manifest>

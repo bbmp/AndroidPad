@@ -43,4 +43,8 @@ dependencies {
     //Mqtt集成
     implementation "org.eclipse.paho:org.eclipse.paho.client.mqttv3:$versions.org_eclipse_paho_client_mqttv3"
     implementation "org.eclipse.paho:org.eclipse.paho.android.service:$versions.org_eclipse_paho_android_service"
+    implementation "com.github.tbruyelle:rxpermissions:$versions.rxpermissions"
+    implementation "com.github.Jasonchenlijian:FastBle:$versions.FastBle"
+    implementation "io.reactivex.rxjava3:rxjava:$versions.rxjava"
+    implementation "io.reactivex.rxjava3:rxandroid:$versions.rxandroid"
 }

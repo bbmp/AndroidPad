@@ -28,5 +28,12 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/bt_detect"
         android:text="take photo"/>
+    <Button
+        android:id="@+id/ble"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ble"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bt_take"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

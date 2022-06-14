@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/AndroidProjects/AndroidPad/app/src/main/res/layout/activity_main.xml" value="0.175" />
+        <entry key="..\:/AndroidProjects/AndroidPad/stream/src/main/res/layout/activity_ble.xml" value="0.13333333333333333" />
         <entry key="..\:/AndroidProjects/AndroidPad/stream/src/main/res/layout/home_fragment.xml" value="0.175" />
         <entry key="..\:/workspace/AndroidPad/app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="..\:/workspace/AndroidPad/stream/src/main/res/layout/home_fragment.xml" value="0.1" />

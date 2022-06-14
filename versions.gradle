@@ -9,11 +9,15 @@ versions.navigation_ui = "2.3.5"
 versions.legacy_support_v4 = "1.0.0"
 versions.lifecycle_livedata_ktx = "2.3.1"
 versions.lifecycle_viewmodel_ktx = "2.3.1"
-versions.org_eclipse_paho_client_mqttv3 = "1.1.0"
+versions.org_eclipse_paho_client_mqttv3 = "1.1.0"    //mqtt
 versions.org_eclipse_paho_android_service = "1.1.1"
 versions.retrofit = "2.9.0"
 versions.converter_gson = "2.9.0"
-versions.BaseRecyclerViewAdapterHelper = "3.0.4"
+versions.BaseRecyclerViewAdapterHelper = "3.0.4"  //适配器
+versions.rxpermissions = "0.12"  //权限
+versions.FastBle = "2.4.0"   //蓝牙
+versions.rxjava = "3.0.13"
+versions.rxandroid = "3.0.0"
 
 
 ext.versions = versions
