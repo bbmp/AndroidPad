@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.robam.ventilator.fragment.HomeFragment"
-        android:label="@string/app_name"
+        android:label="@string/app_name_ventilator"
         tools:layout="@layout/home_fragment">
         <action
             android:id="@+id/action_fullscreen"
@@ -20,7 +20,7 @@
 
         android:id="@+id/fullscreenFragment"
         android:name="com.robam.ventilator.fragment.FullScreenFragment"
-        android:label="@string/app_name"
+        android:label="@string/app_name_ventilator"
         tools:layout="@layout/fragment_full_screen">
 
     </fragment>

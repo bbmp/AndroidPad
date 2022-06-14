@@ -1,13 +1,13 @@
 plugins {
     id 'com.android.library'
 }
-
+apply from: '../versions.gradle'
 android {
-    compileSdk 32
+    compileSdk build_versions.compile_sdk
 
     defaultConfig {
-        minSdk 21
-        targetSdk 32
+        minSdk build_versions.min_sdk
+        targetSdk build_versions.target_sdk
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -27,12 +27,9 @@ android {
 
 dependencies {
 
-    implementation 'androidx.appcompat:appcompat:1.3.0'
-    implementation 'com.google.android.material:material:1.4.0'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
-    implementation 'androidx.navigation:navigation-fragment:2.3.5'
-    implementation 'androidx.navigation:navigation-ui:2.3.5'
+    api "androidx.appcompat:appcompat:$versions.appcompat"
+    api "com.google.android.material:material:$versions.material"
+    api "androidx.navigation:navigation-fragment:$versions.navigation_fragment"
+    api "androidx.navigation:navigation-ui:$versions.navigation_ui"
     testImplementation 'junit:junit:4.13.2'
 }

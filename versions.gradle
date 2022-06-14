@@ -1,0 +1,19 @@
+
+
+def versions = [:]
+versions.appcompat = '1.3.0'
+versions.material = "1.4.0"
+versions.navigation_fragment = "2.0.0"
+versions.navigation_ui = "2.0.0"
+versions.legacy_support_v4 = "1.0.0"
+versions.lifecycle_livedata_ktx = "2.3.1"
+versions.lifecycle_viewmodel_ktx = "2.3.1"
+
+
+ext.versions = versions
+
+def build_versions = [:]
+build_versions.min_sdk = 21
+build_versions.target_sdk = 32
+build_versions.compile_sdk = 32
+ext.build_versions = build_versions
