@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.serialport.helper.SerialPortHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +23,6 @@ import com.robam.stream.R;
 
 public class HomeFragment extends Fragment {
 
-    private HomeViewModel mViewModel;
     private Button detect;
     private Button btTake;
 
@@ -59,10 +59,8 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-        // TODO: Use the ViewModel
+    public void onDestroy() {
+        super.onDestroy();
+        SerialPortHelper.getInstance().closeDevice();
     }
-
 }

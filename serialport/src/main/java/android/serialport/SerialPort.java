@@ -218,14 +218,6 @@ public final class SerialPort {
         System.loadLibrary("serial_port");
     }
 
-    public static Builder newBuilder(File device, int baudrate) {
-        return new Builder(device, baudrate);
-    }
-
-    public static Builder newBuilder(String devicePath, int baudrate) {
-        return new Builder(devicePath, baudrate);
-    }
-
     public final static class Builder {
 
         private File device;

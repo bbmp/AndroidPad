@@ -3,11 +3,17 @@
 def versions = [:]
 versions.appcompat = '1.3.0'
 versions.material = "1.4.0"
-versions.navigation_fragment = "2.0.0"
-versions.navigation_ui = "2.0.0"
+versions.constraintlayout = "2.0.4"
+versions.navigation_fragment = "2.3.5"
+versions.navigation_ui = "2.3.5"
 versions.legacy_support_v4 = "1.0.0"
 versions.lifecycle_livedata_ktx = "2.3.1"
 versions.lifecycle_viewmodel_ktx = "2.3.1"
+versions.org_eclipse_paho_client_mqttv3 = "1.1.0"
+versions.org_eclipse_paho_android_service = "1.1.1"
+versions.retrofit = "2.9.0"
+versions.converter_gson = "2.9.0"
+versions.BaseRecyclerViewAdapterHelper = "3.0.4"
 
 
 ext.versions = versions

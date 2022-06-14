@@ -34,7 +34,13 @@ dependencies {
     implementation project(path: ':stream')
     implementation project(path: ':serialport')
     implementation project(path: ':foodmaterialdetect')
+    implementation project(path: ':common')
     testImplementation 'junit:junit:4.13.2'
     implementation "androidx.navigation:navigation-fragment:$versions.navigation_fragment"
     implementation "androidx.navigation:navigation-ui:$versions.navigation_ui"
+    implementation "com.squareup.retrofit2:retrofit:$versions.retrofit"
+    implementation "com.squareup.retrofit2:converter-gson:$versions.converter_gson"
+    //Mqtt集成
+    implementation "org.eclipse.paho:org.eclipse.paho.client.mqttv3:$versions.org_eclipse_paho_client_mqttv3"
+    implementation "org.eclipse.paho:org.eclipse.paho.android.service:$versions.org_eclipse_paho_android_service"
 }

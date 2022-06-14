@@ -12,18 +12,10 @@ import java.util.concurrent.TimeUnit;
 public class SerialPortHelper {
     private final static String TAG = SerialPortHelper.class.getSimpleName();
 
-    private int baudRate = 9600;
-    private int dataBits = 8;
-    private char checkBits = 'N';
-    private int stopBits = 1;
-    private int parity = 0;
-    private String path = "dev/ttyS3";
     private SphThreads sphThreads;
     private SerialPort serialPort;
-    /**
-     * 最大接收数据的长度
-     */
-    private int maxSize;
+
+    private SerialPortConfig serialPortConfig;
 
     /**
      * 是否需要返回最大数据接收长度
@@ -53,32 +45,43 @@ public class SerialPortHelper {
     }
 
     private SerialPortHelper() {
+
+    }
+
+    /**
+     * 初始化 设置参数
+     */
+    public void init(SerialPortConfig config) {
         // 设置默认串口参数
-        maxSize = 16;
+        serialPortConfig = config;
         isReceiveMaxSize = true;
     }
     /**
      * 打开串口设备
      */
     public void openDevice(SphResultCallback onResultCallback){
-        if(path == null){
+        if(serialPortConfig == null){
+            throw new IllegalArgumentException("'SerialPortConfig' must can not be null!!! ");
+        }
+        if(serialPortConfig.path == null){
             throw new IllegalArgumentException("You not have setting the device path, " +
                     "you must 'new SerialPortHelper(String path)' or call 'openDevice(String path)' ");
         }
+
         executorService.execute(new Runnable() {
             @Override
             public void run() {
 
                 try {
                     serialPort = new SerialPort //
-                            .Builder(path, baudRate) // 串口地址地址，波特率
-                            .parity(parity) // 校验位；0:无校验位(NONE，默认)；1:奇校验位(ODD);2:偶校验位(EVEN)
-                            .dataBits(dataBits) // 数据位,默认8；可选值为5~8
-                            .stopBits(stopBits) // 停止位，默认1；1:1位停止位；2:2位停止位
+                            .Builder(serialPortConfig.path, serialPortConfig.baudRate) // 串口地址地址，波特率
+                            .parity(serialPortConfig.parity) // 校验位；0:无校验位(NONE，默认)；1:奇校验位(ODD);2:偶校验位(EVEN)
+                            .dataBits(serialPortConfig.dataBits) // 数据位,默认8；可选值为5~8
+                            .stopBits(serialPortConfig.stopBits) // 停止位，默认1；1:1位停止位；2:2位停止位
                             .flags(0)
                             .build();
                     // 创建数据处理
-                    processingData = new SphDataProcess(serialPort, maxSize);
+                    processingData = new SphDataProcess(serialPort, serialPortConfig.maxSize);
                     processingData.setRecevieMaxSize(isReceiveMaxSize);
                     processingData.setSphResultCallback(onResultCallback);
                     // 开启读写线程
@@ -95,7 +98,7 @@ public class SerialPortHelper {
                     }
                 } catch (Exception e) {
                     Log.e(TAG,"cannot open the device !!! " +
-                            "path:"+path);
+                            "path:"+serialPortConfig.path);
                 }
             }
         });
