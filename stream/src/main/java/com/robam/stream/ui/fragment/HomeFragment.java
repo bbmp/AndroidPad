@@ -1,16 +1,6 @@
 package com.robam.stream.ui.fragment;
 
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.lifecycle.ViewModelProvider;
-
-import android.Manifest;
-import android.app.AlertDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,24 +9,18 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import android.provider.Settings;
 import android.serialport.helper.SerialPortHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.clj.fastble.BleManager;
-import com.robam.common.utils.PermissionUtils;
 import com.robam.foodmaterialdetect.FoodMaterialDetectCallback;
 import com.robam.foodmaterialdetect.FoodMaterialHelper;
 import com.robam.stream.R;
 import com.robam.stream.ui.activity.BleActivity;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class HomeFragment extends Fragment {
 
@@ -50,7 +34,7 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.home_fragment, container, false);
+        View rootView = inflater.inflate(R.layout.stream_home_fragment, container, false);
         detect = rootView.findViewById(R.id.bt_detect);
         btTake = rootView.findViewById(R.id.bt_take);
         btBle = rootView.findViewById(R.id.ble);

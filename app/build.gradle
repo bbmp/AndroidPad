@@ -31,7 +31,8 @@ dependencies {
 
     implementation "androidx.appcompat:appcompat:$versions.appcompat"
     implementation "com.google.android.material:material:$versions.material"
-    implementation project(path: ':stream')
+    implementation "androidx.constraintlayout:constraintlayout:$versions.constraintlayout"
+    implementation project(path: ':ventilator')
     implementation project(path: ':serialport')
     implementation project(path: ':foodmaterialdetect')
     implementation project(path: ':common')

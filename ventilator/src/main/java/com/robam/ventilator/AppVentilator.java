@@ -1,14 +1,11 @@
-package com.robam.stream;
+package com.robam.ventilator;
 
 import android.app.Application;
-import android.serialport.helper.SerialPortConfig;
-import android.serialport.helper.SerialPortHelper;
 
 import com.clj.fastble.BleManager;
 import com.robam.common.http.RetrofitClient;
-import com.robam.foodmaterialdetect.FoodMaterialHelper;
 
-public class AppStream extends Application {
+public class AppVentilator extends Application {
     @Override
     public void onCreate() {
         super.onCreate();

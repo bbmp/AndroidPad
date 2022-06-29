@@ -3,13 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_home"
+    tools:ignore="ResourceName">
 
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.robam.stream.ui.fragment.HomeFragment"
-        android:label="@string/app_name_stream"
-        tools:layout="@layout/home_fragment">
+        android:label="@string/stream_app_name"
+        tools:layout="@layout/stream_home_fragment">
         <action
             android:id="@+id/action_fullscreen"
             app:destination="@id/fullscreenFragment"/>
@@ -18,16 +19,16 @@
     <fragment
         android:id="@+id/navigation_takephoto"
         android:name="com.robam.stream.ui.fragment.TakePhotoFragment"
-        android:label="@string/app_name_stream"
-        tools:layout="@layout/fragment_take_photo">
+        android:label="@string/stream_app_name"
+        tools:layout="@layout/stream_fragment_take_photo">
 
     </fragment>
     <fragment
 
         android:id="@+id/fullscreenFragment"
         android:name="com.robam.stream.ui.fragment.FullScreenFragment"
-        android:label="@string/app_name_stream"
-        tools:layout="@layout/fragment_full_screen">
+        android:label="@string/stream_app_name"
+        tools:layout="@layout/stream_fragment_full_screen">
 
     </fragment>
 </navigation>
