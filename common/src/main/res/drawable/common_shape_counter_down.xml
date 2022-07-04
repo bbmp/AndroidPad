@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 默认获取验证码按钮样式 -->
+<shape
+    android:shape="rectangle"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <solid android:color="@color/common_transparent"/>
+
+
+    <corners android:radius="@dimen/dp_81"/>
+    <stroke android:width="@dimen/dp_1" android:color="#333333"/>
+</shape>

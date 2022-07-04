@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/welcomepage"
+    tools:ignore="ResourceName">
+
+    <fragment
+        android:id="@+id/welcomepage"
+        android:name="com.robam.roki.pages.WelcomPage"
+        android:label="@string/roki_app_name"
+        tools:layout="@layout/roki_page_layout_welcome">
+        <action
+            android:id="@+id/action_webpage"
+            app:destination="@id/webPage"/>
+        <action
+            android:id="@+id/action_wizardpage"
+            app:destination="@id/wizardPage"/>
+
+    </fragment>
+
+    <fragment
+
+        android:id="@+id/webPage"
+        android:name="com.robam.roki.pages.WebPage"
+        android:label="@string/roki_app_name"
+        tools:layout="@layout/roki_page_layout_web">
+        <action
+            android:id="@+id/action_welcomepage"
+            app:popUpTo="@id/welcomepage"/>
+    </fragment>
+    <fragment android:id="@+id/wizardPage"
+        android:name="com.robam.roki.pages.WizardPage"
+        tools:layout="@layout/roki_page_layout_wizard">
+<!--        <action-->
+<!--            android:id="@+id/action_homepage"-->
+<!--            app:destination="@+id/homePage"/>-->
+    </fragment>
+</navigation>

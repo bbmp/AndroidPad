@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="common_RoundImageView">
+        <attr name="common_riv_corner_radius" format="dimension" />
+        <attr name="common_riv_left_top_corner_radius" format="dimension" />
+        <attr name="common_riv_right_top_corner_radius" format="dimension" />
+        <attr name="common_riv_left_bottom_corner_radius" format="dimension" />
+        <attr name="common_riv_right_bottom_corner_radius" format="dimension" />
+        <attr name="android:scaleType" />
+    </declare-styleable>
+
+
+
+</resources>

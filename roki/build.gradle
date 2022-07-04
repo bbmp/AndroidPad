@@ -23,17 +23,16 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    resourcePrefix "common_"   //资源前缀的名字
+    resourcePrefix "roki_"   //资源前缀的名字
 }
 
 dependencies {
 
     api "androidx.appcompat:appcompat:$versions.appcompat"
     api "com.google.android.material:material:$versions.material"
+    api "androidx.constraintlayout:constraintlayout:$versions.constraintlayout"
+    api "androidx.navigation:navigation-fragment:$versions.navigation_fragment"
+    api "androidx.navigation:navigation-ui:$versions.navigation_ui"
     testImplementation 'junit:junit:4.13.2'
-    api "com.squareup.retrofit2:retrofit:$versions.retrofit"
-    api "com.squareup.retrofit2:converter-gson:$versions.converter_gson"
-    api "com.github.tbruyelle:rxpermissions:$versions.rxpermissions"
-    api "io.reactivex.rxjava3:rxjava:$versions.rxjava"
-    api "io.reactivex.rxjava3:rxandroid:$versions.rxandroid"
+    api project(path: ':common')
 }

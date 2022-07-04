@@ -4,6 +4,16 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/AndroidProjects/AndroidPad/app/src/main/res/layout/activity_main.xml" value="0.175" />
+        <entry key="..\:/AndroidProjects/AndroidPad/common/src/main/res/layout/abs_header_page.xml" value="0.1703125" />
+        <entry key="..\:/AndroidProjects/AndroidPad/common/src/main/res/layout/common_header_page.xml" value="0.25" />
+        <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/drawable/roki_shape_button_left_selector.xml" value="0.1775" />
+        <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/layout/roki_dialog_layout_type_23.xml" value="0.24010416666666667" />
+        <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/layout/roki_dialog_layout_type_24.xml" value="0.24010416666666667" />
+        <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/layout/roki_fragment_full_screen.xml" value="0.175" />
+        <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/layout/roki_page_layout_web.xml" value="0.24010416666666667" />
+        <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/layout/roki_page_layout_welcome.xml" value="0.33" />
+        <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/layout/roki_page_layout_wizard.xml" value="0.14365113296280463" />
+        <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/layout/roki_view_layout_wizard.xml" value="0.14365113296280463" />
         <entry key="..\:/AndroidProjects/AndroidPad/stream/src/main/res/layout/activity_ble.xml" value="0.13333333333333333" />
         <entry key="..\:/AndroidProjects/AndroidPad/stream/src/main/res/layout/fragment_take_photo.xml" value="0.18177083333333333" />
         <entry key="..\:/AndroidProjects/AndroidPad/stream/src/main/res/layout/home_fragment.xml" value="0.175" />

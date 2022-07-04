@@ -25,6 +25,25 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    //用来配置APP的不同版本
+    productFlavors {
+        //百度渠道
+//        baidu {
+            //修改包名
+//            applicationId "com.product.baidu"
+            //修改app名字,string资源下不能包含"app_name"
+//            resValue "string", "app_name", "百度"
+            //修改AndroidManifest.xml部分字段(包含logo)
+//            manifestPlaceholders = [CHANNEL_VALUE: "baidu",app_icon: "@mipmap/logo"]
+//        }
+        //小米渠道
+//        xiaomi {
+//            applicationId "com.product.xiaomi"
+//            resValue "string", "app_name", "小米"
+            //修改AndroidManifest.xml部分字段(包含logo)
+//            manifestPlaceholders = [CHANNEL_VALUE: "xiaomi",app_icon: "@mipmap/logo"]
+//        }
+    }
 }
 
 dependencies {
@@ -32,10 +51,10 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$versions.appcompat"
     implementation "com.google.android.material:material:$versions.material"
     implementation "androidx.constraintlayout:constraintlayout:$versions.constraintlayout"
-    implementation project(path: ':ventilator')
     implementation project(path: ':serialport')
     implementation project(path: ':foodmaterialdetect')
     implementation project(path: ':common')
+    implementation project(path: ':roki')
     testImplementation 'junit:junit:4.13.2'
     implementation "androidx.navigation:navigation-fragment:$versions.navigation_fragment"
     implementation "androidx.navigation:navigation-ui:$versions.navigation_ui"

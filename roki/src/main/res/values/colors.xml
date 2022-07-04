@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="roki_transparent">#00000000</color>
+    <color name="roki_white">#FFFFFFFF</color>
+    <color name="roki_black">#FF000000</color>
+    <color name="roki_main">#ff61acff</color>
+    <color name="roki_text_color_online">#a6000000</color>
+    <color name="roki_text_color_exit_login">#ff61acff</color>
+    <color name="roki_text_color_net_err">#d9000000</color>
+</resources>
