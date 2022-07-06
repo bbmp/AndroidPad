@@ -33,8 +33,8 @@
     <fragment android:id="@+id/wizardPage"
         android:name="com.robam.roki.pages.WizardPage"
         tools:layout="@layout/roki_page_layout_wizard">
-<!--        <action-->
-<!--            android:id="@+id/action_homepage"-->
-<!--            app:destination="@+id/homePage"/>-->
+        <action
+            android:id="@+id/action_webpage"
+            app:destination="@+id/webPage"/>
     </fragment>
 </navigation>

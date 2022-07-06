@@ -18,8 +18,6 @@ import com.robam.roki.factory.RokiDialogFactory;
 import com.robam.roki.ui.UIService;
 import com.robam.roki.utils.PageArgumentKey;
 
-import java.util.List;
-
 public class WelcomPage extends HeadPage {
     private CountdownView2 cv_ring;
     private IRokiDialog privacyDialog;//隐私协议对话框

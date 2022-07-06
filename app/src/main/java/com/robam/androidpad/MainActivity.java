@@ -1,6 +1,8 @@
 package com.robam.androidpad;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.os.Bundle;
 
@@ -15,5 +17,7 @@ public class MainActivity extends AppCompatActivity {
         //沉浸式
         SkinStatusBarUtils.translucent(this);
         setContentView(R.layout.activity_main);
+        final NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        Navigation.setViewNavController(findViewById(R.id.nav_host_fragment), navController);
     }
 }
