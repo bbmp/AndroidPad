@@ -67,7 +67,7 @@ public class DialogType_23 extends BaseDialog {
                 Bundle bd = new Bundle();
                 bd.putString(PageArgumentKey.Url, url);
                 bd.putString(PageArgumentKey.WebTitle, "ROKI用户协议");
-                UIService.postPage(widget, R.id.action_webpage);
+                UIService.postPage(widget, R.id.action_webpage, bd);
 //                UIService.getInstance().postPage(PageKey.WebClientNew, bd);
 //                dismiss();
 //                WebActivity.start(mContext ,url);

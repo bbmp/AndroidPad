@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/homepage"
+    tools:ignore="ResourceName">
+
+
+    <fragment
+        android:id="@+id/homepage"
+        android:name="com.robam.roki.pages.HomePage"
+        tools:layout="@layout/roki_fragment_home" />
+
+
+
+
+
+
+</navigation>

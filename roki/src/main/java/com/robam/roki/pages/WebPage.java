@@ -23,6 +23,7 @@ public class WebPage extends HeadPage {
 
     @Override
     protected void initView() {
+        setStateBarFixer();
         webView = (ExtWebView) findViewById(R.id.webView);
         ivBack = (ImageView) findViewById(R.id.iv_back);
         ivBack.setOnClickListener(new View.OnClickListener() {
@@ -55,4 +56,5 @@ public class WebPage extends HeadPage {
 
         webView.loadUrl(url);
     }
+
 }

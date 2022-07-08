@@ -2,4 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.robam.roki">
 
+    <application>
+        <activity
+            android:name=".activity.HomeActivity"
+            android:exported="false" />
+
+    </application>
+
 </manifest>

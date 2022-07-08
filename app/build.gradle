@@ -67,4 +67,6 @@ dependencies {
     implementation "com.github.Jasonchenlijian:FastBle:$versions.FastBle"
     implementation "io.reactivex.rxjava3:rxjava:$versions.rxjava"
     implementation "io.reactivex.rxjava3:rxandroid:$versions.rxandroid"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$versions.lifecycle_livedata_ktx"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle_viewmodel_ktx"
 }

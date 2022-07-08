@@ -23,7 +23,10 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    resourcePrefix "roki_"   //资源前缀的名字
+    resourcePrefix "roki_"
+    buildFeatures {
+        viewBinding true
+    }   //资源前缀的名字
 }
 
 dependencies {
@@ -33,6 +36,8 @@ dependencies {
     api "androidx.constraintlayout:constraintlayout:$versions.constraintlayout"
     api "androidx.navigation:navigation-fragment:$versions.navigation_fragment"
     api "androidx.navigation:navigation-ui:$versions.navigation_ui"
+    api "androidx.lifecycle:lifecycle-livedata-ktx:$versions.lifecycle_livedata_ktx"
+    api "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle_viewmodel_ktx"
     testImplementation 'junit:junit:4.13.2'
     api project(path: ':common')
 }

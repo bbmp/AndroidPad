@@ -1,5 +1,6 @@
 package com.robam.roki.pages;
 
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -10,7 +11,9 @@ import androidx.viewpager.widget.ViewPager;
 import com.robam.common.ui.HeadPage;
 import com.robam.roki.R;
 import com.robam.roki.adapter.ExtPageAdapter;
+import com.robam.roki.cloud.IRokiRestService;
 import com.robam.roki.ui.UIService;
+import com.robam.roki.utils.PageArgumentKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +57,11 @@ public class WizardPage extends HeadPage {
         btStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UIService.postPage(view, R.id.action_webpage);
+                String url = String.format("%s", IRokiRestService.UserNotice);
+                Bundle bd = new Bundle();
+                bd.putString(PageArgumentKey.Url, url);
+                bd.putString(PageArgumentKey.WebTitle, "ROKI用户协议");
+                UIService.postPage(view, R.id.action_webpage, bd);
             }
         });
         return views;

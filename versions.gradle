@@ -18,6 +18,8 @@ versions.rxpermissions = "0.12"  //权限
 versions.FastBle = "2.4.0"   //蓝牙
 versions.rxjava = "3.0.13"
 versions.rxandroid = "3.0.0"
+versions.lifecycle_livedata_ktx = "2.3.1"
+versions.lifecycle_viewmodel_ktx = "2.3.1"
 
 
 ext.versions = versions

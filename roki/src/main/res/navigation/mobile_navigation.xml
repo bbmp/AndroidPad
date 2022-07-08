@@ -16,7 +16,8 @@
             app:destination="@id/webPage"/>
         <action
             android:id="@+id/action_wizardpage"
-            app:destination="@id/wizardPage"/>
+            app:destination="@id/wizardPage"
+            app:popUpTo="@id/wizardPage"/>
 
     </fragment>
 
