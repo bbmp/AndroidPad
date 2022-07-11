@@ -21,6 +21,12 @@ public class UIService {
         controller.navigate(resid, bundle);
     }
 
+    public static void popBack(View v) {
+        NavController controller = Navigation.findNavController(v);
+
+        controller.popBackStack();
+    }
+
     public static void postPagePopUp(View v, @IdRes int resid, Bundle bundle) {
         NavController controller = Navigation.findNavController(v);
         NavOptions navOptions = new NavOptions.Builder().setPopUpTo(resid, false).build();

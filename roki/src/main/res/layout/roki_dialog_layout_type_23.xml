@@ -28,18 +28,25 @@
                 android:textColor="@color/roki_text_color_net_err"/>
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/common_dialog_content_text"
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:layout_margin="20dp"
-            android:lineSpacingMultiplier='1.1'
-            android:letterSpacing="0.08"
-            tools:text="9877777777777777777777777777777777"
-            android:scrollbars="vertical"
-            android:textSize="@dimen/sp_16"
-            android:textColor="@color/roki_text_color_net_err"/>
+            android:layout_margin="@dimen/dp_20"
+            android:scrollbars="none">
+
+
+            <TextView
+                android:id="@+id/common_dialog_content_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:lineSpacingMultiplier='1.1'
+                android:letterSpacing="0.08"
+                tools:text="9877777777777777777777777777777777"
+                android:scrollbars="vertical"
+                android:textSize="@dimen/sp_16"
+                android:textColor="@color/roki_text_color_net_err"/>
+        </ScrollView>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -51,7 +58,7 @@
             <Button
                 android:id="@+id/common_dialog_cancel_btn"
                 android:layout_width="wrap_content"
-                android:layout_height="45dp"
+                android:layout_height="@dimen/dp_45"
                 android:layout_margin="10dp"
                 android:layout_gravity="center"
                 android:layout_weight="0.5"
@@ -64,7 +71,7 @@
             <Button
                 android:id="@+id/common_dialog_ok_btn"
                 android:layout_width="wrap_content"
-                android:layout_height="45dp"
+                android:layout_height="@dimen/dp_45"
                 android:background="@drawable/roki_shape_button_right_selector"
                 android:textColor="@color/roki_text_color_exit_login"
                 android:textSize="@dimen/sp_20"

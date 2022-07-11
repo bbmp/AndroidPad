@@ -1,6 +1,7 @@
 package com.robam.roki.dialog.type;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
@@ -14,6 +15,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.robam.roki.R;
+import com.robam.roki.activity.ui.WebActivity;
 import com.robam.roki.cloud.IRokiRestService;
 import com.robam.roki.dialog.BaseDialog;
 import com.robam.roki.dialog.CoreDialog;
@@ -64,13 +66,14 @@ public class DialogType_23 extends BaseDialog {
             @Override
             public void onClick(View widget) {
                 String url = String.format("%s", IRokiRestService.UserNotice);
-                Bundle bd = new Bundle();
-                bd.putString(PageArgumentKey.Url, url);
-                bd.putString(PageArgumentKey.WebTitle, "ROKI用户协议");
-                UIService.postPage(widget, R.id.action_webpage, bd);
-//                UIService.getInstance().postPage(PageKey.WebClientNew, bd);
-//                dismiss();
-//                WebActivity.start(mContext ,url);
+//                Bundle bd = new Bundle();
+//                bd.putString(PageArgumentKey.Url, url);
+//                bd.putString(PageArgumentKey.WebTitle, "ROKI用户协议");
+//                UIService.postPage(widget, R.id.action_webpage, bd);
+                Intent intent = new Intent(mContext, WebActivity.class);
+                intent.putExtra(PageArgumentKey.Url, url);
+                intent.putExtra(PageArgumentKey.WebTitle, "ROKI用户协议");
+                mContext.startActivity(intent);
             }
 
             @Override
@@ -88,10 +91,14 @@ public class DialogType_23 extends BaseDialog {
             @Override
             public void onClick(View widget) {
                 String url = String.format("%s", IRokiRestService.RegisterAgreement);
-                Bundle bd = new Bundle();
-                bd.putString(PageArgumentKey.Url, url);
-                bd.putString(PageArgumentKey.WebTitle, "ROKI用户协议");
+//                Bundle bd = new Bundle();
+//                bd.putString(PageArgumentKey.Url, url);
+//                bd.putString(PageArgumentKey.WebTitle, "ROKI用户协议");
 //                WebActivity.start(mContext ,url);
+                Intent intent = new Intent(mContext, WebActivity.class);
+                intent.putExtra(PageArgumentKey.Url, url);
+                intent.putExtra(PageArgumentKey.WebTitle, "ROKI用户协议");
+                mContext.startActivity(intent);
             }
 
             @Override

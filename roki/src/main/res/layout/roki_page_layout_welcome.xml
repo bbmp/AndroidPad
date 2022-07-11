@@ -15,7 +15,7 @@
 
     <com.robam.common.view.CountdownView2
         android:id="@+id/cv_ring"
-        android:visibility="invisible"
+        android:visibility="visible"
         android:background="@drawable/common_shape_counter_down"
         android:text="跳过3s"
         android:textSize="@dimen/sp_14"
@@ -23,7 +23,9 @@
         android:layout_gravity="end"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/dp_7"
         android:layout_marginTop="@dimen/dp_40"
+        android:layout_marginRight="@dimen/dp_20"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

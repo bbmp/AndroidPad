@@ -4,18 +4,38 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/AndroidProjects/AndroidPad/app/src/main/res/layout/activity_main.xml" value="0.175" />
+        <entry key="..\:/AndroidProjects/AndroidPad/common/src/main/res/drawable/common_shape_counter_down.xml" value="0.2255" />
         <entry key="..\:/AndroidProjects/AndroidPad/common/src/main/res/layout/abs_header_page.xml" value="0.1703125" />
         <entry key="..\:/AndroidProjects/AndroidPad/common/src/main/res/layout/common_header_page.xml" value="0.25" />
         <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/drawable/ic_dashboard_black_24dp.xml" value="0.1835" />
+        <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/drawable/roki_.xml" value="0.185" />
+        <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/drawable/roki_home_tab_icon_selector.xml" value="0.185" />
+        <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/drawable/roki_home_tab_personal.xml" value="0.185" />
+        <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/drawable/roki_home_tab_recipe_selector.xml" value="0.185" />
+        <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/drawable/roki_home_tab_text_color_selector.xml" value="0.185" />
+        <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/drawable/roki_ic_collection.xml" value="0.185" />
+        <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/drawable/roki_ic_mywork.xml" value="0.185" />
+        <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/drawable/roki_shape_backtotop_bg.xml" value="0.185" />
+        <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/drawable/roki_shape_bg_main.xml" value="0.185" />
         <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/drawable/roki_shape_button_left_selector.xml" value="0.1775" />
+        <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/drawable/roki_shape_divider_bg.xml" value="0.185" />
+        <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/drawable/roki_shape_kitchen_bg_round.xml" value="0.185" />
         <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/layout/activity_home.xml" value="0.14365113296280463" />
         <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/layout/roki_activity_home.xml" value="0.14493373236425822" />
+        <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/layout/roki_activity_layout_web.xml" value="0.14493373236425822" />
         <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/layout/roki_dialog_layout_type_23.xml" value="0.24010416666666667" />
         <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/layout/roki_dialog_layout_type_24.xml" value="0.24010416666666667" />
         <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/layout/roki_fragment_full_screen.xml" value="0.175" />
+        <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/layout/roki_fragment_home.xml" value="0.14493373236425822" />
+        <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/layout/roki_layout_empty.xml" value="0.14493373236425822" />
+        <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/layout/roki_page_layout_home.xml" value="0.16203505771697307" />
+        <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/layout/roki_page_layout_homedevice.xml" value="0.14493373236425822" />
+        <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/layout/roki_page_layout_homemine.xml" value="0.14493373236425822" />
+        <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/layout/roki_page_layout_homerecipe.xml" value="0.14493373236425822" />
         <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/layout/roki_page_layout_web.xml" value="0.24010416666666667" />
         <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/layout/roki_page_layout_welcome.xml" value="0.33" />
         <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/layout/roki_page_layout_wizard.xml" value="0.14365113296280463" />
+        <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/layout/roki_view_home_tab_item.xml" value="0.21" />
         <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/layout/roki_view_layout_wizard.xml" value="0.14365113296280463" />
         <entry key="..\:/AndroidProjects/AndroidPad/stream/src/main/res/layout/activity_ble.xml" value="0.13333333333333333" />
         <entry key="..\:/AndroidProjects/AndroidPad/stream/src/main/res/layout/fragment_take_photo.xml" value="0.18177083333333333" />

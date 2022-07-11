@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="@dimen/dp_100"
+        android:layout_height="@dimen/dp_100"
+        android:src="@mipmap/roki_icon_net_error"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="当前网络已断开"
+        android:layout_marginTop="@dimen/dp_20"
+        android:textSize="@dimen/sp_20"
+        android:textColor="@color/roki_text_color_net_err"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_14"
+        android:text="轻触屏幕重试"
+        android:textSize="@dimen/sp_14"
+        android:textColor="@color/roki_text_color_touch_retry"/>
+
+</LinearLayout>
+
+

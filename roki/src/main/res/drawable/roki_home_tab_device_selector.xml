@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@mipmap/roki_ic_device_nor"
+        android:state_selected="false"/>
+    <item android:drawable="@mipmap/roki_ic_device_pre"
+        android:state_selected="true"/>
+</selector>

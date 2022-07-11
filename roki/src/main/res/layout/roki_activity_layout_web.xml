@@ -12,22 +12,7 @@
         android:background="@color/roki_transparent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_44"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/status_bar_fix">
-    //这里为了不换图标
-    <com.robam.common.view.RoundImageView
-        android:id="@+id/iv_back"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/dp_20"
-        android:src="@mipmap/roki_ic_arrow_back" />
 
-
-    </RelativeLayout>
 
     <com.robam.common.view.ExtWebView
         android:id="@+id/webView"
@@ -36,4 +21,20 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/status_bar_fix"
         app:layout_constraintBottom_toBottomOf="parent"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_44"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/status_bar_fix">
+        //这里为了不换图标
+        <com.robam.common.view.RoundImageView
+            android:id="@+id/iv_back"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:src="@mipmap/roki_ic_arrow_back" />
+
+
+    </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

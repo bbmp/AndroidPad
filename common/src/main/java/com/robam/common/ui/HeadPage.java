@@ -39,11 +39,13 @@ public abstract class HeadPage extends Fragment {
 
 //        mRootView = inflater.inflate(R.layout.common_header_page, container, false);
 //        pnlMain = mRootView.findViewById(R.id.pnlMain);
-        mRootView = inflater.inflate(getLayoutId(), container, false);
+        if (null == mRootView) {
+            mRootView = inflater.inflate(getLayoutId(), container, false);
 //        pnlMain.addView(mContentView);
 //        setStateBarFixer();
-        initView();
-        initData();
+            initView();
+            initData();
+        }
         return mRootView;
     }
 

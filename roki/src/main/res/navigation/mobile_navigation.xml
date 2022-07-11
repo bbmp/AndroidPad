@@ -18,15 +18,21 @@
             android:id="@+id/action_wizardpage"
             app:destination="@id/wizardPage"
             app:popUpTo="@id/wizardPage"/>
-
+        <action
+            android:id="@+id/action_type23"
+            app:destination="@+id/type23"/>
     </fragment>
+    <fragment
+        android:id="@+id/type23"
+        android:name="com.robam.roki.dialog.type.DialogFragmentType_23"
+        tools:layout="@layout/roki_dialog_layout_type_23"/>
 
     <fragment
 
         android:id="@+id/webPage"
         android:name="com.robam.roki.pages.WebPage"
         android:label="@string/roki_app_name"
-        tools:layout="@layout/roki_page_layout_web">
+        tools:layout="@layout/roki_activity_layout_web">
         <action
             android:id="@+id/action_welcomepage"
             app:popUpTo="@id/welcomepage"/>

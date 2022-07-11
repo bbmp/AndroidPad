@@ -6,6 +6,8 @@
         <activity
             android:name=".activity.HomeActivity"
             android:exported="false" />
+        <activity android:name=".activity.ui.WebActivity"
+            android:exported="false"/>
 
     </application>
 

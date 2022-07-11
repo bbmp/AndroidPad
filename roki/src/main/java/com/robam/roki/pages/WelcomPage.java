@@ -12,8 +12,10 @@ import com.robam.common.utils.NetworkUtils;
 import com.robam.common.utils.PreferenceUtils;
 import com.robam.common.view.CountdownView2;
 import com.robam.roki.R;
+import com.robam.roki.activity.HomeActivity;
 import com.robam.roki.dialog.DialogUtils;
 import com.robam.roki.dialog.IRokiDialog;
+import com.robam.roki.dialog.type.DialogFragmentType_23;
 import com.robam.roki.factory.RokiDialogFactory;
 import com.robam.roki.ui.UIService;
 import com.robam.roki.utils.PageArgumentKey;
@@ -52,9 +54,9 @@ public class WelcomPage extends HeadPage {
                         privacyDialog.dismiss();
                         if (NetworkUtils.isConnect(getContext())){
 //                            WizardActivity.start(activity);
-                            UIService.postPage(getView(), R.id.action_wizardpage);
+                            UIService.postPage(mRootView, R.id.action_wizardpage);
                         }else {
-//                            MainActivity.start(activity);
+                            HomeActivity.start(getActivity());
                         }
                     } else if (v.getId() == R.id.common_dialog_cancel_btn) {
                         privacyDialog.dismiss();
@@ -63,6 +65,9 @@ public class WelcomPage extends HeadPage {
                 }
             }, R.id.common_dialog_ok_btn, R.id.common_dialog_cancel_btn);
             privacyDialog.show();
+
+//            DialogFragmentType_23 dialogFragmentType_23 = new DialogFragmentType_23();
+//            dialogFragmentType_23.showNow(getChildFragmentManager(), "type_23");
 
             return;
         }
@@ -77,7 +82,6 @@ public class WelcomPage extends HeadPage {
 
     private void showExitDialog() {
         exitDialog.setCancelable(false);
-        exitDialog.show();
         exitDialog.setListeners(new IRokiDialog.DialogOnClickListener() {
             @Override
             public void onClick(View v, int position) {
@@ -85,17 +89,17 @@ public class WelcomPage extends HeadPage {
                     PreferenceUtils.setBool(getContext(), PageArgumentKey.IsFirstUse, false);
                     exitDialog.dismiss();
                     if (NetworkUtils.isConnect(getContext())){
-                        UIService.postPage(v, R.id.action_wizardpage);
+                        UIService.postPage(mRootView, R.id.action_wizardpage);
                     }else {
-//                        MainActivity.start(activity);
+                        HomeActivity.start(getActivity());
                     }
                 } else if (v.getId() == R.id.common_dialog_cancel_btn) {
                     exitDialog.dismiss();
                     getActivity().finish();
                 }
             }
-        });
-
+        }, R.id.common_dialog_ok_btn, R.id.common_dialog_cancel_btn);
+        exitDialog.show();
     }
     private Handler handler=new Handler(){
         @Override
@@ -172,6 +176,15 @@ public class WelcomPage extends HeadPage {
 //                }
 //            }
 //        });
+        if (cv_ring != null){
+            cv_ring.setVisibility(View.VISIBLE);
+            cv_ring.start(new CountdownView2.StopLinstener() {
+                @Override
+                public void stop() {
+                    startNext();
+                }
+            });
+        }
     }
 
     private void startNext() {
@@ -179,12 +192,12 @@ public class WelcomPage extends HeadPage {
         LogUtils.i( "isFirstUse:" + isFirstUse);
         if (isFirstUse) {
             if (NetworkUtils.isConnect(getContext())) {
-                UIService.postPage(getView(), R.id.action_wizardpage);
+                UIService.postPage(mRootView, R.id.action_wizardpage);
             }else{
 //                MainActivity.start(activity);
             }
         }else {
-//            MainActivity.start(activity);
+            HomeActivity.start(getActivity());
         }
 
     }

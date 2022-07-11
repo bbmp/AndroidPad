@@ -10,6 +10,7 @@ import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.common.view.ExtWebView;
 import com.robam.roki.R;
+import com.robam.roki.ui.UIService;
 import com.robam.roki.utils.PageArgumentKey;
 
 public class WebPage extends HeadPage {
@@ -18,7 +19,7 @@ public class WebPage extends HeadPage {
     private String url;
     @Override
     protected int getLayoutId() {
-        return R.layout.roki_page_layout_web;
+        return R.layout.roki_activity_layout_web;
     }
 
     @Override
@@ -29,7 +30,7 @@ public class WebPage extends HeadPage {
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                UIService.popBack(v);
             }
         });
     }

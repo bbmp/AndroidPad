@@ -7,4 +7,10 @@
     <color name="roki_text_color_online">#a6000000</color>
     <color name="roki_text_color_exit_login">#ff61acff</color>
     <color name="roki_text_color_net_err">#d9000000</color>
+    <color name="roki_main_tab_background">#bfffffff</color>
+    <color name="roki_text_color_kitchen">#e6000000</color>
+    <color name="roki_text_color_touch_retry">#73000000</color>
+    <color name="roki_text_color_search">#4d000000</color>
+    <color name="roki_text_color_device_category">#ff000000</color>
+    <color name="roki_text_color_read_number">#99000000</color>
 </resources>
