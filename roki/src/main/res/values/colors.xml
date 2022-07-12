@@ -13,4 +13,5 @@
     <color name="roki_text_color_search">#4d000000</color>
     <color name="roki_text_color_device_category">#ff000000</color>
     <color name="roki_text_color_read_number">#99000000</color>
+    <color name="roki_red">#FFFF0000</color>
 </resources>

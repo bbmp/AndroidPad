@@ -10,9 +10,17 @@
     <fragment
         android:id="@+id/homepage"
         android:name="com.robam.roki.pages.HomePage"
-        tools:layout="@layout/roki_fragment_home" />
+        tools:layout="@layout/roki_page_layout_home" >
+        <action
+            android:id="@+id/action_saleservice"
+            app:destination="@id/saleservicepage"/>
+    </fragment>
+    <fragment
+        android:id="@+id/saleservicepage"
+        android:name="com.robam.roki.pages.SaleServicePage"
+        tools:layout="@layout/roki_page_layout_saleservice">
 
-
+    </fragment>
 
 
 

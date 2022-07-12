@@ -36,4 +36,5 @@ dependencies {
     api "com.github.tbruyelle:rxpermissions:$versions.rxpermissions"
     api "io.reactivex.rxjava3:rxjava:$versions.rxjava"
     api "io.reactivex.rxjava3:rxandroid:$versions.rxandroid"
+    api "com.github.bumptech.glide:glide:$versions.glide"
 }

@@ -4,9 +4,9 @@
 
     <application>
         <activity
-            android:name=".activity.HomeActivity"
+            android:name=".ui.activity.HomeActivity"
             android:exported="false" />
-        <activity android:name=".activity.ui.WebActivity"
+        <activity android:name=".ui.activity.WebActivity"
             android:exported="false"/>
 
     </application>

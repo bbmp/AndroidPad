@@ -13,6 +13,7 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        flavorDimensions "versionCode"
     }
 
     buildTypes {
@@ -27,15 +28,15 @@ android {
     }
     //用来配置APP的不同版本
     productFlavors {
-        //百度渠道
-//        baidu {
-            //修改包名
-//            applicationId "com.product.baidu"
-            //修改app名字,string资源下不能包含"app_name"
-//            resValue "string", "app_name", "百度"
-            //修改AndroidManifest.xml部分字段(包含logo)
-//            manifestPlaceholders = [CHANNEL_VALUE: "baidu",app_icon: "@mipmap/logo"]
-//        }
+        //roki
+        roki {
+//            修改包名
+            applicationId "com.robam.roki2"
+//            修改app名字,string资源下不能包含"app_name"
+            resValue "string", "app_name", "roki"
+//            修改AndroidManifest.xml部分字段(包含logo)
+            manifestPlaceholders = [app_icon: "@mipmap/logo"]
+        }
         //小米渠道
 //        xiaomi {
 //            applicationId "com.product.xiaomi"
@@ -71,4 +72,6 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle_viewmodel_ktx"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$versions.swiperefreshlayout"
     implementation "io.github.youth5201314:banner:$versions.banner"
+    implementation "com.github.bumptech.glide:glide:$versions.glide"
+    annotationProcessor "com.github.bumptech.glide:compiler:$versions.glide"
 }

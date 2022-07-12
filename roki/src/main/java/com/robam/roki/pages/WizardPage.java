@@ -1,20 +1,15 @@
 package com.robam.roki.pages;
 
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 
 import androidx.viewpager.widget.ViewPager;
 
 import com.robam.common.ui.HeadPage;
 import com.robam.roki.R;
-import com.robam.roki.activity.HomeActivity;
+import com.robam.roki.ui.activity.HomeActivity;
 import com.robam.roki.adapter.ExtPageAdapter;
-import com.robam.roki.cloud.IRokiRestService;
-import com.robam.roki.ui.UIService;
-import com.robam.roki.utils.PageArgumentKey;
 
 import java.util.ArrayList;
 import java.util.List;

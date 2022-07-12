@@ -1,4 +1,4 @@
-package com.robam.roki.activity.ui;
+package com.robam.roki.ui.activity;
 
 import android.os.Bundle;
 import android.view.View;

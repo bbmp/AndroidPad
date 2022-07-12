@@ -9,11 +9,19 @@ import retrofit2.http.Body;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
-public interface ICloudService<T extends BaseResponse> {
+public interface ICloudService {
     String getVerifyCode = "/rest/api/cas/verify-code/get";
+    //获取厨房支持列表
+    String getCookingKnowledge = "/rest/ops/api/cookingKnowledge/getCookingKnowledge";
 
     @POST(getVerifyCode)
     @Headers("Content-Type: application/json")
     Call<ResponseBody> getVerifyCode(@Body RequestBody body);
 
+    /**
+     * 获取厨房知识列表
+     */
+    @POST(getCookingKnowledge)
+    @Headers("Content-Type: application/json")
+    Call<ResponseBody> getCookingKnowledge(@Body RequestBody body);
 }

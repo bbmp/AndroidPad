@@ -5,21 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="false"
-    android:orientation="vertical"
-    android:background="@drawable/roki_shape_bg_main">
-    <View
-        android:id="@+id/status_bar_fix"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@color/roki_white"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+    android:orientation="vertical">
+
     <RelativeLayout
         android:id="@+id/rl_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/status_bar_fix"
+        app:layout_constraintTop_toTopOf="parent"
         android:background="@color/roki_white">
 
         <RelativeLayout

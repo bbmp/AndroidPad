@@ -11,7 +11,6 @@ public class HomeRecipePage extends HeadPage {
 
     @Override
     protected void initView() {
-
     }
 
     @Override

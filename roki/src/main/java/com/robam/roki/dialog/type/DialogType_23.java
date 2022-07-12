@@ -3,7 +3,6 @@ package com.robam.roki.dialog.type;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Bundle;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
@@ -15,11 +14,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.robam.roki.R;
-import com.robam.roki.activity.ui.WebActivity;
+import com.robam.roki.ui.activity.WebActivity;
 import com.robam.roki.cloud.IRokiRestService;
 import com.robam.roki.dialog.BaseDialog;
 import com.robam.roki.dialog.CoreDialog;
-import com.robam.roki.ui.UIService;
 import com.robam.roki.utils.PageArgumentKey;
 
 public class DialogType_23 extends BaseDialog {

@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.robam.common.ui.HeadPage;
@@ -22,7 +23,7 @@ import java.util.List;
 
 public class HomePage extends HeadPage {
     private TabLayout tabLayout;
-    private NoScrollViewPager noScrollViewPager;
+    private ViewPager noScrollViewPager;
     private List<Fragment> fragments = new ArrayList<>();
 
     @Override
@@ -32,6 +33,7 @@ public class HomePage extends HeadPage {
 
     @Override
     protected void initView() {
+        setStateBarFixer();
         tabLayout = findViewById(R.id.tabLayout);
         noScrollViewPager = findViewById(R.id.pager);
         tabLayout.setSelectedTabIndicatorHeight(0);
@@ -70,9 +72,12 @@ public class HomePage extends HeadPage {
         fragments.add(new HomeMinePage());
         //添加设置适配器
         noScrollViewPager.setAdapter(new HomePagerAdapter(getParentFragmentManager()));
-        //把TabLayout与ViewPager关联起来
-        tabLayout.setupWithViewPager(noScrollViewPager);
-//        noScrollViewPager.setCurrentItem(1);
+//        //把TabLayout与ViewPager关联起来
+//        tabLayout.setupWithViewPager(noScrollViewPager);
+        noScrollViewPager.setOffscreenPageLimit(3);
+        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(noScrollViewPager));
+        noScrollViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        noScrollViewPager.setCurrentItem(1);
     }
 
     @Override
@@ -80,7 +85,7 @@ public class HomePage extends HeadPage {
 
     }
 
-    class HomePagerAdapter extends FragmentPagerAdapter {
+    class HomePagerAdapter extends FragmentStatePagerAdapter {
 
 
         public HomePagerAdapter(@NonNull FragmentManager fm) {
@@ -103,5 +108,10 @@ public class HomePage extends HeadPage {
         public CharSequence getPageTitle(int position) {
             return super.getPageTitle(position);
         }
+    }
+
+    @Override
+    protected void setStateBarFixer() {
+
     }
 }

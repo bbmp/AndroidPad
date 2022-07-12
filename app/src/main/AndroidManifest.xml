@@ -17,6 +17,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AndroidPad"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:name=".PadApp">
         <activity android:exported="true" android:name=".MainActivity">
             <intent-filter>

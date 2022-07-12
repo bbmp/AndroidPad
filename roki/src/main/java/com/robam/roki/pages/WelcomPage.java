@@ -12,10 +12,9 @@ import com.robam.common.utils.NetworkUtils;
 import com.robam.common.utils.PreferenceUtils;
 import com.robam.common.view.CountdownView2;
 import com.robam.roki.R;
-import com.robam.roki.activity.HomeActivity;
+import com.robam.roki.ui.activity.HomeActivity;
 import com.robam.roki.dialog.DialogUtils;
 import com.robam.roki.dialog.IRokiDialog;
-import com.robam.roki.dialog.type.DialogFragmentType_23;
 import com.robam.roki.factory.RokiDialogFactory;
 import com.robam.roki.ui.UIService;
 import com.robam.roki.utils.PageArgumentKey;
@@ -32,6 +31,8 @@ public class WelcomPage extends HeadPage {
 
     @Override
     protected void initView() {
+        //全屏
+        setStateBarFixer();
         privacyDialog = RokiDialogFactory.createDialogByType(getContext(), DialogUtils.DIALOG_TYPE_23);
         exitDialog = RokiDialogFactory.createDialogByType(getContext(), DialogUtils.DIALOG_TYPE_24);
 
@@ -199,6 +200,11 @@ public class WelcomPage extends HeadPage {
         }else {
             HomeActivity.start(getActivity());
         }
+
+    }
+
+    @Override
+    protected void setStateBarFixer() {
 
     }
 }

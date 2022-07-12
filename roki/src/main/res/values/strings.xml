@@ -24,4 +24,9 @@
     <string name="roki_my_sale_service">一键售后</string>
     <string name="roki_my_device">厨电管理</string>
     <string name="roki_my_curve_list">烹饪曲线</string>
+    <string name="roki_after_reminding">您可通过下面两种方式</string>
+    <string name="roki_after_remindin_01">享受老板电器会员的专属服务哦~</string>
+    <string name="roki_my_sale_consulting">留言咨询</string>
+    <string name="roki_my_sale_one_key">一键售后</string>
+    <string name="roki_my_sale_one_key_call">一键售后未开通地区可拨打</string>
 </resources>

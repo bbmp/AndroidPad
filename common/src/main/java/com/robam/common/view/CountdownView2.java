@@ -72,13 +72,12 @@ public class CountdownView2 extends AppCompatTextView implements Runnable {
     @SuppressLint("SetTextI18n")
     @Override
     public void run() {
+        setText("跳过" +mCurrentSecond + "" + TIME_UNIT );
+        mCurrentSecond--;
         if (mCurrentSecond == 0) {
             stop();
             return;
         }
-
-        setText("跳过" +mCurrentSecond + "" + TIME_UNIT );
-        mCurrentSecond--;
         postDelayed(this, 1000);
     }
 

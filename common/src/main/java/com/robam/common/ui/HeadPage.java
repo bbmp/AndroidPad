@@ -12,8 +12,9 @@ import androidx.annotation.IdRes;
 import androidx.fragment.app.Fragment;
 
 import com.robam.common.R;
+import com.robam.common.ui.action.ClickAction;
 
-public abstract class HeadPage extends Fragment {
+public abstract class HeadPage extends Fragment implements ClickAction {
     protected View mRootView;
     protected View mContentView;
     protected FrameLayout pnlMain;
@@ -37,12 +38,13 @@ public abstract class HeadPage extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-//        mRootView = inflater.inflate(R.layout.common_header_page, container, false);
-//        pnlMain = mRootView.findViewById(R.id.pnlMain);
         if (null == mRootView) {
-            mRootView = inflater.inflate(getLayoutId(), container, false);
-//        pnlMain.addView(mContentView);
-//        setStateBarFixer();
+            mRootView = inflater.inflate(R.layout.common_header_page, container, false);
+            pnlMain = mRootView.findViewById(R.id.pnlMain);
+
+            mContentView = inflater.inflate(getLayoutId(), container, false);
+            pnlMain.addView(mContentView);
+            setStateBarFixer();
             initView();
             initData();
         }
@@ -55,6 +57,17 @@ public abstract class HeadPage extends Fragment {
 
 
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
     /**
      * 设置状态栏占位
      */
@@ -66,6 +79,24 @@ public abstract class HeadPage extends Fragment {
             layoutParams.height = getStatusBarHeight(getActivity());
             mStateBarFixer.setLayoutParams(layoutParams);
 
+        }
+    }
+    /**
+     * 设置状态栏颜色
+     */
+    protected void setStateBarColor(int resid) {
+        View mStateBarFixer = mRootView.findViewById(R.id.status_bar_fix);
+        if (mStateBarFixer != null){
+            mStateBarFixer.setBackgroundResource(resid);
+        }
+    }
+    /**
+     * 设置状态栏颜色
+     */
+    protected void setStateBarDrawable(Drawable drawable) {
+        View mStateBarFixer = mRootView.findViewById(R.id.status_bar_fix);
+        if (mStateBarFixer != null){
+            mStateBarFixer.setBackground(drawable);
         }
     }
     /**
