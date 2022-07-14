@@ -37,4 +37,6 @@ dependencies {
     api "io.reactivex.rxjava3:rxjava:$versions.rxjava"
     api "io.reactivex.rxjava3:rxandroid:$versions.rxandroid"
     api "com.github.bumptech.glide:glide:$versions.glide"
+    api "androidx.navigation:navigation-fragment:$versions.navigation_fragment"
+    api "androidx.navigation:navigation-ui:$versions.navigation_ui"
 }

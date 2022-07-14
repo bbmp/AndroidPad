@@ -1,4 +1,4 @@
-package com.robam.ventilator.fragment;
+package com.robam.ventilator.pages;
 
 import androidx.lifecycle.ViewModel;
 

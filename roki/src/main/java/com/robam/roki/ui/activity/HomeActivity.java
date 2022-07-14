@@ -23,13 +23,13 @@ public class HomeActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.roki_activity_home);
+        setContentView(R.layout.roki_activity_layout_home);
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_home);
-        Navigation.setViewNavController(findViewById(R.id.nav_host_fragment_activity_home), navController);
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_roki_activity_home);
+        Navigation.setViewNavController(findViewById(R.id.nav_host_roki_activity_home), navController);
     }
 
 }

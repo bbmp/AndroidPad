@@ -5,10 +5,8 @@ import android.app.Application;
 import com.clj.fastble.BleManager;
 import com.robam.common.http.RetrofitClient;
 
-public class AppVentilator extends Application {
-    @Override
-    public void onCreate() {
-        super.onCreate();
+public class AppVentilator {
+    public static void init(Application application) {
         //检测食物
 //        FoodMaterialHelper.init(this);
         //串口初始化
@@ -18,7 +16,7 @@ public class AppVentilator extends Application {
         //http
         RetrofitClient.getInstance().init("https://api.github.com", null);
         //ble
-        BleManager.getInstance().init(this);
+        BleManager.getInstance().init(application);
         BleManager.getInstance()
                 .enableLog(true)
                 .setReConnectCount(1, 5000)
