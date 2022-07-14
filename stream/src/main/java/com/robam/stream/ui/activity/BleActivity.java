@@ -36,7 +36,7 @@ public class BleActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.stream_activity_ble);
+        setContentView(R.layout.stream_activity_layout_ble);
         scan = findViewById(R.id.scan);
         scan.setOnClickListener(new View.OnClickListener() {
             @Override

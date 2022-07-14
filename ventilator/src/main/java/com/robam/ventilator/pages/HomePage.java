@@ -1,6 +1,10 @@
 package com.robam.ventilator.pages;
 
+import android.content.Intent;
+import android.view.View;
+
 import com.robam.common.ui.HeadPage;
+import com.robam.stream.ui.activity.MainActivity;
 import com.robam.ventilator.R;
 
 public class HomePage extends HeadPage {
@@ -18,7 +22,7 @@ public class HomePage extends HeadPage {
 
     @Override
     protected void initView() {
-
+        setOnClickListener(R.id.tv_ven);
     }
 
     @Override
@@ -26,5 +30,13 @@ public class HomePage extends HeadPage {
 
     }
 
-
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.tv_ven)
+        {
+            Intent intent = new Intent();
+            intent.setClass(getContext(), MainActivity.class);
+            startActivity(intent);
+        }
+    }
 }

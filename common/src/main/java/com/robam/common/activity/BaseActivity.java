@@ -9,8 +9,9 @@ import androidx.annotation.Nullable;
 
 import com.robam.common.R;
 import com.robam.common.skin.SkinStatusBarUtils;
+import com.robam.common.ui.action.ClickAction;
 
-public abstract class BaseActivity extends AbsActivity{
+public abstract class BaseActivity extends AbsActivity implements ClickAction {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

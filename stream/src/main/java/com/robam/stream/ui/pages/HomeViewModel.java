@@ -1,4 +1,4 @@
-package com.robam.stream.ui.fragment;
+package com.robam.stream.ui.pages;
 
 import androidx.lifecycle.ViewModel;
 

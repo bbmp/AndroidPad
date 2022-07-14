@@ -1,4 +1,4 @@
-package com.robam.stream.ui.fragment;
+package com.robam.stream.ui.pages;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,12 +17,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.clj.fastble.BleManager;
+import com.robam.common.ui.HeadPage;
 import com.robam.foodmaterialdetect.FoodMaterialDetectCallback;
 import com.robam.foodmaterialdetect.FoodMaterialHelper;
 import com.robam.stream.R;
 import com.robam.stream.ui.activity.BleActivity;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends HeadPage {
 
     private Button detect;
     private Button btTake, btBle;
@@ -32,12 +33,15 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.stream_home_fragment, container, false);
-        detect = rootView.findViewById(R.id.bt_detect);
-        btTake = rootView.findViewById(R.id.bt_take);
-        btBle = rootView.findViewById(R.id.ble);
+    protected int getLayoutId() {
+        return R.layout.stream_page_layout_home;
+    }
+
+    @Override
+    protected void initView() {
+        detect = findViewById(R.id.bt_detect);
+        btTake = findViewById(R.id.bt_take);
+        btBle = findViewById(R.id.ble);
 
         detect.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,7 +69,11 @@ public class HomeFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        return  rootView;
+    }
+
+    @Override
+    protected void initData() {
+
     }
 
     @Override

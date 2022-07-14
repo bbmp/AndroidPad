@@ -36,6 +36,7 @@ dependencies {
     api project(path: ':serialport')
     api project(path: ':foodmaterialdetect')
     api project(path: ':common')
+    api project(path: ':stream')
     testImplementation 'junit:junit:4.13.2'
     api "com.squareup.retrofit2:retrofit:$versions.retrofit"
     api "com.squareup.retrofit2:converter-gson:$versions.converter_gson"

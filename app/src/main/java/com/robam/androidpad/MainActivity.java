@@ -16,6 +16,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //沉浸式
         SkinStatusBarUtils.translucent(this);
+        //字体
+        SkinStatusBarUtils.setStatusBarLightMode(this);
         setContentView(R.layout.activity_main);
         final NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         Navigation.setViewNavController(findViewById(R.id.nav_host_fragment), navController);

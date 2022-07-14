@@ -1,4 +1,4 @@
-package com.robam.stream.ui.fragment;
+package com.robam.stream.ui.pages;
 
 import android.os.Bundle;
 
@@ -12,10 +12,10 @@ import com.robam.stream.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link FullScreenFragment#newInstance} factory method to
+ * Use the {@link TakePhotoFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FullScreenFragment extends Fragment {
+public class TakePhotoFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,7 +26,7 @@ public class FullScreenFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public FullScreenFragment() {
+    public TakePhotoFragment() {
         // Required empty public constructor
     }
 
@@ -36,11 +36,11 @@ public class FullScreenFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment FullScreenFragment.
+     * @return A new instance of fragment TakePhotoFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static FullScreenFragment newInstance(String param1, String param2) {
-        FullScreenFragment fragment = new FullScreenFragment();
+    public static TakePhotoFragment newInstance(String param1, String param2) {
+        TakePhotoFragment fragment = new TakePhotoFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -61,6 +61,6 @@ public class FullScreenFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.stream_fragment_full_screen, container, false);
+        return inflater.inflate(R.layout.stream_page_layout_take_photo, container, false);
     }
 }
