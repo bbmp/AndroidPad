@@ -8,6 +8,7 @@ import androidx.navigation.Navigation;
 
 import com.robam.common.activity.BaseActivity;
 import com.robam.stream.R;
+import com.robam.stream.device.SteamFactory;
 
 //非主入口调用入口
 public class MainActivity extends BaseActivity {
@@ -18,5 +19,9 @@ public class MainActivity extends BaseActivity {
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_stream_activity_main);
         Navigation.setViewNavController(findViewById(R.id.nav_host_stream_activity_main), navController);
+        //使用哪个平台
+        SteamFactory.initPlat(this, SteamFactory.TUOBANG);
+        //开启远程控制
+        SteamFactory.initMqttProtocol(SteamFactory.CQ926);
     }
 }

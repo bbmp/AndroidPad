@@ -1,6 +1,8 @@
 package com.robam.ventilator;
 
 import android.app.Application;
+import android.serialport.helper.SerialPortConfig;
+import android.serialport.helper.SerialPortHelper;
 
 import com.clj.fastble.BleManager;
 import com.robam.common.http.RetrofitClient;
@@ -10,9 +12,9 @@ public class AppVentilator {
         //检测食物
 //        FoodMaterialHelper.init(this);
         //串口初始化
-//        SerialPortConfig serialPortConfig = new SerialPortConfig.Builder()
-//                .setMaxSize(16).build();
-//        SerialPortHelper.getInstance().init(serialPortConfig);
+        SerialPortConfig serialPortConfig = new SerialPortConfig.Builder()
+                .setMaxSize(16).build();
+        SerialPortHelper.getInstance().init(serialPortConfig);
         //http
         RetrofitClient.getInstance().init("https://api.github.com", null);
         //ble

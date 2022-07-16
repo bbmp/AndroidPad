@@ -3,6 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidProjects/AndroidPad/app/src/main/res/drawable/info_ic.xml" value="0.1835" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/src/main/res/drawable/reboot_ic.xml" value="0.1835" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/src/main/res/drawable/share_ic.xml" value="0.1835" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/src/main/res/layout/activity_crash.xml" value="0.25" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/src/main/res/layout/activity_main.xml" value="0.175" />
         <entry key="..\:/AndroidProjects/AndroidPad/common/src/main/res/drawable/common_shape_counter_down.xml" value="0.2255" />
         <entry key="..\:/AndroidProjects/AndroidPad/common/src/main/res/layout/abs_header_page.xml" value="0.1703125" />

@@ -31,6 +31,11 @@ public class PermissionUtils {
                 });
     }
 
+    public static boolean isGranted(FragmentActivity activity, String permission) {
+        RxPermissions rxPermissions = new RxPermissions(activity);
+        return rxPermissions.isGranted(permission);
+    }
+
     public static void requestPermission(Fragment fragment, OnPermissionListener listener, String... permissions) {
 
         RxPermissions rxPermissions = new RxPermissions(fragment);

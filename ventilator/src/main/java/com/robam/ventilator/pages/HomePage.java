@@ -1,6 +1,7 @@
 package com.robam.ventilator.pages;
 
 import android.content.Intent;
+import android.serialport.helper.SerialPortHelper;
 import android.view.View;
 
 import com.robam.common.ui.HeadPage;
@@ -27,7 +28,6 @@ public class HomePage extends HeadPage {
 
     @Override
     protected void initData() {
-
     }
 
     @Override
@@ -38,5 +38,12 @@ public class HomePage extends HeadPage {
             intent.setClass(getContext(), MainActivity.class);
             startActivity(intent);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //关闭串口
+        SerialPortHelper.getInstance().closeDevice();
     }
 }
