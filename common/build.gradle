@@ -39,4 +39,7 @@ dependencies {
     api "com.github.bumptech.glide:glide:$versions.glide"
     api "androidx.navigation:navigation-fragment:$versions.navigation_fragment"
     api "androidx.navigation:navigation-ui:$versions.navigation_ui"
+    //Mqtt集成
+    api "org.eclipse.paho:org.eclipse.paho.client.mqttv3:$versions.org_eclipse_paho_client_mqttv3"
+    api "org.eclipse.paho:org.eclipse.paho.android.service:$versions.org_eclipse_paho_android_service"
 }

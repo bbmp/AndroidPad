@@ -20,10 +20,11 @@ dependencyResolutionManagement {
 }
 rootProject.name = "AndroidPad"
 include ':app'
-include ':stream'
+include ':steam'
 include ':ventilator'
 include ':serialport'
 include ':foodmaterialdetect'
 include ':common'
 include ':roki'
 include ':control'
+include ':dishwasher'

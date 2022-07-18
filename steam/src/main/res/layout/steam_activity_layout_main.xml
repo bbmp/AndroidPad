@@ -7,7 +7,7 @@
 
 
     <fragment
-        android:id="@+id/nav_host_ventilator_activity_main"
+        android:id="@+id/nav_host_stream_activity_main"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -17,6 +17,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:navGraph="@navigation/dishwasher_navigation" />
+        app:navGraph="@navigation/steam_navigation" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

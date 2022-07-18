@@ -13,10 +13,11 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/common" />
             <option value="$PROJECT_DIR$/control" />
+            <option value="$PROJECT_DIR$/dishwasher" />
             <option value="$PROJECT_DIR$/foodmaterialdetect" />
             <option value="$PROJECT_DIR$/roki" />
             <option value="$PROJECT_DIR$/serialport" />
-            <option value="$PROJECT_DIR$/stream" />
+            <option value="$PROJECT_DIR$/steam" />
             <option value="$PROJECT_DIR$/ventilator" />
           </set>
         </option>

@@ -57,7 +57,8 @@ dependencies {
     implementation project(path: ':common')
     implementation project(path: ":control")
     implementation project(path: ':ventilator')
-    implementation project(path: ':stream')
+    implementation project(path: ':steam')
+    implementation project(path: ':dishwasher')
     testImplementation 'junit:junit:4.13.2'
     implementation "androidx.navigation:navigation-fragment:$versions.navigation_fragment"
     implementation "androidx.navigation:navigation-ui:$versions.navigation_ui"

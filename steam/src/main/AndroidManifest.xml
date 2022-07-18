@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.robam.steam">
+
+    <application>
+        <activity
+            android:name="com.robam.steam.ui.activity.BleActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.robam.steam.ui.activity.MainActivity"
+            android:exported="false" />
+    </application>
+
+</manifest>

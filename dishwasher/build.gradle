@@ -23,7 +23,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    resourcePrefix "ventilator_"   //资源前缀的名字
+    resourcePrefix "dishwasher_"   //资源前缀的名字
 }
 
 dependencies {
@@ -33,16 +33,6 @@ dependencies {
     api "androidx.constraintlayout:constraintlayout:$versions.constraintlayout"
     api "androidx.navigation:navigation-fragment:$versions.navigation_fragment"
     api "androidx.navigation:navigation-ui:$versions.navigation_ui"
-    api project(path: ':serialport')
-    api project(path: ':foodmaterialdetect')
-    api project(path: ':common')
-    api project(path: ':steam')
-    api project(path: ':dishwasher')
     testImplementation 'junit:junit:4.13.2'
-    api "com.squareup.retrofit2:retrofit:$versions.retrofit"
-    api "com.squareup.retrofit2:converter-gson:$versions.converter_gson"
-    //Mqtt集成
-    api "org.eclipse.paho:org.eclipse.paho.client.mqttv3:$versions.org_eclipse_paho_client_mqttv3"
-    api "org.eclipse.paho:org.eclipse.paho.android.service:$versions.org_eclipse_paho_android_service"
-    api "com.github.Jasonchenlijian:FastBle:$versions.FastBle"
+
 }

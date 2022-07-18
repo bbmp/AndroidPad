@@ -8,21 +8,27 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.robam.ventilator.ui.pages.HomePage"
-        android:label="@string/ventilator_app_name"
-        tools:layout="@layout/ventilator_page_layout_home">
+        android:name="com.robam.steam.ui.pages.HomePage"
+        android:label="@string/steam_app_name"
+        tools:layout="@layout/steam_page_layout_home">
         <action
             android:id="@+id/action_fullscreen"
             app:destination="@id/fullscreenFragment"/>
 
     </fragment>
+    <fragment
+        android:id="@+id/navigation_takephoto"
+        android:name="com.robam.steam.ui.pages.TakePhotoFragment"
+        android:label="@string/steam_app_name"
+        tools:layout="@layout/steam_page_layout_take_photo">
 
+    </fragment>
     <fragment
 
         android:id="@+id/fullscreenFragment"
-        android:name="com.robam.ventilator.ui.pages.FullScreenFragment"
-        android:label="@string/ventilator_app_name"
-        tools:layout="@layout/ventilator_fragment_full_screen">
+        android:name="com.robam.steam.ui.pages.FullScreenFragment"
+        android:label="@string/steam_app_name"
+        tools:layout="@layout/steam_page_layout_full_screen">
 
     </fragment>
 </navigation>

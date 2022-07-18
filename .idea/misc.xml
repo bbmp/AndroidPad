@@ -46,6 +46,11 @@
         <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/layout/roki_page_saleservice.xml" value="0.33" />
         <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/layout/roki_view_home_tab_item.xml" value="0.21" />
         <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/layout/roki_view_layout_wizard.xml" value="0.14365113296280463" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_activity_layout_ble.xml" value="0.16246259085079093" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_activity_layout_main.xml" value="0.16246259085079093" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_page_layout_full_screen.xml" value="0.16246259085079093" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_page_layout_home.xml" value="0.16246259085079093" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_page_layout_take_photo.xml" value="0.16246259085079093" />
         <entry key="..\:/AndroidProjects/AndroidPad/stream/src/main/res/layout/activity_ble.xml" value="0.13333333333333333" />
         <entry key="..\:/AndroidProjects/AndroidPad/stream/src/main/res/layout/fragment_take_photo.xml" value="0.18177083333333333" />
         <entry key="..\:/AndroidProjects/AndroidPad/stream/src/main/res/layout/home_fragment.xml" value="0.175" />
