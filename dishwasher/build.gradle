@@ -34,5 +34,6 @@ dependencies {
     api "androidx.navigation:navigation-fragment:$versions.navigation_fragment"
     api "androidx.navigation:navigation-ui:$versions.navigation_ui"
     testImplementation 'junit:junit:4.13.2'
+    api project(path: ':common')
 
 }

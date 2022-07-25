@@ -5,6 +5,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import android.os.Bundle;
+import android.view.WindowManager;
 
 import com.robam.common.skin.SkinDeviceUtils;
 import com.robam.common.skin.SkinStatusBarUtils;
@@ -14,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         //沉浸式
         SkinStatusBarUtils.translucent(this);
         //字体
