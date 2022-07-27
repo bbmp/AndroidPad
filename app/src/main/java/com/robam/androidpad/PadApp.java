@@ -9,14 +9,14 @@ import android.app.Application;
 
 import com.robam.ventilator.AppVentilator;
 
-//import com.robam.roki.AppRoki;
+import com.robam.roki.AppRoki;
 
 public class PadApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
         CrashHandler.register(this);
-//        AppRoki.init(this);
+        AppRoki.init(this);
         AppVentilator.init(this);
     }
 }

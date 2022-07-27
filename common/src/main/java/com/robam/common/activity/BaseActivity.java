@@ -23,4 +23,33 @@ public abstract class BaseActivity extends AbsActivity implements ClickAction {
         SkinStatusBarUtils.setStatusBarLightMode(this);
     }
 
+    /**
+     * 设置状态栏占位
+     */
+    protected void setStateBarFixer(){
+        View mStateBarFixer = findViewById(R.id.status_bar_fix);
+        if (mStateBarFixer != null){
+            ViewGroup.LayoutParams layoutParams = mStateBarFixer.getLayoutParams();
+            layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            layoutParams.height = getStatusBarHeight(this);
+            mStateBarFixer.setLayoutParams(layoutParams);
+
+        }
+    }
+
+    private int getStatusBarHeight(Activity a) {
+        int result = 0;
+        int resourceId = a.getResources().getIdentifier("status_bar_height",
+                "dimen", "android");
+        if (resourceId > 0) {
+            result = a.getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
+
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+        finishAfterTransition();
+    }
 }

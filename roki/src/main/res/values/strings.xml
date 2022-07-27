@@ -29,4 +29,8 @@
     <string name="roki_my_sale_consulting">留言咨询</string>
     <string name="roki_my_sale_one_key">一键售后</string>
     <string name="roki_my_sale_one_key_call">一键售后未开通地区可拨打</string>
+    <string name="roki_home_stove_recipe_text">灶具菜谱</string>
+    <string name="roki_home_oven_recipe_text">电烤箱菜谱</string>
+    <string name="roki_home_combi_steam_oven_recipe_text">一体机菜谱</string>
+    <string name="roki_home_steam_recipe_text">电蒸箱菜谱</string>
 </resources>

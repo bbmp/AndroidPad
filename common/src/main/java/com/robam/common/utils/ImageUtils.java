@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.BaseRequestOptions;
 
 public class ImageUtils {
 
@@ -16,6 +17,13 @@ public class ImageUtils {
 
     public static  void loadImage(View view, String url, ImageView imageView) {
         Glide.with(view).load(url).into(imageView);
+    }
+
+    public static void loadImage(Context context, String url, BaseRequestOptions<?> options, ImageView imageView) {
+        Glide.with(context)
+                .load(url)
+                .apply(options)
+                .into(imageView);
     }
 
     public static void loadImage(Context context, String url, int resErr, int resHolder, int overWidth, int overHeight, ImageView imageView) {

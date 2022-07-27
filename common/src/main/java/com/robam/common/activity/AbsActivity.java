@@ -1,16 +1,22 @@
 package com.robam.common.activity;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.robam.common.R;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ToastUtils;
 
@@ -24,11 +30,47 @@ public abstract class AbsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
 //        getPermission(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.RECORD_AUDIO});
+
+
     }
+
 
     /**
      * 检查是否拥有指定的所有权限
      */
+
+    /**
+     * 初始化软键盘
+     */
+    protected void initSoftKeyboard() {
+        // 点击外部隐藏软键盘，提升用户体验
+        getContentView().setOnClickListener(v -> {
+            // 隐藏软键，避免内存泄漏
+            hideKeyboard(getCurrentFocus());
+        });
+    }
+
+    /**
+     * 和 setContentView 对应的方法
+     */
+    public ViewGroup getContentView() {
+        return findViewById(Window.ID_ANDROID_CONTENT);
+    }
+
+    /**
+     * 隐藏软键盘
+     */
+    private void hideKeyboard(View view) {
+        if (view == null) {
+            return;
+        }
+        InputMethodManager manager = (InputMethodManager) view.getContext()
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (manager == null) {
+            return;
+        }
+        manager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    }
 
     protected boolean checkPermissionAllGranted(String[] permissions) {
         for (String permission : permissions) {
@@ -114,4 +156,5 @@ public abstract class AbsActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         LogUtils.i("requestCode::" + requestCode + " resultCode  " + resultCode);
     }
+
 }

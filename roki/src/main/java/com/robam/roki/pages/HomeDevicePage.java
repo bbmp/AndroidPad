@@ -68,8 +68,8 @@ public class HomeDevicePage extends HeadPage {
                 public void onBindView(BannerImageHolder bannerImageHolder, CookingKnowledge cookingKnowledge, int position, int size) {
                     ImageUtils.loadImage(getContext(),
                             cookingKnowledge.pictureCoverUrl,
-                            R.mipmap.banner_default,
-                            R.mipmap.banner_default,
+                            R.mipmap.roki_banner_default,
+                            R.mipmap.roki_banner_default,
                             350*2, 131*2,
                             bannerImageHolder.imageView);
                 }

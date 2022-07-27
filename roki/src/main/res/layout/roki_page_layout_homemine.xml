@@ -5,220 +5,229 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="false"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/roki_shape_bg_main">
 
     <RelativeLayout
-        android:id="@+id/rl_login"
+        android:id="@+id/rl_mine_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/roki_white"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/roki_white">
-
-        <RelativeLayout
-            android:id="@+id/rl_mine_message"
-            android:layout_width="@dimen/dp_60"
-            android:layout_height="@dimen/dp_44"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true">
-
-            <ImageView
-                android:id="@+id/home_recipe_img"
-                android:layout_width="@dimen/dp_24"
-                android:layout_height="@dimen/dp_24"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentBottom="true"
-                android:src="@mipmap/roki_ic_my_message" />
-
-            <TextView
-                android:id="@+id/textview_home_device_number"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_14"
-                android:minWidth="@dimen/dp_14"
-                android:layout_alignParentStart="true"
-                android:layout_marginLeft="@dimen/dp_13"
-                android:layout_marginTop="@dimen/dp_19"
-                android:background="@drawable/roki_shape_notification_bg"
-                android:gravity="center"
-                android:textColor="@color/roki_white"
-                android:textSize="@dimen/sp_10"
-                android:visibility="invisible" />
-        </RelativeLayout>
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/iv_photo"
-            android:layout_width="@dimen/dp_88"
-            android:layout_height="@dimen/dp_88"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/dp_68"
-            android:scaleType="centerCrop"
-            android:src="@mipmap/roki_head_portrait" />
+            android:id="@+id/home_recipe_img"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dp_36"
+            android:layout_marginTop="@dimen/dp_20"
+            android:src="@mipmap/roki_ic_my_message" />
 
-        <LinearLayout
-            android:id="@+id/ll_login"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/iv_photo"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/dp_12"
+        <TextView
+            android:id="@+id/textview_home_device_number"
+            android:layout_width="@dimen/dp_14"
+            android:layout_height="@dimen/dp_14"
+            android:minWidth="@dimen/dp_14"
+            android:layout_alignLeft="@id/home_recipe_img"
+            android:layout_marginLeft="@dimen/dp_13"
+            android:layout_marginTop="@dimen/dp_19"
+            android:background="@drawable/roki_shape_notification_bg"
             android:gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tv_user_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/roki_not_login"
-                android:textColor="@color/roki_text_color_device_category"
-                android:textSize="@dimen/sp_20" />
-
-            <TextView
-                android:id="@+id/tv_user_phone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/roki_login_or_register"
-                android:textColor="@color/roki_text_color_read_number"
-                android:textSize="@dimen/sp_12" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_60"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_20"
-            android:layout_below="@id/ll_login"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:id="@+id/ll_curve"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tv_curve_num"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#ff61acff"
-                    android:textSize="@dimen/sp_25"
-                    android:text="0" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center">
-
-                    <ImageView
-                        android:layout_width="@dimen/dp_13"
-                        android:layout_height="wrap_content"
-                        android:src="@mipmap/roki_ic_curve" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_2"
-                        android:text="@string/roki_my_cook_line"
-                        android:textColor="@color/roki_text_color_device_category"
-                        android:textSize="@dimen/sp_12" />
-                </LinearLayout>
-            </LinearLayout>
-            <View
-                android:id="@+id/vertical_line1"
-                android:layout_width="1dp"
-                android:layout_height="@dimen/dp_20"
-                android:layout_centerInParent="true"
-                android:background="#D8D8D8"
-                android:visibility="invisible" />
-            <LinearLayout
-                android:id="@+id/ll_work"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tv_work_num"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#ff61acff"
-                    android:textSize="@dimen/sp_25"
-                    tools:text="88" />
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center">
-                    <ImageView
-                        android:layout_width="@dimen/dp_13"
-                        android:layout_height="@dimen/dp_13"
-                        android:src="@drawable/roki_ic_mywork"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_2"
-                        android:text="我的创作"
-                        android:textColor="@color/roki_text_color_device_category"
-                        android:textSize="@dimen/sp_12" />
-                </LinearLayout>
-            </LinearLayout>
-            <View
-                android:id="@+id/vertical_line2"
-                android:layout_width="1dp"
-                android:layout_height="@dimen/dp_20"
-                android:layout_centerInParent="true"
-                android:background="#D8D8D8"
-                android:visibility="invisible" />
-            <LinearLayout
-                android:id="@+id/ll_collection"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tv_collection_num"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#ff61acff"
-                    android:textSize="@dimen/sp_25"
-                    tools:text="88" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center">
-
-                    <ImageView
-                        android:layout_width="@dimen/dp_13"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/roki_ic_collection" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_2"
-                        android:text="我的收藏"
-                        android:textColor="@color/roki_text_color_device_category"
-                        android:textSize="@dimen/sp_12" />
-                </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
-
+            android:text="1"
+            android:textColor="@color/roki_white"
+            android:textSize="@dimen/sp_10"
+            android:visibility="invisible" />
     </RelativeLayout>
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/dp_20"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rl_login"
+        app:layout_constraintTop_toBottomOf="@id/rl_mine_message"
         app:layout_constraintBottom_toBottomOf="parent">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/dp_20">
+            <RelativeLayout
+                android:id="@+id/rl_login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:background="@color/roki_white">
+
+
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_photo"
+                    android:layout_width="@dimen/dp_88"
+                    android:layout_height="@dimen/dp_88"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/roki_head_portrait" />
+
+                <LinearLayout
+                    android:id="@+id/ll_login"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/iv_photo"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/dp_12"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_user_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/roki_not_login"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:maxEms="9"
+                        android:textColor="@color/roki_text_color_device_category"
+                        android:textSize="@dimen/sp_20" />
+
+                    <TextView
+                        android:id="@+id/tv_user_phone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/roki_login_or_register"
+                        android:textColor="@color/roki_text_color_read_number"
+                        android:textSize="@dimen/sp_12" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_60"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginBottom="@dimen/dp_20"
+                    android:layout_below="@id/ll_login"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/ll_curve"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tv_curve_num"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#ff61acff"
+                            android:textSize="@dimen/sp_25"
+                            android:text="0" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center">
+
+                            <ImageView
+                                android:layout_width="@dimen/dp_13"
+                                android:layout_height="wrap_content"
+                                android:src="@mipmap/roki_ic_curve" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/dp_2"
+                                android:text="@string/roki_my_cook_line"
+                                android:textColor="@color/roki_text_color_device_category"
+                                android:textSize="@dimen/sp_12" />
+                        </LinearLayout>
+                    </LinearLayout>
+                    <View
+                        android:id="@+id/vertical_line1"
+                        android:layout_width="1dp"
+                        android:layout_height="@dimen/dp_20"
+                        android:layout_centerInParent="true"
+                        android:background="#D8D8D8"
+                        android:visibility="invisible" />
+                    <LinearLayout
+                        android:id="@+id/ll_work"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tv_work_num"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#ff61acff"
+                            android:textSize="@dimen/sp_25"
+                            tools:text="88" />
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center">
+                            <ImageView
+                                android:layout_width="@dimen/dp_13"
+                                android:layout_height="@dimen/dp_13"
+                                android:src="@drawable/roki_ic_mywork"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/dp_2"
+                                android:text="我的创作"
+                                android:textColor="@color/roki_text_color_device_category"
+                                android:textSize="@dimen/sp_12" />
+                        </LinearLayout>
+                    </LinearLayout>
+                    <View
+                        android:id="@+id/vertical_line2"
+                        android:layout_width="1dp"
+                        android:layout_height="@dimen/dp_20"
+                        android:layout_centerInParent="true"
+                        android:background="#D8D8D8"
+                        android:visibility="invisible" />
+                    <LinearLayout
+                        android:id="@+id/ll_collection"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tv_collection_num"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#ff61acff"
+                            android:textSize="@dimen/sp_25"
+                            tools:text="88" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center">
+
+                            <ImageView
+                                android:layout_width="@dimen/dp_13"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/roki_ic_collection" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/dp_2"
+                                android:text="我的收藏"
+                                android:textColor="@color/roki_text_color_device_category"
+                                android:textSize="@dimen/sp_12" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+            </RelativeLayout>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -235,7 +244,8 @@
                 android:layout_width="0dp"
                 android:layout_height="@dimen/dp_59"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rl_login"
+                android:layout_marginTop="@dimen/dp_20"
                 android:layout_marginStart="@dimen/dp_40"
                 android:text="产品手册"
                 android:gravity="center_vertical"
@@ -329,19 +339,7 @@
                 app:layout_constraintTop_toTopOf="@id/tv_device_manage"
                 app:layout_constraintBottom_toBottomOf="@id/tv_set">
             </View>
-            <TextView
-                android:id="@+id/tv_curve_list"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/dp_59"
-                android:layout_marginStart="@dimen/dp_40"
-                android:layout_marginTop="@dimen/dp_20"
-                android:gravity="center_vertical"
-                android:text="@string/roki_my_curve_list"
-                android:textSize="@dimen/sp_18"
-                android:textColor="@color/roki_text_color_device_category"
-                app:layout_constraintTop_toBottomOf="@id/tv_sercie_shop"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"/>
+
             <ImageView
                 android:layout_width="@dimen/dp_24"
                 android:layout_height="@dimen/dp_24"
@@ -360,6 +358,8 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_device_manage"/>
+
+
             <TextView
                 android:id="@+id/tv_device_manage"
                 android:layout_width="0dp"
@@ -370,7 +370,7 @@
                 android:text="@string/roki_my_device"
                 android:textSize="@dimen/sp_18"
                 android:textColor="@color/roki_text_color_device_category"
-                app:layout_constraintTop_toBottomOf="@id/tv_curve_list"
+                app:layout_constraintTop_toBottomOf="@id/tv_sercie_shop"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"/>
             <ImageView

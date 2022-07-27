@@ -29,21 +29,21 @@ android {
     //用来配置APP的不同版本
     productFlavors {
         //roki
-//        roki {
-////            修改包名
-//            applicationId "com.robam.roki2"
-////            修改app名字,string资源下不能包含"app_name"
-//            resValue "string", "app_name", "roki"
-////            修改AndroidManifest.xml部分字段(包含logo)
-//            manifestPlaceholders = [app_icon: "@mipmap/logo"]
-//        }
-        //ventilator
-        ventilator {
-            applicationId "com.robam.ventilator"
-            resValue "string", "app_name", "ventilator"
+        roki {
+//            修改包名
+            applicationId "com.robam.roki2"
+//            修改app名字,string资源下不能包含"app_name"
+            resValue "string", "app_name", "roki"
 //            修改AndroidManifest.xml部分字段(包含logo)
             manifestPlaceholders = [app_icon: "@mipmap/logo"]
         }
+        //ventilator
+//        ventilator {
+//            applicationId "com.robam.ventilator"
+//            resValue "string", "app_name", "ventilator"
+////            修改AndroidManifest.xml部分字段(包含logo)
+//            manifestPlaceholders = [app_icon: "@mipmap/logo"]
+//        }
     }
 }
 
@@ -58,7 +58,7 @@ dependencies {
     implementation project(path: ":control")
     implementation project(path: ':ventilator')
     implementation project(path: ':steam')
-    implementation project(path: ':dishwasher')
+    implementation project(path: ':roki')
     testImplementation 'junit:junit:4.13.2'
     implementation "androidx.navigation:navigation-fragment:$versions.navigation_fragment"
     implementation "androidx.navigation:navigation-ui:$versions.navigation_ui"
@@ -84,4 +84,6 @@ dependencies {
     annotationProcessor "com.github.bumptech.glide:compiler:$versions.glide"
     // 内存泄漏监测框架：https://github.com/square/leakcanary
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$versions.leakcanary"
+    //适配器
+    implementation "com.github.CymChad:BaseRecyclerViewAdapterHelper:$versions.BaseRecyclerViewAdapterHelper"
 }
