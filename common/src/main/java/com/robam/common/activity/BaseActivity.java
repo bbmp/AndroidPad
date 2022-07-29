@@ -7,12 +7,16 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
+import androidx.navigation.NavController;
 
 import com.robam.common.R;
 import com.robam.common.skin.SkinStatusBarUtils;
 import com.robam.common.ui.action.ClickAction;
+import com.robam.common.utils.LogUtils;
 
 public abstract class BaseActivity extends AbsActivity implements ClickAction {
+    protected NavController navController;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +53,8 @@ public abstract class BaseActivity extends AbsActivity implements ClickAction {
 
     @Override
     public void onBackPressed() {
-//        super.onBackPressed();
-        finishAfterTransition();
+
+
+        super.onBackPressed();
     }
 }

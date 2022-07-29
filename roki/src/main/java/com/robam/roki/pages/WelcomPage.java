@@ -7,6 +7,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 
 import com.robam.common.ui.HeadPage;
+import com.robam.common.ui.UIService;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.NetworkUtils;
 import com.robam.common.utils.PreferenceUtils;
@@ -16,7 +17,6 @@ import com.robam.roki.ui.activity.HomeActivity;
 import com.robam.roki.dialog.DialogUtils;
 import com.robam.roki.dialog.IRokiDialog;
 import com.robam.roki.factory.RokiDialogFactory;
-import com.robam.roki.ui.UIService;
 import com.robam.roki.utils.PageArgumentKey;
 
 public class WelcomPage extends HeadPage {

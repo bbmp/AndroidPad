@@ -5,8 +5,8 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.robam.common.ui.HeadPage;
+import com.robam.common.ui.UIService;
 import com.robam.roki.R;
-import com.robam.roki.ui.UIService;
 
 public class SaleServicePage extends HeadPage {
     @Override

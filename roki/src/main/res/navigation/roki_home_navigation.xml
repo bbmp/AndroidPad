@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mobile_navigation"
+    android:id="@+id/roki_home_navigation"
     app:startDestination="@id/homepage"
     tools:ignore="ResourceName">
 
@@ -14,6 +14,8 @@
         <action
             android:id="@+id/action_saleservice"
             app:destination="@id/saleservicepage"/>
+        <action android:id="@+id/action_recipecategory"
+            app:destination="@id/recipecategory"/>
     </fragment>
     <fragment
         android:id="@+id/saleservicepage"
@@ -21,7 +23,12 @@
         tools:layout="@layout/roki_page_layout_saleservice">
 
     </fragment>
+    <fragment
+        android:id="@+id/recipecategory"
+        android:name="com.robam.roki.pages.RecipeCategoryListPage"
+        tools:layout="@layout/roki_page_layout_recipecategory">
 
+    </fragment>
 
 
 

@@ -7,17 +7,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import androidx.annotation.IdRes;
 import androidx.fragment.app.Fragment;
 
 import com.robam.common.R;
 import com.robam.common.ui.action.ClickAction;
+import com.robam.common.utils.LogUtils;
 
 public abstract class HeadPage extends Fragment implements ClickAction {
     protected View mRootView;
-    protected View mContentView;
-    protected FrameLayout pnlMain;
+//    protected View mContentView;
+    protected boolean isDestroyed;
 
     /**
      * 获取布局 ID
@@ -40,9 +42,9 @@ public abstract class HeadPage extends Fragment implements ClickAction {
 
         if (null == mRootView) {
             mRootView = inflater.inflate(R.layout.common_header_page, container, false);
-            pnlMain = mRootView.findViewById(R.id.pnlMain);
+            FrameLayout pnlMain = mRootView.findViewById(R.id.pnlMain);
 
-            mContentView = inflater.inflate(getLayoutId(), container, false);
+            View mContentView = inflater.inflate(getLayoutId(), container, false);
             pnlMain.addView(mContentView);
             setStateBarFixer();
             initView();
@@ -61,11 +63,52 @@ public abstract class HeadPage extends Fragment implements ClickAction {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        mRootView = null;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        isDestroyed = true;
+    }
+
+    private void disposeView(View view) {
+        if (view == null)
+            return;
+
+        Drawable dw = view.getBackground();
+        if (dw != null) {
+            dw.setCallback(null);
+            dw = null;
+        }
+        view.setBackgroundResource(0);
+
+        if (view instanceof ImageView) {
+            ImageView img = (ImageView) view;
+            dw = img.getDrawable();
+            if (dw != null) {
+                dw.setCallback(null);
+                dw = null;
+            }
+            img.destroyDrawingCache();
+            img.setImageDrawable(null);
+        }
+
+        if (view instanceof ViewGroup) {
+            ViewGroup group = (ViewGroup) view;
+            int count = group.getChildCount();
+            for (int i = 0; i < count; i++) {
+                View childView = group.getChildAt(i);
+                disposeView(childView);
+            }
+            group.removeAllViews();
+        }
+
+        view = null;
+    }
+    //页面是否销毁
+    public boolean isDestroyed() {
+        return isDestroyed;
     }
 
     /**

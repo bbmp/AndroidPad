@@ -4,11 +4,14 @@
 
     <application>
         <activity
+            android:name=".ui.activity.RWebActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activity.HomeActivity"
             android:exported="false" />
-        <activity android:name=".ui.activity.WebActivity"
-            android:exported="false"/>
-
+        <activity
+            android:name=".ui.activity.WebActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

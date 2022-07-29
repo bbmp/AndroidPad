@@ -22,6 +22,8 @@ public interface ICloudService {
     String getWeekTops = "/rest/cks/api/cookbook/week/tops";//菜谱周排名
     //获取主题菜谱列表 精选专题
     String getThemeRecipeList = "/rest/cks/api/theme/list/get";
+    //根据设备品类获取所有菜谱(只包括导航菜谱)
+    String getGroundingRecipesByDevice = "/rest/api/cookbook/grounding/get-by-dc";
 
     @POST(getVerifyCode)
     @Headers("Content-Type: application/json")
@@ -43,8 +45,6 @@ public interface ICloudService {
     /**
      * 根据主题id查询下属所有菜单
      *
-     * @param reqBody
-     * @param callback
      */
     @POST(getCookbookbythemeId)
     @Headers("Content-Type: application/json")
@@ -72,4 +72,12 @@ public interface ICloudService {
     @POST(getThemeRecipeList)
     @Headers("Content-Type: application/json")
     Call<ResponseBody> getThemeRecipeList(@Body RequestBody body);
+
+    /**
+     * 根据设备种类获取所有菜谱
+     *
+     */
+    @POST(getGroundingRecipesByDevice)
+    @Headers("Content-Type: application/json")
+    Call<ResponseBody> getGroundingRecipesByDevice(@Body RequestBody body);
 }

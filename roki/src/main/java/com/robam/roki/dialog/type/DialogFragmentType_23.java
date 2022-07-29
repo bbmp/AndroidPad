@@ -25,7 +25,6 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.robam.common.utils.ScreenUtils;
 import com.robam.roki.R;
 import com.robam.roki.cloud.IRokiRestService;
-import com.robam.roki.ui.UIService;
 import com.robam.roki.utils.PageArgumentKey;
 
 public class DialogFragmentType_23 extends DialogFragment {

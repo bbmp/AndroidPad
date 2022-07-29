@@ -6,8 +6,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.robam.common.ui.HeadPage;
+import com.robam.common.ui.UIService;
 import com.robam.roki.R;
-import com.robam.roki.ui.UIService;
 
 public class HomeMinePage extends HeadPage {
     /**

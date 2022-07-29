@@ -6,11 +6,11 @@ import android.webkit.WebView;
 import android.widget.ImageView;
 
 import com.robam.common.ui.HeadPage;
+import com.robam.common.ui.UIService;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.common.view.ExtWebView;
 import com.robam.roki.R;
-import com.robam.roki.ui.UIService;
 import com.robam.roki.utils.PageArgumentKey;
 
 public class WebPage extends HeadPage {

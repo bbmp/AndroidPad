@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,6 +19,7 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.module.LoadMoreModule;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.robam.common.http.RetrofitCallback;
+import com.robam.common.ui.HeadPage;
 import com.robam.common.utils.ImageUtils;
 import com.robam.roki.R;
 import com.robam.roki.bean.Dc;
@@ -35,7 +37,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class RvRecipeThemeAdapter extends BaseMultiItemQuickAdapter<ThemeRecipeMultipleItem, BaseViewHolder> implements LoadMoreModule {
-
+    private HeadPage headPage;
 
     private RequestOptions maskOption = new RequestOptions()
             .centerCrop()
@@ -44,12 +46,13 @@ public class RvRecipeThemeAdapter extends BaseMultiItemQuickAdapter<ThemeRecipeM
             .priority(Priority.HIGH) //优先级
             .skipMemoryCache(true)
             .format(DecodeFormat.PREFER_RGB_565)
-            .diskCacheStrategy(DiskCacheStrategy.NONE) //缓存
+            .diskCacheStrategy(DiskCacheStrategy.ALL) //缓存
             .override((int) (167*2), (int) (160*2));
 //            .transform(new MultiTransformation(new CenterCrop(), new RoundedCornersTransformation(30, 0, RoundedCornersTransformation.CornerType.TOP)));
 //            .transform(new RoundedCornersTransformation(30, 0,RoundedCornersTransformation.CornerType.TOP)); //圆角
 
-    public RvRecipeThemeAdapter() {
+    public RvRecipeThemeAdapter(HeadPage fragment) {
+        this.headPage = fragment;
         addItemType(ThemeRecipeMultipleItem.IMG_RECIPE_MSG_TEXT, R.layout.roki_layout_item_recipe);
         addItemType(ThemeRecipeMultipleItem.IMG_THEME_RECIPE_MSG_TEXT, R.layout.roki_layout_item_recipe_theme_list);
     }
@@ -124,7 +127,7 @@ public class RvRecipeThemeAdapter extends BaseMultiItemQuickAdapter<ThemeRecipeM
      */
     private void getBygetCookbookBythemeId(String lang, long limit, final int start, final RecipeTheme recipeTheme, RecyclerView recyclerView) {
 
-        CloudHelper.getCookBookBythemeId(lang, limit, start, recipeTheme.id.intValue(), PersonalizedRecipeRes.class, new RetrofitCallback<PersonalizedRecipeRes>() {
+        CloudHelper.getCookBookBythemeId(headPage, lang, limit, start, recipeTheme.id.intValue(), PersonalizedRecipeRes.class, new RetrofitCallback<PersonalizedRecipeRes>() {
             @Override
             public void onSuccess(PersonalizedRecipeRes personalizedRecipeRes) {
                 List<Recipe> recipes = personalizedRecipeRes.cookbooks;

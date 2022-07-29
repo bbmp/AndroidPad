@@ -1,5 +1,7 @@
 package com.robam.roki.pages;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +21,7 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.ui.HeadPage;
+import com.robam.common.ui.UIService;
 import com.robam.common.utils.ImageUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.NetworkUtils;
@@ -29,6 +32,7 @@ import com.robam.roki.adapter.RvRecipeThemeAdapter;
 import com.robam.roki.adapter.SelectedTopicsAdapter;
 import com.robam.roki.bean.CookBanner;
 import com.robam.roki.bean.TopicMultipleItem;
+import com.robam.roki.constant.IDeviceType;
 import com.robam.roki.response.CookBannerRes;
 import com.robam.roki.bean.Recipe;
 import com.robam.roki.bean.RecipeTheme;
@@ -42,6 +46,7 @@ import com.robam.roki.ui.activity.helper.BannerIndicator;
 import com.robam.roki.ui.view.CustomLoadMoreView;
 import com.robam.roki.ui.view.HorizontalItemDecoration;
 import com.robam.roki.ui.view.HorizontalItemRecipeDecoration;
+import com.robam.roki.utils.PageArgumentKey;
 import com.youth.banner.Banner;
 import com.youth.banner.adapter.BannerImageAdapter;
 import com.youth.banner.holder.BannerImageHolder;
@@ -140,7 +145,7 @@ public class HomeRecipePage extends HeadPage {
         llEmpty = findViewById(R.id.ll_empty);
         rvHomeRecipe.setLayoutManager(new StaggeredGridLayoutManager(2, RecyclerView.VERTICAL));
         rvHomeRecipe.addItemDecoration(new HorizontalItemRecipeDecoration(12 , getContext()));
-        rvRecipeThemeAdapter = new RvRecipeThemeAdapter();
+        rvRecipeThemeAdapter = new RvRecipeThemeAdapter(this);
         rvHomeRecipe.setAdapter(rvRecipeThemeAdapter);
         rvRecipeThemeAdapter.getLoadMoreModule().setLoadMoreView(new CustomLoadMoreView());
         rvRecipeThemeAdapter.getLoadMoreModule().setOnLoadMoreListener(new OnLoadMoreListener() {
@@ -182,6 +187,26 @@ public class HomeRecipePage extends HeadPage {
         rvWeekTopics.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
         rvWeekTopics.addItemDecoration(new HorizontalItemDecoration(16 , getContext()));
         setOnClickListener(rl_recipe_search,etReipeSearch , ivRecipeVoice ,stove , combiSteamOven , oven , steamOven , more ,tvThemeMore ,tvWeekTopMore ,ivToTop , tvmore3);
+
+        findViewById(R.id.home_recipe_img).setOnClickListener(view -> {
+//            if (Plat.accountService.isLogon()) {
+//                getContext().startActivity(new Intent(getContext(), MessageActivity.class));
+//            }else{
+//                CmccLoginHelper.getInstance().toLogin();
+//            }
+        });
+
+        srlHome.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                pageNo = 0 ;
+                rvRecipeThemeAdapter.setNewInstance(new ArrayList<ThemeRecipeMultipleItem>());
+                getBannerRes();
+                getByTagOtherThemes();
+                getWeekRecipeTops();
+                getThemeHttpData();
+            }
+        });
     }
 
     @Override
@@ -221,6 +246,29 @@ public class HomeRecipePage extends HeadPage {
             getThemeHttpData();
         }
     }
+
+    @Override
+    public void onClick(View view) {
+        if (view == stove){
+            recipeCategoryClick(view, IDeviceType.RRQZ);
+        }else if (view == combiSteamOven){
+            recipeCategoryClick(view, IDeviceType.RZKY);
+        }else if (view == oven){
+            recipeCategoryClick(view, IDeviceType.RDKX);
+        }else if (view == steamOven) {
+            recipeCategoryClick(view, IDeviceType.RZQL);
+        }
+    }
+
+    /**
+     * 设备菜谱点击调用(可提供外部调用)
+     */
+    public void recipeCategoryClick(View view, String category) {
+        Bundle bundle = new Bundle();
+        bundle.putString(PageArgumentKey.RecipeId, category);
+        UIService.postPage(view, R.id.action_recipecategory, bundle);
+    }
+
     /**
      * 加载菜谱数据
      */
@@ -229,7 +277,7 @@ public class HomeRecipePage extends HeadPage {
             rvRecipeThemeAdapter.getLoadMoreModule().loadMoreEnd();
             return;
         }
-        CloudHelper.getbyTagOtherCooks(null , true, pageNo, 10, -1 , recipeIds, PersonalizedRecipeRes.class, new RetrofitCallback<PersonalizedRecipeRes>() {
+        CloudHelper.getbyTagOtherCooks(this, null , true, pageNo, 10, -1 , recipeIds, PersonalizedRecipeRes.class, new RetrofitCallback<PersonalizedRecipeRes>() {
             @Override
             public void onSuccess(PersonalizedRecipeRes personalizedRecipeRes) {
                 List<Recipe> recipes = personalizedRecipeRes.cookbooks;
@@ -302,7 +350,7 @@ public class HomeRecipePage extends HeadPage {
 
             @Override
             public void onFaild(String err) {
-
+                LogUtils.e("banner err:" + err);
             }
 
         });
@@ -404,7 +452,7 @@ public class HomeRecipePage extends HeadPage {
      * 获取某个标签或推荐或周上新的主题
      */
     public void getByTagOtherThemes() {
-        CloudHelper.getByTagOtherThemes(null, false, pageNo, 10, -1, RecipeThemeRes.class,
+        CloudHelper.getByTagOtherThemes(this, null, false, pageNo, 10, -1, RecipeThemeRes.class,
                 new RetrofitCallback<RecipeThemeRes>() {
                     @Override
                     public void onSuccess(RecipeThemeRes recipeThemeRes) {
@@ -431,7 +479,7 @@ public class HomeRecipePage extends HeadPage {
     private void getWeekRecipeTops() {
         String weekTime = TimeUtils.getlastWeekTime();
         LogUtils.i("weekTime:" + weekTime);
-        CloudHelper.getWeekTops(weekTime, 0, 5, WeekTopsRes.class, new RetrofitCallback<WeekTopsRes>() {
+        CloudHelper.getWeekTops(this, weekTime, 0, 5, WeekTopsRes.class, new RetrofitCallback<WeekTopsRes>() {
             @Override
             public void onSuccess(WeekTopsRes weekTopsRes) {
                 if (null != weekTopsRes) {
@@ -471,7 +519,7 @@ public class HomeRecipePage extends HeadPage {
      * 精选专题列表
      */
     private void getThemeHttpData() {
-        CloudHelper.getThemeRecipeList(RecipeThemeRes.class, new RetrofitCallback<RecipeThemeRes>() {
+        CloudHelper.getThemeRecipeList(this, RecipeThemeRes.class, new RetrofitCallback<RecipeThemeRes>() {
             @Override
             public void onSuccess(RecipeThemeRes recipeThemeRes) {
                 if (null != recipeThemeRes) {

@@ -1,5 +1,6 @@
 package com.robam.roki.pages;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -8,10 +9,12 @@ import com.robam.common.ui.HeadPage;
 import com.robam.common.utils.ImageUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.roki.R;
+import com.robam.roki.ui.activity.RWebActivity;
 import com.robam.roki.ui.activity.helper.BannerIndicator;
 import com.robam.roki.bean.CookingKnowledge;
 import com.robam.roki.http.CloudHelper;
 import com.robam.roki.response.CookingKnowledgeRes;
+import com.robam.roki.utils.PageArgumentKey;
 import com.youth.banner.Banner;
 import com.youth.banner.adapter.BannerImageAdapter;
 import com.youth.banner.holder.BannerImageHolder;
@@ -35,11 +38,21 @@ public class HomeDevicePage extends HeadPage {
     protected void initView() {
         bannerKichen = findViewById(R.id.br_kichen_home);
         llEmpty = findViewById(R.id.ll_empty);
+
+        findViewById(R.id.iv_kitchen_knowledge).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.putExtra(PageArgumentKey.Url, "https://h5.myroki.com/#/kitchenKnowledge");
+                intent.setClass(getContext(), RWebActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
     protected void initData() {
-        CloudHelper.getCookingKnowledge("cookingSkill", 1, null, 0, 3, CookingKnowledgeRes.class,
+        CloudHelper.getCookingKnowledge(this, "cookingSkill", 1, null, 0, 3, CookingKnowledgeRes.class,
                 new RetrofitCallback<CookingKnowledgeRes>() {
                     @Override
                     public void onSuccess(CookingKnowledgeRes cookingKnowledgeRes) {
