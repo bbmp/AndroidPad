@@ -5,13 +5,24 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.pages.HomePage">
-
-    <TextView
-        android:id="@+id/tv_ven"
+    <View
+        android:id="@+id/status_bar_fix"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/ventilator_app_name"
+        android:layout_height="1dp"
+        android:background="@color/ventilator_transparent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
+    <include layout="@layout/ventilator_view_layout_title"
+        android:id="@+id/ll_title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_44"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/status_bar_fix"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_fun"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_title"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

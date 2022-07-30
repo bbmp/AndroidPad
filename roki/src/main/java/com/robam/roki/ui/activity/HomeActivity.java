@@ -2,15 +2,20 @@ package com.robam.roki.ui.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
 
-import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import com.robam.common.activity.BaseActivity;
+import com.robam.common.ui.activity.BaseActivity;
 import com.robam.roki.R;
 
 public class HomeActivity extends BaseActivity {
+
+    public static void start(Activity activity) {
+        Intent intent = new Intent();
+        intent.setClass(activity, HomeActivity.class);
+        activity.startActivity(intent);
+        activity.finish();
+    }
 
     @Override
     protected int getLayoutId() {

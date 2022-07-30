@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".pages.WelcomPage">
+    tools:context=".ui.pages.WelcomPage">
 
     <ImageView
         android:id="@+id/img_advert"
@@ -13,7 +13,7 @@
         android:src="@mipmap/roki_img_start"
         android:scaleType="centerCrop" />
 
-    <com.robam.common.view.CountdownView2
+    <com.robam.common.ui.view.CountdownView2
         android:id="@+id/cv_ring"
         android:visibility="visible"
         android:background="@drawable/common_shape_counter_down"

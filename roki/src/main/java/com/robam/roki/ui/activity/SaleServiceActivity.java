@@ -1,10 +1,9 @@
 package com.robam.roki.ui.activity;
 
-import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.robam.common.activity.BaseActivity;
+import com.robam.common.ui.activity.BaseActivity;
 import com.robam.roki.R;
 
 public class SaleServiceActivity extends BaseActivity {

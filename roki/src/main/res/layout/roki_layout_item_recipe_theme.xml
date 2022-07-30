@@ -8,7 +8,7 @@
 
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.robam.common.view.RoundImageView
+    <com.robam.common.ui.view.RoundImageView
         android:id="@+id/iv_theme_recipe_pic"
         android:layout_width="@dimen/dp_40"
         android:scaleType="centerCrop"
@@ -22,7 +22,7 @@
         tools:srcCompat="@tools:sample/avatars"
         app:common_riv_corner_radius="@dimen/dp_8"/>
 
-    <com.robam.common.view.RoundImageView
+    <com.robam.common.ui.view.RoundImageView
         android:id="@+id/iv_theme_recipe_pic2"
         android:layout_width="match_parent"
         android:scaleType="centerCrop"

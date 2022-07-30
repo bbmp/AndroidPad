@@ -9,7 +9,7 @@
     android:background="@drawable/roki_shape_kitchen_bg_round">
 
     <!--图片和图标-->
-    <com.robam.common.view.RoundImageView
+    <com.robam.common.ui.view.RoundImageView
         android:id="@+id/iv_img"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_158"

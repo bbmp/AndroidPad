@@ -1,12 +1,9 @@
 package com.robam.steam.ui.activity;
 
-import android.os.Bundle;
-
-import androidx.annotation.Nullable;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import com.robam.common.activity.BaseActivity;
+import com.robam.common.ui.activity.BaseActivity;
 import com.robam.steam.R;
 import com.robam.steam.device.SteamAbstractControl;
 import com.robam.steam.device.SteamFactory;

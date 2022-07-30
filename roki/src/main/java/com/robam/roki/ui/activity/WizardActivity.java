@@ -1,5 +1,7 @@
 package com.robam.roki.ui.activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,15 +9,23 @@ import android.widget.Button;
 
 import androidx.viewpager.widget.ViewPager;
 
-import com.robam.common.activity.BaseActivity;
+import com.robam.common.ui.activity.BaseActivity;
 import com.robam.roki.R;
-import com.robam.roki.adapter.ExtPageAdapter;
+import com.robam.roki.ui.adapter.ExtPageAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class WizardActivity extends BaseActivity {
     private ViewPager pager;
+
+
+    public static void start(Activity activity) {
+        Intent intent = new Intent();
+        intent.setClass(activity, WizardActivity.class);
+        activity.startActivity(intent);
+        activity.finish();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -16,8 +16,8 @@ public class PadApp extends Application {
     public void onCreate() {
         super.onCreate();
         CrashHandler.register(this);
-        AppRoki.init(this);
-//        AppVentilator.init(this);
+//        AppRoki.init(this);
+        AppVentilator.init(this);
     }
 
     @Override

@@ -3,26 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ventilator_navigation"
-    app:startDestination="@+id/navigation_home"
+    app:startDestination="@+id/welcomepage"
     tools:ignore="ResourceName">
-
+<!--主入口一般会有welcome-->
     <fragment
-        android:id="@+id/navigation_home"
-        android:name="com.robam.ventilator.ui.pages.HomePage"
+        android:id="@+id/welcomepage"
+        android:name="com.robam.ventilator.ui.pages.WelcomePage"
         android:label="@string/ventilator_app_name"
-        tools:layout="@layout/ventilator_page_layout_home">
-        <action
-            android:id="@+id/action_fullscreen"
-            app:destination="@id/fullscreenFragment"/>
+        tools:layout="@layout/ventilator_page_layout_welcome">
 
     </fragment>
 
-    <fragment
-
-        android:id="@+id/fullscreenFragment"
-        android:name="com.robam.ventilator.ui.pages.FullScreenFragment"
-        android:label="@string/ventilator_app_name"
-        tools:layout="@layout/ventilator_fragment_full_screen">
-
-    </fragment>
 </navigation>

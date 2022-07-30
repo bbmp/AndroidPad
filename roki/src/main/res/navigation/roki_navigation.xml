@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/welcomepage"
-        android:name="com.robam.roki.pages.WelcomPage"
+        android:name="com.robam.roki.ui.pages.WelcomPage"
         android:label="@string/roki_app_name"
         tools:layout="@layout/roki_page_layout_welcome">
 

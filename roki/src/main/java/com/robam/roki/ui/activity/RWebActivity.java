@@ -1,6 +1,5 @@
 package com.robam.roki.ui.activity;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -8,8 +7,6 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -23,14 +20,11 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 
-import androidx.core.content.ContextCompat;
-
-import com.robam.common.activity.BaseActivity;
+import com.robam.common.ui.activity.BaseActivity;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ToastUtils;
-import com.robam.common.view.ExtWebView;
+import com.robam.common.ui.view.ExtWebView;
 import com.robam.roki.R;
-import com.robam.roki.factory.RokiDialogFactory;
 import com.robam.roki.utils.PageArgumentKey;
 
 public class RWebActivity extends BaseActivity {

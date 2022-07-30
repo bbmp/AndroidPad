@@ -10,6 +10,11 @@
         <attr name="android:scaleType" />
     </declare-styleable>
 
-
+    <declare-styleable name="common_CircleImageView">
+        <attr name="common_civ_border_width" format="dimension" />
+        <attr name="common_civ_border_color" format="color" />
+        <attr name="common_civ_border_overlay" format="boolean" />
+        <attr name="common_civ_circle_background_color" format="color" />
+    </declare-styleable>
 
 </resources>

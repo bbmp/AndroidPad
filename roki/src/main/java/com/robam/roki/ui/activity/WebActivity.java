@@ -1,16 +1,13 @@
 package com.robam.roki.ui.activity;
 
-import android.os.Bundle;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.ImageView;
 
-import androidx.annotation.Nullable;
-
-import com.robam.common.activity.BaseActivity;
+import com.robam.common.ui.activity.BaseActivity;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ToastUtils;
-import com.robam.common.view.ExtWebView;
+import com.robam.common.ui.view.ExtWebView;
 import com.robam.roki.R;
 import com.robam.roki.utils.PageArgumentKey;
 

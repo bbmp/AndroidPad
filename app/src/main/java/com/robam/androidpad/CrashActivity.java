@@ -6,7 +6,6 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -21,13 +20,10 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.robam.common.activity.BaseActivity;
 import com.robam.common.skin.SkinStatusBarUtils;
 import com.robam.common.utils.PermissionUtils;
-import com.tbruyelle.rxpermissions3.Permission;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

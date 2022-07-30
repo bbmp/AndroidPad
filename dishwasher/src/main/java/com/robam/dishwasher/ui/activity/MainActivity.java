@@ -1,12 +1,9 @@
 package com.robam.dishwasher.ui.activity;
 
-import android.os.Bundle;
-
-import androidx.annotation.Nullable;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import com.robam.common.activity.BaseActivity;
+import com.robam.common.ui.activity.BaseActivity;
 import com.robam.dishwasher.R;
 
 //远程入口，供烟机调用

@@ -18,7 +18,7 @@
         android:src="@mipmap/roki_tag_video"
         android:visibility="gone"/>
 
-    <com.robam.common.view.RoundImageView
+    <com.robam.common.ui.view.RoundImageView
         android:id="@+id/iv_item_topic_img"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_100"
