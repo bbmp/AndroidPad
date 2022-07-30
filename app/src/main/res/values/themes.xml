@@ -12,5 +12,11 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">@color/transparent</item>
         <!-- Customize your theme here. -->
+
+        <item name="android:windowAnimationStyle">@style/Animation</item>
+    </style>
+    <style name="Animation">
+        <item name="android:windowEnterAnimation">@null</item>
+        <item name="android:windowExitAnimation">@null</item>
     </style>
 </resources>

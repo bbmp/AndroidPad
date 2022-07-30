@@ -4,6 +4,12 @@
 
     <application>
         <activity
+            android:name=".ui.activity.WizardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activity.SaleServiceActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activity.RWebActivity"
             android:exported="false" />
         <activity

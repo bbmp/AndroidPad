@@ -13,10 +13,11 @@ import androidx.annotation.IdRes;
 import androidx.fragment.app.Fragment;
 
 import com.robam.common.R;
+import com.robam.common.http.ILife;
 import com.robam.common.ui.action.ClickAction;
 import com.robam.common.utils.LogUtils;
 
-public abstract class HeadPage extends Fragment implements ClickAction {
+public abstract class HeadPage extends Fragment implements ClickAction, ILife {
     protected View mRootView;
 //    protected View mContentView;
     protected boolean isDestroyed;
@@ -41,11 +42,11 @@ public abstract class HeadPage extends Fragment implements ClickAction {
                              ViewGroup container, Bundle savedInstanceState) {
 
         if (null == mRootView) {
-            mRootView = inflater.inflate(R.layout.common_header_page, container, false);
-            FrameLayout pnlMain = mRootView.findViewById(R.id.pnlMain);
+//            mRootView = inflater.inflate(R.layout.common_header_page, container, false);
+//            FrameLayout pnlMain = mRootView.findViewById(R.id.pnlMain);
 
-            View mContentView = inflater.inflate(getLayoutId(), container, false);
-            pnlMain.addView(mContentView);
+            mRootView = inflater.inflate(getLayoutId(), container, false);
+//            pnlMain.addView(mContentView);
             setStateBarFixer();
             initView();
             initData();
@@ -63,7 +64,6 @@ public abstract class HeadPage extends Fragment implements ClickAction {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mRootView = null;
     }
 
     @Override
@@ -107,6 +107,9 @@ public abstract class HeadPage extends Fragment implements ClickAction {
         view = null;
     }
     //页面是否销毁
+
+
+    @Override
     public boolean isDestroyed() {
         return isDestroyed;
     }

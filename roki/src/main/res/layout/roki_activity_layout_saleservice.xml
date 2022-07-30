@@ -7,6 +7,11 @@
     android:orientation="vertical"
     android:gravity="center_horizontal"
     tools:ignore="MissingDefaultResource">
+    <View
+        android:id="@+id/status_bar_fix"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/roki_transparent"/>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_44">

@@ -43,4 +43,5 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     api project(path: ':common')
     api "com.github.CymChad:BaseRecyclerViewAdapterHelper:$versions.BaseRecyclerViewAdapterHelper"
+
 }

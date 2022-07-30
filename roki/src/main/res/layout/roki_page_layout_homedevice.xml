@@ -6,12 +6,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="false">
-
+    <View
+        android:id="@+id/status_bar_fix"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/roki_transparent" />
     <LinearLayout
         android:orientation="horizontal"
         android:id="@+id/ll_title"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_50">
+        android:layout_height="@dimen/dp_50"
+        android:layout_below="@id/status_bar_fix">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">

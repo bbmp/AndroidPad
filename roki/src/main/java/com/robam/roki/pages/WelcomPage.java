@@ -1,5 +1,6 @@
 package com.robam.roki.pages;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
@@ -17,6 +18,7 @@ import com.robam.roki.ui.activity.HomeActivity;
 import com.robam.roki.dialog.DialogUtils;
 import com.robam.roki.dialog.IRokiDialog;
 import com.robam.roki.factory.RokiDialogFactory;
+import com.robam.roki.ui.activity.WizardActivity;
 import com.robam.roki.utils.PageArgumentKey;
 
 public class WelcomPage extends HeadPage {
@@ -54,10 +56,9 @@ public class WelcomPage extends HeadPage {
                         PreferenceUtils.setBool(getContext(), PageArgumentKey.IsFirstUse, false);
                         privacyDialog.dismiss();
                         if (NetworkUtils.isConnect(getContext())){
-//                            WizardActivity.start(activity);
-                            UIService.postPage(mRootView, R.id.action_wizardpage);
+                            startActivity(new Intent(getActivity(), WizardActivity.class));
                         }else {
-                            HomeActivity.start(getActivity());
+                            startActivity(new Intent(getActivity(), HomeActivity.class));
                         }
                     } else if (v.getId() == R.id.common_dialog_cancel_btn) {
                         privacyDialog.dismiss();
@@ -90,9 +91,9 @@ public class WelcomPage extends HeadPage {
                     PreferenceUtils.setBool(getContext(), PageArgumentKey.IsFirstUse, false);
                     exitDialog.dismiss();
                     if (NetworkUtils.isConnect(getContext())){
-                        UIService.postPage(mRootView, R.id.action_wizardpage);
+                        startActivity(new Intent(getActivity(), WizardActivity.class));
                     }else {
-                        HomeActivity.start(getActivity());
+                        startActivity(new Intent(getActivity(), HomeActivity.class));
                     }
                 } else if (v.getId() == R.id.common_dialog_cancel_btn) {
                     exitDialog.dismiss();
@@ -192,13 +193,13 @@ public class WelcomPage extends HeadPage {
         boolean isFirstUse = PreferenceUtils.getBool(getContext(), PageArgumentKey.IsFirstUse, true);
         LogUtils.i( "isFirstUse:" + isFirstUse);
         if (isFirstUse) {
-            if (NetworkUtils.isConnect(getContext())) {
-                UIService.postPage(mRootView, R.id.action_wizardpage);
-            }else{
-//                MainActivity.start(activity);
+            if (NetworkUtils.isConnect(getContext())){
+                startActivity(new Intent(getActivity(), WizardActivity.class));
+            }else {
+                startActivity(new Intent(getActivity(), HomeActivity.class));
             }
         }else {
-            HomeActivity.start(getActivity());
+            startActivity(new Intent(getActivity(), HomeActivity.class));
         }
 
     }

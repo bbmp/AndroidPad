@@ -14,16 +14,19 @@ import com.robam.common.view.ExtWebView;
 import com.robam.roki.R;
 import com.robam.roki.utils.PageArgumentKey;
 
+//普通h5
 public class WebActivity extends BaseActivity {
     private ExtWebView webView;
     private ImageView ivBack;
     private String url;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.roki_activity_layout_web);
-        setStateBarFixer();
+    protected int getLayoutId() {
+        return R.layout.roki_activity_layout_web;
+    }
+
+    @Override
+    protected void initView() {
         webView = (ExtWebView) findViewById(R.id.webView);
         ivBack = (ImageView) findViewById(R.id.iv_back);
         url = getIntent().getStringExtra(PageArgumentKey.Url);
@@ -42,6 +45,11 @@ public class WebActivity extends BaseActivity {
                 ToastUtils.showShort(WebActivity.this, description);
             }
         });
+
+    }
+
+    @Override
+    protected void initData() {
 
         webView.loadUrl(url);
         ivBack.setOnClickListener(new View.OnClickListener() {

@@ -19,4 +19,9 @@ public class PadApp extends Application {
         AppRoki.init(this);
 //        AppVentilator.init(this);
     }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+    }
 }

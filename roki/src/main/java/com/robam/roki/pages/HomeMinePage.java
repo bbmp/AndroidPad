@@ -1,13 +1,15 @@
 package com.robam.roki.pages;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.robam.common.ui.HeadPage;
-import com.robam.common.ui.UIService;
 import com.robam.roki.R;
+import com.robam.roki.constant.RokiRouter;
+import com.robam.roki.ui.activity.SaleServiceActivity;
 
 public class HomeMinePage extends HeadPage {
     /**
@@ -96,7 +98,10 @@ public class HomeMinePage extends HeadPage {
     @Override
     public void onClick(View view) {
         if (view.equals(stbSaleService)) {
-            UIService.postPage(view, R.id.action_saleservice);
+            Intent intent = new Intent();
+            intent.setClass(getContext(), SaleServiceActivity.class);
+            startActivity(intent);
+//            UIService.postPage(view, R.id.action_saleservice);
         } else if (view.equals(stbAbout)) {
 //            UIService.getInstance().postPage(PageKey.MineAboutPage);
         }

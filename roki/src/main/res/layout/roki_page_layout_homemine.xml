@@ -7,14 +7,20 @@
     android:fitsSystemWindows="false"
     android:orientation="vertical"
     android:background="@drawable/roki_shape_bg_main">
-
+    <View
+        android:id="@+id/status_bar_fix"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/roki_transparent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
     <RelativeLayout
         android:id="@+id/rl_mine_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/roki_white"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/status_bar_fix">
 
         <ImageView
             android:id="@+id/home_recipe_img"

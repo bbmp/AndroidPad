@@ -33,7 +33,7 @@ public class HomePage extends HeadPage {
 
     @Override
     protected void initView() {
-        setStateBarFixer();
+
         tabLayout = findViewById(R.id.tabLayout);
         noScrollViewPager = findViewById(R.id.pager);
         tabLayout.setSelectedTabIndicatorHeight(0);
@@ -110,8 +110,4 @@ public class HomePage extends HeadPage {
         }
     }
 
-    @Override
-    protected void setStateBarFixer() {
-
-    }
 }

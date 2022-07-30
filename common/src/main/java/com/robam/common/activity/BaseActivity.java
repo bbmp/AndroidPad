@@ -1,6 +1,7 @@
 package com.robam.common.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,12 +11,15 @@ import androidx.annotation.Nullable;
 import androidx.navigation.NavController;
 
 import com.robam.common.R;
+import com.robam.common.http.ILife;
 import com.robam.common.skin.SkinStatusBarUtils;
+import com.robam.common.ui.action.ActivityAction;
 import com.robam.common.ui.action.ClickAction;
 import com.robam.common.utils.LogUtils;
 
-public abstract class BaseActivity extends AbsActivity implements ClickAction {
+public abstract class BaseActivity extends AbsActivity implements ActivityAction, ClickAction, ILife {
     protected NavController navController;
+    private boolean isDestroyed;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -25,7 +29,33 @@ public abstract class BaseActivity extends AbsActivity implements ClickAction {
         SkinStatusBarUtils.translucent(this);
         //字体
         SkinStatusBarUtils.setStatusBarLightMode(this);
+
+        setContentView(getLayoutId());
+        //占位状态栏
+        setStateBarFixer();
+        initView();
+        initData();
     }
+
+    @Override
+    public Context getContext() {
+        return this;
+    }
+
+    /**
+     * 获取布局 ID
+     */
+    protected abstract int getLayoutId();
+
+    /**
+     * 初始化控件
+     */
+    protected abstract void initView();
+
+    /**
+     * 初始化数据
+     */
+    protected abstract void initData();
 
     /**
      * 设置状态栏占位
@@ -56,5 +86,16 @@ public abstract class BaseActivity extends AbsActivity implements ClickAction {
 
 
         super.onBackPressed();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        isDestroyed = true;
+    }
+
+    @Override
+    public boolean isDestroyed() {
+        return isDestroyed;
     }
 }

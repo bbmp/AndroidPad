@@ -46,18 +46,20 @@ public class RWebActivity extends BaseActivity {
     private String mShareId;
     private WebChromeClient.CustomViewCallback mCallback;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.roki_activity_layout_rweb);
-        setStateBarFixer();
-        evKitchenKnowledgAct = findViewById(R.id.ev_kitchen_knowledg_act);
-        flVideo = findViewById(R.id.fl_video);
 
-        initData();
+    @Override
+    protected int getLayoutId() {
+        return R.layout.roki_activity_layout_rweb;
     }
 
-    private void initData() {
+    @Override
+    protected void initView() {
+        evKitchenKnowledgAct = findViewById(R.id.ev_kitchen_knowledg_act);
+        flVideo = findViewById(R.id.fl_video);
+    }
+
+    @Override
+    protected void initData() {
         url = getIntent().getStringExtra(PageArgumentKey.Url);
         setiingWebToJS();
 //        boolean logon = Plat.accountService.isLogon();
