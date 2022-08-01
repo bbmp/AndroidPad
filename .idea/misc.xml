@@ -9,6 +9,9 @@
         <entry key="..\:/AndroidProjects/AndroidPad/app/src/main/res/layout/activity_crash.xml" value="0.25" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/src/main/res/layout/activity_main.xml" value="0.175" />
         <entry key="..\:/AndroidProjects/AndroidPad/common/src/main/res/drawable/common_shape_counter_down.xml" value="0.2255" />
+        <entry key="..\:/AndroidProjects/AndroidPad/common/src/main/res/drawable/input_delete_ic.xml" value="0.2" />
+        <entry key="..\:/AndroidProjects/AndroidPad/common/src/main/res/drawable/password_off_ic.xml" value="0.3015" />
+        <entry key="..\:/AndroidProjects/AndroidPad/common/src/main/res/drawable/password_on_ic.xml" value="0.3015" />
         <entry key="..\:/AndroidProjects/AndroidPad/common/src/main/res/layout/abs_header_page.xml" value="0.1703125" />
         <entry key="..\:/AndroidProjects/AndroidPad/common/src/main/res/layout/common_header_page.xml" value="0.25" />
         <entry key="..\:/AndroidProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_activity_layout_main.xml" value="0.15904232578024796" />
@@ -25,6 +28,7 @@
         <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/drawable/roki_shape_bg_main.xml" value="0.185" />
         <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/drawable/roki_shape_button_bg.xml" value="0.179" />
         <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/drawable/roki_shape_button_left_selector.xml" value="0.1775" />
+        <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/drawable/roki_shape_dialog_bg.xml" value="0.3015" />
         <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/drawable/roki_shape_divider_bg.xml" value="0.185" />
         <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/drawable/roki_shape_kitchen_bg_round.xml" value="0.185" />
         <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/drawable/roki_shape_recipe_bg.xml" value="0.2" />
@@ -68,11 +72,15 @@
         <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/layout/roki_page_saleservice.xml" value="0.33" />
         <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/layout/roki_view_home_tab_item.xml" value="0.21" />
         <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/layout/roki_view_layout_wizard.xml" value="0.14365113296280463" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/icon_main.xml" value="0.3015" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_activity_layout_ble.xml" value="0.16246259085079093" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_activity_layout_main.xml" value="0.16246259085079093" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_base_title.xml" value="0.10755208333333334" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_item_main_function.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_page_layout_full_screen.xml" value="0.16246259085079093" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_page_layout_home.xml" value="0.16246259085079093" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_page_layout_take_photo.xml" value="0.16246259085079093" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_view_layout_title.xml" value="0.17682291666666666" />
         <entry key="..\:/AndroidProjects/AndroidPad/stream/src/main/res/layout/activity_ble.xml" value="0.13333333333333333" />
         <entry key="..\:/AndroidProjects/AndroidPad/stream/src/main/res/layout/fragment_take_photo.xml" value="0.18177083333333333" />
         <entry key="..\:/AndroidProjects/AndroidPad/stream/src/main/res/layout/home_fragment.xml" value="0.175" />
@@ -85,16 +93,23 @@
         <entry key="..\:/AndroidProjects/AndroidPad/stream/src/main/res/layout/stream_page_layout_home.xml" value="0.16246259085079093" />
         <entry key="..\:/AndroidProjects/AndroidPad/stream/src/main/res/layout/stream_page_layout_take_photo.xml" value="0.16246259085079093" />
         <entry key="..\:/AndroidProjects/AndroidPad/stream/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1835" />
+        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_shape_button_ok_bg.xml" value="0.3015" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/fragment_full_screen.xml" value="0.175" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/home_fragment.xml" value="0.175" />
+        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_activity_layout_about.xml" value="0.22" />
+        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_activity_layout_date_setting.xml" value="0.17682291666666666" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_activity_layout_home.xml" value="0.16246259085079093" />
+        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_activity_layout_login_phone.xml" value="0.14" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_activity_layout_main.xml" value="0.14493373236425822" />
+        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_activity_layout_wifi_connect.xml" value="0.13" />
+        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_activity_layout_wifi_setting.xml" value="0.17682291666666666" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_fragment_full_screen.xml" value="0.175" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_home_fragment.xml" value="0.175" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_item_layout_function.xml" value="0.17443351859769132" />
+        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_item_pick_text.xml" value="0.25" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_page_layout_home.xml" value="0.21" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_page_layout_welcome.xml" value="0.17443351859769132" />
-        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_view_layout_title.xml" value="0.17443351859769132" />
+        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_view_layout_title.xml" value="0.21" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/app/src/main/res/layout/activity_main.xml" value="0.14130434782608695" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/roki/src/main/res/layout/roki_view_layout_wizard.xml" value="0.14130434782608695" />
         <entry key="..\:/workspace/AndroidPad/app/src/main/res/layout/activity_main.xml" value="0.1" />

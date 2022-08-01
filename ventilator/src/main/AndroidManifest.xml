@@ -4,6 +4,23 @@
 
     <application>
         <activity
+            android:name=".ui.activity.DateSettingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activity.WifiSettingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activity.WifiConnectActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activity.LoginPhoneActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activity.AboutActivity"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="landscape"
+            android:exported="false" />
+        <activity
             android:name=".ui.activity.MainActivity"
             android:exported="false" />
         <activity

@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="ventilator_transparent">#00000000</color>
+    <color name="ventilator_white">#FFFFFF</color>
+    <color name="ventilator_login">#ff72afff</color>
+    <color name="ventilator_white_50">#80ffffff</color>
 </resources>

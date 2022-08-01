@@ -16,5 +16,33 @@
         <attr name="common_civ_border_overlay" format="boolean" />
         <attr name="common_civ_circle_background_color" format="color" />
     </declare-styleable>
-
+    <!-- 正则表达式编辑框 -->
+    <declare-styleable name="common_RegexEditText">
+        <!-- 正则输入限制 -->
+        <attr name="common_inputRegex" format="string" />
+        <!-- 常用正则类型 -->
+        <attr name="common_regexType" >
+            <!-- 手机号（只能以 1 开头）-->
+            <enum name="mobile" value="0x01" />
+            <!-- 中文（普通的中文字符）-->
+            <enum name="chinese" value="0x02" />
+            <!-- 英文（大写和小写的英文）-->
+            <enum name="english" value="0x03" />
+            <!-- 数字（只允许输入纯数字）-->
+            <enum name="number" value="0x04" />
+            <!-- 整数（非 0 开头的数字）-->
+            <enum name="count" value="0x05" />
+            <!-- 用户名（中文、英文、数字）-->
+            <enum name="name" value="0x06" />
+            <!-- 非空格字符 -->
+            <enum name="nonnull" value="0x07" />
+        </attr>
+    </declare-styleable>
+    <!-- 仿 ios 开关按钮 -->
+    <declare-styleable name="common_SwitchButton">
+        <!-- 是否选中 -->
+        <attr name="android:checked" />
+        <!-- 是否禁用 -->
+        <attr name="android:enabled" />
+    </declare-styleable>
 </resources>

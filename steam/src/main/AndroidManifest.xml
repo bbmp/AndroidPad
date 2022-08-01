@@ -9,7 +9,8 @@
             android:exported="false" />
         <activity
             android:name="com.robam.steam.ui.activity.MainActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="landscape"/>
     </application>
 
 </manifest>

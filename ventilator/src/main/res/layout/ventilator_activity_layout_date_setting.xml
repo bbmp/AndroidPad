@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.activity.DateSettingActivity">
+    <include
+        android:id="@+id/ll_title"
+        layout="@layout/ventilator_view_layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <LinearLayout
+        android:id="@+id/ll_border"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_88"
+        android:layout_marginStart="@dimen/dp_88"
+        android:layout_marginEnd="@dimen/dp_88"
+        android:layout_marginTop="@dimen/dp_30"
+        android:background="@drawable/ventilator_shape_border_bg"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/dp_64"
+        android:paddingEnd="@dimen/dp_64"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_title">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ventilator_auto_set" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <com.robam.common.ui.view.SwitchButton
+            android:id="@+id/sb_auto_set"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_10"
+            android:checked="true" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/ll_date_select"
+        android:layout_marginTop="@dimen/dp_40"
+        android:layout_width="@dimen/dp_300"
+        android:layout_height="@dimen/dp_230"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_border">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_time_hour"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            tools:itemCount="3"
+            tools:listitem="@layout/ventilator_item_pick_text" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=":"
+            android:textSize="@dimen/sp_32" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_time_minute"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            tools:itemCount="3"
+            tools:listitem="@layout/ventilator_item_pick_text" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,8 +4,11 @@ import android.content.Intent;
 import android.serialport.helper.SerialPortHelper;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.robam.common.ui.HeadPage;
 import com.robam.common.ui.helper.CenterSnapHelper;
 import com.robam.common.ui.helper.ScaleLayoutManager;
@@ -13,6 +16,7 @@ import com.robam.common.ui.helper.ViewPagerLayoutManager;
 import com.robam.steam.ui.activity.MainActivity;
 import com.robam.ventilator.R;
 import com.robam.ventilator.bean.VenFun;
+import com.robam.ventilator.ui.activity.AboutActivity;
 import com.robam.ventilator.ui.adapter.RvFunctionAdapter;
 
 import java.util.ArrayList;
@@ -58,6 +62,12 @@ public class HomePage extends HeadPage {
         recyclerView.setAdapter(rvFunctionAdapter);
         rvFunctionAdapter.setList(funList);
         centerSnapHelper.attachToRecyclerView(recyclerView);
+        rvFunctionAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                startActivity(new Intent(getContext(), MainActivity.class));
+            }
+        });
     }
 
     @Override

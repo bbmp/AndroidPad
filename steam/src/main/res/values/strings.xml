@@ -1,5 +1,1152 @@
 <resources>
     <string name="steam_app_name">stream</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="steam_hello_blank_fragment">Hello blank fragment</string>
+    <!-- 通用的 -->
+    <string name="steam_common_loading">加载中&#8230;</string>
+
+    <string name="steam_common_unknown_error">未知错误</string>
+
+    <string name="steam_common_confirm">确认</string>
+    <string name="steam_common_cancel">取消</string>
+
+    <string name="steam_common_year">年</string>
+    <string name="steam_common_month">月</string>
+    <string name="steam_common_day">日</string>
+
+    <string name="steam_common_hour">时</string>
+    <string name="steam_common_minute">分</string>
+    <string name="steam_common_second">秒</string>
+
+    <string name="steam_common_crash_hint">应用出了点小意外，正在重新启动</string>
+
+    <string name="steam_common_network_error">当前网络不可用，请检查网络设置</string>
+
+    <string name="steam_common_video_error_not_support">该视频不适合在此设备上播放</string>
+    <string name="steam_common_video_error_unknown">无法播放此视频</string>
+    <string name="steam_common_video_error_supplement">错误类型：%s，错误代码：%d</string>
+
+    <string name="steam_common_phone_input_hint">请输入手机号码</string>
+    <string name="steam_common_phone_input_error">手机号输入不正确</string>
+
+    <string name="steam_common_password_input_error">请输入密码</string>
+    <string name="steam_common_password_input_unlike">两次密码输入不一致，请重新输入</string>
+
+    <string name="steam_common_code_input_hint">请输入验证码</string>
+    <string name="steam_common_code_send">发送验证码</string>
+    <string name="steam_common_code_send_hint">验证码已发送，请注意查收</string>
+    <string name="steam_common_code_error_hint">验证码错误，请检查输入</string>
+    <string name="steam_common_password_error_hint">密码长度不得小于6，请检查输入</string>
+
+    <string name="steam_common_step_next">下一步</string>
+    <string name="steam_common_step_complete">完成</string>
+    <string name="steam_common_step_commit">提交</string>
+
+    <string name="steam_common_permission_alert">授权提醒</string>
+    <string name="steam_common_permission_fail_1">授权失败，请正确授予权限</string>
+    <string name="steam_common_permission_fail_2">获取权限失败，请手动授予权限</string>
+    <string name="steam_common_permission_fail_3">获取权限失败，请手动授予%s</string>
+    <string name="steam_common_permission_fail_4">没有授予后台定位权限，请您选择"始终允许"</string>
+    <string name="steam_common_permission_goto">前往授权</string>
+
+    <string name="steam_common_permission_calendar">日历权限</string>
+    <string name="steam_common_permission_camera">相机权限</string>
+    <string name="steam_common_permission_contacts">通讯录权限</string>
+    <string name="steam_common_permission_location">定位权限</string>
+    <string name="steam_common_permission_location_background">后台定位权限</string>
+    <string name="steam_common_permission_microphone">麦克风权限</string>
+    <string name="steam_common_permission_phone">电话权限</string>
+    <string name="steam_common_permission_call_log">通话记录权限</string>
+    <string name="steam_common_permission_sensors">身体传感器权限</string>
+    <string name="steam_common_permission_activity_recognition">健身运动权限</string>
+    <string name="steam_common_permission_sms">短信权限</string>
+    <string name="steam_common_permission_storage">存储权限</string>
+
+    <string name="steam_common_permission_install">安装应用权限</string>
+    <string name="steam_common_permission_notification">通知栏权限</string>
+    <string name="steam_common_permission_window">悬浮窗权限</string>
+    <string name="steam_common_permission_setting">系统设置权限</string>
+
+    <string name="steam_common_network_hint">当前没有网络连接，请检查网络设置</string>
+    <string name="steam_common_no_more_data">没有更多数据了</string>
+
+    <string name="steam_common_web_ssl_error_title">当前网站安全证书已过期或不可信\n是否继续浏览</string>
+    <string name="steam_common_web_ssl_error_allow">继续浏览</string>
+    <string name="steam_common_web_ssl_error_reject">返回上一页</string>
+
+    <string name="steam_common_web_location_permission_title">当前网站需要获取您的地理位置</string>
+    <string name="steam_common_web_location_permission_allow">授予</string>
+    <string name="steam_common_web_location_permission_reject">拒绝</string>
+
+    <string name="steam_common_web_call_phone_title">当前号码 %s</string>
+    <string name="steam_common_web_call_phone_allow">拨打</string>
+    <string name="steam_common_web_call_phone_reject">取消</string>
+
+    <!-- 网络请求 -->
+    <string name="steam_http_loading">加载中&#8230;</string>
+
+    <string name="steam_http_unknown_error">请求出错，未知错误</string>
+    <string name="steam_http_token_error">登录失效，请重新登录</string>
+    <string name="steam_http_data_explain_error">数据解析异常，请稍后</string>
+    <string name="steam_http_server_out_time">服务器请求超时，请稍后再试</string>
+    <string name="steam_http_network_error">请求失败，请检查网络设置</string>
+    <string name="steam_http_response_error">服务器响应异常，请稍后再试</string>
+    <string name="steam_http_server_error">服务器连接异常，请稍后再试</string>
+    <string name="steam_http_request_cancel">请求被中断，请重试</string>
+
+    <!-- 状态布局 -->
+    <string name="steam_status_layout_no_data">空空如也</string>
+    <string name="steam_status_layout_error_request">请求出错，请重试</string>
+    <string name="steam_status_layout_error_network">网络错误，请重试</string>
+    <string name="steam_status_layout_retry">重试</string>
+
+    <!-- 地区对话框 -->
+    <string name="steam_address_title">请选择地区</string>
+    <string name="steam_address_hint">请选择</string>
+
+    <!-- 日期对话框 -->
+    <string name="steam_date_title">请选择日期</string>
+
+    <!-- 时间对话框 -->
+    <string name="steam_time_title">请选择时间</string>
+
+    <!-- 升级对话框 -->
+    <string name="steam_update_title">发现新版本</string>
+
+    <string name="steam_update_content">更新内容</string>
+
+    <string name="steam_update_no">下次再说</string>
+    <string name="steam_update_yes">立即更新</string>
+
+    <string name="steam_update_permission_hint">必须先要授予权限才能正常下载更新哦</string>
+
+    <string name="steam_update_status_start">正在下载</string>
+    <string name="steam_update_status_running">下载中 %d%%</string>
+    <string name="steam_update_status_successful">下载完成，点击安装</string>
+    <string name="steam_update_status_failed">下载失败，点击重试</string>
+
+    <string name="steam_update_no_update">当前已是最新版本</string>
+
+    <string name="steam_update_notification_channel_id">update</string>
+    <string name="steam_update_notification_channel_name">升级通知</string>
+
+    <!-- 分享对话框 -->
+    <string name="steam_share_title">分享到&#8230;</string>
+
+    <string name="steam_share_platform_wechat">微信</string>
+    <string name="steam_share_platform_moment">朋友圈</string>
+    <string name="steam_share_platform_qq">QQ</string>
+    <string name="steam_share_platform_qzone">QQ空间</string>
+    <string name="steam_share_platform_link">复制链接</string>
+
+    <string name="steam_share_platform_copy_hint">已复制到剪贴板</string>
+
+    <!-- 支付密码对话框 -->
+    <string name="steam_pay_title">请输入支付密码</string>
+
+    <!-- 选择对话框 -->
+    <string name="steam_select_min_hint">至少要选择 %d 项</string>
+    <string name="steam_select_max_hint">最多只能选择 %d 项</string>
+
+    <!-- 身份校验对话框 -->
+    <string name="steam_safe_title">身份校验</string>
+
+    <!-- 首页 -->
+    <string name="steam_home_exit_hint">再按一次退出</string>
+    <string name="steam_home_nav_index">首页</string>
+    <string name="steam_home_nav_found">发现</string>
+    <string name="steam_home_nav_message">消息</string>
+    <string name="steam_home_nav_me">我的</string>
+
+    <!-- 登录 -->
+    <string name="steam_login_register">注册</string>
+    <string name="steam_login_forget">忘记密码？</string>
+    <string name="steam_login_text">登录</string>
+
+    <string name="steam_login_other">其他登录方式</string>
+
+    <!-- 注册 -->
+    <string name="steam_register_title">注册</string>
+    <string name="steam_register_hint">手机号仅用于登录和保护账号安全</string>
+    <string name="steam_register_password_hint1">设置6&#8211;18位登录密码</string>
+    <string name="steam_register_password_hint2">请再次输入一次密码</string>
+
+    <!-- 设置 -->
+    <string name="steam_setting_title">设置</string>
+
+    <string name="steam_setting_language_switchover">语言切换</string>
+    <string name="steam_setting_language_simple">简体中文</string>
+    <string name="steam_setting_language_complex">繁体中文</string>
+    <string name="steam_setting_update">检查更新</string>
+
+    <string name="steam_setting_password">修改密码</string>
+    <string name="steam_setting_phone">修改手机</string>
+
+    <string name="steam_setting_auto">自动登录</string>
+    <string name="steam_setting_cache">清空缓存</string>
+
+    <string name="steam_setting_agreement">隐私协议</string>
+    <string name="steam_setting_about">关于我们</string>
+
+    <string name="steam_setting_exit">退出登录</string>
+
+    <!-- 关于 -->
+    <string name="steam_about_title">关于我们</string>
+    <string name="steam_about_update"><font color="#5A8DDF">检测到新版本%s</font></string>
+
+    <string name="steam_about_copyright">Copyright © 2018 &#8211; 2021</string>
+
+    <!-- 忘记密码 -->
+    <string name="steam_password_forget_title">忘记密码</string>
+
+    <!-- 重置密码 -->
+    <string name="steam_password_reset_title">设置登录密码</string>
+    <string name="steam_password_reset_phone_hint1">设置6&#8211;18位登录密码</string>
+    <string name="steam_password_reset_phone_hint2">重新输入一次密码</string>
+    <string name="steam_password_reset_input_error">两次密码输入不一致，请重新输入</string>
+    <string name="steam_password_reset_success">修改成功</string>
+
+    <!-- 修改手机号 -->
+    <string name="steam_phone_reset_title">设置手机号</string>
+    <string name="steam_phone_reset_change_hint">下次登录请使用更换后的新手机号登录</string>
+    <string name="steam_phone_reset_commit">立即绑定</string>
+
+    <string name="steam_phone_reset_commit_succeed">绑定成功</string>
+
+    <!-- 个人资料 -->
+    <string name="steam_personal_data_title">个人资料</string>
+    <string name="steam_personal_data_head">头像</string>
+
+    <string name="steam_personal_data_id">用户ID</string>
+    <string name="steam_personal_data_name">昵称</string>
+    <string name="steam_personal_data_name_hint">设置昵称</string>
+
+    <string name="steam_personal_data_address">地区</string>
+    <string name="steam_personal_data_address_hint">请选择</string>
+
+    <string name="steam_personal_data_phone">手机号码</string>
+    <string name="steam_personal_data_phone_hint">立即绑定</string>
+
+    <!-- 浏览器 -->
+    <string name="steam_web_title">网页加载中&#8230;</string>
+
+    <!-- 图片选择 -->
+    <string name="steam_image_select_title">图片选择</string>
+    <string name="steam_image_select_all">所有图片</string>
+
+    <string name="steam_image_select_total">共 %d 张</string>
+
+    <string name="steam_image_select_max_hint">本次最多只能选择 %d 张图片</string>
+
+    <string name="steam_image_select_error">无法选中，该图片已经被删除</string>
+
+    <!-- 裁剪图片 -->
+    <string name="steam_image_crop_error_not_support">裁剪失败，当前手机不支持裁剪图片</string>
+
+    <!-- 视频选择 -->
+    <string name="steam_video_select_title">视频选择</string>
+    <string name="steam_video_select_all">所有视频</string>
+
+    <string name="steam_video_select_total">共 %d 个</string>
+
+    <string name="steam_video_select_max_hint">本次最多只能选择 %d 个视频</string>
+
+    <string name="steam_video_select_error">无法选中，该视频已经被删除</string>
+
+    <!-- 拍照和拍摄 -->
+    <string name="steam_camera_launch_fail">相机启动异常，请返回重新尝试</string>
+    <string name="steam_camera_launch_fail2">相机调用异常</string>
+    <string name="steam_camera_image_error">目标地址错误</string>
+    <string name="steam_device_disconnect">离线</string>
+    <string name="steam_scan_text">将二维码放入扫描框内, 即可自动扫描</string>
+    <string name="steam_app_error">数据加载异常，请联系专业人士</string>
+    <string name="steam_take_photo">  拍  照  </string>
+    <string name="steam_take_photo_massage">点击保存上传至Roki相册</string>
+
+    <!-- 菜单与页面标题 -->
+    <string name="steam_title_app_name">ROKI智能烹饪</string>
+    <string name="steam_title_about">关于软件</string>
+
+
+    <!-- 添加设备 -->
+    <string name="steam_add_dev">点击添加更多联网设备</string>
+    <string name="steam_search_again">重新搜索</string>
+    <string name="steam_cancel_search">取消搜索</string>
+    <string name="steam_roki_error_no_wifi">无可用WiFi网络，请检查WiFi网络</string>
+    <string name="steam_roki_wifi_pwd_hint">请输入WiFi密码</string>
+
+    <!-- 首页 -->
+    <string name="steam_love_meal">来吃有爱的饭</string>
+    <string name="steam_today_main">今日主打</string>
+    <string name="steam_today_menu">今日菜谱</string>
+    <string name="steam_log">烹饪，从未如此简单</string>
+    <string name="steam_type">型号：</string>
+    <string name="steam_version">系统版本：</string>
+    <!-- 设置 -->
+    <string name="steam_setting_add_login">您还未登录,请点击上方登录</string>
+    <string name="steam_setting_add_newdev">添加厨电</string>
+    <string name="steam_setting_dev_manage">设备管理</string>
+    <string name="steam_setting_account_manage">账户管理</string>
+    <string name="steam_setting_network">烟机联网</string>
+    <string name="steam_setting_intel_setting">智能设定</string>
+    <string name="steam_setting_foresale">售后服务</string>
+    <string name="steam_setting_myroki">关于软件</string>
+    <string name="steam_recover_setting">恢复默认设置</string>
+    <string name="steam_inactive_hint">您尚未联网激活，此功能暂不可用，想更好的使用我，请点击联网并激活</string>
+    <string name="steam_connect_and_active">联网并激活</string>
+    <string name="steam_disconnect_hint">您还尚未联网，想更好的使用我，请点击联网设置</string>
+    <string name="steam_setting_wifi">联网设置</string>
+    <string name="steam_unlogin_hint">您尚未登录，此功能暂不可用，想更好的使用我，请点击登录</string>
+    <string name="steam_official_website">roki官网</string>
+    <string name="steam_usage_terms">使用条款</string>
+    <string name="steam_company_title">公司名称 : </string>
+    <string name="steam_company_name">杭州老板电器股份有限公司</string>
+    <string name="steam_system_version">系统版本 : </string>
+    <string name="steam_copyright">Copyright © 2011-2018 ROKI. All rights reserved</string>
+    <string name="steam_update">软件版本</string>
+    <string name="steam_systemupdate">系统升级</string>
+    <string name="steam_update_en">Version update</string>
+    <string name="steam_apply_foresale">申请售后</string>
+
+    <string name="steam_main_account">主账户</string>
+    <string name="steam_setting_nickname">昵称 : </string>
+    <string name="steam_setting_phone_number">电话 : </string>
+    <string name="steam_dialog_add_user_hint">请使用roki APP扫二维码添加用户</string>
+    <string name="steam_add_user">请登录</string>
+    <string name="steam_add_device_fail">添加设备失败!</string>
+    <string name="steam_unconnect_toast">设备未连接!</string>
+
+    <!-- 菜谱 -->
+    <string name="steam_recipes_category_material">食材分类</string>
+    <string name="steam_recipes_category_style">菜系分类</string>
+    <string name="steam_recipes_category_taste">口味分类</string>
+    <string name="steam_recipes_vegetable">果蔬类</string>
+    <string name="steam_recipes_meat">红肉类</string>
+    <string name="steam_recipes_egg">蛋禽类</string>
+    <string name="steam_recipes_bean">豆制品</string>
+    <string name="steam_recipes_aquatic">水产品</string>
+    <string name="steam_recipes_main">主食</string>
+    <string name="steam_search">搜索</string>
+    <string name="steam_cancel">取 消</string>
+    <string name="steam_ok_btn">确 定</string>
+    <string name="steam_ok_btn2">确 认</string>
+
+    <!-- 动态菜谱 -->
+    <string name="steam_start_prepare">开始准备</string>
+    <string name="steam_start_cook">开始烹饪</string>
+    <string name="steam_main_material">主料</string>
+    <string name="steam_assist_material">辅料</string>
+    <string name="steam_accessory_material">佐料</string>
+    <string name="steam_dialog_choose_stove_hint">即将开始烹饪，请选择您要使用的炉头</string>
+    <string name="steam_product_time">制作时间</string>
+    <string name="steam_next_step">下一步</string>
+    <string name="steam_quit">退出</string>
+    <string name="steam_cookfinished">煮好了！</string>
+    <string name="steam_cookfinishedhit">大厨莫走！开吃前，先拍照，这是美德。</string>
+    <string name="steam_othercooked">大家做过的这道菜</string>
+    <string name="steam_setTime">设置时间</string>
+
+    <!-- 激活 -->
+    <string name="steam_active_welcome">欢迎购买ROBAM的智能产品，点击开始进入无线网连接</string>
+    <string name="steam_active_start">开始</string>
+    <string name="steam_active_skip">跳过</string>
+    <string name="steam_active_back">返回</string>
+    <string name="steam_active_skipping">正在跳转</string>
+    <string name="steam_active_next">下一步</string>
+    <string name="steam_active">激活</string>
+
+    <string name="steam_register">注册新号码</string>
+    <string name="steam_forget_pwd">忘记密码</string>
+    <string name="steam_password">密码</string>
+    <string name="steam_show_password">显示密码</string>
+    <string name="steam_main_phone">您的手机号码</string>
+    <string name="steam_your_phone">您的手机号码</string>
+    <string name="steam_nickname">昵称</string>
+    <string name="steam_confirm_pwd">确认新密码</string>
+    <string name="steam_input_identify_code">请输入验证码</string>
+    <string name="steam_input_password">请输入密码</string>
+    <string name="steam_send_identify_code">获取验证码</string>
+    <string name="steam_identify_code">验证码</string>
+    <string name="steam_wifi_connected">已连接</string>
+    <string name="steam_password_login">密码登录</string>
+    <string name="steam_code_login">验证码登录</string>
+    <string name="steam_login">登 录</string>
+    <string name="steam_no_login">未登录</string>
+    <string name="steam_account_login">账户登录</string>
+    <string name="steam_account_register">账户注册</string>
+    <string name="steam_account">账号</string>
+    <string name="steam_show_pwd">显示密码</string>
+    <string name="steam_notReg">还没注册?</string>
+
+    <!-- 设备相关 -->
+    <string name="steam_device_sync_timeout_error">sync timeout</string>
+    <string name="steam_fan_invalid_error">油烟机已离线</string>
+    <string name="steam_steam_invalid_error">蒸汽炉已离线</string>
+    <string name="steam_stove_invalid_error">灶具已离线</string>
+    <string name="steam_stove_notknown_error">未知灶具设备</string>
+    <string name="steam_stove_startfire">请先在灶具开火</string>
+    <string name="steam_stove_null_error">当前无灶具设备</string>
+    <string name="steam_pot_null_error">当前无无人锅设备</string>
+    <string name="steam_stovepot_null_error">当前无灶具和无人锅设备</string>
+    <string name="steam_dev_invalid_error">没有可用的设备</string>
+    <string name="steam_oven_invalid_error">电烤箱已离线</string>
+    <string name="steam_micro_invalid_error">微波炉已离线</string>
+    <string name="steam_steamoven_invalid_error">烤蒸一体机已离线</string>
+    <string name="steam_stove_tempplot_invalid_error">无人锅和灶具已离线</string>
+    <string name="steam_stove_tempplot_null_error">无人锅已离线</string>
+    <string name="steam_pot_disconnect_hint1">1、请将无人锅放置在烟机附近,距离过远会影响其蓝牙连接;</string>
+    <string name="steam_pot_disconnect_hint2">2、无人锅电池可能已经耗尽,请尝试更换新的电池;</string>
+    <string name="steam_pot_wait_hint">加热激活无人锅</string>
+    <string name="steam_pot_showtemp_stage1">低油温适合软炸</string>
+    <string name="steam_pot_showtemp_stage1_desc">最适合爆香将葱姜蒜等辅料,放食材后蛋白质可快速凝固，\n原料不易碎烂，适合滑炒肉丝，鸡蛋等。</string>
+    <string name="steam_pot_showtemp_stage2">过热</string>
+    <string name="steam_pot_showtemp_stage2_desc">此界面基本不会出现。温度太高啦！要烧着啦！~</string>
+    <!-- 关于ROKI -->
+    <string name="steam_download_app">下载APP</string>
+    <string name="steam_download_andorid">ROKI智能烹饪</string>
+    <string name="steam_download_ios">IOS版\nROKI智能烹饪</string>
+    <string name="steam_scan_download">『扫一扫』下载手机app，体验远程联动烹饪</string>
+
+
+    <!-- 智能用户 -->
+    <string name="steam_logout">退出登录</string>
+    <string name="steam_share_contrl">分享控制权</string>
+    <string name="steam_dev9700">油烟机9700+电磁灶9W70</string>
+    <string name="steam_device9700">油烟机9700</string>
+    <string name="steam_dev8230">油烟机8230+电磁灶9W70</string>
+    <string name="steam_dev">油烟机+电磁灶9W70</string>
+    <string name="steam_dev829">消毒柜829</string>
+    <string name="steam_dev826">消毒柜826</string>
+    <string name="steam_devR028">电烤箱R028</string>
+    <string name="steam_devR039">电烤箱R039</string>
+    <string name="steam_devR026">电烤箱R026</string>
+    <string name="steam_devR016">电烤箱R016</string>
+    <string name="steam_devHK906">电烤箱RHK906</string>
+    <string name="steam_devS209">蒸汽炉S209</string>
+    <string name="steam_devS226">蒸汽炉S226</string>
+    <string name="steam_devHS906">蒸汽炉RHS906</string>
+    <string name="steam_devS228">蒸汽炉S228</string>
+    <string name="steam_delete_hit">不能删除该设备</string>
+    <string name="steam_deletefan_hit">不能删除此烟机</string>
+    <string name="steam_owner_device">已有厨电</string>
+    <string name="steam_enter_phone">请输入您的手机号码</string>
+    <string name="steam_sure_exit">残忍退出</string>
+    <string name="steam_connectedUser">已连接用户</string>
+
+    <string name="steam_ConnectWifiFail">连接wifi失败</string>
+    <string name="steam_pwd">密码</string>
+    <string name="steam_update_description"> 发现新版本,是否更新</string>
+    <string name="steam_update_newest">当前已是最新版本</string>
+    <string name="steam_update_confirm">发现新版本,是否更新?</string>
+    <string name="steam_update_check_failure">检查更新失败</string>
+    <string name="steam_update_downloading">开始下载新版本,下载完成后安装新版本</string>
+    <string name="steam_update_newVerDesc">新版本信息</string>
+
+    <!-- WLAN -->
+    <string name="steam_choose_wlan">选取附近的WLAN</string>
+    <string name="steam_pwd_hit">请输入WiFi密码</string>
+    <string name="steam_confirm">确&#160;&#160;认</string>
+    <string name="steam_cancel_">取&#160;&#160;消</string>
+
+    <!-- 智能设定 -->
+    <string name="steam_linkage">联动</string>
+    <string name="steam_stove_fan">当开启灶具时，烟机自动开启</string>
+    <string name="steam_stove_delay">当关闭灶具，烟机延时</string>
+
+    <string name="steam_ventilation">通风换气</string>
+    <string name="steam_open_air">天自动开启换气</string>
+    <string name="steam_open_air_auto">天未开启烟机，烟机自动换气</string>
+    <string name="steam_week_time">每周固定</string>
+    <string name="steam_WED">周三</string>
+    <string name="steam_three_min">开启烟机5分钟自动换气</string>
+    <string name="steam_delay_min">分钟关闭</string>
+    <string name="steam_clear_hit">清洗提示</string>
+    <string name="steam_open_clear_hit">开启智能油网清洗提示</string>
+    <string name="steam_machineAutoClose">分钟关闭。灶具调整到最大档时，烟机自动调整为爆炒模式</string>
+
+
+    <!-- 售后服务 -->
+    <string name="steam_forsale_address_hz">浙江省余杭经济开发区临平大道592号</string>
+    <string name="steam_forsale_phone_hz">95105855</string>
+    <string name="steam_forsale_dialog_hint">您的请求已发送至服务器，请耐心等待ROKI售后的主动回拨</string>
+    <string name="steam_one_key">一键售后</string>
+    <string name="steam_find">哇哈哈被你发现了，售后人员会主动电话回访哟</string>
+    <string name="steam_service_call">全国售后服务：95105855</string>
+
+    <!-- 厨电信息 -->
+    <string name="steam_code">编码:</string>
+    <string name="steam_model">型号:</string>
+    <string name="steam_firemware_version">固件版本: </string>
+    <string name="steam_cooker">油烟机: </string>
+    <string name="steam_hob">灶具: </string>
+    <string name="steam_pot">无人锅: </string>
+
+
+    <!-- 设备控制 -->
+    <string name="steam_no_repate_cooking">正在烧菜中,不可重复烧菜</string>
+    <string name="steam_delete_control">删除控制权</string>
+    <string name="steam_finish">已完成~</string>
+    <string name="steam_finish2">已完成</string>
+    <string name="steam_on_stove_way">正在获取灶具中，请稍等</string>
+
+
+    <!--导航菜谱-->
+    <string name="steam_stoveautoset">联动燃气灶</string>
+    <string name="steam_steamautoset">联动蒸汽炉</string>
+    <string name="steam_microautoset">联动微波炉</string>
+    <string name="steam_ovenautoset">联动电烤箱</string>
+    <string name="steam_preheating">预热中</string>
+    <string name="steam_pausepreheating">暂停预热</string>
+    <string name="steam_working">运行中</string>
+    <string name="steam_start">开始烹饪</string>
+    <string name="steam_oven_in_working">烤箱正在工作</string>
+    <string name="steam_steam_in_working">蒸汽炉正在工作</string>
+    <string name="steam_micro_in_working">微波炉正在工作</string>
+    <string name="steam_yuyue">预约启动时间</string>
+    <string name="steam_notCanWork">不可操纵,请先暂停工作</string>
+    <string name="steam_canNotPause">不允许暂停</string>
+    <string name="steam_unableChange">无法调整参数</string>
+
+    <!--无人锅-->
+    <string name="steam_healthy_cooking">健 康 烹 饪</string>
+    <string name="steam_over_heated">过 热</string>
+    <string name="steam_dry_cleaning">防 干 烧</string>
+    <string name="steam_add_pot">添加无人锅</string>
+    <string name="steam_add_pot_desc">烹饪美好生活~</string>
+    <string name="steam_pot_alarm_tmperature_sensor_desc">锅温度传感器故障,拆下手柄擦干后重试</string>
+    <string name="steam_pot_alarm_low_battery">无人锅电池电量低</string>
+    <string name="steam_pot_alarm_dry_fire">无人锅干烧预警</string>
+    <string name="steam_pot_name">"无人锅"</string>
+
+    <!--菜谱解析异常-->
+    <string name="steam_recipe_error">菜谱数据异常</string>
+    <string name="steam_no_stove">没有可用灶具</string>
+    <string name="steam_no_pot">没有可用无人锅</string>
+    <string name="steam_get_recipefail_pleasechecknet">获取菜谱数据失败,请检查网络</string>
+    <string name="steam_recoverDefaultSetting"> </string>
+    <string name="steam_get_recipefail_chk_and_retry">获取菜谱数据失败,请检查网络,并点击上面图标重新获取</string>
+
+    <!--设备通用-->
+    <string name="steam_device_disconnext_bymanual">设备离线中,请手动关闭</string>
+    <string name="steam_device_close_bymanual">请手动关闭设备</string>
+
+    <string name="steam_light">照明</string>
+    <string name="steam_fan_control">风量控制</string>
+    <string name="steam_hits_p9">当灶具火力最大时，油烟机自动调整为爆炒模式</string>
+    <string name="steam_hits_max">当灶具火力最大时，油烟机自动调整为爆炒模式</string>
+    <string name="steam_gear">档</string>
+    <string name="steam_hit_lock">防止小朋友操作，离开时，可开启童锁！     *开启童锁，其他按键将被锁住，不能操作</string>
+    <string name="steam_lock_close">童锁已关闭</string>
+    <string name="steam_lock_open">童锁已开启</string>
+    <string name="steam_close">已关闭</string>
+    <string name="steam_open">已开启</string>
+    <string name="steam_smart_config_stir">灶具调整到最大档时，烟机自动调整为爆炒模式。</string>
+    <string name="steam_volume_control">风量控制</string>
+    <string name="steam_confirm_cancel_time">确定要取消倒计时吗？</string>
+    <string name="steam_guide_home_bot">ROBAM智能一小步，你的厨艺一大步，点击开始味蕾征程！</string>
+    <string name="steam_unSell">未上市</string>
+    <string name="steam_stoveRecipe">灶具菜谱</string>
+    <string name="steam_ovenRecipe">电烤箱菜谱</string>
+    <string name="steam_steamOvenRecipe">蒸汽炉菜谱</string>
+    <string name="steam_microRecipe">微波炉菜谱</string>
+    <string name="steam_allRecipe">所有菜谱</string>
+    <string name="steam_firstRecipe">菜谱首页</string>
+    <string name="steam_confirExit">是否确定退出？</string>
+
+    <string name="steam_Sterilizer">消毒柜</string>
+    <string name="steam_Oven">电烤箱</string>
+    <string name="steam_Steamoven">蒸汽炉</string>
+    <string name="steam_Microwave">微波炉</string>
+    <string name="steam_Stove">灶具</string>
+    <string name="steam_titleRoki">ROKI智能厨电</string>
+    <string name="steam_deviceChoose">请选择您要添加的智能厨电</string>
+    <string name="steam_potLeaveStove">锅灶分离</string>
+    <string name="steam_setCountDownSuc">设置倒计时成功</string>
+
+    <string name="steam_airbaking">风焙烤</string>
+    <string name="steam_airbarbecue">风扇烤</string>
+    <string name="steam_barbecue">烤烧</string>
+    <string name="steam_expmodel">EXP</string>
+    <string name="steam_expmodel_swsk">双温双控</string>
+    <string name="steam_bakedbarbecue">煎烤</string>
+    <string name="steam_strongsteam">鲜嫩蒸</string>
+    <string name="steam_nutritionsteam">营养蒸</string>
+    <string name="steam_hightempsteam">高温蒸</string>
+    <string name="steam_fermentation">发酵</string>
+    <string name="steam_fruitandvegetabledrying">果蔬烘干</string>
+    <string name="steam_heatpreservation">保温</string>
+    <string name="steam_steamsterilization">蒸汽杀菌</string>
+    <string name="steam_dry">干燥</string>
+    <string name="steam_clean">清洁</string>
+    <string name="steam_nomodel">无模式</string>
+
+    <string name="steam_c906_longpress">请长按烤蒸一体机上的</string>
+    <string name="steam_c906_no_waterbox">未识别到水箱</string>
+    <string name="steam_c906_door_notclose">门未关好</string>
+    <string name="steam_c906_nowork">无法正常工作</string>
+    <string name="steam_c906_nowork_">无法正常工作,</string>
+    <string name="steam_c906_water_shortage">水箱缺水</string>
+    <string name="steam_c906_water_pop">弹出水箱</string>
+    <string name="steam_ovensteam_one">烤蒸一体机</string>
+    <string name="steam_c906_tempsenor_error">温度传感器故障!</string>
+    <string name="steam_c906_fengji_error">风机故障!</string>
+    <string name="steam_waterpop">水箱已弹出</string>
+
+    <string name="steam_connect_setting">网络设置</string>
+    <string name="steam_workHardLoading">正在努力加载中...</string>
+    <string name="steam_minute">分钟</string>
+    <string name="steam_isMakingAnAppointment">预约中</string>
+    <string name="steam_disinfection">计时完成后消毒 </string>
+    <string name="steam_makeAnAppointment">预 约</string>
+    <string name="steam_feelSterilize">感应\n杀菌</string>
+    <string name="steam_quickSterilize">快洁</string>
+    <string name="steam_disinfect">消毒</string>
+    <string name="steam_quickClean">快洁</string>
+    <string name="steam_warmBaked">暖烘</string>
+    <string name="steam_warmDishes">暖碟</string>
+    <string name="steam_warmDishes2">暖碟中</string>
+    <string name="steam_drying">烘干</string>
+    <string name="steam_clickRightBelowButton">请点击右下方电源键</string>
+    <string name="steam_openDisinfectionCabinet">开启消毒柜</string>
+    <string name="steam_walk">逛一逛</string>
+    <string name="steam_sure">确定</string>
+    <string name="steam_know">知道了</string>
+    <string name="steam_kitchenFault">灶具内部故障，请申请售后</string>
+    <string name="steam_WarmPrompt">温馨提示：请把锅放置在灶具上；或者尝试调整锅的位置；请使用电磁灶匹配锅</string>
+    <string name="steam_PleaseOpenAppROKI">请打开APP-ROKI中的扫一扫</string>
+    <string name="steam_wifiHasNoName">WIFI名称暂无</string>
+    <string name="steam_wifiFailReason">1.您的WIFI网络是否正常\n2.您输入的WIFI密码是否正确\n3.是否在该厨电上的WIFI键长按（非烟机）</string>
+    <string name="steam_kitchenConnectSuccess">智能厨电，连接成功</string>
+    <string name="steam_openGoodFoodCooking">开启美食烹饪之旅吧 ~</string>
+    <string name="steam_exitYouCanNotControl">退出后，您连接的厨电（不含烟、灶）\n将不能控制了呢。</string>
+    <string name="steam_shutdown">关机</string>
+    <string name="steam_setting">设置</string>
+    <string name="steam_homePage">主页</string>
+    <string name="steam_exitRecipe">退出菜谱</string>
+    <string name="steam_willStartWork">即将开始工作</string>
+    <string name="steam_finishDisinfect">结束消毒</string>
+    <string name="steam_unableDisplayDisinfectionStatus">无法显示消毒状况</string>
+    <string name="steam_temperatureSensorFailure">*温度传感器出现问题</string>
+    <string name="steam_afterSales">一键售后</string>
+    <string name="steam_finishQuickClean">结束快洁</string>
+    <string name="steam_pleaseEnterVerificationCode">请输入验证码</string>
+    <string name="steam_sendVerifyCode">发送验证码</string>
+    <string name="steam_newPwd">新密码</string>
+    <string name="steam_sure2">确\t\t定</string>
+    <string name="steam_recipeName">菜谱名</string>
+    <string name="steam_step">步骤</string>
+    <string name="steam_usedTime">用时</string>
+    <string name="steam_hotRecommend">热门推荐</string>
+    <string name="steam_didFood">我做过的菜</string>
+    <string name="steam_temperatureTop">温度（上管）\n ℃</string>
+    <string name="steam_temperatureBottom">温度（下管）\n ℃</string>
+    <string name="steam_time">时间\n min</string>
+    <string name="steam_temperature">温度</string>
+    <string name="steam_temperature_unit">温度\n ℃</string>
+    <string name="steam_time2">时间</string>
+    <string name="steam_water_box">水箱</string>
+    <string name="steam_previewCookSteps">烹饪步骤预览</string>
+    <string name="steam_OnionOilAndFishFillet">葱油鱼片</string>
+    <string name="steam_hour">小时</string>
+    <string name="steam_autoReturn">秒后自动返回</string>
+    <string name="steam_deviceDisconnectPAD">设备与PAD断开连接，请检查设备</string>
+    <string name="steam_workOnWifiState">*请在WIFI状态下进行此操作</string>
+    <string name="steam_enterWifiPwd">请输入wifi密码</string>
+    <string name="steam_tellMachineWifiPwd">请告诉烟机您家的wifi密码</string>
+    <string name="steam_confirmConnection">确认连接</string>
+    <string name="steam_chickenWings">鸡翅</string>
+    <string name="steam_cake">蛋糕</string>
+    <string name="steam_bread">面包</string>
+    <string name="steam_porkBelly">五花肉</string>
+    <string name="steam_steak">牛排</string>
+    <string name="steam_pizza">披萨</string>
+    <string name="steam_seafood">海鲜</string>
+    <string name="steam_cookie">饼干</string>
+    <string name="steam_vegetable">蔬菜</string>
+    <string name="steam_ProfessionalModel">专业模式</string>
+    <string name="steam_ProfessionalModel2">专业\n模式</string>
+    <string name="steam_selfCleaning">自洁</string>
+    <string name="steam_OpenTheOven">开启电烤箱</string>
+    <string name="steam_steam">蒸</string>
+    <string name="steam_mode">模式</string>
+    <string name="steam_CleaningTheLock">清洗锁定</string>
+    <string name="steam_difficulty">难度</string>
+    <string name="steam_LemonSweetCookies">柠香曲奇</string>
+    <string name="steam_fruitVegetable">果蔬类</string>
+    <string name="steam_systemUpgrade">系统版本</string>
+    <string name="steam_adjustment">调整</string>
+    <string name="steam_delete">删 除</string>
+    <string name="steam_SmokeExhaust8230">油烟机8230</string>
+    <string name="steam_firmwareVersion9">固件版本 9</string>
+    <string name="steam_disinfectionCabinet">消毒柜智能设定</string>
+    <string name="steam_eachWeek">固定每周</string>
+    <string name="steam_OpenDisinfection">开启消毒模式。</string>
+    <string name="steam_OpenDisinfection2">在用电波谷时间段</string>
+    <string name="steam_timeValley">峰谷电时间设为  </string>
+    <string name="steam_restoreSetting">恢复消毒柜出厂设置</string>
+    <string name="steam_restorePotSetting">恢复无人锅出厂设置</string>
+    <string name="steam_lazySavePowerMode">懒人省电模式</string>
+    <string name="steam_safeAndSaveElectricity">烟机会与灶具联动，省心又省电。</string>
+    <string name="steam_smallKitchenAirGuardMode">厨房空气小卫士模式</string>
+    <string name="steam_smokeAutoOpenLookNew">烟机会适时自动开启将厨房空气焕然一新</string>
+    <string name="steam_autoOpenAir">天未开启烟机，自动开启换气。</string>
+    <string name="steam_longTimeBecomeFry">长时间变频爆炒</string>
+    <string name="steam_canChangeFrequency">可以延长变频爆炒的持续时间</string>
+    <string name="steam_frequencyTime">变频爆炒时间</string>
+    <string name="steam_sure3">确 定</string>
+    <string name="steam_enterPwdAgain">请重新输入密码</string>
+    <string name="steam_inTheDrying">烘干中</string>
+    <string name="steam_addSmartOven">添加智能烤箱</string>
+    <string name="steam_goodLife">烤出美好生活~</string>
+    <string name="steam_linkageStep">联动步骤</string>
+    <string name="steam_featureHaveThreeConsecutive">*此功能可以使您连续设定三段火力烹调程序</string>
+    <string name="steam_TipNeedInfo">小贴士：搅拌时需要均匀，需慢慢加入材料</string>
+    <string name="steam_yamFryDiced">山药炒肉丁</string>
+    <string name="steam_add5SmallSpoon">加入盐5小勺</string>
+    <string name="steam_JsonTeacher">     JSON为曲奇达人热捧的老师......原料简单快手曲奇~教你用一份原料做出双卫曲奇。</string>
+    <string name="steam_adjust">调整</string>
+    <string name="steam_wifiConnectSuccess">路由设置成功.</string>
+    <string name="steam_connectNetFail">网络配置失败</string>
+    <string name="steam_notSupportPhoneFormat">手机号码错误</string>
+    <string name="steam_pwdIsNull">未填写密码</string>
+    <string name="steam_loginSuccess">登录成功!</string>
+    <string name="steam_controlManagement">控制管理</string>
+    <string name="steam_smartSet">智能设定</string>
+    <string name="steam_afterSalesService">售后服务</string>
+    <string name="steam_kitchenElectricalInfo">厨电信息</string>
+    <string name="steam_aboutRoki">关于ROKI</string>
+    <string name="steam_cookerHood">油烟机</string>
+    <string name="steam_stove">灶具</string>
+    <string name="steam_waterpurifier">"净水机"</string>
+    <string name="steam_microwaveOven509">微波炉M509</string>
+    <string name="steam_microwaveOven526">微波炉M526</string>
+    <string name="steam_waterpurifier312">净水机J312</string>
+    <string name="steam_waterpurifier320">净水机J320</string>
+    <string name="steam_waterpurifier321">净水机J321</string>
+    <string name="steam_zhengkaoyitiji">蒸烤一体机</string>
+    <string name="steam_canNotDeleteTheCookerHood">不能删除该油烟机</string>
+    <string name="steam_failureOperation">操作失败</string>
+    <string name="steam_canNotDeleteOven">不能删除当前用户控制的烟灶</string>
+    <string name="steam_canNotDeleteDevices">不能删除自己哦</string>
+    <string name="steam_canNotLogDevices">请先登录</string>
+    <string name="steam_failedTheDeviceCode">获取设备串码失败</string>
+    <string name="steam_deviceIsNotYou">不是设备拥有者</string>
+    <string name="steam_setSuccess">设置成功</string>
+    <string name="steam_communicateDeviceAbnormal">设备通讯异常通讯超时</string>
+    <string name="steam_chooseTypePan">请选择锅的类型</string>
+    <string name="steam_thinPan">薄底不粘锅</string>
+    <string name="steam_thickPan">厚底不粘锅</string>
+    <string name="steam_ironPan">铁锅</string>
+    <string name="steam_stainlessSteelPan">不锈钢锅 </string>
+    <string name="steam_stayTunedForPan">*敬请期待适配更多的锅具</string>
+    <string name="steam_parseDataAbnormal">数据解析异常</string>
+    <string name="steam_foodMaterial">食材</string>
+    <string name="steam_seasoning">佐料</string>
+    <string name="steam_oneKeyCook">一键烹饪</string>
+    <string name="steam_recipe_detail">菜谱详情</string>
+    <string name="steam_cookingNotRepeatableToEnter">正在做菜中,不可重复进入!</string>
+    <string name="steam_waitForGetTheStove">正在获取灶具中，请稍等</string>
+    <string name="steam_phoneNumIsNull">未填写手机号码</string>
+    <string name="steam_findVerifyCode">请注意查收短信验证码</string>
+    <string name="steam_pwdLengthNotLess6">密码不得小于6位</string>
+    <string name="steam_verifyCodeNotEmpty">验证码不能为空</string>
+    <string name="steam_verifyCodeError">验证码错误</string>
+    <string name="steam_pwdNotContainNull">密码中不得有空格</string>
+    <string name="steam_invalidPhoneNum">无效的手机号</string>
+    <string name="steam_registerAccount">注 册</string>
+    <string name="steam_phoneNumCanNotNull">手机不能为空</string>
+    <string name="steam_nickNameCanNotNull">昵称不可为空</string>
+    <string name="steam_twoInputPwdIsNotSame">两次输入的密码不一致</string>
+    <string name="steam_registerSuccess">注册成功</string>
+    <string name="steam_openPowerKeyToFire">请在灶具上
+                                        按”电源键“开火</string>
+    <string name="steam_openLeftPowerKeyToFire">请在灶具上
+                                        按左边”电源键“开火</string>
+    <string name="steam_openRightPowerKeyToFire">请在灶具上
+                                        按右边”电源键“开火</string>
+    <string name="steam_afterFireOnCanTurnOff">火力开启后
+                                        才能打开计时关火</string>
+    <string name="steam_fireOnStove">请在灶具上开火</string>
+    <string name="steam_fireClosedForSafety">火力已关，为了安全，
+                    请到灶具前复位按钮</string>
+    <string name="steam_afterOpenTheBh">*开启童锁后，其他按键将被锁住，不能操作.</string>
+    <string name="steam_reallyWantToDelete">真的要删除</string>
+    <string name="steam_reallyWantToDelete2">真的要把</string>
+    <string name="steam_reallyWantToDeleteCon2">删除吗?</string>
+    <string name="steam_recoverDefaultFanSetting">确定将烟机智能设定恢复成默认设置？ </string>
+    <string name="steam_recoverDefaultSterSetting">确定将消毒柜智能设定恢复成默认设置？ </string>
+    <string name="steam_recoverDefaultPotSetting">确定将无人锅智能设定恢复成默认设置？ </string>
+    <string name="steam_second">秒</string>
+    <string name="steam_minutes">分</string>
+    <string name="steam_decoctEgg">煎蛋</string>
+    <string name="steam_fireDumplings">煎饺</string>
+    <string name="steam_decoctSteak">煎肉排</string>
+    <string name="steam_accountOrPwdError">帐号或者密码错误 </string>
+    <string name="steam_tongSuo">童锁关闭中 </string>
+    <string name="steam_openPowerKey">开启屏幕上电源键 </string>
+    <string name="steam_lockIsClosed">童锁关闭中 </string>
+    <string name="steam_pleaseOpenLock">请开锁 </string>
+    <string name="steam_willBeginToWork">即将开始工作</string>
+    <string name="steam_iamknown">知道了</string>
+    <string name="steam_stove_electrlcity_one">带ROKI的灶具通电后会自动连接</string>
+    <string name="steam_stove_electrlcity_two">和烟机匹配联网;</string>
+    <string name="steam_stove_electrlcity_three">右图中图标亮起,即联网成功。</string>
+    <string name="steam_network_error">网络出错</string>
+    <string name="steam_network_check1">1.请确认产品是否连接路由器,如未连接</string>
+    <string name="steam_network_check1_do"><u>去连接</u></string>
+    <string name="steam_network_check2">2.请检查连接到路由器的设备是否达到上限,及外网是否通畅;</string>
+    <string name="steam_kuaire_desc">快热模式适合烤蛋挞、玉米、葱油饼。</string>
+    <string name="steam_fengbeikao_desc">风焙烤模式适合烤一些成品食物，如：肉串、薯条。</string>
+    <string name="steam_beikao_desc">焙烤模式特别适合烘焙，主要烤蛋糕、饼干、奶黄包。</string>
+    <string name="steam_fengshankao_desc">风扇烤适合烤鸭，烤鸡，也适合烤牛排、猪排、五花肉、培根、翅中、\n 鸡腿。</string>
+    <string name="steam_kaoshao_desc">烤烧模式适合烤猪排、肉串、香肠、翅根。</string>
+    <string name="steam_qiangkaoshao_desc">强烤烧功能强大，适合烤：牛排、香肠、培根、鸡肉、翅中、翅根、\n 鸡腿、肉串、烤鱼。</string>
+    <string name="steam_dijiare_desc">适合加热餐点、燉干汤汁、制作果酱，也适合烘烤浅色糕点。</string>
+    <string name="steam_exp_desc">该功能可自行控制上下层加热温度，满足客户多样化烘烤及口感。</string>
+    <string name="steam_kuaisuyure_desc">适用于烘焙糕点前的预热，速度较快。</string>
+    <string name="steam_jiankao_desc">用于烹饪需要从下方大量加热的披萨或菜式，会使底部焦脆，外表松软。</string>
+    <string name="steam_baowen_desc">可防止烹饪出的菜肴或糕点冷掉，建议保温不超过一个半小时以免 \n 影响口感。</string>
+    <string name="steam_guoshuhonggan_desc">适合将切片果蔬中的水分烘干。</string>
+    <string name="steam_fajiao_desc">适用于面团的发酵。</string>
+    <string name="steam_yingyang_desc">用于对日常蔬菜、鱼类等食材进行蒸制，较好的保留营养。</string>
+    <string name="steam_qianglizheng_desc">适宜一些鲜嫩食材，比如海鲜类(虾，鱼)水蒸蛋等。</string>
+    <string name="steam_gaowenzheng_desc">尤其对蹄筋、蹄膀等较厚食物有较好的效果。</string>
+    <string name="steam_shajun_desc">针对耐高温器皿进行高温杀菌。 清洁保养请至设备上操作。</string>
+    <string name="steam_jiedong_desc">尤其适合禽类和肉类的解冻。 清洁保养请至设备上操作。</string>
+    <string name="steam_pot_bellnotice_link">智能联动:</string>
+    <string name="steam_pot_bellnotice_link_text1">当使用无人锅时候,根据无人锅的反馈，</string>
+    <string name="steam_pot_bellnotice_link_text2">系统将自动切换合适的烟机档位哦。</string>
+    <string name="steam_pot_bellnotice_dry">干烧警示:</string>
+    <string name="steam_pot_bellnotice_predry_text1">当无人锅识别到干烧时，系统将自动关闭老</string>
+    <string name="steam_pot_bellnotice_predry_text2">板智能灶，解除安全隐患。若为普通灶具，</string>
+    <string name="steam_pot_bellnotice_predry_text3">系统将无法关闭灶具，提示干烧警示。</string>
+    <string name="steam_pot_robam_pothint">只有老板智能灶才可以一键烹饪哦。</string>
+    <string name="steam_pot_robam_tempup_limit">温度高于100℃时,一键烹饪暂不可用哦。</string>
+    <string name="steam_end_work">结束工作</string>
+    <string name="steam_pot_fryover_hint">防干烧提醒!</string>
+    <string name="steam_pot_fryover_hint1">无人锅识别到干烧,已自动关闭灶具</string>
+    <string name="steam_pot_fryover_hint2">无人锅识别到干烧,请立即关闭灶具</string>
+    <string name="steam_water_unwater01">未检测到水源。</string>
+    <string name="steam_water_unwater02">请重新开启净水机的进水阀。</string>
+    <string name="steam_water_unwater03">再长按“</string>
+    <string name="steam_water_unwater04">或直接拨打一键售后。</string>
+    <string name="steam_water_unwater05">如有疑问请致电服务热线95105855</string>
+    <string name="steam_water_main01">原水水质：</string>
+    <string name="steam_water_main02">净水TDS值</string>
+    <string name="steam_water_main03">数据仅供参考</string>
+    <string name="steam_stove_mannual_connect_fail"><u>无法完成上述操作?</u></string>
+    <string name="steam_account_null">暂无用户名</string>
+    <string name="steam_phone_null">暂无手机号</string>
+    <string name="steam_scroll_notice">使用技巧:请按住小圆点并稍微下拖解锁，方可向左向右滑动</string>
+    <string name="steam_add_steam_device1">添加智能蒸汽炉</string>
+    <string name="steam_add_steam_device2">蒸出美好生活~</string>
+    <string name="steam_oilCupClean">你的油杯可能需要清洁了\n 不要忘记哦!</string>
+    <string name="steam_export_mode">专家\n模式</string>
+    <string name="steam_support_mode">辅助</string>
+    <string name="steam_professional_mode">专业模式</string>
+    <string name="steam_please_turnon">请先开启设备</string>
+    <string name="steam_exportname">专家模式</string>
+    <string name="steam_supportname">辅助模式</string>
+    <string name="steam_fermentation_desc">适用于面团的发酵。</string>
+    <string name="steam_sterilize_desc">针对耐高温器皿进行高温杀菌。</string>
+    <string name="steam_unfreeze_desc">尤其适合禽类和肉类的解冻。</string>
+    <string name="steam_keep_warm_desc">可防止烹饪出的菜肴或糕点冷掉，建议保温不超过一个半小时以免 \n 影响口感。</string>
+
+    <string name="steam_xian_nen_desc">适宜一些鲜嫩食材，比如海鲜类（虾、鱼）、水蒸蛋等。</string>
+    <string name="steam_nutrition_desc">适宜大部分食材，比如大部分肉类、鱼类、鸡肉、胡萝卜、土豆等。</string>
+    <string name="steam_strong_power_desc">适宜一些较厚、难以成熟的食材，比如蹄髈、腊肉、排骨、鸭肉等。</string>
+    <string name="steam_fast_and_slowly_desc">适宜快速蒸制或者慢速炖煮汤类食物，隔气蒸炖美味鲜。请使用标\n配的陶瓷器皿，放置于蒸发皿正上方。</string>
+    <string name="steam_sterilize_desc2">针对器皿如奶瓶，杀菌模式，请保持水箱水量足够。</string>
+    <string name="steam_kao">烤</string>
+    <string name="steam_order_start_time">预约开始时间</string>
+    <string name="steam_fast_preheat">快速预热</string>
+    <string name="steam_preheat">快热</string>
+    <string name="steam_oventoast">焙烤</string>
+    <string name="steam_bottomheat">底加热</string>
+    <string name="steam_unfreeze">解冻</string>
+    <string name="steam_strongbarbecue">强烤烧</string>
+    <string name="steam_sterilize">杀菌</string>
+    <string name="steam_fastPreheatAndKeepWarm">"快速预热\n保温中"</string>
+    <string name="steam_overOvenWork">"结束工作"</string>
+    <string name="steam_ovenWorking">"工作中"</string>
+    <string name="steam_ovenExpWorking">EXP模式</string>
+    <string name="steam_ovenR028">ovenR028</string>
+    <string name="steam_ovenRunMode">ovenRunMode</string>
+    <string name="steam_KUAI_RE">"快热"</string>
+    <string name="steam_FENG_BEI_KAO">"风焙烤"</string>
+    <string name="steam_BEI_KAO">"焙烤"</string>
+    <string name="steam_FENG_SHAN_KAO">"风扇烤"</string>
+    <string name="steam_KAO_SHAO">"烤烧"</string>
+    <string name="steam_QIANG_KAO_SHAO">"强烤烧"</string>
+    <string name="steam_KUAI_SU_YU_RE">"快速预热"</string>
+    <string name="steam_JIAN_KAO">"煎烤"</string>
+    <string name="steam_GUO_SHU_HONG_GAN">"果蔬烘干"</string>
+    <string name="steam_DI_JIA_RE">"底加热"</string>
+    <string name="steam_dijiare">底加热</string>
+    <string name="steam_FA_JIAO">发酵</string>
+    <string name="steam_FA_JIAO_HINT">发酵提示</string>
+    <string name="steam_FA_JIAO_MIDDLE_CONTENT">盛面团的容器盖上保鲜膜放入烤盘,\n
+                                        盘底放200ml清水或热水。</string>
+    <string name="steam_JIE_DONG">解冻</string>
+    <string name="steam_SHA_JUN">杀菌</string>
+    <string name="steam_SHA_JUN_HINT">杀菌提示</string>
+    <string name="steam_SHA_JUN_MIDDLE_CONTENT">请勿放入非耐高温器皿、\n
+                                         比如塑料、橡胶等。</string>
+    <string name="steam_KEEP_WARM">保温</string>
+    <string name="steam_long_press_stove">长按灶具上的\"</string>
+    <string name="steam_long_press_stove_behind">\"至闪烁，</string>
+    <string name="steam_long_press_stove3">2秒至闪烁，等待3秒,数码管显示\"</string>
+    <string name="steam_long_press_stove_behind3">\"常亮，</string>
+    <string name="steam_long_press_stove4">等待3秒，灶具\"</string>
+    <string name="steam_long_press_stove5">等待3秒左右，灶具的\"</string>
+    <string name="steam_long_press_stove_behind4">\"常亮，</string>
+    <string name="steam_long_press_stove_9b39">长按灶具上的 \"</string>
+    <string name="steam_long_press_stove_behind_9b39">\" ,至 \"</string>
+    <string name="steam_long_press_stove_behind_9b39_t">\" 闪烁</string>
+    <string name="steam_long_press_stove3_9b39">等待3秒左右,灶具的\"</string>
+    <string name="steam_long_press_stove3_9b39_t">\"</string>
+    <string name="steam_long_press_stove3_9b39_t1">\"常亮,</string>
+    <string name="steam_long_press_stove_9b37">同时长按灶具上的 \"</string>
+    <string name="steam_and_9b37">\" 和 \"</string>
+    <string name="steam_and_9b37_t">\"</string>
+    <string name="steam_long_press_pot">长按无人锅上的 \"</string>
+    <string name="steam_wait_after_press_pot">等待3秒，无人锅\"</string>
+    <string name="steam_long_press_device">开机点亮屏幕,长按屏幕上的\"</string>
+    <string name="steam_two_seconds">\" 2秒</string>
+    <string name="steam_two_seconds2">\" 或 \"</string>
+    <string name="steam_input_wifi_pwd">输入 \"</string>
+    <string name="steam_input_wifi_pwd_behind"> \"的密码</string>
+    <string name="steam_input_wifi_pwd_connected">输入密码</string>
+    <string name="steam_device_9w70">9w70</string>
+    <string name="steam_device_9b39">9b39</string>
+    <string name="steam_device_9b37">9b37</string>
+    <string name="steam_device_long_press">长按产品上的\" </string>
+    <string name="steam_please_login_first">请先登录</string>
+    <string name="steam_device_deleting">设备正在删除中请稍候...</string>
+    <string name="steam_temperature_sensor_error">无法正常工作,温度传感器故障!\n 售后服务:95105855</string>
+    <string name="steam_conmunication_error">无法正常工作,通讯故障!\n 售后服务:95105855</string>
+    <string name="steam_conmunication_error2">通讯故障,请关闭蒸汽炉\n 并申请售后服务。\n 售后服务:95105855</string>
+    <string name="steam_fengji_error">风机故障,请关闭蒸汽炉\n 并申请售后服务。\n 售后服务:95105855</string>
+    <string name="steam_door_not_close">门未关好，无法开启工作</string>
+    <string name="steam_door_not_close2">门未关好,请检查并确认关好门</string>
+    <string name="steam_temperature_error">识别到温度异常,已启动温度保护,\n请尝试先关机再开机.</string>
+    <string name="steam_feng_ji_error">无法正常工作,风机故障!\n 售后服务:95105855</string>
+    <string name="steam_araming">设备处于报警中,无法工作</string>
+    <string name="steam_popWaterTank">水箱已弹出</string>
+    <string name="steam_popWaterTank2">水箱已弹出,无法开始工作</string>
+    <string name="steam_popFWaterTank2">废水箱已弹出,无法开始工作</string>
+    <string name="steam_leakWaterAlarm">水箱缺水,请加水.</string>
+    <string name="steam_notChange">不允许调整</string>
+
+    <string name="steam_s228JieDong">解冻</string>
+    <string name="steam_s228FaJiao">发酵</string>
+    <string name="steam_s228XiaoDu">杀菌</string>
+    <string name="steam_s228KeepWarm">保温</string>
+    <string name="steam_s228XianLengZheng">鲜嫩蒸</string>
+    <string name="steam_s228YinYangZheng">营养蒸</string>
+    <string name="steam_s228QiangLiZheng">强力蒸</string>
+    <string name="steam_s228KuaiZhenManDun">快蒸慢炖</string>
+    <string name="steam_descaling">除垢</string>
+    <string name="steam_dryText">干燥</string>
+    <string name="steam_s228OffLine">蒸箱已离线</string>
+    <string name="steam_afterStopCanOperate">暂停后方可操作</string>
+    <string name="steam_waterTankHadPop">水箱已弹出</string>
+    <string name="steam_temp_unit">℃</string>
+    <string name="steam_time_unit_minu">%smin</string>
+    <string name="steam_time_unit_minu_html"><p><font size="53">%s</font><font size="20">min</font></p></string>
+    <string name="steam_up_temp">上温度</string>
+    <string name="steam_dn_temp">下温度</string>
+    <string name="steam_oven_model">烤模式</string>
+    <string name="steam_steam_mode">蒸模式</string>
+    <string name="steam_steam_model">蒸模式</string>
+    <string name="steam_fuzhu_model">辅助模式</string>
+    <string name="steam_stove_9w70">9w70</string>
+    <string name="steam_stove_9b39">stove_9b39</string>
+    <string name="steam_stove_9b37">stove_9b37</string>
+    <string name="steam_sterilizing">消毒中</string>
+    <string name="steam_fast_cleaning">快洁中</string>
+    <string name="steam_fast_sterilize">快洁</string>
+    <string name="steam_warmDish">*为保证暖碟效果,请将需要暖碟的餐具放在上层.</string>
+    <string name="steam_intelligentDetection">已开启\n 智能监测...</string>
+    <string name="steam_intelligentDetection2">已开启智能监测...</string>
+    <string name="steam_ganYinShaJun">感应杀菌</string>
+    <string name="steam_ganYinShaJuning">感应杀菌中</string>
+    <string name="steam_xiaoDu">消毒中</string>
+    <string name="steam_fastShaJun">快洁中</string>
+    <string name="steam_pleaseOpenPower">请点击电源开机</string>
+    <string name="steam_pleaseCloseDoor">门未关,请关好机门</string>
+    <string name="steam_e5">传感器故障,请关闭消毒柜 \n 并且请售后服务。\n售后服务:95105855</string>
+    <string name="steam_e6">通讯故障,请关闭消毒柜 \n 并且请售后服务。\n售后服务:95105855</string>
+
+    <string name="steam_recipe_device_no_connect">离线，连接后才可自动烹饪</string>
+    <string name="steam_recipe_device_occupy">被占用，停止后才可自动烹饪</string>
+    <string name="steam_mainmaterial">mianmaterial</string>
+    <string name="steam_stopOnStart">1.重新插拔电试一下.2多次尝试有问题请联系售后</string>
+    <string name="steam_pleaseConnectNet">请连接网络</string>
+    <string name="steam_autoCook">自动烹饪</string>
+    <string name="steam_notSupportAutoCook">9B37不支持自动烹饪</string>
+    <string name="steam_canNotAutoCook">缺少智能设备，无法开始自动烹饪</string>
+    <string name="steam_guidIsNull">设备guid为空</string>
+    <string name="steam_openClock">请开锁</string>
+    <string name="steam_sendErrorOfStove">下发失败，请尝试手动重新下发</string>
+    <string name="steam_doorNotClose">门未关，请关好门在继续当前步骤</string>
+    <string name="steam_networkIsWell">网络较差，请重新尝试</string>
+    <string name="steam_comeOnByClick">点击继续</string>
+    <string name="steam_preheatComplete">预热完成，放入食材后继续</string>
+    <string name="steam_waiting">等待中</string>
+    <string name="steam_HE906">HE906</string>
+    <string name="steam_current_tempute">当前温度</string>
+    <string name="steam_downloaded">&#160;%s %%</string>
+
+    //新增
+    <string name="steam_stove_close">已关闭</string>
+    <string name="steam_stove_head_left">左炉头</string>
+    <string name="steam_stove_head_right">右炉头</string>
+    <string name="steam_stove_power_on">已开启</string>
+    <string name="steam_stove_lock">童锁</string>
+    <string name="steam_dialog_stove_big_level">已是最大档位</string>
+    <string name="steam_dialog_stove_small_level">已是最小档位</string>
+    <string name="steam_dialog_not_level">档位未开启不可下发定时</string>
+    <string name="steam_dialog_ple_on_stove">请先开启灶具</string>
+    <string name="steam_dialog_ple_on_stove_level">请先开启档位</string>
+    <string name="steam_dialog_small_level_text">切换到弱档风量</string>
+    <string name="steam_dialog_close_level_text">关闭</string>
+    <string name="steam_dialog_middle_level_text">切换至强档风量</string>
+    <string name="steam_dialog_big_level_text">切换至爆炒风量</string>
+    <string name="steam_setting_clean_lock_not_in_text">请先解除清洗锁定</string>
+    <string name="steam_setting_new_version">已是最新版本</string>
+    <string name="steam_setting_updata_text">升级</string>
+    <string name="steam_setting_exit_min_model"><u>退出极简模式</u></string>
+    <string name="steam_device_not_text">程序员正在努力开发中\n敬请期待...</string>
+    <string name="steam_device_select_dt">选择型号</string>
+    <string name="steam_device_stove_not_add_text">添加智能灶具</string>
+    <string name="steam_setting_model_device_delayed_stove_text">烟机延迟</string>
+    <string name="steam_pot_link_ok">已连接</string>
+    <string name="steam_pot_link_not">未连接</string>
+    <string name="steam_stove_select_head">请选择你将要使用的炉头</string>
+    <string name="steam_stove_healthy_hot_oil_desc">智能识别油温，您的\n炒炸小助手</string>
+    <string name="steam_stove_link_text">烟灶联动</string>
+    <string name="steam_stove_link_desc_text">当灶具点火时，油烟机风量自动开启；\n当灶具关火时，油烟机自动进入1分钟\n延时关机</string>
+    <string name="steam_device_fan_clean_lock_content_8236s">挡风板，屏幕，按键均已处于锁定状态\n可以放心清洗。</string>
+    <string name="steam_left_stovehead">左炉头</string>
+    <string name="steam_right_stovehead">右炉头</string>
+    <string name="steam_children_lock_close">关</string>
+    <string name="steam_power_open">开</string>
+    <string name="steam_power_close">关</string>
+    <string name="steam_head_open">已开启:  </string>
+    <string name="steam_head_closed">未开启</string>
+    <string name="steam_stove_head_level">档</string>
+    <string name="steam_frided_egg_cook">冷锅加入适量油 , 加热\n20s后打入鸡蛋，煎至\n两面金黄即可。</string>
+    <string name="steam_hot_milk_cook">将带包装的牛奶放入锅\n中，加入适量清水后，\n点击开始烹饪。</string>
+    <string name="steam_long_click_min_level">长按1s至1档</string>
+    <string name="steam_long_click_max_level">长按1s至10档</string>
+    <string name="steam_dialog_exit">退出</string>
+    <string name="steam_dialog_sure">不退出</string>
+    <string name="steam_continue_time">继续</string>
+    <string name="steam_stove_alarm">灶具报警</string>
+    <string name="steam_no_adapter_device_notic">该设备未适配，请选择其他设备</string>
+    <string name="steam_unit_temp">℃</string>
+    <string name="steam_unit_minu">min</string>
+    <string name="steam_net_work">网络</string>
+    <string name="steam_net_work_join">加入</string>
+    <string name="steam_start_cooking">开始烹饪</string>
+    <string name="steam_start_working">开始工作</string>
+    <string name="steam_cancel_oreder">取消预约</string>
+    <string name="steam_work_order_message">预约中 %s启动工作</string>
+    <string name="steam_work_order_message2">明天%s分开始烹饪</string>
+    <string name="steam_work_order_message3">今天%s分开始烹饪</string>
+    <string name="steam_work_order_message4">后启动工作</string>
+    <string name="steam_work_order_countdown">%s:%s</string>
+    <string name="steam_total_duration">总时长</string>
+    <string name="steam_multi_confirm">确认</string>
+    <string name="steam_title_delete">删除</string>
+    <string name="steam_title_take">拍摄</string>
+    <string name="steam_login_86"> +86  </string>
+    <string name="steam_setting_date_auto">自动设置</string>
+    <string name="steam_about_product">产品型号</string>
+    <string name="steam_about_version">固件版本号</string>
+    <string name="steam_about_foresale_phone">售后热线: 95105855</string>
+    <string name="steam_about_foresale_scan">官方售后微信，扫一扫查看常见问题解决方案</string>
+    <string name="steam_setting_renew_message">恢复出厂设置后，设备将删除您的个人设置与收藏信息</string>
+    <string name="steam_setting_renew_check">确认恢复出厂设置</string>
+    <string name="steam_work_mode">%s  %s℃</string>
+    <string name="steam_work_temp">%s℃</string>
+    <string name="steam_work_complete">烹饪结束，快来享受美食吧！</string>
+    <string name="steam_work_complete_add_time">加时</string>
+    <string name="steam_work_complete_complete">完成</string>
+    <string name="steam_carve_saving">保存曲线</string>
+    <string name="steam_up_load_video">上传视频至ROKI</string>
+    <string name="steam_create_message">正在生成视频中</string>
+    <string name="steam_recom_site">推荐层数：%s</string>
+    <string name="steam_recipe_cook_time">时间  %smin</string>
+    <string name="steam_recipe_material_num">%s%s</string>
+    <string name="steam_recipe_tool">请将%s放入腔体：%s</string>
+    <string name="steam_recipe_step_des">%s.%s</string>
+    <string name="steam_discen">识别</string>
+    <string name="steam_discen_again">重新识别</string>
+    <string name="steam_device_info">蒸烤炸一体机\nCQ926L60</string>
+    <string name="steam_step_1">1</string>
+    <string name="steam_step1_hint">请将除垢剂放入水箱，加满温水稀释</string>
+    <string name="steam_step_2">2</string>
+    <string name="steam_step2_hint">拿出水箱倒掉余水，加满水</string>
+    <string name="steam_step_3">3</string>
+    <string name="steam_second_step">第二阶段</string>
+    <string name="steam_descaling_complete">除垢已完成</string>
+    <string name="steam_back_home">返回主页</string>
+    <string name="steam_save">保存</string>
+    <string name="steam_save_upload">点击保存上传至Roki相册中</string>
+    <string name="steam_login_roki">登陆Roki体验更多功能</string>
+    <string name="steam_smart_hint">智能提醒</string>
+    <string name="steam_cook_complete">烹饪结束</string>
+    <string name="steam_ignore">忽略</string>
+    <string name="steam_finish_now">立即结束</string>
+    <string name="steam_cook_burnt">菜品快糊啦，请尽快结束烹饪。</string>
+    <string name="steam_temp_message">%s模式不需要调节温度参数</string>
+    <string name="steam_time_message">%s模式不需要调节时间参数</string>
+    <string name="steam_multi_message">请设置两段或者两段以上段数</string>
+    <string name="steam_open_wifi">开启网络</string>
+    <string name="steam_remind">智能提醒：</string>
+    <string name="steam_work_back_message">是否结束当前菜谱烹饪工作？</string>
+    <string name="steam_work_end">结束烹饪</string>
+    <string name="steam_work_continue">继续烹饪</string>
+
+    <!--   功能   -->
+    <string name="steam_main_funtion">[{
+		"backgroundImg": "ic_bg_steam",
+		"funtionCode": 0,
+		"funtionName": "识别"
+	}, {
+		"backgroundImg": "ic_bg_steam",
+		"funtionCode": 3,
+		"funtionName": "蒸",
+        "mode": [1,2,3,4,5]
+	}, {
+		"backgroundImg": "ic_bg_oven",
+		"funtionCode": 4,
+		"funtionName": "烤",
+		"mode": [6,7,8,9,10 ,11,12,13,14,15]
+	}, {
+		"backgroundImg": "ic_bg_oven",
+		"funtionCode": 3,
+		"funtionName": "炸"
+	}, {
+		"backgroundImg": "ic_bg_oven",
+		"funtionCode": 1,
+		"funtionName": "多段"
+	},
+	{
+		"backgroundImg": "ic_bg_oven",
+		"funtionCode": 2,
+		"funtionName": "菜谱"
+	},
+	{
+		"backgroundImg": "ic_bg_oven",
+		"funtionCode": 6,
+		"funtionName": "烹饪曲线"
+	},
+	{
+		"backgroundImg": "ic_bg_oven",
+		"funtionCode": 7,
+		"funtionName": "辅助",
+        "mode": [16,17,18,19,20 ,21,22]
+	}
+]</string>
 </resources>

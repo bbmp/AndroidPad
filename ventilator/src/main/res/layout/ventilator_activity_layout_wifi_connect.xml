@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.activity.WifiConnectActivity">
+
+    <include
+        android:id="@+id/ll_title"
+        layout="@layout/ventilator_view_layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_network"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:text="@string/ventilator_net"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:textSize="@dimen/sp_32"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tv_password"
+        app:layout_constraintLeft_toRightOf="@id/guideline4"
+        app:layout_constraintVertical_chainStyle="packed"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_wifi_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_60"
+        android:gravity="center_vertical"
+        android:layout_marginRight="@dimen/dp_10"
+        android:text="test"
+        android:textSize="@dimen/sp_32"
+        android:textColor="@color/ventilator_white"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_network"
+        app:layout_constraintLeft_toRightOf="@id/tv_network"
+        app:layout_constraintRight_toRightOf="@id/guideline5"/>
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_54"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:text="@string/ventilator_password"
+        android:textSize="@dimen/sp_32"
+        app:layout_constraintLeft_toRightOf="@id/guideline4"
+        app:layout_constraintTop_toBottomOf="@id/tv_network"
+        app:layout_constraintBottom_toTopOf="@id/btn_join"/>
+
+
+    <com.robam.common.ui.view.PasswordEditText
+        android:id="@+id/et_password"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_60"
+        android:layout_marginTop="@dimen/dp_25"
+        android:maxLength="20"
+        android:singleLine="true"
+        android:text="78797078"
+        android:textColor="@color/ventilator_white"
+        android:layout_marginRight="@dimen/dp_10"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_password"
+        app:layout_constraintLeft_toRightOf="@id/tv_password"
+        app:layout_constraintRight_toRightOf="@id/guideline5"/>
+
+
+    <Button
+        android:id="@+id/btn_join"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_56"
+        android:layout_marginTop="@dimen/dp_58"
+        android:text="@string/ventilator_join"
+        android:textSize="@dimen/sp_30"
+        android:textColor="@color/ventilator_white"
+        android:background="@drawable/ventilator_shape_button_ok_bg"
+        app:layout_constraintLeft_toLeftOf="@id/guideline4"
+        app:layout_constraintRight_toRightOf="@id/guideline5"
+        app:layout_constraintTop_toBottomOf="@id/tv_password"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.3" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.7" />
+</androidx.constraintlayout.widget.ConstraintLayout>
