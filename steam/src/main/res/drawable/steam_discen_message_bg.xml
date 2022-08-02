@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?><!-- 默认按钮样式 -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 禁用状态 -->
+    <item android:state_enabled="false">
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/steam_button_circle_size" />
+            <solid android:color="#44FFFFFF" />
+        </shape>
+    </item>
+
+    <!-- 按压状态 -->
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/steam_button_circle_size" />
+            <stroke android:width="0.5px" android:color="@color/steam_common_text_color" />
+            <gradient android:endColor="#44FFFFFF" android:startColor="@color/steam_common_select_button_cancel1" />
+        </shape>
+    </item>
+
+    <!-- 焦点状态 -->
+    <item android:state_focused="true">
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/steam_button_circle_size" />
+            <stroke android:width="0.5px" android:color="@color/steam_common_text_color" />
+            <gradient android:endColor="#44FFFFFF" android:startColor="@color/steam_common_select_button_cancel1" />
+        </shape>
+    </item>
+
+    <!-- 默认状态 -->
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/steam_button_circle_size" />
+            <stroke android:width="0.5px" android:color="@color/steam_common_text_color" />
+            <gradient android:endColor="#44FFFFFF" android:startColor="@color/steam_common_select_button_cancel2" />
+        </shape>
+    </item>
+
+</selector>

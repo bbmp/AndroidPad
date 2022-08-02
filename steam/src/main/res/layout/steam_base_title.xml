@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="horizontal">
     <LinearLayout
         android:layout_width="0dp"
@@ -14,7 +14,6 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:gravity="center"
-        android:paddingEnd="20dp"
         android:layout_height="match_parent">
         <ImageView
             android:layout_width="@dimen/dp_22"
@@ -24,7 +23,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/steam_homePage"/>
+            android:text="@string/steam_homePage"
+            android:textSize="@dimen/sp_16"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/ll_title_item3"
@@ -44,7 +44,6 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:gravity="center"
-        android:paddingLeft="20dp"
         android:layout_height="match_parent">
         <ImageView
             android:layout_width="@dimen/dp_22"
@@ -54,7 +53,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/steam_light"/>
+            android:text="@string/steam_light"
+            android:textSize="@dimen/sp_16"/>
 
     </LinearLayout>
     <LinearLayout
@@ -75,7 +75,8 @@
             android:id="@+id/tv_title_item5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/steam_makeAnAppointment">
+            android:text="@string/steam_makeAnAppointment"
+            android:textSize="@dimen/sp_16">
 
         </TextView>
     </LinearLayout>

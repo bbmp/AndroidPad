@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.robam.steam.ui.pages.HomePage"
+        android:name="com.robam.steamoven.ui.pages.HomePage"
         android:label="@string/steam_app_name"
         tools:layout="@layout/steam_page_layout_home">
         <action
@@ -18,7 +18,7 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_takephoto"
-        android:name="com.robam.steam.ui.pages.TakePhotoFragment"
+        android:name="com.robam.steamoven.ui.pages.TakePhotoFragment"
         android:label="@string/steam_app_name"
         tools:layout="@layout/steam_page_layout_take_photo">
 
@@ -26,7 +26,7 @@
     <fragment
 
         android:id="@+id/fullscreenFragment"
-        android:name="com.robam.steam.ui.pages.FullScreenFragment"
+        android:name="com.robam.steamoven.ui.pages.FullScreenFragment"
         android:label="@string/steam_app_name"
         tools:layout="@layout/steam_page_layout_full_screen">
 

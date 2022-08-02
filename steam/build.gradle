@@ -48,6 +48,6 @@ dependencies {
     // 标题栏框架：https://github.com/getActivity/TitleBar
     implementation 'com.github.getActivity:TitleBar:9.2'
     //数据库：litepal
-    implementation 'org.litepal.guolindev:core:3.2.3'
+    api 'org.litepal.guolindev:core:3.2.3'
     api "com.github.CymChad:BaseRecyclerViewAdapterHelper:$versions.BaseRecyclerViewAdapterHelper"
 }

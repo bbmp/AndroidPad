@@ -24,6 +24,7 @@ versions.swiperefreshlayout = "1.1.0"
 versions.banner = "2.2.2"
 versions.glide = "4.11.0"
 versions.leakcanary = "2.7"
+versions.litepal = "3.2.3"
 
 
 ext.versions = versions

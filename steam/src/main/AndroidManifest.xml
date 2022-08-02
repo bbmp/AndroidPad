@@ -1,16 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.robam.steam">
+    package="com.robam.steamoven">
 
     <application>
         <activity
-            android:name="com.robam.steam.ui.activity.BleActivity"
+            android:name="com.robam.steamoven.ui.activity.BleActivity"
             android:exported="false" />
         <activity
-            android:name="com.robam.steam.ui.activity.MainActivity"
+            android:name="com.robam.steamoven.ui.activity.MainActivity"
             android:exported="false"
             android:screenOrientation="landscape"/>
+        <!-- 模式选择 -->
+        <activity
+            android:name="com.robam.steamoven.ui.activity.ModeSelectActivity"
+            android:launchMode="singleTop"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="steamoven.modeselect" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

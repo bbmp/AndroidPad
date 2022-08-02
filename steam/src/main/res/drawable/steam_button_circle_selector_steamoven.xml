@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 默认按钮样式 -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 禁用状态 -->
+    <item android:state_enabled="false">
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/steam_button_circle_size" />
+            <solid android:color="@color/steam_common_button_disable_color" />
+        </shape>
+    </item>
+
+    <!-- 按压状态 -->
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/steam_button_circle_size" />
+            <gradient
+                android:startColor="#AA78B3FF"
+                android:endColor="#AA6D7BFF"
+                />
+        </shape>
+    </item>
+
+    <!-- 焦点状态 -->
+    <item android:state_focused="true">
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/steam_button_circle_size" />
+            <gradient
+                android:startColor="#AA78B3FF"
+                android:endColor="#AA6D7BFF"
+                />
+        </shape>
+    </item>
+
+    <!-- 默认状态 -->
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/steam_button_circle_size" />
+            <gradient
+                android:startColor="#FF78B3FF"
+                android:endColor="#FF6D7BFF"
+              />
+        </shape>
+    </item>
+
+</selector>

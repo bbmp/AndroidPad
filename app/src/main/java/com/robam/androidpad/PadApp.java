@@ -11,11 +11,15 @@ import com.robam.ventilator.AppVentilator;
 
 import com.robam.roki.AppRoki;
 
+import org.litepal.LitePal;
+
 public class PadApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
         CrashHandler.register(this);
+        //LitePal注册 数据库
+        LitePal.initialize(this);
 //        AppRoki.init(this);
         AppVentilator.init(this);
     }

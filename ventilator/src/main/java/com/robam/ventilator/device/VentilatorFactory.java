@@ -5,7 +5,7 @@ import android.content.Context;
 import com.robam.common.device.IPlat;
 import com.robam.common.device.TbangPlat;
 import com.robam.common.mqtt.IProtocol;
-import com.robam.steam.protocol.mqtt.MqttSteamOven;
+import com.robam.steamoven.protocol.mqtt.MqttSteamOven;
 
 public class VentilatorFactory {
     public final static String TUOBANG = "tuobang" ;

@@ -12,11 +12,9 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.robam.common.ui.HeadPage;
 import com.robam.common.ui.helper.CenterSnapHelper;
 import com.robam.common.ui.helper.ScaleLayoutManager;
-import com.robam.common.ui.helper.ViewPagerLayoutManager;
-import com.robam.steam.ui.activity.MainActivity;
+import com.robam.steamoven.ui.activity.MainActivity;
 import com.robam.ventilator.R;
 import com.robam.ventilator.bean.VenFun;
-import com.robam.ventilator.ui.activity.AboutActivity;
 import com.robam.ventilator.ui.adapter.RvFunctionAdapter;
 
 import java.util.ArrayList;

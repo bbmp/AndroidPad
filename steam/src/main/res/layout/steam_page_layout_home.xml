@@ -8,7 +8,8 @@
     <ImageView
         android:id="@+id/iv_bg"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:scaleType="fitXY">
 
     </ImageView>
 
@@ -19,20 +20,17 @@
         android:orientation="vertical">
 
 
-        <com.hjq.bar.TitleBar
+
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:leftIcon="@null">
+            android:gravity="center"
+            android:layout_marginTop="@dimen/dp_25"
+            android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <include layout="@layout/steam_base_title" />
-            </LinearLayout>
-        </com.hjq.bar.TitleBar>
+            <include layout="@layout/steam_base_title" />
+        </LinearLayout>
 
         <RelativeLayout
 

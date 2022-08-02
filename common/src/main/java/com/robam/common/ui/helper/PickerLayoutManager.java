@@ -1,6 +1,7 @@
 package com.robam.common.ui.helper;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -10,7 +11,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class PickerLayoutManager extends LinearLayoutManager {
+/**
+ *    author : 钉某人
+ *    github : https://github.com/DingMouRen/LayoutManagerGroup
+ *    time   : 2019/09/11
+ *    desc   : 选择器布局管理器
+ */
+public final class PickerLayoutManager extends LinearLayoutManager {
+
     private final LinearSnapHelper mLinearSnapHelper;
     private final int mOrientation;
     private final int mMaxItem;
@@ -20,6 +28,8 @@ public class PickerLayoutManager extends LinearLayoutManager {
     private RecyclerView mRecyclerView;
     @Nullable
     private OnPickerListener mListener;
+    @Nullable
+    private OnSlideListener mSlideListener;
 
     private PickerLayoutManager(Context context, int orientation, boolean reverseLayout, int maxItem, float scale, boolean alpha) {
         super(context, orientation, reverseLayout);
@@ -37,6 +47,8 @@ public class PickerLayoutManager extends LinearLayoutManager {
         // 设置子控件的边界可以超过父布局的范围
         mRecyclerView.setClipToPadding(false);
         // 添加 LinearSnapHelper
+        // 需要移除snapHelper 不然无法重复添加
+        mRecyclerView.setOnFlingListener(null);
         mLinearSnapHelper.attachToRecyclerView(mRecyclerView);
     }
 
@@ -68,12 +80,12 @@ public class PickerLayoutManager extends LinearLayoutManager {
             if (mOrientation == HORIZONTAL) {
                 int measuredWidth = itemView.getMeasuredWidth();
                 int paddingHorizontal = (mMaxItem - 1) / 2 * measuredWidth;
-                mRecyclerView.setPadding(paddingHorizontal,0, paddingHorizontal,0);
+                mRecyclerView.setPadding(paddingHorizontal, 0, paddingHorizontal, 0);
                 width = measuredWidth * mMaxItem;
             } else if (mOrientation == VERTICAL) {
                 int measuredHeight = itemView.getMeasuredHeight();
                 int paddingVertical = (mMaxItem - 1) / 2 * measuredHeight;
-                mRecyclerView.setPadding(0, paddingVertical,0, paddingVertical);
+                mRecyclerView.setPadding(0, paddingVertical, 0, paddingVertical);
                 height = measuredHeight * mMaxItem;
             }
         }
@@ -84,6 +96,7 @@ public class PickerLayoutManager extends LinearLayoutManager {
     public void onScrollStateChanged(int state) {
         super.onScrollStateChanged(state);
         // 当 RecyclerView 停止滚动时
+        Log.i("PickerLayoutManager", "----state------" + state);
         if (state != RecyclerView.SCROLL_STATE_IDLE) {
             return;
         }
@@ -93,13 +106,13 @@ public class PickerLayoutManager extends LinearLayoutManager {
         mListener.onPicked(mRecyclerView, getPickedPosition());
     }
 
+
     @Override
     public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
         super.onLayoutChildren(recycler, state);
         if (getItemCount() < 0 || state.isPreLayout()) {
             return;
         }
-
         if (mOrientation == HORIZONTAL) {
             scaleHorizontalChildView();
         } else if (mOrientation == VERTICAL) {
@@ -110,6 +123,10 @@ public class PickerLayoutManager extends LinearLayoutManager {
     @Override
     public int scrollHorizontallyBy(int dx, RecyclerView.Recycler recycler, RecyclerView.State state) {
         scaleHorizontalChildView();
+        if (mSlideListener != null) {
+            //滚动中
+            mSlideListener.onSlid(mRecyclerView, getPickedPosition());
+        }
         return super.scrollHorizontallyBy(dx, recycler, state);
     }
 
@@ -125,7 +142,7 @@ public class PickerLayoutManager extends LinearLayoutManager {
     private void scaleHorizontalChildView() {
         float mid = getWidth() / 2.0f;
         for (int i = 0; i < getChildCount(); i++) {
-            View childView =  getChildAt(i);
+            View childView = getChildAt(i);
             if (childView == null) {
                 continue;
             }
@@ -145,12 +162,12 @@ public class PickerLayoutManager extends LinearLayoutManager {
     private void scaleVerticalChildView() {
         float mid = getHeight() / 2.0f;
         for (int i = 0; i < getChildCount(); i++) {
-            View childView =  getChildAt(i);
+            View childView = getChildAt(i);
             if (childView == null) {
                 continue;
             }
             float childMid = (getDecoratedTop(childView) + getDecoratedBottom(childView)) / 2.0f;
-            float scale = 1.0f + (-1 *  (1 - mScale)) * (Math.min(mid, Math.abs(mid - childMid))) / mid;
+            float scale = 1.0f + (-1 * (1 - mScale)) * (Math.min(mid, Math.abs(mid - childMid))) / mid;
             childView.setScaleX(scale);
             childView.setScaleY(scale);
             if (mAlpha) {
@@ -164,7 +181,7 @@ public class PickerLayoutManager extends LinearLayoutManager {
      */
     public int getPickedPosition() {
         View itemView = mLinearSnapHelper.findSnapView(this);
-        if(itemView == null) {
+        if (itemView == null) {
             return 0;
         }
         return getPosition(itemView);
@@ -177,15 +194,33 @@ public class PickerLayoutManager extends LinearLayoutManager {
         mListener = listener;
     }
 
+    /**
+     * 设置滚动监听器
+     */
+    public void setOnSlideListener(@Nullable OnSlideListener listener) {
+        mSlideListener = listener;
+    }
+
     public interface OnPickerListener {
 
         /**
          * 滚动停止时触发的监听
          *
-         * @param recyclerView              RecyclerView 对象
-         * @param position                  当前滚动的位置
+         * @param recyclerView RecyclerView 对象
+         * @param position     当前滚动的位置
          */
         void onPicked(RecyclerView recyclerView, int position);
+    }
+
+    public interface OnSlideListener {
+
+        /**
+         * 滚动时触发的监听
+         *
+         * @param recyclerView RecyclerView 对象
+         * @param position     当前滚动的位置
+         */
+        void onSlid(RecyclerView recyclerView, int position);
     }
 
     public static final class Builder {
@@ -194,6 +229,7 @@ public class PickerLayoutManager extends LinearLayoutManager {
         private int mOrientation = VERTICAL;
         private boolean mReverseLayout;
         private OnPickerListener mListener;
+        private OnSlideListener onSlideListener;
 
         private int mMaxItem = 3;
         private float mScale = 0.6f;
@@ -248,12 +284,18 @@ public class PickerLayoutManager extends LinearLayoutManager {
             return this;
         }
 
+        public Builder setOnSlideListener(OnSlideListener listener) {
+            onSlideListener = listener;
+            return this;
+        }
+
         /**
          * 构建布局管理器
          */
         public PickerLayoutManager build() {
             PickerLayoutManager layoutManager = new PickerLayoutManager(mContext, mOrientation, mReverseLayout, mMaxItem, mScale, mAlpha);
             layoutManager.setOnPickerListener(mListener);
+            layoutManager.setOnSlideListener(onSlideListener);
             return layoutManager;
         }
 

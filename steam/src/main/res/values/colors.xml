@@ -7,4 +7,48 @@
     <color name="steam_teal_700">#FF018786</color>
     <color name="steam_black">#FF000000</color>
     <color name="steam_white">#FFFFFFFF</color>
+    <!-- App 样式中引用的颜色 -->
+    <color name="steam_common_primary_color">#1E2229</color>
+    <color name="steam_common_primary_dark_color">#FF000000</color>
+    <color name="steam_common_accent_color">#5A8DDF</color>
+    <color name="steam_common_window_background_color">#1E2229</color>
+    <color name="steam_common_text_color">#FFFFFFFF</color>
+    <color name="steam_common_text_hint_color">#FF757575</color>
+    <color name="steam_common_text_button">#72AFFF</color>
+
+
+    <!-- 按钮按压时的颜色 -->
+    <color name="steam_common_button_pressed_color">#AA5A8DDF</color>
+    <!-- 按钮禁用时的颜色 -->
+    <color name="steam_common_button_disable_color">#BBBBBB</color>
+    <!-- 分割线的颜色 -->
+    <color name="steam_common_line_color">#7C7C7C</color>
+    <!-- 分割线的颜色 -->
+    <color name="steam_common_line_color_v">#8896B3EC</color>
+    <!-- 矢量图标的颜色 -->
+    <color name="steam_common_icon_color">#7C7C7C</color>
+
+    <!-- 对话框确认按钮的文本颜色 -->
+    <color name="steam_common_confirm_text_color">#007AFF</color>
+    <!-- 对话框取消按钮的文本颜色 -->
+    <color name="steam_common_cancel_text_color">#F44336</color>
+
+    <!-- 选择温度时间文本颜色 -->
+    <color name="steam_common_select_mode_text_color">#F6F6F6</color>
+    <color name="steam_common_select_mode_text_color2">#A6FFFFFF</color>
+    <color name="steam_common_select_mode_text_color3">#55FFFFFF</color>
+
+    <color name="steam_common_select_button_cancel1">#A6FFFFFF</color>
+    <color name="steam_common_select_button_cancel2">#55FFFFFF</color>
+    <color name="steam_chart">#FF3D00</color>
+    <color name="steam_chart_multi">#66FF3D00</color>
+    <color name="steam_message_color">#FFEA94</color>
+    <color name="steam_white90">#E6FFFFFF</color>
+    <color name="steam_black5">#0D000000</color>
+    <!-- 透明色 -->
+    <color name="steam_transparent">#00000000</color>
+    <!-- 熊猫色（黑白背景通吃） -->
+    <color name="steam_panda">#FF757575</color>
+    <color name="steam_white35">#59FFFFFF</color>
+    <color name="steam_white25">#40FFFFFF</color>
 </resources>

@@ -86,5 +86,5 @@ dependencies {
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$versions.leakcanary"
     //适配器
     implementation "com.github.CymChad:BaseRecyclerViewAdapterHelper:$versions.BaseRecyclerViewAdapterHelper"
-
+    implementation "org.litepal.guolindev:core:$versions.litepal"
 }

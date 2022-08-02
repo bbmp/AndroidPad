@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<litepal>
+    <dbname value="recipe" />
+    <version value="6" />
+    <list>
+        <mapping class="com.robam.steamoven.bean.model.RecipeClassifyMode" />
+        <mapping class="com.robam.steamoven.bean.model.Recipe" />
+        <mapping class="com.robam.steamoven.bean.model.RecipeMaterialBean" />
+        <mapping class="com.robam.steamoven.bean.model.RecipeStep" />
+        <mapping class="com.robam.steamoven.bean.model.MCarve" />
+        <mapping class="com.robam.steamoven.bean.model.ModeBean" />
+        <mapping class="com.robam.steamoven.bean.model.WorkRecord" />
+        <mapping class="com.robam.steamoven.bean.model.PRecipe" />
+        <mapping class="com.robam.steamoven.bean.model.RecipeWork" />
+        <mapping class="com.robam.steamoven.bean.model.RecipeWorkMode" />
+        <mapping class="com.robam.steamoven.bean.model.RecipeDetail" />
+    </list>
+    <storage value ="external"/>
+</litepal>
