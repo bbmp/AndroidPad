@@ -34,5 +34,7 @@ public class AppVentilator {
         VentilatorAbstractControl.getInstance().init(new VentilatorLocalControl());
         //协议解析和打包
         VentilatorFactory.initMqttProtocol();
+        //初始化主设备mqtt收发
+
     }
 }

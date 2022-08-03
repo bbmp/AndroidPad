@@ -5,7 +5,7 @@ import android.content.Context;
 import com.robam.common.device.IPlat;
 import com.robam.common.device.TbangPlat;
 import com.robam.common.mqtt.IProtocol;
-import com.robam.steamoven.protocol.mqtt.MqttSteamOven;
+import com.robam.ventilator.protocol.mqtt.MqttVentilator;
 
 public class VentilatorFactory {
     public final static String TUOBANG = "tuobang" ;
@@ -23,7 +23,7 @@ public class VentilatorFactory {
 
     public static void initMqttProtocol() {
         if (null == protocol)
-            protocol = new MqttSteamOven();
+            protocol = new MqttVentilator();
     }
 
     public static IPlat getPlatform() {

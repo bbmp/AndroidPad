@@ -1,12 +1,10 @@
-package com.robam.steamoven.protocol.mqtt;
+package com.robam.common.mqtt;
 
 import android.content.Context;
 import android.util.Log;
 
 import com.robam.common.bean.RTopic;
-import com.robam.common.mqtt.MqttMsg;
-import com.robam.common.mqtt.MsgKeys;
-import com.robam.steamoven.device.SteamFactory;
+import com.robam.common.device.IPlat;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -19,6 +17,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.util.Arrays;
 
+//全局mqtt收发
 public class MqttManager {
     private static final String TAG = MqttManager.class.toString();
     private final String CLIENTID = "";
@@ -31,13 +30,20 @@ public class MqttManager {
     public String PUBLISH_TOPIC = getPublishTopic();//发布主题
     public String RESPONSE_TOPIC = "message_arrived";//响应主题
 
+    //初始化平台
+    private IPlat iPlat;
+    //初始化mqtt协议
+    private IProtocol iProtocol;
+
     private static MqttManager INSTANCE = new MqttManager();
 
     public static MqttManager getInstance() {
         return INSTANCE;
     }
 
-    public void start(Context context) {
+    public void start(Context context, IPlat plat, IProtocol protocol) {
+        iPlat = plat;
+        iProtocol = protocol;
         mqttAndroidClient = new MqttAndroidClient(context, HOST, CLIENTID);
         mqttAndroidClient.setCallback(mqttCallback); //设置监听订阅消息的回调
         mMqttConnectOptions = new MqttConnectOptions();
@@ -72,8 +78,8 @@ public class MqttManager {
         public void onSuccess(IMqttToken arg0) {
             Log.i(TAG, "连接成功 ");
             try {
-                String topic = new RTopic(RTopic.TOPIC_UNICAST, SteamFactory.getPlatform().getDt()
-                        , SteamFactory.getPlatform().getMac()).getTopic();
+                String topic = new RTopic(RTopic.TOPIC_UNICAST, iPlat.getDt()
+                        , iPlat.getMac()).getTopic();
                 mqttAndroidClient.subscribe(topic, 2, null, mqttActionListener);//订阅主题，参数：主题、服务质量
             } catch (MqttException e) {
                 e.printStackTrace();
@@ -136,26 +142,26 @@ public class MqttManager {
         @Override
         public void messageArrived(String topic, MqttMessage message) throws Exception {
             Log.i(TAG, "收到消息： " + Arrays.toString(message.getPayload()));
-            int msgId = SteamFactory.getProtocol().decode(topic, message.getPayload());
+            int msgId = iProtocol.decode(topic, message.getPayload());
 //            if (null != mqttMsgCallback && null != message)
 //                mqttMsgCallback.messageArrived(message.getPayload());
             //统一 处理
             if (msgId == MsgKeys.getDeviceAttribute_Req){
                 MqttMsg msg = new MqttMsg.Builder()
                         .setMsgId(MsgKeys.getDeviceAttribute_Rep)
-                        .setDt(SteamFactory.getPlatform().getDt())
-                        .setSignNum(SteamFactory.getPlatform().getMac())
-                        .setTopic(new RTopic(RTopic.TOPIC_UNICAST, SteamFactory.getPlatform().getDt(), SteamFactory.getPlatform().getMac()))
+                        .setDt(iPlat.getDt())
+                        .setSignNum(iPlat.getMac())
+                        .setTopic(new RTopic(RTopic.TOPIC_UNICAST, iPlat.getDt(), iPlat.getMac()))
                         .build();
-                publish(msg);
+                publish(msg, iProtocol);
             }else if (msgId == MsgKeys.setDeviceAttribute_Req){
                 MqttMsg msg = new MqttMsg.Builder()
                         .setMsgId(MsgKeys.setDeviceAttribute_Req)
-                        .setDt(SteamFactory.getPlatform().getDt())
-                        .setSignNum(SteamFactory.getPlatform().getMac())
-                        .setTopic(new RTopic(RTopic.TOPIC_UNICAST, SteamFactory.getPlatform().getDt(), SteamFactory.getPlatform().getMac()))
+                        .setDt(iPlat.getDt())
+                        .setSignNum(iPlat.getMac())
+                        .setTopic(new RTopic(RTopic.TOPIC_UNICAST, iPlat.getDt(), iPlat.getMac()))
                         .build();
-                publish(msg);
+                publish(msg, iProtocol);
             }
 
         }
@@ -178,16 +184,16 @@ public class MqttManager {
 
     /**
      * 发布 （模拟其他客户端发布消息）
-     *
-     * @param msg 消息
+     *  具体协议实现
+     * @param
      */
-    public void publish(MqttMsg msg) {
+    public void publish(MqttMsg msg, IProtocol protocol) {
         //获取发布主题
         String topic = msg.getrTopic().getTopic();
         Integer qos = 0;
         Boolean retained = false;
         try {
-            byte[] data = SteamFactory.getProtocol().encode(msg);
+            byte[] data = protocol.encode(msg);
             Log.i(TAG, "发送的主题： " + topic);
             Log.i(TAG, "发送的消息： " + Arrays.toString(data));
             //参数分别为：主题、消息的字节数组、服务质量、是否在服务器保留断开连接后的最后一条消息
@@ -217,14 +223,14 @@ public class MqttManager {
      * 发送设备上线通知
      */
     private void deviceConnectedNoti() {
-        Log.i(TAG, "发送设备上线通知  " + android.os.Process.myTid() + "  " + SteamFactory.getPlatform().getMac());
+        Log.i(TAG, "发送设备上线通知  " + android.os.Process.myTid() + "  " + iPlat.getMac());
         MqttMsg msg = new MqttMsg.Builder()
                 .setMsgId(MsgKeys.DeviceConnected_Noti)
-                .setDt(SteamFactory.getPlatform().getDt())
-                .setSignNum(SteamFactory.getPlatform().getMac())
-                .setTopic(new RTopic(RTopic.TOPIC_BROADCAST, SteamFactory.getPlatform().getDt(), SteamFactory.getPlatform().getMac()))
+                .setDt(iPlat.getDt())
+                .setSignNum(iPlat.getMac())
+                .setTopic(new RTopic(RTopic.TOPIC_BROADCAST, iPlat.getDt(), iPlat.getMac()))
                 .build();
 
-        publish(msg);
+        publish(msg, iProtocol);
     }
 }
