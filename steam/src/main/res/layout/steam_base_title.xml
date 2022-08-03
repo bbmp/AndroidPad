@@ -24,7 +24,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/steam_homePage"
-            android:textSize="@dimen/sp_16"/>
+            android:textSize="@dimen/sp_16"
+            android:textColor="@color/steam_white"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/ll_title_item3"
@@ -54,7 +55,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/steam_light"
-            android:textSize="@dimen/sp_16"/>
+            android:textSize="@dimen/sp_16"
+            android:textColor="@color/steam_white"/>
 
     </LinearLayout>
     <LinearLayout
@@ -76,7 +78,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/steam_makeAnAppointment"
-            android:textSize="@dimen/sp_16">
+            android:textSize="@dimen/sp_16"
+            android:textColor="@color/steam_white">
 
         </TextView>
     </LinearLayout>

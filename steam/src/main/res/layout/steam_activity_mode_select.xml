@@ -21,20 +21,15 @@
         android:gravity="center"
         android:orientation="vertical">
 
-
-        <com.hjq.bar.TitleBar
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="@dimen/dp_12"
-            android:background="@color/steam_transparent"
-            app:leftIconHeight="@dimen/dp_22"
-            app:leftIconPadding="@dimen/dp_3"
-            app:leftIconWidth="@dimen/dp_22"
-            app:leftTitle="@string/steam_active_back">
+            android:gravity="center"
+            android:layout_marginTop="@dimen/dp_25"
+            android:orientation="horizontal">
 
             <include layout="@layout/steam_base_title" />
-        </com.hjq.bar.TitleBar>
-
+        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_select_2"

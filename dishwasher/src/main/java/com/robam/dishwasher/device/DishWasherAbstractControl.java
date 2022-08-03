@@ -1,5 +1,6 @@
 package com.robam.dishwasher.device;
 
+//控制协议调用
 public class DishWasherAbstractControl implements DishWasherFunction{
     private DishWasherFunction function;
 

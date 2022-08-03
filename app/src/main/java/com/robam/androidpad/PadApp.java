@@ -9,7 +9,7 @@ import android.app.Application;
 
 import com.robam.ventilator.AppVentilator;
 
-import com.robam.roki.AppRoki;
+//import com.robam.roki.AppRoki;
 
 import org.litepal.LitePal;
 

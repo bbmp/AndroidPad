@@ -21,8 +21,8 @@ public class DishWasherFactory {
             platform = new TbangPlat();
     }
 
-    public static void initMqttProtocol(String dt) {
-        if (CQ926.equals(dt))
+    public static void initMqttProtocol() {
+        if (null == protocol)
             protocol = new MqttDishWasher();
     }
 
