@@ -5,7 +5,6 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.robam.steamoven.bean.FuntionBean;
-import com.robam.steamoven.bean.FuntionList;
 import com.robam.steamoven.bean.model.ModeBean;
 import com.robam.steamoven.bean.RecipeClassify;
 import com.robam.steamoven.bean.model.RecipeClassifyMode;
@@ -30,9 +29,10 @@ public class FuntionModeManage {
             if (jsonString == null) {
                 return null;
             }
-
-            FuntionList funtionList = new Gson().fromJson(jsonString, FuntionList.class);
-            return funtionList.getData();
+            Type type = new TypeToken<List<FuntionBean>>() {
+            }.getType();
+            List<FuntionBean> funtionBeans = new Gson().fromJson(jsonString, type);
+            return funtionBeans;
         } catch (Exception e) {
 //            CrashReport.postCatchedException(e);
         }

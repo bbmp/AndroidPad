@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/dp_300"
-    android:layout_height="match_parent">
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_marginHorizontal="@dimen/dp_60">
     <TextView
         android:id="@+id/tv_funtion_name"
-        android:layout_width="@dimen/dp_250"
-        android:layout_height="@dimen/dp_250"
+        android:layout_width="@dimen/dp_270"
+        android:layout_height="@dimen/dp_270"
         android:layout_centerInParent="true"
         android:gravity="center"
-        android:textSize="@dimen/sp_36"
+        android:textSize="@dimen/sp_40"
+        android:textColor="@color/steam_white"
         android:background="@drawable/steam_ic_main_item_bg"
         android:lineSpacingMultiplier="0.8"
         tools:text="烹饪\n曲线"/>

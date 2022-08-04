@@ -8,6 +8,7 @@ package com.robam.androidpad;
 import android.app.Application;
 
 import com.robam.ventilator.AppVentilator;
+import com.tencent.mmkv.MMKV;
 
 //import com.robam.roki.AppRoki;
 
@@ -20,6 +21,9 @@ public class PadApp extends Application {
         CrashHandler.register(this);
         //LitePal注册 数据库
         LitePal.initialize(this);
+
+        // MMKV 初始化
+        MMKV.initialize(this);
 //        AppRoki.init(this);
         AppVentilator.init(this);
     }

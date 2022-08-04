@@ -25,6 +25,7 @@ versions.banner = "2.2.2"
 versions.glide = "4.11.0"
 versions.leakcanary = "2.7"
 versions.litepal = "3.2.3"
+versions.mmkv = "1.2.10"
 
 
 ext.versions = versions

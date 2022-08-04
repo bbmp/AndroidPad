@@ -47,7 +47,7 @@ public abstract class HeadPage extends Fragment implements ClickAction, ILife {
 
             mRootView = inflater.inflate(getLayoutId(), container, false);
 //            pnlMain.addView(mContentView);
-            setStateBarFixer();
+//            setStateBarFixer();
             initView();
             initData();
         }

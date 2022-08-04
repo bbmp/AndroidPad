@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.AndroidPad" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.AndroidPad" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
@@ -14,6 +14,7 @@
         <!-- Customize your theme here. -->
 
         <item name="android:windowAnimationStyle">@style/Animation</item>
+        <item name="android:windowFullscreen">true</item>
     </style>
     <style name="Animation">
         <item name="android:windowEnterAnimation">@null</item>

@@ -4,6 +4,14 @@
 
     <application>
         <activity
+            android:name=".ui.activity.SaleServiceActivity"
+            android:screenOrientation="landscape"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activity.SimpleModeActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
             android:name=".ui.activity.DateSettingActivity"
             android:exported="false" />
         <activity
@@ -14,18 +22,20 @@
             android:exported="false" />
         <activity
             android:name=".ui.activity.LoginPhoneActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".ui.activity.AboutActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
-            android:screenOrientation="landscape"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".ui.activity.MainActivity"
             android:exported="false" />
         <activity
             android:name=".ui.activity.HomeActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="landscape" />
     </application>
 
 </manifest>

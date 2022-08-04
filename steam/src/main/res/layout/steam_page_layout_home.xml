@@ -13,37 +13,26 @@
 
     </ImageView>
 
-    <LinearLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_dot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/dp_38"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center"
-        android:orientation="vertical">
+        android:layout_marginTop="@dimen/dp_12"
+        android:orientation="horizontal">
 
-
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginTop="@dimen/dp_25"
-            android:orientation="horizontal">
-
-            <include layout="@layout/steam_base_title" />
-        </LinearLayout>
-
-        <RelativeLayout
-
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_main"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_centerInParent="true"
-                />
-        </RelativeLayout>
-
+        <include layout="@layout/steam_base_title" />
     </LinearLayout>
 </RelativeLayout>

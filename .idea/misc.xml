@@ -3,6 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_input_delete_ic.xml" value="0.2115" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_password_off_ic.xml" value="0.2115" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_password_on_ic.xml" value="0.2115" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_shape_counter_down.xml" value="0.2115" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/layout/common_header_page.xml" value="0.10208333333333333" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/src/main/res/drawable/info_ic.xml" value="0.1835" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/src/main/res/drawable/reboot_ic.xml" value="0.1835" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/src/main/res/drawable/share_ic.xml" value="0.1835" />
@@ -81,6 +86,7 @@
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_add_ic.xml" value="0.2" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_arrows_bottom_ic.xml" value="0.2" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_button_circle_selector.xml" value="0.2" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_button_circle_selector_steamoven.xml" value="0.2115" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_button_rect_selector.xml" value="0.2" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_checkbox_checked_ic.xml" value="0.2" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_checkbox_selector.xml" value="0.2" />
@@ -89,6 +95,7 @@
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_countdown_selector.xml" value="0.2" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_dialog_input_bg.xml" value="0.2" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_discen_message_bg.xml" value="0.2" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_dot_bg.xml" value="0.2" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_example_bg.xml" value="0.2" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_guide_indicator_selected.xml" value="0.2" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_guide_indicator_unselected.xml" value="0.2" />
@@ -121,6 +128,8 @@
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_icon_shuixiang.xml" value="0.2" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_icon_steamoven.xml" value="0.2" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_image_preview_indicator.xml" value="0.2" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_indicator_selected.xml" value="0.2" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_indicator_unselected.xml" value="0.2" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_info_ic.xml" value="0.2" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_login_qq_ic.xml" value="0.2" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_login_wechat_ic.xml" value="0.2" />
@@ -157,14 +166,15 @@
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_activity_layout_ble.xml" value="0.16246259085079093" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_activity_layout_main.xml" value="0.16246259085079093" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_activity_mode_select.xml" value="0.1" />
-        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_base_title.xml" value="0.12" />
-        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_item_main_function.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_base_title.xml" value="0.15" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_item_dot.xml" value="0.17" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_item_main_function.xml" value="0.12" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_item_mode_foot.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_item_mode_select.xml" value="0.10755208333333334" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_item_steam.xml" value="0.10755208333333334" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_item_temp_time_select.xml" value="0.10755208333333334" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_page_layout_full_screen.xml" value="0.16246259085079093" />
-        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_page_layout_home.xml" value="0.14" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_page_layout_home.xml" value="0.12" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_page_layout_take_photo.xml" value="0.16246259085079093" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_view_layout_title.xml" value="0.17682291666666666" />
         <entry key="..\:/AndroidProjects/AndroidPad/stream/src/main/res/layout/activity_ble.xml" value="0.13333333333333333" />
@@ -179,21 +189,26 @@
         <entry key="..\:/AndroidProjects/AndroidPad/stream/src/main/res/layout/stream_page_layout_home.xml" value="0.16246259085079093" />
         <entry key="..\:/AndroidProjects/AndroidPad/stream/src/main/res/layout/stream_page_layout_take_photo.xml" value="0.16246259085079093" />
         <entry key="..\:/AndroidProjects/AndroidPad/stream/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1835" />
+        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_shape_border_bg.xml" value="0.259" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_shape_button_ok_bg.xml" value="0.3015" />
+        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_shape_button_selected.xml" value="0.259" />
+        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_shape_button_unselected.xml" value="0.259" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/fragment_full_screen.xml" value="0.175" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/home_fragment.xml" value="0.175" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_activity_layout_about.xml" value="0.22" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_activity_layout_date_setting.xml" value="0.17682291666666666" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_activity_layout_home.xml" value="0.16246259085079093" />
-        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_activity_layout_login_phone.xml" value="0.14" />
+        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_activity_layout_login_phone.xml" value="0.17" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_activity_layout_main.xml" value="0.14493373236425822" />
+        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_activity_layout_sale_service.xml" value="0.14" />
+        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_activity_layout_simple_mode.xml" value="0.33" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_activity_layout_wifi_connect.xml" value="0.13" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_activity_layout_wifi_setting.xml" value="0.17682291666666666" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_fragment_full_screen.xml" value="0.175" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_home_fragment.xml" value="0.175" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_item_layout_function.xml" value="0.17443351859769132" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_item_pick_text.xml" value="0.25" />
-        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_page_layout_home.xml" value="0.21" />
+        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_page_layout_home.xml" value="0.22" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_page_layout_welcome.xml" value="0.17443351859769132" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_view_layout_title.xml" value="0.21" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/app/src/main/res/layout/activity_main.xml" value="0.14130434782608695" />

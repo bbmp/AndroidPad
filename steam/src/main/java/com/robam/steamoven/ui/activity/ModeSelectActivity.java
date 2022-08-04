@@ -3,6 +3,7 @@ package com.robam.steamoven.ui.activity;
 import android.view.View;
 
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.robam.common.ui.helper.PickerLayoutManager;
@@ -14,6 +15,7 @@ import com.robam.steamoven.bean.FuntionBean;
 import com.robam.steamoven.bean.model.ModeBean;
 import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.SteamOvenModeEnum;
+import com.robam.steamoven.ui.adapter.RvDotAdapter;
 import com.robam.steamoven.ui.adapter.RvModeAdapter;
 import com.robam.steamoven.ui.adapter.RvModeFootAdapter;
 import com.robam.steamoven.ui.adapter.RvSteamAdapter;
@@ -22,6 +24,7 @@ import com.robam.steamoven.ui.adapter.RvTimeOrTempAdapter;
 import org.litepal.LitePal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ModeSelectActivity extends SteamBaseActivity {
@@ -34,9 +37,17 @@ public class ModeSelectActivity extends SteamBaseActivity {
      */
     private RecyclerView rvSelect2;
     /**
+     * 指示器
+     */
+    private RecyclerView rvDot;
+    /**
      * 功能
      */
     private FuntionBean funBean;
+    /**
+     * 指示器adapter
+     */
+    private RvDotAdapter rvDotAdapter;
     /**
      * 模式选择adapter
      */
@@ -88,6 +99,7 @@ public class ModeSelectActivity extends SteamBaseActivity {
 
         rvSelect1 = findViewById(R.id.rv_select_1);
         rvSelect2 = findViewById(R.id.rv_select_2);
+        rvDot = findViewById(R.id.rv_dot);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
         rvSelect1.setLayoutManager(gridLayoutManager);
         rvModeFootAdapter = new RvModeFootAdapter(this);
@@ -95,7 +107,8 @@ public class ModeSelectActivity extends SteamBaseActivity {
         setAdapterClick();
         rvSelect1.setAdapter(rvModeFootAdapter);
         //设置选择recycleView的layoutManage
-        setLayoutManage(5, 0.2f);
+        setLayoutManage(5, 0.56f);
+        rvDot.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
 
 
         tempAdapter = new RvTimeOrTempAdapter(this, getString(R.string.steam_unit_temp));
@@ -151,17 +164,14 @@ public class ModeSelectActivity extends SteamBaseActivity {
                 //模式
                 if (position == 0) {
                     rvSelect2.setAdapter(rvModeAdapter);
-                    setLayoutManage(5, 0.2f);
+                    setLayoutManage(5, 0.33f);
                     rvModeFootAdapter.setIndex(0);
                     pickerLayoutManager.scrollToPosition(rvModeAdapter.getIndex());
-//                    if (modeBean.code == rvModeAdapter.getItem(rvModeAdapter.getIndex()).code){
-//                        return;
-//                    }
-//                    modeBean = rvModeAdapter.getItem(rvModeAdapter.getIndex()) ;
-
-                    //初始化该模式相关参数
-//                    initParameter(rvModeAdapter.getItem(rvModeAdapter.getIndex()));
+                    //指示器
+                    rvDot.setVisibility(View.VISIBLE);
                 } else {
+                    //指示器
+                    rvDot.setVisibility(View.GONE);
                     if (rvModeFootAdapter.getModeBean().steamSelect()) {
                         //加湿烤模块 澎湃蒸
                         if (position == 1) {
@@ -272,6 +282,16 @@ public class ModeSelectActivity extends SteamBaseActivity {
             rvSelect2.setAdapter(rvModeAdapter);
             rvModeAdapter.addData(modes);
 
+            rvDotAdapter = new RvDotAdapter();
+            rvDot.setAdapter(rvDotAdapter);
+
+            List<String> dotList = new ArrayList<>();
+            for (ModeBean bean: modes) {
+                dotList.add(bean.name);
+            }
+            rvDotAdapter.setList(dotList);
+            rvDotAdapter.setPickPosition(Integer.MAX_VALUE / 2);
+
             pickerLayoutManager.scrollToPosition(Integer.MAX_VALUE / 2);
             rvModeAdapter.setIndex(Integer.MAX_VALUE / 2);
             modeBean = rvModeAdapter.getItem(rvModeAdapter.getIndex());
@@ -332,6 +352,7 @@ public class ModeSelectActivity extends SteamBaseActivity {
                             modeBean = rvModeAdapter.getItem(position);
 
                             rvModeAdapter.setIndex(position);
+                            rvDotAdapter.setPickPosition(position);
                             setFootData(modeBean);
                             //初始化该模式相关参数
                             initParameter(modeBean);

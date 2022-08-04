@@ -3,6 +3,7 @@ package com.robam.steamoven.ui.pages;
 import android.content.Intent;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.serialport.helper.SerialPortHelper;
@@ -15,6 +16,7 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.clj.fastble.BleManager;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.common.utils.ImageUtils;
+import com.robam.common.utils.MMKVUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBasePage;
@@ -22,15 +24,19 @@ import com.robam.steamoven.bean.FuntionBean;
 import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.manager.DataInitManage;
 import com.robam.steamoven.manager.FuntionModeManage;
+import com.robam.steamoven.ui.adapter.RvDotAdapter;
 import com.robam.steamoven.ui.adapter.RvMainFuntionAdapter;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class HomePage extends SteamBasePage {
 
-    private RecyclerView rvMain;
+    private RecyclerView rvMain, rvDot;
     private RvMainFuntionAdapter rvMainFuntionAdapter;
+    private RvDotAdapter rvDotAdapter;
     private RelativeLayout llMain;
     private PickerLayoutManager pickerLayoutManager;
     private ImageView imageView;
@@ -47,21 +53,25 @@ public class HomePage extends SteamBasePage {
     @Override
     protected void initView() {
         rvMain = findViewById(R.id.rv_main);
+        rvDot = findViewById(R.id.rv_dot);
         llMain = findViewById(R.id.ll_main);
         imageView = findViewById(R.id.iv_bg);
         pickerLayoutManager = new PickerLayoutManager.Builder(getContext())
                 .setOrientation(RecyclerView.HORIZONTAL)
                 .setMaxItem(3)
-                .setScale(0.3f)
+                .setScale(0.33f)
                 .setOnPickerListener(new PickerLayoutManager.OnPickerListener() {
                     @Override
                     public void onPicked(RecyclerView recyclerView, int position) {
 //                        rvMainFuntionAdapter.setIndex(position);
                         setBackground(position);
+                        rvDotAdapter.setPickPosition(position);
+                        rvMainFuntionAdapter.setPickPosition(position);
                     }
                 })
                 .build();
         rvMain.setLayoutManager(pickerLayoutManager);
+        rvDot.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
         rvMainFuntionAdapter = new RvMainFuntionAdapter();
         rvMainFuntionAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
@@ -81,8 +91,11 @@ public class HomePage extends SteamBasePage {
 
         });
         rvMain.setAdapter(rvMainFuntionAdapter);
+        rvDotAdapter = new RvDotAdapter();
+        rvDot.setAdapter(rvDotAdapter);
         //设置滑动速度
         setMaxFlingVelocity(rvMain, 3000);
+        hideItem1();
         hideItem2();
     }
 
@@ -90,10 +103,18 @@ public class HomePage extends SteamBasePage {
     protected void initData() {
         List<FuntionBean> funtionBeans = FuntionModeManage.getFuntionList(getContext());
         rvMainFuntionAdapter.setList(funtionBeans);
+        List<String> dotList = new ArrayList<>();
+        for (FuntionBean funtionBean: funtionBeans) {
+            dotList.add(funtionBean.funtionName);
+        }
+
+        rvDotAdapter.setList(dotList);
+        rvDotAdapter.setPickPosition(Integer.MAX_VALUE / 2);
         pickerLayoutManager.scrollToPosition(Integer.MAX_VALUE / 2);
         setBackground(Integer.MAX_VALUE / 2);
-
-        DataInitManage.savaRecipe(getContext());
+        if (!MMKVUtils.isInitData()) {
+            DataInitManage.savaRecipe(getContext());
+        }
     }
 
     @Override

@@ -1,5 +1,8 @@
 package com.robam.steamoven.ui.adapter;
 
+import android.util.TypedValue;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -9,7 +12,12 @@ import com.robam.steamoven.R;
 import com.robam.steamoven.bean.FuntionBean;
 
 public class RvMainFuntionAdapter extends BaseQuickAdapter<FuntionBean, BaseViewHolder> {
+    private int pickPosition;
 
+    public void setPickPosition(int pickPosition) {
+        this.pickPosition = pickPosition % getData().size();
+        notifyDataSetChanged();
+    }
 
     public RvMainFuntionAdapter() {
         super(R.layout.steam_item_main_function);
@@ -23,7 +31,8 @@ public class RvMainFuntionAdapter extends BaseQuickAdapter<FuntionBean, BaseView
 
     @Override
     public FuntionBean getItem(int position) {
-        position = position % 9 ;
+        int count = getHeaderLayoutCount() + getData().size();
+        position = position % count ;
         return super.getItem(position);
     }
 
@@ -43,8 +52,13 @@ public class RvMainFuntionAdapter extends BaseQuickAdapter<FuntionBean, BaseView
     @Override
     protected void convert(@NonNull BaseViewHolder baseViewHolder, FuntionBean functionBean) {
         if (null != functionBean) {
-            baseViewHolder.setText(R.id.tv_funtion_name, functionBean.funtionName);
+            TextView textView = baseViewHolder.getView(R.id.tv_funtion_name);
+            textView.setText(functionBean.funtionName);
 //            mTextView.setTextColor(getColor(R.color.common_text_color));
+            if (pickPosition == getItemPosition(functionBean)) {
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, 80);
+            } else
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, 40);
         }
     }
 }

@@ -90,4 +90,6 @@ dependencies {
     //适配器
     implementation "com.github.CymChad:BaseRecyclerViewAdapterHelper:$versions.BaseRecyclerViewAdapterHelper"
     implementation "org.litepal.guolindev:core:$versions.litepal"
+    // 腾讯 MMKV：https://github.com/Tencent/MMKV
+    implementation "com.tencent:mmkv-static:$versions.mmkv"
 }

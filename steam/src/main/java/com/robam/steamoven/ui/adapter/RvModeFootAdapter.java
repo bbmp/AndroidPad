@@ -121,11 +121,11 @@ public final class RvModeFootAdapter extends AppAdapter<Integer> {
             }
 
             if (position == index) {
-                mTextView.setTextSize(34);
+                mTextView.setTextSize(27);
                 mTextView.setTextColor(getColor(R.color.steam_common_select_mode_text_color));
                 mImageSelectCheck.setVisibility(View.VISIBLE);
             } else {
-                mTextView.setTextSize(30);
+                mTextView.setTextSize(24);
                 mTextView.setTextColor(getColor(R.color.steam_common_select_mode_text_color2));
                 mImageSelectCheck.setVisibility(View.GONE);
             }

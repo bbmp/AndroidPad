@@ -14,13 +14,18 @@ import com.robam.common.ui.helper.CenterSnapHelper;
 import com.robam.common.ui.helper.ScaleLayoutManager;
 import com.robam.steamoven.ui.activity.MainActivity;
 import com.robam.ventilator.R;
+import com.robam.ventilator.base.VentilatorBasePage;
 import com.robam.ventilator.bean.VenFun;
+import com.robam.ventilator.ui.activity.AboutActivity;
+import com.robam.ventilator.ui.activity.LoginPhoneActivity;
+import com.robam.ventilator.ui.activity.SaleServiceActivity;
+import com.robam.ventilator.ui.activity.SimpleModeActivity;
 import com.robam.ventilator.ui.adapter.RvFunctionAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomePage extends HeadPage {
+public class HomePage extends VentilatorBasePage {
     private RecyclerView recyclerView;
     private RvFunctionAdapter rvFunctionAdapter;
     private ScaleLayoutManager scaleLayoutManager;
@@ -47,6 +52,7 @@ public class HomePage extends HeadPage {
         scaleLayoutManager.setMoveSpeed(0.05f * 10);
 
         recyclerView.setLayoutManager(scaleLayoutManager);
+        showCenter();
     }
 
     @Override
@@ -63,7 +69,7 @@ public class HomePage extends HeadPage {
         rvFunctionAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                startActivity(new Intent(getContext(), MainActivity.class));
+                startActivity(new Intent(getContext(), SaleServiceActivity.class));
             }
         });
     }

@@ -49,4 +49,5 @@
     <string name="ventilator_input_password">输入密码</string>
     <string name="ventilator_join">加入</string>
     <string name="ventilator_auto_set">自动设置</string>
+    <string name="ventilator_exit_simple_mode">退出极简模式</string>
 </resources>

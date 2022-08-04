@@ -24,14 +24,14 @@ public abstract class BaseActivity extends AbsActivity implements ActivityAction
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-        //沉浸式
-        SkinStatusBarUtils.translucent(this);
-        //字体
-        SkinStatusBarUtils.setStatusBarLightMode(this);
+//        //沉浸式
+//        SkinStatusBarUtils.translucent(this);
+//        //字体
+//        SkinStatusBarUtils.setStatusBarLightMode(this);
 
         setContentView(getLayoutId());
         //占位状态栏
-        setStateBarFixer();
+//        setStateBarFixer();
         initView();
         initData();
     }

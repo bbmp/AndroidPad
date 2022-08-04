@@ -6,8 +6,9 @@ import android.widget.TextView;
 
 import com.robam.common.ui.activity.BaseActivity;
 import com.robam.ventilator.R;
+import com.robam.ventilator.base.VentilatorBaseActivity;
 
-public class AboutActivity extends BaseActivity {
+public class AboutActivity extends VentilatorBaseActivity {
 
     @Override
     protected int getLayoutId() {
@@ -16,8 +17,10 @@ public class AboutActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        findViewById(R.id.iv_left).setVisibility(View.VISIBLE);
-        findViewById(R.id.tv_left).setVisibility(View.VISIBLE);
+
+        showLeft();
+        showCenter();
+        findViewById(R.id.tc_center).setVisibility(View.GONE);
         TextView tvCenter = findViewById(R.id.tv_center);
         tvCenter.setVisibility(View.VISIBLE);
         tvCenter.setText(R.string.ventilator_about_product);

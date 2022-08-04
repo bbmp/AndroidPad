@@ -2,6 +2,7 @@ package com.robam.steamoven.manager;
 
 import android.content.Context;
 
+import com.robam.common.utils.MMKVUtils;
 import com.robam.steamoven.bean.model.ModeBean;
 import com.robam.steamoven.bean.model.PRecipe;
 import com.robam.steamoven.bean.model.RecipeClassifyMode;
@@ -65,7 +66,7 @@ public class DataInitManage {
                 assert mode != null;
                 LitePal.saveAll(mode);
 //                mWaitDialog.dismiss();
-//                MMKVUtils.initData(true);
+                MMKVUtils.initData(true);
             }
         });
 
