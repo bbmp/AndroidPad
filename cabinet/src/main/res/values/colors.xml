@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="cabinet_transparent">#00000000</color>
+    <color name="cabinet_white">#FFFFFF</color>
+    <color name="cabinet_white35">#59FFFFFF</color>
+    <color name="cabinet_white25">#40FFFFFF</color>
+</resources>

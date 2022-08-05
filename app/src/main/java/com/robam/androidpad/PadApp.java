@@ -18,7 +18,7 @@ public class PadApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        CrashHandler.register(this);
+//        CrashHandler.register(this);
         //LitePal注册 数据库
         LitePal.initialize(this);
 

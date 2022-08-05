@@ -8,8 +8,9 @@ import android.widget.TextView;
 
 import com.robam.common.ui.activity.BaseActivity;
 import com.robam.ventilator.R;
+import com.robam.ventilator.base.VentilatorBaseActivity;
 
-public class DateSettingActivity extends BaseActivity {
+public class DateSettingActivity extends VentilatorBaseActivity {
 
     @Override
     protected int getLayoutId() {
@@ -18,15 +19,21 @@ public class DateSettingActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        findViewById(R.id.iv_left).setVisibility(View.VISIBLE);
-        findViewById(R.id.tv_left).setVisibility(View.VISIBLE);
-        TextView tvCenter = findViewById(R.id.tv_center);
-        tvCenter.setVisibility(View.VISIBLE);
-        tvCenter.setText(R.string.ventilator_setting_time);
+        showLeft();
+        setCenter(R.string.ventilator_setting_time);
+
+        setOnClickListener(R.id.ll_left);
     }
 
     @Override
     protected void initData() {
 
+    }
+
+    @Override
+    public void onClick(View view) {
+        int id = view.getId();
+        if (id == R.id.ll_left)
+            finish();
     }
 }

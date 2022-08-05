@@ -1,3 +1,4 @@
 <resources>
-    <string name="cabinet_app_name">cabinet</string>
+    <string name="cabinet_app_name">消毒柜</string>
+    <string name="cabinet_back">返回</string>
 </resources>

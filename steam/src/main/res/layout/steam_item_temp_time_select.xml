@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:textSize="@dimen/dp_70"
+        android:textSize="@dimen/sp_48"
         tools:text="100" />
     <TextView
         android:id="@+id/tv_unit_temp"
@@ -20,7 +20,7 @@
         android:text="@string/steam_unit_temp"
         android:textColor="@color/steam_common_select_mode_text_color"
         android:paddingTop="@dimen/dp_10"
-        android:textSize="@dimen/sp_18"
+        android:textSize="@dimen/sp_30"
         />
 
     <TextView
@@ -33,5 +33,5 @@
         android:layout_marginStart="@dimen/dp_5"
         android:text="@string/steam_unit_minu"
         android:textColor="@color/steam_common_select_mode_text_color"
-        android:textSize="@dimen/sp_18" />
+        android:textSize="@dimen/sp_30" />
 </RelativeLayout>

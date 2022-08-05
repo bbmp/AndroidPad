@@ -9,7 +9,7 @@
         android:layout_weight="1"
         android:layout_height="match_parent"
         android:gravity="center_vertical|left"
-        android:layout_marginLeft="@dimen/dp_30">
+        android:layout_marginLeft="@dimen/dp_24">
         <ImageView
             android:layout_width="@dimen/dp_38"
             android:layout_height="@dimen/dp_38"
@@ -83,7 +83,7 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:gravity="right|center_vertical"
-        android:layout_marginRight="@dimen/dp_30"
+        android:layout_marginRight="@dimen/dp_24"
         android:layout_height="match_parent"
         android:orientation="horizontal">
         <ImageView

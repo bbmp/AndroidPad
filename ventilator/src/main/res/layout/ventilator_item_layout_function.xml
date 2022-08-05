@@ -1,22 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <com.robam.common.ui.view.CircleImageView
-        android:id="@+id/iv_fun"
-        android:layout_width="@dimen/dp_80"
-        android:layout_height="@dimen/dp_80"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"/>
     <TextView
-        android:id="@+id/tv_fun"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="fun"
-        app:layout_constraintLeft_toLeftOf="@id/iv_fun"
-        app:layout_constraintRight_toRightOf="@id/iv_fun"
-        app:layout_constraintTop_toTopOf="@id/iv_fun"
-        app:layout_constraintBottom_toBottomOf="@id/iv_fun"/>
+        android:id="@+id/tv_fun_name"
+        android:layout_width="@dimen/dp_140"
+        android:layout_height="@dimen/dp_140"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:textColor="@color/ventilator_white"
+        android:background="@mipmap/ventilator_ic_main_item_bg"
+        android:lineSpacingMultiplier="0.8"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <ImageView
+        android:id="@+id/iv_fun"
+        android:layout_width="@dimen/dp_87"
+        android:layout_height="@dimen/dp_87"
+        app:layout_constraintLeft_toLeftOf="@id/tv_fun_name"
+        app:layout_constraintRight_toRightOf="@id/tv_fun_name"
+        app:layout_constraintTop_toTopOf="@id/tv_fun_name"
+        app:layout_constraintBottom_toBottomOf="@id/tv_fun_name"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

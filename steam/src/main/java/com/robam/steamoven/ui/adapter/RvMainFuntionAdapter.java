@@ -56,9 +56,9 @@ public class RvMainFuntionAdapter extends BaseQuickAdapter<FuntionBean, BaseView
             textView.setText(functionBean.funtionName);
 //            mTextView.setTextColor(getColor(R.color.common_text_color));
             if (pickPosition == getItemPosition(functionBean)) {
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, 80);
+                textView.setTextSize(80);
             } else
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, 40);
+                textView.setTextSize(40);
         }
     }
 }

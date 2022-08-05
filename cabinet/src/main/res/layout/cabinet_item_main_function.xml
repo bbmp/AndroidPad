@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <TextView
+        android:id="@+id/tv_funtion_name"
+        android:layout_width="@dimen/dp_270"
+        android:layout_height="@dimen/dp_270"
+        android:layout_centerInParent="true"
+        android:layout_marginHorizontal="@dimen/dp_15"
+        android:gravity="center"
+        android:textSize="@dimen/sp_80"
+        android:textColor="@color/cabinet_white"
+        android:background="@mipmap/cabinet_ic_main_item_bg"
+        android:lineSpacingMultiplier="0.8"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

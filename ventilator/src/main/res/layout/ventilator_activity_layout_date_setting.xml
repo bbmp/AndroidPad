@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activity.DateSettingActivity">
+    tools:context=".ui.activity.DateSettingActivity"
+    android:background="@mipmap/ventilator_ic_bg">
     <include
         android:id="@+id/ll_title"
         layout="@layout/ventilator_view_layout_title"
@@ -29,7 +30,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/ventilator_auto_set" />
+            android:text="@string/ventilator_auto_set"
+            android:textSize="@dimen/sp_34"
+            android:textColor="@color/ventilator_white"/>
 
         <View
             android:layout_width="0dp"

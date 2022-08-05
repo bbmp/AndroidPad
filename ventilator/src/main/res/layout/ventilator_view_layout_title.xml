@@ -117,11 +117,11 @@
         android:gravity="center_vertical|right"
         android:visibility="invisible">
         <ImageView
-            android:id="@+id/iv_right"
+            android:id="@+id/iv_right1"
             android:layout_width="@dimen/dp_38"
             android:layout_height="@dimen/dp_38"/>
         <View
-            android:id="@+id/view_right"
+            android:id="@+id/view_right1"
             android:layout_width="@dimen/dp_6"
             android:layout_height="0dp"/>
         <TextView
@@ -131,5 +131,15 @@
             android:textSize="@dimen/sp_32"
             android:text="@string/ventilator_back"
             android:textColor="@color/ventilator_white"/>
+        <View
+            android:id="@+id/view_right2"
+            android:layout_width="@dimen/dp_6"
+            android:layout_height="0dp"
+            android:visibility="gone"/>
+        <ImageView
+            android:id="@+id/iv_right2"
+            android:layout_width="@dimen/dp_38"
+            android:layout_height="@dimen/dp_38"
+            android:visibility="gone"/>
     </LinearLayout>
 </LinearLayout>

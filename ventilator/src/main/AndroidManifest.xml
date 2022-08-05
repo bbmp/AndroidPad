@@ -4,22 +4,29 @@
 
     <application>
         <activity
-            android:name=".ui.activity.SaleServiceActivity"
+            android:name=".ui.activity.SmartSettingActivity"
             android:screenOrientation="landscape"
             android:exported="false" />
+        <activity
+            android:name=".ui.activity.SaleServiceActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".ui.activity.SimpleModeActivity"
             android:exported="false"
             android:screenOrientation="landscape" />
         <activity
             android:name=".ui.activity.DateSettingActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".ui.activity.WifiSettingActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".ui.activity.WifiConnectActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".ui.activity.LoginPhoneActivity"
             android:exported="false"

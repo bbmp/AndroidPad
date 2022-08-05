@@ -79,13 +79,13 @@ public class HomePage extends SteamBasePage {
 //                keyTone();
                 scollToPosition(position);
                 Intent intent = new Intent();
-                intent.putExtra(Constant.FUNTION_BEAN, rvMainFuntionAdapter.getItem(position));
-                FuntionBean item = rvMainFuntionAdapter.getItem(position);
-                if (item.into == null || item.into.length() == 0) {
+                FuntionBean funtionBean = (FuntionBean) adapter.getItem(position);
+                intent.putExtra(Constant.FUNTION_BEAN, funtionBean);
+                if (funtionBean.into == null || funtionBean.into.length() == 0) {
                     ToastUtils.showShort(getContext(), "功能还未实现，请等待版本更新");
                     return;
                 }
-                intent.setAction(item.into);
+                intent.setAction(funtionBean.into);
                 startActivity(intent);
             }
 
@@ -94,7 +94,7 @@ public class HomePage extends SteamBasePage {
         rvDotAdapter = new RvDotAdapter();
         rvDot.setAdapter(rvDotAdapter);
         //设置滑动速度
-        setMaxFlingVelocity(rvMain, 3000);
+//        setMaxFlingVelocity(rvMain, 3000);
         hideItem1();
         hideItem2();
     }

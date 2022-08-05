@@ -49,8 +49,9 @@
         app:layout_constraintBaseline_toBaselineOf="@id/tv_phone"
         app:layout_constraintRight_toRightOf="@id/ventilator_guideline3"
         android:textSize="@dimen/sp_32"
-        android:textColor="@color/ventilator_login"
-        android:hint="@string/ventilator_input_phone_hint"/>
+        android:textColor="@color/ventilator_white"
+        android:textColorHint="@color/ventilator_white_20"
+        android:hint="@string/ventilator_input_phone_hint" />
     <TextView
         android:id="@+id/tv_verifycode"
         android:layout_width="wrap_content"
@@ -68,8 +69,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textSize="@dimen/sp_32"
-        android:textColor="@color/ventilator_login"
+        android:layout_marginLeft="@dimen/dp_32"
+        android:layout_marginRight="@dimen/dp_24"
+        android:textColor="@color/ventilator_white"
         android:hint="@string/ventilator_input_verifycode_hint"
+        android:textColorHint="@color/ventilator_white_20"
         app:layout_constraintLeft_toRightOf="@id/tv_verifycode"
         app:layout_constraintRight_toLeftOf="@id/tv_getverifycode"
         app:layout_constraintBaseline_toBaselineOf="@id/tv_verifycode"/>
@@ -82,7 +86,7 @@
         android:textSize="@dimen/sp_32"
         android:textColor="@color/ventilator_login"
         android:text="@string/ventilator_get_verifycode"/>
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/bt_login"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_56"
@@ -92,6 +96,7 @@
         app:layout_constraintRight_toRightOf="@id/ventilator_guideline3"
         app:layout_constraintBottom_toTopOf="@id/tv_login_qrcode"
         android:text="@string/ventilator_login"
+        android:gravity="center"
         android:textSize="@dimen/sp_30"
         android:textColor="@color/ventilator_white"
         android:background="@drawable/ventilator_shape_button_ok_bg"/>

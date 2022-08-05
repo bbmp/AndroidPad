@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:gravity="center"
-        android:textSize="@dimen/dp_50"
+        android:textSize="@dimen/sp_100"
         tools:text="蒸烤炸煎"/>
 
 </RelativeLayout>

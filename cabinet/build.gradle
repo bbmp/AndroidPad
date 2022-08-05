@@ -35,4 +35,5 @@ dependencies {
     api "androidx.navigation:navigation-ui:$versions.navigation_ui"
     testImplementation 'junit:junit:4.13.2'
     api project(path: ':app:common')
+    api "com.github.CymChad:BaseRecyclerViewAdapterHelper:$versions.BaseRecyclerViewAdapterHelper"
 }

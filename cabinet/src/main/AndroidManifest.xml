@@ -5,6 +5,7 @@
     <application>
         <activity
             android:name=".ui.activity.MainActivity"
+            android:screenOrientation="landscape"
             android:exported="false" />
     </application>
 

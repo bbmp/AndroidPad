@@ -15,6 +15,11 @@
 
         <item name="android:windowAnimationStyle">@style/Animation</item>
         <item name="android:windowFullscreen">true</item>
+        //下划线颜色
+        <item name="colorControlNormal">#33FFFFFF</item>
+        <item name="colorControlActivated">#FFFFFF</item>
+        //光标
+        <item name="android:textCursorDrawable">@drawable/custom</item>
     </style>
     <style name="Animation">
         <item name="android:windowEnterAnimation">@null</item>

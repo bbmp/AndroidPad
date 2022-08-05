@@ -5,9 +5,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <ImageView
         android:id="@+id/iv_dot"
-        android:layout_width="@dimen/dp_6"
-        android:layout_height="@dimen/dp_6"
-        android:layout_marginHorizontal="@dimen/dp_4"
+        android:layout_width="@dimen/dp_12"
+        android:layout_height="@dimen/dp_12"
+        android:layout_marginHorizontal="@dimen/dp_8"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:src="@drawable/steam_indicator_unselected"/>

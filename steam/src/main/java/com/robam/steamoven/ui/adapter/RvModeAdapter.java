@@ -23,7 +23,7 @@ public final class RvModeAdapter extends AppAdapter<ModeBean> {
      */
     private int index ;
     /**
-     * 需要选择的模式 模式 温度 时间
+     * 需要选择的模式 模式 温度 时间(0, 1, 2)
      */
     private int type ;
     /**
@@ -37,6 +37,12 @@ public final class RvModeAdapter extends AppAdapter<ModeBean> {
     public RvModeAdapter(Context context , int num ) {
         super(context);
         this.num = num ;
+    }
+
+    public RvModeAdapter(Context context, int num, int type) {
+        super(context);
+        this.num = num;
+        this.type = type;
     }
 
     @NonNull
