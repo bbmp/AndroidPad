@@ -6,4 +6,5 @@
     <color name="ventilator_white_10">#19ffffff</color>
     <color name="ventilator_white_20">#33ffffff</color>
     <color name="ventilator_white_50">#80ffffff</color>
+    <color name="ventilator_color_menu">#80000000</color>
 </resources>

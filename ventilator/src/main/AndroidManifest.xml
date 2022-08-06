@@ -4,9 +4,12 @@
 
     <application>
         <activity
-            android:name=".ui.activity.SmartSettingActivity"
-            android:screenOrientation="landscape"
+            android:name=".LoginQrcodeActivity"
             android:exported="false" />
+        <activity
+            android:name=".ui.activity.SmartSettingActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".ui.activity.SaleServiceActivity"
             android:exported="false"
