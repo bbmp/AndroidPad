@@ -4,8 +4,17 @@
 
     <application>
         <activity
-            android:name=".LoginQrcodeActivity"
-            android:exported="false" />
+            android:name=".ui.activity.ResetActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".ui.activity.PersonalCenterActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.LoginQrcodeActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".ui.activity.SmartSettingActivity"
             android:exported="false"

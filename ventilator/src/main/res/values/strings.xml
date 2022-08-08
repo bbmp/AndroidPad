@@ -53,4 +53,6 @@
     <string name="ventilator_skip">跳过</string>
     <string name="ventilator_smart_setting">智能设置</string>
     <string name="ventilator_reset_start">恢复初始</string>
+    <string name="ventilator_offline">离线</string>
+    <string name="ventilator_online">在线</string>
 </resources>

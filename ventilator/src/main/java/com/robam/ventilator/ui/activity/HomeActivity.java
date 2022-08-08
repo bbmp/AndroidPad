@@ -33,4 +33,10 @@ public class HomeActivity extends BaseActivity {
     protected void initData() {
 
     }
+
+    @Override
+    public void onBackPressed() {
+        //解决内存泄漏
+        finishAfterTransition();
+    }
 }

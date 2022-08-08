@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/ventilator_ic_bg"
+    tools:context=".ui.pages.HomePage">
+
+    <include
+        android:id="@+id/ll_title"
+        layout="@layout/ventilator_view_layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_fun"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_78"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_title" />
+
+    <LinearLayout
+        android:id="@+id/ll_select"
+        android:layout_width="@dimen/dp_260"
+        android:layout_height="@dimen/dp_60"
+        android:layout_marginBottom="@dimen/dp_40"
+        android:background="@drawable/ventilator_shape_button_unselected"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <TextView
+            android:id="@+id/tv_performance"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/ventilator_shape_button_selector"
+            android:gravity="center"
+            android:text="@string/ventilator_performance"
+            android:textColor="@drawable/ventilator_text_color_selector"
+            android:textSize="@dimen/sp_32" />
+
+        <TextView
+            android:id="@+id/tv_comfort"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/ventilator_shape_button_selector"
+            android:gravity="center"
+            android:text="@string/ventilator_comfort"
+            android:textColor="@drawable/ventilator_text_color_selector"
+            android:textSize="@dimen/sp_32" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/ventilator_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/dp_30"
+        android:layout_marginBottom="@dimen/sp_36"
+        android:text="@string/ventilator_air_speed"
+        android:textColor="@color/ventilator_white_50"
+        android:textSize="@dimen/sp_32"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/iv_speed" />
+
+    <ImageView
+        android:id="@+id/iv_speed"
+        android:layout_width="@dimen/dp_120"
+        android:layout_height="@dimen/dp_60"
+        android:layout_marginRight="@dimen/dp_56"
+        android:layout_marginBottom="@dimen/sp_36"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/ll_select" />
+
+    <ImageView
+        android:id="@+id/iv_flow"
+        android:layout_width="@dimen/dp_120"
+        android:layout_height="@dimen/dp_60"
+        android:layout_marginLeft="@dimen/dp_56"
+        android:layout_marginBottom="@dimen/sp_36"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/ll_select" />
+
+    <TextView
+        android:id="@+id/ventilator_textview2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_30"
+        android:layout_marginBottom="@dimen/sp_36"
+        android:text="@string/ventilator_air_flow"
+        android:textColor="@color/ventilator_white_50"
+        android:textSize="@dimen/sp_32"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/iv_flow" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/ventilator_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="ventilator_textview,iv_flow,ventilator_textview2,iv_speed" />
+    <LinearLayout
+        android:id="@+id/ll_drawer_left"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="center_vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_24"
+            android:text="@string/ventilator_settting"
+            android:textSize="@dimen/sp_30"
+            android:maxEms="1"
+            android:maxLines="4"
+            android:textColor="@color/cabinet_white"/>
+        <ImageView
+            android:layout_width="@dimen/dp_15"
+            android:layout_height="@dimen/dp_15"
+            android:layout_marginRight="@dimen/dp_20"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_drawer_right"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="center_vertical">
+        <ImageView
+            android:layout_width="@dimen/dp_15"
+            android:layout_height="@dimen/dp_15"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/dp_24"
+            android:text="@string/ventilator_product"
+            android:textSize="@dimen/sp_30"
+            android:maxEms="1"
+            android:maxLines="4"
+            android:textColor="@color/cabinet_white"/>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

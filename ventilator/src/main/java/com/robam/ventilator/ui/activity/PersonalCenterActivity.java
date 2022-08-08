@@ -8,17 +8,19 @@ import android.view.View;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
 
-public class LoginQrcodeActivity extends VentilatorBaseActivity {
+public class PersonalCenterActivity extends VentilatorBaseActivity {
+
 
     @Override
     protected int getLayoutId() {
-        return R.layout.ventilator_activity_layout_login_qrcode;
+        return R.layout.ventilator_activity_layout_personal_center;
     }
 
     @Override
     protected void initView() {
         showLeft();
-        setCenter(R.string.ventilator_login_qrcode);
+        showCenter();
+
         setOnClickListener(R.id.ll_left);
     }
 

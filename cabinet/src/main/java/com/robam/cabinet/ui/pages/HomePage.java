@@ -19,6 +19,7 @@ import com.robam.cabinet.ui.adapter.RvDotAdapter;
 import com.robam.cabinet.ui.adapter.RvMainFunctionAdapter;
 import com.robam.common.ui.HeadPage;
 import com.robam.common.ui.UIService;
+import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.common.utils.ImageUtils;
 import com.robam.common.utils.ToastUtils;
@@ -47,7 +48,7 @@ public class HomePage extends CabinetBasePage {
         pickerLayoutManager = new PickerLayoutManager.Builder(getContext())
                 .setOrientation(RecyclerView.HORIZONTAL)
                 .setMaxItem(3)
-                .setScale(0.33f)
+                .setScale(0.5f)
                 .setOnPickerListener(new PickerLayoutManager.OnPickerListener() {
                     @Override
                     public void onPicked(RecyclerView recyclerView, int position) {

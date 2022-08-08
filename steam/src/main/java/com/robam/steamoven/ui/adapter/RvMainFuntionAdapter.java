@@ -55,10 +55,10 @@ public class RvMainFuntionAdapter extends BaseQuickAdapter<FuntionBean, BaseView
             TextView textView = baseViewHolder.getView(R.id.tv_funtion_name);
             textView.setText(functionBean.funtionName);
 //            mTextView.setTextColor(getColor(R.color.common_text_color));
-            if (pickPosition == getItemPosition(functionBean)) {
-                textView.setTextSize(80);
-            } else
-                textView.setTextSize(40);
+//            if (pickPosition == getItemPosition(functionBean)) {
+//                textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getContext().getResources().getDimensionPixelSize(com.robam.common.R.dimen.sp_80));
+//            } else
+//                textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getContext().getResources().getDimensionPixelSize(com.robam.common.R.dimen.sp_40));
         }
     }
 }

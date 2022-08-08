@@ -16,6 +16,12 @@ public class ImageUtils {
         Glide.with(context).load(res).into(imageView);
     }
 
+    public static void loadImage(Context context, int res, BaseRequestOptions<?> options, ImageView imageView) {
+        Glide.with(context)
+                .load(res)
+                .apply(options)
+                .into(imageView);
+    }
     public static void loadImage(Context context, String url, ImageView imageView) {
         Glide.with(context).load(url).into(imageView);
     }

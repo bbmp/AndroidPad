@@ -24,10 +24,18 @@ public class SaleServiceActivity extends VentilatorBaseActivity {
         TextView tvCenter = findViewById(R.id.tv_center);
         tvCenter.setVisibility(View.VISIBLE);
         tvCenter.setText(R.string.ventilator_about_saleservice);
+        setOnClickListener(R.id.ll_left);
     }
 
     @Override
     protected void initData() {
 
+    }
+
+    @Override
+    public void onClick(View view) {
+        int id = view.getId();
+        if (id == R.id.ll_left)
+            finish();
     }
 }

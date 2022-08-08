@@ -1,19 +1,26 @@
 package com.robam.cabinet.ui.adapter;
 
+import android.util.TypedValue;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.bumptech.glide.load.MultiTransformation;
+import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.robam.cabinet.R;
 import com.robam.cabinet.bean.FunctionBean;
+import com.robam.common.utils.ImageUtils;
 import com.robam.common.utils.LogUtils;
 
 import io.reactivex.rxjava3.internal.operators.flowable.FlowableDistinctUntilChanged;
+import jp.wasabeef.glide.transformations.BlurTransformation;
 
 public class RvMainFunctionAdapter extends BaseQuickAdapter<FunctionBean, BaseViewHolder> {
     private int pickPosition;
+//    private RequestOptions options = RequestOptions.bitmapTransform(new MultiTransformation(new BlurTransformation(30, 3)));
 
     public void setPickPosition(int pickPosition) {
         this.pickPosition = pickPosition % getData().size();
@@ -54,10 +61,12 @@ public class RvMainFunctionAdapter extends BaseQuickAdapter<FunctionBean, BaseVi
         if (null != functionBean) {
             TextView textView = baseViewHolder.getView(R.id.tv_funtion_name);
             textView.setText(functionBean.funtionName);
-            if (pickPosition == getItemPosition(functionBean)) {
-                textView.setTextSize(80);
-            } else
-                textView.setTextSize(40);
+            ImageView imageView = baseViewHolder.getView(R.id.iv_round_bg);
+//            ImageUtils.loadImage(getContext(), R.drawable.cabinet_main_item_bg, options, imageView);
+//            if (pickPosition == getItemPosition(functionBean)) {
+//                textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getContext().getResources().getDimensionPixelSize(com.robam.common.R.dimen.sp_80));
+//            } else
+//                textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getContext().getResources().getDimensionPixelSize(com.robam.common.R.dimen.sp_40));
         }
     }
 }

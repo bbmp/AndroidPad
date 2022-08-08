@@ -20,6 +20,8 @@
         android:id="@+id/rv_wifi"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="@dimen/dp_3"
+        android:layout_marginHorizontal="@dimen/dp_80"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ll_title" />
