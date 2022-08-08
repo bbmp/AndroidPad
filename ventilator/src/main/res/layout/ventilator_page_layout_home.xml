@@ -44,7 +44,8 @@
             android:layout_height="match_parent"
             android:scrollbars="vertical"
             android:layout_marginVertical="@dimen/dp_30"
-            android:layout_marginHorizontal="@dimen/dp_30"
+            android:layout_marginRight="@dimen/dp_30"
+            android:layout_marginLeft="@dimen/dp_11"
             app:layout_constraintLeft_toLeftOf="parent"
             android:scrollbarThumbVertical="@drawable/ventilator_shape_scrollbar_bg"
             app:layout_constraintTop_toTopOf="parent"/>

@@ -15,11 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
-import com.robam.cabinet.ui.activity.MainActivity;
 import com.robam.common.skin.SkinDisplayUtils;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ScreenUtils;
+import com.robam.steamoven.ui.activity.MainActivity;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBasePage;
 import com.robam.ventilator.bean.Device;
@@ -102,9 +102,9 @@ public class HomePage extends VentilatorBasePage {
                 if (drawerView.getId() == R.id.drawer_left)
                     llSetting.setX(slideOffset * drawerView.getWidth());
                 else {
-                    LogUtils.e("x" + drawerView.getWidth());
+                    LogUtils.e("x" + llProducts.getX());
                     int width = ScreenUtils.getWidthPixels(getContext());
-                    llProducts.setX(width - slideOffset * drawerView.getWidth() - SkinDisplayUtils.dp2px(getContext(), 50));
+                    llProducts.setX(width - slideOffset * drawerView.getWidth() - getContext().getResources().getDimension(com.robam.common.R.dimen.dp_90));
                 }
 
             }
