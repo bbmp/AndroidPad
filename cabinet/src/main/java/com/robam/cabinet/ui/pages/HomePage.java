@@ -47,7 +47,7 @@ public class HomePage extends CabinetBasePage {
         pickerLayoutManager = new PickerLayoutManager.Builder(getContext())
                 .setOrientation(RecyclerView.HORIZONTAL)
                 .setMaxItem(3)
-                .setScale(0.5f)
+                .setScale(0.66f)
                 .setOnPickerListener(new PickerLayoutManager.OnPickerListener() {
                     @Override
                     public void onPicked(RecyclerView recyclerView, int position) {

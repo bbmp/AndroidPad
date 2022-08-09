@@ -148,15 +148,26 @@ public final class PickerLayoutManager extends LinearLayoutManager {
             }
             float childMid = (getDecoratedLeft(childView) + getDecoratedRight(childView)) / 2.0f;
             float scale = 1.0f + (-1 * (1 - mScale)) * (Math.min(mid, Math.abs(mid - childMid))) / mid;
-//            if (Math.abs(mid - childMid) < childView.getWidth()) {
+            scale = 1.0f - (1 - mScale)*Math.abs(mid - childMid)/childView.getWidth();
+            if (Math.abs(mid - childMid) < childView.getWidth()) {
                 childView.setScaleX(scale);
                 childView.setScaleY(scale);
-//            } else {
-//                childView.setScaleX(0.66f);
-//                childView.setScaleY(0.66f);
-//            }
+            } else {
+                childView.setScaleX(mScale);
+                childView.setScaleY(mScale);
+            }
             if (mAlpha) {
-                childView.setAlpha(scale);
+                if (Math.abs(mid - childMid) < childView.getWidth()) {
+                    childView.setAlpha(scale);
+                } else
+                    childView.setAlpha(mScale);
+            } else {
+                if (Math.abs(mid - childMid) < childView.getWidth())
+                    childView.setAlpha(scale);
+                else if (mid - childMid > 0)
+                    childView.setAlpha(0);
+                else
+                    childView.setAlpha(mScale);
             }
         }
     }

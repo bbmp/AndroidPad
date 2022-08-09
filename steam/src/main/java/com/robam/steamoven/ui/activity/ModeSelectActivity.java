@@ -107,7 +107,7 @@ public class ModeSelectActivity extends SteamBaseActivity {
         setAdapterClick();
         rvSelect1.setAdapter(rvModeFootAdapter);
         //设置选择recycleView的layoutManage
-        setLayoutManage(5, 0.56f);
+        setLayoutManage(5, 0.44f);
         rvDot.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
 
 

@@ -37,7 +37,8 @@ public class ModeSelectActivity extends CabinetBaseActivity {
         pickerLayoutManager = new PickerLayoutManager.Builder(getContext())
                 .setOrientation(RecyclerView.HORIZONTAL)
                 .setMaxItem(5)
-                .setScale(0.25f)
+                .setAlpha(false)
+                .setScale(0.44f)
                 .setOnPickerListener(new PickerLayoutManager.OnPickerListener() {
                     @Override
                     public void onPicked(RecyclerView recyclerView, int position) {
