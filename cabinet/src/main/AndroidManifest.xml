@@ -4,9 +4,21 @@
 
     <application>
         <activity
-            android:name=".ui.activity.MainActivity"
+            android:name=".ui.activity.WorkActivity"
             android:screenOrientation="landscape"
             android:exported="false" />
+        <activity
+            android:name=".ui.activity.AppointMentActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.ModeSelectActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.MainActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
     </application>
 
 </manifest>

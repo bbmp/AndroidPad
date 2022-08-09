@@ -1,4 +1,4 @@
-package com.robam.ventilator.base;
+package com.robam.cabinet.base;
 
 import android.os.Bundle;
 import android.view.View;
@@ -6,10 +6,10 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.robam.cabinet.R;
 import com.robam.common.ui.activity.BaseActivity;
-import com.robam.ventilator.R;
 
-public abstract class VentilatorBaseActivity extends BaseActivity {
+public abstract class CabinetBaseActivity extends BaseActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -25,12 +25,9 @@ public abstract class VentilatorBaseActivity extends BaseActivity {
         findViewById(R.id.ll_center).setVisibility(View.VISIBLE);
     }
 
-    public void setCenter(int res) {
-        findViewById(R.id.ll_center).setVisibility(View.VISIBLE);
-        findViewById(R.id.iv_center).setVisibility(View.GONE);
-        findViewById(R.id.tc_center).setVisibility(View.GONE);
-        TextView textView = findViewById(R.id.tv_center);
-        textView.setVisibility(View.VISIBLE);
+    public void setRight(int res) {
+        findViewById(R.id.ll_right).setVisibility(View.VISIBLE);
+        TextView textView = findViewById(R.id.tv_right);
         textView.setText(res);
     }
 

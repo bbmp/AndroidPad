@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/cabinet_ic_bg"
+    tools:context=".ui.activity.ModeSelectActivity">
+
+    <include
+        android:id="@+id/ll_title"
+        layout="@layout/cabinet_view_layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_mode"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_title"
+        app:layout_constraintBottom_toTopOf="@id/ll_foot"/>
+
+    <View
+        android:id="@+id/ll_foot"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_104"
+        android:background="#881E2229"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+    </View>
+    <TextView
+        android:id="@+id/tv_mode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_48"
+        android:textColor="@color/cabinet_white70"
+        android:layout_marginLeft="@dimen/dp_120"
+        android:text="mode"
+        app:layout_constraintTop_toTopOf="@id/ll_foot"
+        app:layout_constraintBottom_toBottomOf="@id/ll_foot"
+        app:layout_constraintLeft_toLeftOf="@id/ll_foot"/>
+
+    <TextView
+        android:id="@+id/tv_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/cabinet_white"
+        android:layout_marginLeft="@dimen/dp_210"
+        android:textSize="@dimen/sp_48"
+        android:text="1"
+        app:layout_constraintTop_toTopOf="@id/ll_foot"
+        app:layout_constraintLeft_toRightOf="@id/tv_mode"/>
+    <TextView
+        android:id="@+id/tv_min"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_30"
+        android:text="min"
+        android:layout_marginBottom="@dimen/dp_7"
+        android:textColor="@color/cabinet_white"
+        app:layout_constraintLeft_toRightOf="@id/tv_num"
+        app:layout_constraintBottom_toBottomOf="@id/tv_num"/>
+
+    <ImageView
+        android:id="@+id/iv_select_check"
+        android:src="@mipmap/cabinet_ic_mode_select"
+        android:layout_width="@dimen/dp_82"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_3"
+        app:layout_constraintTop_toBottomOf="@id/tv_num"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/tv_num"
+        app:layout_constraintRight_toRightOf="@id/tv_min"/>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_start"
+        android:layout_width="@dimen/dp_175"
+        android:layout_height="@dimen/dp_56"
+        android:layout_marginEnd="@dimen/dp_40"
+        android:textSize="@dimen/sp_30"
+        android:textColor="@color/cabinet_white"
+        android:gravity="center"
+        android:background="@drawable/cabinet_shape_button_bg_ok"
+        android:text="@string/cabinet_start_working"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/ll_foot"
+        app:layout_constraintBottom_toBottomOf="@id/ll_foot"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

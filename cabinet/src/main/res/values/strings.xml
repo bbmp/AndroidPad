@@ -1,4 +1,9 @@
 <resources>
     <string name="cabinet_app_name">消毒柜</string>
     <string name="cabinet_back">返回</string>
+    <string name="cabinet_start_working">开始工作</string>
+    <string name="cabinet_appointment">预约</string>
+    <string name="cabinet_appointment_time">预约启动时间</string>
+    <string name="cabinet_cancel_appointment">取消预约</string>
+    <string name="cabinet_ok_appointment">确认预约</string>
 </resources>

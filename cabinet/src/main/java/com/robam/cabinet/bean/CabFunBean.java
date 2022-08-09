@@ -3,14 +3,14 @@ package com.robam.cabinet.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class FunctionBean implements Parcelable {
+public class CabFunBean implements Parcelable {
     public int funtionCode ;
     public String funtionName ;
     public String backgroundImg ;
     public String mode ;
     public String into ;
 
-    private FunctionBean(Parcel in) {
+    private CabFunBean(Parcel in) {
         funtionCode = in.readInt();
         funtionName = in.readString();
         backgroundImg = in.readString();
@@ -19,15 +19,23 @@ public class FunctionBean implements Parcelable {
         into = in.readString();
     }
 
-    public static final Creator<FunctionBean> CREATOR = new Creator<FunctionBean>() {
+    public CabFunBean(int funtionCode, String funtionName, String backgroundImg, String mode, String into) {
+        this.funtionCode = funtionCode;
+        this.funtionName = funtionName;
+        this.backgroundImg = backgroundImg;
+        this.mode = mode;
+        this.into = into;
+    }
+
+    public static final Creator<CabFunBean> CREATOR = new Creator<CabFunBean>() {
         @Override
-        public FunctionBean createFromParcel(Parcel in) {
-            return new FunctionBean(in);
+        public CabFunBean createFromParcel(Parcel in) {
+            return new CabFunBean(in);
         }
 
         @Override
-        public FunctionBean[] newArray(int size) {
-            return new FunctionBean[size];
+        public CabFunBean[] newArray(int size) {
+            return new CabFunBean[size];
         }
     };
 

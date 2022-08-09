@@ -31,7 +31,7 @@
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <ImageView
-        android:src="@mipmap/ic_lock"
+        android:src="@mipmap/ventilator_ic_lock"
         android:layout_width="@dimen/dp_38"
         android:layout_height="@dimen/dp_38"
         app:layout_constraintTop_toTopOf="parent"
@@ -40,7 +40,7 @@
     <ImageView
         android:id="@+id/iv_wifi"
         android:layout_alignParentEnd="true"
-        android:src="@mipmap/ic_wifi"
+        android:src="@mipmap/ventilator_ic_wifi"
         android:layout_marginStart="@dimen/dp_3"
         android:layout_width="@dimen/dp_38"
         android:layout_height="@dimen/dp_38"

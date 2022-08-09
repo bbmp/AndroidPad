@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.robam.cabinet.bean.FunctionBean;
+import com.robam.cabinet.bean.CabFunBean;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -16,15 +16,15 @@ public class FunctionManager {
     /**
      * 获取功能列表
      */
-    public static List<FunctionBean> getFuntionList(Context context) {
+    public static List<CabFunBean> getFuntionList(Context context) {
         try {
             String jsonString = getFileString(context , "cabinet");
             if (jsonString == null) {
                 return null;
             }
-            Type type = new TypeToken<List<FunctionBean>>() {
+            Type type = new TypeToken<List<CabFunBean>>() {
             }.getType();
-            List<FunctionBean> funtionBeans = new Gson().fromJson(jsonString, type);
+            List<CabFunBean> funtionBeans = new Gson().fromJson(jsonString, type);
             return funtionBeans;
         } catch (Exception e) {
 //            CrashReport.postCatchedException(e);

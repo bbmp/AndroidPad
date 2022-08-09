@@ -12,14 +12,11 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.robam.cabinet.R;
 import com.robam.cabinet.base.CabinetBasePage;
-import com.robam.cabinet.bean.FunctionBean;
+import com.robam.cabinet.bean.CabFunBean;
 import com.robam.cabinet.constant.Constant;
 import com.robam.cabinet.manage.FunctionManager;
 import com.robam.cabinet.ui.adapter.RvDotAdapter;
 import com.robam.cabinet.ui.adapter.RvMainFunctionAdapter;
-import com.robam.common.ui.HeadPage;
-import com.robam.common.ui.UIService;
-import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.common.utils.ImageUtils;
 import com.robam.common.utils.ToastUtils;
@@ -33,6 +30,8 @@ public class HomePage extends CabinetBasePage {
     private RvMainFunctionAdapter rvMainFunctionAdapter;
     private RvDotAdapter rvDotAdapter;
     private ImageView imageView;
+    //主功能
+    private List<CabFunBean> functionList = new ArrayList<>();
 
     @Override
     protected int getLayoutId() {
@@ -67,13 +66,13 @@ public class HomePage extends CabinetBasePage {
 //                keyTone();
                 scollToPosition(position);
                 Intent intent = new Intent();
-                FunctionBean functionBean = (FunctionBean) adapter.getItem(position);
-                intent.putExtra(Constant.FUNCTION_BEAN, functionBean);
-                if (functionBean.into == null || functionBean.into.length() == 0) {
+                CabFunBean cabFunBean = (CabFunBean) adapter.getItem(position);
+                intent.putExtra(Constant.FUNCTION_BEAN, cabFunBean);
+                if (cabFunBean.into == null || cabFunBean.into.length() == 0) {
                     ToastUtils.showShort(getContext(), "功能还未实现，请等待版本更新");
                     return;
                 }
-                intent.setAction(functionBean.into);
+                intent.setAction(cabFunBean.into);
                 startActivity(intent);
             }
 
@@ -88,11 +87,16 @@ public class HomePage extends CabinetBasePage {
 
     @Override
     protected void initData() {
-        List<FunctionBean> functionBeans = FunctionManager.getFuntionList(getContext());
-        rvMainFunctionAdapter.setList(functionBeans);
+//        List<CabFunBean> cabFunBeans = FunctionManager.getFuntionList(getContext());
+        functionList.add(new CabFunBean(1, "消毒", "", "disinfect", "com.robam.cabinet.ui.activity.ModeSelectActivity"));
+        functionList.add(new CabFunBean(2, "快洁", "", "clean", "com.robam.cabinet.ui.activity.ModeSelectActivity"));
+        functionList.add(new CabFunBean(3, "烘干", "", "dry", "com.robam.cabinet.ui.activity.ModeSelectActivity"));
+        functionList.add(new CabFunBean(4, "净存", "", "flush", "com.robam.cabinet.ui.activity.ModeSelectActivity"));
+        functionList.add(new CabFunBean(5, "智能", "", "smart", "com.robam.cabinet.ui.activity.ModeSelectActivity"));
+        rvMainFunctionAdapter.setList(functionList);
         List<String> dotList = new ArrayList<>();
-        for (FunctionBean functionBean: functionBeans) {
-            dotList.add(functionBean.funtionName);
+        for (CabFunBean cabFunBean : functionList) {
+            dotList.add(cabFunBean.funtionName);
         }
 
         rvDotAdapter.setList(dotList);
@@ -100,6 +104,18 @@ public class HomePage extends CabinetBasePage {
         rvMainFunctionAdapter.setPickPosition(Integer.MAX_VALUE / 2);
         pickerLayoutManager.scrollToPosition(Integer.MAX_VALUE / 2);
         setBackground(Integer.MAX_VALUE / 2);
+
+        rvMainFunctionAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                CabFunBean cabFunBean = (CabFunBean) adapter.getItem(position);
+
+                Intent intent = new Intent();
+                intent.putExtra("mode", cabFunBean);
+                intent.setClassName(getContext(), cabFunBean.into);
+                startActivity(intent);
+            }
+        });
     }
 
     /**

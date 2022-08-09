@@ -4,9 +4,13 @@
 
     <application>
         <activity
+            android:name=".ui.activity.ScreenBrightnessActivity"
+            android:screenOrientation="landscape"
+            android:exported="false" />
+        <activity
             android:name=".ui.activity.ResetActivity"
             android:exported="false"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
         <activity
             android:name=".ui.activity.PersonalCenterActivity"
             android:exported="false"

@@ -1,6 +1,5 @@
 package com.robam.cabinet.ui.adapter;
 
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -11,26 +10,26 @@ import com.robam.cabinet.R;
 import com.robam.cabinet.bean.CabFunBean;
 import com.robam.common.utils.LogUtils;
 
-public class RvMainFunctionAdapter extends BaseQuickAdapter<CabFunBean, BaseViewHolder> {
+public class RvIntegerAdapter extends BaseQuickAdapter<Integer, BaseViewHolder> {
     private int pickPosition;
-//    private RequestOptions options = RequestOptions.bitmapTransform(new MultiTransformation(new BlurTransformation(30, 3)));
 
     public void setPickPosition(int pickPosition) {
         this.pickPosition = pickPosition % getData().size();
         notifyDataSetChanged();
     }
 
-    public RvMainFunctionAdapter() {
-        super(R.layout.cabinet_item_main_function);
+    public RvIntegerAdapter() {
+        super(R.layout.cabinet_item_layout_integer);
     }
-
     @Override
     public int getItemCount() {
+        if (getData().size() <= 1)
+            return 1;
         return Integer.MAX_VALUE;
     }
 
     @Override
-    public CabFunBean getItem(int position) {
+    public Integer getItem(int position) {
         int count = getHeaderLayoutCount() + getData().size();
         position = position % count ;
         return super.getItem(position);
@@ -48,18 +47,14 @@ public class RvMainFunctionAdapter extends BaseQuickAdapter<CabFunBean, BaseView
         LogUtils.i("newPosition：" + newPosition);
         return super.getItemViewType(newPosition);
     }
-
     @Override
-    protected void convert(@NonNull BaseViewHolder baseViewHolder, CabFunBean cabFunBean) {
-        if (null != cabFunBean) {
-            TextView textView = baseViewHolder.getView(R.id.tv_funtion_name);
-            textView.setText(cabFunBean.funtionName);
-            ImageView imageView = baseViewHolder.getView(R.id.iv_round_bg);
-//            ImageUtils.loadImage(getContext(), R.drawable.cabinet_main_item_bg, options, imageView);
-//            if (pickPosition == getItemPosition(functionBean)) {
-//                textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getContext().getResources().getDimensionPixelSize(com.robam.common.R.dimen.sp_80));
-//            } else
-//                textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getContext().getResources().getDimensionPixelSize(com.robam.common.R.dimen.sp_40));
-        }
+    protected void convert(@NonNull BaseViewHolder baseViewHolder, Integer integer) {
+        TextView textView = baseViewHolder.getView(R.id.tv_num);
+        textView.setText(integer.toString());
+//        if (pickPosition == getItemPosition(integer)) {
+//            baseViewHolder.setVisible(R.id.tv_min, true);
+//        } else {
+//            baseViewHolder.setVisible(R.id.tv_min, false);
+//        }
     }
 }
