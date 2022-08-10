@@ -100,10 +100,12 @@ public class HomePage extends CabinetBasePage {
         }
 
         rvDotAdapter.setList(dotList);
-        rvDotAdapter.setPickPosition(Integer.MAX_VALUE / 2);
-        rvMainFunctionAdapter.setPickPosition(Integer.MAX_VALUE / 2);
-        pickerLayoutManager.scrollToPosition(Integer.MAX_VALUE / 2);
-        setBackground(Integer.MAX_VALUE / 2);
+        //初始位置第一个
+        rvDotAdapter.setPickPosition(0);
+        int initPos = Integer.MAX_VALUE / 2 - (Integer.MAX_VALUE / 2) % functionList.size();
+        rvMainFunctionAdapter.setPickPosition(initPos);
+        pickerLayoutManager.scrollToPosition(initPos);
+        setBackground(initPos);
 
         rvMainFunctionAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override

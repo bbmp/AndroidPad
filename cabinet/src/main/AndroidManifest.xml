@@ -4,9 +4,13 @@
 
     <application>
         <activity
+            android:name=".ui.activity.AppointingActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
+        <activity
             android:name=".ui.activity.WorkActivity"
-            android:screenOrientation="landscape"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".ui.activity.AppointMentActivity"
             android:exported="false"
@@ -18,6 +22,7 @@
         <activity
             android:name=".ui.activity.MainActivity"
             android:exported="false"
+            android:launchMode="singleTask"
             android:screenOrientation="landscape" />
     </application>
 

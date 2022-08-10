@@ -162,9 +162,9 @@ public final class PickerLayoutManager extends LinearLayoutManager {
                 } else
                     childView.setAlpha(mScale);
             } else {
-                if (Math.abs(mid - childMid) < childView.getWidth())
+                if (Math.abs(mid - childMid) < childView.getWidth()/2)
                     childView.setAlpha(scale);
-                else if (mid - childMid > 0)
+                else if (mid - childMid >= childView.getWidth()/2)
                     childView.setAlpha(0);
                 else
                     childView.setAlpha(mScale);

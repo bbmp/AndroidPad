@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activity.WorkActivity">
+    tools:context=".ui.activity.WorkActivity"
+    android:background="@mipmap/cabinet_ic_bg">
     <include
         android:id="@+id/ll_title"
         layout="@layout/cabinet_view_layout_title"
@@ -12,4 +13,56 @@
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_mode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_40"
+        android:textColor="@color/cabinet_mode70"
+        android:text="消毒"
+        android:layout_marginLeft="@dimen/dp_120"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+
+    <com.robam.common.ui.view.MCountdownView
+        android:id="@+id/tv_countdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_100"
+        android:textColor="@color/cabinet_white"
+        tools:text="25"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/tv_min"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_chainStyle="packed"/>
+
+    <TextView
+        android:id="@+id/tv_min"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/cabinet_white"
+        android:textSize="@dimen/sp_48"
+        android:layout_marginLeft="@dimen/dp_6"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:text="min"
+        app:layout_constraintLeft_toRightOf="@id/tv_countdown"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/tv_countdown"/>
+
+
+    <ImageView
+        android:id="@+id/iv_start"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
+        android:src="@mipmap/cabinet_ic_pause"
+        android:layout_marginRight="@dimen/dp_140"
+        app:layout_constraintTop_toTopOf="@id/tv_countdown"
+        app:layout_constraintBottom_toBottomOf="@id/tv_countdown"
+        app:layout_constraintRight_toRightOf="parent"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,18 +1,18 @@
 package com.robam.cabinet.ui.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 
 import com.robam.cabinet.R;
 import com.robam.cabinet.base.CabinetBaseActivity;
-import com.robam.cabinet.ui.adapter.RvIntegerAdapter;
+import com.robam.cabinet.bean.Cabinet;
 import com.robam.cabinet.ui.adapter.RvStringAdapter;
 import com.robam.common.ui.helper.PickerLayoutManager;
+import com.robam.common.utils.DateUtil;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class AppointMentActivity extends CabinetBaseActivity {
     /**
@@ -37,6 +37,13 @@ public class AppointMentActivity extends CabinetBaseActivity {
     private PickerLayoutManager mHourManager;
     private PickerLayoutManager mMinuteManager;
 
+    /**
+     * 预约时间
+     * @return
+     */
+    private String orderTime;
+    private TextView tvTime;
+
     @Override
     protected int getLayoutId() {
         return R.layout.cabinet_activity_layout_appoint_ment;
@@ -49,6 +56,7 @@ public class AppointMentActivity extends CabinetBaseActivity {
         //设置时间选择器
         mHourView = findViewById(R.id.rv_time_hour);
         mMinuteView = findViewById(R.id.rv_time_minute);
+        tvTime = findViewById(R.id.tv_time);
         mHourAdapter = new RvStringAdapter();
         mMinuteAdapter = new RvStringAdapter();
         mHourManager = new PickerLayoutManager.Builder(this)
@@ -57,8 +65,7 @@ public class AppointMentActivity extends CabinetBaseActivity {
                 .setOnPickerListener(new PickerLayoutManager.OnPickerListener() {
                     @Override
                     public void onPicked(RecyclerView recyclerView, int position) {
-//                        hourInt = position;
-//                        setOrderDate();
+                        setOrderDate();
                     }
                 }).build();
         mMinuteManager = new PickerLayoutManager.Builder(this)
@@ -66,13 +73,14 @@ public class AppointMentActivity extends CabinetBaseActivity {
                 .setOnPickerListener(new PickerLayoutManager.OnPickerListener() {
                     @Override
                     public void onPicked(RecyclerView recyclerView, int position) {
-//                        minuteInt = position;
-//                        setOrderDate();
+                        setOrderDate();
                     }
                 })
                 .build();
         mHourView.setLayoutManager(mHourManager);
         mMinuteView.setLayoutManager(mMinuteManager);
+
+        setOnClickListener(R.id.btn_cancel, R.id.btn_ok);
     }
 
     @Override
@@ -92,5 +100,34 @@ public class AppointMentActivity extends CabinetBaseActivity {
         mMinuteAdapter.setList(minuteData);
         mHourView.setAdapter(mHourAdapter);
         mMinuteView.setAdapter(mMinuteAdapter);
+        //默认
+        setOrderDate();
+    }
+
+    @Override
+    public void onClick(View view) {
+        super.onClick(view);
+        int id = view.getId();
+        if (id == R.id.btn_cancel)
+            finish();
+        else if (id == R.id.btn_ok) { //确认预约
+            Cabinet.getInstance().orderTime = orderTime;
+            startActivity(AppointingActivity.class);
+            finish();
+        }
+    }
+
+    /**
+     * 设置下方提示的开始时间
+     */
+    private void setOrderDate() {
+        String hour = mHourAdapter.getItem(mHourManager.getPickedPosition());
+        String minute = mMinuteAdapter.getItem(mMinuteManager.getPickedPosition());
+        orderTime = hour + ":" + minute;
+        if (DateUtil.compareTime(DateUtil.getCurrentTime(DateUtil.PATTERN), orderTime, DateUtil.PATTERN) == 1) {
+            tvTime.setText(String.format(getString(R.string.cabinet_work_order_hint2), orderTime ));
+        } else {
+            tvTime.setText(String.format(getString(R.string.cabinet_work_order_hint3), orderTime ));
+        }
     }
 }

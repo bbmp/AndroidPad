@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.robam.cabinet.R;
 import com.robam.cabinet.base.CabinetBaseActivity;
 import com.robam.cabinet.bean.CabFunBean;
+import com.robam.cabinet.bean.Cabinet;
 import com.robam.cabinet.ui.adapter.RvIntegerAdapter;
 import com.robam.common.ui.helper.PickerLayoutManager;
 
@@ -36,7 +37,7 @@ public class ModeSelectActivity extends CabinetBaseActivity {
         tvNum = findViewById(R.id.tv_num);
         pickerLayoutManager = new PickerLayoutManager.Builder(getContext())
                 .setOrientation(RecyclerView.HORIZONTAL)
-                .setMaxItem(5)
+                .setMaxItem(3)
                 .setAlpha(false)
                 .setScale(0.44f)
                 .setOnPickerListener(new PickerLayoutManager.OnPickerListener() {
@@ -44,15 +45,20 @@ public class ModeSelectActivity extends CabinetBaseActivity {
                     public void onPicked(RecyclerView recyclerView, int position) {
                         rvIntegerAdapter.setPickPosition(position);
                         tvNum.setText(rvIntegerAdapter.getItem(position).toString());
+                        //设置工作时长
+                        Cabinet.getInstance().workHours = rvIntegerAdapter.getItem(position).intValue();
                     }
                 }).build();
         rvMode.setLayoutManager(pickerLayoutManager);
-        setOnClickListener(R.id.ll_right);
+        setOnClickListener(R.id.ll_right, R.id.btn_start);
     }
 
     @Override
     protected void initData() {
         CabFunBean cabFunBean = (CabFunBean) getIntent().getParcelableExtra("mode");
+        //当前模式
+        Cabinet.getInstance().workMode = (short) cabFunBean.funtionCode;
+
         List<Integer> lists = new ArrayList();
         if (null != cabFunBean) {
             tvMode.setText(cabFunBean.funtionName);
@@ -62,7 +68,7 @@ public class ModeSelectActivity extends CabinetBaseActivity {
                         lists.add(i);
                     break;
                 case 2:
-                    for (int i = 3; i<15; i++)
+                    for (int i = 3; i<=15; i++)
                         lists.add(i);
                     break;
                 case 3:
@@ -81,9 +87,13 @@ public class ModeSelectActivity extends CabinetBaseActivity {
         rvIntegerAdapter = new RvIntegerAdapter();
         rvMode.setAdapter(rvIntegerAdapter);
         rvIntegerAdapter.setList(lists);
-        pickerLayoutManager.scrollToPosition(Integer.MAX_VALUE / 2);
+        //初始位置
+        int initPos = (Integer.MAX_VALUE/2) - (Integer.MAX_VALUE / 2) % lists.size();
+        pickerLayoutManager.scrollToPosition(initPos);
         //默认
-        tvNum.setText(lists.get((Integer.MAX_VALUE / 2) % lists.size()) + "");
+        tvNum.setText(lists.get(0) + "");
+        //工作时长
+        Cabinet.getInstance().workHours = lists.get(0);
     }
 
     @Override
@@ -91,7 +101,12 @@ public class ModeSelectActivity extends CabinetBaseActivity {
         super.onClick(view);
         int id = view.getId();
         if (id == R.id.ll_right) {
+            //预约
             startActivity(new Intent(this, AppointMentActivity.class));
+        } else if (id == R.id.btn_start) {
+            //开始工作
+            startActivity(WorkActivity.class);
+            finish();
         }
     }
 }
