@@ -15,11 +15,12 @@ public class RetrofitClient {
     private String ecsHost = "118.178.157.97";
     private int ecsPort;
     private final static int CONNECT_TIMEOUT = 20;
+    private final static int READ_TIMEOUT = 20;
     private final static int WRITE_TIMEOUT = 20;
     private String defaultHost = "https://api.github.com";
     private Map header;
 
-    private static  RetrofitClient instance = new RetrofitClient();
+    private static RetrofitClient instance = new RetrofitClient();
 
     public static RetrofitClient getInstance() { return instance; }
 
@@ -34,6 +35,7 @@ public class RetrofitClient {
         client = new OkHttpClient.Builder()
                 .addInterceptor(new HttpLogInterceptor())
                 .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
+                .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
                 .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)
                 .connectionPool(new ConnectionPool(8, 15, TimeUnit.SECONDS))
                 // 这里你可以根据自己的机型设置同时连接的个数和时间，我这里8个，和每个保持时间为15s
@@ -48,10 +50,20 @@ public class RetrofitClient {
     }
 
     //创建api
-    public <T> T createApi(Class<T> clazz) {
-        if(retrofit == null){
-            throw new IllegalArgumentException("you must init first!!! ");
-        }
+    public <T> T createApi(Class<T> clazz, String url) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new HttpLogInterceptor())
+                .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
+                .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)
+                .connectionPool(new ConnectionPool(8, 15, TimeUnit.SECONDS))
+                // 这里你可以根据自己的机型设置同时连接的个数和时间，我这里8个，和每个保持时间为15s
+                .build();
+        Retrofit retrofit = new Retrofit.Builder()
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create())
+//                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .baseUrl(url)
+                .build();
         return retrofit.create(clazz);
     }
 }

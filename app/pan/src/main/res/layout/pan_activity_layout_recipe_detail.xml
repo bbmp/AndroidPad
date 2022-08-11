@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/pan_ic_bg"
+    tools:context=".ui.activity.RecipeDetailActivity">
+
+    <include
+        android:id="@+id/ll_title"
+        layout="@layout/pan_view_layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/pan_guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.82" />
+    <View
+        android:id="@+id/view_board"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_46"
+        android:layout_marginBottom="@dimen/dp_32"
+        android:background="@drawable/pan_shape_border_bg"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@id/pan_guideline3"
+        app:layout_constraintTop_toBottomOf="@id/ll_title"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_qrcode"
+        android:layout_width="@dimen/dp_175"
+        android:layout_height="@dimen/dp_56"
+        android:textColor="@color/pan_white"
+        android:textSize="@dimen/sp_30"
+        android:gravity="center"
+        android:text="@string/pan_qrcode"
+        app:layout_constraintLeft_toLeftOf="@id/pan_guideline3"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/view_board"
+        app:layout_constraintBottom_toTopOf="@id/tv_material"
+        app:layout_constraintVertical_chainStyle="packed"/>
+
+    <TextView
+        android:id="@+id/tv_material"
+        android:layout_width="@dimen/dp_175"
+        android:layout_height="@dimen/dp_56"
+        android:layout_marginTop="@dimen/dp_100"
+        android:textColor="@color/pan_white"
+        android:textSize="@dimen/sp_30"
+        android:gravity="center"
+        android:text="@string/pan_material"
+        app:layout_constraintLeft_toLeftOf="@id/pan_guideline3"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_qrcode"
+        app:layout_constraintBottom_toBottomOf="@id/view_board"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

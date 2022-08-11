@@ -4,4 +4,7 @@
     <color name="pan_white">#FFFFFF</color>
     <color name="pan_white35">#59FFFFFF</color>
     <color name="pan_white25">#40FFFFFF</color>
+    <color name="pan_mode">#fff6f6f6</color>
+    <color name="pan_white_50">#80ffffff</color>
+    <color name="pan_white_20">#33ffffff</color>
 </resources>
