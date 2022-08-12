@@ -54,6 +54,11 @@ public interface IDialog {
      */
     void dismiss();
 
+    /**
+     * 根布局
+     * @return
+     */
+    View getRootView();
     //
     interface DialogOnClickListener{
         void onClick(View v);

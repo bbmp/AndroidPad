@@ -21,6 +21,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.82" />
+
     <View
         android:id="@+id/view_board"
         android:layout_width="0dp"
@@ -29,36 +30,127 @@
         android:layout_marginTop="@dimen/dp_46"
         android:layout_marginBottom="@dimen/dp_32"
         android:background="@drawable/pan_shape_border_bg"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="@id/pan_guideline3"
-        app:layout_constraintTop_toBottomOf="@id/ll_title"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/ll_title" />
+
+    <com.robam.common.ui.view.CircleImageView
+        android:id="@+id/iv_recipe_img"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginVertical="@dimen/dp_20"
+        android:layout_marginLeft="@dimen/dp_54"
+        android:src="@drawable/pan_main_item_bg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_title" />
+
+    <TextView
+        android:id="@+id/tv_recipe_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_60"
+        android:text="name"
+        android:textColor="@color/pan_white"
+        android:textSize="@dimen/sp_48"
+        app:layout_constraintBottom_toTopOf="@id/iv_time"
+        app:layout_constraintLeft_toRightOf="@id/iv_recipe_img"
+        app:layout_constraintTop_toTopOf="@id/view_board"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <ImageView
+        android:id="@+id/iv_time"
+        android:layout_width="@dimen/dp_38"
+        android:layout_height="@dimen/dp_38"
+        android:layout_marginTop="@dimen/dp_32"
+        app:layout_constraintBottom_toBottomOf="@id/view_board"
+        app:layout_constraintLeft_toLeftOf="@id/tv_recipe_name"
+        app:layout_constraintTop_toBottomOf="@id/tv_recipe_name" />
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:text="@string/pan_time"
+        android:textColor="@color/pan_white"
+        app:layout_constraintBottom_toBottomOf="@id/iv_time"
+        app:layout_constraintLeft_toRightOf="@id/iv_time"
+        app:layout_constraintTop_toTopOf="@id/iv_time" />
+
+    <ImageView
+        android:id="@+id/iv_qrcode"
+        android:layout_width="@dimen/dp_156"
+        android:layout_height="@dimen/dp_156"
+        android:layout_marginRight="@dimen/dp_20"
+        app:layout_constraintBottom_toBottomOf="@id/view_board"
+        app:layout_constraintRight_toRightOf="@id/view_board"
+        app:layout_constraintTop_toTopOf="@id/view_board" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_material"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="@dimen/dp_74"
+        android:layout_marginVertical="@dimen/dp_25"
+        app:layout_constraintBottom_toBottomOf="@id/view_board"
+        app:layout_constraintLeft_toLeftOf="@id/view_board"
+        app:layout_constraintRight_toRightOf="@id/view_board"
+        app:layout_constraintTop_toTopOf="@id/view_board" />
+
+    <View
+        android:id="@+id/view_line"
+        android:layout_width="@dimen/dp_1"
+        android:layout_height="0dp"
+        android:background="@color/pan_white"
+        android:layout_marginVertical="@dimen/dp_15"
+        app:layout_constraintBottom_toBottomOf="@id/view_board"
+        app:layout_constraintLeft_toLeftOf="@id/view_board"
+        app:layout_constraintRight_toRightOf="@id/view_board"
+        app:layout_constraintTop_toTopOf="@id/view_board" />
 
     <TextView
         android:id="@+id/tv_qrcode"
         android:layout_width="@dimen/dp_175"
         android:layout_height="@dimen/dp_56"
-        android:textColor="@color/pan_white"
-        android:textSize="@dimen/sp_30"
+        android:background="@drawable/pan_shape_button_selector"
         android:gravity="center"
         android:text="@string/pan_qrcode"
+        android:textColor="@color/pan_white"
+        android:textSize="@dimen/sp_30"
+        app:layout_constraintBottom_toTopOf="@id/tv_material"
         app:layout_constraintLeft_toLeftOf="@id/pan_guideline3"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/view_board"
-        app:layout_constraintBottom_toTopOf="@id/tv_material"
-        app:layout_constraintVertical_chainStyle="packed"/>
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <TextView
         android:id="@+id/tv_material"
         android:layout_width="@dimen/dp_175"
         android:layout_height="@dimen/dp_56"
         android:layout_marginTop="@dimen/dp_100"
-        android:textColor="@color/pan_white"
-        android:textSize="@dimen/sp_30"
+        android:background="@drawable/pan_shape_button_selector"
         android:gravity="center"
         android:text="@string/pan_material"
+        android:textColor="@color/pan_white"
+        android:textSize="@dimen/sp_30"
+        app:layout_constraintBottom_toBottomOf="@id/view_board"
         app:layout_constraintLeft_toLeftOf="@id/pan_guideline3"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_qrcode"
-        app:layout_constraintBottom_toBottomOf="@id/view_board"/>
+        app:layout_constraintTop_toBottomOf="@id/tv_qrcode" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/pan_group1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="iv_recipe_img,tv_recipe_name,iv_time,tv_time,iv_qrcode" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/pan_group2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="view_line,rv_material" />
 </androidx.constraintlayout.widget.ConstraintLayout>

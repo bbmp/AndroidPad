@@ -22,6 +22,7 @@ import com.robam.pan.ui.adapter.RvRecipeAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+//烹饪曲线
 public class CurveActivity extends PanBaseActivity {
     private RecyclerView rvRecipe;
     private RvFavoriteAdapter rvFavoriteAdapter;
@@ -75,11 +76,27 @@ public class CurveActivity extends PanBaseActivity {
         });
     }
 
+    //炉头选择
     private void selectStove() {
         //炉头选择提示
         IDialog iDialog = PanDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_SELECT_STOVE);
         iDialog.setCancelable(false);
+        iDialog.setListeners(new IDialog.DialogOnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int id = v.getId();
+                if (id == R.id.view_left || id == R.id.view_right)
+                    openFire();
+            }
+        }, R.id.select_stove_dialog, R.id.view_left, R.id.view_right);
         iDialog.show();
+    }
+    //点火提示
+    private void openFire() {
+//        IDialog iDialog = PanDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_OPEN_FIRE);
+//        iDialog.setCancelable(false);
+//        iDialog.show();
+        startActivity(CurveCreateActivity.class);
     }
 
     @Override

@@ -1,7 +1,9 @@
 package com.robam.cabinet.ui.activity;
 
 import android.content.Intent;
+import android.os.Handler;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,8 +12,13 @@ import com.robam.cabinet.R;
 import com.robam.cabinet.base.CabinetBaseActivity;
 import com.robam.cabinet.bean.CabFunBean;
 import com.robam.cabinet.bean.Cabinet;
+import com.robam.cabinet.constant.CabinetEnum;
+import com.robam.cabinet.constant.DialogConstant;
+import com.robam.cabinet.factory.CabinetDialogFactory;
 import com.robam.cabinet.ui.adapter.RvIntegerAdapter;
+import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.PickerLayoutManager;
+import com.robam.common.utils.ClickUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +38,7 @@ public class ModeSelectActivity extends CabinetBaseActivity {
     protected void initView() {
         showLeft();
         showCenter();
+        showRightCenter();
         setRight(R.string.cabinet_appointment);
         rvMode = findViewById(R.id.rv_mode);
         tvMode = findViewById(R.id.tv_mode);
@@ -50,7 +58,7 @@ public class ModeSelectActivity extends CabinetBaseActivity {
                     }
                 }).build();
         rvMode.setLayoutManager(pickerLayoutManager);
-        setOnClickListener(R.id.ll_right, R.id.btn_start);
+        setOnClickListener(R.id.ll_right, R.id.ll_right_center, R.id.btn_start);
     }
 
     @Override
@@ -107,6 +115,24 @@ public class ModeSelectActivity extends CabinetBaseActivity {
             //开始工作
             startActivity(WorkActivity.class);
             finish();
+        } else if (id == R.id.ll_right_center) {
+            //童锁
+            screenLock();
         }
+    }
+
+    private void screenLock() {
+        IDialog iDialog = CabinetDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_SCREEN_LOCK);
+        iDialog.setCancelable(false);
+        //长按解锁
+        ImageView imageView = iDialog.getRootView().findViewById(R.id.iv_screen_lock);
+        ClickUtils.setLongClick(new Handler(), imageView, 2000, new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                iDialog.dismiss();
+                return true;
+            }
+        });
+        iDialog.show();
     }
 }

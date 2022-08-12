@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="dishwasher_transparent">#00000000</color>
+    <color name="dishwasher_white">#FFFFFF</color>
+    <color name="dishwasher_white35">#59FFFFFF</color>
+    <color name="dishwasher_white25">#40FFFFFF</color>
+    <color name="dishwasher_mode">#fff6f6f6</color>
+    <color name="dishwasher_white_50">#80ffffff</color>
+    <color name="dishwasher_white_20">#33ffffff</color>
 </resources>

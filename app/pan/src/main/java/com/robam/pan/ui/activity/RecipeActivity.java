@@ -1,11 +1,16 @@
 package com.robam.pan.ui.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.pan.R;
 import com.robam.pan.base.PanBaseActivity;
@@ -52,5 +57,12 @@ public class RecipeActivity extends PanBaseActivity {
         panRecipeList.add(new PanRecipe("烤牛排", ""));
         panRecipeList.add(new PanRecipe("烤牛排", ""));
         rvRecipeAdapter.setList(panRecipeList);
+
+        rvRecipeAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                startActivity(RecipeSelectedActivity.class);
+            }
+        });
     }
 }

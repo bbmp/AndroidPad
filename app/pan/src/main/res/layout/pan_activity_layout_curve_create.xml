@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/pan_ic_bg"
+    tools:context=".ui.activity.CurveCreateActivity">
+
+    <include
+        android:id="@+id/ll_title"
+        layout="@layout/pan_view_layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_huoli"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_104"
+        android:layout_marginLeft="@dimen/dp_80"
+        android:textSize="@dimen/sp_40"
+        android:textColor="@color/pan_white"
+        app:layout_constraintLeft_toLeftOf="@id/pan_guideline7"
+        app:layout_constraintTop_toBottomOf="@id/ll_title"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/pan_white"
+        android:textSize="@dimen/sp_40"
+        android:layout_marginLeft="@dimen/dp_40"
+        app:layout_constraintLeft_toRightOf="@id/tv_huoli"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_huoli"/>
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_60"
+        android:textSize="@dimen/sp_100"
+        android:textColor="@color/pan_white"
+        app:layout_constraintLeft_toLeftOf="@id/tv_huoli"
+        app:layout_constraintTop_toBottomOf="@id/tv_huoli"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/pan_white"
+        android:textSize="@dimen/sp_48"
+        android:text="min"
+        app:layout_constraintLeft_toRightOf="@id/tv_time"
+        app:layout_constraintBottom_toBottomOf="@id/tv_time"/>
+
+    <ImageView
+        android:id="@+id/iv_stop_create"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
+        android:layout_marginRight="@dimen/dp_95"
+        app:layout_constraintTop_toTopOf="@id/tv_time"
+        app:layout_constraintBottom_toBottomOf="@id/tv_time"
+        app:layout_constraintRight_toRightOf="parent"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/pan_guideline7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

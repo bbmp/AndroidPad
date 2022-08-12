@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.pan.Constant.DialogConstant;
+import com.robam.pan.ui.dialog.CurveEidtDialog;
 import com.robam.pan.ui.dialog.ElectricQuantityDialog;
 import com.robam.pan.ui.dialog.OpenFireDialog;
 import com.robam.pan.ui.dialog.PanCommonDialog;
@@ -28,6 +29,9 @@ public class PanDialogFactory {
                 break;
             case DialogConstant.DIALOG_TYPE_SHARE:
                 iDialog = new ShareDialog(context);
+                break;
+            case DialogConstant.DIALOG_TYPE_CURVE_EDIT:
+                iDialog = new CurveEidtDialog(context);
                 break;
         }
 

@@ -36,4 +36,14 @@
     <string name="pan_select_all">全选</string>
     <string name="pan_qrcode">二维码</string>
     <string name="pan_material">食材</string>
+    <string name="pan_time">时间  %smin</string>
+    <string name="pan_recipe_detail">菜谱详情</string>
+    <string name="pan_home">主页</string>
+    <string name="pan_start_cook">开始烹饪</string>
+    <string name="pan_stop_cook">结束烹饪</string>
+    <string name="pan_curve_name_hint">给曲线起个名字吧</string>
+    <string name="pan_back_home">返回首页</string>
+    <string name="pan_save_surve">保存曲线</string>
+    <string name="pan_save_success">保存成功</string>
+    <string name="pan_input_empty">输入不能为空</string>
 </resources>

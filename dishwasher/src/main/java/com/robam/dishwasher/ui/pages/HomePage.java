@@ -1,8 +1,9 @@
-package com.robam.cabinet.ui.pages;
+package com.robam.dishwasher.ui.pages;
 
 import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -10,39 +11,33 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
-import com.robam.cabinet.R;
-import com.robam.cabinet.base.CabinetBasePage;
-import com.robam.cabinet.bean.CabFunBean;
-import com.robam.cabinet.constant.Constant;
-import com.robam.cabinet.manage.FunctionManager;
-import com.robam.cabinet.ui.adapter.RvDotAdapter;
-import com.robam.cabinet.ui.adapter.RvMainFunctionAdapter;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.common.utils.ImageUtils;
-import com.robam.common.utils.ToastUtils;
+import com.robam.dishwasher.R;
+import com.robam.dishwasher.base.DishWasherBasePage;
+import com.robam.dishwasher.bean.DishWaherFunBean;
+import com.robam.dishwasher.ui.adapter.RvMainFunctionAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomePage extends CabinetBasePage {
-    private RecyclerView rvMain, rvDot;
-    private PickerLayoutManager pickerLayoutManager;
+public class HomePage extends DishWasherBasePage {
+    private RecyclerView rvMain;
     private RvMainFunctionAdapter rvMainFunctionAdapter;
-    private RvDotAdapter rvDotAdapter;
+    private PickerLayoutManager pickerLayoutManager;
     private ImageView imageView;
-    //主功能
-    private List<CabFunBean> functionList = new ArrayList<>();
+    private TextView tvFunhint;
 
     @Override
     protected int getLayoutId() {
-        return R.layout.cabinet_page_layout_home;
+        return R.layout.dishwasher_page_layout_home;
     }
 
     @Override
     protected void initView() {
         rvMain = findViewById(R.id.rv_main);
-        rvDot = findViewById(R.id.rv_dot);
         imageView = findViewById(R.id.iv_bg);
+        tvFunhint = findViewById(R.id.tv_fun_hint);
 
         pickerLayoutManager = new PickerLayoutManager.Builder(getContext())
                 .setOrientation(RecyclerView.HORIZONTAL)
@@ -53,39 +48,32 @@ public class HomePage extends CabinetBasePage {
                     public void onPicked(RecyclerView recyclerView, int position) {
                         setBackground(position);
                         //指示器更新
-                        rvDotAdapter.setPickPosition(position);
                         rvMainFunctionAdapter.setPickPosition(position);
+                        tvFunhint.setText(rvMainFunctionAdapter.getItem(position).mode);
                     }
                 }).build();
         rvMain.setLayoutManager(pickerLayoutManager);
-        rvDot.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
         rvMainFunctionAdapter = new RvMainFunctionAdapter();
-
         rvMain.setAdapter(rvMainFunctionAdapter);
-        rvDotAdapter = new RvDotAdapter();
-        rvDot.setAdapter(rvDotAdapter);
-
         showCenter();
         setOnClickListener(R.id.iv_float);
     }
 
     @Override
     protected void initData() {
-//        List<CabFunBean> cabFunBeans = FunctionManager.getFuntionList(getContext());
-        functionList.add(new CabFunBean(1, "消毒", "", "disinfect", "com.robam.cabinet.ui.activity.ModeSelectActivity"));
-        functionList.add(new CabFunBean(2, "快洁", "", "clean", "com.robam.cabinet.ui.activity.ModeSelectActivity"));
-        functionList.add(new CabFunBean(3, "烘干", "", "dry", "com.robam.cabinet.ui.activity.ModeSelectActivity"));
-        functionList.add(new CabFunBean(4, "净存", "", "flush", "com.robam.cabinet.ui.activity.ModeSelectActivity"));
-        functionList.add(new CabFunBean(5, "智能", "", "smart", "com.robam.cabinet.ui.activity.ModeSelectActivity"));
+        List<DishWaherFunBean> functionList = new ArrayList<>();
+        functionList.add(new DishWaherFunBean(1, "智能洗", "", "自动识别匹配餐具脏污程度进行清洗", "com.robam.cabinet.ui.activity.ModeSelectActivity"));
+        functionList.add(new DishWaherFunBean(2, "强力洗", "", "清洗重度脏污餐具、残渣干结餐具", "com.robam.cabinet.ui.activity.ModeSelectActivity"));
+        functionList.add(new DishWaherFunBean(3, "快速洗", "", "清洗轻度脏污餐具，无需干燥", "com.robam.cabinet.ui.activity.ModeSelectActivity"));
+        functionList.add(new DishWaherFunBean(4, "日常洗", "", "清洗中度脏污餐具", "com.robam.cabinet.ui.activity.ModeSelectActivity"));
+        functionList.add(new DishWaherFunBean(5, "节能洗", "", "清洗未干结的中度脏污餐具", "com.robam.cabinet.ui.activity.ModeSelectActivity"));
+        functionList.add(new DishWaherFunBean(6, "晶亮洗", "", "清洗精致易碎、轻度脏污餐具", "com.robam.cabinet.ui.activity.ModeSelectActivity"));
+        functionList.add(new DishWaherFunBean(7, "护婴洗", "", "清洗需要持续高温除菌餐具", "com.robam.cabinet.ui.activity.ModeSelectActivity"));
+        functionList.add(new DishWaherFunBean(8, "自清洁", "", "洗碗机内腔的清洁", "com.robam.cabinet.ui.activity.ModeSelectActivity"));
+        functionList.add(new DishWaherFunBean(9, "护婴\n净存", "", "餐具在洗碗机内部的储存", "com.robam.cabinet.ui.activity.ModeSelectActivity"));
         rvMainFunctionAdapter.setList(functionList);
-        List<String> dotList = new ArrayList<>();
-        for (CabFunBean cabFunBean : functionList) {
-            dotList.add(cabFunBean.funtionName);
-        }
 
-        rvDotAdapter.setList(dotList);
-        //初始位置第一个
-        rvDotAdapter.setPickPosition(0);
+        //初始位置
         int initPos = Integer.MAX_VALUE / 2 - (Integer.MAX_VALUE / 2) % functionList.size();
         rvMainFunctionAdapter.setPickPosition(initPos);
         pickerLayoutManager.scrollToPosition(initPos);
@@ -94,16 +82,15 @@ public class HomePage extends CabinetBasePage {
         rvMainFunctionAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                CabFunBean cabFunBean = (CabFunBean) adapter.getItem(position);
+                DishWaherFunBean dishWaherFunBean = (DishWaherFunBean) adapter.getItem(position);
 
                 Intent intent = new Intent();
-                intent.putExtra("mode", cabFunBean);
-                intent.setClassName(getContext(), cabFunBean.into);
+                intent.putExtra("mode", dishWaherFunBean);
+                intent.setClassName(getContext(), dishWaherFunBean.into);
                 startActivity(intent);
             }
         });
     }
-
     /**
      * 设置背景图片
      *
@@ -113,13 +100,6 @@ public class HomePage extends CabinetBasePage {
         //设置背景图片
         int resId = getResources().getIdentifier(rvMainFunctionAdapter.getItem(index).backgroundImg, "drawable", getContext().getPackageName());
         ImageUtils.loadGif(getContext(), resId, imageView);
-    }
-
-    /**
-     * 滚动并居中
-     */
-    private void scollToPosition(int index) {
-        pickerLayoutManager.smoothScrollToPosition(rvMain, new RecyclerView.State(), index);
     }
 
     @Override

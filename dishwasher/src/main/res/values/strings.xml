@@ -1,5 +1,5 @@
 <resources>
-    <string name="dishwasher_app_name">dishwasher</string>
+    <string name="dishwasher_app_name">洗碗机</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="dishwasher_hello_blank_fragment">Hello blank fragment</string>
+    <string name="dishwasher_back">返回</string>
 </resources>

@@ -24,6 +24,9 @@ public abstract class CabinetBaseActivity extends BaseActivity {
     public void showCenter() {
         findViewById(R.id.ll_center).setVisibility(View.VISIBLE);
     }
+    public void showRightCenter() {
+        findViewById(R.id.ll_right_center).setVisibility(View.VISIBLE);
+    }
 
     public void setRight(int res) {
         findViewById(R.id.ll_right).setVisibility(View.VISIBLE);

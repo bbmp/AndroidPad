@@ -42,16 +42,8 @@ public abstract class BaseDialog implements IDialog{
 
     @Override
     public void show() {
-        if (mDialog != null) {
-
-            if (mContext instanceof Activity) {
-                Activity activity = (Activity) mContext;
-                if (!activity.isFinishing()) {
-                    mDialog.show();
-                }
-            } else {
-                mDialog.show();
-            }
+        if (mDialog != null && !mDialog.isShowing()) {
+            mDialog.show();
         }
     }
 
@@ -80,6 +72,7 @@ public abstract class BaseDialog implements IDialog{
 
     }
 
+    @Override
     public View getRootView() {
         return rootView;
     }

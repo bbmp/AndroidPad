@@ -3,12 +3,13 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <ImageView
         android:id="@+id/iv_round_bg"
-        android:layout_width="@dimen/dp_180"
-        android:layout_height="@dimen/dp_180"
-        android:background="@drawable/pan_main_item_bg"
-        android:layout_marginHorizontal="@dimen/dp_95"
+        android:layout_width="@dimen/dp_270"
+        android:layout_height="@dimen/dp_270"
+        android:background="@drawable/dishwasher_main_item_bg"
+        android:layout_marginHorizontal="@dimen/dp_50"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -19,8 +20,8 @@
         android:layout_height="0dp"
         android:layout_centerInParent="true"
         android:gravity="center"
-        android:textSize="@dimen/sp_40"
-        android:textColor="@color/pan_white"
+        android:textSize="@dimen/sp_80"
+        android:textColor="@color/dishwasher_white"
         android:lineSpacingMultiplier="0.8"
         app:layout_constraintLeft_toLeftOf="@id/iv_round_bg"
         app:layout_constraintRight_toRightOf="@id/iv_round_bg"
