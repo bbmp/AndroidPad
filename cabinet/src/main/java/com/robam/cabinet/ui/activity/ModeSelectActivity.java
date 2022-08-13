@@ -12,7 +12,6 @@ import com.robam.cabinet.R;
 import com.robam.cabinet.base.CabinetBaseActivity;
 import com.robam.cabinet.bean.CabFunBean;
 import com.robam.cabinet.bean.Cabinet;
-import com.robam.cabinet.constant.CabinetEnum;
 import com.robam.cabinet.constant.DialogConstant;
 import com.robam.cabinet.factory.CabinetDialogFactory;
 import com.robam.cabinet.ui.adapter.RvIntegerAdapter;
@@ -110,7 +109,7 @@ public class ModeSelectActivity extends CabinetBaseActivity {
         int id = view.getId();
         if (id == R.id.ll_right) {
             //预约
-            startActivity(new Intent(this, AppointMentActivity.class));
+            startActivity(new Intent(this, AppointmentActivity.class));
         } else if (id == R.id.btn_start) {
             //开始工作
             startActivity(WorkActivity.class);

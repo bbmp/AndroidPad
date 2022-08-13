@@ -14,7 +14,8 @@ import com.robam.common.utils.DateUtil;
 
 import java.util.ArrayList;
 
-public class AppointMentActivity extends CabinetBaseActivity {
+//工作预约
+public class AppointmentActivity extends CabinetBaseActivity {
     /**
      * 小时选择
      */
@@ -32,7 +33,7 @@ public class AppointMentActivity extends CabinetBaseActivity {
      */
     private RvStringAdapter mMinuteAdapter;
     /**
-     * 重新layoutManage
+     * layoutManager
      */
     private PickerLayoutManager mHourManager;
     private PickerLayoutManager mMinuteManager;
@@ -46,7 +47,7 @@ public class AppointMentActivity extends CabinetBaseActivity {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.cabinet_activity_layout_appoint_ment;
+        return R.layout.cabinet_activity_layout_appointment;
     }
 
     @Override

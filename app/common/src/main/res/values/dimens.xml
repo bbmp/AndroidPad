@@ -423,7 +423,11 @@
     <dimen name="sp_38">38sp</dimen>
     <dimen name="sp_40">40sp</dimen>
     <dimen name="sp_42">42sp</dimen>
+    <dimen name="sp_44">44sp</dimen>
     <dimen name="sp_48">48sp</dimen>
+    <dimen name="sp_50">50sp</dimen>
+    <dimen name="sp_54">54sp</dimen>
+    <dimen name="sp_60">60sp</dimen>
     <dimen name="sp_80">80sp</dimen>
     <dimen name="sp_100">100sp</dimen>
 </resources>

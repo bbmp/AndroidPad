@@ -832,7 +832,15 @@
     	
     <dimen name="sp_42">12.6000sp</dimen>
     	
+    <dimen name="sp_44">13.2000sp</dimen>
+    	
     <dimen name="sp_48">14.4000sp</dimen>
+    	
+    <dimen name="sp_50">15.0000sp</dimen>
+    	
+    <dimen name="sp_54">16.2000sp</dimen>
+    	
+    <dimen name="sp_60">18.0000sp</dimen>
     	
     <dimen name="sp_80">24.0000sp</dimen>
     	

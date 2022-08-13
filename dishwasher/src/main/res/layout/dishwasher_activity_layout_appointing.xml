@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/dishwasher_ic_bg"
+    tools:context=".ui.activity.AppointingActivity">
+
+    <include
+        android:id="@+id/ll_title"
+        layout="@layout/dishwasher_view_layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_mode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_115"
+        android:text="消毒"
+        android:textColor="@color/dishwasher_mode70"
+        android:textSize="@dimen/sp_40"
+        app:layout_constraintBottom_toTopOf="@id/tv_time"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/tv_mode_aux"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_40"
+        android:layout_marginLeft="@dimen/dp_64"
+        android:text="辅助模式"
+        android:textColor="@color/dishwasher_mode70"
+        android:textSize="@dimen/sp_40"
+        app:layout_constraintLeft_toRightOf="@id/tv_mode"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_mode" />
+    <!--    SpannableString-->
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_70"
+        android:text="22"
+        android:textColor="@color/dishwasher_mode70"
+        android:textSize="@dimen/sp_40"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/tv_mode"
+        app:layout_constraintTop_toBottomOf="@id/tv_mode" />
+
+    <TextView
+        android:id="@+id/tv_day"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="日"
+        android:textColor="@color/dishwasher_white35"
+        android:textSize="@dimen/sp_24"
+        app:layout_constraintBottom_toTopOf="@id/tv_countdown"
+        app:layout_constraintLeft_toLeftOf="@id/tv_countdown"
+        app:layout_constraintRight_toRightOf="@id/tv_countdown"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"/>
+
+    <com.robam.common.ui.view.MCountdownView
+        android:id="@+id/tv_countdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/dishwasher_white"
+        android:layout_marginLeft="@dimen/dp_110"
+        android:textSize="@dimen/sp_100"
+        app:layout_constraintBottom_toTopOf="@id/tv_appointment_hint"
+        app:layout_constraintLeft_toLeftOf="@id/dishwasher_guideline"
+        app:layout_constraintTop_toBottomOf="@id/tv_day"
+        tools:text="00:25" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_appointment_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="后启动工作"
+        android:textColor="@color/dishwasher_white35"
+        android:textSize="@dimen/sp_24"
+        app:layout_constraintTop_toBottomOf="@id/tv_countdown"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/tv_countdown"
+        app:layout_constraintRight_toRightOf="@id/tv_countdown"/>
+
+
+    <ImageView
+        android:id="@+id/iv_start"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
+        android:layout_marginRight="@dimen/dp_100"
+        android:src="@mipmap/dishwasher_ic_start"
+        app:layout_constraintBottom_toBottomOf="@id/tv_countdown"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_countdown" />
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/dishwasher_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+</androidx.constraintlayout.widget.ConstraintLayout>

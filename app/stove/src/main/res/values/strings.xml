@@ -1,3 +1,13 @@
 <resources>
-    <string name="stove_app_name">stream</string>
+    <string name="stove_app_name">灶具</string>
+    <string name="stove_back">返回</string>
+    <string name="stove_left_stove">左灶</string>
+    <string name="stove_right_stove">右灶</string>
+    <string name="stove_open_fire_hint">为确保安全，不能远程开火，请在左灶点火</string>
+    <string name="stove_select_stove_hint">请选择工作炉头，并将锅具放置于对应炉头</string>
+    <string name="stove_close_fire_use">关火后可以使用</string>
+    <string name="stove_stove_leisure">空闲</string>
+    <string name="stove_stop_cook_hint">确认结束当前烹饪</string>
+    <string name="stove_cancel">取消</string>
+    <string name="stove_stop_cook">结束烹饪</string>
 </resources>

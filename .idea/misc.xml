@@ -17,6 +17,7 @@
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/drawable/pan_shape_button_selector.xml" value="0.261" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/drawable/pan_shape_button_unselected.xml" value="0.2305" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/drawable/pan_shape_stove_bg.xml" value="0.261" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/drawable/pan_shape_stove_bg_selected.xml" value="0.257" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/drawable/pan_shape_stove_bg_selector.xml" value="0.2305" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/drawable/pan_shape_stove_bg_unselected.xml" value="0.2305" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/drawable/pan_text_color_selector.xml" value="0.261" />
@@ -47,8 +48,23 @@
         <entry key="..\:/AndroidProjects/AndroidPad/app/src/main/res/drawable/share_ic.xml" value="0.1835" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/src/main/res/layout/activity_crash.xml" value="0.25" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/src/main/res/layout/activity_main.xml" value="0.175" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/stove_main_item_bg.xml" value="0.257" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/stove_shape_button_bg_cancel.xml" value="0.259" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/stove_shape_button_bg_ok.xml" value="0.259" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/stove_shape_button_selected.xml" value="0.257" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/stove_shape_button_selector.xml" value="0.257" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/stove_shape_button_unselected.xml" value="0.257" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/stove_shape_stove_bg_selected.xml" value="0.257" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/stove_shape_stove_bg_selector.xml" value="0.2305" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/stove_shape_stove_bg_unselected.xml" value="0.257" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/stove_text_color_selector.xml" value="0.2305" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_activity_layout_main.xml" value="0.1" />
-        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_page_layout_home.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_dialog_layout_common.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_dialog_layout_open_fire.xml" value="0.11788194444444444" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_dialog_layout_select_stove.xml" value="0.11788194444444444" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_item_main_function.xml" value="0.11631944444444445" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_page_layout_home.xml" value="0.15" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_view_layout_title.xml" value="0.11788194444444444" />
         <entry key="..\:/AndroidProjects/AndroidPad/cabinet/src/main/res/drawable/cabinet_main_item_bg.xml" value="0.182" />
         <entry key="..\:/AndroidProjects/AndroidPad/cabinet/src/main/res/drawable/cabinet_shape_border_bg.xml" value="0.182" />
         <entry key="..\:/AndroidProjects/AndroidPad/cabinet/src/main/res/drawable/cabinet_shape_button_bg.xml" value="0.261" />
@@ -58,6 +74,7 @@
         <entry key="..\:/AndroidProjects/AndroidPad/cabinet/src/main/res/drawable/steam_indicator_unselected.xml" value="0.2175" />
         <entry key="..\:/AndroidProjects/AndroidPad/cabinet/src/main/res/layout/cabinet_activity_layout_appoint_ment.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/cabinet/src/main/res/layout/cabinet_activity_layout_appointing.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/cabinet/src/main/res/layout/cabinet_activity_layout_appointment.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/cabinet/src/main/res/layout/cabinet_activity_layout_disinfect.xml" value="0.11788194444444444" />
         <entry key="..\:/AndroidProjects/AndroidPad/cabinet/src/main/res/layout/cabinet_activity_layout_main.xml" value="0.10208333333333333" />
         <entry key="..\:/AndroidProjects/AndroidPad/cabinet/src/main/res/layout/cabinet_activity_layout_modeselect.xml" value="0.1" />
@@ -80,9 +97,20 @@
         <entry key="..\:/AndroidProjects/AndroidPad/common/src/main/res/layout/abs_header_page.xml" value="0.1703125" />
         <entry key="..\:/AndroidProjects/AndroidPad/common/src/main/res/layout/common_header_page.xml" value="0.25" />
         <entry key="..\:/AndroidProjects/AndroidPad/dishwasher/src/main/res/drawable/dishwasher_main_item_bg.xml" value="0.261" />
+        <entry key="..\:/AndroidProjects/AndroidPad/dishwasher/src/main/res/drawable/dishwasher_radiobutton_selector.xml" value="0.221" />
+        <entry key="..\:/AndroidProjects/AndroidPad/dishwasher/src/main/res/drawable/dishwasher_shape_border_bg.xml" value="0.2305" />
+        <entry key="..\:/AndroidProjects/AndroidPad/dishwasher/src/main/res/drawable/dishwasher_shape_button_bg_cancel.xml" value="0.2305" />
+        <entry key="..\:/AndroidProjects/AndroidPad/dishwasher/src/main/res/drawable/dishwasher_shape_button_bg_ok.xml" value="0.2305" />
+        <entry key="..\:/AndroidProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_activity_layout_appointing.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_activity_layout_appointment.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_activity_layout_main.xml" value="0.15904232578024796" />
+        <entry key="..\:/AndroidProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_activity_mode_select.xml" value="0.15" />
+        <entry key="..\:/AndroidProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_dialog_layout_common.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_dialog_layout_exception.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_dialog_layout_work_complete.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_item_main_function.xml" value="0.11788194444444444" />
         <entry key="..\:/AndroidProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_page_layout_home.xml" value="0.11788194444444444" />
+        <entry key="..\:/AndroidProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_picker_item.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_view_layout_title.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/drawable/ic_dashboard_black_24dp.xml" value="0.1835" />
         <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/drawable/roki_.xml" value="0.185" />
@@ -285,7 +313,7 @@
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_item_main_function.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_item_menu_title.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_item_pick_text.xml" value="0.25" />
-        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_page_layout_home.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_page_layout_home.xml" value="0.15" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_page_layout_welcome.xml" value="0.17443351859769132" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_view_layout_title.xml" value="0.21" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/app/src/main/res/layout/activity_main.xml" value="0.14130434782608695" />

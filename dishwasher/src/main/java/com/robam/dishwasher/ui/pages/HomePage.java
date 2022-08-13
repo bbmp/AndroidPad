@@ -16,6 +16,7 @@ import com.robam.common.utils.ImageUtils;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.base.DishWasherBasePage;
 import com.robam.dishwasher.bean.DishWaherFunBean;
+import com.robam.dishwasher.bean.DishWasher;
 import com.robam.dishwasher.ui.adapter.RvMainFunctionAdapter;
 
 import java.util.ArrayList;
@@ -62,15 +63,15 @@ public class HomePage extends DishWasherBasePage {
     @Override
     protected void initData() {
         List<DishWaherFunBean> functionList = new ArrayList<>();
-        functionList.add(new DishWaherFunBean(1, "智能洗", "", "自动识别匹配餐具脏污程度进行清洗", "com.robam.cabinet.ui.activity.ModeSelectActivity"));
-        functionList.add(new DishWaherFunBean(2, "强力洗", "", "清洗重度脏污餐具、残渣干结餐具", "com.robam.cabinet.ui.activity.ModeSelectActivity"));
-        functionList.add(new DishWaherFunBean(3, "快速洗", "", "清洗轻度脏污餐具，无需干燥", "com.robam.cabinet.ui.activity.ModeSelectActivity"));
-        functionList.add(new DishWaherFunBean(4, "日常洗", "", "清洗中度脏污餐具", "com.robam.cabinet.ui.activity.ModeSelectActivity"));
-        functionList.add(new DishWaherFunBean(5, "节能洗", "", "清洗未干结的中度脏污餐具", "com.robam.cabinet.ui.activity.ModeSelectActivity"));
-        functionList.add(new DishWaherFunBean(6, "晶亮洗", "", "清洗精致易碎、轻度脏污餐具", "com.robam.cabinet.ui.activity.ModeSelectActivity"));
-        functionList.add(new DishWaherFunBean(7, "护婴洗", "", "清洗需要持续高温除菌餐具", "com.robam.cabinet.ui.activity.ModeSelectActivity"));
-        functionList.add(new DishWaherFunBean(8, "自清洁", "", "洗碗机内腔的清洁", "com.robam.cabinet.ui.activity.ModeSelectActivity"));
-        functionList.add(new DishWaherFunBean(9, "护婴\n净存", "", "餐具在洗碗机内部的储存", "com.robam.cabinet.ui.activity.ModeSelectActivity"));
+        functionList.add(new DishWaherFunBean(1, "智能洗", "", "自动识别匹配餐具脏污程度进行清洗", "com.robam.dishwasher.ui.activity.ModeSelectActivity"));
+        functionList.add(new DishWaherFunBean(2, "强力洗", "", "清洗重度脏污餐具、残渣干结餐具", "com.robam.dishwasher.ui.activity.ModeSelectActivity"));
+        functionList.add(new DishWaherFunBean(3, "快速洗", "", "清洗轻度脏污餐具，无需干燥", "com.robam.dishwasher.ui.activity.ModeSelectActivity"));
+        functionList.add(new DishWaherFunBean(4, "日常洗", "", "清洗中度脏污餐具", "com.robam.dishwasher.ui.activity.ModeSelectActivity"));
+        functionList.add(new DishWaherFunBean(5, "节能洗", "", "清洗未干结的中度脏污餐具", "com.robam.dishwasher.ui.activity.ModeSelectActivity"));
+        functionList.add(new DishWaherFunBean(6, "晶亮洗", "", "清洗精致易碎、轻度脏污餐具", "com.robam.dishwasher.ui.activity.ModeSelectActivity"));
+        functionList.add(new DishWaherFunBean(7, "护婴洗", "", "清洗需要持续高温除菌餐具", "com.robam.dishwasher.ui.activity.ModeSelectActivity"));
+        functionList.add(new DishWaherFunBean(8, "自清洁", "", "洗碗机内腔的清洁", "com.robam.dishwasher.ui.activity.ModeSelectActivity"));
+        functionList.add(new DishWaherFunBean(9, "护婴\n净存", "", "餐具在洗碗机内部的储存", "com.robam.dishwasher.ui.activity.ModeSelectActivity"));
         rvMainFunctionAdapter.setList(functionList);
 
         //初始位置
@@ -84,6 +85,7 @@ public class HomePage extends DishWasherBasePage {
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 DishWaherFunBean dishWaherFunBean = (DishWaherFunBean) adapter.getItem(position);
 
+                DishWasher.getInstance().workMode = dishWaherFunBean.funtionCode;
                 Intent intent = new Intent();
                 intent.putExtra("mode", dishWaherFunBean);
                 intent.setClassName(getContext(), dishWaherFunBean.into);

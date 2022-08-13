@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="ResourceName">
-    	
     <dimen name="button_round_size">999.0000dp</dimen>
     	
     <dimen name="dp_m_60">-60.0000dp</dimen>
@@ -832,7 +831,15 @@
     	
     <dimen name="sp_42">42.0000sp</dimen>
     	
+    <dimen name="sp_44">44.0000sp</dimen>
+    	
     <dimen name="sp_48">48.0000sp</dimen>
+    	
+    <dimen name="sp_50">50.0000sp</dimen>
+    	
+    <dimen name="sp_54">54.0000sp</dimen>
+    	
+    <dimen name="sp_60">60.0000sp</dimen>
     	
     <dimen name="sp_80">80.0000sp</dimen>
     	

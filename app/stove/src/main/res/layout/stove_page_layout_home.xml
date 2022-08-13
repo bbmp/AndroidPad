@@ -1,6 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@mipmap/stove_ic_bg"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <ImageView
+        android:id="@+id/iv_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY">
 
+    </ImageView>
+    <include layout="@layout/stove_view_layout_title"
+        android:id="@+id/ll_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <ImageView
+        android:id="@+id/iv_float"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_472"
+        android:background="@color/stove_white25"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_main"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_270"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <LinearLayout
+        android:id="@+id/ll_left_stove"
+        android:layout_width="@dimen/dp_244"
+        android:layout_height="@dimen/dp_56"
+        android:layout_marginBottom="@dimen/dp_24"
+        android:layout_marginRight="@dimen/dp_214"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:background="@drawable/stove_shape_button_selector"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/ll_right_stove"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_chainStyle="packed">
+        <ImageView
+            android:layout_width="@dimen/dp_38"
+            android:layout_height="@dimen/dp_38"
+            android:layout_marginRight="@dimen/dp_10"/>
+        <TextView
+            android:id="@+id/tv_left_stove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_30"
+            android:textColor="@color/stove_white"
+            android:text="@string/stove_left_stove"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_right_stove"
+        android:layout_width="@dimen/dp_244"
+        android:layout_height="@dimen/dp_56"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:background="@drawable/stove_shape_button_selector"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/ll_left_stove"
+        app:layout_constraintBottom_toBottomOf="@id/ll_left_stove">
+        <TextView
+            android:id="@+id/tv_right_stove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/dp_10"
+            android:textSize="@dimen/sp_30"
+            android:textColor="@color/stove_white"
+            android:text="@string/stove_right_stove"/>
+        <ImageView
+            android:layout_width="@dimen/dp_38"
+            android:layout_height="@dimen/dp_38"/>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

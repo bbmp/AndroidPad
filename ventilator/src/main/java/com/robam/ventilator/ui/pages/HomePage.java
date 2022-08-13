@@ -19,7 +19,7 @@ import com.robam.common.skin.SkinDisplayUtils;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ScreenUtils;
-import com.robam.dishwasher.ui.activity.MainActivity;
+import com.robam.stove.ui.activity.MainActivity;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBasePage;
 import com.robam.ventilator.bean.Device;
@@ -87,7 +87,7 @@ public class HomePage extends VentilatorBasePage {
         rvRight.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
         //获取px
-        recyclerView.addItemDecoration(new HorizontalSpaceItemDecoration((int) getContext().getResources().getDimension(com.robam.common.R.dimen.dp_45)));
+        recyclerView.addItemDecoration(new HorizontalSpaceItemDecoration((int) getContext().getResources().getDimension(com.robam.common.R.dimen.dp_55)));
         showCenter();
         setOnClickListener(R.id.tv_performance, R.id.tv_comfort, R.id.ll_drawer_left, R.id.ll_drawer_right);
 
@@ -145,6 +145,8 @@ public class HomePage extends VentilatorBasePage {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 startActivity(new Intent(getContext(), MainActivity.class));
+                view.setScaleX(1.6f);
+                view.setScaleY(1.6f);
             }
         });
         //左边菜单
