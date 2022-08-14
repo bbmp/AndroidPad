@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/cabinet_ic_bg"
+    android:background="@drawable/cabinet_ic_bg"
     tools:context=".ui.activity.ModeSelectActivity">
 
     <include
@@ -68,7 +68,7 @@
 
     <ImageView
         android:id="@+id/iv_select_check"
-        android:src="@mipmap/cabinet_ic_mode_select"
+        android:src="@drawable/cabinet_ic_mode_select"
         android:layout_width="@dimen/dp_82"
         android:layout_height="@dimen/dp_24"
         android:layout_marginTop="@dimen/dp_3"

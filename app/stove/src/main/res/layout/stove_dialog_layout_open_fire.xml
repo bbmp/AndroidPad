@@ -3,7 +3,7 @@
     android:id="@+id/full_dialog"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/stove_ic_bg"
+    android:background="@drawable/stove_ic_bg"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView

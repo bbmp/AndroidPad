@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/full_dialog"
-    android:background="@mipmap/dishwasher_ic_bg">
+    android:background="@drawable/dishwasher_ic_bg">
     <ImageView
         android:id="@+id/iv_exception"
         android:layout_width="@dimen/dp_120"

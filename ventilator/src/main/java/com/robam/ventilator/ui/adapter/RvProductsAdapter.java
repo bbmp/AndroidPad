@@ -20,7 +20,7 @@ public class RvProductsAdapter extends BaseMultiItemQuickAdapter<ProductMutiItem
     protected void convert(@NonNull BaseViewHolder baseViewHolder, ProductMutiItem productMutiItem) {
         switch (productMutiItem.getItemType()) {
             case ProductMutiItem.IMAGE:
-                baseViewHolder.setImageResource(R.id.iv_head, R.mipmap.ventilator_ic_bg);
+                baseViewHolder.setImageResource(R.id.iv_head, R.drawable.ventilator_ic_bg);
                 break;
             case ProductMutiItem.BUTTON:
                 break;

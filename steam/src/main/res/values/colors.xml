@@ -51,4 +51,5 @@
     <color name="steam_panda">#FF757575</color>
     <color name="steam_white35">#59FFFFFF</color>
     <color name="steam_white25">#40FFFFFF</color>
+    <color name="steam_white_50">#80ffffff</color>
 </resources>

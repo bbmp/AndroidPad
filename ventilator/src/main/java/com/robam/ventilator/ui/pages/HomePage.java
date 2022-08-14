@@ -19,7 +19,7 @@ import com.robam.common.skin.SkinDisplayUtils;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ScreenUtils;
-import com.robam.stove.ui.activity.MainActivity;
+import com.robam.steamoven.ui.activity.MainActivity;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBasePage;
 import com.robam.ventilator.bean.Device;

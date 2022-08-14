@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/dishwasher_ic_bg"
+    android:background="@drawable/dishwasher_ic_bg"
     tools:context=".ui.activity.AppointingActivity">
 
     <include
@@ -95,7 +95,7 @@
         android:layout_width="@dimen/dp_60"
         android:layout_height="@dimen/dp_60"
         android:layout_marginRight="@dimen/dp_100"
-        android:src="@mipmap/dishwasher_ic_start"
+        android:src="@drawable/dishwasher_ic_start"
         app:layout_constraintBottom_toBottomOf="@id/tv_countdown"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_countdown" />

@@ -52,9 +52,9 @@ public class HomePage extends SteamBasePage {
 
     @Override
     protected void initView() {
+        showCenter();
         rvMain = findViewById(R.id.rv_main);
         rvDot = findViewById(R.id.rv_dot);
-        llMain = findViewById(R.id.ll_main);
         imageView = findViewById(R.id.iv_bg);
         pickerLayoutManager = new PickerLayoutManager.Builder(getContext())
                 .setOrientation(RecyclerView.HORIZONTAL)
@@ -95,8 +95,6 @@ public class HomePage extends SteamBasePage {
         rvDot.setAdapter(rvDotAdapter);
         //设置滑动速度
 //        setMaxFlingVelocity(rvMain, 3000);
-        hideItem1();
-        hideItem2();
     }
 
     @Override

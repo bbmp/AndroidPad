@@ -7,42 +7,19 @@ import androidx.annotation.Nullable;
 
 import com.robam.common.ui.activity.BaseActivity;
 import com.robam.steamoven.R;
-import com.robam.steamoven.base.action.BackgroundImgAction;
 
-public abstract class SteamBaseActivity extends BaseActivity implements BackgroundImgAction {
-    /**
-     * 隐藏title2
-     */
-    public void hideItem2() {
-        if (findViewById(R.id.ll_title_item2) != null) {
-            findViewById(R.id.ll_title_item2).setVisibility(View.INVISIBLE);
-        }
-//        if (findViewById(R.id.ll_title_item4) != null) {
-//            findViewById(R.id.ll_title_item4).setVisibility(View.INVISIBLE);
-//        }
+public abstract class SteamBaseActivity extends BaseActivity {
+
+    public void showLeft() {
+        findViewById(R.id.ll_left).setVisibility(View.VISIBLE);
     }
 
-    public void hideItem3() {
-        if (findViewById(R.id.ll_title_item3) != null) {
-            findViewById(R.id.ll_title_item3).setVisibility(View.INVISIBLE);
-        }
+    public void showCenter() {
+        findViewById(R.id.ll_center).setVisibility(View.VISIBLE);
     }
 
-    /**
-     * 隐藏title5
-     */
-    public void hideItem5() {
-        if (findViewById(R.id.ll_title_item5) != null) {
-            findViewById(R.id.ll_title_item5).setVisibility(View.INVISIBLE);
-        }
+    public void showRight() {
+        findViewById(R.id.ll_right).setVisibility(View.VISIBLE);
     }
 
-    @Nullable
-    @Override
-    public ImageView getBgImg() {
-        if (obtainBgImg(getContentView()) != null) {
-            return obtainBgImg(getContentView());
-        }
-        return null;
-    }
 }

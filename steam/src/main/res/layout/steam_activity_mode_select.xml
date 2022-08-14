@@ -1,74 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/steam_ic_bg_xingkong"
-    tools:context="com.robam.steamoven.ui.activity.ModeSelectActivity">
+    tools:context=".ui.activity.ModeSelectActivity">
 
     <ImageView
         android:id="@+id/iv_bg"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:scaleType="fitXY">
 
     </ImageView>
-
-    <RelativeLayout
+    <include
+        android:id="@+id/ll_title"
+        layout="@layout/steam_view_layout_title"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <com.robam.common.ui.view.NoScrollViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_title"
+        app:layout_constraintBottom_toTopOf="@id/tabLayout"/>
 
-        <LinearLayout
-            android:id="@+id/ll_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginTop="@dimen/dp_24"
-            android:orientation="horizontal">
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_104"
+        android:background="#881E2229"
+        app:tabMode="fixed"
+        app:tabMaxWidth="0dp"
+        app:tabGravity="fill"
+        app:tabBackground="@color/steam_transparent"
+        app:tabRippleColor="@color/steam_transparent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/btn_start"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-            <include layout="@layout/steam_base_title" />
-        </LinearLayout>
+    </com.google.android.material.tabs.TabLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_select_2"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@id/ll_title"
-            android:layout_above="@+id/ll_foot"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_dot"
-            android:layout_above="@id/ll_foot"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="@dimen/dp_45"/>
-        <LinearLayout
-            android:id="@+id/ll_foot"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_104"
-            android:background="#881E2229"
-            android:gravity="center"
-            android:layout_alignParentBottom="true"
-            android:orientation="horizontal">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_select_1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_start"
-                style="@style/steam_ButtonStyleSteamOven"
-                android:layout_width="@dimen/dp_175"
-                android:layout_height="@dimen/dp_56"
-                android:layout_marginEnd="20dp"
-                android:text="@string/steam_start_working" />
-
-        </LinearLayout>
-    </RelativeLayout>
-</RelativeLayout>
+    <TextView
+        android:id="@+id/btn_start"
+        android:layout_width="@dimen/dp_175"
+        android:layout_height="@dimen/dp_56"
+        android:textSize="@dimen/sp_30"
+        android:gravity="center"
+        android:background="@drawable/steam_ic_bg_button"
+        android:textColor="@color/steam_white"
+        android:layout_marginEnd="@dimen/dp_40"
+        android:text="@string/steam_start_working"
+        app:layout_constraintTop_toTopOf="@id/tabLayout"
+        app:layout_constraintBottom_toBottomOf="@id/tabLayout"
+        app:layout_constraintRight_toRightOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

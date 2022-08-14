@@ -18,7 +18,7 @@ public class RvMainFunctonAdapter extends BaseQuickAdapter<VenFunBean, BaseViewH
     protected void convert(@NonNull BaseViewHolder baseViewHolder, VenFunBean venFun) {
         if (null != venFun) {
 //            baseViewHolder.setText(R.id.tv_fun, venFun.getTitle());
-            baseViewHolder.setImageResource(R.id.iv_fun, R.mipmap.logo_roki);
+            baseViewHolder.setImageResource(R.id.iv_fun, R.drawable.logo_roki);
         }
     }
 }

@@ -13,6 +13,14 @@ public class FuntionBean implements Parcelable {
     public String mode ;
     public String into ;
 
+    public FuntionBean(int funtionCode, String funtionName, String backgroundImg, String mode, String into) {
+        this.funtionCode = funtionCode;
+        this.funtionName = funtionName;
+        this.backgroundImg = backgroundImg;
+        this.mode = mode;
+        this.into = into;
+    }
+
     protected FuntionBean(Parcel in) {
         funtionCode = in.readInt();
         funtionName = in.readString();

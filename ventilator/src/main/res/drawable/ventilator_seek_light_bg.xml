@@ -2,10 +2,10 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:drawable="@mipmap/ventilator_ic_bg_seek">
+        android:drawable="@drawable/ventilator_ic_bg_seek">
     </item>
     <item>
-        <clip android:drawable="@mipmap/ventilator_ic_seek_bg_on" />
+        <clip android:drawable="@drawable/ventilator_ic_seek_bg_on" />
     </item>
 
 </layer-list>

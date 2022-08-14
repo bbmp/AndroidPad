@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/ventilator_ic_bg"
+    android:background="@drawable/ventilator_ic_bg"
     tools:context=".ui.activity.ScreenBrightnessActivity">
 
     <androidx.constraintlayout.widget.Guideline
@@ -18,7 +18,7 @@
         android:layout_width="@dimen/dp_38"
         android:layout_height="@dimen/dp_38"
         android:layout_marginRight="@dimen/dp_14"
-        android:src="@mipmap/ventilator_ic_light_min"
+        android:src="@drawable/ventilator_ic_light_min"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="@id/ventilator_guideline7"/>
@@ -45,7 +45,7 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="@dimen/dp_48"
         android:layout_height="@dimen/dp_48"
-        android:src="@mipmap/ventilator_ic_light_max"
+        android:src="@drawable/ventilator_ic_light_max"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="@id/ventilator_guideline8"

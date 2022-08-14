@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@mipmap/pan_ic_bg">
+    android:background="@drawable/pan_ic_bg">
     <include layout="@layout/pan_view_layout_title"
         android:id="@+id/ll_title"
         android:layout_width="match_parent"
