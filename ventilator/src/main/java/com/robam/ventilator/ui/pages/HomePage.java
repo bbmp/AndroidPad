@@ -19,7 +19,7 @@ import com.robam.common.skin.SkinDisplayUtils;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ScreenUtils;
-import com.robam.steamoven.ui.activity.MainActivity;
+import com.robam.dishwasher.ui.activity.MainActivity;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBasePage;
 import com.robam.ventilator.bean.Device;
@@ -37,6 +37,9 @@ public class HomePage extends VentilatorBasePage {
      * 主功能
      */
     private RecyclerView recyclerView;
+    /**
+     *
+     */
     private RvMainFunctonAdapter rvFunctionAdapter;
     /**
      * 系统设置
@@ -145,8 +148,7 @@ public class HomePage extends VentilatorBasePage {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 startActivity(new Intent(getContext(), MainActivity.class));
-                view.setScaleX(1.6f);
-                view.setScaleY(1.6f);
+                rvFunctionAdapter.setPickPosition(position);
             }
         });
         //左边菜单

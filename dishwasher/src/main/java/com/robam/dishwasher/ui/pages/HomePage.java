@@ -36,6 +36,7 @@ public class HomePage extends DishWasherBasePage {
 
     @Override
     protected void initView() {
+        showFloat(); //快捷图标
         rvMain = findViewById(R.id.rv_main);
         imageView = findViewById(R.id.iv_bg);
         tvFunhint = findViewById(R.id.tv_fun_hint);

@@ -1,4 +1,4 @@
-package com.robam.pan.ui.adapter;
+package com.robam.stove.ui.adapter;
 
 import android.widget.ImageView;
 
@@ -11,15 +11,14 @@ import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.robam.common.utils.ImageUtils;
-import com.robam.pan.R;
-import com.robam.pan.bean.PanRecipe;
+import com.robam.stove.R;
+import com.robam.stove.bean.StoveRecipe;
 
-//云端菜谱
-public class RvRecipeAdapter extends BaseQuickAdapter<PanRecipe, BaseViewHolder> {
+public class RvRecipeAdapter extends BaseQuickAdapter<StoveRecipe, BaseViewHolder> {
     private RequestOptions maskOption = new RequestOptions()
             .centerCrop()
-            .placeholder(R.drawable.pan_main_item_bg) //预加载图片
-            .error(R.drawable.pan_main_item_bg) //加载失败图片
+            .placeholder(R.drawable.stove_main_item_bg) //预加载图片
+            .error(R.drawable.stove_main_item_bg) //加载失败图片
             .priority(Priority.HIGH) //优先级
             .skipMemoryCache(true)
             .format(DecodeFormat.PREFER_RGB_565)
@@ -27,16 +26,15 @@ public class RvRecipeAdapter extends BaseQuickAdapter<PanRecipe, BaseViewHolder>
             .override((int) (182), (int) (182));
 
     public RvRecipeAdapter() {
-        super(R.layout.pan_item_recipe);
+        super(R.layout.stove_recipe_item);
     }
 
     @Override
-    protected void convert(@NonNull BaseViewHolder baseViewHolder, PanRecipe panRecipe) {
-        if (null != panRecipe) {
-
+    protected void convert(@NonNull BaseViewHolder baseViewHolder, StoveRecipe stoveRecipe) {
+        if (null != stoveRecipe) {
             ImageView imageView = baseViewHolder.getView(R.id.iv_recipe_img);
-            ImageUtils.loadImage(getContext(), panRecipe.getImgUrl(), maskOption, imageView);
-            baseViewHolder.setText(R.id.tv_recipe, panRecipe.getName());
+            ImageUtils.loadImage(getContext(), stoveRecipe.getImgUrl(), maskOption, imageView);
+            baseViewHolder.setText(R.id.tv_recipe, stoveRecipe.getName());
         }
     }
 }

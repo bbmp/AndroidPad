@@ -48,7 +48,7 @@ public class ModeSelectPage extends SteamBasePage {
         rvDot = findViewById(R.id.rv_dot);
 
         //设置选择recycleView的layoutManage
-        setLayoutManage(5, 0.44f);
+        setLayoutManage(5, 0.66f);
         rvDot.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
 
 
@@ -83,7 +83,7 @@ public class ModeSelectPage extends SteamBasePage {
             rvDotAdapter.setPickPosition(Integer.MAX_VALUE / 2);
 
             pickerLayoutManager.scrollToPosition(Integer.MAX_VALUE / 2);
-        rvStringAdapter.setPickPosition(Integer.MAX_VALUE / 2);
+            rvStringAdapter.setPickPosition(Integer.MAX_VALUE / 2);
 //            modeBean = rvModeAdapter.getItem(rvModeAdapter.getIndex());
 //            setFootData(modeBean);
 //            initParameter(modeBean);
@@ -104,7 +104,9 @@ public class ModeSelectPage extends SteamBasePage {
                 .setOnPickerListener(new PickerLayoutManager.OnPickerListener() {
                     @Override
                     public void onPicked(RecyclerView recyclerView, int position) {
-
+                        //指示器更新
+                        rvDotAdapter.setPickPosition(position);
+                        rvStringAdapter.setPickPosition(position);
 
                     }
                 })

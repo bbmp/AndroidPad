@@ -10,4 +10,16 @@
     <string name="stove_stop_cook_hint">确认结束当前烹饪</string>
     <string name="stove_cancel">取消</string>
     <string name="stove_stop_cook">结束烹饪</string>
+    <string name="stove_delete">删除</string>
+    <string name="stove_select_all">全选</string>
+    <string name="stove_pase_cook">暂停烹饪</string>
+    <string name="stove_stop_creation_hint">确认结束当前烹饪</string>
+    <string name="stove_back_home">返回主页</string>
+    <string name="stove_save_surve">保存曲线</string>
+    <string name="stove_curve_name_hint">给曲线起个名字吧</string>
+    <string name="stove_save_success">保存成功</string>
+    <string name="stove_input_empty">输入不能为空</string>
+    <string name="stove_input_curve_name_hint">请输入曲线名称</string>
+    <string name="stove_ok">确认</string>
+    <string name="stove_share_hint">请打开ROKI APP, 扫一扫分享</string>
 </resources>

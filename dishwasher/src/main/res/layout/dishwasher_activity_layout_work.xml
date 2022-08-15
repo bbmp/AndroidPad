@@ -4,6 +4,76 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/dishwasher_ic_bg"
     tools:context=".ui.activity.WorkActivity">
 
+    <include
+        android:id="@+id/ll_title"
+        layout="@layout/dishwasher_view_layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.robam.common.ui.view.CircleProgressView
+        android:id="@+id/progress"
+        android:layout_width="@dimen/dp_290"
+        android:layout_height="@dimen/dp_290"
+        android:layout_marginRight="@dimen/dp_100"
+        app:common_backColor="#99333333"
+        app:common_backWidth="@dimen/dp_8"
+        app:common_progStartColor="#0000ff"
+        app:common_progWidth="@dimen/dp_20"
+        app:common_progFirstColor="#00ffff"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="@id/dishwasher_guideline2"/>
+    <TextView
+        android:id="@+id/tv_mode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_32"
+        android:textColor="@color/dishwasher_white70"
+        android:textSize="@dimen/sp_40"
+        app:layout_constraintLeft_toLeftOf="@id/dishwasher_guideline2"
+        app:layout_constraintTop_toBottomOf="@id/ll_title"
+        app:layout_constraintBottom_toTopOf="@id/tv_time"
+        app:layout_constraintVertical_chainStyle="packed"/>
+
+    <TextView
+        android:id="@+id/tv_aux_mode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/dp_64"
+        android:textColor="@color/dishwasher_white70"
+        android:textSize="@dimen/sp_40"
+        app:layout_constraintLeft_toRightOf="@id/tv_mode"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_mode"/>
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_40"
+        android:textColor="@color/dishwasher_white"
+        android:textSize="@dimen/sp_100"
+        app:layout_constraintLeft_toLeftOf="@id/tv_mode"
+        app:layout_constraintTop_toBottomOf="@id/tv_mode"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <ImageView
+        android:id="@+id/iv_start"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
+        android:src="@drawable/dishwasher_ic_pause"
+        android:layout_marginRight="@dimen/dp_90"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/dishwasher_guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
 </androidx.constraintlayout.widget.ConstraintLayout>

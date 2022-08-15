@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/stove_ic_bg"
+    tools:context=".ui.activity.CurveCreateActivity">
+
+    <include
+        android:id="@+id/ll_title"
+        layout="@layout/stove_view_layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_huoli"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_104"
+        android:layout_marginLeft="@dimen/dp_80"
+        android:textSize="@dimen/sp_40"
+        tools:text="火力"
+        android:textColor="@color/stove_white"
+        app:layout_constraintLeft_toLeftOf="@id/stove_guideline7"
+        app:layout_constraintTop_toBottomOf="@id/ll_title"/>
+    <TextView
+        android:id="@+id/tv_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/stove_white"
+        android:textSize="@dimen/sp_40"
+        android:layout_marginLeft="@dimen/dp_40"
+        tools:text="温度"
+        app:layout_constraintLeft_toRightOf="@id/tv_huoli"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_huoli"/>
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_40"
+        android:layout_marginLeft="@dimen/dp_40"
+        tools:text="时间"
+        android:textColor="@color/stove_white"
+        app:layout_constraintLeft_toRightOf="@id/tv_temp"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_temp"/>
+
+    <TextView
+        android:id="@+id/btn_cancel"
+        android:layout_width="@dimen/dp_175"
+        android:layout_height="@dimen/dp_56"
+        android:layout_marginTop="@dimen/dp_76"
+        android:textSize="@dimen/sp_30"
+        android:textColor="@color/stove_white"
+        android:gravity="center"
+        android:text="@string/stove_pase_cook"
+        android:background="@drawable/stove_shape_button_bg_cancel"
+        app:layout_constraintLeft_toLeftOf="@id/tv_huoli"
+        app:layout_constraintTop_toBottomOf="@id/tv_huoli"/>
+
+    <TextView
+        android:id="@+id/btn_ok"
+        android:layout_width="@dimen/dp_175"
+        android:layout_height="@dimen/dp_56"
+        android:layout_marginLeft="@dimen/dp_70"
+        android:textSize="@dimen/sp_30"
+        android:textColor="@color/stove_white"
+        android:gravity="center"
+        android:text="@string/stove_stop_cook"
+        android:background="@drawable/stove_shape_button_bg_ok"
+        app:layout_constraintLeft_toRightOf="@id/btn_cancel"
+        app:layout_constraintBaseline_toBaselineOf="@id/btn_cancel"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/stove_guideline7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

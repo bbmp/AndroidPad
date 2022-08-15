@@ -21,6 +21,7 @@ import com.robam.common.utils.ToastUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBasePage;
 import com.robam.steamoven.bean.FuntionBean;
+import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.manager.DataInitManage;
 import com.robam.steamoven.manager.FuntionModeManage;
@@ -86,6 +87,7 @@ public class HomePage extends SteamBasePage {
                     return;
                 }
                 intent.setAction(funtionBean.into);
+                SteamOven.getInstance().workMode = (short) funtionBean.funtionCode;
                 startActivity(intent);
             }
 

@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/pan_ic_bg">
+    android:background="@drawable/stove_ic_bg">
 
     <include
         android:id="@+id/ll_title"
-        layout="@layout/pan_view_layout_title"
+        layout="@layout/stove_view_layout_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -28,10 +28,10 @@
         android:textSize="@dimen/sp_32"
         android:layout_marginLeft="@dimen/dp_100"
         android:layout_marginTop="@dimen/dp_70"
-        android:textColor="@color/pan_white"
+        android:textColor="@color/stove_white"
         android:maxEms="11"
-        android:hint="@string/pan_input_curve_name_hint"
-        android:textColorHint="@color/pan_white_20"
+        android:hint="@string/stove_input_curve_name_hint"
+        android:textColorHint="@color/stove_white_20"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ll_title"
         app:layout_constraintRight_toRightOf="@id/pan_guideline2"/>
@@ -43,9 +43,9 @@
         android:layout_marginRight="@dimen/dp_60"
         android:gravity="center"
         android:textSize="@dimen/sp_30"
-        android:textColor="@color/pan_white"
-        android:text="@string/pan_cancel"
-        android:background="@drawable/pan_shape_button_bg_cancel"
+        android:textColor="@color/stove_white"
+        android:text="@string/stove_cancel"
+        android:background="@drawable/stove_shape_button_bg_cancel"
         app:layout_constraintRight_toLeftOf="@id/tv_ok"
         app:layout_constraintBaseline_toBaselineOf="@id/et_curve_name"/>
 
@@ -56,9 +56,9 @@
         android:layout_marginRight="@dimen/dp_38"
         android:gravity="center"
         android:textSize="@dimen/sp_30"
-        android:textColor="@color/pan_white"
-        android:text="@string/pan_ok"
-        android:background="@drawable/pan_shape_button_bg_ok"
+        android:textColor="@color/stove_white"
+        android:text="@string/stove_ok"
+        android:background="@drawable/stove_shape_button_bg_ok"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBaseline_toBaselineOf="@id/et_curve_name"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

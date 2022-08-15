@@ -6,12 +6,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.MCountdownView;
 import com.robam.common.utils.DateUtil;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.base.DishWasherBaseActivity;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.dishwasher.bean.DishWasherEnum;
+import com.robam.dishwasher.constant.DialogConstant;
+import com.robam.dishwasher.device.DishWasherFactory;
+import com.robam.dishwasher.factory.DishWasherDialogFactory;
 
 /**
  * 预约中
@@ -86,6 +90,7 @@ public class AppointingActivity extends DishWasherBaseActivity {
         tvCountdown.start();
     }
 
+    //开始工作
     private void toStartWork() {
 //        CabinetAbstractControl.getInstance().startWork();
         startActivity(WorkActivity.class);
@@ -96,14 +101,32 @@ public class AppointingActivity extends DishWasherBaseActivity {
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.ll_left) {
-            //结束倒计时
-            tvCountdown.stop();
-            finish();
+            //取消预约提示
+            cancelAppointment();
         } else if (id == R.id.iv_start) {
             //立即开始
             tvCountdown.stop();
             finish();
             startActivity(WorkActivity.class);
         }
+    }
+    //取消预约
+    private void cancelAppointment() {
+        IDialog iDialog = DishWasherDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_COMMON_DIALOG);
+        iDialog.setCancelable(false);
+        iDialog.setContentText(R.string.dishwasher_cancel_appointment_hint);
+        iDialog.setCancelText(R.string.dishwasher_cancel);
+        iDialog.setOKText(R.string.dishwasher_ok);
+        iDialog.setListeners(new IDialog.DialogOnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (v.getId() == R.id.tv_ok) {
+                    //结束倒计时
+                    tvCountdown.stop();
+                    finish();
+                }
+            }
+        }, R.id.tv_cancel, R.id.tv_ok);
+        iDialog.show();
     }
 }

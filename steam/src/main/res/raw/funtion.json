@@ -23,28 +23,35 @@
   {
     "backgroundImg": "steam_ic_bg_multi",
     "funtionCode": 4,
+    "funtionName": "加湿烤",
+    "into": "steamoven.jiashi",
+    "mode": "jiashi"
+  },
+  {
+    "backgroundImg": "steam_ic_bg_multi",
+    "funtionCode": 5,
     "funtionName": "多段",
     "into": "steamoven.mult",
     "mode": "multimode"
   },
   {
     "backgroundImg": "steam_ic_bg_recipe",
-    "funtionCode": 2,
+    "funtionCode": 6,
     "funtionName": "菜谱",
     "into": "steamoven.recipe",
     "mode": "recipe_classify"
   },
   {
-    "backgroundImg": "steam_ic_bg_carve",
-    "funtionCode": 6,
-    "funtionName": "烹饪\n曲线",
-    "into": "steamoven.carve"
-  },
-  {
     "backgroundImg": "steam_ic_bg_aux",
-    "funtionCode": 5,
+    "funtionCode": 7,
     "funtionName": "辅助",
     "into": "steamoven.modeselect",
     "mode": "auxmode"
+  },
+  {
+    "backgroundImg": "steam_ic_bg_carve",
+    "funtionCode": 8,
+    "funtionName": "烹饪\n曲线",
+    "into": "steamoven.carve"
   }
 ]

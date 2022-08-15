@@ -9,8 +9,18 @@
         <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_shape_counter_down.xml" value="0.2115" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/layout/common_header_page.xml" value="0.10208333333333333" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/drawable/pan_main_item_bg.xml" value="0.1725" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/drawable/pan_recipe_img_bg.xml" value="0.261" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_activity_layout_curve.xml" value="0.11788194444444444" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_activity_layout_curve_create.xml" value="0.11788194444444444" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_activity_layout_curve_edit.xml" value="0.11788194444444444" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_activity_layout_curve_save.xml" value="0.11788194444444444" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_activity_layout_main.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_activity_layout_recipe.xml" value="0.11788194444444444" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_activity_layout_recipe_selected.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_dialog_layout_share.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_item_main_function.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_item_recipe.xml" value="0.11788194444444444" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_item_recipe_favorite.xml" value="0.11788194444444444" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_page_layout_home.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_view_layout_title.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/src/main/res/drawable/custom.xml" value="0.259" />
@@ -19,8 +29,21 @@
         <entry key="..\:/AndroidProjects/AndroidPad/app/src/main/res/drawable/share_ic.xml" value="0.1835" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/src/main/res/layout/activity_crash.xml" value="0.25" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/src/main/res/layout/activity_main.xml" value="0.175" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/pan_recipe_img_bg.xml" value="0.261" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/stove_tab_text_color_selector.xml" value="0.261" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/stove_text_color_selector.xml" value="0.261" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_activity_layout_curve.xml" value="0.11788194444444444" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_activity_layout_curve_create.xml" value="0.11788194444444444" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_activity_layout_curve_edit.xml" value="0.11788194444444444" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_activity_layout_curve_save.xml" value="0.11788194444444444" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_activity_layout_main.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_activity_layout_recipe.xml" value="0.11788194444444444" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_dialog_layout_share.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_item_recipe.xml" value="0.11788194444444444" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_page_layout_home.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_page_layout_recipe_classify.xml" value="0.11788194444444444" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_recipe_item.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_view_layout_tab.xml" value="0.11788194444444444" />
         <entry key="..\:/AndroidProjects/AndroidPad/cabinet/src/main/res/drawable/cabinet_main_item_bg.xml" value="0.182" />
         <entry key="..\:/AndroidProjects/AndroidPad/cabinet/src/main/res/drawable/cabinet_shape_border_bg.xml" value="0.182" />
         <entry key="..\:/AndroidProjects/AndroidPad/cabinet/src/main/res/drawable/cabinet_shape_button_bg.xml" value="0.261" />
@@ -49,7 +72,13 @@
         <entry key="..\:/AndroidProjects/AndroidPad/common/src/main/res/drawable/password_on_ic.xml" value="0.3015" />
         <entry key="..\:/AndroidProjects/AndroidPad/common/src/main/res/layout/abs_header_page.xml" value="0.1703125" />
         <entry key="..\:/AndroidProjects/AndroidPad/common/src/main/res/layout/common_header_page.xml" value="0.25" />
+        <entry key="..\:/AndroidProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_activity_layout_appointing.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_activity_layout_appointment.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_activity_layout_main.xml" value="0.15904232578024796" />
+        <entry key="..\:/AndroidProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_activity_layout_work.xml" value="0.12" />
+        <entry key="..\:/AndroidProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_dialog_layout_common.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_page_layout_home.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_view_layout_title.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/drawable/ic_dashboard_black_24dp.xml" value="0.1835" />
         <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/drawable/roki_.xml" value="0.185" />
         <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/drawable/roki_bg_recipe_device.xml" value="0.2" />
@@ -201,7 +230,9 @@
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_item_temp_time_select.xml" value="0.21" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_page_layout_full_screen.xml" value="0.16246259085079093" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_page_layout_home.xml" value="0.12" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_page_layout_mode_select.xml" value="0.11788194444444444" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_page_layout_take_photo.xml" value="0.16246259085079093" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_view_layout_tab.xml" value="0.11788194444444444" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_view_layout_title.xml" value="0.17682291666666666" />
         <entry key="..\:/AndroidProjects/AndroidPad/stream/src/main/res/layout/activity_ble.xml" value="0.13333333333333333" />
         <entry key="..\:/AndroidProjects/AndroidPad/stream/src/main/res/layout/fragment_take_photo.xml" value="0.18177083333333333" />
