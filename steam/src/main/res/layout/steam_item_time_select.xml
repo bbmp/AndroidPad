@@ -28,7 +28,6 @@
         android:textSize="@dimen/sp_30"
         app:layout_constraintTop_toTopOf="@id/tv_select"
         app:layout_constraintLeft_toRightOf="@id/tv_select"
-        app:layout_constraintRight_toRightOf="parent"
         android:visibility="invisible"/>
 
     <TextView

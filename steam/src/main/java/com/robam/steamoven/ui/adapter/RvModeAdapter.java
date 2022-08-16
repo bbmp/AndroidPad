@@ -1,6 +1,7 @@
 package com.robam.steamoven.ui.adapter;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
@@ -19,6 +20,11 @@ public class RvModeAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
         if (getData().size() <= 1)
             return 1;
         return Integer.MAX_VALUE;
+    }
+
+    @Override
+    public int getItemPosition(@Nullable String item) {
+        return super.getItemPosition(item);
     }
 
     @Override
