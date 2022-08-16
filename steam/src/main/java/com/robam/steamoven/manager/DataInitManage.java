@@ -62,7 +62,7 @@ public class DataInitManage {
 //
 //                }
 
-                List<ModeBean> mode = FuntionModeManage.getMode(context, "allmode");
+                List<ModeBean> mode = FuntionModeManage.getMode(context, "steammode");
                 assert mode != null;
                 LitePal.saveAll(mode);
 //                mWaitDialog.dismiss();

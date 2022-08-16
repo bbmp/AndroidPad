@@ -9,6 +9,9 @@ import com.robam.common.ui.activity.BaseActivity;
 import com.robam.steamoven.R;
 
 public abstract class SteamBaseActivity extends BaseActivity {
+    public void showFloat() {
+        findViewById(R.id.iv_float).setVisibility(View.VISIBLE);
+    }
 
     public void showLeft() {
         findViewById(R.id.ll_left).setVisibility(View.VISIBLE);

@@ -156,7 +156,7 @@
     "needWater": 0
   },
   {
-    "funCode": 5,
+    "funCode": 7,
     "code": 32,
     "name": "发酵",
     "defTemp": 35,
@@ -169,7 +169,7 @@
     "needWater": 1
   },
   {
-    "funCode": 5,
+    "funCode": 7,
     "code": 33,
     "name": "干燥",
     "defTemp": 250,
@@ -182,7 +182,7 @@
     "needWater": 0
   },
   {
-    "funCode": 5,
+    "funCode": 7,
     "code": 34,
     "name": "杀菌",
     "defTemp": 100,
@@ -195,7 +195,7 @@
     "needWater": 1
   },
   {
-    "funCode": 5,
+    "funCode": 7,
     "code": 35,
     "name": "除垢",
     "defTemp": 0,
@@ -208,7 +208,7 @@
     "needWater": 1
   },
   {
-    "funCode": 5,
+    "funCode": 7,
     "code": 36,
     "name": "保温",
     "defTemp": 60,
@@ -221,7 +221,7 @@
     "needWater": 0
   },
   {
-    "funCode": 5,
+    "funCode": 7,
     "code": 37,
     "name": "解冻",
     "defTemp": 55,
@@ -234,7 +234,7 @@
     "needWater": 1
   },
   {
-    "funCode": 5,
+    "funCode": 7,
     "code": 38,
     "name": "清洁",
     "defTemp": 100,
@@ -247,7 +247,7 @@
     "needWater": 1
   },
   {
-    "funCode":6,
+    "funCode":4,
     "code": 22,
     "name": "焙烤",
     "defTemp": 60,
@@ -264,7 +264,7 @@
     "addSteam": 0
   },
   {
-    "funCode":6,
+    "funCode":4,
     "code": 23,
     "name": "风焙烤",
     "defTemp": 200,
@@ -281,7 +281,7 @@
     "addSteam": 0
   },
   {
-    "funCode":6,
+    "funCode":4,
     "code": 24,
     "name": "强烤烧",
     "defTemp": 180,

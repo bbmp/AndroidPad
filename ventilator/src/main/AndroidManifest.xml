@@ -4,9 +4,13 @@
 
     <application>
         <activity
+            android:name=".ui.activity.MatchNetworkActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
+        <activity
             android:name=".ui.activity.ScreenBrightnessActivity"
-            android:screenOrientation="landscape"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".ui.activity.ResetActivity"
             android:exported="false"

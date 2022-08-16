@@ -6,19 +6,18 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.robam.common.utils.LogUtils;
 import com.robam.steamoven.R;
-import com.robam.steamoven.bean.FuntionBean;
 
-public class RvStringAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
+public class RvModeAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
     private int pickPosition;
 
     public void setPickPosition(int pickPosition) {
         this.pickPosition = pickPosition % getData().size();
         notifyDataSetChanged();
     }
-
-
     @Override
     public int getItemCount() {
+        if (getData().size() <= 1)
+            return 1;
         return Integer.MAX_VALUE;
     }
 
@@ -42,7 +41,8 @@ public class RvStringAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
         return super.getItemViewType(newPosition);
     }
 
-    public RvStringAdapter() {
+
+    public RvModeAdapter() {
         super(R.layout.steam_item_mode_select);
     }
 

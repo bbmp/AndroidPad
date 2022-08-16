@@ -10,7 +10,7 @@ public enum SteamOvenModeEnum {
      *
      */
     NO_MOEL(0,"无模式"),
-    XIANNENZHENG(1,"鲜嫩蒸"),
+    XIANNENZHENG(1, "鲜嫩蒸"),
     YIYANGZHENG(2,"营养蒸"),
     GAOWENZHENG(3,"高温蒸 "),
     WEIBOZHENG(4,"微波蒸 "),

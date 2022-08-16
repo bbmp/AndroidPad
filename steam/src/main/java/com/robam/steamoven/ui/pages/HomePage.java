@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.clj.fastble.BleManager;
+import com.robam.common.manager.FunctionManager;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.common.utils.ImageUtils;
 import com.robam.common.utils.MMKVUtils;
@@ -54,6 +55,8 @@ public class HomePage extends SteamBasePage {
     @Override
     protected void initView() {
         showCenter();
+        showFloat();
+
         rvMain = findViewById(R.id.rv_main);
         rvDot = findViewById(R.id.rv_dot);
         imageView = findViewById(R.id.iv_bg);
@@ -101,7 +104,8 @@ public class HomePage extends SteamBasePage {
 
     @Override
     protected void initData() {
-        List<FuntionBean> funtionBeans = FuntionModeManage.getFuntionList(getContext());
+//        List<FuntionBean> funtionBeans = FuntionModeManage.getFuntionList(getContext());
+        List<FuntionBean> funtionBeans = FunctionManager.getFuntionList(getContext(), FuntionBean.class, "steam");
         rvMainFuntionAdapter.setList(funtionBeans);
         List<String> dotList = new ArrayList<>();
         for (FuntionBean funtionBean: funtionBeans) {

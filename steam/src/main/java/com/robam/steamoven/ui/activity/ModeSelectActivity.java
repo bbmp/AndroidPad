@@ -1,5 +1,6 @@
 package com.robam.steamoven.ui.activity;
 
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,55 +16,36 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.robam.common.ui.helper.PickerLayoutManager;
-import com.robam.common.utils.ToastUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.bean.FuntionBean;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.bean.model.ModeBean;
 import com.robam.steamoven.constant.Constant;
-import com.robam.steamoven.constant.SteamOvenModeEnum;
 import com.robam.steamoven.ui.adapter.RvDotAdapter;
+import com.robam.steamoven.ui.pages.IModeSelect;
 import com.robam.steamoven.ui.pages.ModeSelectPage;
+import com.robam.steamoven.ui.pages.TimeSelectPage;
 
+import org.litepal.LitePal;
+
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ModeSelectActivity extends SteamBaseActivity {
+public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect {
     private TabLayout tabLayout;
     private ViewPager noScrollViewPager;
-    private List<Fragment> fragments = new ArrayList<>();
-    /**
-     * 模式 温度 时间选择
-     */
-    private RecyclerView rvSelect2;
-    /**
-     * 指示器
-     */
-    private RecyclerView rvDot;
-    /**
-     * 功能
-     */
-    private FuntionBean funBean;
-    /**
-     * 指示器adapter
-     */
-    private RvDotAdapter rvDotAdapter;
+    //弱引用，防止内存泄漏
+    private List<WeakReference<Fragment>> fragments = new ArrayList<>();
 
+    //模式选择， 温度和时间
+    private TabLayout.Tab modeTab, tempTab, timeTab;
 
-    /**
-     * 重写选择器
-     */
-    private PickerLayoutManager pickerLayoutManager;
-
-    /**
-     * 功能下所有模式
-     */
     private List<ModeBean> modes;
-    /**
-     * 选中的模式
-     */
-    private ModeBean modeBean;
+
+    private TimeSelectPage tempSelectPage, timeSelectPage;
+
     @Override
     protected int getLayoutId() {
         return R.layout.steam_activity_mode_select;
@@ -81,6 +63,7 @@ public class ModeSelectActivity extends SteamBaseActivity {
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                //tab选中放大
                 View view = tab.getCustomView();
                 TextView textView = view.findViewById(R.id.tv_mode);
                 textView.setScaleX(1.1f);
@@ -105,54 +88,84 @@ public class ModeSelectActivity extends SteamBaseActivity {
 
             }
         });
-        TabLayout.Tab tab1 = tabLayout.newTab();
-        tab1.setId(0);
-        View view1 = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab, null);
-        tab1.setCustomView(view1);
-        tabLayout.addTab(tab1);
 
-        TabLayout.Tab tab2 = tabLayout.newTab();
-        tab2.setId(1);
-        View view2 = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab, null);
-        tab2.setCustomView(view2);
-        tabLayout.addTab(tab2);
-
-        TabLayout.Tab tab3 = tabLayout.newTab();
-        tab3.setId(2);
-        View view3 = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab, null);
-        tab3.setCustomView(view3);
-        tabLayout.addTab(tab3);
-
-        TabLayout.Tab tab4 = tabLayout.newTab();
-        tab4.setId(3);
-        View view4 = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab, null);
-        tab4.setCustomView(view4);
-        tabLayout.addTab(tab4);
-
-        fragments.add(new ModeSelectPage());
-        fragments.add(new ModeSelectPage());
-        fragments.add(new ModeSelectPage());
-        fragments.add(new ModeSelectPage());
-//添加设置适配器
-        noScrollViewPager.setAdapter(new HomePagerAdapter(getSupportFragmentManager()));
-//        //把TabLayout与ViewPager关联起来
-//        tabLayout.setupWithViewPager(noScrollViewPager);
-        noScrollViewPager.setOffscreenPageLimit(3);
-
-//        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(noScrollViewPager));
-        noScrollViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        setOnClickListener(R.id.ll_left, R.id.ll_right, R.id.btn_start);
-        tabLayout.selectTab(tab1);
     }
-
-
 
 
     @Override
     protected void initData() {
         FuntionBean funtionBean = (FuntionBean) getIntent().getParcelableExtra(Constant.FUNTION_BEAN);
-        //当前模式
-        SteamOven.getInstance().workMode = (short) funtionBean.funtionCode;
+        //当前功能
+        SteamOven.getInstance().workType = (short) funtionBean.funtionCode;
+        //功能下的模式
+        modes =  LitePal.where("funCode = ?", funtionBean.funtionCode + "").find(ModeBean.class);
+
+        //
+        if (null != modes && modes.size() > 0) {
+            //默认模式
+            ModeBean defaultBean = modes.get(0);
+            modeTab = tabLayout.newTab();
+            modeTab.setId(0);
+            View modeView = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab_mode, null);
+            TextView tvMode = modeView.findViewById(R.id.tv_mode);
+            tvMode.setText(defaultBean.name);
+            modeTab.setCustomView(modeView);
+            tabLayout.addTab(modeTab);
+            Fragment modeFragment = new ModeSelectPage(this);
+            Bundle modeBundle = new Bundle();
+            ArrayList<String> modeList = new ArrayList<>();
+            for (ModeBean modeBean: modes) {
+                modeList.add(modeBean.name);
+            }
+            modeBundle.putStringArrayList("mode", modeList);
+            modeFragment.setArguments(modeBundle);
+            fragments.add(new WeakReference<>(modeFragment));
+
+            tempTab = tabLayout.newTab();
+            tempTab.setId(1);
+            View tempView = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab_temp, null);
+            TextView tvTemp = tempView.findViewById(R.id.tv_mode);
+            tvTemp.setText(defaultBean.defTemp + "");
+            tempTab.setCustomView(tempView);
+            tabLayout.addTab(tempTab);
+            Fragment tempFragment = new TimeSelectPage("temp", this);
+            Bundle tempBundle = new Bundle();
+            ArrayList<String> tempList = new ArrayList<>();
+            for (int i = defaultBean.minTemp; i<=defaultBean.maxTemp; i++) {
+                tempList.add(i + "");
+            }
+            tempBundle.putStringArrayList("mode", tempList);
+            tempFragment.setArguments(tempBundle);
+            fragments.add(new WeakReference<>(tempFragment));
+
+            timeTab = tabLayout.newTab();
+            timeTab.setId(2);
+            View timeView = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab_time, null);
+            TextView tvTime = timeView.findViewById(R.id.tv_mode);
+            tvTime.setText(defaultBean.defTime + "");
+            timeTab.setCustomView(timeView);
+            tabLayout.addTab(timeTab);
+            Fragment timeFragment = new TimeSelectPage("time", this);
+            Bundle timeBundle = new Bundle();
+            ArrayList<String> timeList = new ArrayList<>();
+            for (int i = defaultBean.minTime; i<=defaultBean.maxTime; i++) {
+                timeList.add(i + "");
+            }
+            timeBundle.putStringArrayList("mode", timeList);
+            timeFragment.setArguments(timeBundle);
+            fragments.add(new WeakReference<>(timeFragment));
+        }
+
+
+
+//添加设置适配器
+        noScrollViewPager.setAdapter(new HomePagerAdapter(getSupportFragmentManager()));
+        noScrollViewPager.setOffscreenPageLimit(fragments.size());
+
+//        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(noScrollViewPager));
+//        noScrollViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        setOnClickListener(R.id.ll_left, R.id.ll_right, R.id.btn_start);
+
     }
 
 
@@ -170,6 +183,47 @@ public class ModeSelectActivity extends SteamBaseActivity {
         }
     }
 
+    /**
+     * 根据当前模式设置温度和时间
+     */
+    private void setTimeParams(String mode) {
+        if (null != modes) {
+            for (ModeBean modeBean: modes) {
+                if (mode.equals(modeBean.name)) {
+                    ArrayList<String> tempList = new ArrayList<>();
+                    for (int i = modeBean.minTemp; i<=modeBean.maxTemp; i++) {
+                        tempList.add(i + "");
+                    }
+                    ArrayList<String> timeList = new ArrayList<>();
+                    for (int i = modeBean.minTime; i<=modeBean.maxTime; i++) {
+                        timeList.add(i + "");
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+
+    //更新底部tab内容
+    @Override
+    public void updateTab(String type, String tabString) {
+
+        if (type.equals("mode") && modeTab != null) {
+            TextView textView = modeTab.getCustomView().findViewById(R.id.tv_mode);
+            textView.setText(tabString);
+            //模式变更，温度和时间值也要变更
+        }
+        if (type.equals("temp") && tempTab != null) {
+            TextView textView = tempTab.getCustomView().findViewById(R.id.tv_mode);
+            textView.setText(tabString);
+        }
+        if (type.equals("time") && timeTab != null) {
+            TextView textView = timeTab.getCustomView().findViewById(R.id.tv_mode);
+            textView.setText(tabString);
+        }
+    }
+
     class HomePagerAdapter extends FragmentStatePagerAdapter {
 
 
@@ -180,7 +234,7 @@ public class ModeSelectActivity extends SteamBaseActivity {
         @NonNull
         @Override
         public Fragment getItem(int position) {
-            return fragments.get(position);
+            return fragments.get(position).get();
         }
 
         @Override
