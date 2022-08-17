@@ -22,4 +22,5 @@
     <string name="stove_input_curve_name_hint">请输入曲线名称</string>
     <string name="stove_ok">确认</string>
     <string name="stove_share_hint">请打开ROKI APP, 扫一扫分享</string>
+    <string name="stove_lock">长按2s解锁</string>
 </resources>

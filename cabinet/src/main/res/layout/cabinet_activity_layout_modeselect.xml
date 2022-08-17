@@ -45,16 +45,26 @@
         app:layout_constraintBottom_toBottomOf="@id/ll_foot"
         app:layout_constraintLeft_toLeftOf="@id/ll_foot"/>
 
+<!--    固定宽度-->
+    <View
+        android:id="@+id/view_time"
+        android:layout_width="@dimen/dp_170"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/dp_210"
+        app:layout_constraintTop_toTopOf="@id/ll_foot"
+        app:layout_constraintBottom_toBottomOf="@id/ll_foot"
+        app:layout_constraintLeft_toRightOf="@id/tv_mode"/>
     <TextView
         android:id="@+id/tv_num"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/cabinet_white"
-        android:layout_marginLeft="@dimen/dp_210"
         android:textSize="@dimen/sp_48"
         android:text="1"
-        app:layout_constraintTop_toTopOf="@id/ll_foot"
-        app:layout_constraintLeft_toRightOf="@id/tv_mode"/>
+        app:layout_constraintTop_toTopOf="@id/view_time"
+        app:layout_constraintLeft_toLeftOf="@id/view_time"
+        app:layout_constraintRight_toLeftOf="@id/tv_min"
+        app:layout_constraintHorizontal_chainStyle="packed"/>
     <TextView
         android:id="@+id/tv_min"
         android:layout_width="wrap_content"
@@ -64,6 +74,7 @@
         android:layout_marginBottom="@dimen/dp_7"
         android:textColor="@color/cabinet_white"
         app:layout_constraintLeft_toRightOf="@id/tv_num"
+        app:layout_constraintRight_toRightOf="@id/view_time"
         app:layout_constraintBottom_toBottomOf="@id/tv_num"/>
 
     <ImageView
@@ -73,9 +84,9 @@
         android:layout_height="@dimen/dp_24"
         android:layout_marginTop="@dimen/dp_3"
         app:layout_constraintTop_toBottomOf="@id/tv_num"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="@id/tv_num"
-        app:layout_constraintRight_toRightOf="@id/tv_min"/>
+        app:layout_constraintBottom_toBottomOf="@id/view_time"
+        app:layout_constraintLeft_toLeftOf="@id/view_time"
+        app:layout_constraintRight_toRightOf="@id/view_time"/>
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_start"
         android:layout_width="@dimen/dp_175"

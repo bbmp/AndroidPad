@@ -160,8 +160,12 @@ public class VenWifiManager {
      * 是否开启wifi，没有的话打开wifi
      */
     public static void openWifi(WifiManager mWifiManager) {
-        if (!mWifiManager.isWifiEnabled()) {
-            mWifiManager.setWifiEnabled(true);
+        try {
+            if (!mWifiManager.isWifiEnabled()) {
+                mWifiManager.setWifiEnabled(true);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -169,7 +173,11 @@ public class VenWifiManager {
      * 是否开启wifi，没有的话打开wifi
      */
     public static void closeWifi(WifiManager mWifiManager) {
-        mWifiManager.setWifiEnabled(false);
+        try {
+            mWifiManager.setWifiEnabled(false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**

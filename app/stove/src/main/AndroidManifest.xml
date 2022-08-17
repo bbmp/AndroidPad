@@ -4,9 +4,13 @@
 
     <application>
         <activity
-            android:name=".ui.activity.CurveSaveActivity"
+            android:name=".ui.activity.ModeSelectActivity"
             android:exported="false"
             android:screenOrientation="landscape"/>
+        <activity
+            android:name=".ui.activity.CurveSaveActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".ui.activity.CurveCreateActivity"
             android:exported="false"
@@ -18,7 +22,7 @@
         <activity
             android:name=".ui.activity.RecipeActivity"
             android:exported="false"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
         <activity
             android:name=".ui.activity.MainActivity"
             android:exported="false"

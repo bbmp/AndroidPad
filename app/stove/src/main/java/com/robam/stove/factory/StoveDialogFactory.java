@@ -5,6 +5,7 @@ import android.content.Context;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.stove.constant.DialogConstant;
 import com.robam.stove.ui.dialog.CurveEditDialog;
+import com.robam.stove.ui.dialog.LockDialog;
 import com.robam.stove.ui.dialog.OpenFireDialog;
 import com.robam.stove.ui.dialog.SelectStoveDialog;
 import com.robam.stove.ui.dialog.StoveCommonDialog;
@@ -24,6 +25,9 @@ public class StoveDialogFactory {
                 break;
             case DialogConstant.DIALOG_TYPE_CURVE_EDIT:
                 iDialog = new CurveEditDialog(context);
+                break;
+            case DialogConstant.DIALOG_TYPE_LOCK:
+                iDialog = new LockDialog(context);
                 break;
         }
         return iDialog;

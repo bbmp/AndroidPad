@@ -8,4 +8,6 @@
     <color name="ventilator_white_50">#80ffffff</color>
     <color name="ventilator_color_menu">#80000000</color>
     <color name="ventilator_mode">#fff6f6f6</color>
+    <color name="ventilator_line">#1ad9d9d9</color>
+    <color name="ventilator_lock">#80000d2a</color>
 </resources>

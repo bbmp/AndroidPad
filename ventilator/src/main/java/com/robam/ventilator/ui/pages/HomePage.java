@@ -1,9 +1,11 @@
 package com.robam.ventilator.ui.pages;
 
 import android.content.Intent;
+import android.os.Handler;
 import android.serialport.helper.SerialPortHelper;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -16,16 +18,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.robam.common.skin.SkinDisplayUtils;
+import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
+import com.robam.common.utils.ClickUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ScreenUtils;
-import com.robam.steamoven.ui.activity.MainActivity;
+import com.robam.stove.ui.activity.MainActivity;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBasePage;
 import com.robam.ventilator.bean.Device;
 import com.robam.ventilator.bean.ProductMutiItem;
 import com.robam.ventilator.bean.VenFunBean;
+import com.robam.ventilator.constant.DialogConstant;
+import com.robam.ventilator.factory.VentilatorDialogFactory;
 import com.robam.ventilator.ui.activity.MatchNetworkActivity;
+import com.robam.ventilator.ui.activity.ShortcutActivity;
+import com.robam.ventilator.ui.activity.SimpleModeActivity;
 import com.robam.ventilator.ui.adapter.RvMainFunctonAdapter;
 import com.robam.ventilator.ui.adapter.RvProductsAdapter;
 import com.robam.ventilator.ui.adapter.RvSettingAdapter;
@@ -91,7 +99,7 @@ public class HomePage extends VentilatorBasePage {
         rvRight.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
         //获取px
-        recyclerView.addItemDecoration(new HorizontalSpaceItemDecoration((int) getContext().getResources().getDimension(com.robam.common.R.dimen.dp_55)));
+        recyclerView.addItemDecoration(new HorizontalSpaceItemDecoration((int) getContext().getResources().getDimension(com.robam.common.R.dimen.dp_45)));
         showCenter();
         setOnClickListener(R.id.tv_performance, R.id.tv_comfort, R.id.ll_drawer_left, R.id.ll_drawer_right);
 
@@ -145,10 +153,14 @@ public class HomePage extends VentilatorBasePage {
         rvFunctionAdapter = new RvMainFunctonAdapter();
         recyclerView.setAdapter(rvFunctionAdapter);
         rvFunctionAdapter.setList(funList);
+        //主功能
         rvFunctionAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                startActivity(new Intent(getContext(), MainActivity.class));
+                if (position == 0)
+                    screenLock();
+                else
+                    startActivity(new Intent(getContext(), MainActivity.class));
                 rvFunctionAdapter.setPickPosition(position);
             }
         });
@@ -157,7 +169,7 @@ public class HomePage extends VentilatorBasePage {
         rvLeft.setAdapter(settingAdapter);
         //设置功能
         settingList.add(new VenFunBean(1, "个人中心", "", "personal_center", "com.robam.ventilator.ui.activity.PersonalCenterActivity"));
-        settingList.add(new VenFunBean(2, "网络连接", "", "wifi_connect", "com.robam.ventilator.ui.activity.WifiSettingActivity"));
+        settingList.add(new VenFunBean(2, "网络设置", "", "wifi_connect", "com.robam.ventilator.ui.activity.WifiSettingActivity"));
         settingList.add(new VenFunBean(3, "时间设定", "", "date_setting", "com.robam.ventilator.ui.activity.DateSettingActivity"));
         settingList.add(new VenFunBean(4, "屏幕亮度", "", "screen_brightness", "com.robam.ventilator.ui.activity.ScreenBrightnessActivity"));
         settingList.add(new VenFunBean(5, "恢复出厂", "", "reset", "com.robam.ventilator.ui.activity.AboutActivity"));
@@ -171,10 +183,14 @@ public class HomePage extends VentilatorBasePage {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 VenFunBean venFunBean = (VenFunBean) adapter.getItem(position);
-                Intent intent = new Intent();
+                if (venFunBean.funtionCode == 9) {
+                    simpleMode(); //进入极简模式
+                } else {
+                    Intent intent = new Intent();
 
-                intent.setClassName(getContext(), venFunBean.into);
-                startActivity(intent);
+                    intent.setClassName(getContext(), venFunBean.into);
+                    startActivity(intent);
+                }
                 //close setting menu
                 if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
                     drawerLayout.closeDrawer(Gravity.LEFT);
@@ -232,5 +248,37 @@ public class HomePage extends VentilatorBasePage {
         super.onDestroy();
         //关闭串口
         SerialPortHelper.getInstance().closeDevice();
+    }
+
+    //锁屏
+    private void screenLock() {
+        IDialog iDialog = VentilatorDialogFactory.createDialogByType(getContext(), DialogConstant.DIALOG_TYPE_LOCK);
+        iDialog.setCancelable(false);
+        //长按解锁
+        ImageView imageView = iDialog.getRootView().findViewById(R.id.iv_lock);
+        ClickUtils.setLongClick(new Handler(), imageView, 2000, new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                iDialog.dismiss();
+                return true;
+            }
+        });
+        iDialog.show();
+    }
+
+    //切换至极简模式
+    private void simpleMode() {
+        IDialog iDialog = VentilatorDialogFactory.createDialogByType(getContext(), DialogConstant.DIALOG_TYPE_VENTILATOR_COMMON);
+        iDialog.setCancelable(false);
+        iDialog.setContentText(R.string.ventilator_simple_mode_hint);
+        iDialog.setListeners(new IDialog.DialogOnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (v.getId() == R.id.tv_ok) {
+                    startActivity(new Intent(getContext(), SimpleModeActivity.class));
+                }
+            }
+        }, R.id.tv_cancel, R.id.tv_ok);
+        iDialog.show();
     }
 }

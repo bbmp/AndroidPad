@@ -26,7 +26,7 @@ public class DelayCloseDialog extends BaseDialog {
     @Override
     protected void initView() {
         rootView = LayoutInflater.from(mContext).inflate(R.layout.ventilator_dialog_layout_delay_close, null);
-        tvCountdown = rootView.findViewById(com.robam.cabinet.R.id.tv_countdown);
+        tvCountdown = rootView.findViewById(R.id.tv_countdown);
         mCancelTv = rootView.findViewById(R.id.tv_cancel);
         mOkTv = rootView.findViewById(R.id.tv_ok);
         mContent = rootView.findViewById(R.id.tv_work_content);

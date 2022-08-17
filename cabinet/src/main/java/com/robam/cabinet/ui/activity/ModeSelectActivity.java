@@ -44,8 +44,8 @@ public class ModeSelectActivity extends CabinetBaseActivity {
         tvNum = findViewById(R.id.tv_num);
         pickerLayoutManager = new PickerLayoutManager.Builder(getContext())
                 .setOrientation(RecyclerView.HORIZONTAL)
-                .setMaxItem(3)
-                .setAlpha(false)
+                .setMaxItem(5)
+//                .setAlpha(false)
                 .setScale(0.44f)
                 .setOnPickerListener(new PickerLayoutManager.OnPickerListener() {
                     @Override

@@ -83,7 +83,7 @@ public class HomePage extends StoveBasePage {
         functionList.add(new StoveFunBean(ModeConstant.MODE_SMART, StoveEnum.match(ModeConstant.MODE_SMART), "", "smart", "com.robam.stove.ui.activity.RecipeActivity"));
         functionList.add(new StoveFunBean(ModeConstant.MODE_CURVE, StoveEnum.match(ModeConstant.MODE_CURVE), "", "curve", "com.robam.stove.ui.activity.CurveActivity"));
         functionList.add(new StoveFunBean(ModeConstant.MODE_RECIPE, StoveEnum.match(ModeConstant.MODE_RECIPE), "", "recipe", "com.robam.stove.ui.activity.RecipeActivity"));
-        functionList.add(new StoveFunBean(ModeConstant.MODE_TIMING, StoveEnum.match(ModeConstant.MODE_TIMING), "", "timing", "com.robam.stove.ui.activity.CurveActivity"));
+        functionList.add(new StoveFunBean(ModeConstant.MODE_TIMING, StoveEnum.match(ModeConstant.MODE_TIMING), "", "timing", "com.robam.stove.ui.activity.ModeSelectActivity"));
         rvMainFunctionAdapter.setList(functionList);
 
         //初始位置

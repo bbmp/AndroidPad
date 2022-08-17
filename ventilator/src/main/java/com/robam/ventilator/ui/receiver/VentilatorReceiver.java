@@ -51,20 +51,20 @@ public class VentilatorReceiver extends BroadcastReceiver {
         }else if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(intent.getAction())) {
             //监听wifi连接状态
             NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
-            LogUtils.i( "--NetworkInfo--" + info.toString());
+            LogUtils.e( "--NetworkInfo--" + info.toString());
             if (NetworkInfo.State.DISCONNECTED == info.getState()) {
-                LogUtils.i("wifi没连接上");
+                LogUtils.e("wifi没连接上");
             } else if (NetworkInfo.State.CONNECTED == info.getState()) {//wifi连接上了
                 WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
                 WifiInfo wifiInfo = wifiManager.getConnectionInfo();
                 //获取当前wifi名称
-                LogUtils.i( "连接到网络 " + wifiInfo.getSSID());
-                LogUtils.i("wifi已连接");
+                LogUtils.e( "连接到网络 " + wifiInfo.getSSID());
+                LogUtils.e("wifi已连接");
             } else if (NetworkInfo.State.CONNECTING == info.getState()) {//正在连接
-                LogUtils.i("wifi正在连接");
+                LogUtils.e("wifi正在连接");
             }
         } else if (WifiManager.SCAN_RESULTS_AVAILABLE_ACTION.equals(intent.getAction())) {
-            LogUtils.i("wifi列表发生变化");
+            LogUtils.e("wifi列表发生变化");
         }
     }
 }

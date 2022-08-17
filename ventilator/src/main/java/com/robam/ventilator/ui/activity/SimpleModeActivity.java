@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import com.robam.common.ui.activity.BaseActivity;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
@@ -29,11 +30,14 @@ public class SimpleModeActivity extends VentilatorBaseActivity {
 
     @Override
     protected void initView() {
+        showLeft();
+        TextView tvLeft = findViewById(R.id.tv_left);
+        tvLeft.setText(R.string.ventilator_exit_simple_mode);
+        showCenter();
         rvSimple = findViewById(R.id.rv_simple_mode);
         rvSimple.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
         rvSimple.addItemDecoration(new HorizontalSpaceItemDecoration((int) getContext().getResources().getDimension(com.robam.common.R.dimen.dp_40)));
-        showCenter();
-        setOnClickListener(R.id.tv_exit_simple_mode);
+
     }
 
     @Override
@@ -50,7 +54,6 @@ public class SimpleModeActivity extends VentilatorBaseActivity {
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.tv_exit_simple_mode)
-            finish();
+        super.onClick(view);
     }
 }

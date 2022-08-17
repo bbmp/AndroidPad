@@ -4,13 +4,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.robam.common.ui.activity.BaseActivity;
+import com.robam.common.ui.view.SwitchButton;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
 
 public class DateSettingActivity extends VentilatorBaseActivity {
+    private SwitchButton switchButton;
+    private LinearLayout llSelect;
 
     @Override
     protected int getLayoutId() {
@@ -22,7 +26,14 @@ public class DateSettingActivity extends VentilatorBaseActivity {
         showLeft();
         setCenter(R.string.ventilator_setting_time);
 
-        setOnClickListener(R.id.ll_left);
+        switchButton = findViewById(R.id.sb_auto_set);
+        llSelect = findViewById(R.id.ll_date_select);
+        switchButton.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(SwitchButton button, boolean checked) {
+                llSelect.setVisibility(checked? View.GONE: View.VISIBLE);
+            }
+        });
     }
 
     @Override
@@ -32,8 +43,8 @@ public class DateSettingActivity extends VentilatorBaseActivity {
 
     @Override
     public void onClick(View view) {
+        super.onClick(view);
         int id = view.getId();
-        if (id == R.id.ll_left)
-            finish();
+
     }
 }

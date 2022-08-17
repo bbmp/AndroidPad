@@ -9,4 +9,5 @@
     <color name="stove_mode">#fff6f6f6</color>
     <color name="stove_white_50">#80ffffff</color>
     <color name="stove_white_20">#33ffffff</color>
+    <color name="stove_lock">#80000d2a</color>
 </resources>

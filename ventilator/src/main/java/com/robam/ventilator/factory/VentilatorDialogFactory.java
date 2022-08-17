@@ -5,7 +5,9 @@ import android.content.Context;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.ventilator.constant.DialogConstant;
 import com.robam.ventilator.ui.dialog.DelayCloseDialog;
+import com.robam.ventilator.ui.dialog.LockDialog;
 import com.robam.ventilator.ui.dialog.VentilatorCommonDialog;
+import com.robam.ventilator.ui.dialog.WaitingDialog;
 
 public class VentilatorDialogFactory {
     public static IDialog createDialogByType(Context context, int dialogType) {
@@ -16,6 +18,12 @@ public class VentilatorDialogFactory {
                 break;
             case DialogConstant.DIALOG_TYPE_DELAY_CLOSE:
                 iDialog = new DelayCloseDialog(context);
+                break;
+            case DialogConstant.DIALOG_TYPE_LOCK:
+                iDialog = new LockDialog(context);
+                break;
+            case DialogConstant.DIALOG_TYPE_WAITING:
+                iDialog = new WaitingDialog(context);
                 break;
         }
         return iDialog;
