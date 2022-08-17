@@ -1,4 +1,4 @@
-package com.robam.cabinet.manage;
+package com.robam.cabinet.manager;
 
 import android.content.Context;
 

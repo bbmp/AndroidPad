@@ -13,13 +13,10 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.robam.cabinet.R;
 import com.robam.cabinet.base.CabinetBasePage;
 import com.robam.cabinet.bean.CabFunBean;
-import com.robam.cabinet.constant.Constant;
-import com.robam.cabinet.manage.FunctionManager;
 import com.robam.cabinet.ui.adapter.RvDotAdapter;
 import com.robam.cabinet.ui.adapter.RvMainFunctionAdapter;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.common.utils.ImageUtils;
-import com.robam.common.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -124,7 +121,12 @@ public class HomePage extends CabinetBasePage {
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.iv_float)
-            getActivity().finish();
+        if (view.getId() == R.id.iv_float) {
+//            getActivity().finish();
+            Intent intent = new Intent();
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            intent.setClassName(getContext(), "com.robam.ventilator.ui.activity.HomeActivity");
+            startActivity(intent);
+        }
     }
 }

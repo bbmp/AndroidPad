@@ -32,6 +32,7 @@ public class WelcomePage extends VentilatorBasePage {
             intent.putExtra(VentilatorConstant.EXTRA_FIRST, true);
             startActivity(intent);
             PreferenceUtils.setBool(getActivity(), VentilatorConstant.EXTRA_FIRST, true);
+            getActivity().finish();
         } else {
             //跳转到首页
             HomeActivity.start(getActivity());

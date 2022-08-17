@@ -7,6 +7,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 import com.robam.cabinet.R;
+import com.robam.cabinet.manager.CabinetActivityManager;
 import com.robam.common.ui.activity.BaseActivity;
 
 public abstract class CabinetBaseActivity extends BaseActivity {
@@ -14,6 +15,7 @@ public abstract class CabinetBaseActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        CabinetActivityManager.getInstance().addActivity(this);
         setOnClickListener(R.id.ll_left);
     }
 
@@ -39,5 +41,11 @@ public abstract class CabinetBaseActivity extends BaseActivity {
         int id = view.getId();
         if (id == R.id.ll_left)
             finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        CabinetActivityManager.getInstance().removeActivity(this);
     }
 }

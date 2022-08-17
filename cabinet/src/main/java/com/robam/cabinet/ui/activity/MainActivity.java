@@ -7,12 +7,13 @@ import androidx.navigation.Navigation;
 import android.os.Bundle;
 
 import com.robam.cabinet.R;
+import com.robam.cabinet.base.CabinetBaseActivity;
 import com.robam.cabinet.device.CabinetAbstractControl;
 import com.robam.cabinet.device.CabinetFactory;
 import com.robam.cabinet.device.CabinetMqttControl;
 import com.robam.common.ui.activity.BaseActivity;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends CabinetBaseActivity {
 
     @Override
     protected int getLayoutId() {

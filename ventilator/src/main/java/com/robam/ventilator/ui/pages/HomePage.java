@@ -17,13 +17,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.robam.cabinet.ui.activity.MainActivity;
 import com.robam.common.skin.SkinDisplayUtils;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.common.utils.ClickUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ScreenUtils;
-import com.robam.stove.ui.activity.MainActivity;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBasePage;
 import com.robam.ventilator.bean.Device;
@@ -159,8 +159,11 @@ public class HomePage extends VentilatorBasePage {
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 if (position == 0)
                     screenLock();
-                else
-                    startActivity(new Intent(getContext(), MainActivity.class));
+                else {
+                    Intent intent = new Intent(getContext(), MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent);
+                }
                 rvFunctionAdapter.setPickPosition(position);
             }
         });
@@ -182,6 +185,10 @@ public class HomePage extends VentilatorBasePage {
         settingAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                //close setting menu
+                if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
+                    drawerLayout.closeDrawer(Gravity.LEFT);
+                }
                 VenFunBean venFunBean = (VenFunBean) adapter.getItem(position);
                 if (venFunBean.funtionCode == 9) {
                     simpleMode(); //进入极简模式
@@ -190,10 +197,6 @@ public class HomePage extends VentilatorBasePage {
 
                     intent.setClassName(getContext(), venFunBean.into);
                     startActivity(intent);
-                }
-                //close setting menu
-                if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
-                    drawerLayout.closeDrawer(Gravity.LEFT);
                 }
             }
         });

@@ -71,7 +71,8 @@
         <activity
             android:name=".ui.activity.HomeActivity"
             android:exported="false"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="landscape"
+            android:launchMode="singleTask"/>
     </application>
 
 </manifest>
