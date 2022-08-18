@@ -1,6 +1,6 @@
 package com.robam.steamoven.bean.model;
 
-import com.robam.steamoven.constant.SteamOvenModeEnum;
+import com.robam.steamoven.constant.SteamModeEnum;
 
 import org.litepal.annotation.Column;
 import org.litepal.crud.LitePalSupport;
@@ -170,15 +170,4 @@ public class ModeBean extends LitePalSupport {
         return tempData ;
     }
 
-
-    /**
-     * 选择功能时候是否支持蒸汽量选择
-     * @return
-     */
-    public  boolean steamSelect(){
-        if (funCode == 6 || code == SteamOvenModeEnum.ZHIKONGZHENG.getCode()){
-            return true ;
-        }
-        return false ;
-    }
 }

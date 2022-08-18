@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.tabs.TabLayout;
-import com.robam.common.ui.IModeSelect;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBasePage;
@@ -17,6 +16,7 @@ import com.robam.steamoven.ui.adapter.RvModeAdapter;
 import com.robam.steamoven.ui.adapter.RvTimeAdapter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ModeSelectPage extends SteamBasePage {
@@ -47,15 +47,21 @@ public class ModeSelectPage extends SteamBasePage {
     //回调接口
     private IModeSelect iModeSelect;
 
-    public ModeSelectPage(TabLayout.Tab tab, IModeSelect iModeSelect) {
+    private List<ModeBean> selectList;
+
+    public ModeSelectPage(TabLayout.Tab tab, List<ModeBean> selectlist, IModeSelect iModeSelect) {
         this.tab = tab;
+        this.selectList = selectlist;
         this.iModeSelect = iModeSelect;
     }
 
-    public void setList(List<String> selectList) {
+    public void setList(List<ModeBean> selectList) {
         rvModeAdapter.setList(selectList);
 
-        rvDotAdapter.setList(selectList);
+        List<String> dotList = new ArrayList<>();
+        for (ModeBean bean: selectList)
+            dotList.add(bean.name);
+        rvDotAdapter.setList(dotList);
         rvDotAdapter.setPickPosition(Integer.MAX_VALUE / 2 - (Integer.MAX_VALUE/2) % selectList.size());
 
         pickerLayoutManager.scrollToPosition(Integer.MAX_VALUE / 2 - (Integer.MAX_VALUE/2) % selectList.size());
@@ -84,15 +90,12 @@ public class ModeSelectPage extends SteamBasePage {
     @Override
     protected void initData() {
 //获取当前功能下的模式
-        ArrayList<String> selectList = null;
         rvModeAdapter = new RvModeAdapter();
         rvSelect2.setAdapter(rvModeAdapter);
 
-        if (null != getArguments()) {
-            selectList = getArguments().getStringArrayList("mode");
-
+        if (null != selectList)
             setList(selectList);
-        }
+
     }
 
     /**
@@ -115,14 +118,18 @@ public class ModeSelectPage extends SteamBasePage {
                         if (null != tab) {
                             //切换模式
                             TextView textView = tab.getCustomView().findViewById(R.id.tv_mode);
-                            textView.setText(rvModeAdapter.getItem(position));
+                            textView.setText(rvModeAdapter.getItem(position).name);
                         }
                         if (null != iModeSelect) {
-                            iModeSelect.updateTab("mode", rvModeAdapter.getItem(position));
+                            iModeSelect.updateTab(rvModeAdapter.getItem(position).code);
                         }
                     }
                 })
                 .build();
         rvSelect2.setLayoutManager(pickerLayoutManager);
+    }
+
+    public interface IModeSelect {
+        void updateTab(int mode);
     }
 }

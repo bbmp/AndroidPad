@@ -14,7 +14,6 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
-import com.robam.common.ui.IModeSelect;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.bean.FuntionBean;
@@ -32,7 +31,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect {
+public class ModeSelectActivity extends SteamBaseActivity implements ModeSelectPage.IModeSelect {
     private TabLayout tabLayout;
     private ViewPager noScrollViewPager;
     //弱引用，防止内存泄漏
@@ -46,6 +45,10 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
     private List<ModeBean> modes;
 
     private TimeSelectPage tempSelectPage, timeSelectPage;
+
+    private ModeSelectPage steamFragment;
+
+    private SelectPagerAdapter selectPagerAdapter;
 
     @Override
     protected int getLayoutId() {
@@ -113,14 +116,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             tvMode.setText(defaultBean.name);
             modeTab.setCustomView(modeView);
             tabLayout.addTab(modeTab);
-            Fragment modeFragment = new ModeSelectPage(modeTab, this);
-            Bundle modeBundle = new Bundle();
-            ArrayList<String> modeList = new ArrayList<>();
-            for (ModeBean modeBean: modes) {
-                modeList.add(modeBean.name);
-            }
-            modeBundle.putStringArrayList("mode", modeList);
-            modeFragment.setArguments(modeBundle);
+            Fragment modeFragment = new ModeSelectPage(modeTab, modes, this);
             fragments.add(new WeakReference<>(modeFragment));
 
             if (SteamOven.getInstance().workType == ModeConstant.MODE_JIASHI_BAKE) {
@@ -131,15 +127,8 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
 
                 steamTab.setCustomView(steamView);
                 tabLayout.addTab(steamTab);
-                Fragment steamFragment = new ModeSelectPage(steamTab, this);
-                Bundle steamBundle = new Bundle();
-                ArrayList<String> steamList = new ArrayList<>();
-                steamList.add(SteamOvenSteamEnum.SMALL_STEAM.getValue());
-                steamList.add(SteamOvenSteamEnum.MID_STEAM.getValue());
-                steamList.add(SteamOvenSteamEnum.MAX_STEAM.getValue());
+                steamFragment = new ModeSelectPage(steamTab, modes,this);
 
-                steamBundle.putStringArrayList("mode", steamList);
-                steamFragment.setArguments(steamBundle);
                 fragments.add(new WeakReference<>(steamFragment));
             }
 
@@ -150,7 +139,11 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             tvTemp.setText(defaultBean.defTemp + "");
             tempTab.setCustomView(tempView);
             tabLayout.addTab(tempTab);
-            tempSelectPage = new TimeSelectPage(tempTab, "temp", defaultBean.name,this);
+            ArrayList<String> tempList = new ArrayList<>();
+            for (int i = defaultBean.minTemp; i <= defaultBean.maxTemp; i++) {
+                tempList.add(i + "");
+            }
+            tempSelectPage = new TimeSelectPage(tempTab, 0, defaultBean);
             fragments.add(new WeakReference<>(tempSelectPage));
 
             timeTab = tabLayout.newTab();
@@ -160,10 +153,15 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             tvTime.setText(defaultBean.defTime + "");
             timeTab.setCustomView(timeView);
             tabLayout.addTab(timeTab);
-            timeSelectPage = new TimeSelectPage(timeTab, "time", defaultBean.name, this);
+            ArrayList<String> timeList = new ArrayList<>();
+            for (int i = defaultBean.minTime; i <= defaultBean.maxTime; i++) {
+                timeList.add(i + "");
+            }
+            timeSelectPage = new TimeSelectPage(timeTab, 1, defaultBean);
             fragments.add(new WeakReference<>(timeSelectPage));
 //添加设置适配器
-            noScrollViewPager.setAdapter(new HomePagerAdapter(getSupportFragmentManager()));
+            selectPagerAdapter = new SelectPagerAdapter(getSupportFragmentManager());
+            noScrollViewPager.setAdapter(selectPagerAdapter);
             noScrollViewPager.setOffscreenPageLimit(fragments.size());
 
         }
@@ -192,24 +190,22 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
     /**
      * 根据当前模式设置温度和时间
      */
-    private void initTimeParams(String type, String name) {
+    private void initTimeParams(int mode) {
         if (null != modes) {
             for (ModeBean modeBean: modes) {
-                if (name.equals(modeBean.name)) {
-                    if ("mode".equals(type) || "temp".equals(type)) {
-                        ArrayList<String> tempList = new ArrayList<>();
-                        for (int i = modeBean.minTemp; i <= modeBean.maxTemp; i++) {
-                            tempList.add(i + "");
-                        }
-                        tempSelectPage.setList(tempList, modeBean.defTemp - modeBean.minTemp);
+                if (mode == modeBean.code) {
+
+                    ArrayList<String> tempList = new ArrayList<>();
+                    for (int i = modeBean.minTemp; i <= modeBean.maxTemp; i++) {
+                        tempList.add(i + "");
                     }
-                    if ("mode".equals(type) || "time".equals(type)) {
-                        ArrayList<String> timeList = new ArrayList<>();
-                        for (int i = modeBean.minTime; i <= modeBean.maxTime; i++) {
-                            timeList.add(i + "");
-                        }
-                        timeSelectPage.setList(timeList, modeBean.defTime - modeBean.minTime);
+                    tempSelectPage.setList(tempList, modeBean.defTemp - modeBean.minTemp);
+                    ArrayList<String> timeList = new ArrayList<>();
+                    for (int i = modeBean.minTime; i <= modeBean.maxTime; i++) {
+                        timeList.add(i + "");
                     }
+                    timeSelectPage.setList(timeList, modeBean.defTime - modeBean.minTime);
+
                     break;
                 }
             }
@@ -218,17 +214,17 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
 
 
     @Override
-    public void updateTab(String type, String tabString) {
+    public void updateTab(int mode) {
         if (modeTab != null) {
             //模式变更，温度和时间值也要变更
-            initTimeParams(type, tabString);
+            initTimeParams(mode);
         }
     }
 
-    class HomePagerAdapter extends FragmentStatePagerAdapter {
+    class SelectPagerAdapter extends FragmentStatePagerAdapter {
 
 
-        public HomePagerAdapter(@NonNull FragmentManager fm) {
+        public SelectPagerAdapter(@NonNull FragmentManager fm) {
             super(fm);
         }
 
