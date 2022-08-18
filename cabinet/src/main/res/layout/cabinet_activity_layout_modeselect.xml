@@ -35,7 +35,7 @@
     </View>
     <TextView
         android:id="@+id/tv_mode"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/dp_170"
         android:layout_height="wrap_content"
         android:textSize="@dimen/sp_48"
         android:textColor="@color/cabinet_white70"
@@ -50,7 +50,7 @@
         android:id="@+id/view_time"
         android:layout_width="@dimen/dp_170"
         android:layout_height="0dp"
-        android:layout_marginLeft="@dimen/dp_210"
+        android:layout_marginLeft="@dimen/dp_55"
         app:layout_constraintTop_toTopOf="@id/ll_foot"
         app:layout_constraintBottom_toBottomOf="@id/ll_foot"
         app:layout_constraintLeft_toRightOf="@id/tv_mode"/>

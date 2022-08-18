@@ -4,6 +4,9 @@
     package="com.robam.steamoven">
 
     <application>
+        <activity android:name=".ui.activity.RecipeActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
         <activity
             android:name="com.robam.steamoven.ui.activity.BleActivity"
             android:exported="false" />

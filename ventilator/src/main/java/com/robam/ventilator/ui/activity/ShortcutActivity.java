@@ -5,11 +5,13 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.view.KeyEvent;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.robam.cabinet.manager.CabinetActivityManager;
 import com.robam.common.ui.helper.GridSpaceItemDecoration;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.ventilator.R;
@@ -89,6 +91,15 @@ public class ShortcutActivity extends VentilatorBaseActivity {
         rvShortcutOnlineAdapter.setList(deviceList2);
 
         setOnClickListener(R.id.activity_short);
+        rvShortcutOnlineAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                Activity activity = CabinetActivityManager.getInstance().currentActivity();
+                if (null != activity) {
+                    startActivity(activity.getClass());
+                }
+            }
+        });
     }
 
     @Override

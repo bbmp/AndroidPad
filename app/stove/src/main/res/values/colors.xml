@@ -10,4 +10,5 @@
     <color name="stove_white_50">#80ffffff</color>
     <color name="stove_white_20">#33ffffff</color>
     <color name="stove_lock">#80000d2a</color>
+    <color name="stove_color_foot">#881E2229</color>
 </resources>

@@ -3,28 +3,28 @@
     "backgroundImg": "steam_ic_bg_steam",
     "funtionCode": 1,
     "funtionName": "蒸",
-    "into": "steamoven.modeselect",
+    "into": "com.robam.steamoven.ui.activity.ModeSelectActivity",
     "mode": "steam"
   },
   {
     "backgroundImg": "steam_ic_bg_oven",
     "funtionCode": 2,
     "funtionName": "烤",
-    "into": "steamoven.modeselect",
+    "into": "com.robam.steamoven.ui.activity.ModeSelectActivity",
     "mode": "oven"
   },
   {
     "backgroundImg": "steam_ic_bg_zha",
     "funtionCode": 3,
     "funtionName": "炸",
-    "into": "steamoven.modeselect",
+    "into": "com.robam.steamoven.ui.activity.ModeSelectActivity",
     "mode": "blow"
   },
   {
     "backgroundImg": "steam_ic_bg_multi",
     "funtionCode": 4,
     "funtionName": "加湿烤",
-    "into": "steamoven.jiashi",
+    "into": "com.robam.steamoven.ui.activity.ModeSelectActivity",
     "mode": "jiashi"
   },
   {
@@ -38,7 +38,7 @@
     "backgroundImg": "steam_ic_bg_recipe",
     "funtionCode": 6,
     "funtionName": "菜谱",
-    "into": "steamoven.recipe",
+    "into": "com.robam.steamoven.ui.activity.RecipeActivity",
     "mode": "recipe_classify"
   },
   {

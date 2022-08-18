@@ -35,7 +35,7 @@ dependencies {
     api "androidx.navigation:navigation-fragment:$versions.navigation_fragment"
     api "androidx.navigation:navigation-ui:$versions.navigation_ui"
     api project(path: ':app:serialport')
-    api project(path: ':app:foodmaterialdetect')
+//    api project(path: ':app:foodmaterialdetect')
     api project(path: ':app:common')
     testImplementation 'junit:junit:4.13.2'
     api "com.squareup.retrofit2:retrofit:$versions.retrofit"
@@ -45,7 +45,7 @@ dependencies {
     api "org.eclipse.paho:org.eclipse.paho.android.service:$versions.org_eclipse_paho_android_service"
     api "com.github.Jasonchenlijian:FastBle:$versions.FastBle"
     // 标题栏框架：https://github.com/getActivity/TitleBar
-    implementation 'com.github.getActivity:TitleBar:9.2'
+//    implementation 'com.github.getActivity:TitleBar:9.2'
     //数据库：litepal
     api 'org.litepal.guolindev:core:3.2.3'
     api "com.github.CymChad:BaseRecyclerViewAdapterHelper:$versions.BaseRecyclerViewAdapterHelper"

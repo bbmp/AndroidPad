@@ -57,12 +57,11 @@
     <string name="ventilator_online">在线</string>
     <string name="ventilator_clean_oil_hint">油烟机挡风板将锁定在打开状\n态，可放心拆卸、清洗油网并安装</string>
     <string name="ventilator_delay_close_hint">系统将延迟关机，为您处理残留油烟</string>
-    <string name="ventilator_match_hint1">1.长按面板上[联网]2秒至滴声响，屏幕内智能符号\" \"闪烁。\n2.在ROKI APP中，添加XG858，输 出WiFi密码，连接网络。</string>
-    <string name="ventilator_match_hint2">请在一体机产品端登录当前ROKI账号</string>
-    <string name="ventilator_match_hint3">1.长按锅柄上[标记图标]2秒至滴声响，屏幕内智能符号\“ \”闪烁。\n
-        2.在ROKI APP中，添加KP100,输出WiFi密码，连接网络。</string>
-    <string name="ventilator_match_hint4">1.燃气灶点火；\n2.长按燃气灶面板上[ ]2秒至滴声响，</string>
-    <string name="ventilator_match_hint5">屏幕内智能符号“ ”闪烁。</string>
+    <string name="ventilator_match_hint1">1.长按面板上[ ]2秒至滴声响，屏幕内智能符号\" \"闪烁。\n2.在ROKI APP中，添加XG858，输出WiFi密码，连接网络。</string>
+    <string name="ventilator_match_hint3">1.长按明火自动翻炒锅锅柄上[ ]2秒至滴声响，屏幕内智能符号\" \"闪烁。\n完成上述操作后点击下一步。</string>
+    <string name="ventilator_match_hint4">1.燃气灶点火。 \n2.长按燃气灶面板上[ ]2秒至滴声响，屏幕内智能符号\" \"闪烁。\n完成上述操作后点击下一步。</string>
+    <string name="ventilator_match_hint6">1.开启洗碗机。 \n2.在洗碗机上登录当前ROKI账户。 \n完成上述操作后点击下一步。</string>
+    <string name="ventilator_match_hint7">1.开启一体机。 \n2.在一体机上登录当前ROKI账户。 \n完成上述操作后点击下一步。</string>
     <string name="ventilator_lock">长按2s解锁</string>
     <string name="ventilator_connectting">网络连接中</string>
     <string name="ventilator_account">账号</string>
@@ -70,4 +69,6 @@
     <string name="ventilator_simple_mode_hint">切换至极简模式</string>
     <string name="ventilator_save_set">保存设置</string>
     <string name="ventilator_share">分享控制权</string>
+    <string name="ventilator_add">添加</string>
+    <string name="ventilator_next_step">下一步</string>
 </resources>

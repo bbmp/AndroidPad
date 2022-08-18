@@ -17,13 +17,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
-import com.robam.cabinet.ui.activity.MainActivity;
 import com.robam.common.skin.SkinDisplayUtils;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.common.utils.ClickUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ScreenUtils;
+import com.robam.steamoven.ui.activity.MainActivity;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBasePage;
 import com.robam.ventilator.bean.Device;
@@ -31,6 +31,7 @@ import com.robam.ventilator.bean.ProductMutiItem;
 import com.robam.ventilator.bean.VenFunBean;
 import com.robam.ventilator.constant.DialogConstant;
 import com.robam.ventilator.factory.VentilatorDialogFactory;
+import com.robam.ventilator.ui.activity.AddDeviceMainActivity;
 import com.robam.ventilator.ui.activity.MatchNetworkActivity;
 import com.robam.ventilator.ui.activity.ShortcutActivity;
 import com.robam.ventilator.ui.activity.SimpleModeActivity;
@@ -208,6 +209,20 @@ public class HomePage extends VentilatorBasePage {
         productList.add(new ProductMutiItem(ProductMutiItem.DEVICE, new Device()));
         productList.add(new ProductMutiItem(ProductMutiItem.BUTTON, ""));
         rvProductsAdapter.setList(productList);
+
+        rvProductsAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                //close products menu
+                if (drawerLayout.isDrawerOpen(Gravity.RIGHT)) {
+                    drawerLayout.closeDrawer(Gravity.RIGHT);
+                }
+                ProductMutiItem productMutiItem = (ProductMutiItem) adapter.getItem(position);
+                if (productMutiItem.getItemType() == ProductMutiItem.BUTTON) {  //添加产品
+                    startActivity(new Intent(getContext(), AddDeviceMainActivity.class));
+                }
+            }
+        });
     }
 
     @Override

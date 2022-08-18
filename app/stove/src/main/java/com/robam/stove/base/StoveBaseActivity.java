@@ -28,6 +28,10 @@ public abstract class StoveBaseActivity extends BaseActivity {
         findViewById(R.id.ll_right).setVisibility(View.VISIBLE);
     }
 
+    public void showRightCenter() {
+        findViewById(R.id.ll_right_center).setVisibility(View.VISIBLE);
+    }
+
     public void setRight(int res) {
         findViewById(R.id.ll_right).setVisibility(View.VISIBLE);
         TextView textView = findViewById(R.id.tv_right);

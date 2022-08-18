@@ -89,7 +89,7 @@ public class HomePage extends SteamBasePage {
                     ToastUtils.showShort(getContext(), "功能还未实现，请等待版本更新");
                     return;
                 }
-                intent.setAction(funtionBean.into);
+                intent.setClassName(getContext(), funtionBean.into);
                 SteamOven.getInstance().workMode = (short) funtionBean.funtionCode;
                 startActivity(intent);
             }

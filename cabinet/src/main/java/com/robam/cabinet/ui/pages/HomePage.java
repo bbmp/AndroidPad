@@ -37,6 +37,8 @@ public class HomePage extends CabinetBasePage {
 
     @Override
     protected void initView() {
+        showFloat();
+
         rvMain = findViewById(R.id.rv_main);
         rvDot = findViewById(R.id.rv_dot);
         imageView = findViewById(R.id.iv_bg);

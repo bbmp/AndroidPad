@@ -4,9 +4,13 @@
 
     <application>
         <activity
+            android:name=".ui.activity.AddDeviceMainActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
             android:name=".ui.activity.LoginPasswordActivity"
             android:exported="false"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
         <activity
             android:name=".ui.activity.ShortcutActivity"
             android:exported="false"
@@ -67,12 +71,12 @@
         <activity
             android:name=".ui.activity.MainActivity"
             android:exported="false"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
         <activity
             android:name=".ui.activity.HomeActivity"
             android:exported="false"
-            android:screenOrientation="landscape"
-            android:launchMode="singleTask"/>
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape" />
     </application>
 
 </manifest>

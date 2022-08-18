@@ -1,25 +1,19 @@
-package com.robam.cabinet.ui.adapter;
-
-import android.widget.TextView;
+package com.robam.stove.ui.adapter;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
-import com.robam.cabinet.R;
-import com.robam.cabinet.bean.CabFunBean;
 import com.robam.common.utils.LogUtils;
+import com.robam.stove.R;
 
-public class RvIntegerAdapter extends BaseQuickAdapter<Integer, BaseViewHolder> {
+public class RvModeAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
     private int pickPosition;
 
     public void setPickPosition(int pickPosition) {
         this.pickPosition = pickPosition % getData().size();
         notifyDataSetChanged();
-    }
-
-    public RvIntegerAdapter() {
-        super(R.layout.cabinet_item_layout_integer);
     }
     @Override
     public int getItemCount() {
@@ -29,7 +23,12 @@ public class RvIntegerAdapter extends BaseQuickAdapter<Integer, BaseViewHolder> 
     }
 
     @Override
-    public Integer getItem(int position) {
+    public int getItemPosition(@Nullable String item) {
+        return super.getItemPosition(item);
+    }
+
+    @Override
+    public String getItem(int position) {
         int count = getHeaderLayoutCount() + getData().size();
         position = position % count ;
         return super.getItem(position);
@@ -47,14 +46,14 @@ public class RvIntegerAdapter extends BaseQuickAdapter<Integer, BaseViewHolder> 
         LogUtils.i("newPosition：" + newPosition);
         return super.getItemViewType(newPosition);
     }
+
+
+    public RvModeAdapter() {
+        super(R.layout.stove_item_mode_select);
+    }
+
     @Override
-    protected void convert(@NonNull BaseViewHolder baseViewHolder, Integer integer) {
-        TextView textView = baseViewHolder.getView(R.id.tv_num);
-        textView.setText(integer.toString());
-//        if (pickPosition == getItemPosition(integer)) {
-//            baseViewHolder.setVisible(R.id.tv_min, true);
-//        } else {
-//            baseViewHolder.setVisible(R.id.tv_min, false);
-//        }
+    protected void convert(@NonNull BaseViewHolder baseViewHolder, String s) {
+        baseViewHolder.setText(R.id.tv_select, s);
     }
 }

@@ -14,13 +14,15 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.robam.common.ui.IModeSelect;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.bean.FuntionBean;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.bean.model.ModeBean;
 import com.robam.steamoven.constant.Constant;
-import com.robam.steamoven.ui.IModeSelect;
+import com.robam.steamoven.constant.ModeConstant;
+import com.robam.steamoven.constant.SteamOvenSteamEnum;
 import com.robam.steamoven.ui.pages.ModeSelectPage;
 import com.robam.steamoven.ui.pages.TimeSelectPage;
 
@@ -38,6 +40,8 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
 
     //模式选择， 温度和时间
     private TabLayout.Tab modeTab, tempTab, timeTab;
+    //加湿烤
+    private TabLayout.Tab steamTab;
 
     private List<ModeBean> modes;
 
@@ -99,10 +103,11 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
 
         //
         if (null != modes && modes.size() > 0) {
+            int index = 0;
             //默认模式
             ModeBean defaultBean = modes.get(0);
             modeTab = tabLayout.newTab();
-            modeTab.setId(0);
+            modeTab.setId(index++);
             View modeView = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab_mode, null);
             TextView tvMode = modeView.findViewById(R.id.tv_mode);
             tvMode.setText(defaultBean.name);
@@ -118,38 +123,44 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             modeFragment.setArguments(modeBundle);
             fragments.add(new WeakReference<>(modeFragment));
 
+            if (SteamOven.getInstance().workType == ModeConstant.MODE_JIASHI_BAKE) {
+                //加湿烤
+                steamTab = tabLayout.newTab();
+                steamTab.setId(index++);
+                View steamView = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab_mode, null);
+
+                steamTab.setCustomView(steamView);
+                tabLayout.addTab(steamTab);
+                Fragment steamFragment = new ModeSelectPage(steamTab, this);
+                Bundle steamBundle = new Bundle();
+                ArrayList<String> steamList = new ArrayList<>();
+                steamList.add(SteamOvenSteamEnum.SMALL_STEAM.getValue());
+                steamList.add(SteamOvenSteamEnum.MID_STEAM.getValue());
+                steamList.add(SteamOvenSteamEnum.MAX_STEAM.getValue());
+
+                steamBundle.putStringArrayList("mode", steamList);
+                steamFragment.setArguments(steamBundle);
+                fragments.add(new WeakReference<>(steamFragment));
+            }
+
             tempTab = tabLayout.newTab();
-            tempTab.setId(1);
+            tempTab.setId(index++);
             View tempView = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab_temp, null);
             TextView tvTemp = tempView.findViewById(R.id.tv_mode);
             tvTemp.setText(defaultBean.defTemp + "");
             tempTab.setCustomView(tempView);
             tabLayout.addTab(tempTab);
             tempSelectPage = new TimeSelectPage(tempTab, "temp", defaultBean.name,this);
-//            Bundle tempBundle = new Bundle();
-//            ArrayList<String> tempList = new ArrayList<>();
-//            for (int i = defaultBean.minTemp; i<=defaultBean.maxTemp; i++) {
-//                tempList.add(i + "");
-//            }
-//            tempBundle.putStringArrayList("mode", tempList);
-//            tempSelectPage.setArguments(tempBundle);
             fragments.add(new WeakReference<>(tempSelectPage));
 
             timeTab = tabLayout.newTab();
-            timeTab.setId(2);
+            timeTab.setId(index++);
             View timeView = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab_time, null);
             TextView tvTime = timeView.findViewById(R.id.tv_mode);
             tvTime.setText(defaultBean.defTime + "");
             timeTab.setCustomView(timeView);
             tabLayout.addTab(timeTab);
             timeSelectPage = new TimeSelectPage(timeTab, "time", defaultBean.name, this);
-//            Bundle timeBundle = new Bundle();
-//            ArrayList<String> timeList = new ArrayList<>();
-//            for (int i = defaultBean.minTime; i<=defaultBean.maxTime; i++) {
-//                timeList.add(i + "");
-//            }
-//            timeBundle.putStringArrayList("mode", timeList);
-//            timeSelectPage.setArguments(timeBundle);
             fragments.add(new WeakReference<>(timeSelectPage));
 //添加设置适配器
             noScrollViewPager.setAdapter(new HomePagerAdapter(getSupportFragmentManager()));

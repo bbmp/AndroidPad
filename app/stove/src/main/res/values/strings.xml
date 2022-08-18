@@ -23,4 +23,6 @@
     <string name="stove_ok">确认</string>
     <string name="stove_share_hint">请打开ROKI APP, 扫一扫分享</string>
     <string name="stove_lock">长按2s解锁</string>
+    <string name="stove_start_working">开始烹饪</string>
+    <string name="stove_time">定时</string>
 </resources>

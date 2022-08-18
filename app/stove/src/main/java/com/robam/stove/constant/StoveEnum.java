@@ -1,12 +1,10 @@
 package com.robam.stove.constant;
 
-import android.view.Display;
-
 public enum StoveEnum {
-    SMART(ModeConstant.MODE_SMART,"智能\n烹饪"),
-    CURVE(ModeConstant.MODE_CURVE,"烹饪\n曲线"),
-    RECIPE(ModeConstant.MODE_RECIPE,"菜谱"),
-    TIMING(ModeConstant.MODE_TIMING,"定时"),;
+    SMART(StoveConstant.FUN_SMART,"智能\n烹饪"),
+    CURVE(StoveConstant.FUN_CURVE,"烹饪\n曲线"),
+    RECIPE(StoveConstant.FUN_RECIPE,"菜谱"),
+    TIMING(StoveConstant.FUN_TIMING,"定时"),;
 
     private int code;
     private String value;

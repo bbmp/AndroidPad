@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_104"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!--    固定宽度-->
+    <View
+        android:id="@+id/view"
+        android:layout_width="@dimen/dp_170"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/dp_55"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+    <TextView
+        android:id="@+id/tv_mode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:text="time"
+        android:textColor="@drawable/stove_text_color_selector"
+        android:textSize="@dimen/sp_48"
+        app:layout_constraintLeft_toLeftOf="@id/view"
+        app:layout_constraintRight_toLeftOf="@id/tv_time"
+        app:layout_constraintTop_toTopOf="@id/view"
+        app:layout_constraintBottom_toTopOf="@id/iv_select"
+        app:layout_constraintHorizontal_chainStyle="packed"/>
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_7"
+        android:ellipsize="end"
+        android:text="min"
+        android:gravity="center"
+        android:textColor="@drawable/stove_text_color_selector"
+        android:textSize="@dimen/sp_30"
+        app:layout_constraintLeft_toRightOf="@id/tv_mode"
+        app:layout_constraintRight_toRightOf="@id/view"
+        app:layout_constraintBottom_toBottomOf="@id/tv_mode"/>
+    <ImageView
+        android:id="@+id/iv_select"
+        android:layout_width="@dimen/dp_82"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_2"
+        android:scaleType="fitXY"
+        android:visibility="gone"
+        android:src="@drawable/stove_ic_mode_select"
+        app:layout_constraintLeft_toLeftOf="@id/view"
+        app:layout_constraintRight_toRightOf="@id/view"
+        app:layout_constraintTop_toBottomOf="@id/tv_mode"
+        app:layout_constraintBottom_toBottomOf="@id/view"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

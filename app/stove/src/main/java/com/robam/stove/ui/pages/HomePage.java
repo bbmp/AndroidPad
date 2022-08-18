@@ -7,21 +7,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
-import com.robam.common.ui.HeadPage;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.common.utils.ImageUtils;
-import com.robam.common.utils.ToastUtils;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBasePage;
 import com.robam.stove.bean.Stove;
 import com.robam.stove.bean.StoveFunBean;
-import com.robam.stove.constant.Constant;
-import com.robam.stove.constant.ModeConstant;
+import com.robam.stove.constant.StoveConstant;
 import com.robam.stove.constant.StoveEnum;
 import com.robam.stove.ui.adapter.RvMainFunctionAdapter;
 
@@ -80,10 +76,10 @@ public class HomePage extends StoveBasePage {
     @Override
     protected void initData() {
         List<StoveFunBean> functionList = new ArrayList<>();
-        functionList.add(new StoveFunBean(ModeConstant.MODE_SMART, StoveEnum.match(ModeConstant.MODE_SMART), "", "smart", "com.robam.stove.ui.activity.RecipeActivity"));
-        functionList.add(new StoveFunBean(ModeConstant.MODE_CURVE, StoveEnum.match(ModeConstant.MODE_CURVE), "", "curve", "com.robam.stove.ui.activity.CurveActivity"));
-        functionList.add(new StoveFunBean(ModeConstant.MODE_RECIPE, StoveEnum.match(ModeConstant.MODE_RECIPE), "", "recipe", "com.robam.stove.ui.activity.RecipeActivity"));
-        functionList.add(new StoveFunBean(ModeConstant.MODE_TIMING, StoveEnum.match(ModeConstant.MODE_TIMING), "", "timing", "com.robam.stove.ui.activity.ModeSelectActivity"));
+        functionList.add(new StoveFunBean(StoveConstant.FUN_SMART, StoveEnum.match(StoveConstant.FUN_SMART), "", "smart", "com.robam.stove.ui.activity.ModeSelectActivity"));
+        functionList.add(new StoveFunBean(StoveConstant.FUN_CURVE, StoveEnum.match(StoveConstant.FUN_CURVE), "", "curve", "com.robam.stove.ui.activity.CurveActivity"));
+        functionList.add(new StoveFunBean(StoveConstant.FUN_RECIPE, StoveEnum.match(StoveConstant.FUN_RECIPE), "", "recipe", "com.robam.stove.ui.activity.RecipeActivity"));
+        functionList.add(new StoveFunBean(StoveConstant.FUN_TIMING, StoveEnum.match(StoveConstant.FUN_TIMING), "", "timing", "com.robam.stove.ui.activity.TimeSelectActivity"));
         rvMainFunctionAdapter.setList(functionList);
 
         //初始位置
@@ -121,7 +117,10 @@ public class HomePage extends StoveBasePage {
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.iv_float) {
-            getActivity().finish();
+            //快捷入口 隐式启动 降低耦合
+            Intent intent = new Intent();
+            intent.setClassName(getContext(), "com.robam.ventilator.ui.activity.ShortcutActivity");
+            startActivity(intent);
         } else if (id == R.id.ll_left_stove) {
             if (!llLeftStove.isSelected()) {
                 //左灶

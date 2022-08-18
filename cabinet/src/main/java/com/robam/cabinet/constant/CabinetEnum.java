@@ -1,12 +1,12 @@
 package com.robam.cabinet.constant;
 
 public enum CabinetEnum {
-
-    DISINFECT(1,"消毒"),
-    CLEAN(2,"快洁"),
-    DRY(3,"烘干"),
-    FLUSH(4,"净存"),
-    SMART(5,"智能"),
+    //主功能
+    DISINFECT(CabinetConstant.FUN_DISINFECT,"消毒"),
+    CLEAN(CabinetConstant.FUN_CLEAN,"快洁"),
+    DRY(CabinetConstant.FUN_DRY,"烘干"),
+    FLUSH(CabinetConstant.FUN_FLUSH,"净存"),
+    SMART(CabinetConstant.FUN_SMART,"智能"),
     ;
 
     private int code;
