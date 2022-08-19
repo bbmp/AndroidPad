@@ -1,28 +1,22 @@
 package com.robam.pan.ui.pages;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
-import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.utils.ToastUtils;
-import com.robam.pan.Constant.Constant;
-import com.robam.pan.Constant.DialogConstant;
+import com.robam.pan.constant.Constant;
 import com.robam.pan.R;
 import com.robam.pan.base.PanBasePage;
 import com.robam.pan.bean.PanFunBean;
-import com.robam.pan.factory.PanDialogFactory;
 import com.robam.pan.ui.adapter.RvMainFunctionAdapter;
 
 import java.util.ArrayList;

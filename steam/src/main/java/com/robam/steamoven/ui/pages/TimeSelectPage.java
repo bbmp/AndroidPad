@@ -11,6 +11,7 @@ import com.robam.common.ui.IModeSelect;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBasePage;
+import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.bean.model.ModeBean;
 import com.robam.steamoven.ui.adapter.RvDotAdapter;
 import com.robam.steamoven.ui.adapter.RvModeAdapter;
@@ -42,14 +43,19 @@ public class TimeSelectPage extends SteamBasePage {
 
     private ModeBean modeBean; //当前模式
 
-    public TimeSelectPage(TabLayout.Tab tab, int type, ModeBean bean) {
+    private IModeSelect iModeSelect;//回调接口
+
+    public TimeSelectPage(TabLayout.Tab tab, int type, IModeSelect iModeSelect) {
         this.tab = tab;
         this.type = type;
-        this.modeBean = bean;
+        this.iModeSelect = iModeSelect;
     }
 
 
     public void setList(List<String> selectList, int offset) {
+        if (null == rvTimeAdapter)
+            return;
+
         rvTimeAdapter.setList(selectList);
 
         int position = Integer.MAX_VALUE / 2-(Integer.MAX_VALUE / 2)%selectList.size() + offset;
@@ -81,26 +87,10 @@ public class TimeSelectPage extends SteamBasePage {
         rvTimeAdapter = new RvTimeAdapter(type);
         rvSelect2.setAdapter(rvTimeAdapter);
 
-        initList(modeBean);
+        if (null != iModeSelect)  //默认模式
+            iModeSelect.updateTab(SteamOven.getInstance().workMode);
     }
 
-    private void initList(ModeBean modeBean) {
-        if (null != modeBean) {
-            ArrayList<String> list = new ArrayList<>();
-            if (type == 0) {
-                for (int i = modeBean.minTemp; i <= modeBean.maxTemp; i++) {
-                    list.add(i + "");
-                }
-                setList(list, modeBean.defTemp - modeBean.minTemp);
-            } else {
-                for (int i = modeBean.minTime; i <= modeBean.maxTime; i++) {
-                    list.add(i + "");
-                }
-                setList(list, modeBean.defTime - modeBean.minTime);
-            }
-
-        }
-    }
 
     /**
      * 设置layout

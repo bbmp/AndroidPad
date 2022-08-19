@@ -1,14 +1,12 @@
 package com.robam.pan.ui.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
 import com.robam.common.ui.dialog.IDialog;
-import com.robam.pan.Constant.DialogConstant;
+import com.robam.pan.constant.DialogConstant;
 import com.robam.pan.R;
 import com.robam.pan.base.PanBaseActivity;
 import com.robam.pan.factory.PanDialogFactory;

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.tabs.TabLayout;
+import com.robam.common.ui.IModeSelect;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBasePage;
@@ -129,7 +130,5 @@ public class ModeSelectPage extends SteamBasePage {
         rvSelect2.setLayoutManager(pickerLayoutManager);
     }
 
-    public interface IModeSelect {
-        void updateTab(int mode);
-    }
+
 }

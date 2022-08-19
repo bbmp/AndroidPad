@@ -25,6 +25,8 @@
         <item name="colorControlActivated">#FFFFFF</item>
         //光标
         <item name="android:textCursorDrawable">@drawable/custom</item>
+        //软键盘
+        <item name="android:windowSoftInputMode">stateVisible|adjustPan</item>
     </style>
     <style name="Animation">
         <item name="android:windowEnterAnimation">@null</item>

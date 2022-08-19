@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+import com.robam.common.utils.ImageUtils;
 import com.robam.ventilator.R;
 import com.robam.ventilator.bean.ProductMutiItem;
 
@@ -25,8 +26,9 @@ public class RvProductsAdapter extends BaseMultiItemQuickAdapter<ProductMutiItem
             case ProductMutiItem.BUTTON:
                 break;
             case ProductMutiItem.DEVICE: {
-                baseViewHolder.setText(R.id.tv_device_name, "一体机");
-
+                baseViewHolder.setText(R.id.tv_device_name, productMutiItem.getDevice().getName());
+                baseViewHolder.setText(R.id.tv_model, productMutiItem.getDevice().getDisplayType());
+                ImageUtils.loadImage(getContext(), productMutiItem.getDevice().deviceTypeIconUrl, baseViewHolder.getView(R.id.iv_device));
             }
                 break;
         }

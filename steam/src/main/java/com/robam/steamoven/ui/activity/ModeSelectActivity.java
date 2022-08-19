@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.robam.common.ui.IModeSelect;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.bean.FuntionBean;
@@ -31,7 +32,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ModeSelectActivity extends SteamBaseActivity implements ModeSelectPage.IModeSelect {
+public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect {
     private TabLayout tabLayout;
     private ViewPager noScrollViewPager;
     //弱引用，防止内存泄漏
@@ -109,6 +110,8 @@ public class ModeSelectActivity extends SteamBaseActivity implements ModeSelectP
             int index = 0;
             //默认模式
             ModeBean defaultBean = modes.get(0);
+            //当前模式
+            SteamOven.getInstance().workMode = (short) defaultBean.code;
             modeTab = tabLayout.newTab();
             modeTab.setId(index++);
             View modeView = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab_mode, null);
@@ -139,11 +142,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements ModeSelectP
             tvTemp.setText(defaultBean.defTemp + "");
             tempTab.setCustomView(tempView);
             tabLayout.addTab(tempTab);
-            ArrayList<String> tempList = new ArrayList<>();
-            for (int i = defaultBean.minTemp; i <= defaultBean.maxTemp; i++) {
-                tempList.add(i + "");
-            }
-            tempSelectPage = new TimeSelectPage(tempTab, 0, defaultBean);
+            tempSelectPage = new TimeSelectPage(tempTab, 0, this);
             fragments.add(new WeakReference<>(tempSelectPage));
 
             timeTab = tabLayout.newTab();
@@ -153,11 +152,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements ModeSelectP
             tvTime.setText(defaultBean.defTime + "");
             timeTab.setCustomView(timeView);
             tabLayout.addTab(timeTab);
-            ArrayList<String> timeList = new ArrayList<>();
-            for (int i = defaultBean.minTime; i <= defaultBean.maxTime; i++) {
-                timeList.add(i + "");
-            }
-            timeSelectPage = new TimeSelectPage(timeTab, 1, defaultBean);
+            timeSelectPage = new TimeSelectPage(timeTab, 1, this);
             fragments.add(new WeakReference<>(timeSelectPage));
 //添加设置适配器
             selectPagerAdapter = new SelectPagerAdapter(getSupportFragmentManager());

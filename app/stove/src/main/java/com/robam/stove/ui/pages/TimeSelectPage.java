@@ -9,6 +9,7 @@ import com.robam.common.ui.IModeSelect;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBasePage;
+import com.robam.stove.bean.Stove;
 import com.robam.stove.ui.adapter.RvTimeAdapter;
 
 import java.util.List;
@@ -29,13 +30,12 @@ public class TimeSelectPage extends StoveBasePage {
 
     private int offset;//偏移
 
-    private IModeSelect iModeSelect;
-
     private String mode;
 
-    public TimeSelectPage(TabLayout.Tab tab, String mode, IModeSelect iModeSelect) {
+    private IModeSelect iModeSelect;
+
+    public TimeSelectPage(TabLayout.Tab tab, IModeSelect iModeSelect) {
         this.tab = tab;
-        this.mode = mode;
         this.iModeSelect = iModeSelect;
     }
 
@@ -44,6 +44,9 @@ public class TimeSelectPage extends StoveBasePage {
     }
 
     public void setList(List<String> selectList, int offset) {
+        if (null == rvTimeAdapter)
+            return;
+
         rvTimeAdapter.setList(selectList);
         this.offset = offset;
 
@@ -75,7 +78,7 @@ public class TimeSelectPage extends StoveBasePage {
         rvSelect.setAdapter(rvTimeAdapter);
 
         if (null != iModeSelect)
-            iModeSelect.updateTab("time", mode);
+            iModeSelect.updateTab(Stove.getInstance().workMode);
     }
 
     /**

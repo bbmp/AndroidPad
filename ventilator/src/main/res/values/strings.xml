@@ -71,4 +71,5 @@
     <string name="ventilator_share">分享控制权</string>
     <string name="ventilator_add">添加</string>
     <string name="ventilator_next_step">下一步</string>
+    <string name="ventilator_request_failed">请求失败</string>
 </resources>

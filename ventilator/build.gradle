@@ -49,4 +49,6 @@ dependencies {
     api "org.eclipse.paho:org.eclipse.paho.client.mqttv3:$versions.org_eclipse_paho_client_mqttv3"
     api "org.eclipse.paho:org.eclipse.paho.android.service:$versions.org_eclipse_paho_android_service"
     api "com.github.Jasonchenlijian:FastBle:$versions.FastBle"
+    // 腾讯 MMKV：https://github.com/Tencent/MMKV
+    api "com.tencent:mmkv-static:$versions.mmkv"
 }

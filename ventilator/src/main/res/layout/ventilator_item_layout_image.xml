@@ -9,7 +9,9 @@
         android:layout_width="@dimen/dp_600"
         android:layout_height="@dimen/dp_320"
         android:layout_marginRight="@dimen/dp_30"
+        android:layout_marginBottom="@dimen/dp_35"
         android:scaleType="fitXY"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

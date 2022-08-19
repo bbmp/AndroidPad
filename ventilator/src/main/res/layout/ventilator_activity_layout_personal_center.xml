@@ -56,30 +56,47 @@
         android:layout_height="@dimen/dp_110"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="@id/ventilator_guideline10"
-        app:layout_constraintTop_toTopOf="@id/view_board"/>
+        app:layout_constraintTop_toTopOf="@id/view_board" />
+
     <TextView
         android:id="@+id/tv_nickname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_32"
+        android:maxLines="1"
+        android:maxEms="10"
+        android:ellipsize="end"
+        android:textColor="@color/ventilator_white"
+        android:textSize="@dimen/sp_32"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="@id/ventilator_guideline10"
-        app:layout_constraintTop_toBottomOf="@id/iv_head"/>
+        app:layout_constraintTop_toBottomOf="@id/iv_head" />
+
     <TextView
         android:id="@+id/tv_phone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_24"
+        android:textColor="@color/ventilator_white_50"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="@id/ventilator_guideline10"
-        app:layout_constraintTop_toBottomOf="@id/tv_nickname"/>
+        app:layout_constraintTop_toBottomOf="@id/tv_nickname" />
+
     <TextView
         android:id="@+id/btn_exit_login"
         android:layout_width="@dimen/dp_175"
         android:layout_height="@dimen/dp_56"
-        android:layout_marginBottom="@dimen/dp_32"
+        android:textColor="@color/ventilator_white"
+        android:textSize="@dimen/sp_30"
+        android:gravity="center"
+        android:text="@string/ventilator_login_exit"
+        android:background="@drawable/ventilator_shape_button_ok_bg"
+        app:layout_constraintBottom_toBottomOf="@id/view_board"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="@id/ventilator_guideline10"
-        app:layout_constraintTop_toBottomOf="@id/tv_phone"
-        app:layout_constraintBottom_toBottomOf="@id/view_board"/>
+        app:layout_constraintTop_toBottomOf="@id/tv_phone" />
+
     <View
         android:id="@+id/view_board"
         android:layout_width="0dp"
@@ -87,18 +104,19 @@
         android:layout_marginVertical="@dimen/dp_48"
         android:layout_marginRight="@dimen/dp_20"
         android:background="@drawable/ventilator_shape_border_bg"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="@id/ventilator_guideline10"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_title"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/ll_title" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_device"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/view_board"
         app:layout_constraintLeft_toLeftOf="@id/view_board"
         app:layout_constraintRight_toRightOf="@id/view_board"
-        app:layout_constraintTop_toTopOf="@id/view_board"
-        app:layout_constraintBottom_toBottomOf="@id/view_board"/>
+        app:layout_constraintTop_toTopOf="@id/view_board" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_dot"
@@ -107,11 +125,25 @@
         android:layout_marginTop="@dimen/dp_5"
         app:layout_constraintLeft_toLeftOf="@id/view_board"
         app:layout_constraintRight_toRightOf="@id/view_board"
-        app:layout_constraintTop_toBottomOf="@id/view_board"/>
+        app:layout_constraintTop_toBottomOf="@id/view_board" />
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/ventilator_guideline10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.34"/>
+        app:layout_constraintGuide_percent="0.34" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/ventilator_group3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="iv_head,tv_nickname,tv_phone,btn_exit_login,view_board,rv_device,rv_dot" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/ventilator_group4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="iv_head_img, tv_not_login, tv_login" />
 </androidx.constraintlayout.widget.ConstraintLayout>

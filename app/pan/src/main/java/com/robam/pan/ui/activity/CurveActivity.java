@@ -11,13 +11,12 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
-import com.robam.pan.Constant.DialogConstant;
+import com.robam.pan.constant.DialogConstant;
 import com.robam.pan.R;
 import com.robam.pan.base.PanBaseActivity;
 import com.robam.pan.bean.PanRecipe;
 import com.robam.pan.factory.PanDialogFactory;
 import com.robam.pan.ui.adapter.RvFavoriteAdapter;
-import com.robam.pan.ui.adapter.RvRecipeAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

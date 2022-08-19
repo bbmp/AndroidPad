@@ -1,4 +1,4 @@
-package com.robam.pan.Constant;
+package com.robam.pan.constant;
 
 public class DialogConstant {
     public final static int DIALOG_TYPE_OPEN_FIRE = 1;

@@ -10,6 +10,8 @@
         <activity
             android:name=".ui.activity.LoginPasswordActivity"
             android:exported="false"
+            android:windowSoftInputMode="adjustResize"
+            android:launchMode="singleTop"
             android:screenOrientation="landscape" />
         <activity
             android:name=".ui.activity.ShortcutActivity"
@@ -34,6 +36,7 @@
         <activity
             android:name=".ui.activity.LoginQrcodeActivity"
             android:exported="false"
+            android:launchMode="singleTop"
             android:screenOrientation="landscape" />
         <activity
             android:name=".ui.activity.SmartSettingActivity"
@@ -62,11 +65,13 @@
         <activity
             android:name=".ui.activity.LoginPhoneActivity"
             android:exported="false"
+            android:launchMode="singleTop"
             android:screenOrientation="landscape" />
         <activity
             android:name=".ui.activity.AboutActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:exported="false"
+            android:launchMode="singleTop"
             android:screenOrientation="landscape" />
         <activity
             android:name=".ui.activity.MainActivity"

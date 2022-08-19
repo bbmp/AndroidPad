@@ -50,6 +50,7 @@
         app:layout_constraintBaseline_toBaselineOf="@id/tv_phone"
         app:layout_constraintRight_toRightOf="@id/ventilator_guideline3"
         android:textSize="@dimen/sp_32"
+        android:inputType="phone"
         android:textColor="@color/ventilator_white"
         android:textColorHint="@color/ventilator_white_20"
         android:hint="@string/ventilator_input_phone_hint" />
@@ -73,6 +74,7 @@
         android:layout_marginLeft="@dimen/dp_32"
         android:textColor="@color/ventilator_white"
         android:hint="@string/ventilator_input_verifycode_hint"
+        android:inputType="number"
         android:textColorHint="@color/ventilator_white_20"
         app:layout_constraintLeft_toRightOf="@id/tv_verifycode"
         app:layout_constraintBaseline_toBaselineOf="@id/tv_verifycode"/>

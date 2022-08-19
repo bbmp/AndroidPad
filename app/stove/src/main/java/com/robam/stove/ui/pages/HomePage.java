@@ -58,6 +58,7 @@ public class HomePage extends StoveBasePage {
                 .setOrientation(RecyclerView.HORIZONTAL)
                 .setMaxItem(3)
                 .setScale(0.66f)
+                .setAlpha(false)
                 .setOnPickerListener(new PickerLayoutManager.OnPickerListener() {
                     @Override
                     public void onPicked(RecyclerView recyclerView, int position) {

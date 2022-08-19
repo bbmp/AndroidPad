@@ -1,4 +1,4 @@
-package com.robam.pan.Constant;
+package com.robam.pan.constant;
 
 public interface Constant {
     /**

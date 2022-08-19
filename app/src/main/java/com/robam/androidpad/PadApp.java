@@ -7,6 +7,7 @@ package com.robam.androidpad;
 
 import android.app.Application;
 
+import com.bumptech.glide.Glide;
 import com.robam.ventilator.AppVentilator;
 import com.tencent.mmkv.MMKV;
 
@@ -31,5 +32,18 @@ public class PadApp extends Application {
     @Override
     public void onTerminate() {
         super.onTerminate();
+    }
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        // 清理所有图片内存缓存
+        Glide.get(this).onLowMemory();
+    }
+
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+        // 根据手机内存剩余情况清理图片内存缓存
+        Glide.get(this).onTrimMemory(level);
     }
 }

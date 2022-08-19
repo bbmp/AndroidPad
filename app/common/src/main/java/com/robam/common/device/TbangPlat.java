@@ -40,16 +40,16 @@ public class TbangPlat implements IPlat{
 
     @Override
     public String getDt() {
-        return null;
+        return "DB620";
     }
 
     @Override
     public String getDeviceOnlySign() {
-        return null;
+        return getDt() + getMac().replace(":" , "");
     }
 
     @Override
     public String getMac() {
-        return null;
+        return "test";
     }
 }

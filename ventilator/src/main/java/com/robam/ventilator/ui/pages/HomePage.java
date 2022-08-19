@@ -12,25 +12,31 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.Group;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.robam.common.http.RetrofitCallback;
 import com.robam.common.skin.SkinDisplayUtils;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.common.utils.ClickUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ScreenUtils;
-import com.robam.steamoven.ui.activity.MainActivity;
+import com.robam.stove.ui.activity.MainActivity;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBasePage;
+import com.robam.ventilator.bean.AccountInfo;
 import com.robam.ventilator.bean.Device;
 import com.robam.ventilator.bean.ProductMutiItem;
+import com.robam.ventilator.bean.UserInfo;
 import com.robam.ventilator.bean.VenFunBean;
 import com.robam.ventilator.constant.DialogConstant;
 import com.robam.ventilator.factory.VentilatorDialogFactory;
+import com.robam.ventilator.http.CloudHelper;
+import com.robam.ventilator.response.GetDeviceRes;
 import com.robam.ventilator.ui.activity.AddDeviceMainActivity;
 import com.robam.ventilator.ui.activity.MatchNetworkActivity;
 import com.robam.ventilator.ui.activity.ShortcutActivity;
@@ -89,6 +95,7 @@ public class HomePage extends VentilatorBasePage {
         tvComfort = findViewById(R.id.tv_comfort);
         group = findViewById(R.id.ventilator_group);
         drawerLayout = findViewById(R.id.drawer_layout);
+//        drawerLayout.setScrimColor(getResources().getColor(R.color.ventilator_drawer_bg));
         llSetting = findViewById(R.id.ll_drawer_left);
         llProducts = findViewById(R.id.ll_drawer_right);
         rvLeft = findViewById(R.id.rv_left);
@@ -205,8 +212,6 @@ public class HomePage extends VentilatorBasePage {
         rvProductsAdapter  = new RvProductsAdapter();
         rvRight.setAdapter(rvProductsAdapter);
         productList.add(new ProductMutiItem(ProductMutiItem.IMAGE, ""));
-        productList.add(new ProductMutiItem(ProductMutiItem.DEVICE, new Device()));
-        productList.add(new ProductMutiItem(ProductMutiItem.DEVICE, new Device()));
         productList.add(new ProductMutiItem(ProductMutiItem.BUTTON, ""));
         rvProductsAdapter.setList(productList);
 
@@ -223,6 +228,42 @@ public class HomePage extends VentilatorBasePage {
                 }
             }
         });
+        //监听用户登录状态
+        AccountInfo.getInstance().getUser().observe(this, new Observer<UserInfo>() {
+            @Override
+            public void onChanged(UserInfo userInfo) {
+                getDeviceInfo(userInfo);
+            }
+        });
+    }
+
+    /**
+     * 获取设备信息
+     * @param userInfo
+     */
+    private void getDeviceInfo(UserInfo userInfo) {
+        if (null != userInfo) {
+            CloudHelper.getDevices(this, userInfo.id, GetDeviceRes.class, new RetrofitCallback<GetDeviceRes>() {
+                @Override
+                public void onSuccess(GetDeviceRes getDeviceRes) {
+                    if (null != getDeviceRes) {
+                        List<Device> deviceList = getDeviceRes.devices;
+                        productList.clear();
+                        productList.add(new ProductMutiItem(ProductMutiItem.IMAGE, ""));
+                        for (Device device: deviceList)
+                            productList.add(new ProductMutiItem(ProductMutiItem.DEVICE, device));
+                        productList.add(new ProductMutiItem(ProductMutiItem.BUTTON, ""));
+                        if (null != rvProductsAdapter)
+                            rvProductsAdapter.setList(productList);
+                    }
+                }
+
+                @Override
+                public void onFaild(String err) {
+                    LogUtils.e("getDevices" + err);
+                }
+            });
+        }
     }
 
     @Override

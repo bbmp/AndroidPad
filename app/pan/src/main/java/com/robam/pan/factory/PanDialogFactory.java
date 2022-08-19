@@ -3,7 +3,7 @@ package com.robam.pan.factory;
 import android.content.Context;
 
 import com.robam.common.ui.dialog.IDialog;
-import com.robam.pan.Constant.DialogConstant;
+import com.robam.pan.constant.DialogConstant;
 import com.robam.pan.ui.dialog.CurveEidtDialog;
 import com.robam.pan.ui.dialog.ElectricQuantityDialog;
 import com.robam.pan.ui.dialog.OpenFireDialog;

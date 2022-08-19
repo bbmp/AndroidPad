@@ -19,6 +19,7 @@ import com.robam.common.ui.IModeSelect;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBaseActivity;
 import com.robam.stove.bean.ModeBean;
+import com.robam.stove.bean.Stove;
 import com.robam.stove.constant.StoveModeEnum;
 import com.robam.stove.ui.pages.ModeSelectPage;
 import com.robam.stove.ui.pages.TimeSelectPage;
@@ -89,8 +90,9 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
     @Override
     protected void initData() {
         modes.addAll(StoveModeEnum.getModeList());
-
+        //默认模式
         ModeBean defaultBean = modes.get(0);
+        Stove.getInstance().workMode = defaultBean.code;
         modeTab = tabLayout.newTab();
         modeTab.setId(0);
         View modeView = LayoutInflater.from(getContext()).inflate(R.layout.stove_view_layout_tab_mode, null);
@@ -98,24 +100,18 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
         tvMode.setText(defaultBean.name);
         modeTab.setCustomView(modeView);
         tabLayout.addTab(modeTab);
-        modeSelectPage = new ModeSelectPage(modeTab, this);
-        Bundle modeBundle = new Bundle();
-        ArrayList<String> modeList = new ArrayList<>();
-        for (ModeBean modeBean: modes) {
-            modeList.add(modeBean.name);
-        }
-        modeBundle.putStringArrayList("mode", modeList);
-        modeSelectPage.setArguments(modeBundle);
+
+        modeSelectPage = new ModeSelectPage(modeTab, modes,this);
         fragments.add(new WeakReference<>(modeSelectPage));
 
         timeTab = tabLayout.newTab();
-        timeTab.setId(2);
+        timeTab.setId(1);
         View timeView = LayoutInflater.from(getContext()).inflate(R.layout.stove_view_layout_tab_time, null);
         TextView tvTime = timeView.findViewById(R.id.tv_mode);
         tvTime.setText(defaultBean.defTime + "");
         timeTab.setCustomView(timeView);
         tabLayout.addTab(timeTab);
-        timeSelectPage = new TimeSelectPage(timeTab, defaultBean.name, this);
+        timeSelectPage = new TimeSelectPage(timeTab, this);
 
         fragments.add(new WeakReference<>(timeSelectPage));
 
@@ -127,17 +123,17 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
     /**
      * 根据当前模式设置温度和时间
      */
-    private void initTimeParams(String type, String name) {
+    private void initTimeParams(int mode) {
         if (null != modes) {
             for (ModeBean modeBean: modes) {
-                if (name.equals(modeBean.name)) {
-                    if ("mode".equals(type) || "time".equals(type)) {
-                        ArrayList<String> timeList = new ArrayList<>();
-                        for (int i = modeBean.minTime; i <= modeBean.maxTime; i++) {
-                            timeList.add(i + "");
-                        }
-                        timeSelectPage.setList(timeList, modeBean.defTime - modeBean.minTime);
+                if (mode == modeBean.code) {
+
+                    ArrayList<String> timeList = new ArrayList<>();
+                    for (int i = modeBean.minTime; i <= modeBean.maxTime; i++) {
+                        timeList.add(i + "");
                     }
+                    timeSelectPage.setList(timeList, modeBean.defTime - modeBean.minTime);
+
                     break;
                 }
             }
@@ -145,10 +141,10 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
     }
 
     @Override
-    public void updateTab(String type, String tabString) {
+    public void updateTab(int mode) {
         if (modeTab != null) {
             //模式变更，温度和时间值也要变更
-            initTimeParams(type, tabString);
+            initTimeParams(mode);
         }
     }
 

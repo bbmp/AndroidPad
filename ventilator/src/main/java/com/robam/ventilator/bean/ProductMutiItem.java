@@ -31,4 +31,8 @@ public class ProductMutiItem implements MultiItemEntity {
         this.itemType = itemType;
         this.device = device;
     }
+
+    public Device getDevice() {
+        return device;
+    }
 }

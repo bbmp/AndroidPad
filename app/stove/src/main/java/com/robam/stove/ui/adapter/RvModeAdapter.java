@@ -7,8 +7,9 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.robam.common.utils.LogUtils;
 import com.robam.stove.R;
+import com.robam.stove.bean.ModeBean;
 
-public class RvModeAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
+public class RvModeAdapter extends BaseQuickAdapter<ModeBean, BaseViewHolder> {
     private int pickPosition;
 
     public void setPickPosition(int pickPosition) {
@@ -23,12 +24,12 @@ public class RvModeAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
     }
 
     @Override
-    public int getItemPosition(@Nullable String item) {
+    public int getItemPosition(@Nullable ModeBean item) {
         return super.getItemPosition(item);
     }
 
     @Override
-    public String getItem(int position) {
+    public ModeBean getItem(int position) {
         int count = getHeaderLayoutCount() + getData().size();
         position = position % count ;
         return super.getItem(position);
@@ -53,7 +54,7 @@ public class RvModeAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
     }
 
     @Override
-    protected void convert(@NonNull BaseViewHolder baseViewHolder, String s) {
-        baseViewHolder.setText(R.id.tv_select, s);
+    protected void convert(@NonNull BaseViewHolder baseViewHolder, ModeBean modeBean) {
+        baseViewHolder.setText(R.id.tv_select, modeBean.name);
     }
 }

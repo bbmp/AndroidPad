@@ -25,7 +25,7 @@ public class RvShortcutDeviceAdapter extends BaseQuickAdapter<Device, BaseViewHo
     protected void convert(@NonNull BaseViewHolder baseViewHolder, Device device) {
         if (null != device) {
             baseViewHolder.setText(R.id.tv_device_name, device.getName());
-            baseViewHolder.setText(R.id.tv_model, device.getModel());
+            baseViewHolder.setText(R.id.tv_model, device.getDisplayType());
             baseViewHolder.setImageResource(R.id.iv_device, R.drawable.logo_roki);
         }
     }
