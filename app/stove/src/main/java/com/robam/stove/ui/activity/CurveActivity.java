@@ -29,13 +29,6 @@ public class CurveActivity extends StoveBaseActivity {
     private TextView tvRight;
     private List<StoveRecipe> panRecipeList = new ArrayList<>();
 
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.stove_activity_layout_curve);
-    }
-
     @Override
     protected int getLayoutId() {
         return R.layout.stove_activity_layout_curve;

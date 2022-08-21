@@ -52,6 +52,14 @@
             android:textColor="@color/stove_white"
             android:text="@string/stove_left_stove"/>
     </LinearLayout>
+    <ImageView
+        android:id="@+id/iv_lock"
+        android:layout_width="@dimen/dp_38"
+        android:layout_height="@dimen/dp_38"
+        android:layout_marginBottom="@dimen/dp_24"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
     <LinearLayout
         android:id="@+id/ll_right_stove"
         android:layout_width="@dimen/dp_244"

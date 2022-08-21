@@ -2,10 +2,16 @@ package com.robam.stove.ui.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.robam.common.manager.LineChartManager;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.ClearEditText;
 import com.robam.common.utils.ToastUtils;
@@ -14,9 +20,13 @@ import com.robam.stove.base.StoveBaseActivity;
 import com.robam.stove.constant.DialogConstant;
 import com.robam.stove.factory.StoveDialogFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 //曲线保存
 public class CurveSaveActivity extends StoveBaseActivity {
-
+    private LineChart lineChart;//曲线图带限制线
+    private LineChartManager lineChartManager;
 
     @Override
     protected int getLayoutId() {
@@ -26,12 +36,14 @@ public class CurveSaveActivity extends StoveBaseActivity {
     @Override
     protected void initView() {
         showCenter();
+        lineChart = findViewById(R.id.lineChart);
+        lineChartManager = new LineChartManager(lineChart);
         setOnClickListener(R.id.tv_back, R.id.tv_save, R.id.iv_edit_name);
     }
 
     @Override
     protected void initData() {
-
+        setLineChartData();
     }
 
     @Override
@@ -71,5 +83,40 @@ public class CurveSaveActivity extends StoveBaseActivity {
                 iDialog.dismiss();
             }
         });
+    }
+
+    private void setLineChartData() {
+        //设置X轴数据
+        ArrayList xValues = new ArrayList<>();
+        for (int i = 0; i < 12; i++) {
+            xValues.add((float) i);
+        }
+        //设置Y轴数据
+        List<Float> yValue = new ArrayList<>();
+        //一条曲线模拟数据
+        for (int j = 0; j < 12; j++) {
+            yValue.add((float) (Math.random() * 80));
+        }
+
+        //设置数据并显示一条曲线
+        lineChartManager.showLineChart(xValues, yValue, "", Color.BLUE);
+        lineChartManager.setDescription("");
+        //Y轴0-100 分10格
+//        lineChartManager.setYAxis(100, 0, 11);
+        //警戒线80 红色
+//        lineChartManager.setHightLimitLine(80, "高温报警", Color.RED);
+
+        lineChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+//                Log.e(TAG, "----e:" + e.toString());
+            }
+
+            @Override
+            public void onNothingSelected() {
+
+            }
+        });
+
     }
 }

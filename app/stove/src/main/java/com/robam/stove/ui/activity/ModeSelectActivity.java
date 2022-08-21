@@ -16,11 +16,14 @@ import android.widget.TextView;
 
 import com.google.android.material.tabs.TabLayout;
 import com.robam.common.ui.IModeSelect;
+import com.robam.common.ui.dialog.IDialog;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBaseActivity;
 import com.robam.stove.bean.ModeBean;
 import com.robam.stove.bean.Stove;
+import com.robam.stove.constant.DialogConstant;
 import com.robam.stove.constant.StoveModeEnum;
+import com.robam.stove.factory.StoveDialogFactory;
 import com.robam.stove.ui.pages.ModeSelectPage;
 import com.robam.stove.ui.pages.TimeSelectPage;
 
@@ -85,6 +88,7 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
             }
         });
 
+        setOnClickListener(R.id.btn_start);
     }
 
     @Override
@@ -118,6 +122,39 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
         //添加设置适配器
         noScrollViewPager.setAdapter(new HomePagerAdapter(getSupportFragmentManager()));
         noScrollViewPager.setOffscreenPageLimit(fragments.size());
+    }
+
+    @Override
+    public void onClick(View view) {
+        super.onClick(view);
+        int id = view.getId();
+        if (id == R.id.btn_start) {
+            //选择炉头
+            selectStove();
+        }
+    }
+
+    //炉头选择
+    private void selectStove() {
+        //炉头选择提示
+        IDialog iDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_SELECT_STOVE);
+        iDialog.setCancelable(false);
+        iDialog.setListeners(new IDialog.DialogOnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int id = v.getId();
+                if (id == R.id.view_left || id == R.id.view_right)
+                    openFire();
+            }
+        }, R.id.select_stove_dialog, R.id.view_left, R.id.view_right);
+        iDialog.show();
+    }
+
+    //点火提示
+    private void openFire() {
+        IDialog iDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_OPEN_FIRE);
+        iDialog.setCancelable(false);
+        iDialog.show();
     }
 
     /**

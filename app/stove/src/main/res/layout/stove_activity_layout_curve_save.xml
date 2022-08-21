@@ -16,6 +16,47 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/tv_huoli"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_52"
+        android:textSize="@dimen/sp_24"
+        android:textColor="@color/stove_white"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/tv_temp"
+        app:layout_constraintTop_toBottomOf="@id/ll_title"
+        app:layout_constraintHorizontal_chainStyle="spread"/>
+    <TextView
+        android:id="@+id/tv_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_24"
+        android:textColor="@color/stove_white"
+        app:layout_constraintLeft_toRightOf="@id/tv_huoli"
+        app:layout_constraintRight_toLeftOf="@id/tv_time"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_huoli"/>
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_24"
+        android:textColor="@color/stove_white"
+        app:layout_constraintLeft_toRightOf="@id/tv_temp"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_temp"
+        app:layout_constraintRight_toRightOf="@id/pan_guideline6"/>
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/lineChart"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/dp_40"
+        android:layout_marginLeft="@dimen/dp_40"
+        android:layout_marginBottom="@dimen/dp_60"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@id/pan_guideline6"
+        app:layout_constraintTop_toBottomOf="@id/tv_huoli"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+    <TextView
         android:id="@+id/tv_curve_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -349,14 +349,22 @@
         <entry key="..\:/AndroidStudioProjects/AndroidPad/app/pan/src/main/res/layout/pan_item_main_function.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/app/pan/src/main/res/layout/pan_page_layout_home.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/app/src/main/res/layout/activity_main.xml" value="0.14130434782608695" />
+        <entry key="..\:/AndroidStudioProjects/AndroidPad/app/stove/src/main/res/layout/stove_activity_layout_curve.xml" value="0.1" />
+        <entry key="..\:/AndroidStudioProjects/AndroidPad/app/stove/src/main/res/layout/stove_activity_layout_curve_save.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/app/stove/src/main/res/layout/stove_activity_layout_main.xml" value="0.1" />
+        <entry key="..\:/AndroidStudioProjects/AndroidPad/app/stove/src/main/res/layout/stove_activity_layout_mode_select.xml" value="0.22916666666666666" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/app/stove/src/main/res/layout/stove_activity_layout_recipe.xml" value="0.1" />
+        <entry key="..\:/AndroidStudioProjects/AndroidPad/app/stove/src/main/res/layout/stove_activity_layout_recipe_detail.xml" value="0.1" />
+        <entry key="..\:/AndroidStudioProjects/AndroidPad/app/stove/src/main/res/layout/stove_activity_layout_time_select.xml" value="0.14945652173913043" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/app/stove/src/main/res/layout/stove_dialog_layout_common.xml" value="0.1" />
+        <entry key="..\:/AndroidStudioProjects/AndroidPad/app/stove/src/main/res/layout/stove_dialog_layout_lock.xml" value="0.22916666666666666" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/app/stove/src/main/res/layout/stove_dialog_layout_open_fire.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/app/stove/src/main/res/layout/stove_dialog_layout_select_stove.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/app/stove/src/main/res/layout/stove_item_main_function.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/app/stove/src/main/res/layout/stove_page_layout_home.xml" value="0.1" />
+        <entry key="..\:/AndroidStudioProjects/AndroidPad/app/stove/src/main/res/layout/stove_page_layout_mode_select.xml" value="0.22916666666666666" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/app/stove/src/main/res/layout/stove_view_layout_title.xml" value="0.1" />
+        <entry key="..\:/AndroidStudioProjects/AndroidPad/cabinet/src/main/res/drawable/cabinet_main_item_bg.xml" value="0.188" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/cabinet/src/main/res/layout/cabinet_activity_layout_appointing.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/cabinet/src/main/res/layout/cabinet_activity_layout_appointment.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/cabinet/src/main/res/layout/cabinet_activity_layout_main.xml" value="0.14266304347826086" />

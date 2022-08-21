@@ -55,6 +55,7 @@ dependencies {
     implementation project(path: ':app:serialport')
 //    implementation project(path: ':app:foodmaterialdetect')
     implementation project(path: ':app:common')
+    implementation project(path: ':app:MPChartLib')
     implementation project(path: ':ventilator')  //烟机
     implementation project(path: ':steam')       //一体机
     implementation project(path: ':dishwasher')   //洗碗机

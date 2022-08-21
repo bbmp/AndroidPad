@@ -5,15 +5,23 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.MultiTransformation;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.robam.cabinet.R;
 import com.robam.cabinet.bean.CabFunBean;
+import com.robam.common.utils.ImageUtils;
 import com.robam.common.utils.LogUtils;
+
+import jp.wasabeef.glide.transformations.BlurTransformation;
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 public class RvMainFunctionAdapter extends BaseQuickAdapter<CabFunBean, BaseViewHolder> {
     private int pickPosition;
-//    private RequestOptions options = RequestOptions.bitmapTransform(new MultiTransformation(new BlurTransformation(30, 3)));
+    private RequestOptions options = RequestOptions.bitmapTransform(new MultiTransformation(new BlurTransformation(1, 1), new CircleCrop()));
 
     public void setPickPosition(int pickPosition) {
         this.pickPosition = pickPosition % getData().size();
@@ -55,7 +63,7 @@ public class RvMainFunctionAdapter extends BaseQuickAdapter<CabFunBean, BaseView
             TextView textView = baseViewHolder.getView(R.id.tv_funtion_name);
             textView.setText(cabFunBean.funtionName);
             ImageView imageView = baseViewHolder.getView(R.id.iv_round_bg);
-//            ImageUtils.loadImage(getContext(), R.drawable.cabinet_main_item_bg, options, imageView);
+            ImageUtils.loadImage(getContext(), R.drawable.cabinet_main_item_bg, options, imageView);
 //            if (pickPosition == getItemPosition(functionBean)) {
 //                textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getContext().getResources().getDimensionPixelSize(com.robam.common.R.dimen.sp_80));
 //            } else

@@ -4,13 +4,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
+import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBaseActivity;
 import com.robam.stove.bean.Stove;
+import com.robam.stove.constant.DialogConstant;
 import com.robam.stove.constant.StoveModeEnum;
+import com.robam.stove.factory.StoveDialogFactory;
 import com.robam.stove.ui.adapter.RvTimeAdapter;
 
 import java.util.ArrayList;
@@ -50,6 +54,7 @@ public class TimeSelectActivity extends StoveBaseActivity {
                     }
                 }).build();
         rvTime.setLayoutManager(pickerLayoutManager);
+        setOnClickListener(R.id.btn_start);
     }
 
     @Override
@@ -68,5 +73,37 @@ public class TimeSelectActivity extends StoveBaseActivity {
         tvNum.setText(lists.get(0));
         //工作时长
         Stove.getInstance().workHours = Integer.parseInt(lists.get(0));
+    }
+
+    @Override
+    public void onClick(View view) {
+        super.onClick(view);
+        int id = view.getId();
+        if (id == R.id.btn_start) {
+            //炉头选择
+            selectStove();
+        }
+    }
+    //炉头选择
+    private void selectStove() {
+        //炉头选择提示
+        IDialog iDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_SELECT_STOVE);
+        iDialog.setCancelable(false);
+        iDialog.setListeners(new IDialog.DialogOnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int id = v.getId();
+                if (id == R.id.view_left || id == R.id.view_right)
+                    openFire();
+            }
+        }, R.id.select_stove_dialog, R.id.view_left, R.id.view_right);
+        iDialog.show();
+    }
+
+    //点火提示
+    private void openFire() {
+        IDialog iDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_OPEN_FIRE);
+        iDialog.setCancelable(false);
+        iDialog.show();
     }
 }

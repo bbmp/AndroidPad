@@ -7,7 +7,6 @@
         android:id="@+id/iv_round_bg"
         android:layout_width="@dimen/dp_270"
         android:layout_height="@dimen/dp_270"
-        android:background="@drawable/cabinet_main_item_bg"
         android:layout_marginHorizontal="@dimen/dp_50"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
