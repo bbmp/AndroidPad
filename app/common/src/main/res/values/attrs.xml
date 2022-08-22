@@ -55,4 +55,10 @@
         <attr name="common_progFirstColor" format="color" />   <!--进度圆环结束颜色-->
         <attr name="common_progress" format="integer" />       <!--圆环进度-->
     </declare-styleable>
+<!--    模糊背景-->
+    <declare-styleable name="common_BlurredView">
+        <attr name="common_src" format="reference"/>
+        <attr name="common_move" format="boolean"/>
+        <attr name="common_disableBlurred" format="boolean"/>
+    </declare-styleable>
 </resources>

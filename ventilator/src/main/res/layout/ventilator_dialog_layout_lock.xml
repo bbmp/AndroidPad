@@ -2,9 +2,14 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/ventilator_lock">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
+<!--    模糊背景是图片-->
+    <com.robam.common.ui.view.BlurredView
+        android:id="@+id/blurredView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:common_src="@drawable/ventilator_ic_bg"/>
     <TextView
         android:id="@+id/tv_lock"
         android:layout_width="wrap_content"

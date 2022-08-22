@@ -7,16 +7,20 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.UiAutomation;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.utils.ImageUtils;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
 import com.robam.ventilator.bean.AccountInfo;
 import com.robam.ventilator.bean.UserInfo;
+import com.robam.ventilator.constant.DialogConstant;
+import com.robam.ventilator.factory.VentilatorDialogFactory;
 
 public class PersonalCenterActivity extends VentilatorBaseActivity {
     private TextView tvLogin;
@@ -84,10 +88,24 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
         if (id == R.id.tv_login) {  //默认手机登录
             startActivity(LoginPhoneActivity.class);
         } else if (id == R.id.btn_exit_login) { //退出登录
-
-            AccountInfo.getInstance().getUser().setValue(null);
+            exitLogin();
         }
     }
 
     //获取绑定的设备
+    //退出登录提示
+    private void exitLogin() {
+        IDialog iDialog = VentilatorDialogFactory.createDialogByType(getContext(), DialogConstant.DIALOG_TYPE_VENTILATOR_COMMON);
+        iDialog.setCancelable(false);
+        iDialog.setContentText(R.string.ventilator_login_exit_hint);
+        iDialog.setListeners(new IDialog.DialogOnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (v.getId() == R.id.tv_ok) {
+                    AccountInfo.getInstance().getUser().setValue(null);
+                }
+            }
+        }, R.id.tv_cancel, R.id.tv_ok);
+        iDialog.show();
+    }
 }

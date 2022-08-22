@@ -12,4 +12,5 @@ public class UserInfo {
     public boolean appleIdBinded;
     public String wxNickname;
     public boolean binded;
+    public String loginType; //登录方式
 }

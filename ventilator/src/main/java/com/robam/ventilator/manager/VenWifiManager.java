@@ -186,7 +186,7 @@ public class VenWifiManager {
      * @param ssid
      * @param pws
      */
-    public static void connectWifiPws(Context context, String ssid, String pws) {
+    public static void connectWifiPws(Context context, String ssid, String pws, ConnectivityManager.NetworkCallback networkCallback) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q)
         {
             NetworkSpecifier specifier =
@@ -205,17 +205,6 @@ public class VenWifiManager {
             ConnectivityManager connectivityManager = (ConnectivityManager)
                     context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-            ConnectivityManager.NetworkCallback networkCallback = new ConnectivityManager.NetworkCallback() {
-                @Override
-                public void onAvailable(Network network) {
-                    Log.i("onAvailable", "success");
-                }
-
-                @Override
-                public void onUnavailable() {
-                    Log.i("onUnavailable", "failed");
-                }
-            };
             connectivityManager.requestNetwork(request, networkCallback);
             // Release the request when done.
             // connectivityManager.unregisterNetworkCallback(networkCallback);

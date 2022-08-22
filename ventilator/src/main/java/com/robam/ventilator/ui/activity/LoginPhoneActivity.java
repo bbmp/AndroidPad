@@ -21,6 +21,7 @@ import com.robam.common.utils.ToastUtils;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
 import com.robam.ventilator.bean.AccountInfo;
+import com.robam.ventilator.bean.UserInfo;
 import com.robam.ventilator.device.VentilatorFactory;
 import com.robam.ventilator.http.CloudHelper;
 import com.robam.ventilator.request.GetVerifyCodeReq;
@@ -115,12 +116,14 @@ public class LoginPhoneActivity extends VentilatorBaseActivity {
             @Override
             public void onSuccess(GetUserInfoRes getUserInfoRes) {
                 if (null != getUserInfoRes && null != getUserInfoRes.getUser()) {
-                    String userJson = new Gson().toJson(getUserInfoRes.getUser());
+                    UserInfo info = getUserInfoRes.getUser();
+                    info.loginType = CODE_LOGIN;
+                    String userJson = new Gson().toJson(info);
                     //保存用户信息及登录状态
                     MMKVUtils.login(true);
                     MMKVUtils.setUser(userJson);
                     //登录成功
-                    AccountInfo.getInstance().getUser().setValue(getUserInfoRes.getUser());
+                    AccountInfo.getInstance().getUser().setValue(info);
                     finish();
                     //绑定设备
 //                    bindDevice(getUserInfoRes.getUser().id);

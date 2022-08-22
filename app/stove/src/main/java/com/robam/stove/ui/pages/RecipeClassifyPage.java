@@ -1,5 +1,6 @@
 package com.robam.stove.ui.pages;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -13,6 +14,7 @@ import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBasePage;
 import com.robam.stove.bean.StoveRecipe;
+import com.robam.stove.ui.activity.RecipeDetailActivity;
 import com.robam.stove.ui.adapter.RvRecipeAdapter;
 
 import java.util.ArrayList;
@@ -63,7 +65,7 @@ public class RecipeClassifyPage extends StoveBasePage {
         rvRecipeAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-//                startActivity(RecipeSelectedActivity.class);
+                startActivity(new Intent(getContext(), RecipeDetailActivity.class));
             }
         });
     }

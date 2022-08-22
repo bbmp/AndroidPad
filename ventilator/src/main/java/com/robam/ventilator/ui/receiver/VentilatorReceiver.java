@@ -9,6 +9,7 @@ import android.net.wifi.WifiManager;
 import android.util.Log;
 
 import com.robam.common.utils.LogUtils;
+import com.robam.ventilator.bean.AccountInfo;
 
 public class VentilatorReceiver extends BroadcastReceiver {
     @Override
@@ -54,12 +55,14 @@ public class VentilatorReceiver extends BroadcastReceiver {
             LogUtils.e( "--NetworkInfo--" + info.toString());
             if (NetworkInfo.State.DISCONNECTED == info.getState()) {
                 LogUtils.e("wifi没连接上");
+                AccountInfo.getInstance().getConnect().setValue(false);
             } else if (NetworkInfo.State.CONNECTED == info.getState()) {//wifi连接上了
                 WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
                 WifiInfo wifiInfo = wifiManager.getConnectionInfo();
                 //获取当前wifi名称
                 LogUtils.e( "连接到网络 " + wifiInfo.getSSID());
                 LogUtils.e("wifi已连接");
+                AccountInfo.getInstance().getConnect().setValue(true);
             } else if (NetworkInfo.State.CONNECTING == info.getState()) {//正在连接
                 LogUtils.e("wifi正在连接");
             }

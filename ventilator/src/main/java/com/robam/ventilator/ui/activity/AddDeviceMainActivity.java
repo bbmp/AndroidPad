@@ -59,7 +59,7 @@ public class AddDeviceMainActivity extends VentilatorBaseActivity {
         deviceList2.add(new Device("油烟机", "5068s"));
         deviceList2.add(new Device("洗碗机", "5068s"));
         deviceList2.add(new Device("洗碗机", "5068s"));
-        deviceList2.add(new Device("油烟机", "5068s"));
+        deviceList2.add(new Device("一体机", "5068s"));
         deviceList2.add(new Device("洗碗机", "5068s"));
         rvAddDeviceAdapter.setList(deviceList2);
     }

@@ -1,6 +1,7 @@
 package com.robam.stove.ui.pages;
 
 import android.content.Intent;
+import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -11,14 +12,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.PickerLayoutManager;
+import com.robam.common.utils.ClickUtils;
 import com.robam.common.utils.ImageUtils;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBasePage;
 import com.robam.stove.bean.Stove;
 import com.robam.stove.bean.StoveFunBean;
+import com.robam.stove.constant.DialogConstant;
 import com.robam.stove.constant.StoveConstant;
 import com.robam.stove.constant.StoveEnum;
+import com.robam.stove.factory.StoveDialogFactory;
 import com.robam.stove.ui.adapter.RvMainFunctionAdapter;
 
 import java.util.ArrayList;
@@ -37,6 +42,7 @@ public class HomePage extends StoveBasePage {
     private TextView tvLeftStove, tvRightStove;
     //背景
     private ImageView imageView;
+    private ImageView ivLock;
 
     @Override
     protected int getLayoutId() {
@@ -53,6 +59,7 @@ public class HomePage extends StoveBasePage {
         llRightStove = findViewById(R.id.ll_right_stove);
         tvLeftStove = findViewById(R.id.tv_left_stove);
         tvRightStove = findViewById(R.id.tv_right_stove);
+        ivLock = findViewById(R.id.iv_lock);
 
         pickerLayoutManager = new PickerLayoutManager.Builder(getContext())
                 .setOrientation(RecyclerView.HORIZONTAL)
@@ -101,6 +108,31 @@ public class HomePage extends StoveBasePage {
                 startActivity(intent);
             }
         });
+        //长按锁屏
+        ClickUtils.setLongClick(new Handler(), imageView, 2000, new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                screenLock();
+                return true;
+            }
+        });
+    }
+
+    //锁屏
+    private void screenLock() {
+        IDialog iDialog = StoveDialogFactory.createDialogByType(getContext(), DialogConstant.DIALOG_TYPE_LOCK);
+        iDialog.setCancelable(false);
+        //长按解锁
+        ImageView imageView = iDialog.getRootView().findViewById(R.id.iv_lock);
+        ClickUtils.setLongClick(new Handler(), imageView, 2000, new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                iDialog.dismiss();
+
+                return true;
+            }
+        });
+        iDialog.show();
     }
 
     /**

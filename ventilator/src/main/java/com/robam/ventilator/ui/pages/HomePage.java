@@ -18,13 +18,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.google.gson.Gson;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.skin.SkinDisplayUtils;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.common.utils.ClickUtils;
 import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.MD5Utils;
+import com.robam.common.utils.MMKVUtils;
 import com.robam.common.utils.ScreenUtils;
+import com.robam.common.utils.ToastUtils;
 import com.robam.stove.ui.activity.MainActivity;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBasePage;
@@ -37,7 +41,10 @@ import com.robam.ventilator.constant.DialogConstant;
 import com.robam.ventilator.factory.VentilatorDialogFactory;
 import com.robam.ventilator.http.CloudHelper;
 import com.robam.ventilator.response.GetDeviceRes;
+import com.robam.ventilator.response.GetTokenRes;
+import com.robam.ventilator.response.GetUserInfoRes;
 import com.robam.ventilator.ui.activity.AddDeviceMainActivity;
+import com.robam.ventilator.ui.activity.LoginPasswordActivity;
 import com.robam.ventilator.ui.activity.MatchNetworkActivity;
 import com.robam.ventilator.ui.activity.ShortcutActivity;
 import com.robam.ventilator.ui.activity.SimpleModeActivity;
@@ -77,6 +84,7 @@ public class HomePage extends VentilatorBasePage {
     private Group group;
     private DrawerLayout drawerLayout;
     private LinearLayout llSetting, llProducts;
+    private static final String PASSWORD_LOGIN = "mobilePassword";
 
     public static HomePage newInstance() {
         return new HomePage();
@@ -117,12 +125,12 @@ public class HomePage extends VentilatorBasePage {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 //抽屉滑动式回调的方法
-                LogUtils.e("x" + drawerView.getWidth());
-                LogUtils.e("---onDrawerSlide---"+slideOffset);
+//                LogUtils.e("x" + drawerView.getWidth());
+//                LogUtils.e("---onDrawerSlide---"+slideOffset);
                 if (drawerView.getId() == R.id.drawer_left)
                     llSetting.setX(slideOffset * drawerView.getWidth());
                 else {
-                    LogUtils.e("x" + llProducts.getX());
+//                    LogUtils.e("x" + llProducts.getX());
                     int width = ScreenUtils.getWidthPixels(getContext());
                     llProducts.setX(width - slideOffset * drawerView.getWidth() - getContext().getResources().getDimension(com.robam.common.R.dimen.dp_90));
                 }
@@ -235,6 +243,17 @@ public class HomePage extends VentilatorBasePage {
                 getDeviceInfo(userInfo);
             }
         });
+        //未登录
+        if (null == AccountInfo.getInstance().getUser().getValue()) {
+           String json = MMKVUtils.getUser();
+           try {
+               //密码登录 自动登录
+               UserInfo info = new Gson().fromJson(json, UserInfo.class);
+               getToken(info.phone, info.password);
+           } catch (Exception e) {
+
+           }
+        }
     }
 
     /**
@@ -263,6 +282,13 @@ public class HomePage extends VentilatorBasePage {
                     LogUtils.e("getDevices" + err);
                 }
             });
+        } else {
+            //logout
+            productList.clear();
+            productList.add(new ProductMutiItem(ProductMutiItem.IMAGE, ""));
+            productList.add(new ProductMutiItem(ProductMutiItem.BUTTON, ""));
+            if (null != rvProductsAdapter)
+                rvProductsAdapter.setList(productList);
         }
     }
 
@@ -319,6 +345,8 @@ public class HomePage extends VentilatorBasePage {
             @Override
             public boolean onLongClick(View v) {
                 iDialog.dismiss();
+                if (null != rvFunctionAdapter)
+                    rvFunctionAdapter.setPickPosition(-1);
                 return true;
             }
         });
@@ -339,5 +367,48 @@ public class HomePage extends VentilatorBasePage {
             }
         }, R.id.tv_cancel, R.id.tv_ok);
         iDialog.show();
+    }
+    //获取token
+    private void getToken(String phone, String pwd) {
+        CloudHelper.getToken(this, PASSWORD_LOGIN, phone, "", pwd, "roki_client", "test", "RKDRD",
+                GetTokenRes.class, new RetrofitCallback<GetTokenRes>() {
+                    @Override
+                    public void onSuccess(GetTokenRes getTokenRes) {
+                        if (null != getTokenRes) {
+                            getUserInfo(getTokenRes.getAccess_token());
+                        } else {
+                            ToastUtils.showShort(getContext(), R.string.ventilator_request_failed);
+                        }
+                    }
+
+                    @Override
+                    public void onFaild(String err) {
+                        LogUtils.e("getToken" + err);
+                    }
+                });
+    }
+    //获取用户信息
+    private void getUserInfo(String access_token) {
+        CloudHelper.getUserInfo(this, access_token, GetUserInfoRes.class, new RetrofitCallback<GetUserInfoRes>() {
+            @Override
+            public void onSuccess(GetUserInfoRes getUserInfoRes) {
+                if (null != getUserInfoRes && null != getUserInfoRes.getUser()) {
+                    UserInfo info = getUserInfoRes.getUser();
+                    info.loginType = PASSWORD_LOGIN;
+                    //保存用户信息及登录状态
+                    //登录成功
+                    AccountInfo.getInstance().getUser().setValue(info);
+                    //绑定设备
+//                    bindDevice(getUserInfoRes.getUser().id);
+                } else {
+                    ToastUtils.showShort(getContext(), R.string.ventilator_request_failed);
+                }
+            }
+
+            @Override
+            public void onFaild(String err) {
+                LogUtils.e("getUserInfo" + err);
+            }
+        });
     }
 }

@@ -3,6 +3,7 @@ package com.robam.ventilator.ui.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.Group;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,6 +24,7 @@ import com.robam.common.ui.view.SwitchButton;
 import com.robam.common.utils.PermissionUtils;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
+import com.robam.ventilator.bean.AccountInfo;
 import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.manager.VenWifiManager;
 import com.robam.ventilator.ui.adapter.RvWifiAdapter;
@@ -102,6 +104,20 @@ public class WifiSettingActivity extends VentilatorBaseActivity {
                 startActivity(intent);
             }
         });
+        //监听联网状态
+        AccountInfo.getInstance().getConnect().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                //连接成功
+                if (aBoolean) {
+                    TextView textView = findViewById(R.id.tv_right);
+                    textView.setText(R.string.ventilator_next_step);
+                    //当前连接wifi
+                    WifiInfo info = mWifiManager.getConnectionInfo();
+                    rvWifiAdapter.setInfo(info);
+                }
+            }
+        });
     }
 
     //已授权
@@ -126,9 +142,6 @@ public class WifiSettingActivity extends VentilatorBaseActivity {
         if (mWifiManager != null){
             List<ScanResult> wifiList = VenWifiManager.getWifiListBy(mWifiManager);
 
-            //当前连接wifi
-            WifiInfo info = mWifiManager.getConnectionInfo();
-            rvWifiAdapter.setInfo(info);
             rvWifiAdapter.setList(wifiList);
         }
     }
@@ -149,7 +162,13 @@ public class WifiSettingActivity extends VentilatorBaseActivity {
         int id = view.getId();
         if (id == R.id.ll_right) {
             //跳过
-            HomeActivity.start(this);
+            if (!AccountInfo.getInstance().getConnect().getValue())
+                HomeActivity.start(this);
+            else {
+                //login
+                startActivity(LoginPhoneActivity.class);
+                finish();
+            }
         }
     }
 

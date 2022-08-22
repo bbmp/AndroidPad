@@ -4,8 +4,9 @@
 
     <application>
         <activity
-            android:name=".RecipeDetailActivity"
-            android:exported="false" />
+            android:name=".ui.activity.RecipeDetailActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
         <activity
             android:name=".ui.activity.TimeSelectActivity"
             android:exported="false"

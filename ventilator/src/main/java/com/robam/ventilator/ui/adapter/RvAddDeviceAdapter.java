@@ -10,6 +10,8 @@ import com.robam.ventilator.bean.Device;
 public class RvAddDeviceAdapter extends BaseQuickAdapter<Device, BaseViewHolder> {
     public RvAddDeviceAdapter() {
         super(R.layout.ventilator_item_layout_add_device);
+        //一定要在构造里设置
+        addChildClickViewIds(R.id.btn_add);
     }
 
     @Override
@@ -18,7 +20,7 @@ public class RvAddDeviceAdapter extends BaseQuickAdapter<Device, BaseViewHolder>
             baseViewHolder.setText(R.id.tv_device_name, device.getName());
             baseViewHolder.setText(R.id.tv_model, device.getDisplayType());
             baseViewHolder.setImageResource(R.id.iv_device, R.drawable.logo_roki);
-            addChildClickViewIds(R.id.btn_add);
+
         }
     }
 }

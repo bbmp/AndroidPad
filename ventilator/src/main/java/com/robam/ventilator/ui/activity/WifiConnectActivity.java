@@ -1,23 +1,33 @@
 package com.robam.ventilator.ui.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.Network;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.robam.common.ui.activity.BaseActivity;
+import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.PasswordEditText;
+import com.robam.common.utils.ToastUtils;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
+import com.robam.ventilator.bean.AccountInfo;
+import com.robam.ventilator.constant.DialogConstant;
 import com.robam.ventilator.constant.VentilatorConstant;
+import com.robam.ventilator.factory.VentilatorDialogFactory;
 import com.robam.ventilator.manager.VenWifiManager;
 
 public class WifiConnectActivity extends VentilatorBaseActivity {
     private TextView tvName;
     private PasswordEditText etPassword;
+    private IDialog waitingDialog;
 
     @Override
     protected int getLayoutId() {
@@ -51,16 +61,42 @@ public class WifiConnectActivity extends VentilatorBaseActivity {
         int id = view.getId();
         if (id == R.id.btn_join) {
             //连接网络
+            connecting();
+
             VenWifiManager.connectWifiPws(getApplicationContext()
                     , tvName.getText().toString()
-                    ,etPassword.getText().toString()
-            );
-            connecting();
+                    ,etPassword.getText().toString(), new ConnectivityManager.NetworkCallback() {
+                        @Override
+                        public void onAvailable(Network network) {
+                            Log.i("onAvailable", "success");
+                            if (null != waitingDialog)
+                                waitingDialog.dismiss();
+                            //connect success
+                            finish();
+                        }
+
+                        @Override
+                        public void onUnavailable() {
+                            Log.i("onUnavailable", "failed");
+                            if (null != waitingDialog)
+                                waitingDialog.dismiss();
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastUtils.showShort(WifiConnectActivity.this, R.string.ventilator_connect_failed);
+                                }
+                            });
+                        }
+                    });
+
         }
     }
 
     //连接网络
     private void connecting() {
-
+        if (null == waitingDialog)
+            waitingDialog = VentilatorDialogFactory.createDialogByType(getContext(), DialogConstant.DIALOG_TYPE_WAITING);
+        waitingDialog.setCancelable(false);
+        waitingDialog.show();
     }
 }

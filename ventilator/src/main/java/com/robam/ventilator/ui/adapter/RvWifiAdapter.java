@@ -16,6 +16,7 @@ public class RvWifiAdapter extends BaseQuickAdapter<ScanResult, BaseViewHolder> 
 
     public void setInfo(WifiInfo info) {
         this.info = info;
+        notifyDataSetChanged();
     }
 
     public RvWifiAdapter() {

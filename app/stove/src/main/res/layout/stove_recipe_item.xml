@@ -20,7 +20,6 @@
         android:layout_width="@dimen/dp_182"
         android:layout_height="@dimen/dp_182"
         android:layout_marginBottom="@dimen/dp_87"
-        android:src="@drawable/stove_main_item_bg"
         app:layout_constraintLeft_toLeftOf="@id/iv_recipe"
         app:layout_constraintRight_toRightOf="@id/iv_recipe"
         app:layout_constraintBottom_toBottomOf="@id/iv_recipe"/>

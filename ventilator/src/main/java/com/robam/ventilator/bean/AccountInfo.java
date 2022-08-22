@@ -7,6 +7,7 @@ public class AccountInfo {
 
     private MutableLiveData<Boolean> isLogin = new MutableLiveData<>(false);
     private MutableLiveData<UserInfo> user = new MutableLiveData<>(null);
+    private MutableLiveData<Boolean> connect = new MutableLiveData<>(false); //联网情况
     private AccountInfo() {}
 
     private static class Holder {
@@ -19,6 +20,10 @@ public class AccountInfo {
 
     public MutableLiveData<Boolean> getIsLogin() {
         return isLogin;
+    }
+
+    public MutableLiveData<Boolean> getConnect() {
+        return connect;
     }
 
     public MutableLiveData<UserInfo> getUser() {

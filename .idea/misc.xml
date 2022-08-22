@@ -7,9 +7,11 @@
         <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_password_off_ic.xml" value="0.2115" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_password_on_ic.xml" value="0.2115" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_shape_counter_down.xml" value="0.2115" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/layout/common_blurredview.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/layout/common_header_page.xml" value="0.10208333333333333" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/drawable/pan_main_item_bg.xml" value="0.1725" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/drawable/pan_recipe_img_bg.xml" value="0.261" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/drawable/pan_shape_border_bg.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_activity_layout_curve.xml" value="0.11788194444444444" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_activity_layout_curve_create.xml" value="0.11788194444444444" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_activity_layout_curve_edit.xml" value="0.11788194444444444" />
@@ -21,6 +23,7 @@
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_dialog_layout_common.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_dialog_layout_share.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_item_main_function.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_item_material.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_item_recipe.xml" value="0.11788194444444444" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_item_recipe_favorite.xml" value="0.11788194444444444" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_page_layout_home.xml" value="0.1" />
@@ -34,6 +37,7 @@
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/pan_recipe_img_bg.xml" value="0.261" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/stove_main_item_bg.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/stove_recipe_img_bg.xml" value="0.1775" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/stove_shape_border_bg.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/stove_shape_button_bg_cancel.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/stove_shape_button_bg_ok.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/stove_shape_button_selected.xml" value="0.1775" />
@@ -46,11 +50,15 @@
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_activity_layout_main.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_activity_layout_mode_select.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_activity_layout_recipe.xml" value="0.11788194444444444" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_activity_layout_recipe_detail.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_activity_layout_time_select.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_dialog_layout_lock.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_dialog_layout_share.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_item_layout_button.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_item_material.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_item_mode_select.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_item_recipe.xml" value="0.11788194444444444" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_item_recipe_step.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_item_time_select.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_page_layout_home.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_page_layout_mode_select.xml" value="0.1" />
@@ -274,6 +282,7 @@
         <entry key="..\:/AndroidProjects/AndroidPad/stream/src/main/res/layout/stream_page_layout_home.xml" value="0.16246259085079093" />
         <entry key="..\:/AndroidProjects/AndroidPad/stream/src/main/res/layout/stream_page_layout_take_photo.xml" value="0.16246259085079093" />
         <entry key="..\:/AndroidProjects/AndroidPad/stream/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1835" />
+        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_blurred_bg.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_ic_seek_thumb.xml" value="0.168" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_seek_light_bg.xml" value="0.168" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_seek_light_thumb_bg.xml" value="0.168" />
