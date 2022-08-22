@@ -6,6 +6,7 @@ import android.serialport.helper.SerialPortHelper;
 
 import com.clj.fastble.BleManager;
 import com.robam.common.http.RetrofitClient;
+import com.robam.common.mqtt.MqttManager;
 import com.robam.ventilator.device.VentilatorAbstractControl;
 import com.robam.ventilator.device.VentilatorFactory;
 import com.robam.ventilator.device.VentilatorLocalControl;
@@ -34,7 +35,8 @@ public class AppVentilator {
         VentilatorAbstractControl.getInstance().init(new VentilatorLocalControl());
         //协议解析和打包
         VentilatorFactory.initMqttProtocol();
-        //初始化主设备mqtt收发
-
+        //初始化主设备mqtt收发 烟机端只要网络连接上就需要启动mqtt服务，锅和灶不用登录
+        //监听网络状态
+        MqttManager.getInstance().start(application, VentilatorFactory.getPlatform(), VentilatorFactory.getProtocol());
     }
 }
