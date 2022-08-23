@@ -20,14 +20,13 @@ import java.util.Arrays;
 //全局mqtt收发
 public class MqttManager {
     private static final String TAG = MqttManager.class.toString();
-    private final String CLIENTID = "";
+    private String CLIENTID = "";
     private MqttAndroidClient mqttAndroidClient;
     private MqttConnectOptions mMqttConnectOptions;
     private String HOST = "tcp://mqtt.myroki.com:1883";//服务器地址（协议+地址+端口号）
     //    public String HOST = "tcp://develop.mqtt.myroki.com:1883";//服务器地址（协议+地址+端口号）
     private String USERNAME = "admin";//用户名
     private String PASSWORD = "jnkj2014";//密码
-    public String PUBLISH_TOPIC = getPublishTopic();//发布主题
     public String RESPONSE_TOPIC = "message_arrived";//响应主题
 
     //初始化平台
@@ -44,6 +43,7 @@ public class MqttManager {
     public void start(Context context, IPlat plat, IProtocol protocol) {
         iPlat = plat;
         iProtocol = protocol;
+        CLIENTID = iPlat.getDeviceOnlySign();
         mqttAndroidClient = new MqttAndroidClient(context, HOST, CLIENTID);
         mqttAndroidClient.setCallback(mqttCallback); //设置监听订阅消息的回调
         mMqttConnectOptions = new MqttConnectOptions();
@@ -55,7 +55,7 @@ public class MqttManager {
 
         // last will message
         String message = "{\"terminal_uid\":\"" + CLIENTID + "\"}";
-        String topic = PUBLISH_TOPIC;
+        String topic = getPublishTopic();
         Integer qos = 2;
         Boolean retained = false;
         if ((!message.equals("")) || (!topic.equals(""))) {
@@ -80,7 +80,7 @@ public class MqttManager {
             try {
                 String topic = new RTopic(RTopic.TOPIC_UNICAST, iPlat.getDt()
                         , iPlat.getMac()).getTopic();
-                mqttAndroidClient.subscribe(topic, 2, null, mqttActionListener);//订阅主题，参数：主题、服务质量
+                mqttAndroidClient.subscribe(topic, 2, iPlat.getDeviceOnlySign(), mqttActionListener);//订阅主题，参数：主题、服务质量
             } catch (MqttException e) {
                 e.printStackTrace();
             }
@@ -93,6 +93,17 @@ public class MqttManager {
             doClientConnection();//连接失败，重连（可关闭服务器进行模拟）
         }
     };
+
+    /**
+     * 订阅一组设备
+     */
+    public void subscribe(String[] topicFilters, int[] pos) {
+        try {
+            mqttAndroidClient.subscribe(topicFilters, pos, null, mqttActionListener);
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * 连接MQTT服务器
@@ -114,8 +125,9 @@ public class MqttManager {
         @Override
         public void onSuccess(IMqttToken asyncActionToken) {
             Log.i(TAG, "订阅成功 ");
-            //发送设备上线成功
-            deviceConnectedNoti();
+            //发送设备上线成功 主设备
+            if (null != asyncActionToken && iPlat.getDeviceOnlySign().equals(asyncActionToken.getUserContext()))
+                deviceConnectedNoti();
         }
 
         @Override
@@ -145,7 +157,7 @@ public class MqttManager {
             int msgId = iProtocol.decode(topic, message.getPayload());
 //            if (null != mqttMsgCallback && null != message)
 //                mqttMsgCallback.messageArrived(message.getPayload());
-            //统一 处理
+            //统一 处理响应
             if (msgId == MsgKeys.getDeviceAttribute_Req){
                 MqttMsg msg = new MqttMsg.Builder()
                         .setMsgId(MsgKeys.getDeviceAttribute_Rep)
@@ -179,7 +191,7 @@ public class MqttManager {
     };
 
     private String getPublishTopic() {
-        return "/u/" + "DB620/" ;
+        return "/u/" + "DB620/" + iPlat.getMac();
     }
 
     /**

@@ -2,9 +2,10 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:drawable="@drawable/ventilator_ic_bg_seek">
+        android:drawable="@drawable/ventilator_ic_bg_seek"
+        android:height="@dimen/dp_8">
     </item>
-    <item>
+    <item android:height="@dimen/dp_8">
         <clip android:drawable="@drawable/ventilator_ic_seek_bg_on" />
     </item>
 

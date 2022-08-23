@@ -10,6 +10,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 
 public interface ICloudService {
     //获取验证码
@@ -22,6 +23,12 @@ public interface ICloudService {
     String bindDevice = "/rest/dms/api/device/bind";
     //获取设备
     String getDevices = "/rest/dms/api/device/get";
+    //获取二维码
+    String getCode = "/rest/gateway/api/auth/scan/key";
+
+    String getLoginStatus = "/rest/gateway/api/auth/scan/login";
+
+    String login = "/rest/api/cas/app/login";
 
     @POST(getVerifyCode)
     @Headers("Content-Type: application/json")
@@ -48,4 +55,15 @@ public interface ICloudService {
     @POST(getDevices)
     @Headers("Content-Type: application/json")
     Call<ResponseBody> getDevices(@Body RequestBody body);
+
+    @GET(getCode)
+    Call<ResponseBody> getCode();
+
+    @GET(getLoginStatus)
+    Call<ResponseBody> getLoginStatus(@Query("key") String key);
+
+    @POST(login)
+    @Headers("Content-Type: application/json")
+    Call<ResponseBody> login(@Body RequestBody body);
+
 }

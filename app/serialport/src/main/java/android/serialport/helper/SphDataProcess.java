@@ -202,7 +202,9 @@ public class SphDataProcess {
     public void addCommands(byte[] command) {
         // 初始化同步控制
         try {
-            blockingQueue.put(command);
+            //过滤相同的循环指令
+            if (!blockingQueue.contains(command))
+                blockingQueue.put(command);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

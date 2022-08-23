@@ -9,6 +9,7 @@ import com.robam.ventilator.constant.HostServer;
 import com.robam.ventilator.request.BindDeviceReq;
 import com.robam.ventilator.request.GetUserReq;
 import com.robam.ventilator.request.GetVerifyCodeReq;
+import com.robam.ventilator.request.LoginQrcodeReq;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -70,6 +71,25 @@ public class CloudHelper {
         RequestBody requestBody =
                 RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
         Call<ResponseBody> call = svr.getDevices(requestBody);
+        enqueue(iLife, entity, call, callback);
+    }
+    //获取二维码
+    public static <T extends BaseResponse> void getCode(ILife iLife, Class<T> entity, final RetrofitCallback<T> callback) {
+        Call<ResponseBody> call = svr.getCode();
+        enqueue(iLife, entity, call, callback);
+    }
+
+    //
+    public static <T extends BaseResponse> void getLoginStatus(ILife iLife, String key, Class<T> entity, final RetrofitCallback<T> callback) {
+        Call<ResponseBody> call = svr.getLoginStatus(key);
+        enqueue(iLife, entity, call, callback);
+    }
+    //二维码登录
+    public static <T extends BaseResponse> void loginQrcode(ILife iLife, String account, String pwd, Class<T> entity, final RetrofitCallback<T> callback) {
+        String json = new LoginQrcodeReq(account, pwd).toString();
+        RequestBody requestBody =
+                RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
+        Call<ResponseBody> call = svr.login(requestBody);
         enqueue(iLife, entity, call, callback);
     }
 

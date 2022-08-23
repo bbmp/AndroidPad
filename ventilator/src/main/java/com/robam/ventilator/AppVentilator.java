@@ -7,6 +7,7 @@ import android.serialport.helper.SerialPortHelper;
 import com.clj.fastble.BleManager;
 import com.robam.common.http.RetrofitClient;
 import com.robam.common.mqtt.MqttManager;
+import com.robam.pan.constant.HostServer;
 import com.robam.ventilator.device.VentilatorAbstractControl;
 import com.robam.ventilator.device.VentilatorFactory;
 import com.robam.ventilator.device.VentilatorLocalControl;
@@ -17,11 +18,11 @@ public class AppVentilator {
 //        FoodMaterialHelper.init(this);
         //串口初始化
         SerialPortConfig serialPortConfig = new SerialPortConfig.Builder()
-                .setMaxSize(16).build();
+                .setMaxSize(23).build();
         SerialPortHelper.getInstance().init(serialPortConfig);
-        //http
-        RetrofitClient.getInstance().init("https://api.github.com", null);
-        //ble
+        //http init
+        RetrofitClient.getInstance().init(HostServer.apiHost, null);
+        //ble init
         BleManager.getInstance().init(application);
         BleManager.getInstance()
                 .enableLog(true)

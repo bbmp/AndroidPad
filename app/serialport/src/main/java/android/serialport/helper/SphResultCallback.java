@@ -14,4 +14,14 @@ public interface SphResultCallback {
      */
     void onReceiveData(byte[] data);
 
+    /**
+     * 串口打开失败
+     */
+    void onOpenSuccess();
+
+    /**
+     * 串口打开失败
+     */
+    void onOpenFailed();
+
 }

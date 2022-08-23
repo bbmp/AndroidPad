@@ -87,18 +87,14 @@ public class SerialPortHelper {
                     // 开启读写线程
                     sphThreads = new SphThreads(processingData);
 
-                    //循环
-                    while (true) {
-                        processingData.addCommands(payload);
-                        try {
-                            Thread.sleep(3000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
+                    if (null != onResultCallback)
+                        onResultCallback.onOpenSuccess();
+
                 } catch (Exception e) {
                     Log.e(TAG,"cannot open the device !!! " +
                             "path:"+serialPortConfig.path);
+                    if (null != onResultCallback)
+                        onResultCallback.onOpenFailed();
                 }
             }
         });

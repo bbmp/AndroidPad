@@ -38,7 +38,7 @@ public class MqttVentilator implements IProtocol {
                 break;
         }
     }
-
+    //烟机端的协议
     private void onEncodeMsg(ByteBuffer buf, MqttMsg msg) {
         //远程控制其他设备或通知上报
 

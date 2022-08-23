@@ -56,11 +56,11 @@ public class AddDeviceMainActivity extends VentilatorBaseActivity {
     @Override
     protected void initData() {
         List<Device> deviceList2 = new ArrayList<>();
-        deviceList2.add(new Device("油烟机", "5068s"));
-        deviceList2.add(new Device("洗碗机", "5068s"));
-        deviceList2.add(new Device("洗碗机", "5068s"));
-        deviceList2.add(new Device("一体机", "5068s"));
-        deviceList2.add(new Device("洗碗机", "5068s"));
+        deviceList2.add(new Device("明火自动翻炒锅", "KP100"));
+        deviceList2.add(new Device("燃气灶", "9B328"));
+        deviceList2.add(new Device("洗碗机", "WB758"));
+        deviceList2.add(new Device("消毒柜", "XG858"));
+        deviceList2.add(new Device("蒸烤一体机", "CQ928"));
         rvAddDeviceAdapter.setList(deviceList2);
     }
 }

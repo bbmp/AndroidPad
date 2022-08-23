@@ -26,6 +26,7 @@ versions.glide = "4.11.0"
 versions.leakcanary = "2.7"
 versions.litepal = "3.2.3"
 versions.mmkv = "1.2.10"
+versions.zxing_core="3.2.1"
 
 
 ext.versions = versions

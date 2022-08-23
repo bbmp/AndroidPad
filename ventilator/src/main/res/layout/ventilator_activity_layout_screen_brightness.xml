@@ -25,8 +25,10 @@
     <androidx.appcompat.widget.AppCompatSeekBar
         android:id="@+id/sbr_light"
         android:layout_width="0dp"
-        android:layout_height="@dimen/dp_8"
+        android:layout_height="wrap_content"
         android:max="255"
+        android:minHeight="@dimen/dp_8"
+        android:maxHeight="@dimen/dp_8"
         android:thumb="@drawable/ventilator_seek_light_thumb_bg"
         android:splitTrack="false"
         android:progressDrawable="@drawable/ventilator_seek_light_bg"

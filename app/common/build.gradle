@@ -54,4 +54,5 @@ dependencies {
     api "org.eclipse.paho:org.eclipse.paho.android.service:$versions.org_eclipse_paho_android_service"
     // 腾讯 MMKV：https://github.com/Tencent/MMKV
     api "com.tencent:mmkv-static:$versions.mmkv"
+    api "com.google.zxing:core:$versions.zxing_core"
 }

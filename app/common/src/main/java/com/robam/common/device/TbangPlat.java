@@ -50,6 +50,6 @@ public class TbangPlat implements IPlat{
 
     @Override
     public String getMac() {
-        return "test";
+        return "121212121212";
     }
 }

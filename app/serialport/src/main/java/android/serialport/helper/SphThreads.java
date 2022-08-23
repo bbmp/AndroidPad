@@ -43,6 +43,12 @@ public class SphThreads {
             while (!writeThread.isInterrupted()) {
                 //正常指令
                 processingData.writeData();
+                //间隔100ms发送
+                try {
+                    Thread.sleep(100);
+                } catch (Exception e) {
+
+                }
             }
         }
     }

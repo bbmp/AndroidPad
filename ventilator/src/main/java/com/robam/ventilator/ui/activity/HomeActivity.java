@@ -5,9 +5,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.serialport.helper.SerialPortHelper;
+import android.serialport.helper.SphResultCallback;
 
 import com.robam.common.ui.activity.BaseActivity;
+import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.StringUtils;
 import com.robam.ventilator.R;
+import com.robam.ventilator.bean.Ventilator;
+import com.robam.ventilator.protocol.serial.SerialVentilator;
 
 //主页
 public class HomeActivity extends BaseActivity {
@@ -31,6 +37,40 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected void initData() {
+        SerialPortHelper.getInstance().openDevice(new SphResultCallback() {
+            @Override
+            public void onSendData(byte[] sendCom) {
+
+            }
+
+            @Override
+            public void onReceiveData(byte[] data) {
+                LogUtils.e(StringUtils.bytes2Hex(data));
+                SerialVentilator.parseSerial(data);
+            }
+
+            @Override
+            public void onOpenSuccess() {
+                //开机
+                if (Ventilator.getInstance().startup == 0x00)
+                    SerialPortHelper.getInstance().addCommands(SerialVentilator.powerOn());
+                //循环查询
+                byte data[] = SerialVentilator.packQueryCmd();
+                while (true) {
+                    SerialPortHelper.getInstance().addCommands(data);
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onOpenFailed() {
+                LogUtils.i("serial open failed" + Thread.currentThread().getName());
+            }
+        });
 
     }
 
