@@ -146,6 +146,16 @@ public class MqttManager {
             e.printStackTrace();
         }
     }
+    /*
+      close
+     */
+    public void close() {
+        try {
+            mqttAndroidClient.close(); //关闭
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     /**
      * 订阅的主题的消息回调
      */

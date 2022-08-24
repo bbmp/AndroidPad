@@ -57,7 +57,7 @@
     <string name="ventilator_online">在线</string>
     <string name="ventilator_clean_oil_hint">油烟机挡风板将锁定在打开状\n态，可放心拆卸、清洗油网并安装</string>
     <string name="ventilator_delay_close_hint">系统将延迟关机，为您处理残留油烟</string>
-    <string name="ventilator_match_hint1">1.长按面板上[ ]2秒至滴声响，屏幕内智能符号\" \"闪烁。\n2.在ROKI APP中，添加XG858，输出WiFi密码，连接网络。</string>
+    <string name="ventilator_match_hint1">1.长按面板上[ ]2秒至滴声响，屏幕内智能符号\" \"闪烁。\n2.在ROKI APP中，添加XG858，输入WiFi密码，连接网络。</string>
     <string name="ventilator_match_hint3">1.长按明火自动翻炒锅锅柄上[ ]2秒至滴声响，屏幕内智能符号\" \"闪烁。\n完成上述操作后点击下一步。</string>
     <string name="ventilator_match_hint4">1.燃气灶点火。 \n2.长按燃气灶面板上[ ]2秒至滴声响，屏幕内智能符号\" \"闪烁。\n完成上述操作后点击下一步。</string>
     <string name="ventilator_match_hint6">1.开启洗碗机。 \n2.在洗碗机上登录当前ROKI账户。 \n完成上述操作后点击下一步。</string>
@@ -73,4 +73,6 @@
     <string name="ventilator_next_step">下一步</string>
     <string name="ventilator_request_failed">请求失败</string>
     <string name="ventilator_connect_failed">网络连接失败</string>
+    <string name="ventilator_match_ing">配对中...</string>
+    <string name="ventilator_rematch">重新配对</string>
 </resources>

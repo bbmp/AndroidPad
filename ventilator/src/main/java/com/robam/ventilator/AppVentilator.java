@@ -13,7 +13,8 @@ import com.robam.ventilator.device.VentilatorFactory;
 import com.robam.ventilator.device.VentilatorLocalControl;
 
 public class AppVentilator {
-    public static void init(Application application) {
+
+    public static void onCreate(Application application) {
         //检测食物
 //        FoodMaterialHelper.init(this);
         //串口初始化
@@ -25,7 +26,7 @@ public class AppVentilator {
         //ble init
         BleManager.getInstance().init(application);
         BleManager.getInstance()
-                .enableLog(true)
+                .enableLog(BuildConfig.DEBUG)
                 .setReConnectCount(1, 5000)
                 .setConnectOverTime(20000)
                 .setOperateTimeout(5000);
@@ -39,5 +40,14 @@ public class AppVentilator {
         //初始化主设备mqtt收发 烟机端只要网络连接上就需要启动mqtt服务，锅和灶不用登录
         //监听网络状态
         MqttManager.getInstance().start(application, VentilatorFactory.getPlatform(), VentilatorFactory.getProtocol());
+    }
+
+
+    public static void onTerminate() {
+        //关闭蓝牙
+        BleManager.getInstance().disconnectAllDevice();
+        BleManager.getInstance().destroy();
+        //关闭mqtt
+        MqttManager.getInstance().close();
     }
 }

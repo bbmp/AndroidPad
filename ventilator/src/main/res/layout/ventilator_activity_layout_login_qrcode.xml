@@ -19,6 +19,7 @@
         android:id="@+id/iv_qrcode"
         android:layout_width="@dimen/dp_194"
         android:layout_height="@dimen/dp_194"
+        android:background="@color/ventilator_white"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ll_title"

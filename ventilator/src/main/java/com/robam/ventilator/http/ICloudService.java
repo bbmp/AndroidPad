@@ -24,11 +24,13 @@ public interface ICloudService {
     //获取设备
     String getDevices = "/rest/dms/api/device/get";
     //获取二维码
-    String getCode = "/rest/gateway/api/auth/scan/key";
+//    String getCode = "/rest/gateway/api/auth/scan/key";
 
     String getLoginStatus = "/rest/gateway/api/auth/scan/login";
-
+    //扫码登录
     String login = "/rest/api/cas/app/login";
+    //获取设备绑定的用户
+    String getDeviceUsers = "/rest/dms/api/device/user/get";
 
     @POST(getVerifyCode)
     @Headers("Content-Type: application/json")
@@ -56,9 +58,6 @@ public interface ICloudService {
     @Headers("Content-Type: application/json")
     Call<ResponseBody> getDevices(@Body RequestBody body);
 
-    @GET(getCode)
-    Call<ResponseBody> getCode();
-
     @GET(getLoginStatus)
     Call<ResponseBody> getLoginStatus(@Query("key") String key);
 
@@ -66,4 +65,7 @@ public interface ICloudService {
     @Headers("Content-Type: application/json")
     Call<ResponseBody> login(@Body RequestBody body);
 
+    @POST(getDeviceUsers)
+    @Headers("Content-Type: application/json")
+    Call<ResponseBody> getDeviceUsers(@Body RequestBody body);
 }

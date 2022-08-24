@@ -109,8 +109,8 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ll_title" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_device"
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/vp_device"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="@id/view_board"
@@ -118,10 +118,11 @@
         app:layout_constraintRight_toRightOf="@id/view_board"
         app:layout_constraintTop_toTopOf="@id/view_board" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_dot"
+    <LinearLayout
+        android:id="@+id/ll_dot"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_marginTop="@dimen/dp_5"
         app:layout_constraintLeft_toLeftOf="@id/view_board"
         app:layout_constraintRight_toRightOf="@id/view_board"
@@ -139,7 +140,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="iv_head,tv_nickname,tv_phone,btn_exit_login,view_board,rv_device,rv_dot" />
+        app:constraint_referenced_ids="iv_head,tv_nickname,tv_phone,btn_exit_login,view_board,vp_device,rv_dot" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/ventilator_group4"

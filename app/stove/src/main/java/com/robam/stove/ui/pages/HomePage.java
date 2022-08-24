@@ -52,6 +52,8 @@ public class HomePage extends StoveBasePage {
     @Override
     protected void initView() {
         showCenter();
+        showFloat();
+
         rvMain = findViewById(R.id.rv_main);
         ivFloat = findViewById(R.id.iv_float);
         imageView = findViewById(R.id.iv_bg);

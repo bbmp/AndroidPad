@@ -2,14 +2,19 @@ package com.robam.ventilator.ui.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.serialport.helper.SerialPortHelper;
 import android.serialport.helper.SphResultCallback;
 
+import com.clj.fastble.BleManager;
 import com.robam.common.ui.activity.BaseActivity;
 import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.PermissionUtils;
 import com.robam.common.utils.StringUtils;
 import com.robam.ventilator.R;
 import com.robam.ventilator.bean.Ventilator;
@@ -25,6 +30,8 @@ public class HomeActivity extends BaseActivity {
         activity.finish();
     }
 
+    private BluetoothAdapter bluetoothAdapter;
+
     @Override
     protected int getLayoutId() {
         return R.layout.ventilator_activity_layout_home;
@@ -37,6 +44,7 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected void initData() {
+        //打开串口
         SerialPortHelper.getInstance().openDevice(new SphResultCallback() {
             @Override
             public void onSendData(byte[] sendCom) {
@@ -71,12 +79,47 @@ public class HomeActivity extends BaseActivity {
                 LogUtils.i("serial open failed" + Thread.currentThread().getName());
             }
         });
+        //打开蓝牙
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (!bluetoothAdapter.isEnabled())
+            checkPermissions();
+    }
 
+    private void checkPermissions() {
+        //请求权限
+        PermissionUtils.requestPermission(this, new PermissionUtils.OnPermissionListener() {
+            @Override
+            public void onSucceed() {
+                onPermissionGranted();
+            }
+
+            @Override
+            public void onFailed() {
+                //权限未给
+                LogUtils.e("requestPermission onFailed");
+            }
+        }, Manifest.permission.BLUETOOTH_CONNECT);
+    }
+    //已授权
+    @SuppressLint("MissingPermission")
+    private void onPermissionGranted() {
+        try {
+            bluetoothAdapter.enable();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onBackPressed() {
         //解决内存泄漏
         finishAfterTransition();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //关闭串口
+        SerialPortHelper.getInstance().closeDevice();
     }
 }

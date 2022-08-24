@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -13,6 +14,7 @@ import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
 import com.robam.ventilator.bean.Device;
+import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.ui.adapter.RvAddDeviceAdapter;
 
 import java.util.ArrayList;
@@ -45,9 +47,11 @@ public class AddDeviceMainActivity extends VentilatorBaseActivity {
                     //添加设备
                     Device device = (Device) adapter.getItem(position);
                     //判断设备类型
-
+                    Intent intent = new Intent();
+                    intent.putExtra(VentilatorConstant.EXTRA_MODEL, device.getDisplayType());
+                    intent.setClass(AddDeviceMainActivity.this, MatchNetworkActivity.class);
                     //开始配网流程
-                    startActivity(MatchNetworkActivity.class);
+                    startActivity(intent);
                 }
             }
         });

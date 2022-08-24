@@ -68,7 +68,7 @@ public class Device {
         return status;
     }
 
-    public String getName() {
+    public String getCategoryName() {
         return categoryName;
     }
 

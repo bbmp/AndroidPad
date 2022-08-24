@@ -17,7 +17,7 @@ public class RvAddDeviceAdapter extends BaseQuickAdapter<Device, BaseViewHolder>
     @Override
     protected void convert(@NonNull BaseViewHolder baseViewHolder, Device device) {
         if (null != device) {
-            baseViewHolder.setText(R.id.tv_device_name, device.getName());
+            baseViewHolder.setText(R.id.tv_device_name, device.getCategoryName());
             baseViewHolder.setText(R.id.tv_model, device.getDisplayType());
             baseViewHolder.setImageResource(R.id.iv_device, R.drawable.logo_roki);
 

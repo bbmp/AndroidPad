@@ -7,6 +7,7 @@ import com.robam.common.http.RetrofitCallback;
 import com.robam.common.utils.LogUtils;
 import com.robam.ventilator.constant.HostServer;
 import com.robam.ventilator.request.BindDeviceReq;
+import com.robam.ventilator.request.GetDeviceUserReq;
 import com.robam.ventilator.request.GetUserReq;
 import com.robam.ventilator.request.GetVerifyCodeReq;
 import com.robam.ventilator.request.LoginQrcodeReq;
@@ -73,9 +74,18 @@ public class CloudHelper {
         Call<ResponseBody> call = svr.getDevices(requestBody);
         enqueue(iLife, entity, call, callback);
     }
-    //获取二维码
-    public static <T extends BaseResponse> void getCode(ILife iLife, Class<T> entity, final RetrofitCallback<T> callback) {
-        Call<ResponseBody> call = svr.getCode();
+//    //获取二维码
+//    public static <T extends BaseResponse> void getCode(ILife iLife, Class<T> entity, final RetrofitCallback<T> callback) {
+//        Call<ResponseBody> call = svr.getCode();
+//        enqueue(iLife, entity, call, callback);
+//    }
+
+    //获取设备绑定的用户
+    public static <T extends BaseResponse> void getDeviceUsers(ILife iLife, long userid, String guid, Class<T> entity, final RetrofitCallback<T> callback) {
+        String json = new GetDeviceUserReq(userid, guid).toString();
+        RequestBody requestBody =
+                RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
+        Call<ResponseBody> call = svr.getDeviceUsers(requestBody);
         enqueue(iLife, entity, call, callback);
     }
 

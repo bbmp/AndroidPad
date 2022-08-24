@@ -331,8 +331,6 @@ public class HomePage extends VentilatorBasePage {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //关闭串口
-        SerialPortHelper.getInstance().closeDevice();
     }
 
     //锁屏

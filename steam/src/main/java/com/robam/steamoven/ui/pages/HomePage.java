@@ -163,10 +163,5 @@ public class HomePage extends SteamBasePage {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //关闭串口
-        SerialPortHelper.getInstance().closeDevice();
-        //关闭蓝牙
-        BleManager.getInstance().disconnectAllDevice();
-        BleManager.getInstance().destroy();
     }
 }

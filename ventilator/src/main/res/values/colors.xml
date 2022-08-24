@@ -12,4 +12,5 @@
     <color name="ventilator_line">#1ad9d9d9</color>
     <color name="ventilator_lock">#80000d2a</color>
     <color name="ventilator_drawer_bg">#332c2c2c</color>
+    <color name="ventilator_phone">#AEAEAE</color>
 </resources>

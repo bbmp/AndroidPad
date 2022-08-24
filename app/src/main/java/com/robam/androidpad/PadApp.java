@@ -26,12 +26,13 @@ public class PadApp extends Application {
         // MMKV 初始化
         MMKV.initialize(this);
 //        AppRoki.init(this);
-        AppVentilator.init(this);
+        AppVentilator.onCreate(this);
     }
 
     @Override
     public void onTerminate() {
         super.onTerminate();
+        AppVentilator.onTerminate();
     }
     @Override
     public void onLowMemory() {
