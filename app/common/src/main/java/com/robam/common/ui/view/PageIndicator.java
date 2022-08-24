@@ -20,17 +20,12 @@ public class PageIndicator implements ViewPager.OnPageChangeListener {
     private int imgSize = 12;
     private int margin = 8;
 
-    public void setImgSize(int imgSize) {
-        this.imgSize = imgSize;
-    }
-
-    public void setMargin(int margin) {
-        this.margin = margin;
-    }
-
     public PageIndicator(Context context, LinearLayout linearLayout, int pageCount) {
         this.mPageCount = pageCount;
 
+        imgSize = (int) context.getResources().getDimension(R.dimen.dp_12);
+        margin = (int) context.getResources().getDimension(R.dimen.dp_8);
+        linearLayout.removeAllViews();
         mImgList = new ArrayList<>();
         img_select = R.drawable.common_dot_select;
         img_unSelect = R.drawable.common_dot_unselect;

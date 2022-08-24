@@ -166,7 +166,11 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        BleManager.getInstance().cancelScan();
+        try {
+            BleManager.getInstance().cancelScan();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //扫描规则

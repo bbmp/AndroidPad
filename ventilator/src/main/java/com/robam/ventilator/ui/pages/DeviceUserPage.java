@@ -23,7 +23,7 @@ public class DeviceUserPage extends VentilatorBasePage {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.ventilator_item_layout_bind_device;
+        return R.layout.ventilator_page_layout_bind_device;
     }
 
     @Override

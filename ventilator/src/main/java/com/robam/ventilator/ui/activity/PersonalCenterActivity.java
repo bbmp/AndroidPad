@@ -119,14 +119,14 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
                 @Override
                 public void onSuccess(GetDeviceRes getDeviceRes) {
                     if (null != getDeviceRes && null != getDeviceRes.devices) {
-                        fragments.clear();
+                        List<Fragment> fragments = new ArrayList<>();
                         for (Device device: getDeviceRes.devices) {
                             DeviceUserPage deviceUserPage = new DeviceUserPage(device);
-                            fragments.add(new WeakReference<>(deviceUserPage));
+                            fragments.add(deviceUserPage);
                         }
 
                         //添加设置适配器
-                        vpDevice.setAdapter(new DeviceUserPagerAdapter(getSupportFragmentManager()));
+                        vpDevice.setAdapter(new DeviceUserPagerAdapter(getSupportFragmentManager(), fragments));
                         vpDevice.setOffscreenPageLimit(fragments.size());
                         //设置指示器
                         PageIndicator pageIndicator = new PageIndicator(PersonalCenterActivity.this, llDot, fragments.size());
@@ -174,16 +174,17 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
     }
 
     class DeviceUserPagerAdapter extends FragmentStatePagerAdapter {
+        private List<Fragment> fragments;
 
-
-        public DeviceUserPagerAdapter(@NonNull FragmentManager fm) {
+        public DeviceUserPagerAdapter(@NonNull FragmentManager fm, List<Fragment> fragments) {
             super(fm);
+            this.fragments = fragments;
         }
 
         @NonNull
         @Override
         public Fragment getItem(int position) {
-            return fragments.get(position).get();
+            return fragments.get(position);
         }
 
         @Override

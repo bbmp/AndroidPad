@@ -8,7 +8,7 @@ android {
     defaultConfig {
         applicationId "com.robam.androidpad"
         minSdk build_versions.min_sdk
-        targetSdk 32
+        targetSdk build_versions.target_sdk
         versionCode 1
         versionName "1.0"
 

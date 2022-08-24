@@ -140,7 +140,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="iv_head,tv_nickname,tv_phone,btn_exit_login,view_board,vp_device,rv_dot" />
+        app:constraint_referenced_ids="iv_head,tv_nickname,tv_phone,btn_exit_login,view_board,vp_device,ll_dot" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/ventilator_group4"
