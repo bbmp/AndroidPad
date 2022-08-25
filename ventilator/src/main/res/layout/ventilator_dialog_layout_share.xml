@@ -2,8 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/stove_ic_bg"
     android:id="@+id/share_dialog"
+    android:background="@drawable/ventilator_ic_bg"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
@@ -20,8 +20,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_45"
         android:textSize="@dimen/sp_32"
-        android:textColor="@color/stove_white"
-        android:text="@string/stove_share_hint"
+        android:textColor="@color/ventilator_white"
+        android:text="@string/ventilator_share_hint"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/iv_qrcode"/>

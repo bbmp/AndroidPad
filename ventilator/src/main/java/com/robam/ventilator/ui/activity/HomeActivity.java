@@ -10,12 +10,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.serialport.helper.SerialPortHelper;
 import android.serialport.helper.SphResultCallback;
+import android.view.View;
 
 import com.clj.fastble.BleManager;
 import com.robam.common.ui.activity.BaseActivity;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.PermissionUtils;
 import com.robam.common.utils.StringUtils;
+import com.robam.common.utils.WindowsUtils;
 import com.robam.ventilator.R;
 import com.robam.ventilator.bean.Ventilator;
 import com.robam.ventilator.protocol.serial.SerialVentilator;
@@ -39,7 +41,25 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+//        WindowsUtils.initPopupWindow(this, new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                //浮窗点击 快捷入口
+//                startActivity(ShortcutActivity.class);
+//            }
+//        });
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        WindowsUtils.hidePopupWindow();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        WindowsUtils.showPopupWindow();
     }
 
     @Override
@@ -119,6 +139,7 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        WindowsUtils.closePopupWindow();
         //关闭串口
         SerialPortHelper.getInstance().closeDevice();
     }

@@ -10,6 +10,8 @@ import com.robam.ventilator.bean.UserInfo;
 public class RvDeviceUserAdapter extends BaseQuickAdapter<UserInfo, BaseViewHolder> {
     public RvDeviceUserAdapter() {
         super(R.layout.ventilator_item_layout_device_user);
+        //一定要在构造里设置
+        addChildClickViewIds(R.id.iv_delete);
     }
 
 

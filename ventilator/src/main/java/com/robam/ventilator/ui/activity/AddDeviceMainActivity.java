@@ -13,6 +13,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
+import com.robam.ventilator.bean.AccountInfo;
 import com.robam.ventilator.bean.Device;
 import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.ui.adapter.RvAddDeviceAdapter;
@@ -46,7 +47,14 @@ public class AddDeviceMainActivity extends VentilatorBaseActivity {
                 if (view.getId() == R.id.btn_add) {
                     //添加设备
                     Device device = (Device) adapter.getItem(position);
-                    //判断设备类型
+                    //判断设备类型 非锅和灶判断是否登录
+                    if (!"9B328".equals(device.getDisplayType()) &&
+                            !"KP100".equals(device.getDisplayType())) {
+                        if (null == AccountInfo.getInstance().getUser().getValue()) {
+                            startActivity(LoginPhoneActivity.class);
+                            return;
+                        }
+                    }
                     Intent intent = new Intent();
                     intent.putExtra(VentilatorConstant.EXTRA_MODEL, device.getDisplayType());
                     intent.setClass(AddDeviceMainActivity.this, MatchNetworkActivity.class);

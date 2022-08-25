@@ -121,7 +121,7 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
                     if (null != getDeviceRes && null != getDeviceRes.devices) {
                         List<Fragment> fragments = new ArrayList<>();
                         for (Device device: getDeviceRes.devices) {
-                            DeviceUserPage deviceUserPage = new DeviceUserPage(device);
+                            DeviceUserPage deviceUserPage = new DeviceUserPage(device, userInfo);
                             fragments.add(deviceUserPage);
                         }
 

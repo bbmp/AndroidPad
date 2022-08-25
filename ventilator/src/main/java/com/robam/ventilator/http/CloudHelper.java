@@ -102,6 +102,14 @@ public class CloudHelper {
         Call<ResponseBody> call = svr.login(requestBody);
         enqueue(iLife, entity, call, callback);
     }
+    //删除绑定的用户
+    public static <T extends BaseResponse> void unbindDevice(ILife iLife, long userid, String guid, Class<T> entity, final RetrofitCallback<T> callback) {
+        String json = new GetDeviceUserReq(userid, guid).toString();
+        RequestBody requestBody =
+                RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
+        Call<ResponseBody> call = svr.unbindDevice(requestBody);
+        enqueue(iLife, entity, call, callback);
+    }
 
     //统一处理回调
     private static <T extends BaseResponse> void enqueue(ILife iLife, final Class<T> entity, Call<ResponseBody> call, final RetrofitCallback<T> callback) {

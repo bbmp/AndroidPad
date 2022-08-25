@@ -36,7 +36,7 @@
     <string name="ventilator_add_more_products">请您添加更多产品</string>
     <string name="ventilator_air_flow">风量</string>
     <string name="ventilator_air_speed">风速</string>
-    <string name="ventilator_reset_hint">恢复出厂设置后，设备将删除您的个人设置与收藏信息</string>
+    <string name="ventilator_reset_hint">恢复出厂设置后，\n将删除个人设置信息</string>
     <string name="ventilator_reset_ok">确认恢复出厂设置？</string>
     <string name="ventilator_reset_ing">恢复中</string>
     <string name="ventilator_donot_cut_power">请勿断电</string>
@@ -75,4 +75,7 @@
     <string name="ventilator_connect_failed">网络连接失败</string>
     <string name="ventilator_match_ing">配对中...</string>
     <string name="ventilator_rematch">重新配对</string>
+    <string name="ventilator_delete_user_hint">确认删除该账号</string>
+    <string name="ventilator_not_administrator">您不是管理员</string>
+    <string name="ventilator_share_hint">请打开ROKI APP, 扫一扫分享</string>
 </resources>

@@ -191,7 +191,7 @@ public class HomePage extends VentilatorBasePage {
         settingList.add(new VenFunBean(2, "网络设置", "", "wifi_connect", "com.robam.ventilator.ui.activity.WifiSettingActivity"));
         settingList.add(new VenFunBean(3, "时间设定", "", "date_setting", "com.robam.ventilator.ui.activity.DateSettingActivity"));
         settingList.add(new VenFunBean(4, "屏幕亮度", "", "screen_brightness", "com.robam.ventilator.ui.activity.ScreenBrightnessActivity"));
-        settingList.add(new VenFunBean(5, "恢复出厂", "", "reset", "com.robam.ventilator.ui.activity.AboutActivity"));
+        settingList.add(new VenFunBean(5, "恢复出厂", "", "reset", "com.robam.ventilator.ui.activity.ResetActivity"));
         settingList.add(new VenFunBean(6, "关于售后", "", "sale_service", "com.robam.ventilator.ui.activity.SaleServiceActivity"));
         settingList.add(new VenFunBean(7, "关于产品", "", "about_product", "com.robam.ventilator.ui.activity.AboutActivity"));
         settingList.add(new VenFunBean(8, "智能设置", "", "smart_setting", "com.robam.ventilator.ui.activity.SmartSettingActivity"));

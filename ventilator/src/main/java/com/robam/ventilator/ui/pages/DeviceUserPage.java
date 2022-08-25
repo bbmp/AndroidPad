@@ -1,13 +1,29 @@
 package com.robam.ventilator.ui.pages;
 
+import android.content.Intent;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemChildClickListener;
+import com.robam.common.bean.BaseResponse;
 import com.robam.common.http.RetrofitCallback;
+import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.GridSpaceItemDecoration;
+import com.robam.common.utils.ImageUtils;
+import com.robam.common.utils.ToastUtils;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBasePage;
+import com.robam.ventilator.bean.AccountInfo;
 import com.robam.ventilator.bean.Device;
+import com.robam.ventilator.bean.UserInfo;
+import com.robam.ventilator.constant.DialogConstant;
+import com.robam.ventilator.factory.VentilatorDialogFactory;
 import com.robam.ventilator.http.CloudHelper;
 import com.robam.ventilator.response.GetDeviceUserRes;
 import com.robam.ventilator.ui.adapter.RvDeviceUserAdapter;
@@ -16,9 +32,15 @@ public class DeviceUserPage extends VentilatorBasePage {
     private Device device;
     private RecyclerView rvUser;
     private RvDeviceUserAdapter rvDeviceUserAdapter;
+    private UserInfo curUser; //登录用户
+    private ImageView ivDevice;
+    private TextView tvDeviceName;
+    private TextView tvModel; //机型
+    private TextView btnShare;
 
-    public DeviceUserPage(Device device) {
+    public DeviceUserPage(Device device, UserInfo info) {
         this.device = device;
+        this.curUser = info;
     }
 
     @Override
@@ -29,20 +51,50 @@ public class DeviceUserPage extends VentilatorBasePage {
     @Override
     protected void initView() {
         rvUser = findViewById(R.id.rv_user);
+        ivDevice = findViewById(R.id.iv_device);
+        tvDeviceName = findViewById(R.id.tv_device_name);
+        tvModel = findViewById(R.id.tv_model);
+        btnShare = findViewById(R.id.btn_share);
         rvUser.setLayoutManager(new GridLayoutManager(getContext(), 2));
         rvUser.addItemDecoration(new GridSpaceItemDecoration((int) getContext().getResources().getDimension(com.robam.common.R.dimen.dp_58)));
         rvDeviceUserAdapter = new RvDeviceUserAdapter();
         rvUser.setAdapter(rvDeviceUserAdapter);
+        rvDeviceUserAdapter.setOnItemChildClickListener(new OnItemChildClickListener() {
+            @Override
+            public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
+                if (view.getId() == R.id.iv_delete) {
+                    //删除提示
+                    UserInfo userInfo = (UserInfo) adapter.getItem(position);
+                    if (null != userInfo ) {
+                        //删除自己
+                        if (userInfo.id == curUser.id)
+                            ;
+                        else {
+                            //非管理员
+                            if (curUser.id != device.ownerId) {
+                                ToastUtils.showShort(getContext(), R.string.ventilator_not_administrator);
+                                return;
+                            }
+                        }
+                        deleteUserDialog(userInfo.id);
+                    }
+                }
+            }
+        });
+        setOnClickListener(R.id.btn_share);
     }
 
     @Override
     protected void initData() {
+        tvDeviceName.setText(device.categoryName);
+        tvModel.setText(device.displayType);
+        ImageUtils.loadImage(getContext(), device.deviceTypeIconUrl, ivDevice);
         getDeviceUsers(device);
     }
 
     //获取设备绑定的用户
     private void getDeviceUsers(Device device) {
-        CloudHelper.getDeviceUsers(this, device.ownerId, device.guid, GetDeviceUserRes.class, new RetrofitCallback<GetDeviceUserRes>() {
+        CloudHelper.getDeviceUsers(this, curUser.id, device.guid, GetDeviceUserRes.class, new RetrofitCallback<GetDeviceUserRes>() {
 
             @Override
             public void onSuccess(GetDeviceUserRes getDeviceUserRes) {
@@ -55,5 +107,50 @@ public class DeviceUserPage extends VentilatorBasePage {
 
             }
         });
+    }
+    //删除用户确认
+    private void deleteUserDialog(long userid) {
+        IDialog iDialog = VentilatorDialogFactory.createDialogByType(getContext(), DialogConstant.DIALOG_TYPE_VENTILATOR_COMMON);
+        iDialog.setCancelable(false);
+        iDialog.setContentText(R.string.ventilator_delete_user_hint);
+        iDialog.setListeners(new IDialog.DialogOnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (v.getId() == R.id.tv_ok) {
+                    unbindDeviceUser(userid);
+                }
+            }
+        }, R.id.tv_cancel, R.id.tv_ok);
+        iDialog.show();
+    }
+    //解绑用户
+    private void unbindDeviceUser(long userid) {
+        CloudHelper.unbindDevice(this, userid, device.guid, BaseResponse.class, new RetrofitCallback<BaseResponse>() {
+            @Override
+            public void onSuccess(BaseResponse baseResponse) {
+                if (null != baseResponse) {
+                    //解绑成功
+                    AccountInfo.getInstance().getUser().setValue(curUser);
+                }
+            }
+
+            @Override
+            public void onFaild(String err) {
+
+            }
+        });
+    }
+
+    @Override
+    public void onClick(View view) {
+        int id = view.getId();
+        if (id == R.id.btn_share)
+            shareDialog();
+    }
+    //分享控制权
+    private void shareDialog() {
+        IDialog iDialog = VentilatorDialogFactory.createDialogByType(getContext(), DialogConstant.DIALOG_TYPE_SHARE);
+        iDialog.setCancelable(false);
+        iDialog.show();
     }
 }

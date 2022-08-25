@@ -28,6 +28,7 @@
         <activity
             android:name=".ui.activity.ResetActivity"
             android:exported="false"
+            android:launchMode="singleTop"
             android:screenOrientation="landscape" />
         <activity
             android:name=".ui.activity.PersonalCenterActivity"

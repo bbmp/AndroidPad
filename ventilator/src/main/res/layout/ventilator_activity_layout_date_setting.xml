@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activity.DateSettingActivity"
-    android:background="@drawable/ventilator_ic_bg">
+    android:background="@drawable/ventilator_ic_bg"
+    tools:context=".ui.activity.DateSettingActivity">
+
     <include
         android:id="@+id/ll_title"
         layout="@layout/ventilator_view_layout_title"
@@ -13,13 +14,14 @@
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
     <LinearLayout
         android:id="@+id/ll_border"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_88"
         android:layout_marginStart="@dimen/dp_88"
-        android:layout_marginEnd="@dimen/dp_88"
         android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginEnd="@dimen/dp_88"
         android:background="@drawable/ventilator_shape_border_bg"
         android:gravity="center_vertical"
         android:paddingStart="@dimen/dp_64"
@@ -31,8 +33,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/ventilator_auto_set"
-            android:textSize="@dimen/sp_34"
-            android:textColor="@color/ventilator_white"/>
+            android:textColor="@color/ventilator_white"
+            android:textSize="@dimen/sp_34" />
 
         <View
             android:layout_width="0dp"
@@ -48,51 +50,68 @@
     </LinearLayout>
 
 
-    <LinearLayout
-        android:id="@+id/ll_date_select"
-        android:layout_marginTop="@dimen/dp_40"
-        android:layout_width="@dimen/dp_300"
-        android:layout_height="@dimen/dp_230"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
+    <View
+        android:id="@+id/view_board"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_44"
+        android:layout_marginBottom="@dimen/dp_30"
+        android:background="@drawable/ventilator_shape_border_bg"
+        app:layout_constraintBottom_toTopOf="@id/btn_save"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_border">
+        app:layout_constraintTop_toBottomOf="@id/ll_border" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_time_hour"
-            android:layout_width="0px"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            tools:itemCount="3"
-            tools:listitem="@layout/ventilator_item_pick_text" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_time_hour"
+        android:layout_width="@dimen/dp_220"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/view_board"
+        app:layout_constraintRight_toLeftOf="@id/tv_colon"
+        app:layout_constraintTop_toTopOf="@id/view_board"
+        tools:itemCount="3"
+        tools:listitem="@layout/ventilator_item_layout_string" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=":"
-            android:textSize="@dimen/sp_32" />
+    <TextView
+        android:id="@+id/tv_colon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=":"
+        android:textColor="@color/ventilator_white"
+        android:textSize="@dimen/sp_40"
+        app:layout_constraintBottom_toBottomOf="@id/view_board"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/view_board" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_time_minute"
-            android:layout_width="0px"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            tools:itemCount="3"
-            tools:listitem="@layout/ventilator_item_pick_text" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_time_minute"
+        android:layout_width="@dimen/dp_220"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/view_board"
+        app:layout_constraintLeft_toRightOf="@id/tv_colon"
+        app:layout_constraintTop_toTopOf="@id/view_board"
+        tools:itemCount="3"
+        tools:listitem="@layout/ventilator_item_layout_string" />
 
-    </LinearLayout>
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_save"
         android:layout_width="@dimen/dp_175"
         android:layout_height="@dimen/dp_56"
-        android:gravity="center"
-        android:textSize="@dimen/sp_30"
-        android:textColor="@color/ventilator_white"
-        android:background="@drawable/stove_shape_button_bg_ok"
         android:layout_marginRight="@dimen/dp_40"
         android:layout_marginBottom="@dimen/dp_24"
+        android:background="@drawable/ventilator_shape_button_bg_ok"
+        android:gravity="center"
         android:text="@string/ventilator_save_set"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        android:textColor="@color/ventilator_white"
+        android:textSize="@dimen/sp_30"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/ventilator_group5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="view_board,btn_save,rv_time_hour,rv_time_minute,tv_colon" />
 </androidx.constraintlayout.widget.ConstraintLayout>

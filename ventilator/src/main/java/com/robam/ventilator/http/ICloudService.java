@@ -31,6 +31,8 @@ public interface ICloudService {
     String login = "/rest/api/cas/app/login";
     //获取设备绑定的用户
     String getDeviceUsers = "/rest/dms/api/device/user/get";
+    //删除绑定的用户
+    String unbindDevice = "/rest/dms/api/device/unbind";
 
     @POST(getVerifyCode)
     @Headers("Content-Type: application/json")
@@ -68,4 +70,8 @@ public interface ICloudService {
     @POST(getDeviceUsers)
     @Headers("Content-Type: application/json")
     Call<ResponseBody> getDeviceUsers(@Body RequestBody body);
+
+    @POST(unbindDevice)
+    @Headers("Content-Type: application/json")
+    Call<ResponseBody> unbindDevice(@Body RequestBody body);
 }

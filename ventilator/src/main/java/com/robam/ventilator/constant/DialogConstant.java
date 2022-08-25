@@ -5,4 +5,5 @@ public class DialogConstant {
     public final static int DIALOG_TYPE_DELAY_CLOSE = 2;
     public final static int DIALOG_TYPE_LOCK = 3;
     public final static int DIALOG_TYPE_WAITING = 4;
+    public final static int DIALOG_TYPE_SHARE = 5;
 }

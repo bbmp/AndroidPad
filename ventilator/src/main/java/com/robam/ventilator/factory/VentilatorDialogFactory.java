@@ -6,6 +6,7 @@ import com.robam.common.ui.dialog.IDialog;
 import com.robam.ventilator.constant.DialogConstant;
 import com.robam.ventilator.ui.dialog.DelayCloseDialog;
 import com.robam.ventilator.ui.dialog.LockDialog;
+import com.robam.ventilator.ui.dialog.ShareDialog;
 import com.robam.ventilator.ui.dialog.VentilatorCommonDialog;
 import com.robam.ventilator.ui.dialog.WaitingDialog;
 
@@ -24,6 +25,9 @@ public class VentilatorDialogFactory {
                 break;
             case DialogConstant.DIALOG_TYPE_WAITING:
                 iDialog = new WaitingDialog(context);
+                break;
+            case DialogConstant.DIALOG_TYPE_SHARE:
+                iDialog = new ShareDialog(context);
                 break;
         }
         return iDialog;
