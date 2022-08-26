@@ -75,6 +75,7 @@ public class DateSettingActivity extends VentilatorBaseActivity {
             @Override
             public void onCheckedChanged(SwitchButton button, boolean checked) {
                 group.setVisibility(checked? View.GONE: View.VISIBLE);
+                llBorder.setVisibility(checked ? View.VISIBLE:View.GONE);
             }
         });
         //已联网

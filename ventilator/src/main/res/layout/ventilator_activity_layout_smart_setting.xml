@@ -46,11 +46,12 @@
         android:text="@string/ventilator_reset_start"
         android:textColor="@color/ventilator_white"
         android:textSize="@dimen/sp_30"
-        android:layout_marginTop="@dimen/dp_53"
         android:gravity="center"
         android:background="@drawable/ventilator_shape_button_ok_bg"
         app:layout_constraintTop_toBottomOf="@id/ll_title"
-        app:layout_constraintRight_toLeftOf="@id/ventilator_guideline5"/>
+        app:layout_constraintBottom_toTopOf="@id/tv_auto_change_air"
+        app:layout_constraintRight_toLeftOf="@id/ventilator_guideline5"
+        app:layout_constraintVertical_chainStyle="packed"/>
 
     <View
         android:id="@+id/ll_border1"
@@ -75,6 +76,7 @@
         android:maxLines="1"
         android:ellipsize="end"
         app:layout_constraintTop_toBottomOf="@id/bt_reset"
+        app:layout_constraintBottom_toTopOf="@id/tv_wash"
         app:layout_constraintLeft_toLeftOf="@id/ventilator_guideline4"
         app:layout_constraintRight_toLeftOf="@id/sb_auto_set1"
         android:layout_marginLeft="@dimen/dp_64"/>
@@ -116,7 +118,8 @@
         android:textColor="@color/ventilator_white"
         app:layout_constraintLeft_toLeftOf="@id/ventilator_guideline4"
         app:layout_constraintRight_toLeftOf="@id/sb_auto_set2"
-        app:layout_constraintTop_toBottomOf="@id/tv_auto_change_air"/>
+        app:layout_constraintTop_toBottomOf="@id/tv_auto_change_air"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 
     <com.robam.common.ui.view.SwitchButton

@@ -91,6 +91,15 @@ public interface MsgKeys {
     short ExitPair_Rep = 48;
     //----------------------------------------------------------
     /**
+     * 一体机状态查询
+     */
+    short getSteameOvenStatus_Req = 150;
+
+    /**
+     * 一体机状态查询(应答)
+     */
+    short getSteameOvenStatus_Rep = 151;
+    /**
      * 属性查询
      */
     short getDeviceAttribute_Req = 190;

@@ -8,6 +8,8 @@ public class MqttMsg {
      */
     protected short msgId;
 
+
+    private String guid;
     /**
      * 数据
      */
@@ -23,8 +25,9 @@ public class MqttMsg {
         this.msgId = msgId;
     }
 
-    public MqttMsg(short msgId, String dt, String signNum, RTopic topic, byte[] data) {
+    public MqttMsg(short msgId, String guid, String dt, String signNum, RTopic topic, byte[] data) {
         this.msgId = msgId;
+        this.guid = guid;
         this.dt = dt;
         this.signNum = signNum;
         this.rTopic = topic;
@@ -47,7 +50,7 @@ public class MqttMsg {
     }
 
     public String getGuid() {
-        return null;
+        return guid;
     }
 
     public static class Builder {
@@ -56,6 +59,7 @@ public class MqttMsg {
         private RTopic topic;
         private String dt;
         private String signNum;
+        private String guid;
 
         public Builder setMsgId(short msgId) {
             this.msgId = msgId;
@@ -82,8 +86,13 @@ public class MqttMsg {
             return this;
         }
 
+        public Builder setGuid(String guid) {
+            this.guid = guid;
+            return this;
+        }
+
         public MqttMsg build() {
-            return new MqttMsg(msgId, dt, signNum, topic, payload);
+            return new MqttMsg(msgId, guid, dt, signNum, topic, payload);
         }
     }
 }

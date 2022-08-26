@@ -19,7 +19,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.google.gson.Gson;
+import com.robam.common.bean.RTopic;
 import com.robam.common.http.RetrofitCallback;
+import com.robam.common.mqtt.MqttManager;
+import com.robam.common.mqtt.MqttMsg;
+import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.skin.SkinDisplayUtils;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
@@ -38,6 +42,7 @@ import com.robam.ventilator.bean.ProductMutiItem;
 import com.robam.ventilator.bean.UserInfo;
 import com.robam.ventilator.bean.VenFunBean;
 import com.robam.ventilator.constant.DialogConstant;
+import com.robam.ventilator.device.VentilatorFactory;
 import com.robam.ventilator.factory.VentilatorDialogFactory;
 import com.robam.ventilator.http.CloudHelper;
 import com.robam.ventilator.response.GetDeviceRes;
@@ -269,8 +274,11 @@ public class HomePage extends VentilatorBasePage {
                         List<Device> deviceList = getDeviceRes.devices;
                         productList.clear();
                         productList.add(new ProductMutiItem(ProductMutiItem.IMAGE, ""));
-                        for (Device device: deviceList)
+                        for (Device device: deviceList) {
                             productList.add(new ProductMutiItem(ProductMutiItem.DEVICE, device));
+//                            queryDeviceStatus(device);
+                        }
+                        //查询设备状态
                         productList.add(new ProductMutiItem(ProductMutiItem.BUTTON, ""));
                         if (null != rvProductsAdapter)
                             rvProductsAdapter.setList(productList);
@@ -289,6 +297,19 @@ public class HomePage extends VentilatorBasePage {
             productList.add(new ProductMutiItem(ProductMutiItem.BUTTON, ""));
             if (null != rvProductsAdapter)
                 rvProductsAdapter.setList(productList);
+        }
+    }
+
+    private void queryDeviceStatus(Device device) {
+        if (device.getDisplayType() .equals("DB610D")) {
+            MqttMsg msg = new MqttMsg.Builder()
+                    .setMsgId(MsgKeys.getSteameOvenStatus_Req)
+                    .setGuid(VentilatorFactory.getPlatform().getDeviceOnlySign())
+                    .setDt(VentilatorFactory.getPlatform().getDt())
+                    .setSignNum(VentilatorFactory.getPlatform().getMac())
+                    .setTopic(new RTopic(RTopic.TOPIC_UNICAST, VentilatorFactory.getPlatform().getDt(), VentilatorFactory.getPlatform().getMac()))
+                    .build();
+            MqttManager.getInstance().publish(msg, VentilatorFactory.getProtocol());
         }
     }
 

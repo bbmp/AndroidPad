@@ -13,6 +13,7 @@ import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MsgUtils;
 import com.robam.common.utils.StringUtils;
 import com.robam.steamoven.device.SteamFactory;
+import com.robam.ventilator.device.VentilatorFactory;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -45,6 +46,15 @@ public class MqttVentilator implements IProtocol {
         int msgId = msg.getID();
         switch (msgId) {
             case MsgKeys.DeviceConnected_Noti:
+                buf.put((byte) 1);
+                buf.put("0000000000".getBytes());
+                buf.put(VentilatorFactory.getPlatform().getMac().getBytes());
+                buf.put(msg.getGuid().getBytes());
+                buf.put((byte) VentilatorFactory.getPlatform().getMac().length());
+                buf.put(VentilatorFactory.getPlatform().getMac().getBytes());
+                buf.put((byte) 1);
+                buf.put((byte) 4);
+                buf.put((byte) 1);
                 break;
             case MsgKeys.setDeviceAttribute_Rep:
                 buf.put((byte) 1);

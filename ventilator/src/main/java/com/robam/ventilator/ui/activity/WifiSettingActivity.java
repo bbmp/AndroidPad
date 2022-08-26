@@ -104,6 +104,10 @@ public class WifiSettingActivity extends VentilatorBaseActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    //已授权
+    private void onPermissionGranted() {
         //监听联网状态
         AccountInfo.getInstance().getConnect().observe(this, new Observer<Boolean>() {
             @Override
@@ -118,10 +122,6 @@ public class WifiSettingActivity extends VentilatorBaseActivity {
                 }
             }
         });
-    }
-
-    //已授权
-    private void onPermissionGranted() {
         //注册广播
         registerWifiReceiver();
         //获取wifi

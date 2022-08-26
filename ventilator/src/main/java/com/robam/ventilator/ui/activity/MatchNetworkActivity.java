@@ -22,6 +22,7 @@ import com.clj.fastble.callback.BleIndicateCallback;
 import com.clj.fastble.callback.BleNotifyCallback;
 import com.clj.fastble.callback.BleScanCallback;
 import com.clj.fastble.data.BleDevice;
+import com.clj.fastble.data.BleScanState;
 import com.clj.fastble.exception.BleException;
 import com.clj.fastble.scan.BleScanRuleConfig;
 import com.clj.fastble.utils.HexUtil;
@@ -166,8 +167,14 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        cancelScan();
+    }
+
+    //取消扫描
+    private void cancelScan() {
         try {
-            BleManager.getInstance().cancelScan();
+            if (BleManager.getInstance().getScanSate() == BleScanState.STATE_SCANNING)
+                BleManager.getInstance().cancelScan();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -207,12 +214,14 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
             @Override
             public void onScanFinished(List<BleDevice> scanResultList) {
                 LogUtils.e("onScanFinished ");
-                if (null != scanResultList && scanResultList.size() > 0) {
-                    connect(scanResultList.get(0));
-                } else {
-                    //未扫描到
-                    tvNext.setText(R.string.ventilator_rematch);
-                    tvNext.setClickable(true);
+                if (!isDestroyed()) {  //界面销毁不连接
+                    if (null != scanResultList && scanResultList.size() > 0) {
+                        connect(scanResultList.get(0));
+                    } else {
+                        //未扫描到
+                        tvNext.setText(R.string.ventilator_rematch);
+                        tvNext.setClickable(true);
+                    }
                 }
             }
         });

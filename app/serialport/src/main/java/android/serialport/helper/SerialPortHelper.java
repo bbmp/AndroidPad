@@ -5,6 +5,7 @@ import android.util.Log;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -36,7 +37,7 @@ public class SerialPortHelper {
      */
     private ExecutorService executorService = new ThreadPoolExecutor(1, 1,
             0L, TimeUnit.MILLISECONDS,
-            new SynchronousQueue<>());
+            new LinkedBlockingQueue<>());
 
     private static SerialPortHelper INSTANCE = new SerialPortHelper();
 
