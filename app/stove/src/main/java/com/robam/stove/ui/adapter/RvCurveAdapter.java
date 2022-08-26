@@ -1,5 +1,6 @@
 package com.robam.stove.ui.adapter;
 
+import android.view.View;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -25,6 +26,7 @@ public class RvCurveAdapter extends BaseQuickAdapter<StoveRecipe, BaseViewHolder
             .diskCacheStrategy(DiskCacheStrategy.ALL) //缓存
             .override((int) (286), (int) (226));
     private boolean delete;
+    private boolean allSelect;
 
     public boolean isDelete() {
         return delete;
@@ -36,10 +38,18 @@ public class RvCurveAdapter extends BaseQuickAdapter<StoveRecipe, BaseViewHolder
 
     public RvCurveAdapter() {
         super(R.layout.stove_item_curve_recipe);
+        addChildClickViewIds(R.id.iv_select);
+    }
+
+    public void setAllselect(boolean allselect) {
+       this.allSelect = allselect;
+       notifyDataSetChanged();
     }
 
     @Override
     protected void convert(@NonNull BaseViewHolder baseViewHolder, StoveRecipe stoveRecipe) {
+        if (allSelect)
+            baseViewHolder.getView(R.id.iv_select).setSelected(true);
         //删除状态
         if (delete) {
             baseViewHolder.setVisible(R.id.iv_select, true);

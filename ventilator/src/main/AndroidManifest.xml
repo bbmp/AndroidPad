@@ -84,6 +84,8 @@
             android:launchMode="singleTask"
             android:screenOrientation="landscape" />
         <service android:name="org.eclipse.paho.android.service.MqttService" /> <!-- mqtt服务-->
+        <service android:name=".ui.service.AlarmService" android:exported="true" android:enabled="true"/>
+        <receiver android:name=".ui.receiver.AlarmReceiver" />
     </application>
 
 </manifest>

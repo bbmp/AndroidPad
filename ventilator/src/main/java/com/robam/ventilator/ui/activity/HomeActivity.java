@@ -10,9 +10,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.serialport.helper.SerialPortHelper;
 import android.serialport.helper.SphResultCallback;
+import android.util.DisplayMetrics;
 import android.view.View;
 
 import com.clj.fastble.BleManager;
+import com.robam.common.mqtt.MqttManager;
 import com.robam.common.ui.activity.BaseActivity;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.PermissionUtils;
@@ -20,7 +22,9 @@ import com.robam.common.utils.StringUtils;
 import com.robam.common.utils.WindowsUtils;
 import com.robam.ventilator.R;
 import com.robam.ventilator.bean.Ventilator;
+import com.robam.ventilator.device.VentilatorFactory;
 import com.robam.ventilator.protocol.serial.SerialVentilator;
+import com.robam.ventilator.ui.service.AlarmService;
 
 //主页
 public class HomeActivity extends BaseActivity {
@@ -33,6 +37,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     private BluetoothAdapter bluetoothAdapter;
+    private Intent intent;
 
     @Override
     protected int getLayoutId() {
@@ -41,6 +46,10 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        float x = getResources().getDimension(com.robam.common.R.dimen.dp_10);
+
 //        WindowsUtils.initPopupWindow(this, new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -54,6 +63,11 @@ public class HomeActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         WindowsUtils.hidePopupWindow();
+        Runtime r = Runtime.getRuntime();
+
+        LogUtils.e("最大可用内存:" + r.maxMemory() / (1024*1024) + "M");
+        LogUtils.e("当前可用内存:" + r.totalMemory()/ (1024*1024) + "M");
+        LogUtils.e("当前空闲内存:" + r.freeMemory() / (1024*1024) + "M");
     }
 
     @Override
@@ -103,6 +117,13 @@ public class HomeActivity extends BaseActivity {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (!bluetoothAdapter.isEnabled())
             checkPermissions();
+        //启动定时服务
+        intent = new Intent(this.getApplicationContext(), AlarmService.class);
+        intent.setPackage(getPackageName());
+        startService(intent);
+//初始化主设备mqtt收发 烟机端只要网络连接上就需要启动mqtt服务，锅和灶不用登录
+        //监听网络状态
+        MqttManager.getInstance().start(this, VentilatorFactory.getPlatform(), VentilatorFactory.getProtocol());
     }
 
     private void checkPermissions() {
@@ -118,7 +139,7 @@ public class HomeActivity extends BaseActivity {
                 //权限未给
                 LogUtils.e("requestPermission onFailed");
             }
-        }, Manifest.permission.BLUETOOTH_CONNECT);
+        }, Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.ACCESS_FINE_LOCATION);
     }
     //已授权
     @SuppressLint("MissingPermission")
@@ -142,5 +163,7 @@ public class HomeActivity extends BaseActivity {
         WindowsUtils.closePopupWindow();
         //关闭串口
         SerialPortHelper.getInstance().closeDevice();
+        //关闭定时任务
+        stopService(intent);
     }
 }

@@ -19,7 +19,8 @@ public class AppVentilator {
 //        FoodMaterialHelper.init(this);
         //串口初始化
         SerialPortConfig serialPortConfig = new SerialPortConfig.Builder()
-                .setMaxSize(23).build();
+                .setMaxSize(23)
+                .setPath("/dev/ttyS1").build();
         SerialPortHelper.getInstance().init(serialPortConfig);
         //http init
         RetrofitClient.getInstance().init(HostServer.apiHost, null);
@@ -37,9 +38,7 @@ public class AppVentilator {
         VentilatorAbstractControl.getInstance().init(new VentilatorLocalControl());
         //协议解析和打包
         VentilatorFactory.initMqttProtocol();
-        //初始化主设备mqtt收发 烟机端只要网络连接上就需要启动mqtt服务，锅和灶不用登录
-        //监听网络状态
-        MqttManager.getInstance().start(application, VentilatorFactory.getPlatform(), VentilatorFactory.getProtocol());
+
     }
 
 

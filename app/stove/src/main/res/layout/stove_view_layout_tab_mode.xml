@@ -9,24 +9,22 @@
         android:layout_width="@dimen/dp_170"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_55"
+        android:layout_marginBottom="@dimen/dp_2"
         android:ellipsize="end"
         android:text="mode"
         android:gravity="center"
         android:textColor="@drawable/stove_text_color_selector"
         android:textSize="@dimen/sp_48"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/iv_select"/>
     <ImageView
         android:id="@+id/iv_select"
         android:layout_width="@dimen/dp_82"
         android:layout_height="@dimen/dp_24"
-        android:layout_marginTop="@dimen/dp_2"
         android:scaleType="fitXY"
-        android:visibility="gone"
+        android:visibility="visible"
         android:src="@drawable/stove_ic_mode_select"
         app:layout_constraintLeft_toLeftOf="@id/tv_mode"
         app:layout_constraintRight_toRightOf="@id/tv_mode"
-        app:layout_constraintTop_toBottomOf="@id/tv_mode"
         app:layout_constraintBottom_toBottomOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

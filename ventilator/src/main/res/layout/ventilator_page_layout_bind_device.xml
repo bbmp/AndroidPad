@@ -27,6 +27,7 @@
         android:id="@+id/tv_model"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_2"
         android:textSize="@dimen/sp_24"
         android:textColor="@color/ventilator_white_50"
         app:layout_constraintLeft_toRightOf="@id/tv_device_name"

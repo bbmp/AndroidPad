@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
@@ -28,6 +29,8 @@ public class CurveActivity extends StoveBaseActivity {
     private RvCurveAdapter rvCurveAdapter;
     private TextView tvRight;
     private List<StoveRecipe> panRecipeList = new ArrayList<>();
+    private TextView tvDelete; //确认删除
+
 
     @Override
     protected int getLayoutId() {
@@ -43,6 +46,7 @@ public class CurveActivity extends StoveBaseActivity {
         //
         tvRight.setText(R.string.stove_delete);
         rvRecipe = findViewById(R.id.rv_recipe);
+        tvDelete = findViewById(R.id.tv_delete);
         rvRecipe.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
         rvRecipe.addItemDecoration(new HorizontalSpaceItemDecoration((int)getResources().getDimension(com.robam.common.R.dimen.dp_8), (int)getResources().getDimension(com.robam.common.R.dimen.dp_32)));
         rvCurveAdapter = new RvCurveAdapter();
@@ -72,6 +76,14 @@ public class CurveActivity extends StoveBaseActivity {
                     return;
                 if (position == 0)
                     selectStove();
+            }
+        });
+        rvCurveAdapter.setOnItemChildClickListener(new OnItemChildClickListener() {
+            @Override
+            public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
+                if (view.getId() == R.id.iv_select) {
+                    view.setSelected(view.isSelected() ? false:true);
+                }
             }
         });
     }
@@ -109,12 +121,14 @@ public class CurveActivity extends StoveBaseActivity {
 //                rvFavoriteAdapter.setDelete(false);
 //                panRecipeList.add(0, new PanRecipe("创作烹饪曲线", ""));
 //                rvFavoriteAdapter.setList(panRecipeList);
+                rvCurveAdapter.setAllselect(true);
             } else {
                 //设置删除状态
                 tvRight.setText(R.string.stove_select_all);
                 rvCurveAdapter.setDelete(true);
                 panRecipeList.remove(0);
                 rvCurveAdapter.setList(panRecipeList);
+                tvDelete.setVisibility(View.VISIBLE);
             }
         } else if (id == R.id.ll_left) {
             if (rvCurveAdapter.isDelete()) {
@@ -123,6 +137,7 @@ public class CurveActivity extends StoveBaseActivity {
                 rvCurveAdapter.setDelete(false);
                 panRecipeList.add(0, new StoveRecipe("创作烹饪曲线", ""));
                 rvCurveAdapter.setList(panRecipeList);
+                tvDelete.setVisibility(View.GONE);
             } else
                 finish();
         }

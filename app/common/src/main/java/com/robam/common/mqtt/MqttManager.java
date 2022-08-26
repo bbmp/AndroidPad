@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.robam.common.bean.RTopic;
 import com.robam.common.device.IPlat;
+import com.robam.common.utils.LogUtils;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -52,7 +53,7 @@ public class MqttManager {
         mMqttConnectOptions.setKeepAliveInterval(60); //设置心跳包发送间隔，单位：秒
         mMqttConnectOptions.setUserName(USERNAME); //设置用户名
         mMqttConnectOptions.setPassword(PASSWORD.toCharArray()); //设置密码
-
+        mMqttConnectOptions.setAutomaticReconnect(true);
         // last will message
         String message = "{\"terminal_uid\":\"" + CLIENTID + "\"}";
         String topic = getPublishTopic();
@@ -76,7 +77,7 @@ public class MqttManager {
 
         @Override
         public void onSuccess(IMqttToken arg0) {
-            Log.i(TAG, "连接成功 ");
+            LogUtils.e( "连接成功 ");
             try {
                 String topic = new RTopic(RTopic.TOPIC_UNICAST, iPlat.getDt()
                         , iPlat.getMac()).getTopic();
@@ -89,8 +90,8 @@ public class MqttManager {
         @Override
         public void onFailure(IMqttToken arg0, Throwable arg1) {
             arg1.printStackTrace();
-            Log.i(TAG, "连接失败 ");
-            doClientConnection();//连接失败，重连（可关闭服务器进行模拟）
+            LogUtils.e( "连接失败 ");
+//            doClientConnection();//连接失败，重连（可关闭服务器进行模拟）
         }
     };
 
@@ -124,7 +125,7 @@ public class MqttManager {
     IMqttActionListener mqttActionListener = new IMqttActionListener() {
         @Override
         public void onSuccess(IMqttToken asyncActionToken) {
-            Log.i(TAG, "订阅成功 ");
+            LogUtils.e( "订阅成功 ");
             //发送设备上线成功 主设备
             if (null != asyncActionToken && iPlat.getDeviceOnlySign().equals(asyncActionToken.getUserContext()))
                 deviceConnectedNoti();
@@ -163,7 +164,7 @@ public class MqttManager {
 
         @Override
         public void messageArrived(String topic, MqttMessage message) throws Exception {
-            Log.i(TAG, "收到消息： " + Arrays.toString(message.getPayload()));
+            LogUtils.e( "收到消息： " + Arrays.toString(message.getPayload()));
             int msgId = iProtocol.decode(topic, message.getPayload());
 //            if (null != mqttMsgCallback && null != message)
 //                mqttMsgCallback.messageArrived(message.getPayload());
@@ -171,6 +172,7 @@ public class MqttManager {
             if (msgId == MsgKeys.getDeviceAttribute_Req){
                 MqttMsg msg = new MqttMsg.Builder()
                         .setMsgId(MsgKeys.getDeviceAttribute_Rep)
+                        .setGuid(iPlat.getDeviceOnlySign())
                         .setDt(iPlat.getDt())
                         .setSignNum(iPlat.getMac())
                         .setTopic(new RTopic(RTopic.TOPIC_UNICAST, iPlat.getDt(), iPlat.getMac()))
@@ -179,6 +181,7 @@ public class MqttManager {
             }else if (msgId == MsgKeys.setDeviceAttribute_Req){
                 MqttMsg msg = new MqttMsg.Builder()
                         .setMsgId(MsgKeys.setDeviceAttribute_Req)
+                        .setGuid(iPlat.getDeviceOnlySign())
                         .setDt(iPlat.getDt())
                         .setSignNum(iPlat.getMac())
                         .setTopic(new RTopic(RTopic.TOPIC_UNICAST, iPlat.getDt(), iPlat.getMac()))
@@ -195,8 +198,8 @@ public class MqttManager {
 
         @Override
         public void connectionLost(Throwable arg0) {
-            Log.i(TAG, "连接断开 ");
-            doClientConnection();//连接断开，重连
+            LogUtils.e( "连接断开 ");
+//            doClientConnection();//连接断开，重连
         }
     };
 
@@ -216,8 +219,8 @@ public class MqttManager {
         Boolean retained = false;
         try {
             byte[] data = protocol.encode(msg);
-            Log.i(TAG, "发送的主题： " + topic);
-            Log.i(TAG, "发送的消息： " + Arrays.toString(data));
+            LogUtils.e( "发送的主题： " + topic);
+            LogUtils.e( "发送的消息： " + Arrays.toString(data));
             //参数分别为：主题、消息的字节数组、服务质量、是否在服务器保留断开连接后的最后一条消息
             mqttAndroidClient.publish(topic, data, qos.intValue(), retained.booleanValue());
         } catch (Exception e) {
@@ -248,6 +251,7 @@ public class MqttManager {
         Log.i(TAG, "发送设备上线通知  " + android.os.Process.myTid() + "  " + iPlat.getMac());
         MqttMsg msg = new MqttMsg.Builder()
                 .setMsgId(MsgKeys.DeviceConnected_Noti)
+                .setGuid(iPlat.getDeviceOnlySign())
                 .setDt(iPlat.getDt())
                 .setSignNum(iPlat.getMac())
                 .setTopic(new RTopic(RTopic.TOPIC_BROADCAST, iPlat.getDt(), iPlat.getMac()))
