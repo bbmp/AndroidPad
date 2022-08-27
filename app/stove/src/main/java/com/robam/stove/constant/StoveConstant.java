@@ -12,4 +12,6 @@ public class StoveConstant {
     public final static int MODE_STEAM = 2; //清蒸
     public final static int MODE_FRY = 3;  //煎炸
     public final static int MODE_TIMING = 4;   //定时
+
+    public final static String EXTRA_RECIPE_ID = "recipeid";
 }

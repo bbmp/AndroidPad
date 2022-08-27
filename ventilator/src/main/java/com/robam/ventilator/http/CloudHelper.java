@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.robam.common.bean.BaseResponse;
 import com.robam.common.http.ILife;
 import com.robam.common.http.RetrofitCallback;
+import com.robam.common.http.RetrofitClient;
 import com.robam.common.utils.LogUtils;
 import com.robam.ventilator.constant.HostServer;
 import com.robam.ventilator.request.BindDeviceReq;

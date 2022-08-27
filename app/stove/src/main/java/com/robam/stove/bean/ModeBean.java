@@ -19,12 +19,21 @@ public class ModeBean {
      * 最大时间
      */
     public int maxTime;
+    //默认温度
+    public int defTemp;
+    //最小温度
+    public int minTemp;
+    //最大温度
+    public int maxTemp;
 
-    public ModeBean(int code, String name, int defTime, int minTime, int maxTime) {
+    public ModeBean(int code, String name, int defTime, int minTime, int maxTime, int defTemp, int minTemp, int maxTemp) {
         this.code = code;
         this.name = name;
         this.defTime = defTime;
         this.minTime = minTime;
         this.maxTime = maxTime;
+        this.defTemp = defTemp;
+        this.minTemp = minTemp;
+        this.maxTemp = maxTemp;
     }
 }

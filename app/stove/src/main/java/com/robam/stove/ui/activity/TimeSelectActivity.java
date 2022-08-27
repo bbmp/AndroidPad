@@ -63,7 +63,7 @@ public class TimeSelectActivity extends StoveBaseActivity {
 
         for (int i = StoveModeEnum.MODE_TIMING.minTime; i <= StoveModeEnum.MODE_TIMING.maxTime; i++)
             lists.add(i + "");
-        rvTimeAdapter = new RvTimeAdapter();
+        rvTimeAdapter = new RvTimeAdapter(1);
         rvTime.setAdapter(rvTimeAdapter);
         rvTimeAdapter.setList(lists);
         //初始位置

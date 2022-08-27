@@ -25,15 +25,19 @@ public class RvCurveAdapter extends BaseQuickAdapter<StoveRecipe, BaseViewHolder
             .format(DecodeFormat.PREFER_RGB_565)
             .diskCacheStrategy(DiskCacheStrategy.ALL) //缓存
             .override((int) (286), (int) (226));
-    private boolean delete;
-    private boolean allSelect;
+    public static int STATUS_BACK = 0;  //返回
+    public static int STATUS_DELETE = 1; //删除
+    public static int STATUS_ALL = 2; //全选
 
-    public boolean isDelete() {
-        return delete;
+   private int status;
+
+    public int getStatus() {
+        return status;
     }
 
-    public void setDelete(boolean delete) {
-        this.delete = delete;
+    public void setStatus(int status) {
+        this.status = status;
+        notifyDataSetChanged();
     }
 
     public RvCurveAdapter() {
@@ -41,17 +45,16 @@ public class RvCurveAdapter extends BaseQuickAdapter<StoveRecipe, BaseViewHolder
         addChildClickViewIds(R.id.iv_select);
     }
 
-    public void setAllselect(boolean allselect) {
-       this.allSelect = allselect;
-       notifyDataSetChanged();
-    }
 
     @Override
     protected void convert(@NonNull BaseViewHolder baseViewHolder, StoveRecipe stoveRecipe) {
-        if (allSelect)
+        if (status == STATUS_ALL) {
             baseViewHolder.getView(R.id.iv_select).setSelected(true);
+            baseViewHolder.setVisible(R.id.iv_select, true);
+        }
         //删除状态
-        if (delete) {
+        else if (status == STATUS_DELETE) {
+            baseViewHolder.getView(R.id.iv_select).setSelected(stoveRecipe.isSelected());
             baseViewHolder.setVisible(R.id.iv_select, true);
         } else {
             baseViewHolder.setVisible(R.id.iv_select, false);

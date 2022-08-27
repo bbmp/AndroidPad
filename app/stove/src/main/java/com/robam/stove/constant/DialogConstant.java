@@ -6,4 +6,5 @@ public class DialogConstant {
     public final static int DIALOG_TYPE_SELECT_STOVE = 3;
     public final static int DIALOG_TYPE_CURVE_EDIT = 4;
     public final static int DIALOG_TYPE_LOCK = 5;
+    public final static int DIALOG_TYPE_WAITING = 6;
 }

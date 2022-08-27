@@ -26,13 +26,13 @@ public class HorizontalSpaceItemDecoration extends RecyclerView.ItemDecoration {
             int totalCount = parent.getAdapter().getItemCount();
             if (position == 0) {//第一个
                 outRect.left = startSpace;
-                outRect.right = space / 2;
+                outRect.right = space;
             } else if (position == totalCount - 1) {//最后一个
-                outRect.left = space / 2;
+                outRect.left = space;
                 outRect.right = startSpace;
             } else {//中间其它的
-                outRect.left = space / 2;
-                outRect.right = space / 2;
+                outRect.left = space;
+                outRect.right = space;
             }
         } else {
             outRect.left = space;

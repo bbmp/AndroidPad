@@ -17,13 +17,14 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/iv_step_img"
         app:layout_constraintTop_toTopOf="parent" />
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.robam.common.ui.view.RoundImageView
         android:id="@+id/iv_step_img"
         android:layout_width="@dimen/dp_312"
         android:layout_height="@dimen/dp_312"
         android:scaleType="fitXY"
         android:layout_marginRight="@dimen/dp_80"
         android:src="@drawable/stove_ic_bg"
+        app:common_riv_corner_radius="@dimen/dp_55"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

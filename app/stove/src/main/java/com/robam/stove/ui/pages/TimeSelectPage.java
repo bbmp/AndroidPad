@@ -32,10 +32,13 @@ public class TimeSelectPage extends StoveBasePage {
 
     private String mode;
 
+    private int type;//时间or温度
+
     private IModeSelect iModeSelect;
 
-    public TimeSelectPage(TabLayout.Tab tab, IModeSelect iModeSelect) {
+    public TimeSelectPage(TabLayout.Tab tab, int type, IModeSelect iModeSelect) {
         this.tab = tab;
+        this.type = type;
         this.iModeSelect = iModeSelect;
     }
 
@@ -74,7 +77,7 @@ public class TimeSelectPage extends StoveBasePage {
 
     @Override
     protected void initData() {
-        rvTimeAdapter = new RvTimeAdapter();
+        rvTimeAdapter = new RvTimeAdapter(type);
         rvSelect.setAdapter(rvTimeAdapter);
 
         if (null != iModeSelect)

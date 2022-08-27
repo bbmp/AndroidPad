@@ -30,4 +30,5 @@
     <string name="stove_step">步骤</string>
     <string name="stove_recipe_step_des">%s.%s</string>
     <string name="stove_delete_ok">确认删除</string>
+    <string name="stove_no_recipe">没有相关菜谱</string>
 </resources>
