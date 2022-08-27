@@ -18,6 +18,19 @@
         app:layout_constraintHorizontal_chainStyle="packed"/>
 
     <TextView
+        android:id="@+id/tv_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="℃"
+        android:layout_marginTop="@dimen/dp_9"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:textColor="@color/stove_white"
+        android:textSize="@dimen/sp_30"
+        app:layout_constraintTop_toTopOf="@id/tv_select"
+        app:layout_constraintLeft_toRightOf="@id/tv_select"
+        android:visibility="invisible"/>
+
+    <TextView
         android:id="@+id/tv_min"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

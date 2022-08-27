@@ -12,6 +12,7 @@ import com.robam.stove.R;
 
 public class RvTimeAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
     private int pickPosition;
+    private int type; //0温度1时间
 
     public void setPickPosition(int pickPosition) {
         this.pickPosition = pickPosition % getData().size();
@@ -46,18 +47,30 @@ public class RvTimeAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
         return super.getItemViewType(newPosition);
     }
 
-    public RvTimeAdapter() {
+    public RvTimeAdapter(int type) {
         super(R.layout.stove_item_time_select);
+        this.type = type;
     }
 
     @Override
     protected void convert(@NonNull BaseViewHolder baseViewHolder, String s) {
         baseViewHolder.setText(R.id.tv_select, s);
+        TextView tvTemp = baseViewHolder.getView(R.id.tv_temp);
         TextView tvMin = baseViewHolder.getView(R.id.tv_min);
         if (getItemPosition(s) == pickPosition) {
-            tvMin.setVisibility(View.VISIBLE);
+            if (type == 0) {
+                tvTemp.setVisibility(View.VISIBLE);
+                tvMin.setVisibility(View.INVISIBLE);
+            }
+            else if (type == 1) {
+                tvMin.setVisibility(View.VISIBLE);
+                tvTemp.setVisibility(View.INVISIBLE);
+            } else {
+                tvTemp.setVisibility(View.INVISIBLE);
+                tvMin.setVisibility(View.INVISIBLE);
+            }
         } else {
-
+            tvTemp.setVisibility(View.INVISIBLE);
             tvMin.setVisibility(View.INVISIBLE);
         }
     }

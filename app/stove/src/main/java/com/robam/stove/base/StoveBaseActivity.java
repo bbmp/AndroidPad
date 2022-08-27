@@ -31,6 +31,10 @@ public abstract class StoveBaseActivity extends BaseActivity {
         findViewById(R.id.ll_right).setVisibility(View.VISIBLE);
     }
 
+    public void hideRight() {
+        findViewById(R.id.ll_right).setVisibility(View.GONE);
+    }
+
     public void showRightCenter() {
         findViewById(R.id.ll_right_center).setVisibility(View.VISIBLE);
     }

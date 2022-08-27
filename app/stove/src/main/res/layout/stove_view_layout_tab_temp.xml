@@ -17,27 +17,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:text=""
+        android:text="temp"
         android:textColor="@drawable/stove_text_color_selector"
         android:textSize="@dimen/sp_48"
         app:layout_constraintLeft_toLeftOf="@id/view"
-        app:layout_constraintRight_toLeftOf="@id/tv_time"
+        app:layout_constraintRight_toLeftOf="@id/tv_temp"
         app:layout_constraintTop_toTopOf="@id/view"
         app:layout_constraintBottom_toTopOf="@id/iv_select"
         app:layout_constraintHorizontal_chainStyle="packed"/>
     <TextView
-        android:id="@+id/tv_time"
+        android:id="@+id/tv_temp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_7"
+        android:layout_marginTop="@dimen/dp_3"
         android:ellipsize="end"
-        android:text="min"
+        android:text="℃"
         android:gravity="center"
         android:textColor="@drawable/stove_text_color_selector"
         android:textSize="@dimen/sp_30"
         app:layout_constraintLeft_toRightOf="@id/tv_mode"
         app:layout_constraintRight_toRightOf="@id/view"
-        app:layout_constraintBottom_toBottomOf="@id/tv_mode"/>
+        app:layout_constraintTop_toTopOf="@id/tv_mode"/>
     <ImageView
         android:id="@+id/iv_select"
         android:layout_width="@dimen/dp_82"

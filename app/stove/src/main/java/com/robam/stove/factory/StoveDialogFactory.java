@@ -9,6 +9,7 @@ import com.robam.stove.ui.dialog.LockDialog;
 import com.robam.stove.ui.dialog.OpenFireDialog;
 import com.robam.stove.ui.dialog.SelectStoveDialog;
 import com.robam.stove.ui.dialog.StoveCommonDialog;
+import com.robam.stove.ui.dialog.WaitingDialog;
 
 public class StoveDialogFactory {
     public static IDialog createDialogByType(Context context, int dialogType) {
@@ -28,6 +29,9 @@ public class StoveDialogFactory {
                 break;
             case DialogConstant.DIALOG_TYPE_LOCK:
                 iDialog = new LockDialog(context);
+                break;
+            case DialogConstant.DIALOG_TYPE_WAITING:
+                iDialog = new WaitingDialog(context);
                 break;
         }
         return iDialog;

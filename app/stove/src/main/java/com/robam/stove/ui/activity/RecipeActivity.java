@@ -6,17 +6,33 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.google.android.material.tabs.TabLayout;
+import com.robam.common.http.RetrofitCallback;
+import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBaseActivity;
+import com.robam.stove.bean.StoveRecipe;
+import com.robam.stove.constant.StoveConstant;
+import com.robam.stove.http.CloudHelper;
+import com.robam.stove.response.GetRecipesByDeviceRes;
+import com.robam.stove.ui.adapter.RvRecipeAdapter;
 import com.robam.stove.ui.pages.RecipeClassifyPage;
 
 import java.lang.ref.WeakReference;
@@ -25,12 +41,16 @@ import java.util.List;
 
 //灶具菜谱
 public class RecipeActivity extends StoveBaseActivity {
-    private TabLayout tabLayout;
-    private ViewPager noScrollViewPager;
+    private RecyclerView rvRecipe;
+    private RvRecipeAdapter rvRecipeAdapter;
+
+    private EditText etSearch;
+    private TextView tvEmpty;
     //分类
-    private List<String> classifyList = new ArrayList<>();
+//    private List<String> classifyList = new ArrayList<>();
     //弱引用，防止内存泄漏
-    private List<WeakReference<Fragment>> fragments = new ArrayList<>();
+//    private List<WeakReference<Fragment>> fragments = new ArrayList<>();
+    private List<StoveRecipe> stoveRecipeList = new ArrayList<>();
 
     @Override
     protected int getLayoutId() {
@@ -42,86 +62,97 @@ public class RecipeActivity extends StoveBaseActivity {
         showLeft();
         showCenter();
 
-        tabLayout = findViewById(R.id.tablayout);
-        noScrollViewPager = findViewById(R.id.pager);
-        tabLayout.setSelectedTabIndicatorHeight(0);
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        etSearch = findViewById(R.id.et_search);
+        rvRecipe = findViewById(R.id.rv_recipe);
+        tvEmpty = findViewById(R.id.tv_empty_hint);
+        rvRecipe.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
+        rvRecipe.addItemDecoration(new HorizontalSpaceItemDecoration((int)getResources().getDimension(com.robam.common.R.dimen.dp_8), (int)getResources().getDimension(com.robam.common.R.dimen.dp_32)));
+        rvRecipeAdapter = new RvRecipeAdapter();
+        rvRecipe.setAdapter(rvRecipeAdapter);
+
+        rvRecipeAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                noScrollViewPager.setCurrentItem(tab.getId(), false);
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
+            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                StoveRecipe stoveRecipe = (StoveRecipe) adapter.getItem(position);
+                Intent intent = new Intent(getContext(), RecipeDetailActivity.class);
+                intent.putExtra(StoveConstant.EXTRA_RECIPE_ID, stoveRecipe.id);
+                startActivity(intent);
             }
         });
-
+        etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    String text = etSearch.getText().toString();
+                    if (!TextUtils.isEmpty(text)) {
+                        //处理搜索
+                        searchResult(text);
+                    } else {
+                        rvRecipeAdapter.setList(stoveRecipeList);
+                        hideEmpty();
+                    }
+                    return false;
+                }
+                return false;
+            }
+        });
     }
 
     @Override
     protected void initData() {
-        //for test
-        classifyList.add("肉禽");
-        classifyList.add("水产品");
-        classifyList.add("主食");
-        classifyList.add("甜品");
-        classifyList.add("果蔬");
-        classifyList.add("牛奶");
-        classifyList.add("肉禽");
-        classifyList.add("肉禽");
-        classifyList.add("肉禽");
-        classifyList.add("肉禽");
-        for (int i = 0; i< classifyList.size(); i++) {
-            TabLayout.Tab tab = tabLayout.newTab();
-            tab.setId(i);
-            View view = LayoutInflater.from(getContext()).inflate(R.layout.stove_view_layout_tab, null);
-            TextView classify = view.findViewById(R.id.tv_classify);
-            classify.setText(classifyList.get(i));
-            tab.setCustomView(view);
-            tabLayout.addTab(tab);
-
-            Fragment recipeClassifyPage = new RecipeClassifyPage();
-            Bundle bundle = new Bundle();
-            bundle.putInt("classify", i);
-            recipeClassifyPage.setArguments(bundle);
-            fragments.add(new WeakReference<>(recipeClassifyPage));
-        }
-        //添加设置适配器
-        noScrollViewPager.setAdapter(new RecipeClassifyPagerAdapter(getSupportFragmentManager()));
-
-        noScrollViewPager.setOffscreenPageLimit(classifyList.size());
-
-//        noScrollViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        getStoveRecipe();
     }
 
-    class RecipeClassifyPagerAdapter extends FragmentStatePagerAdapter {
+    @Override
+    public void onClick(View view) {
+        super.onClick(view);
+        int id = view.getId();
+        if (id == R.id.et_search) {
 
-
-        public RecipeClassifyPagerAdapter(@NonNull FragmentManager fm) {
-            super(fm);
         }
+    }
+    //获取灶具菜谱
+    private void getStoveRecipe() {
+        CloudHelper.getRecipesByDevice(this, "RRQZ", "all", 1, 20, GetRecipesByDeviceRes.class,
+                new RetrofitCallback<GetRecipesByDeviceRes>() {
+                    @Override
+                    public void onSuccess(GetRecipesByDeviceRes getRecipesByDeviceRes) {
+                        if (null != getRecipesByDeviceRes && getRecipesByDeviceRes.cookbooks != null) {
+                            stoveRecipeList.addAll(getRecipesByDeviceRes.cookbooks);
+                            rvRecipeAdapter.setList(stoveRecipeList);
+                            hideEmpty();
+                        } else
+                            showEmpty();
+                    }
 
-        @NonNull
-        @Override
-        public Fragment getItem(int position) {
-            return fragments.get(position).get();
-        }
+                    @Override
+                    public void onFaild(String err) {
+                        showEmpty();
+                    }
+                });
+    }
+    //获取不到数据
+    private void showEmpty() {
+        tvEmpty.setVisibility(View.VISIBLE);
+        rvRecipe.setVisibility(View.GONE);
+    }
 
-        @Override
-        public int getCount() {
-            return fragments.size();
-        }
+    private void hideEmpty() {
+        tvEmpty.setVisibility(View.GONE);
+        rvRecipe.setVisibility(View.VISIBLE);
+    }
 
-        @Nullable
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return super.getPageTitle(position);
+    //搜索结果
+    private void searchResult(String text) {
+        List<StoveRecipe> recipeList = new ArrayList<>();
+        for (int i=0; i<stoveRecipeList.size(); i++) {
+            if (stoveRecipeList.get(i).getName().contains(text))
+                recipeList.add(stoveRecipeList.get(i));
         }
+        rvRecipeAdapter.setList(recipeList);
+        if (recipeList.size() == 0)
+            showEmpty();
+        else
+            hideEmpty();
     }
 }
