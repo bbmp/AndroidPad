@@ -105,7 +105,7 @@ public class HomePage extends SteamBasePage {
     @Override
     protected void initData() {
 //        List<FuntionBean> funtionBeans = FuntionModeManage.getFuntionList(getContext());
-        List<FuntionBean> funtionBeans = FunctionManager.getFuntionList(getContext(), FuntionBean.class, "steam");
+        List<FuntionBean> funtionBeans = FunctionManager.getFuntionList(getContext(), FuntionBean.class, R.raw.steam);
         rvMainFuntionAdapter.setList(funtionBeans);
         List<String> dotList = new ArrayList<>();
         for (FuntionBean funtionBean: funtionBeans) {

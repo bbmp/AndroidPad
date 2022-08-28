@@ -1,9 +1,7 @@
 package com.robam.stove.ui.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
@@ -11,9 +9,10 @@ import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBaseActivity;
+import com.robam.stove.bean.ModeBean;
 import com.robam.stove.bean.Stove;
 import com.robam.stove.constant.DialogConstant;
-import com.robam.stove.constant.StoveModeEnum;
+import com.robam.stove.constant.StoveConstant;
 import com.robam.stove.factory.StoveDialogFactory;
 import com.robam.stove.ui.adapter.RvTimeAdapter;
 
@@ -61,8 +60,13 @@ public class TimeSelectActivity extends StoveBaseActivity {
     protected void initData() {
         List<String> lists = new ArrayList();
 
-        for (int i = StoveModeEnum.MODE_TIMING.minTime; i <= StoveModeEnum.MODE_TIMING.maxTime; i++)
-            lists.add(i + "");
+        //定时功能一种模式
+        List<ModeBean> modeBeans = Stove.getInstance().getModeBeans(StoveConstant.FUN_TIMING);
+        if (null != modeBeans && modeBeans.size() > 0) {
+            ModeBean modeBean = modeBeans.get(0);//取第一个模式
+            for (int i = modeBean.minTime; i <= modeBean.maxTime; i++)
+                lists.add(i + "");
+        }
         rvTimeAdapter = new RvTimeAdapter(1);
         rvTime.setAdapter(rvTimeAdapter);
         rvTimeAdapter.setList(lists);

@@ -7,6 +7,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
+import com.robam.common.utils.LogUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -19,30 +20,33 @@ public class FunctionManager {
     /**
      * 获取功能列表
      */
-    public static <T> List<T> getFuntionList(Context context, Class<T> cls, String fileName) {
-        List<T> funtionList = new ArrayList<>();
+    public static <T> List<T> getFuntionList(Context context, Class<T> cls, int resId) {
         try {
-            String jsonString = getFileString(context , fileName);
+            LogUtils.e("getFuntionList " + cls.getName());
+            String jsonString = getFileString(context , resId);
             if (jsonString == null) {
                 return null;
             }
-            JsonArray jsonArray = new JsonParser().parse(jsonString).getAsJsonArray();
+            List<T> funtionList = new ArrayList<>();
             Gson gson = new Gson();
+            JsonArray jsonArray = new JsonParser().parse(jsonString).getAsJsonArray();
+
             for (JsonElement jsonElement : jsonArray) {
                 funtionList.add(gson.fromJson(jsonElement,cls));
             }
+            LogUtils.e("getFuntionList return " + cls.getName());
+            return funtionList;
         } catch (Exception e) {
 //            CrashReport.postCatchedException(e);
         }
-        return funtionList;
+        return null;
     }
 
     /**
      * 获取资产目录下面文件的字符串（Json）
      */
-    private static String getFileString(Context context , String file) {
+    private static String getFileString(Context context , int resId) {
         try {
-            int resId = context.getResources().getIdentifier(file, "raw", context.getPackageName());
             InputStream inputStream = context.getResources().openRawResource(resId);
             ByteArrayOutputStream outStream = new ByteArrayOutputStream();
             byte[] buffer = new byte[512];

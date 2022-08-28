@@ -21,12 +21,9 @@ import com.robam.stove.base.StoveBasePage;
 import com.robam.stove.bean.Stove;
 import com.robam.stove.bean.StoveFunBean;
 import com.robam.stove.constant.DialogConstant;
-import com.robam.stove.constant.StoveConstant;
-import com.robam.stove.constant.StoveEnum;
 import com.robam.stove.factory.StoveDialogFactory;
 import com.robam.stove.ui.adapter.RvMainFunctionAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class HomePage extends StoveBasePage {
@@ -84,11 +81,10 @@ public class HomePage extends StoveBasePage {
 
     @Override
     protected void initData() {
-        List<StoveFunBean> functionList = new ArrayList<>();
-        functionList.add(new StoveFunBean(StoveConstant.FUN_SMART, StoveEnum.match(StoveConstant.FUN_SMART), "", "smart", "com.robam.stove.ui.activity.ModeSelectActivity"));
-        functionList.add(new StoveFunBean(StoveConstant.FUN_CURVE, StoveEnum.match(StoveConstant.FUN_CURVE), "", "curve", "com.robam.stove.ui.activity.CurveActivity"));
-        functionList.add(new StoveFunBean(StoveConstant.FUN_RECIPE, StoveEnum.match(StoveConstant.FUN_RECIPE), "", "recipe", "com.robam.stove.ui.activity.RecipeActivity"));
-        functionList.add(new StoveFunBean(StoveConstant.FUN_TIMING, StoveEnum.match(StoveConstant.FUN_TIMING), "", "timing", "com.robam.stove.ui.activity.TimeSelectActivity"));
+        //初始化数据
+        Stove.getInstance().init(getContext());
+        List<StoveFunBean> functionList = Stove.getInstance().getStoveFunBeans();
+
         rvMainFunctionAdapter.setList(functionList);
 
         //初始位置
@@ -102,15 +98,14 @@ public class HomePage extends StoveBasePage {
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 StoveFunBean stoveFunBean = (StoveFunBean) adapter.getItem(position);
 
-                Stove.getInstance().workMode = stoveFunBean.funtionCode;
+                Stove.getInstance().funCode = stoveFunBean.funtionCode;
                 Intent intent = new Intent();
-                intent.putExtra("mode", stoveFunBean);
                 intent.setClassName(getContext(), stoveFunBean.into);
                 startActivity(intent);
             }
         });
         //长按锁屏
-        ClickUtils.setLongClick(new Handler(), imageView, 2000, new View.OnLongClickListener() {
+        ClickUtils.setLongClick(new Handler(), ivLock, 2000, new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 screenLock();

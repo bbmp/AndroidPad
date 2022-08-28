@@ -2,13 +2,11 @@ package com.robam.stove.ui.activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,8 +20,6 @@ import com.robam.stove.base.StoveBaseActivity;
 import com.robam.stove.bean.ModeBean;
 import com.robam.stove.bean.Stove;
 import com.robam.stove.constant.DialogConstant;
-import com.robam.stove.constant.StoveConstant;
-import com.robam.stove.constant.StoveModeEnum;
 import com.robam.stove.factory.StoveDialogFactory;
 import com.robam.stove.ui.pages.ModeSelectPage;
 import com.robam.stove.ui.pages.TimeSelectPage;
@@ -94,45 +90,49 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
 
     @Override
     protected void initData() {
-        modes.addAll(StoveModeEnum.getModeList());
-        //默认模式
-        ModeBean defaultBean = modes.get(0);
-        Stove.getInstance().workMode = defaultBean.code;
-        modeTab = tabLayout.newTab();
-        modeTab.setId(0);
-        View modeView = LayoutInflater.from(getContext()).inflate(R.layout.stove_view_layout_tab_mode, null);
-        TextView tvMode = modeView.findViewById(R.id.tv_mode);
-        tvMode.setText(defaultBean.name);
-        modeTab.setCustomView(modeView);
-        tabLayout.addTab(modeTab);
+        //当前功能的模式
+        List<ModeBean> modeBeans = Stove.getInstance().getModeBeans(Stove.getInstance().funCode);
+        if (null != modeBeans) {
+            modes.addAll(modeBeans);
+            //默认模式
+            ModeBean defaultBean = modes.get(0);
+            Stove.getInstance().workMode = defaultBean.code;
+            modeTab = tabLayout.newTab();
+            modeTab.setId(0);
+            View modeView = LayoutInflater.from(getContext()).inflate(R.layout.stove_view_layout_tab_mode, null);
+            TextView tvMode = modeView.findViewById(R.id.tv_mode);
+            tvMode.setText(defaultBean.name);
+            modeTab.setCustomView(modeView);
+            tabLayout.addTab(modeTab);
 
-        modeSelectPage = new ModeSelectPage(modeTab, modes,this);
-        fragments.add(new WeakReference<>(modeSelectPage));
-        //时间tab
-        timeTab = tabLayout.newTab();
-        timeTab.setId(1);
-        View timeView = LayoutInflater.from(getContext()).inflate(R.layout.stove_view_layout_tab_time, null);
-        TextView tvTime = timeView.findViewById(R.id.tv_mode);
-        tvTime.setText(defaultBean.defTime + "");
-        timeTab.setCustomView(timeView);
-        tabLayout.addTab(timeTab);
-        timeSelectPage = new TimeSelectPage(timeTab, 1,this);
+            modeSelectPage = new ModeSelectPage(modeTab, modes, this);
+            fragments.add(new WeakReference<>(modeSelectPage));
+            //时间tab
+            timeTab = tabLayout.newTab();
+            timeTab.setId(1);
+            View timeView = LayoutInflater.from(getContext()).inflate(R.layout.stove_view_layout_tab_time, null);
+            TextView tvTime = timeView.findViewById(R.id.tv_mode);
+            tvTime.setText(defaultBean.defTime + "");
+            timeTab.setCustomView(timeView);
+            tabLayout.addTab(timeTab);
+            timeSelectPage = new TimeSelectPage(timeTab, 1, this);
 
-        fragments.add(new WeakReference<>(timeSelectPage));
-        //温度tab
-        tempTab = tabLayout.newTab();
-        tempTab.setId(2);
-        View tempView = LayoutInflater.from(getContext()).inflate(R.layout.stove_view_layout_tab_temp, null);
-        TextView tvTemp = tempView.findViewById(R.id.tv_mode);
-        tvTemp.setText(defaultBean.defTemp + "");
-        tempTab.setCustomView(tempView);
-        tabLayout.addTab(tempTab);
-        tempSelectPage = new TimeSelectPage(tempTab, 0, this);
-        fragments.add(new WeakReference<>(tempSelectPage));
+            fragments.add(new WeakReference<>(timeSelectPage));
+            //温度tab
+            tempTab = tabLayout.newTab();
+            tempTab.setId(2);
+            View tempView = LayoutInflater.from(getContext()).inflate(R.layout.stove_view_layout_tab_temp, null);
+            TextView tvTemp = tempView.findViewById(R.id.tv_mode);
+            tvTemp.setText(defaultBean.defTemp + "");
+            tempTab.setCustomView(tempView);
+            tabLayout.addTab(tempTab);
+            tempSelectPage = new TimeSelectPage(tempTab, 0, this);
+            fragments.add(new WeakReference<>(tempSelectPage));
 
-        //添加设置适配器
-        noScrollViewPager.setAdapter(new HomePagerAdapter(getSupportFragmentManager()));
-        noScrollViewPager.setOffscreenPageLimit(fragments.size());
+            //添加设置适配器
+            noScrollViewPager.setAdapter(new HomePagerAdapter(getSupportFragmentManager()));
+            noScrollViewPager.setOffscreenPageLimit(fragments.size());
+        }
     }
 
     @Override
@@ -175,19 +175,17 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
         if (null != modes) {
             for (ModeBean modeBean: modes) {
                 if (mode == modeBean.code) {
-                    if (mode == StoveConstant.MODE_FRY) {
-                        ArrayList<String> tempList = new ArrayList<>();
-                        for (int i = modeBean.minTemp; i <= modeBean.maxTemp; i++) {
-                            tempList.add(i + "");
-                        }
-                        tempSelectPage.setList(tempList, modeBean.defTemp - modeBean.minTemp);
-                    } else {
-                        ArrayList<String> timeList = new ArrayList<>();
-                        for (int i = modeBean.minTime; i <= modeBean.maxTime; i++) {
-                            timeList.add(i + "");
-                        }
-                        timeSelectPage.setList(timeList, modeBean.defTime - modeBean.minTime);
+                    ArrayList<String> tempList = new ArrayList<>();
+                    for (int i = modeBean.minTemp; i <= modeBean.maxTemp; i++) {
+                        tempList.add(i + "");
                     }
+                    tempSelectPage.setList(tempList, modeBean.defTemp - modeBean.minTemp);
+
+                    ArrayList<String> timeList = new ArrayList<>();
+                    for (int i = modeBean.minTime; i <= modeBean.maxTime; i++) {
+                        timeList.add(i + "");
+                    }
+                    timeSelectPage.setList(timeList, modeBean.defTime - modeBean.minTime);
 
                     break;
                 }
@@ -200,6 +198,7 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
         if (modeTab != null) {
             //模式变更，温度和时间值也要变更
             initTimeParams(mode);
+
         }
     }
 
