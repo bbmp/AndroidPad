@@ -24,7 +24,7 @@ public class TimeSelectPage extends StoveBasePage {
      */
     private PickerLayoutManager pickerLayoutManager;
 
-    private RvTimeAdapter rvTimeAdapter;
+    private RvTimeAdapter rvTimeAdapter, rvTempAdapter;
 
     private TabLayout.Tab tab;
 
@@ -36,9 +36,8 @@ public class TimeSelectPage extends StoveBasePage {
 
     private IModeSelect iModeSelect;
 
-    public TimeSelectPage(TabLayout.Tab tab, int type, IModeSelect iModeSelect) {
+    public TimeSelectPage(TabLayout.Tab tab, IModeSelect iModeSelect) {
         this.tab = tab;
-        this.type = type;
         this.iModeSelect = iModeSelect;
     }
 
@@ -46,9 +45,11 @@ public class TimeSelectPage extends StoveBasePage {
         this.offset = offset;
     }
 
-    public void setList(List<String> selectList, int offset) {
+    public void setTimeList(List<String> selectList, int offset) {
         if (null == rvTimeAdapter)
             return;
+        type = 0;
+        rvSelect.setAdapter(rvTimeAdapter);
 
         rvTimeAdapter.setList(selectList);
         this.offset = offset;
@@ -59,6 +60,24 @@ public class TimeSelectPage extends StoveBasePage {
         if (null != tab) {
             TextView textView = tab.getCustomView().findViewById(R.id.tv_mode);
             textView.setText(rvTimeAdapter.getItem(position));
+        }
+    }
+
+    public void setTempList(List<String> selectList, int offset) {
+        if (null == rvTempAdapter)
+            return;
+        type = 1;
+        rvSelect.setAdapter(rvTempAdapter);
+
+        rvTempAdapter.setList(selectList);
+        this.offset = offset;
+
+        int position = Integer.MAX_VALUE / 2-(Integer.MAX_VALUE / 2)%selectList.size() + offset;
+        pickerLayoutManager.scrollToPosition(position);
+        rvTempAdapter.setPickPosition(position);
+        if (null != tab) {
+            TextView textView = tab.getCustomView().findViewById(R.id.tv_mode);
+            textView.setText(rvTempAdapter.getItem(position));
         }
     }
 
@@ -77,8 +96,9 @@ public class TimeSelectPage extends StoveBasePage {
 
     @Override
     protected void initData() {
-        rvTimeAdapter = new RvTimeAdapter(type);
-        rvSelect.setAdapter(rvTimeAdapter);
+        rvTimeAdapter = new RvTimeAdapter(0);
+        rvTempAdapter = new RvTimeAdapter(1);
+
 
         if (null != iModeSelect)
             iModeSelect.updateTab(Stove.getInstance().workMode);
@@ -99,10 +119,18 @@ public class TimeSelectPage extends StoveBasePage {
                     @Override
                     public void onPicked(RecyclerView recyclerView, int position) {
                         //指示器更新
-                        rvTimeAdapter.setPickPosition(position);
-                        if (null != tab) {
-                            TextView textView = tab.getCustomView().findViewById(R.id.tv_mode);
-                            textView.setText(rvTimeAdapter.getItem(position));
+                        if (type == 0) {
+                            rvTimeAdapter.setPickPosition(position);
+                            if (null != tab) {
+                                TextView textView = tab.getCustomView().findViewById(R.id.tv_mode);
+                                textView.setText(rvTimeAdapter.getItem(position));
+                            }
+                        } else {
+                            rvTempAdapter.setPickPosition(position);
+                            if (null != tab) {
+                                TextView textView = tab.getCustomView().findViewById(R.id.tv_mode);
+                                textView.setText(rvTempAdapter.getItem(position));
+                            }
                         }
                     }
                 })

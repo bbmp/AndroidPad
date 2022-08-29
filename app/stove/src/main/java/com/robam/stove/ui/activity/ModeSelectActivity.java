@@ -20,6 +20,7 @@ import com.robam.stove.base.StoveBaseActivity;
 import com.robam.stove.bean.ModeBean;
 import com.robam.stove.bean.Stove;
 import com.robam.stove.constant.DialogConstant;
+import com.robam.stove.constant.StoveConstant;
 import com.robam.stove.factory.StoveDialogFactory;
 import com.robam.stove.ui.pages.ModeSelectPage;
 import com.robam.stove.ui.pages.TimeSelectPage;
@@ -115,19 +116,19 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
             tvTime.setText(defaultBean.defTime + "");
             timeTab.setCustomView(timeView);
             tabLayout.addTab(timeTab);
-            timeSelectPage = new TimeSelectPage(timeTab, 1, this);
+            timeSelectPage = new TimeSelectPage(timeTab, this);
 
             fragments.add(new WeakReference<>(timeSelectPage));
-            //温度tab
-            tempTab = tabLayout.newTab();
-            tempTab.setId(2);
-            View tempView = LayoutInflater.from(getContext()).inflate(R.layout.stove_view_layout_tab_temp, null);
-            TextView tvTemp = tempView.findViewById(R.id.tv_mode);
-            tvTemp.setText(defaultBean.defTemp + "");
-            tempTab.setCustomView(tempView);
-            tabLayout.addTab(tempTab);
-            tempSelectPage = new TimeSelectPage(tempTab, 0, this);
-            fragments.add(new WeakReference<>(tempSelectPage));
+//            //温度tab
+//            tempTab = tabLayout.newTab();
+//            tempTab.setId(2);
+//            View tempView = LayoutInflater.from(getContext()).inflate(R.layout.stove_view_layout_tab_temp, null);
+//            TextView tvTemp = tempView.findViewById(R.id.tv_mode);
+//            tvTemp.setText(defaultBean.defTemp + "");
+//            tempTab.setCustomView(tempView);
+//            tabLayout.addTab(tempTab);
+//            tempSelectPage = new TimeSelectPage(tempTab, 0, this);
+//            fragments.add(new WeakReference<>(tempSelectPage));
 
             //添加设置适配器
             noScrollViewPager.setAdapter(new HomePagerAdapter(getSupportFragmentManager()));
@@ -175,17 +176,20 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
         if (null != modes) {
             for (ModeBean modeBean: modes) {
                 if (mode == modeBean.code) {
-                    ArrayList<String> tempList = new ArrayList<>();
-                    for (int i = modeBean.minTemp; i <= modeBean.maxTemp; i++) {
-                        tempList.add(i + "");
-                    }
-                    tempSelectPage.setList(tempList, modeBean.defTemp - modeBean.minTemp);
+                    if (mode != StoveConstant.MODE_FRY) {
+                        ArrayList<String> timeList = new ArrayList<>();
+                        for (int i = modeBean.minTime; i <= modeBean.maxTime; i++) {
+                            timeList.add(i + "");
+                        }
+                        timeSelectPage.setTimeList(timeList, modeBean.defTemp - modeBean.minTemp);
+                    } else {
 
-                    ArrayList<String> timeList = new ArrayList<>();
-                    for (int i = modeBean.minTime; i <= modeBean.maxTime; i++) {
-                        timeList.add(i + "");
+                        ArrayList<String> tempList = new ArrayList<>();
+                        for (int i = modeBean.minTemp; i <= modeBean.maxTemp; i++) {
+                            tempList.add(i + "");
+                        }
+                        timeSelectPage.setTempList(tempList, modeBean.defTime - modeBean.minTime);
                     }
-                    timeSelectPage.setList(timeList, modeBean.defTime - modeBean.minTime);
 
                     break;
                 }
