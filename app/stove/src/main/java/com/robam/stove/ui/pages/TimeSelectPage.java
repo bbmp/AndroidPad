@@ -10,6 +10,7 @@ import com.robam.common.ui.IModeSelect;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBasePage;
+import com.robam.stove.bean.ModeBean;
 import com.robam.stove.bean.Stove;
 import com.robam.stove.ui.adapter.RvTimeAdapter;
 
@@ -29,10 +30,6 @@ public class TimeSelectPage extends StoveBasePage {
 
     private TabLayout.Tab tab;
 
-    private int offset;//偏移
-
-    private String mode;
-
     private int type;//时间or温度
 
     private IModeSelect iModeSelect;
@@ -42,19 +39,13 @@ public class TimeSelectPage extends StoveBasePage {
         this.iModeSelect = iModeSelect;
     }
 
-    public void setOffset(int offset) {
-        this.offset = offset;
-    }
-
     //时间设置
     public void setTimeList(List<String> selectList, int offset) {
         if (null == rvTimeAdapter)
             return;
-        type = 1;
         rvSelect.setAdapter(rvTimeAdapter);
 
         rvTimeAdapter.setList(selectList);
-        this.offset = offset;
 
         int position = Integer.MAX_VALUE / 2-(Integer.MAX_VALUE / 2)%selectList.size() + offset;
         pickerLayoutManager.scrollToPosition(position);
@@ -64,27 +55,6 @@ public class TimeSelectPage extends StoveBasePage {
             tab.getCustomView().findViewById(R.id.tv_time).setVisibility(View.VISIBLE);
             tab.getCustomView().findViewById(R.id.tv_temp).setVisibility(View.GONE);
             textView.setText(rvTimeAdapter.getItem(position));
-        }
-    }
-
-    //温度设置
-    public void setTempList(List<String> selectList, int offset) {
-        if (null == rvTempAdapter)
-            return;
-        type = 0;
-        rvSelect.setAdapter(rvTempAdapter);
-
-        rvTempAdapter.setList(selectList);
-        this.offset = offset;
-
-        int position = Integer.MAX_VALUE / 2-(Integer.MAX_VALUE / 2)%selectList.size() + offset;
-        pickerLayoutManager.scrollToPosition(position);
-        rvTempAdapter.setPickPosition(position);
-        if (null != tab) {
-            TextView textView = tab.getCustomView().findViewById(R.id.tv_mode);
-            tab.getCustomView().findViewById(R.id.tv_time).setVisibility(View.GONE);
-            tab.getCustomView().findViewById(R.id.tv_temp).setVisibility(View.VISIBLE);
-            textView.setText(rvTempAdapter.getItem(position));
         }
     }
 
@@ -104,7 +74,7 @@ public class TimeSelectPage extends StoveBasePage {
     @Override
     protected void initData() {
         rvTimeAdapter = new RvTimeAdapter(1);
-        rvTempAdapter = new RvTimeAdapter(0);
+//        rvTempAdapter = new RvTimeAdapter(0);
 
 
         if (null != iModeSelect)
@@ -126,18 +96,10 @@ public class TimeSelectPage extends StoveBasePage {
                     @Override
                     public void onPicked(RecyclerView recyclerView, int position) {
                         //指示器更新
-                        if (type == 1) {
-                            rvTimeAdapter.setPickPosition(position);
-                            if (null != tab) {
-                                TextView textView = tab.getCustomView().findViewById(R.id.tv_mode);
-                                textView.setText(rvTimeAdapter.getItem(position));
-                            }
-                        } else {
-                            rvTempAdapter.setPickPosition(position);
-                            if (null != tab) {
-                                TextView textView = tab.getCustomView().findViewById(R.id.tv_mode);
-                                textView.setText(rvTempAdapter.getItem(position));
-                            }
+                        rvTimeAdapter.setPickPosition(position);
+                        if (null != tab) {
+                            TextView textView = tab.getCustomView().findViewById(R.id.tv_mode);
+                            textView.setText(rvTimeAdapter.getItem(position));
                         }
                     }
                 })

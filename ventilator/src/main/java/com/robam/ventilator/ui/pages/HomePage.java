@@ -33,7 +33,7 @@ import com.robam.common.utils.MD5Utils;
 import com.robam.common.utils.MMKVUtils;
 import com.robam.common.utils.ScreenUtils;
 import com.robam.common.utils.ToastUtils;
-import com.robam.pan.ui.activity.MainActivity;
+import com.robam.stove.ui.activity.MainActivity;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBasePage;
 import com.robam.ventilator.bean.AccountInfo;

@@ -9,6 +9,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,6 +24,7 @@ import com.robam.stove.constant.DialogConstant;
 import com.robam.stove.constant.StoveConstant;
 import com.robam.stove.factory.StoveDialogFactory;
 import com.robam.stove.ui.pages.ModeSelectPage;
+import com.robam.stove.ui.pages.TempSelectPage;
 import com.robam.stove.ui.pages.TimeSelectPage;
 
 import java.lang.ref.WeakReference;
@@ -42,7 +44,8 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
 
     private ModeSelectPage modeSelectPage;
 
-    private TimeSelectPage timeSelectPage, tempSelectPage;
+    private TimeSelectPage timeSelectPage;
+    private TempSelectPage tempSelectPage;
 
     @Override
     protected int getLayoutId() {
@@ -119,16 +122,16 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
             timeSelectPage = new TimeSelectPage(timeTab, this);
 
             fragments.add(new WeakReference<>(timeSelectPage));
-//            //温度tab
-//            tempTab = tabLayout.newTab();
-//            tempTab.setId(2);
-//            View tempView = LayoutInflater.from(getContext()).inflate(R.layout.stove_view_layout_tab_temp, null);
-//            TextView tvTemp = tempView.findViewById(R.id.tv_mode);
-//            tvTemp.setText(defaultBean.defTemp + "");
-//            tempTab.setCustomView(tempView);
-//            tabLayout.addTab(tempTab);
-//            tempSelectPage = new TimeSelectPage(tempTab, 0, this);
-//            fragments.add(new WeakReference<>(tempSelectPage));
+            //温度tab
+            tempTab = tabLayout.newTab();
+            tempTab.setId(2);
+            View tempView = LayoutInflater.from(getContext()).inflate(R.layout.stove_view_layout_tab_temp, null);
+            TextView tvTemp = tempView.findViewById(R.id.tv_mode);
+            tvTemp.setText(defaultBean.defTemp + "");
+            tempTab.setCustomView(tempView);
+            tabLayout.addTab(tempTab);
+            tempSelectPage = new TempSelectPage(tempTab,  this);
+            fragments.add(new WeakReference<>(tempSelectPage));
 
             //添加设置适配器
             noScrollViewPager.setAdapter(new HomePagerAdapter(getSupportFragmentManager()));
@@ -182,13 +185,17 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
                             timeList.add(i + "");
                         }
                         timeSelectPage.setTimeList(timeList, modeBean.defTime - modeBean.minTime);
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.GONE);
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(1).setVisibility(View.VISIBLE);
                     } else {
 
                         ArrayList<String> tempList = new ArrayList<>();
                         for (int i = modeBean.minTemp; i <= modeBean.maxTemp; i++) {
                             tempList.add(i + "");
                         }
-                        timeSelectPage.setTempList(tempList, modeBean.defTemp - modeBean.minTemp);
+                        tempSelectPage.setTempList(tempList, modeBean.defTemp - modeBean.minTemp);
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.VISIBLE);
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(1).setVisibility(View.GONE);
                     }
 
                     break;
@@ -202,7 +209,6 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
         if (modeTab != null) {
             //模式变更，温度和时间值也要变更
             initTimeParams(mode);
-
         }
     }
 

@@ -61,11 +61,11 @@ public class TempSelectPage extends StoveBasePage {
 
     @Override
     protected void initData() {
-        rvTempAdapter = new RvTimeAdapter(1);
+        rvTempAdapter = new RvTimeAdapter(0);
 
 
-//        if (null != iModeSelect)
-//            iModeSelect.updateTab(Stove.getInstance().workMode);
+        if (null != iModeSelect)
+            iModeSelect.updateTab(Stove.getInstance().workMode);
     }
 
     /**
