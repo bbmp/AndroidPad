@@ -46,4 +46,7 @@
     <string name="pan_save_surve">保存曲线</string>
     <string name="pan_save_success">保存成功</string>
     <string name="pan_input_empty">输入不能为空</string>
+    <string name="pan_no_recipe">没有相关菜谱</string>
+    <string name="pan_recipe_step_des">%s.%s</string>
+    <string name="pan_cur_step">当前步骤%s/%s</string>
 </resources>

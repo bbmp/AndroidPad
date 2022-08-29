@@ -15,13 +15,27 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/tv_recipe_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_48"
+        android:layout_marginTop="@dimen/dp_60"
+        android:layout_marginLeft="@dimen/dp_40"
+        android:textColor="@color/pan_white"
+        app:layout_constraintLeft_toLeftOf="@id/pan_guideline4"
+        app:layout_constraintTop_toBottomOf="@id/ll_title"/>
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_step"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
+        android:verticalScrollbarPosition="left"
+        android:scrollbars="vertical"
+        android:scrollbarThumbVertical="@drawable/pan_shape_scrollbar_bg"
+        android:layout_marginTop="@dimen/dp_30"
         app:layout_constraintLeft_toLeftOf="@id/pan_guideline4"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_title"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/tv_recipe_name"/>
     <TextView
         android:id="@+id/tv_start_cook"
         android:layout_width="@dimen/dp_175"

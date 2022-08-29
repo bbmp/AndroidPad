@@ -1,5 +1,5 @@
 package com.robam.pan.constant;
 
 public class HostServer {
-    public static String apiHost = "http://api.myroki.com:80";
+    public final static String apiHost = "https://api.myroki.com/";
 }

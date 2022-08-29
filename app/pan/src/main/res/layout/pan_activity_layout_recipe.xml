@@ -26,14 +26,15 @@
         app:layout_constraintTop_toBottomOf="@id/ll_title">
     </View>
     <EditText
-        android:id="@+id/tv_search"
+        android:id="@+id/et_search"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:paddingHorizontal="@dimen/dp_8"
         android:includeFontPadding="false"
         android:background="@null"
-        android:text="搜索"
+        android:hint="搜索"
+        android:imeOptions="actionSearch"
         android:textColor="@color/pan_white"
         android:textColorHint="@color/pan_white25"
         android:textSize="@dimen/sp_24"
@@ -58,9 +59,21 @@
         android:id="@+id/rv_recipe"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_49"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ll_search"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_empty_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pan_no_recipe"
+        android:textColor="@color/pan_white"
+        android:textSize="@dimen/sp_32"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,13 +1,10 @@
 package com.robam.pan.ui.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.Group;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,11 +12,16 @@ import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.robam.common.http.RetrofitCallback;
 import com.robam.common.ui.helper.GridSpaceItemDecoration;
 import com.robam.common.utils.ImageUtils;
 import com.robam.pan.R;
+import com.robam.pan.bean.Material;
 import com.robam.pan.base.PanBaseActivity;
-import com.robam.pan.bean.RecipeMaterial;
+import com.robam.pan.bean.PanRecipeDetail;
+import com.robam.pan.constant.PanConstant;
+import com.robam.pan.http.CloudHelper;
+import com.robam.pan.response.GetRecipeDetailRes;
 import com.robam.pan.ui.adapter.RvMaterialAdapter;
 
 import java.util.ArrayList;
@@ -30,8 +32,25 @@ public class RecipeDetailActivity extends PanBaseActivity {
     private RecyclerView rvMaterial;
     private Group group1, group2;
     private TextView tvQrcode, tvMaterial;
+    //菜谱图片
     private ImageView ivRecipe;
+    //菜谱名字
+    private TextView tvRecipeName;
+    //时长
+    private TextView tvTime;
     private RvMaterialAdapter rvMaterialAdapter;
+    private RequestOptions maskOption = new RequestOptions()
+            .centerCrop()
+            .placeholder(R.drawable.pan_main_item_bg) //预加载图片
+            .error(R.drawable.pan_main_item_bg) //加载失败图片
+            .priority(Priority.HIGH) //优先级
+            .skipMemoryCache(true)
+            .format(DecodeFormat.PREFER_RGB_565)
+            .diskCacheStrategy(DiskCacheStrategy.ALL) //缓存
+            .override((int) (370), (int) (370));
+    //菜谱id
+    private long recipeId;
+
 
     @Override
     protected int getLayoutId() {
@@ -42,9 +61,14 @@ public class RecipeDetailActivity extends PanBaseActivity {
     protected void initView() {
         showLeft();
         showCenter();
+
+        if (null != getIntent())
+            recipeId = getIntent().getLongExtra(PanConstant.EXTRA_RECIPE_ID, 0);
         rvMaterial = findViewById(R.id.rv_material);
         group1 = findViewById(R.id.pan_group1);
         group2 = findViewById(R.id.pan_group2);
+        tvRecipeName = findViewById(R.id.tv_recipe_name);
+        tvTime = findViewById(R.id.tv_time);
         tvQrcode = findViewById(R.id.tv_qrcode);
         tvMaterial = findViewById(R.id.tv_material);
         ivRecipe = findViewById(R.id.iv_recipe_img);
@@ -59,27 +83,7 @@ public class RecipeDetailActivity extends PanBaseActivity {
     protected void initData() {
         //初始值
         tvQrcode.setSelected(true);
-        RequestOptions maskOption = new RequestOptions()
-                .centerCrop()
-                .placeholder(R.drawable.pan_main_item_bg) //预加载图片
-                .error(R.drawable.pan_main_item_bg) //加载失败图片
-                .priority(Priority.HIGH) //优先级
-                .skipMemoryCache(true)
-                .format(DecodeFormat.PREFER_RGB_565)
-                .diskCacheStrategy(DiskCacheStrategy.ALL) //缓存
-                .override((int) (370), (int) (370));
-        ImageUtils.loadImage(getContext(), R.drawable.pan_main_item_bg, maskOption, ivRecipe);
-
-        //test
-        List<RecipeMaterial> materialList = new ArrayList<>();
-        materialList.add(new RecipeMaterial("排骨", 800, "克"));
-        materialList.add(new RecipeMaterial("枸杞", 2, "克"));
-        materialList.add(new RecipeMaterial("姜", 5, "克"));
-        materialList.add(new RecipeMaterial("盐", 2, "克"));
-        materialList.add(new RecipeMaterial("排骨", 800, "克"));
-        materialList.add(new RecipeMaterial("排骨", 800, "克"));
-        materialList.add(new RecipeMaterial("排骨", 800, "克"));
-        rvMaterialAdapter.setList(materialList);
+        getRecipeDetail();
     }
 
     @Override
@@ -101,5 +105,39 @@ public class RecipeDetailActivity extends PanBaseActivity {
                 group2.setVisibility(View.GONE);
             }
         }
+    }
+
+    //获取菜谱详情
+    private void getRecipeDetail() {
+        CloudHelper.getRecipeDetail(this, recipeId, "1", "1", GetRecipeDetailRes.class, new RetrofitCallback<GetRecipeDetailRes>() {
+            @Override
+            public void onSuccess(GetRecipeDetailRes getRecipeDetailRes) {
+                if (null != getRecipeDetailRes && null != getRecipeDetailRes.cookbook)
+                    setData(getRecipeDetailRes.cookbook);
+            }
+
+            @Override
+            public void onFaild(String err) {
+
+            }
+        });
+    }
+    //获取到的数据
+    private void setData(PanRecipeDetail panRecipeDetail) {
+        //图片
+        ImageUtils.loadImage(this, panRecipeDetail.imgSmall, maskOption, ivRecipe);
+        //名字
+        tvRecipeName.setText(panRecipeDetail.name);
+        //时长
+        tvTime.setText("时间   " + panRecipeDetail.needTime / 60 + "min");
+        //食材
+        List<Material> materials = new ArrayList<>();
+        if (null != panRecipeDetail.materials && null != panRecipeDetail.materials.main)
+            materials.addAll(panRecipeDetail.materials.main);
+
+        if (null != panRecipeDetail.materials && null != panRecipeDetail.materials.accessory)
+            materials.addAll(panRecipeDetail.materials.accessory);
+        rvMaterialAdapter.setList(materials);
+
     }
 }

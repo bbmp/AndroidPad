@@ -15,11 +15,14 @@
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/drawable/pan_main_item_bg.xml" value="0.1725" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/drawable/pan_recipe_img_bg.xml" value="0.261" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/drawable/pan_shape_border_bg.xml" value="0.1775" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/drawable/pan_shape_progress_bg.xml" value="0.1775" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/drawable/pan_shape_scrollbar_bg.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_activity_layout_curve.xml" value="0.11788194444444444" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_activity_layout_curve_create.xml" value="0.11788194444444444" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_activity_layout_curve_edit.xml" value="0.11788194444444444" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_activity_layout_curve_restore.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_activity_layout_curve_save.xml" value="0.11788194444444444" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_activity_layout_favorite.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_activity_layout_main.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_activity_layout_recipe.xml" value="0.11788194444444444" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_activity_layout_recipe_detail.xml" value="0.1" />
@@ -30,6 +33,7 @@
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_item_material.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_item_recipe.xml" value="0.11788194444444444" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_item_recipe_favorite.xml" value="0.11788194444444444" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_item_recipe_step.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_page_layout_home.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_view_layout_title.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/src/main/res/drawable/custom.xml" value="0.259" />
@@ -391,7 +395,6 @@
         <entry key="..\:/AndroidStudioProjects/AndroidPad/app/stove/src/main/res/layout/stove_item_main_function.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/app/stove/src/main/res/layout/stove_page_layout_home.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/app/stove/src/main/res/layout/stove_page_layout_mode_select.xml" value="0.22916666666666666" />
-        <entry key="..\:/AndroidStudioProjects/AndroidPad/app/stove/src/main/res/layout/stove_view_layout_tab_mode.xml" value="0.3333333333333333" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/app/stove/src/main/res/layout/stove_view_layout_title.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/cabinet/src/main/res/drawable/cabinet_main_item_bg.xml" value="0.188" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/cabinet/src/main/res/layout/cabinet_activity_layout_appointing.xml" value="0.1" />
@@ -412,7 +415,7 @@
         <entry key="..\:/AndroidStudioProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_activity_layout_appointment.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_activity_layout_main.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_activity_layout_work.xml" value="0.1" />
-        <entry key="..\:/AndroidStudioProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_activity_mode_select.xml" value="0.5" />
+        <entry key="..\:/AndroidStudioProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_activity_mode_select.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_dialog_layout_common.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_dialog_layout_exception.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_dialog_layout_work_complete.xml" value="0.1" />

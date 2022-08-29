@@ -181,14 +181,14 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
                         for (int i = modeBean.minTime; i <= modeBean.maxTime; i++) {
                             timeList.add(i + "");
                         }
-                        timeSelectPage.setTimeList(timeList, modeBean.defTemp - modeBean.minTemp);
+                        timeSelectPage.setTimeList(timeList, modeBean.defTime - modeBean.minTime);
                     } else {
 
                         ArrayList<String> tempList = new ArrayList<>();
                         for (int i = modeBean.minTemp; i <= modeBean.maxTemp; i++) {
                             tempList.add(i + "");
                         }
-                        timeSelectPage.setTempList(tempList, modeBean.defTime - modeBean.minTime);
+                        timeSelectPage.setTempList(tempList, modeBean.defTemp - modeBean.minTemp);
                     }
 
                     break;
