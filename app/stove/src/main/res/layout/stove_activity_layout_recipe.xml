@@ -34,6 +34,7 @@
         android:includeFontPadding="false"
         android:background="@null"
         android:hint="搜索"
+        android:maxLines="1"
         android:imeOptions="actionSearch"
         android:textColor="@color/stove_white"
         android:textColorHint="@color/stove_white25"
