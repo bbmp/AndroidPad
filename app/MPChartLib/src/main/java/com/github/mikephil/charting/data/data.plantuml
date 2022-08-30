@@ -1,0 +1,841 @@
+@startuml
+
+title __DATA's Class Diagram__\n
+
+  namespace com.github.mikephil.charting.data {
+    class com.github.mikephil.charting.data.BarData {
+        - mBarWidth : float
+        + BarData()
+        + BarData()
+        + BarData()
+        + getBarWidth()
+        + getGroupWidth()
+        + groupBars()
+        + setBarWidth()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.data {
+    class com.github.mikephil.charting.data.BarDataSet {
+        # mFills : List<Fill>
+        - mBarBorderColor : int
+        - mBarBorderWidth : float
+        - mBarShadowColor : int
+        - mEntryCountStacks : int
+        - mHighLightAlpha : int
+        - mStackLabels : String[]
+        - mStackSize : int
+        + BarDataSet()
+        + copy()
+        + getBarBorderColor()
+        + getBarBorderWidth()
+        + getBarShadowColor()
+        + getEntryCountStacks()
+        + getFill()
+        + getFills()
+        + getGradient()
+        + getGradients()
+        + getHighLightAlpha()
+        + getStackLabels()
+        + getStackSize()
+        + isStacked()
+        + setBarBorderColor()
+        + setBarBorderWidth()
+        + setBarShadowColor()
+        + setFills()
+        + setGradientColor()
+        + setGradientColors()
+        + setHighLightAlpha()
+        + setStackLabels()
+        # calcMinMax()
+        # copy()
+        - calcEntryCountIncludingStacks()
+        - calcStackSize()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.data {
+    class com.github.mikephil.charting.data.BarEntry {
+        - mNegativeSum : float
+        - mPositiveSum : float
+        - mRanges : Range[]
+        - mYVals : float[]
+        + BarEntry()
+        + BarEntry()
+        + BarEntry()
+        + BarEntry()
+        + BarEntry()
+        + BarEntry()
+        + BarEntry()
+        + BarEntry()
+        + copy()
+        + getBelowSum()
+        + getNegativeSum()
+        + getPositiveSum()
+        + getRanges()
+        + getSumBelow()
+        + getY()
+        + getYVals()
+        + isStacked()
+        + setVals()
+        # calcRanges()
+        - calcPosNegSum()
+        {static} - calcSum()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.data {
+    abstract class com.github.mikephil.charting.data.BarLineScatterCandleBubbleData {
+        + BarLineScatterCandleBubbleData()
+        + BarLineScatterCandleBubbleData()
+        + BarLineScatterCandleBubbleData()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.data {
+    abstract class com.github.mikephil.charting.data.BarLineScatterCandleBubbleDataSet {
+        # mHighLightColor : int
+        + BarLineScatterCandleBubbleDataSet()
+        + getHighLightColor()
+        + setHighLightColor()
+        # copy()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.data {
+    abstract class com.github.mikephil.charting.data.BaseDataSet {
+        # mColors : List<Integer>
+        # mDrawIcons : boolean
+        # mDrawValues : boolean
+        # mHighlightEnabled : boolean
+        # mValueColors : List<Integer>
+        # mValueTextSize : float
+        # mValueTypeface : Typeface
+        # mVisible : boolean
+        - mFormLineDashEffect : DashPathEffect
+        - mFormLineWidth : float
+        - mFormSize : float
+        - mLabel : String
+        + BaseDataSet()
+        + BaseDataSet()
+        + addColor()
+        + contains()
+        + getAxisDependency()
+        + getColor()
+        + getColor()
+        + getColors()
+        + getForm()
+        + getFormLineDashEffect()
+        + getFormLineWidth()
+        + getFormSize()
+        + getIconsOffset()
+        + getIndexInEntries()
+        + getLabel()
+        + getValueColors()
+        + getValueFormatter()
+        + getValueTextColor()
+        + getValueTextColor()
+        + getValueTextSize()
+        + getValueTypeface()
+        + isDrawIconsEnabled()
+        + isDrawValuesEnabled()
+        + isHighlightEnabled()
+        + isVisible()
+        + needsFormatter()
+        + notifyDataSetChanged()
+        + removeEntry()
+        + removeEntryByXValue()
+        + removeFirst()
+        + removeLast()
+        + resetColors()
+        + setAxisDependency()
+        + setColor()
+        + setColor()
+        + setColors()
+        + setColors()
+        + setColors()
+        + setColors()
+        + setDrawIcons()
+        + setDrawValues()
+        + setForm()
+        + setFormLineDashEffect()
+        + setFormLineWidth()
+        + setFormSize()
+        + setHighlightEnabled()
+        + setIconsOffset()
+        + setLabel()
+        + setValueFormatter()
+        + setValueTextColor()
+        + setValueTextColors()
+        + setValueTextSize()
+        + setValueTypeface()
+        + setVisible()
+        # copy()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.data {
+    abstract class com.github.mikephil.charting.data.BaseEntry {
+        - mData : Object
+        - mIcon : Drawable
+        - y : float
+        + BaseEntry()
+        + BaseEntry()
+        + BaseEntry()
+        + BaseEntry()
+        + BaseEntry()
+        + getData()
+        + getIcon()
+        + getY()
+        + setData()
+        + setIcon()
+        + setY()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.data {
+    class com.github.mikephil.charting.data.BubbleData {
+        + BubbleData()
+        + BubbleData()
+        + BubbleData()
+        + setHighlightCircleWidth()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.data {
+    class com.github.mikephil.charting.data.BubbleDataSet {
+        # mMaxSize : float
+        # mNormalizeSize : boolean
+        - mHighlightCircleWidth : float
+        + BubbleDataSet()
+        + copy()
+        + getHighlightCircleWidth()
+        + getMaxSize()
+        + isNormalizeSizeEnabled()
+        + setHighlightCircleWidth()
+        + setNormalizeSizeEnabled()
+        # calcMinMax()
+        # copy()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.data {
+    class com.github.mikephil.charting.data.BubbleEntry {
+        - mSize : float
+        + BubbleEntry()
+        + BubbleEntry()
+        + BubbleEntry()
+        + BubbleEntry()
+        + copy()
+        + getSize()
+        + setSize()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.data {
+    class com.github.mikephil.charting.data.CandleData {
+        + CandleData()
+        + CandleData()
+        + CandleData()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.data {
+    class com.github.mikephil.charting.data.CandleDataSet {
+        # mDecreasingColor : int
+        # mDecreasingPaintStyle : Style
+        # mIncreasingColor : int
+        # mIncreasingPaintStyle : Style
+        # mNeutralColor : int
+        # mShadowColor : int
+        - mBarSpace : float
+        - mShadowColorSameAsCandle : boolean
+        - mShadowWidth : float
+        - mShowCandleBar : boolean
+        + CandleDataSet()
+        + copy()
+        + getBarSpace()
+        + getDecreasingColor()
+        + getDecreasingPaintStyle()
+        + getIncreasingColor()
+        + getIncreasingPaintStyle()
+        + getNeutralColor()
+        + getShadowColor()
+        + getShadowColorSameAsCandle()
+        + getShadowWidth()
+        + getShowCandleBar()
+        + setBarSpace()
+        + setDecreasingColor()
+        + setDecreasingPaintStyle()
+        + setIncreasingColor()
+        + setIncreasingPaintStyle()
+        + setNeutralColor()
+        + setShadowColor()
+        + setShadowColorSameAsCandle()
+        + setShadowWidth()
+        + setShowCandleBar()
+        # calcMinMax()
+        # calcMinMaxY()
+        # copy()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.data {
+    class com.github.mikephil.charting.data.CandleEntry {
+        - mClose : float
+        - mOpen : float
+        - mShadowHigh : float
+        - mShadowLow : float
+        + CandleEntry()
+        + CandleEntry()
+        + CandleEntry()
+        + CandleEntry()
+        + copy()
+        + getBodyRange()
+        + getClose()
+        + getHigh()
+        + getLow()
+        + getOpen()
+        + getShadowRange()
+        + getY()
+        + setClose()
+        + setHigh()
+        + setLow()
+        + setOpen()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.data {
+    abstract class com.github.mikephil.charting.data.ChartData {
+        # mDataSets : List<T>
+        # mLeftAxisMax : float
+        # mLeftAxisMin : float
+        # mRightAxisMax : float
+        # mRightAxisMin : float
+        # mXMax : float
+        # mXMin : float
+        # mYMax : float
+        # mYMin : float
+        + ChartData()
+        + ChartData()
+        + ChartData()
+        + addDataSet()
+        + addEntry()
+        + calcMinMaxY()
+        + clearValues()
+        + contains()
+        + getColors()
+        + getDataSetByIndex()
+        + getDataSetByLabel()
+        + getDataSetCount()
+        + getDataSetForEntry()
+        + getDataSetLabels()
+        + getDataSets()
+        + getEntryCount()
+        + getEntryForHighlight()
+        + getFirstRight()
+        + getIndexOfDataSet()
+        + getMaxEntryCountSet()
+        + getXMax()
+        + getXMin()
+        + getYMax()
+        + getYMax()
+        + getYMin()
+        + getYMin()
+        + isHighlightEnabled()
+        + notifyDataChanged()
+        + removeDataSet()
+        + removeDataSet()
+        + removeEntry()
+        + removeEntry()
+        + setDrawValues()
+        + setHighlightEnabled()
+        + setValueFormatter()
+        + setValueTextColor()
+        + setValueTextColors()
+        + setValueTextSize()
+        + setValueTypeface()
+        # calcMinMax()
+        # calcMinMax()
+        # calcMinMax()
+        # getDataSetIndexByLabel()
+        # getFirstLeft()
+        - arrayToList()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.data {
+    class com.github.mikephil.charting.data.CombinedData {
+        + CombinedData()
+        + calcMinMax()
+        + getAllData()
+        + getBarData()
+        + getBubbleData()
+        + getCandleData()
+        + getDataByIndex()
+        + getDataIndex()
+        + getDataSetByHighlight()
+        + getEntryForHighlight()
+        + getLineData()
+        + getScatterData()
+        + notifyDataChanged()
+        + removeDataSet()
+        + removeDataSet()
+        + removeEntry()
+        + removeEntry()
+        + setData()
+        + setData()
+        + setData()
+        + setData()
+        + setData()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.data {
+    abstract class com.github.mikephil.charting.data.DataSet {
+        # mEntries : List<T>
+        # mXMax : float
+        # mXMin : float
+        # mYMax : float
+        # mYMin : float
+        + DataSet()
+        + addEntry()
+        + addEntryOrdered()
+        + calcMinMax()
+        + calcMinMaxY()
+        + clear()
+        {abstract} + copy()
+        + getEntries()
+        + getEntriesForXValue()
+        + getEntryCount()
+        + getEntryForIndex()
+        + getEntryForXValue()
+        + getEntryForXValue()
+        + getEntryIndex()
+        + getEntryIndex()
+        + getValues()
+        + getXMax()
+        + getXMin()
+        + getYMax()
+        + getYMin()
+        + removeEntry()
+        + setEntries()
+        + setValues()
+        + toSimpleString()
+        + toString()
+        # calcMinMax()
+        # calcMinMaxX()
+        # calcMinMaxY()
+        # copy()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.data {
+    enum Rounding {
+      CLOSEST
+      DOWN
+      UP
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.data {
+    class com.github.mikephil.charting.data.Entry {
+        {static} + CREATOR : Creator<Entry>
+        - x : float
+        + Entry()
+        + Entry()
+        + Entry()
+        + Entry()
+        + Entry()
+        + copy()
+        + describeContents()
+        + equalTo()
+        + getX()
+        + setX()
+        + toString()
+        + writeToParcel()
+        # Entry()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.data {
+    class com.github.mikephil.charting.data.LineData {
+        + LineData()
+        + LineData()
+        + LineData()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.data {
+    class com.github.mikephil.charting.data.LineDataSet {
+        - mCircleColors : List<Integer>
+        - mCircleHoleColor : int
+        - mCircleHoleRadius : float
+        - mCircleRadius : float
+        - mCubicIntensity : float
+        - mDashPathEffect : DashPathEffect
+        - mDrawCircleHole : boolean
+        - mDrawCircles : boolean
+        - mDrawCirclesLast : boolean
+        + LineDataSet()
+        + copy()
+        + disableDashedLine()
+        + enableDashedLine()
+        + getCircleColor()
+        + getCircleColorCount()
+        + getCircleColors()
+        + getCircleHoleColor()
+        + getCircleHoleRadius()
+        + getCircleRadius()
+        + getCircleSize()
+        + getCubicIntensity()
+        + getDashPathEffect()
+        + getFillFormatter()
+        + getMode()
+        + isDashedLineEnabled()
+        + isDrawCircleHoleEnabled()
+        + isDrawCirclesEnabled()
+        + isDrawCirclesLast()
+        + isDrawCubicEnabled()
+        + isDrawSteppedEnabled()
+        + resetCircleColors()
+        + setCircleColor()
+        + setCircleColors()
+        + setCircleColors()
+        + setCircleColors()
+        + setCircleHoleColor()
+        + setCircleHoleRadius()
+        + setCircleRadius()
+        + setCircleSize()
+        + setCubicIntensity()
+        + setDrawCircleHole()
+        + setDrawCircles()
+        + setDrawCirclesLast()
+        + setFillFormatter()
+        + setMode()
+        # copy()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.data {
+    enum Mode {
+      CUBIC_BEZIER
+      HORIZONTAL_BEZIER
+      LINEAR
+      STEPPED
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.data {
+    abstract class com.github.mikephil.charting.data.LineRadarDataSet {
+        # mFillDrawable : Drawable
+        - mDrawFilled : boolean
+        - mFillAlpha : int
+        - mFillColor : int
+        - mLineWidth : float
+        + LineRadarDataSet()
+        + getFillAlpha()
+        + getFillColor()
+        + getFillDrawable()
+        + getLineWidth()
+        + isDrawFilledEnabled()
+        + setDrawFilled()
+        + setFillAlpha()
+        + setFillColor()
+        + setFillDrawable()
+        + setLineWidth()
+        # copy()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.data {
+    abstract class com.github.mikephil.charting.data.LineScatterCandleRadarDataSet {
+        # mDrawHorizontalHighlightIndicator : boolean
+        # mDrawVerticalHighlightIndicator : boolean
+        # mHighlightDashPathEffect : DashPathEffect
+        # mHighlightLineWidth : float
+        + LineScatterCandleRadarDataSet()
+        + disableDashedHighlightLine()
+        + enableDashedHighlightLine()
+        + getDashPathEffectHighlight()
+        + getHighlightLineWidth()
+        + isDashedHighlightLineEnabled()
+        + isHorizontalHighlightIndicatorEnabled()
+        + isVerticalHighlightIndicatorEnabled()
+        + setDrawHighlightIndicators()
+        + setDrawHorizontalHighlightIndicator()
+        + setDrawVerticalHighlightIndicator()
+        + setHighlightLineWidth()
+        # copy()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.data {
+    class com.github.mikephil.charting.data.PieData {
+        + PieData()
+        + PieData()
+        + getDataSet()
+        + getDataSetByIndex()
+        + getDataSetByLabel()
+        + getDataSets()
+        + getEntryForHighlight()
+        + getYValueSum()
+        + setDataSet()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.data {
+    class com.github.mikephil.charting.data.PieDataSet {
+        - mAutomaticallyDisableSliceSpacing : boolean
+        - mHighlightColor : Integer
+        - mShift : float
+        - mSliceSpace : float
+        - mUseValueColorForLine : boolean
+        - mValueLineColor : int
+        - mValueLinePart1Length : float
+        - mValueLinePart1OffsetPercentage : float
+        - mValueLinePart2Length : float
+        - mValueLineVariableLength : boolean
+        - mValueLineWidth : float
+        + PieDataSet()
+        + copy()
+        + getHighlightColor()
+        + getSelectionShift()
+        + getSliceSpace()
+        + getValueLineColor()
+        + getValueLinePart1Length()
+        + getValueLinePart1OffsetPercentage()
+        + getValueLinePart2Length()
+        + getValueLineWidth()
+        + getXValuePosition()
+        + getYValuePosition()
+        + isAutomaticallyDisableSliceSpacingEnabled()
+        + isUseValueColorForLineEnabled()
+        + isUsingSliceColorAsValueLineColor()
+        + isValueLineVariableLength()
+        + setAutomaticallyDisableSliceSpacing()
+        + setHighlightColor()
+        + setSelectionShift()
+        + setSliceSpace()
+        + setUseValueColorForLine()
+        + setUsingSliceColorAsValueLineColor()
+        + setValueLineColor()
+        + setValueLinePart1Length()
+        + setValueLinePart1OffsetPercentage()
+        + setValueLinePart2Length()
+        + setValueLineVariableLength()
+        + setValueLineWidth()
+        + setXValuePosition()
+        + setYValuePosition()
+        # calcMinMax()
+        # copy()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.data {
+    enum ValuePosition {
+      INSIDE_SLICE
+      OUTSIDE_SLICE
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.data {
+    class com.github.mikephil.charting.data.PieEntry {
+        - label : String
+        + PieEntry()
+        + PieEntry()
+        + PieEntry()
+        + PieEntry()
+        + PieEntry()
+        + PieEntry()
+        + PieEntry()
+        + PieEntry()
+        + copy()
+        + getLabel()
+        + getValue()
+        + getX()
+        + setLabel()
+        + setX()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.data {
+    class com.github.mikephil.charting.data.RadarData {
+        - mLabels : List<String>
+        + RadarData()
+        + RadarData()
+        + RadarData()
+        + getEntryForHighlight()
+        + getLabels()
+        + setLabels()
+        + setLabels()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.data {
+    class com.github.mikephil.charting.data.RadarDataSet {
+        # mDrawHighlightCircleEnabled : boolean
+        # mHighlightCircleFillColor : int
+        # mHighlightCircleInnerRadius : float
+        # mHighlightCircleOuterRadius : float
+        # mHighlightCircleStrokeAlpha : int
+        # mHighlightCircleStrokeColor : int
+        # mHighlightCircleStrokeWidth : float
+        + RadarDataSet()
+        + copy()
+        + getHighlightCircleFillColor()
+        + getHighlightCircleInnerRadius()
+        + getHighlightCircleOuterRadius()
+        + getHighlightCircleStrokeAlpha()
+        + getHighlightCircleStrokeColor()
+        + getHighlightCircleStrokeWidth()
+        + isDrawHighlightCircleEnabled()
+        + setDrawHighlightCircleEnabled()
+        + setHighlightCircleFillColor()
+        + setHighlightCircleInnerRadius()
+        + setHighlightCircleOuterRadius()
+        + setHighlightCircleStrokeAlpha()
+        + setHighlightCircleStrokeColor()
+        + setHighlightCircleStrokeWidth()
+        # copy()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.data {
+    class com.github.mikephil.charting.data.RadarEntry {
+        + RadarEntry()
+        + RadarEntry()
+        + copy()
+        + getValue()
+        + getX()
+        + setX()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.data {
+    class com.github.mikephil.charting.data.ScatterData {
+        + ScatterData()
+        + ScatterData()
+        + ScatterData()
+        + getGreatestShapeSize()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.data {
+    class com.github.mikephil.charting.data.ScatterDataSet {
+        - mScatterShapeHoleColor : int
+        - mScatterShapeHoleRadius : float
+        - mShapeSize : float
+        + ScatterDataSet()
+        + copy()
+        {static} + getRendererForShape()
+        + getScatterShapeHoleColor()
+        + getScatterShapeHoleRadius()
+        + getScatterShapeSize()
+        + getShapeRenderer()
+        + setScatterShape()
+        + setScatterShapeHoleColor()
+        + setScatterShapeHoleRadius()
+        + setScatterShapeSize()
+        + setShapeRenderer()
+        # copy()
+    }
+  }
+  
+
+  com.github.mikephil.charting.data.BarData -up-|> com.github.mikephil.charting.data.BarLineScatterCandleBubbleData
+  com.github.mikephil.charting.data.BarDataSet .up.|> com.github.mikephil.charting.interfaces.datasets.IBarDataSet
+  com.github.mikephil.charting.data.BarDataSet -up-|> com.github.mikephil.charting.data.BarLineScatterCandleBubbleDataSet
+  com.github.mikephil.charting.data.BarEntry -up-|> com.github.mikephil.charting.data.Entry
+  com.github.mikephil.charting.data.BarLineScatterCandleBubbleData -up-|> com.github.mikephil.charting.data.ChartData
+  com.github.mikephil.charting.data.BarLineScatterCandleBubbleDataSet .up.|> com.github.mikephil.charting.interfaces.datasets.IBarLineScatterCandleBubbleDataSet
+  com.github.mikephil.charting.data.BarLineScatterCandleBubbleDataSet -up-|> com.github.mikephil.charting.data.DataSet
+  com.github.mikephil.charting.data.BaseDataSet .up.|> com.github.mikephil.charting.interfaces.datasets.IDataSet
+  com.github.mikephil.charting.data.BaseDataSet o-- com.github.mikephil.charting.components.YAxis.AxisDependency : mAxisDependency
+  com.github.mikephil.charting.data.BaseDataSet o-- com.github.mikephil.charting.utils.MPPointF : mIconsOffset
+  com.github.mikephil.charting.data.BaseDataSet o-- com.github.mikephil.charting.formatter.IValueFormatter : mValueFormatter
+  com.github.mikephil.charting.data.BaseDataSet o-- com.github.mikephil.charting.components.Legend.LegendForm : mForm
+  com.github.mikephil.charting.data.BubbleData -up-|> com.github.mikephil.charting.data.BarLineScatterCandleBubbleData
+  com.github.mikephil.charting.data.BubbleDataSet .up.|> com.github.mikephil.charting.interfaces.datasets.IBubbleDataSet
+  com.github.mikephil.charting.data.BubbleDataSet -up-|> com.github.mikephil.charting.data.BarLineScatterCandleBubbleDataSet
+  com.github.mikephil.charting.data.BubbleEntry -up-|> com.github.mikephil.charting.data.Entry
+  com.github.mikephil.charting.data.CandleData -up-|> com.github.mikephil.charting.data.BarLineScatterCandleBubbleData
+  com.github.mikephil.charting.data.CandleDataSet .up.|> com.github.mikephil.charting.interfaces.datasets.ICandleDataSet
+  com.github.mikephil.charting.data.CandleDataSet -up-|> com.github.mikephil.charting.data.LineScatterCandleRadarDataSet
+  com.github.mikephil.charting.data.CandleEntry -up-|> com.github.mikephil.charting.data.Entry
+  com.github.mikephil.charting.data.CombinedData -up-|> com.github.mikephil.charting.data.BarLineScatterCandleBubbleData
+  com.github.mikephil.charting.data.CombinedData o-- com.github.mikephil.charting.data.BarData : mBarData
+  com.github.mikephil.charting.data.CombinedData o-- com.github.mikephil.charting.data.BubbleData : mBubbleData
+  com.github.mikephil.charting.data.CombinedData o-- com.github.mikephil.charting.data.CandleData : mCandleData
+  com.github.mikephil.charting.data.CombinedData o-- com.github.mikephil.charting.data.LineData : mLineData
+  com.github.mikephil.charting.data.CombinedData o-- com.github.mikephil.charting.data.ScatterData : mScatterData
+  com.github.mikephil.charting.data.DataSet -up-|> com.github.mikephil.charting.data.BaseDataSet
+  com.github.mikephil.charting.data.DataSet +-down- com.github.mikephil.charting.data.DataSet.Rounding
+  com.github.mikephil.charting.data.Entry .up.|> android.os.Parcelable
+  com.github.mikephil.charting.data.Entry -up-|> com.github.mikephil.charting.data.BaseEntry
+  com.github.mikephil.charting.data.LineData -up-|> com.github.mikephil.charting.data.BarLineScatterCandleBubbleData
+  com.github.mikephil.charting.data.LineDataSet .up.|> com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+  com.github.mikephil.charting.data.LineDataSet -up-|> com.github.mikephil.charting.data.LineRadarDataSet
+  com.github.mikephil.charting.data.LineDataSet o-- com.github.mikephil.charting.formatter.IFillFormatter : mFillFormatter
+  com.github.mikephil.charting.data.LineDataSet o-- com.github.mikephil.charting.data.LineDataSet.Mode : mMode
+  com.github.mikephil.charting.data.LineDataSet +-down- com.github.mikephil.charting.data.LineDataSet.Mode
+  com.github.mikephil.charting.data.LineRadarDataSet .up.|> com.github.mikephil.charting.interfaces.datasets.ILineRadarDataSet
+  com.github.mikephil.charting.data.LineRadarDataSet -up-|> com.github.mikephil.charting.data.LineScatterCandleRadarDataSet
+  com.github.mikephil.charting.data.LineScatterCandleRadarDataSet .up.|> com.github.mikephil.charting.interfaces.datasets.ILineScatterCandleRadarDataSet
+  com.github.mikephil.charting.data.LineScatterCandleRadarDataSet -up-|> com.github.mikephil.charting.data.BarLineScatterCandleBubbleDataSet
+  com.github.mikephil.charting.data.PieData -up-|> com.github.mikephil.charting.data.ChartData
+  com.github.mikephil.charting.data.PieDataSet .up.|> com.github.mikephil.charting.interfaces.datasets.IPieDataSet
+  com.github.mikephil.charting.data.PieDataSet -up-|> com.github.mikephil.charting.data.DataSet
+  com.github.mikephil.charting.data.PieDataSet o-- com.github.mikephil.charting.data.PieDataSet.ValuePosition : mXValuePosition
+  com.github.mikephil.charting.data.PieDataSet o-- com.github.mikephil.charting.data.PieDataSet.ValuePosition : mYValuePosition
+  com.github.mikephil.charting.data.PieDataSet +-down- com.github.mikephil.charting.data.PieDataSet.ValuePosition
+  com.github.mikephil.charting.data.PieEntry -up-|> com.github.mikephil.charting.data.Entry
+  com.github.mikephil.charting.data.RadarData -up-|> com.github.mikephil.charting.data.ChartData
+  com.github.mikephil.charting.data.RadarDataSet .up.|> com.github.mikephil.charting.interfaces.datasets.IRadarDataSet
+  com.github.mikephil.charting.data.RadarDataSet -up-|> com.github.mikephil.charting.data.LineRadarDataSet
+  com.github.mikephil.charting.data.RadarEntry -up-|> com.github.mikephil.charting.data.Entry
+  com.github.mikephil.charting.data.ScatterData -up-|> com.github.mikephil.charting.data.BarLineScatterCandleBubbleData
+  com.github.mikephil.charting.data.ScatterDataSet .up.|> com.github.mikephil.charting.interfaces.datasets.IScatterDataSet
+  com.github.mikephil.charting.data.ScatterDataSet -up-|> com.github.mikephil.charting.data.LineScatterCandleRadarDataSet
+  com.github.mikephil.charting.data.ScatterDataSet o-- com.github.mikephil.charting.renderer.scatter.IShapeRenderer : mShapeRenderer
+
+
+right footer
+
+
+PlantUML diagram generated by SketchIt! (https://bitbucket.org/pmesmeur/sketch.it)
+For more information about this tool, please contact philippe.mesmeur@gmail.com
+endfooter
+
+@enduml

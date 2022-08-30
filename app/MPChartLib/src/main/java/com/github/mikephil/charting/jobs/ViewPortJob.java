@@ -44,4 +44,6 @@ public abstract class ViewPortJob extends ObjectPool.Poolable implements Runnabl
     public float getYValue() {
         return yValue;
     }
+
+
 }

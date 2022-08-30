@@ -100,4 +100,10 @@ public interface ILineDataSet extends ILineRadarDataSet<Entry> {
      * @return
      */
     IFillFormatter getFillFormatter();
+
+    /**
+     * 绘制最后一个圆点
+     * @return
+     */
+    boolean isDrawCirclesLast();
 }

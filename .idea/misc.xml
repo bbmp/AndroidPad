@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_chart_fill.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_dot_select.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_dot_unselect.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_input_delete_ic.xml" value="0.2115" />

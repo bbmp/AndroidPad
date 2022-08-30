@@ -81,7 +81,11 @@ public abstract class ChartTouchListener<T extends Chart<?>> extends GestureDete
         if (l != null)
             l.onChartGestureEnd(me, mLastGesture);
     }
-
+    public void moveAction(MotionEvent me) {
+        OnChartGestureListener l = mChart.getOnChartGestureListener();
+        if (l != null)
+            l.onChartGestureMove(me, mLastGesture);
+    }
     /**
      * Sets the last value that was highlighted via touch.
      *

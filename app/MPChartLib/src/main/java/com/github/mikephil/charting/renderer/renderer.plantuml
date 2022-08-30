@@ -1,0 +1,476 @@
+@startuml
+
+title __RENDERER's Class Diagram__\n
+
+  namespace com.github.mikephil.charting.renderer {
+    abstract class com.github.mikephil.charting.renderer.AxisRenderer {
+        # mAxisLabelPaint : Paint
+        # mAxisLinePaint : Paint
+        # mGridPaint : Paint
+        # mLimitLinePaint : Paint
+        + AxisRenderer()
+        + computeAxis()
+        + getPaintAxisLabels()
+        + getPaintAxisLine()
+        + getPaintGrid()
+        + getTransformer()
+        {abstract} + renderAxisLabels()
+        {abstract} + renderAxisLine()
+        {abstract} + renderGridLines()
+        {abstract} + renderLimitLines()
+        # computeAxisValues()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.renderer {
+    class com.github.mikephil.charting.renderer.BarChartRenderer {
+        # mBarBorderPaint : Paint
+        # mBarBuffers : BarBuffer[]
+        # mBarRect : RectF
+        # mShadowPaint : Paint
+        - mBarShadowRectBuffer : RectF
+        + BarChartRenderer()
+        + drawData()
+        + drawExtras()
+        + drawHighlighted()
+        + drawValues()
+        + initBuffers()
+        # drawDataSet()
+        # prepareBarHighlight()
+        # setHighlightDrawPos()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.renderer {
+    abstract class com.github.mikephil.charting.renderer.BarLineScatterCandleBubbleRenderer {
+        + BarLineScatterCandleBubbleRenderer()
+        # isInBoundsX()
+        # shouldDrawValues()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.renderer {
+    class com.github.mikephil.charting.renderer.BarLineScatterCandleBubbleRenderer.XBounds {
+        + max : int
+        + min : int
+        + range : int
+        + set()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.renderer {
+    class com.github.mikephil.charting.renderer.BubbleChartRenderer {
+        - _hsvBuffer : float[]
+        - pointBuffer : float[]
+        - sizeBuffer : float[]
+        + BubbleChartRenderer()
+        + drawData()
+        + drawExtras()
+        + drawHighlighted()
+        + drawValues()
+        + initBuffers()
+        # drawDataSet()
+        # getShapeSize()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.renderer {
+    class com.github.mikephil.charting.renderer.CandleStickChartRenderer {
+        - mBodyBuffers : float[]
+        - mCloseBuffers : float[]
+        - mOpenBuffers : float[]
+        - mRangeBuffers : float[]
+        - mShadowBuffers : float[]
+        + CandleStickChartRenderer()
+        + drawData()
+        + drawExtras()
+        + drawHighlighted()
+        + drawValues()
+        + initBuffers()
+        # drawDataSet()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.renderer {
+    class com.github.mikephil.charting.renderer.CombinedChartRenderer {
+        # mChart : WeakReference<Chart>
+        # mHighlightBuffer : List<Highlight>
+        # mRenderers : List<DataRenderer>
+        + CombinedChartRenderer()
+        + createRenderers()
+        + drawData()
+        + drawExtras()
+        + drawHighlighted()
+        + drawValues()
+        + getSubRenderer()
+        + getSubRenderers()
+        + initBuffers()
+        + setSubRenderers()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.renderer {
+    abstract class com.github.mikephil.charting.renderer.DataRenderer {
+        # mDrawPaint : Paint
+        # mHighlightPaint : Paint
+        # mRenderPaint : Paint
+        # mValuePaint : Paint
+        + DataRenderer()
+        {abstract} + drawData()
+        {abstract} + drawExtras()
+        {abstract} + drawHighlighted()
+        + drawValue()
+        {abstract} + drawValues()
+        + getPaintHighlight()
+        + getPaintRender()
+        + getPaintValues()
+        {abstract} + initBuffers()
+        # applyValueTextStyle()
+        # isDrawingValuesAllowed()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.renderer {
+    class com.github.mikephil.charting.renderer.HorizontalBarChartRenderer {
+        - mBarShadowRectBuffer : RectF
+        + HorizontalBarChartRenderer()
+        + drawValues()
+        + initBuffers()
+        # drawDataSet()
+        # drawValue()
+        # isDrawingValuesAllowed()
+        # prepareBarHighlight()
+        # setHighlightDrawPos()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.renderer {
+    class com.github.mikephil.charting.renderer.LegendRenderer {
+        # computedEntries : List<LegendEntry>
+        # legendFontMetrics : FontMetrics
+        # mLegendFormPaint : Paint
+        # mLegendLabelPaint : Paint
+        - mLineFormPath : Path
+        + LegendRenderer()
+        + computeLegend()
+        + getFormPaint()
+        + getLabelPaint()
+        + renderLegend()
+        # drawForm()
+        # drawLabel()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.renderer {
+    class com.github.mikephil.charting.renderer.LineChartRenderer {
+        # cubicFillPath : Path
+        # cubicPath : Path
+        # mBitmapCanvas : Canvas
+        # mBitmapConfig : Config
+        # mCirclePaintInner : Paint
+        # mDrawBitmap : WeakReference<Bitmap>
+        # mGenerateFilledPathBuffer : Path
+        - mCirclesBuffer : float[]
+        - mImageCaches : HashMap<IDataSet, DataSetImageCache>
+        - mLineBuffer : float[]
+        + LineChartRenderer()
+        + drawData()
+        + drawExtras()
+        + drawHighlighted()
+        + drawValues()
+        + getBitmapConfig()
+        + initBuffers()
+        + releaseBitmap()
+        + setBitmapConfig()
+        # drawCircles()
+        # drawCubicBezier()
+        # drawCubicFill()
+        # drawDataSet()
+        # drawHorizontalBezier()
+        # drawLinear()
+        # drawLinearFill()
+        - generateFilledPath()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.renderer {
+    class com.github.mikephil.charting.renderer.LineChartRenderer.DataSetImageCache {
+        - circleBitmaps : Bitmap[]
+        - mCirclePathBuffer : Path
+        # fill()
+        # getBitmap()
+        # init()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.renderer {
+    abstract class com.github.mikephil.charting.renderer.LineRadarRenderer {
+        + LineRadarRenderer()
+        # drawFilledPath()
+        # drawFilledPath()
+        - clipPathSupported()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.renderer {
+    abstract class com.github.mikephil.charting.renderer.LineScatterCandleRadarRenderer {
+        - mHighlightLinePath : Path
+        + LineScatterCandleRadarRenderer()
+        # drawHighlightLines()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.renderer {
+    class com.github.mikephil.charting.renderer.PieChartRenderer {
+        # mBitmapCanvas : Canvas
+        # mDrawBitmap : WeakReference<Bitmap>
+        # mDrawCenterTextPathBuffer : Path
+        # mDrawHighlightedRectF : RectF
+        # mHolePaint : Paint
+        # mTransparentCirclePaint : Paint
+        # mValueLinePaint : Paint
+        - mCenterTextLastBounds : RectF
+        - mCenterTextLastValue : CharSequence
+        - mCenterTextLayout : StaticLayout
+        - mCenterTextPaint : TextPaint
+        - mEntryLabelsPaint : Paint
+        - mHoleCirclePath : Path
+        - mInnerRectBuffer : RectF
+        - mPathBuffer : Path
+        - mRectBuffer : RectF[]
+        + PieChartRenderer()
+        + drawData()
+        + drawExtras()
+        + drawHighlighted()
+        + drawValues()
+        + getPaintCenterText()
+        + getPaintEntryLabels()
+        + getPaintHole()
+        + getPaintTransparentCircle()
+        + initBuffers()
+        + releaseBitmap()
+        # calculateMinimumRadiusForSpacedSlice()
+        # drawCenterText()
+        # drawDataSet()
+        # drawEntryLabel()
+        # drawHole()
+        # drawRoundedSlices()
+        # getSliceSpace()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.renderer {
+    class com.github.mikephil.charting.renderer.RadarChartRenderer {
+        # mDrawDataSetSurfacePathBuffer : Path
+        # mDrawHighlightCirclePathBuffer : Path
+        # mHighlightCirclePaint : Paint
+        # mWebPaint : Paint
+        + RadarChartRenderer()
+        + drawData()
+        + drawExtras()
+        + drawHighlightCircle()
+        + drawHighlighted()
+        + drawValues()
+        + getWebPaint()
+        + initBuffers()
+        # drawDataSet()
+        # drawWeb()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.renderer {
+    abstract class com.github.mikephil.charting.renderer.Renderer {
+        + Renderer()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.renderer {
+    class com.github.mikephil.charting.renderer.ScatterChartRenderer {
+        ~ mPixelBuffer : float[]
+        + ScatterChartRenderer()
+        + drawData()
+        + drawExtras()
+        + drawHighlighted()
+        + drawValues()
+        + initBuffers()
+        # drawDataSet()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.renderer {
+    class com.github.mikephil.charting.renderer.XAxisRenderer {
+        # mGridClippingRect : RectF
+        # mLimitLineClippingRect : RectF
+        # mRenderGridLinesBuffer : float[]
+        # mRenderGridLinesPath : Path
+        # mRenderLimitLinesBuffer : float[]
+        ~ mLimitLineSegmentsBuffer : float[]
+        - mLimitLinePath : Path
+        + XAxisRenderer()
+        + computeAxis()
+        + getGridClippingRect()
+        + renderAxisLabels()
+        + renderAxisLine()
+        + renderGridLines()
+        + renderLimitLineLabel()
+        + renderLimitLineLine()
+        + renderLimitLines()
+        # computeAxisValues()
+        # computeSize()
+        # drawGridLine()
+        # drawLabel()
+        # drawLabels()
+        # setupGridPaint()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.renderer {
+    class com.github.mikephil.charting.renderer.XAxisRendererHorizontalBarChart {
+        # mRenderLimitLinesPathBuffer : Path
+        + XAxisRendererHorizontalBarChart()
+        + computeAxis()
+        + getGridClippingRect()
+        + renderAxisLabels()
+        + renderAxisLine()
+        + renderLimitLines()
+        # computeSize()
+        # drawGridLine()
+        # drawLabels()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.renderer {
+    class com.github.mikephil.charting.renderer.XAxisRendererRadarChart {
+        + XAxisRendererRadarChart()
+        + renderAxisLabels()
+        + renderLimitLines()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.renderer {
+    class com.github.mikephil.charting.renderer.YAxisRenderer {
+        # mDrawZeroLinePath : Path
+        # mGetTransformedPositionsBuffer : float[]
+        # mGridClippingRect : RectF
+        # mLimitLineClippingRect : RectF
+        # mRenderGridLinesPath : Path
+        # mRenderLimitLines : Path
+        # mRenderLimitLinesBuffer : float[]
+        # mZeroLineClippingRect : RectF
+        # mZeroLinePaint : Paint
+        + YAxisRenderer()
+        + getGridClippingRect()
+        + renderAxisLabels()
+        + renderAxisLine()
+        + renderGridLines()
+        + renderLimitLines()
+        # drawYLabels()
+        # drawZeroLine()
+        # getTransformedPositions()
+        # linePath()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.renderer {
+    class com.github.mikephil.charting.renderer.YAxisRendererHorizontalBarChart {
+        # mDrawZeroLinePathBuffer : Path
+        # mRenderLimitLinesBuffer : float[]
+        # mRenderLimitLinesPathBuffer : Path
+        + YAxisRendererHorizontalBarChart()
+        + computeAxis()
+        + getGridClippingRect()
+        + renderAxisLabels()
+        + renderAxisLine()
+        + renderLimitLines()
+        # drawYLabels()
+        # drawZeroLine()
+        # getTransformedPositions()
+        # linePath()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.renderer {
+    class com.github.mikephil.charting.renderer.YAxisRendererRadarChart {
+        - mRenderLimitLinesPathBuffer : Path
+        + YAxisRendererRadarChart()
+        + renderAxisLabels()
+        + renderLimitLines()
+        # computeAxisValues()
+    }
+  }
+  
+
+  com.github.mikephil.charting.renderer.AxisRenderer -up-|> com.github.mikephil.charting.renderer.Renderer
+  com.github.mikephil.charting.renderer.AxisRenderer o-- com.github.mikephil.charting.components.AxisBase : mAxis
+  com.github.mikephil.charting.renderer.AxisRenderer o-- com.github.mikephil.charting.utils.Transformer : mTrans
+  com.github.mikephil.charting.renderer.BarChartRenderer -up-|> com.github.mikephil.charting.renderer.BarLineScatterCandleBubbleRenderer
+  com.github.mikephil.charting.renderer.BarChartRenderer o-- com.github.mikephil.charting.interfaces.dataprovider.BarDataProvider : mChart
+  com.github.mikephil.charting.renderer.BarLineScatterCandleBubbleRenderer -up-|> com.github.mikephil.charting.renderer.DataRenderer
+  com.github.mikephil.charting.renderer.BarLineScatterCandleBubbleRenderer o-- com.github.mikephil.charting.renderer.BarLineScatterCandleBubbleRenderer.XBounds : mXBounds
+  com.github.mikephil.charting.renderer.BarLineScatterCandleBubbleRenderer +-down- com.github.mikephil.charting.renderer.BarLineScatterCandleBubbleRenderer.XBounds
+  com.github.mikephil.charting.renderer.BubbleChartRenderer -up-|> com.github.mikephil.charting.renderer.BarLineScatterCandleBubbleRenderer
+  com.github.mikephil.charting.renderer.BubbleChartRenderer o-- com.github.mikephil.charting.interfaces.dataprovider.BubbleDataProvider : mChart
+  com.github.mikephil.charting.renderer.CandleStickChartRenderer -up-|> com.github.mikephil.charting.renderer.LineScatterCandleRadarRenderer
+  com.github.mikephil.charting.renderer.CandleStickChartRenderer o-- com.github.mikephil.charting.interfaces.dataprovider.CandleDataProvider : mChart
+  com.github.mikephil.charting.renderer.CombinedChartRenderer -up-|> com.github.mikephil.charting.renderer.DataRenderer
+  com.github.mikephil.charting.renderer.DataRenderer -up-|> com.github.mikephil.charting.renderer.Renderer
+  com.github.mikephil.charting.renderer.DataRenderer o-- com.github.mikephil.charting.animation.ChartAnimator : mAnimator
+  com.github.mikephil.charting.renderer.HorizontalBarChartRenderer -up-|> com.github.mikephil.charting.renderer.BarChartRenderer
+  com.github.mikephil.charting.renderer.LegendRenderer -up-|> com.github.mikephil.charting.renderer.Renderer
+  com.github.mikephil.charting.renderer.LegendRenderer o-- com.github.mikephil.charting.components.Legend : mLegend
+  com.github.mikephil.charting.renderer.LineChartRenderer -up-|> com.github.mikephil.charting.renderer.LineRadarRenderer
+  com.github.mikephil.charting.renderer.LineChartRenderer o-- com.github.mikephil.charting.interfaces.dataprovider.LineDataProvider : mChart
+  com.github.mikephil.charting.renderer.LineChartRenderer +-down- com.github.mikephil.charting.renderer.LineChartRenderer.DataSetImageCache
+  com.github.mikephil.charting.renderer.LineRadarRenderer -up-|> com.github.mikephil.charting.renderer.LineScatterCandleRadarRenderer
+  com.github.mikephil.charting.renderer.LineScatterCandleRadarRenderer -up-|> com.github.mikephil.charting.renderer.BarLineScatterCandleBubbleRenderer
+  com.github.mikephil.charting.renderer.PieChartRenderer -up-|> com.github.mikephil.charting.renderer.DataRenderer
+  com.github.mikephil.charting.renderer.PieChartRenderer o-- com.github.mikephil.charting.charts.PieChart : mChart
+  com.github.mikephil.charting.renderer.RadarChartRenderer -up-|> com.github.mikephil.charting.renderer.LineRadarRenderer
+  com.github.mikephil.charting.renderer.RadarChartRenderer o-- com.github.mikephil.charting.charts.RadarChart : mChart
+  com.github.mikephil.charting.renderer.Renderer o-- com.github.mikephil.charting.utils.ViewPortHandler : mViewPortHandler
+  com.github.mikephil.charting.renderer.ScatterChartRenderer -up-|> com.github.mikephil.charting.renderer.LineScatterCandleRadarRenderer
+  com.github.mikephil.charting.renderer.ScatterChartRenderer o-- com.github.mikephil.charting.interfaces.dataprovider.ScatterDataProvider : mChart
+  com.github.mikephil.charting.renderer.XAxisRenderer -up-|> com.github.mikephil.charting.renderer.AxisRenderer
+  com.github.mikephil.charting.renderer.XAxisRenderer o-- com.github.mikephil.charting.components.XAxis : mXAxis
+  com.github.mikephil.charting.renderer.XAxisRendererHorizontalBarChart -up-|> com.github.mikephil.charting.renderer.XAxisRenderer
+  com.github.mikephil.charting.renderer.XAxisRendererHorizontalBarChart o-- com.github.mikephil.charting.charts.BarChart : mChart
+  com.github.mikephil.charting.renderer.XAxisRendererRadarChart -up-|> com.github.mikephil.charting.renderer.XAxisRenderer
+  com.github.mikephil.charting.renderer.XAxisRendererRadarChart o-- com.github.mikephil.charting.charts.RadarChart : mChart
+  com.github.mikephil.charting.renderer.YAxisRenderer -up-|> com.github.mikephil.charting.renderer.AxisRenderer
+  com.github.mikephil.charting.renderer.YAxisRenderer o-- com.github.mikephil.charting.components.YAxis : mYAxis
+  com.github.mikephil.charting.renderer.YAxisRendererHorizontalBarChart -up-|> com.github.mikephil.charting.renderer.YAxisRenderer
+  com.github.mikephil.charting.renderer.YAxisRendererRadarChart -up-|> com.github.mikephil.charting.renderer.YAxisRenderer
+  com.github.mikephil.charting.renderer.YAxisRendererRadarChart o-- com.github.mikephil.charting.charts.RadarChart : mChart
+
+
+right footer
+
+
+PlantUML diagram generated by SketchIt! (https://bitbucket.org/pmesmeur/sketch.it)
+For more information about this tool, please contact philippe.mesmeur@gmail.com
+endfooter
+
+@enduml

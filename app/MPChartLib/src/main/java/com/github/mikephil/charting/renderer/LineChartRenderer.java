@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import com.github.mikephil.charting.animation.ChartAnimator;
 import com.github.mikephil.charting.charts.LineChart;
@@ -689,8 +690,14 @@ public class LineChartRenderer extends LineRadarRenderer {
 
                 Bitmap circleBitmap = imageCache.getBitmap(j);
 
-                if (circleBitmap != null) {
-                    c.drawBitmap(circleBitmap, mCirclesBuffer[0] - circleRadius, mCirclesBuffer[1] - circleRadius, null);
+                if(dataSet.isDrawCirclesLast()){
+                    Log.d("TAG", "drawCircles: "+j);
+                    if (j==boundsRangeCount)
+                        c.drawBitmap(circleBitmap, mCirclesBuffer[0] - circleRadius, mCirclesBuffer[1] - circleRadius, null);
+                }else {
+                    if (circleBitmap != null) {
+                        c.drawBitmap(circleBitmap, mCirclesBuffer[0] - circleRadius, mCirclesBuffer[1] - circleRadius, null);
+                    }
                 }
             }
         }
@@ -809,7 +816,9 @@ public class LineChartRenderer extends LineRadarRenderer {
                 Bitmap circleBitmap = Bitmap.createBitmap((int) (circleRadius * 2.1), (int) (circleRadius * 2.1), conf);
 
                 Canvas canvas = new Canvas(circleBitmap);
+
                 circleBitmaps[i] = circleBitmap;
+
                 mRenderPaint.setColor(set.getCircleColor(i));
 
                 if (drawTransparentCircleHole) {

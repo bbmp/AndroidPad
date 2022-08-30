@@ -134,6 +134,10 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
     protected Transformer mRightAxisTransformer;
 
     protected XAxisRenderer mXAxisRenderer;
+    /**
+     * 添加修改需要销毁的线程
+     */
+    public MoveViewJob job;
 
     // /** the approximator object used for data filtering */
     // private Approximator mApproximator;
@@ -271,32 +275,36 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
         mXAxisRenderer.renderAxisLabels(canvas);
         mAxisRendererLeft.renderAxisLabels(canvas);
         mAxisRendererRight.renderAxisLabels(canvas);
+        try {
+            if (isClipValuesToContentEnabled()) {
+                clipRestoreCount = canvas.save();
+                canvas.clipRect(mViewPortHandler.getContentRect());
 
-        if (isClipValuesToContentEnabled()) {
-            clipRestoreCount = canvas.save();
-            canvas.clipRect(mViewPortHandler.getContentRect());
+                mRenderer.drawValues(canvas);
 
-            mRenderer.drawValues(canvas);
+                canvas.restoreToCount(clipRestoreCount);
+            } else {
+                mRenderer.drawValues(canvas);
+            }
 
-            canvas.restoreToCount(clipRestoreCount);
-        } else {
-            mRenderer.drawValues(canvas);
+            mLegendRenderer.renderLegend(canvas);
+
+            drawDescription(canvas);
+
+            drawMarkers(canvas);
+
+            if (mLogEnabled) {
+                long drawtime = (System.currentTimeMillis() - starttime);
+                totalTime += drawtime;
+                drawCycles += 1;
+                long average = totalTime / drawCycles;
+                Log.i(LOG_TAG, "Drawtime: " + drawtime + " ms, average: " + average + " ms, cycles: "
+                        + drawCycles);
+            }
+        }catch (Exception e){
+            Log.e("char" , "---" + e.getMessage());
         }
 
-        mLegendRenderer.renderLegend(canvas);
-
-        drawDescription(canvas);
-
-        drawMarkers(canvas);
-
-        if (mLogEnabled) {
-            long drawtime = (System.currentTimeMillis() - starttime);
-            totalTime += drawtime;
-            drawCycles += 1;
-            long average = totalTime / drawCycles;
-            Log.i(LOG_TAG, "Drawtime: " + drawtime + " ms, average: " + average + " ms, cycles: "
-                    + drawCycles);
-        }
     }
 
     /**
@@ -839,7 +847,7 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
      */
     public void moveViewToX(float xValue) {
 
-        Runnable job = MoveViewJob.getInstance(mViewPortHandler, xValue, 0f,
+         job = MoveViewJob.getInstance(mViewPortHandler, xValue, 0f,
                 getTransformer(AxisDependency.LEFT), this);
 
         addViewportJob(job);
@@ -858,7 +866,7 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
 
         float yInView = getAxisRange(axis) / mViewPortHandler.getScaleY();
 
-        Runnable job = MoveViewJob.getInstance(mViewPortHandler, xValue, yValue + yInView / 2f,
+        job = MoveViewJob.getInstance(mViewPortHandler, xValue, yValue + yInView / 2f,
                 getTransformer(axis), this);
 
         addViewportJob(job);
@@ -900,7 +908,7 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
 
         float valsInView = getAxisRange(axis) / mViewPortHandler.getScaleY();
 
-        Runnable job = MoveViewJob.getInstance(mViewPortHandler, 0f, yValue + valsInView / 2f,
+         job = MoveViewJob.getInstance(mViewPortHandler, 0f, yValue + valsInView / 2f,
                 getTransformer(axis), this);
 
         addViewportJob(job);
@@ -920,7 +928,7 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
         float yInView = getAxisRange(axis) / mViewPortHandler.getScaleY();
         float xInView = getXAxis().mAxisRange / mViewPortHandler.getScaleX();
 
-        Runnable job = MoveViewJob.getInstance(mViewPortHandler,
+         job = MoveViewJob.getInstance(mViewPortHandler,
                 xValue - xInView / 2f, yValue + yInView / 2f,
                 getTransformer(axis), this);
 

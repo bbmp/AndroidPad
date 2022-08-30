@@ -64,6 +64,7 @@ public class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
 
     private boolean mDrawCircleHole = true;
 
+    private boolean mDrawCirclesLast = false;
 
     public LineDataSet(List<Entry> yVals, String label) {
         super(yVals, label);
@@ -167,7 +168,10 @@ public class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
     public float getCircleRadius() {
         return mCircleRadius;
     }
-
+    @Override
+    public boolean isDrawCirclesLast() {
+        return mDrawCirclesLast;
+    }
     /**
      * Sets the hole radius of the drawn circles.
      * Default radius = 2f, Min = 0.5f
@@ -249,6 +253,10 @@ public class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
      */
     public void setDrawCircles(boolean enabled) {
         this.mDrawCircles = enabled;
+    }
+
+    public void setDrawCirclesLast(boolean enabled) {
+        this.mDrawCirclesLast = enabled;
     }
 
     @Override

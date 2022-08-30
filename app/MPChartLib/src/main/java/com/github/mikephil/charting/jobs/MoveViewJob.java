@@ -20,6 +20,7 @@ public class MoveViewJob extends ViewPortJob {
     }
 
     public static MoveViewJob getInstance(ViewPortHandler viewPortHandler, float xValue, float yValue, Transformer trans, View v){
+
         MoveViewJob result = pool.get();
         result.mViewPortHandler = viewPortHandler;
         result.xValue = xValue;
@@ -52,5 +53,12 @@ public class MoveViewJob extends ViewPortJob {
     @Override
     protected ObjectPool.Poolable instantiate() {
         return new MoveViewJob(mViewPortHandler, xValue, yValue, mTrans, view);
+    }
+
+    public void removePool(){
+        pool.removePool();
+        pool = ObjectPool.create(2, new MoveViewJob(null,0,0,null,null));
+        pool.setReplenishPercentage(0.5f);
+
     }
 }

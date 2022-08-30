@@ -1,0 +1,209 @@
+@startuml
+
+title __DATASETS's Class Diagram__\n
+
+  namespace com.github.mikephil.charting.interfaces.datasets {
+    interface com.github.mikephil.charting.interfaces.datasets.IBarDataSet {
+        {abstract} + getBarBorderColor()
+        {abstract} + getBarBorderWidth()
+        {abstract} + getBarShadowColor()
+        {abstract} + getFill()
+        {abstract} + getFills()
+        {abstract} + getHighLightAlpha()
+        {abstract} + getStackLabels()
+        {abstract} + getStackSize()
+        {abstract} + isStacked()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.interfaces.datasets {
+    interface com.github.mikephil.charting.interfaces.datasets.IBarLineScatterCandleBubbleDataSet {
+        {abstract} + getHighLightColor()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.interfaces.datasets {
+    interface com.github.mikephil.charting.interfaces.datasets.IBubbleDataSet {
+        {abstract} + getHighlightCircleWidth()
+        {abstract} + getMaxSize()
+        {abstract} + isNormalizeSizeEnabled()
+        {abstract} + setHighlightCircleWidth()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.interfaces.datasets {
+    interface com.github.mikephil.charting.interfaces.datasets.ICandleDataSet {
+        {abstract} + getBarSpace()
+        {abstract} + getDecreasingColor()
+        {abstract} + getDecreasingPaintStyle()
+        {abstract} + getIncreasingColor()
+        {abstract} + getIncreasingPaintStyle()
+        {abstract} + getNeutralColor()
+        {abstract} + getShadowColor()
+        {abstract} + getShadowColorSameAsCandle()
+        {abstract} + getShadowWidth()
+        {abstract} + getShowCandleBar()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.interfaces.datasets {
+    interface com.github.mikephil.charting.interfaces.datasets.IDataSet {
+        {abstract} + addEntry()
+        {abstract} + addEntryOrdered()
+        {abstract} + calcMinMax()
+        {abstract} + calcMinMaxY()
+        {abstract} + clear()
+        {abstract} + contains()
+        {abstract} + getAxisDependency()
+        {abstract} + getColor()
+        {abstract} + getColor()
+        {abstract} + getColors()
+        {abstract} + getEntriesForXValue()
+        {abstract} + getEntryCount()
+        {abstract} + getEntryForIndex()
+        {abstract} + getEntryForXValue()
+        {abstract} + getEntryForXValue()
+        {abstract} + getEntryIndex()
+        {abstract} + getEntryIndex()
+        {abstract} + getForm()
+        {abstract} + getFormLineDashEffect()
+        {abstract} + getFormLineWidth()
+        {abstract} + getFormSize()
+        {abstract} + getIconsOffset()
+        {abstract} + getIndexInEntries()
+        {abstract} + getLabel()
+        {abstract} + getValueFormatter()
+        {abstract} + getValueTextColor()
+        {abstract} + getValueTextColor()
+        {abstract} + getValueTextSize()
+        {abstract} + getValueTypeface()
+        {abstract} + getXMax()
+        {abstract} + getXMin()
+        {abstract} + getYMax()
+        {abstract} + getYMin()
+        {abstract} + isDrawIconsEnabled()
+        {abstract} + isDrawValuesEnabled()
+        {abstract} + isHighlightEnabled()
+        {abstract} + isVisible()
+        {abstract} + needsFormatter()
+        {abstract} + removeEntry()
+        {abstract} + removeEntry()
+        {abstract} + removeEntryByXValue()
+        {abstract} + removeFirst()
+        {abstract} + removeLast()
+        {abstract} + setAxisDependency()
+        {abstract} + setDrawIcons()
+        {abstract} + setDrawValues()
+        {abstract} + setHighlightEnabled()
+        {abstract} + setIconsOffset()
+        {abstract} + setLabel()
+        {abstract} + setValueFormatter()
+        {abstract} + setValueTextColor()
+        {abstract} + setValueTextColors()
+        {abstract} + setValueTextSize()
+        {abstract} + setValueTypeface()
+        {abstract} + setVisible()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.interfaces.datasets {
+    interface com.github.mikephil.charting.interfaces.datasets.ILineDataSet {
+        {abstract} + getCircleColor()
+        {abstract} + getCircleColorCount()
+        {abstract} + getCircleHoleColor()
+        {abstract} + getCircleHoleRadius()
+        {abstract} + getCircleRadius()
+        {abstract} + getCubicIntensity()
+        {abstract} + getDashPathEffect()
+        {abstract} + getFillFormatter()
+        {abstract} + getMode()
+        {abstract} + isDashedLineEnabled()
+        {abstract} + isDrawCircleHoleEnabled()
+        {abstract} + isDrawCirclesEnabled()
+        {abstract} + isDrawCirclesLast()
+        {abstract} + isDrawCubicEnabled()
+        {abstract} + isDrawSteppedEnabled()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.interfaces.datasets {
+    interface com.github.mikephil.charting.interfaces.datasets.ILineRadarDataSet {
+        {abstract} + getFillAlpha()
+        {abstract} + getFillColor()
+        {abstract} + getFillDrawable()
+        {abstract} + getLineWidth()
+        {abstract} + isDrawFilledEnabled()
+        {abstract} + setDrawFilled()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.interfaces.datasets {
+    interface com.github.mikephil.charting.interfaces.datasets.ILineScatterCandleRadarDataSet {
+        {abstract} + getDashPathEffectHighlight()
+        {abstract} + getHighlightLineWidth()
+        {abstract} + isHorizontalHighlightIndicatorEnabled()
+        {abstract} + isVerticalHighlightIndicatorEnabled()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.interfaces.datasets {
+    interface com.github.mikephil.charting.interfaces.datasets.IPieDataSet {
+        {abstract} + getHighlightColor()
+        {abstract} + getSelectionShift()
+        {abstract} + getSliceSpace()
+        {abstract} + getValueLineColor()
+        {abstract} + getValueLinePart1Length()
+        {abstract} + getValueLinePart1OffsetPercentage()
+        {abstract} + getValueLinePart2Length()
+        {abstract} + getValueLineWidth()
+        {abstract} + getXValuePosition()
+        {abstract} + getYValuePosition()
+        {abstract} + isAutomaticallyDisableSliceSpacingEnabled()
+        {abstract} + isUseValueColorForLineEnabled()
+        {abstract} + isValueLineVariableLength()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.interfaces.datasets {
+    interface com.github.mikephil.charting.interfaces.datasets.IRadarDataSet {
+        {abstract} + getHighlightCircleFillColor()
+        {abstract} + getHighlightCircleInnerRadius()
+        {abstract} + getHighlightCircleOuterRadius()
+        {abstract} + getHighlightCircleStrokeAlpha()
+        {abstract} + getHighlightCircleStrokeColor()
+        {abstract} + getHighlightCircleStrokeWidth()
+        {abstract} + isDrawHighlightCircleEnabled()
+        {abstract} + setDrawHighlightCircleEnabled()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.interfaces.datasets {
+    interface com.github.mikephil.charting.interfaces.datasets.IScatterDataSet {
+        {abstract} + getScatterShapeHoleColor()
+        {abstract} + getScatterShapeHoleRadius()
+        {abstract} + getScatterShapeSize()
+        {abstract} + getShapeRenderer()
+    }
+  }
+  
+
+
+
+right footer
+
+
+PlantUML diagram generated by SketchIt! (https://bitbucket.org/pmesmeur/sketch.it)
+For more information about this tool, please contact philippe.mesmeur@gmail.com
+endfooter
+
+@enduml

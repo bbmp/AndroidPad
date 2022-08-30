@@ -206,6 +206,10 @@ public class ObjectPool<T extends ObjectPool.Poolable> {
         return this.objectsPointer + 1;
     }
 
+    public void removePool(){
+        modelObject = null ;
+        objects = null ;
+    }
 
     public static abstract class Poolable{
 

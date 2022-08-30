@@ -1,0 +1,511 @@
+@startuml
+
+title __COMPONENTS's Class Diagram__\n
+
+  namespace com.github.mikephil.charting.components {
+    abstract class com.github.mikephil.charting.components.AxisBase {
+        + mAxisMaximum : float
+        + mAxisMinimum : float
+        + mAxisRange : float
+        + mCenteredEntries : float[]
+        + mDecimals : int
+        + mEntries : float[]
+        + mEntryCount : int
+        # mCenterAxisLabels : boolean
+        # mCustomAxisMax : boolean
+        # mCustomAxisMin : boolean
+        # mDrawAxisLine : boolean
+        # mDrawGridLines : boolean
+        # mDrawGridLinesBehindData : boolean
+        # mDrawLabels : boolean
+        # mDrawLimitLineBehindData : boolean
+        # mForceLabels : boolean
+        # mGranularity : float
+        # mGranularityEnabled : boolean
+        # mLimitLines : List<LimitLine>
+        # mSpaceMax : float
+        # mSpaceMin : float
+        - mAxisLineColor : int
+        - mAxisLineDashPathEffect : DashPathEffect
+        - mAxisLineWidth : float
+        - mAxisMaxLabels : int
+        - mAxisMinLabels : int
+        - mGridColor : int
+        - mGridDashPathEffect : DashPathEffect
+        - mGridLineWidth : float
+        - mLabelCount : int
+        + AxisBase()
+        + addLimitLine()
+        + calculate()
+        + disableAxisLineDashedLine()
+        + disableGridDashedLine()
+        + enableAxisLineDashedLine()
+        + enableGridDashedLine()
+        + getAxisLineColor()
+        + getAxisLineDashPathEffect()
+        + getAxisLineWidth()
+        + getAxisMaxLabels()
+        + getAxisMaximum()
+        + getAxisMinLabels()
+        + getAxisMinimum()
+        + getFormattedLabel()
+        + getGranularity()
+        + getGridColor()
+        + getGridDashPathEffect()
+        + getGridLineWidth()
+        + getLabelCount()
+        + getLimitLines()
+        + getLongestLabel()
+        + getSpaceMax()
+        + getSpaceMin()
+        + getValueFormatter()
+        + isAxisLineDashedLineEnabled()
+        + isAxisMaxCustom()
+        + isAxisMinCustom()
+        + isCenterAxisLabelsEnabled()
+        + isDrawAxisLineEnabled()
+        + isDrawGridLinesBehindDataEnabled()
+        + isDrawGridLinesEnabled()
+        + isDrawLabelsEnabled()
+        + isDrawLimitLinesBehindDataEnabled()
+        + isForceLabelsEnabled()
+        + isGranularityEnabled()
+        + isGridDashedLineEnabled()
+        + removeAllLimitLines()
+        + removeLimitLine()
+        + resetAxisMaximum()
+        + resetAxisMinimum()
+        + setAxisLineColor()
+        + setAxisLineDashedLine()
+        + setAxisLineWidth()
+        + setAxisMaxLabels()
+        + setAxisMaxValue()
+        + setAxisMaximum()
+        + setAxisMinLabels()
+        + setAxisMinValue()
+        + setAxisMinimum()
+        + setCenterAxisLabels()
+        + setDrawAxisLine()
+        + setDrawGridLines()
+        + setDrawGridLinesBehindData()
+        + setDrawLabels()
+        + setDrawLimitLinesBehindData()
+        + setGranularity()
+        + setGranularityEnabled()
+        + setGridColor()
+        + setGridDashedLine()
+        + setGridLineWidth()
+        + setLabelCount()
+        + setLabelCount()
+        + setSpaceMax()
+        + setSpaceMin()
+        + setValueFormatter()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.components {
+    abstract class com.github.mikephil.charting.components.ComponentBase {
+        # mEnabled : boolean
+        # mTextColor : int
+        # mTextSize : float
+        # mTypeface : Typeface
+        # mXOffset : float
+        # mYOffset : float
+        + ComponentBase()
+        + getTextColor()
+        + getTextSize()
+        + getTypeface()
+        + getXOffset()
+        + getYOffset()
+        + isEnabled()
+        + setEnabled()
+        + setTextColor()
+        + setTextSize()
+        + setTypeface()
+        + setXOffset()
+        + setYOffset()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.components {
+    class com.github.mikephil.charting.components.Description {
+        - mTextAlign : Align
+        - text : String
+        + Description()
+        + getPosition()
+        + getText()
+        + getTextAlign()
+        + setPosition()
+        + setText()
+        + setTextAlign()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.components {
+    interface com.github.mikephil.charting.components.IMarker {
+        {abstract} + draw()
+        {abstract} + getOffset()
+        {abstract} + getOffsetForDrawingAtPoint()
+        {abstract} + refreshContent()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.components {
+    class com.github.mikephil.charting.components.Legend {
+        + mNeededHeight : float
+        + mNeededWidth : float
+        + mTextHeightMax : float
+        + mTextWidthMax : float
+        - mCalculatedLabelBreakPoints : List<Boolean>
+        - mCalculatedLabelSizes : List<FSize>
+        - mCalculatedLineSizes : List<FSize>
+        - mDrawInside : boolean
+        - mEntries : LegendEntry[]
+        - mExtraEntries : LegendEntry[]
+        - mFormLineDashEffect : DashPathEffect
+        - mFormLineWidth : float
+        - mFormSize : float
+        - mFormToTextSpace : float
+        - mIsLegendCustom : boolean
+        - mMaxSizePercent : float
+        - mStackSpace : float
+        - mWordWrapEnabled : boolean
+        - mXEntrySpace : float
+        - mYEntrySpace : float
+        + Legend()
+        + Legend()
+        + calculateDimensions()
+        + getCalculatedLabelBreakPoints()
+        + getCalculatedLabelSizes()
+        + getCalculatedLineSizes()
+        + getDirection()
+        + getEntries()
+        + getExtraEntries()
+        + getForm()
+        + getFormLineDashEffect()
+        + getFormLineWidth()
+        + getFormSize()
+        + getFormToTextSpace()
+        + getHorizontalAlignment()
+        + getMaxSizePercent()
+        + getMaximumEntryHeight()
+        + getMaximumEntryWidth()
+        + getOrientation()
+        + getStackSpace()
+        + getVerticalAlignment()
+        + getXEntrySpace()
+        + getYEntrySpace()
+        + isDrawInsideEnabled()
+        + isLegendCustom()
+        + isWordWrapEnabled()
+        + resetCustom()
+        + setCustom()
+        + setCustom()
+        + setDirection()
+        + setDrawInside()
+        + setEntries()
+        + setExtra()
+        + setExtra()
+        + setExtra()
+        + setForm()
+        + setFormLineDashEffect()
+        + setFormLineWidth()
+        + setFormSize()
+        + setFormToTextSpace()
+        + setHorizontalAlignment()
+        + setMaxSizePercent()
+        + setOrientation()
+        + setStackSpace()
+        + setVerticalAlignment()
+        + setWordWrapEnabled()
+        + setXEntrySpace()
+        + setYEntrySpace()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.components {
+    enum LegendDirection {
+      LEFT_TO_RIGHT
+      RIGHT_TO_LEFT
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.components {
+    enum LegendForm {
+      CIRCLE
+      DEFAULT
+      EMPTY
+      LINE
+      NONE
+      SQUARE
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.components {
+    enum LegendHorizontalAlignment {
+      CENTER
+      LEFT
+      RIGHT
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.components {
+    enum LegendOrientation {
+      HORIZONTAL
+      VERTICAL
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.components {
+    enum LegendVerticalAlignment {
+      BOTTOM
+      CENTER
+      TOP
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.components {
+    class com.github.mikephil.charting.components.LegendEntry {
+        + formColor : int
+        + formLineDashEffect : DashPathEffect
+        + formLineWidth : float
+        + formSize : float
+        + label : String
+        + LegendEntry()
+        + LegendEntry()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.components {
+    class com.github.mikephil.charting.components.LimitLine {
+        - mDashPathEffect : DashPathEffect
+        - mLabel : String
+        - mLimit : float
+        - mLineColor : int
+        - mLineWidth : float
+        - mTextStyle : Style
+        + LimitLine()
+        + LimitLine()
+        + disableDashedLine()
+        + enableDashedLine()
+        + getDashPathEffect()
+        + getLabel()
+        + getLabelPosition()
+        + getLimit()
+        + getLineColor()
+        + getLineWidth()
+        + getTextStyle()
+        + isDashedLineEnabled()
+        + setLabel()
+        + setLabelPosition()
+        + setLineColor()
+        + setLineWidth()
+        + setTextStyle()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.components {
+    enum LimitLabelPosition {
+      LEFT_BOTTOM
+      LEFT_TOP
+      RIGHT_BOTTOM
+      RIGHT_TOP
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.components {
+    class com.github.mikephil.charting.components.MarkerImage {
+        - mContext : Context
+        - mDrawable : Drawable
+        - mDrawableBoundsCache : Rect
+        - mWeakChart : WeakReference<Chart>
+        + MarkerImage()
+        + draw()
+        + getChartView()
+        + getOffset()
+        + getOffsetForDrawingAtPoint()
+        + getSize()
+        + refreshContent()
+        + setChartView()
+        + setOffset()
+        + setOffset()
+        + setSize()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.components {
+    class com.github.mikephil.charting.components.MarkerView {
+        - mWeakChart : WeakReference<Chart>
+        + MarkerView()
+        + draw()
+        + getChartView()
+        + getOffset()
+        + getOffsetForDrawingAtPoint()
+        + refreshContent()
+        + setChartView()
+        + setOffset()
+        + setOffset()
+        - setupLayoutResource()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.components {
+    class com.github.mikephil.charting.components.XAxis {
+        + mLabelHeight : int
+        + mLabelRotatedHeight : int
+        + mLabelRotatedWidth : int
+        + mLabelWidth : int
+        # mLabelRotationAngle : float
+        - mAvoidFirstLastClipping : boolean
+        + XAxis()
+        + getLabelRotationAngle()
+        + getPosition()
+        + isAvoidFirstLastClippingEnabled()
+        + setAvoidFirstLastClipping()
+        + setLabelRotationAngle()
+        + setPosition()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.components {
+    enum XAxisPosition {
+      BOTH_SIDED
+      BOTTOM
+      BOTTOM_INSIDE
+      TOP
+      TOP_INSIDE
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.components {
+    class com.github.mikephil.charting.components.YAxis {
+        # mDrawZeroLine : boolean
+        # mInverted : boolean
+        # mMaxWidth : float
+        # mMinWidth : float
+        # mSpacePercentBottom : float
+        # mSpacePercentTop : float
+        # mZeroLineColor : int
+        # mZeroLineWidth : float
+        - mDrawBottomYLabelEntry : boolean
+        - mDrawTopYLabelEntry : boolean
+        - mUseAutoScaleRestrictionMax : boolean
+        - mUseAutoScaleRestrictionMin : boolean
+        - mXLabelOffset : float
+        + YAxis()
+        + YAxis()
+        + calculate()
+        + getAxisDependency()
+        + getLabelPosition()
+        + getLabelXOffset()
+        + getMaxWidth()
+        + getMinWidth()
+        + getRequiredHeightSpace()
+        + getRequiredWidthSpace()
+        + getSpaceBottom()
+        + getSpaceTop()
+        + getZeroLineColor()
+        + getZeroLineWidth()
+        + isDrawBottomYLabelEntryEnabled()
+        + isDrawTopYLabelEntryEnabled()
+        + isDrawZeroLineEnabled()
+        + isInverted()
+        + isUseAutoScaleMaxRestriction()
+        + isUseAutoScaleMinRestriction()
+        + needsOffset()
+        + setDrawTopYLabelEntry()
+        + setDrawZeroLine()
+        + setInverted()
+        + setLabelXOffset()
+        + setMaxWidth()
+        + setMinWidth()
+        + setPosition()
+        + setSpaceBottom()
+        + setSpaceTop()
+        + setStartAtZero()
+        + setUseAutoScaleMaxRestriction()
+        + setUseAutoScaleMinRestriction()
+        + setZeroLineColor()
+        + setZeroLineWidth()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.components {
+    enum AxisDependency {
+      LEFT
+      RIGHT
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.components {
+    enum YAxisLabelPosition {
+      INSIDE_CHART
+      OUTSIDE_CHART
+    }
+  }
+  
+
+  com.github.mikephil.charting.components.AxisBase -up-|> com.github.mikephil.charting.components.ComponentBase
+  com.github.mikephil.charting.components.AxisBase o-- com.github.mikephil.charting.formatter.IAxisValueFormatter : mAxisValueFormatter
+  com.github.mikephil.charting.components.Description -up-|> com.github.mikephil.charting.components.ComponentBase
+  com.github.mikephil.charting.components.Description o-- com.github.mikephil.charting.utils.MPPointF : mPosition
+  com.github.mikephil.charting.components.Legend -up-|> com.github.mikephil.charting.components.ComponentBase
+  com.github.mikephil.charting.components.Legend o-- com.github.mikephil.charting.components.Legend.LegendDirection : mDirection
+  com.github.mikephil.charting.components.Legend o-- com.github.mikephil.charting.components.Legend.LegendHorizontalAlignment : mHorizontalAlignment
+  com.github.mikephil.charting.components.Legend o-- com.github.mikephil.charting.components.Legend.LegendOrientation : mOrientation
+  com.github.mikephil.charting.components.Legend o-- com.github.mikephil.charting.components.Legend.LegendForm : mShape
+  com.github.mikephil.charting.components.Legend o-- com.github.mikephil.charting.components.Legend.LegendVerticalAlignment : mVerticalAlignment
+  com.github.mikephil.charting.components.Legend +-down- com.github.mikephil.charting.components.Legend.LegendDirection
+  com.github.mikephil.charting.components.Legend +-down- com.github.mikephil.charting.components.Legend.LegendForm
+  com.github.mikephil.charting.components.Legend +-down- com.github.mikephil.charting.components.Legend.LegendHorizontalAlignment
+  com.github.mikephil.charting.components.Legend +-down- com.github.mikephil.charting.components.Legend.LegendOrientation
+  com.github.mikephil.charting.components.Legend +-down- com.github.mikephil.charting.components.Legend.LegendVerticalAlignment
+  com.github.mikephil.charting.components.LegendEntry o-- com.github.mikephil.charting.components.Legend.LegendForm : form
+  com.github.mikephil.charting.components.LimitLine -up-|> com.github.mikephil.charting.components.ComponentBase
+  com.github.mikephil.charting.components.LimitLine o-- com.github.mikephil.charting.components.LimitLine.LimitLabelPosition : mLabelPosition
+  com.github.mikephil.charting.components.LimitLine +-down- com.github.mikephil.charting.components.LimitLine.LimitLabelPosition
+  com.github.mikephil.charting.components.MarkerImage .up.|> com.github.mikephil.charting.components.IMarker
+  com.github.mikephil.charting.components.MarkerImage o-- com.github.mikephil.charting.utils.MPPointF : mOffset
+  com.github.mikephil.charting.components.MarkerImage o-- com.github.mikephil.charting.utils.MPPointF : mOffset2
+  com.github.mikephil.charting.components.MarkerImage o-- com.github.mikephil.charting.utils.FSize : mSize
+  com.github.mikephil.charting.components.MarkerView .up.|> com.github.mikephil.charting.components.IMarker
+  com.github.mikephil.charting.components.MarkerView -up-|> android.widget.RelativeLayout
+  com.github.mikephil.charting.components.MarkerView o-- com.github.mikephil.charting.utils.MPPointF : mOffset
+  com.github.mikephil.charting.components.MarkerView o-- com.github.mikephil.charting.utils.MPPointF : mOffset2
+  com.github.mikephil.charting.components.XAxis -up-|> com.github.mikephil.charting.components.AxisBase
+  com.github.mikephil.charting.components.XAxis o-- com.github.mikephil.charting.components.XAxis.XAxisPosition : mPosition
+  com.github.mikephil.charting.components.XAxis +-down- com.github.mikephil.charting.components.XAxis.XAxisPosition
+  com.github.mikephil.charting.components.YAxis -up-|> com.github.mikephil.charting.components.AxisBase
+  com.github.mikephil.charting.components.YAxis o-- com.github.mikephil.charting.components.YAxis.AxisDependency : mAxisDependency
+  com.github.mikephil.charting.components.YAxis o-- com.github.mikephil.charting.components.YAxis.YAxisLabelPosition : mPosition
+  com.github.mikephil.charting.components.YAxis +-down- com.github.mikephil.charting.components.YAxis.AxisDependency
+  com.github.mikephil.charting.components.YAxis +-down- com.github.mikephil.charting.components.YAxis.YAxisLabelPosition
+
+
+right footer
+
+
+PlantUML diagram generated by SketchIt! (https://bitbucket.org/pmesmeur/sketch.it)
+For more information about this tool, please contact philippe.mesmeur@gmail.com
+endfooter
+
+@enduml
