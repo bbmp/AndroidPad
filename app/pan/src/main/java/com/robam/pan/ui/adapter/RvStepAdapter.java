@@ -20,12 +20,9 @@ public class RvStepAdapter extends BaseQuickAdapter<RecipeStep, BaseViewHolder> 
     protected void convert(@NonNull BaseViewHolder baseViewHolder, RecipeStep recipeStep) {
         if (null != recipeStep) {
             baseViewHolder.setText(R.id.tv_step_des, String.format(getContext().getString(R.string.pan_recipe_step_des), recipeStep.getNo() + "", recipeStep.getDesc()));
-            if (recipeStep.hideImage)
-                baseViewHolder.getView(R.id.iv_step_img).setVisibility(View.GONE);
-            else {
-                ImageView imageView = baseViewHolder.getView(R.id.iv_step_img);
-                ImageUtils.loadImage(getContext(), recipeStep.image, imageView);
-            }
+            ImageView imageView = baseViewHolder.getView(R.id.iv_step_img);
+            ImageUtils.loadImage(getContext(), recipeStep.image, imageView);
+
         }
     }
 }

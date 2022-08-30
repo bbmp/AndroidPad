@@ -14,4 +14,6 @@ public class StoveConstant {
     public final static int MODE_TIMING = 4;   //定时
 
     public final static String EXTRA_RECIPE_ID = "recipeid";
+    public final static String EXTRA_RECIPE_STEP = "recipestep";
+    public final static String EXTRA_RECIPE_DETAIL = "recipedetail";
 }

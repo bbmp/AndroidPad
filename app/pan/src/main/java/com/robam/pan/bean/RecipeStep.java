@@ -12,6 +12,8 @@ public class RecipeStep implements Serializable {
      * 步骤时间
      */
     public int needTime;
+    //已经过去的时间
+    public int elapsedTime;
 
     //步骤图片
     public String image;
@@ -21,8 +23,6 @@ public class RecipeStep implements Serializable {
     private int no;
     //设备
     private String dc;
-    //隐藏步骤图片，用于显示
-    public boolean hideImage;
 
     public String getDesc() {
         return desc;

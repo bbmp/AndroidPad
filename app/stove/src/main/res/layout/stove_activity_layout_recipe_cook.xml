@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/stove_ic_bg"
+    tools:context=".ui.activity.RecipeCookActivity">
+
+    <include
+        android:id="@+id/ll_title"
+        layout="@layout/stove_view_layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.robam.common.ui.view.RoundImageView
+        android:id="@+id/iv_recipe"
+        android:layout_width="@dimen/dp_286"
+        android:layout_height="@dimen/dp_226"
+        android:layout_marginTop="@dimen/dp_30"
+        android:scaleType="centerCrop"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@id/pan_guideline5"
+        app:layout_constraintTop_toBottomOf="@id/ll_title"
+        app:common_riv_corner_radius="@dimen/dp_20"/>
+
+    <TextView
+        android:id="@+id/tv_fire"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_15"
+        android:textSize="@dimen/sp_24"
+        android:textColor="@color/stove_white"
+        app:layout_constraintLeft_toLeftOf="@id/iv_recipe"
+        app:layout_constraintRight_toLeftOf="@id/tv_air"
+        app:layout_constraintTop_toBottomOf="@id/iv_recipe"
+        tools:text="火力"/>
+    <TextView
+        android:id="@+id/tv_air"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_24"
+        android:textColor="@color/stove_white"
+        app:layout_constraintLeft_toRightOf="@id/tv_fire"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_fire"
+        app:layout_constraintRight_toRightOf="@id/iv_recipe"
+        tools:text="风量"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_step"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginRight="@dimen/dp_90"
+        android:layout_marginVertical="@dimen/dp_30"
+        android:verticalScrollbarPosition="left"
+        app:layout_constraintLeft_toLeftOf="@id/pan_guideline5"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_title"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+    <TextView
+        android:id="@+id/tv_switch_step"
+        android:layout_width="@dimen/dp_175"
+        android:layout_height="@dimen/dp_45"
+        android:layout_marginLeft="@dimen/dp_110"
+        android:layout_marginBottom="@dimen/dp_110"
+        android:background="@drawable/stove_shape_button_bg_cancel"
+        android:gravity="center"
+        android:text="@string/stove_switch_step"
+        android:textColor="@color/stove_white"
+        android:textSize="@dimen/sp_20"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/pan_guideline5" />
+
+    <TextView
+        android:id="@+id/tv_pause_cook"
+        android:layout_width="@dimen/dp_175"
+        android:layout_height="@dimen/dp_56"
+        android:layout_marginRight="@dimen/dp_40"
+        android:layout_marginBottom="@dimen/dp_24"
+        android:background="@drawable/stove_shape_button_bg_ok"
+        android:gravity="center"
+        android:text="@string/stove_pause_cook"
+        android:textColor="@color/stove_white"
+        android:textSize="@dimen/sp_30"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_continue_cook"
+        android:layout_width="@dimen/dp_175"
+        android:layout_height="@dimen/dp_56"
+        android:layout_marginRight="@dimen/dp_40"
+        android:layout_marginBottom="@dimen/dp_24"
+        android:background="@drawable/stove_shape_button_bg_ok"
+        android:gravity="center"
+        android:text="@string/stove_continue_cook"
+        android:textColor="@color/stove_white"
+        android:textSize="@dimen/sp_30"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/pan_guideline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.37" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

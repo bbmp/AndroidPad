@@ -2,12 +2,15 @@ package com.robam.pan.ui.activity;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 
+import android.os.Handler;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.robam.common.ui.dialog.IDialog;
+import com.robam.common.ui.helper.VerticalSpaceItemDecoration;
 import com.robam.common.ui.view.MCountdownView;
 import com.robam.common.utils.DateUtil;
 import com.robam.pan.bean.RecipeStep;
@@ -16,6 +19,7 @@ import com.robam.pan.R;
 import com.robam.pan.base.PanBaseActivity;
 import com.robam.pan.constant.PanConstant;
 import com.robam.pan.factory.PanDialogFactory;
+import com.robam.pan.ui.adapter.RvStep2Adapter;
 import com.robam.pan.ui.adapter.RvStepAdapter;
 
 import java.util.ArrayList;
@@ -25,15 +29,16 @@ public class CurveRestoreActivity extends PanBaseActivity {
     private RecyclerView rvStep;
     private TextView tvStop;
     //步骤
-    private RvStepAdapter rvStepAdapter;
+    private RvStep2Adapter rvStep2Adapter;
     //当前步骤
     private TextView tvStep;
-    //倒计时
-    private MCountdownView tvCountdown;
+
     //步骤
     private ArrayList<RecipeStep> recipeSteps;
 
-    private ProgressBar pbTime;
+    private Handler mHandler = new Handler();
+    private Runnable runnable;
+    private LinearLayoutManager linearLayoutManager;
 
     private int curStep = 0;
 
@@ -51,25 +56,59 @@ public class CurveRestoreActivity extends PanBaseActivity {
         rvStep = findViewById(R.id.rv_step);
         tvStop = findViewById(R.id.tv_stop_cook);
         tvStep = findViewById(R.id.tv_cur_step);
-        tvCountdown = findViewById(R.id.tv_countdown);
-        pbTime = findViewById(R.id.pb_time);
-        rvStep.setLayoutManager(new LinearLayoutManager(this));
+        linearLayoutManager = new LinearLayoutManager(this);
+        rvStep.setLayoutManager(linearLayoutManager);
+        rvStep.addItemDecoration(new VerticalSpaceItemDecoration((int) getResources().getDimension(com.robam.common.R.dimen.dp_30)));
+        rvStep2Adapter = new RvStep2Adapter();
+        rvStep.setAdapter(rvStep2Adapter);
+        //关闭动画,防止闪烁
+        ((SimpleItemAnimator)rvStep.getItemAnimator()).setSupportsChangeAnimations(false);
         setOnClickListener(R.id.ll_left, R.id.tv_stop_cook);
-        rvStepAdapter = new RvStepAdapter();
-        rvStep.setAdapter(rvStepAdapter);
+
     }
 
     @Override
     protected void initData() {
         if (null != recipeSteps) {
-            //步骤图片不显示
-            for (int i=0; i<recipeSteps.size(); i++)
-                recipeSteps.get(i).hideImage = true;
-            tvStep.setText(String.format(getResources().getString(R.string.pan_cur_step), curStep+1+"", recipeSteps.size()+""));
-            rvStepAdapter.setList(recipeSteps);
 
-            setCountDownTime(recipeSteps.get(curStep).needTime);
+            //步骤
+            rvStep2Adapter.setList(recipeSteps);
+            Countdown();
         }
+    }
+    //启动倒计时
+    private void Countdown() {
+
+        runnable = new Runnable() {
+
+            @Override
+
+            public void run() {
+
+                if (curStep >= rvStep2Adapter.getData().size()) {
+                    //工作结束
+                    //去烹饪结束
+                    startActivity(CurveSaveActivity.class);
+                    finish();
+                    return;
+                }
+                RecipeStep recipeStep = rvStep2Adapter.getData().get(curStep);
+
+                if (recipeStep.needTime > 0) {
+                    recipeStep.elapsedTime++;
+                    if (recipeStep.elapsedTime == recipeStep.needTime) {
+                        nextStep();
+                    }
+                    rvStep2Adapter.notifyItemChanged(curStep);
+
+                }
+
+                mHandler.postDelayed(runnable, 1000L);
+
+            }
+
+        };
+        mHandler.postDelayed(runnable, 1000L);
     }
 
     @Override
@@ -80,55 +119,45 @@ public class CurveRestoreActivity extends PanBaseActivity {
             stopCook();
         }
     }
-    /**
-     * 设置倒计时
-     */
-    private void setCountDownTime(int totalTime) {
-
-        tvCountdown.setTotalTime(totalTime);
-
-        tvCountdown.addOnCountDownListener(new MCountdownView.OnCountDownListener() {
-            @Override
-            public void onCountDown(int currentSecond) {
-                String time = DateUtil.secForMatTime(currentSecond);
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        tvCountdown.setText(time);
-                        pbTime.setProgress((totalTime-currentSecond)*100/ totalTime);
-                        if (currentSecond <= 0)
-                            ;
-                    }
-                });
-            }
-        });
-        tvCountdown.start();
-    }
 
     //停止烹饪提示
     private void stopCook() {
         IDialog iDialog = PanDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_PAN_COMMON);
         iDialog.setCancelable(false);
-        iDialog.setContentText(R.string.pan_stop_creation_hint);
-        iDialog.setCancelText(R.string.pan_stop_creation);
-        iDialog.setOKText(R.string.pan_continue_creation);
+        iDialog.setContentText(R.string.pan_stop_cook_hint);
+        iDialog.setOKText(R.string.pan_stop_cook);
         iDialog.setListeners(new IDialog.DialogOnClickListener() {
             @Override
             public void onClick(View v) {
-                //结束创作
-                if (v.getId() == R.id.tv_cancel) {
-                    finish();
+                //停止烹饪
+                if (v.getId() == R.id.tv_ok) {
+                    //回首页
+                    startActivity(MainActivity.class);
                 }
             }
         }, R.id.tv_cancel, R.id.tv_ok);
         iDialog.show();
     }
 
+    //切換步驟
+    private void nextStep() {
+        curStep++; //下一步
+        rvStep2Adapter.setCurStep(curStep);
+        //滑动和置顶
+        linearLayoutManager.scrollToPositionWithOffset(curStep, 0);
+        rvStep2Adapter.notifyDataSetChanged();
+    }
+
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (null != tvCountdown)
-            tvCountdown.stop();
+        closeCountDown();
+    }
+
+    private void closeCountDown() {
+        mHandler.removeCallbacks(runnable);
+
+        mHandler.removeCallbacksAndMessages(null);
     }
 }

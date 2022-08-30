@@ -188,7 +188,7 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
                         ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.GONE);
                         ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(1).setVisibility(View.VISIBLE);
                     } else {
-
+                        //煎炸温度
                         ArrayList<String> tempList = new ArrayList<>();
                         for (int i = modeBean.minTemp; i <= modeBean.maxTemp; i++) {
                             tempList.add(i + "");

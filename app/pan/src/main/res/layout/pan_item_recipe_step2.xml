@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tv_cur_step"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pan_cur_step"
+        android:textColor="@color/pan_step"
+        android:textSize="@dimen/sp_32"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_countdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/pan_step"
+        android:textSize="@dimen/sp_32"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_cur_step"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/pb_time"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_10"
+        android:max="100"
+        android:progress="0"
+        android:progressDrawable="@drawable/pan_shape_progress_bg"
+        app:layout_constraintLeft_toLeftOf="@id/tv_cur_step"
+        app:layout_constraintRight_toRightOf="@id/tv_countdown"
+        app:layout_constraintTop_toBottomOf="@id/tv_cur_step" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_step_des"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:textColor="@color/pan_white"
+        android:textSize="@dimen/sp_32"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pb_time"
+        tools:text="迭迭香烤牛排" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/pan_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="tv_countdown,pb_time" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

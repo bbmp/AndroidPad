@@ -1,5 +1,6 @@
 package com.robam.stove.ui.activity;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,7 +20,6 @@ import com.robam.common.utils.ImageUtils;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBaseActivity;
 import com.robam.stove.bean.Material;
-import com.robam.stove.bean.MaterialClassify;
 import com.robam.stove.bean.RecipeStep;
 import com.robam.stove.bean.StoveRecipeDetail;
 import com.robam.stove.constant.StoveConstant;
@@ -47,6 +47,8 @@ public class RecipeDetailActivity extends StoveBaseActivity {
     //步骤
     private RecyclerView rvStep;
     private RvStepAdapter rvStepAdapter;
+    //菜谱详情
+    private StoveRecipeDetail stoveRecipeDetail;
     private long recipeId;
 
     private RequestOptions maskOption = new RequestOptions()
@@ -108,6 +110,7 @@ public class RecipeDetailActivity extends StoveBaseActivity {
             @Override
             public void onSuccess(GetRecipeDetailRes getRecipeDetailRes) {
                 if (null != getRecipeDetailRes && null != getRecipeDetailRes.cookbook)
+                    stoveRecipeDetail = getRecipeDetailRes.cookbook;
                     setData(getRecipeDetailRes.cookbook);
             }
 
@@ -134,9 +137,10 @@ public class RecipeDetailActivity extends StoveBaseActivity {
             materials.addAll(stoveRecipeDetail.materials.accessory);
         rvMaterialAdapter.setList(materials);
         //步骤
-        List<RecipeStep> recipeSteps = new ArrayList<>();
-        if (null != stoveRecipeDetail.steps)
+        ArrayList<RecipeStep> recipeSteps = new ArrayList<>();
+        if (null != stoveRecipeDetail.steps) {
             recipeSteps.addAll(stoveRecipeDetail.steps);
+        }
         rvStepAdapter.setList(recipeSteps);
     }
 
@@ -172,7 +176,11 @@ public class RecipeDetailActivity extends StoveBaseActivity {
                 group1.setVisibility(View.GONE);
             }
         } else if (id == R.id.btn_start) {//开始烹饪
-
+            Intent intent = new Intent();
+            intent.setClass(this, RecipeCookActivity.class);
+            if (null != stoveRecipeDetail)
+                intent.putExtra(StoveConstant.EXTRA_RECIPE_DETAIL, stoveRecipeDetail);
+            startActivity(intent);
         }
     }
 }

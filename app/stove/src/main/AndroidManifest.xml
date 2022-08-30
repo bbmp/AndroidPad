@@ -4,9 +4,21 @@
 
     <application>
         <activity
-            android:name=".ui.activity.RecipeDetailActivity"
+            android:name=".ui.activity.CurveSelectedActivity"
             android:exported="false"
             android:screenOrientation="landscape"/>
+        <activity
+            android:name=".ui.activity.CurveRestoreActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.RecipeCookActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.RecipeDetailActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".ui.activity.TimeSelectActivity"
             android:exported="false"

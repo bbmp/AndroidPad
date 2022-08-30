@@ -1,8 +1,9 @@
 package com.robam.stove.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class StoveRecipeDetail {
+public class StoveRecipeDetail implements Serializable {
     public long id;
     //名字
     public String name;

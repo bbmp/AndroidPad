@@ -4,47 +4,56 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/pan_ic_bg"
-    tools:context=".ui.activity.CurveRestoreActivity">
+    android:background="@drawable/stove_ic_bg"
+    tools:context=".ui.activity.CurveSelectedActivity">
 
     <include
         android:id="@+id/ll_title"
-        layout="@layout/pan_view_layout_title"
+        layout="@layout/stove_view_layout_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/tv_recipe_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_48"
+        android:layout_marginTop="@dimen/dp_60"
+        android:layout_marginLeft="@dimen/dp_40"
+        android:textColor="@color/stove_white"
+        app:layout_constraintLeft_toLeftOf="@id/pan_guideline4"
+        app:layout_constraintTop_toBottomOf="@id/ll_title"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_step"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginRight="@dimen/dp_90"
-        android:layout_marginVertical="@dimen/dp_30"
+        android:layout_height="wrap_content"
         android:verticalScrollbarPosition="left"
-        app:layout_constraintLeft_toLeftOf="@id/pan_guideline5"
+        android:scrollbars="vertical"
+        android:scrollbarThumbVertical="@drawable/stove_shape_scrollbar_bg"
+        android:layout_marginTop="@dimen/dp_30"
+        app:layout_constraintLeft_toLeftOf="@id/pan_guideline4"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_title"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
+        app:layout_constraintTop_toBottomOf="@id/tv_recipe_name"/>
     <TextView
-        android:id="@+id/tv_stop_cook"
+        android:id="@+id/tv_start_cook"
         android:layout_width="@dimen/dp_175"
         android:layout_height="@dimen/dp_56"
         android:layout_marginRight="@dimen/dp_40"
         android:layout_marginBottom="@dimen/dp_24"
-        android:background="@drawable/pan_shape_button_bg_ok"
+        android:background="@drawable/stove_shape_button_bg_ok"
         android:gravity="center"
-        android:text="@string/pan_stop_cook"
-        android:textColor="@color/pan_white"
+        android:text="@string/stove_start_working"
+        android:textColor="@color/stove_white"
         android:textSize="@dimen/sp_30"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
+
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/pan_guideline5"
+        android:id="@+id/pan_guideline4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.37" />
-
+        app:layout_constraintGuide_percent="0.5" />
 </androidx.constraintlayout.widget.ConstraintLayout>

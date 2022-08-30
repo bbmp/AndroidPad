@@ -49,4 +49,6 @@
     <string name="pan_no_recipe">没有相关菜谱</string>
     <string name="pan_recipe_step_des">%s.%s</string>
     <string name="pan_cur_step">当前步骤%s/%s</string>
+    <string name="pan_step2">步骤%s/%s</string>
+    <string name="pan_stop_cook_hint">确认结束当前烹饪</string>
 </resources>

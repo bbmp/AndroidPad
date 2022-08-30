@@ -1,6 +1,9 @@
 package com.robam.stove.bean;
 
-public class RecipeStep {
+import java.io.Serializable;
+import java.util.List;
+
+public class RecipeStep implements Serializable {
     /**
      * 步骤描述
      */
@@ -9,7 +12,12 @@ public class RecipeStep {
     /**
      * 步骤时间
      */
-    public String needTime;
+    public int needTime;
+
+    /**
+     * 已过时间
+     */
+    public int elapsedTime;
 
     //步骤图片
     public String image;
@@ -17,6 +25,9 @@ public class RecipeStep {
      * 步骤
      */
     private int no;
+    //步骤参数
+    public List<StepParams> params;
+
     //设备
     private String dc;
 
