@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.widget.TextView;
 
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.CircleProgressView;
@@ -22,6 +23,8 @@ public class WorkActivity extends DishWasherBaseActivity {
      */
     private CircleProgressView cpgBar;
 
+    private TextView tvTime;
+
     @Override
     protected int getLayoutId() {
         return R.layout.dishwasher_activity_layout_work;
@@ -34,6 +37,7 @@ public class WorkActivity extends DishWasherBaseActivity {
         showLeft();
         showCenter();
         cpgBar = findViewById(R.id.progress);
+        tvTime = findViewById(R.id.tv_time);
         cpgBar.setProgress(0);
 handler.sendEmptyMessageDelayed(0, 1000);
         setOnClickListener(R.id.ll_left, R.id.iv_float);
@@ -77,5 +81,11 @@ handler.sendEmptyMessageDelayed(0, 1000);
             }
         }, R.id.tv_cancel, R.id.tv_ok);
         iDialog.show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacksAndMessages(null);
     }
 }

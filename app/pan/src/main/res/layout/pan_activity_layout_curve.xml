@@ -21,4 +21,19 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ll_title"
         app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_delete"
+        android:layout_width="@dimen/dp_175"
+        android:layout_height="@dimen/dp_56"
+        android:layout_marginLeft="@dimen/dp_24"
+        android:layout_marginBottom="@dimen/dp_24"
+        android:textSize="@dimen/sp_30"
+        android:textColor="@color/pan_white"
+        android:gravity="center"
+        android:text="@string/pan_delete_ok"
+        android:visibility="gone"
+        android:background="@drawable/pan_shape_button_bg_ok"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

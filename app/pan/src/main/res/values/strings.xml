@@ -51,4 +51,5 @@
     <string name="pan_cur_step">当前步骤%s/%s</string>
     <string name="pan_step2">步骤%s/%s</string>
     <string name="pan_stop_cook_hint">确认结束当前烹饪</string>
+    <string name="pan_delete_ok">确认删除</string>
 </resources>

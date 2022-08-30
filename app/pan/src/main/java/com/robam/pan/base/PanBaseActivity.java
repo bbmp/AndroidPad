@@ -28,6 +28,10 @@ public abstract class PanBaseActivity extends BaseActivity {
         findViewById(R.id.ll_right).setVisibility(View.VISIBLE);
     }
 
+    public void hideRight() {
+        findViewById(R.id.ll_right).setVisibility(View.GONE);
+    }
+
     public void setRight(int res) {
         findViewById(R.id.ll_right).setVisibility(View.VISIBLE);
         TextView textView = findViewById(R.id.tv_right);
