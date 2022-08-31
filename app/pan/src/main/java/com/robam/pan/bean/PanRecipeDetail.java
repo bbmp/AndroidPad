@@ -15,4 +15,12 @@ public class PanRecipeDetail implements Serializable {
     public List<RecipeStep> steps;
     //食材分类
     public MaterialClassify materials;
+    //曲线菜谱id
+    public long curveCookbookId;
+    //温度参数
+    public String temperatureCurveParams;
+    //电机参数
+    public String curveStageParams;
+    //曲线步骤
+    public List<CurveStep> curveStepDtoList;
 }

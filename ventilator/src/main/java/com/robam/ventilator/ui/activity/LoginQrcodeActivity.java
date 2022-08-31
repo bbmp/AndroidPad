@@ -1,21 +1,10 @@
 package com.robam.ventilator.ui.activity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.google.gson.Gson;
-import com.robam.common.bean.BaseResponse;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MMKVUtils;
@@ -23,14 +12,12 @@ import com.robam.common.utils.QrUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
-import com.robam.ventilator.bean.AccountInfo;
-import com.robam.ventilator.bean.UserInfo;
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.UserInfo;
 import com.robam.ventilator.http.CloudHelper;
 import com.robam.ventilator.response.GetLoginStatusRes;
 import com.robam.ventilator.response.GetUserInfoRes;
 
-import java.lang.ref.WeakReference;
-import java.util.Random;
 import java.util.UUID;
 
 public class LoginQrcodeActivity extends VentilatorBaseActivity {

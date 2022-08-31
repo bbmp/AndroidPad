@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,6 +18,7 @@ import com.robam.pan.constant.DialogConstant;
 import com.robam.pan.R;
 import com.robam.pan.base.PanBaseActivity;
 import com.robam.pan.bean.PanRecipe;
+import com.robam.pan.constant.PanConstant;
 import com.robam.pan.factory.PanDialogFactory;
 import com.robam.pan.ui.adapter.RvFavoriteAdapter;
 
@@ -76,8 +78,14 @@ public class CurveActivity extends PanBaseActivity {
                 //删除状态不响应
                 if (rvFavoriteAdapter.getStatus() != rvFavoriteAdapter.STATUS_BACK)
                     return;
-                if (position == 0)
+                if (position == 0) //曲线创作
                     selectStove();
+                else {
+                    Intent intent = new Intent();
+                    intent.setClass(CurveActivity.this, RecipeSelectedActivity.class);
+                    intent.putExtra(PanConstant.EXTRA_RECIPE_ID, 15292L);
+                    startActivity(intent);
+                }
             }
         });
         rvFavoriteAdapter.setOnItemChildClickListener(new OnItemChildClickListener() {

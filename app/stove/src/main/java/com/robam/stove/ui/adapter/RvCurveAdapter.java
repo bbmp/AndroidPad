@@ -13,9 +13,10 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.robam.common.utils.ImageUtils;
 import com.robam.stove.R;
+import com.robam.stove.bean.StoveCurveInfo;
 import com.robam.stove.bean.StoveRecipe;
 
-public class RvCurveAdapter extends BaseQuickAdapter<StoveRecipe, BaseViewHolder> {
+public class RvCurveAdapter extends BaseQuickAdapter<StoveCurveInfo, BaseViewHolder> {
     private RequestOptions maskOption = new RequestOptions()
             .centerCrop()
             .placeholder(R.drawable.stove_recipe_img_bg) //预加载图片
@@ -47,21 +48,21 @@ public class RvCurveAdapter extends BaseQuickAdapter<StoveRecipe, BaseViewHolder
 
 
     @Override
-    protected void convert(@NonNull BaseViewHolder baseViewHolder, StoveRecipe stoveRecipe) {
+    protected void convert(@NonNull BaseViewHolder baseViewHolder, StoveCurveInfo stoveCurveInfo) {
         if (status == STATUS_ALL) {
             baseViewHolder.getView(R.id.iv_select).setSelected(true);
             baseViewHolder.setVisible(R.id.iv_select, true);
         }
         //删除状态
         else if (status == STATUS_DELETE) {
-            baseViewHolder.getView(R.id.iv_select).setSelected(stoveRecipe.isSelected());
+            baseViewHolder.getView(R.id.iv_select).setSelected(stoveCurveInfo.isSelected());
             baseViewHolder.setVisible(R.id.iv_select, true);
         } else {
             baseViewHolder.setVisible(R.id.iv_select, false);
         }
 
         ImageView imageView = baseViewHolder.getView(R.id.iv_recipe);
-        ImageUtils.loadImage(getContext(), stoveRecipe.getImgUrl(), maskOption, imageView);
-        baseViewHolder.setText(R.id.tv_recipe, stoveRecipe.getName());
+        ImageUtils.loadImage(getContext(), stoveCurveInfo.imageCover, maskOption, imageView);
+        baseViewHolder.setText(R.id.tv_recipe, stoveCurveInfo.name);
     }
 }

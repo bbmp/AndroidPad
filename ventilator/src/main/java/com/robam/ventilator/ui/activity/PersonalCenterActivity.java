@@ -2,46 +2,32 @@ package com.robam.ventilator.ui.activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.Group;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.lifecycle.Observer;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.PagerSnapHelper;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
-import androidx.viewpager2.widget.ViewPager2;
 
-import android.app.UiAutomation;
-import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.robam.common.bean.BaseResponse;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.PageIndicator;
 import com.robam.common.utils.ImageUtils;
 import com.robam.common.utils.LogUtils;
-import com.robam.stove.ui.activity.ModeSelectActivity;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
-import com.robam.ventilator.bean.AccountInfo;
+import com.robam.common.bean.AccountInfo;
 import com.robam.ventilator.bean.Device;
-import com.robam.ventilator.bean.ProductMutiItem;
-import com.robam.ventilator.bean.UserInfo;
+import com.robam.common.bean.UserInfo;
 import com.robam.ventilator.constant.DialogConstant;
 import com.robam.ventilator.factory.VentilatorDialogFactory;
 import com.robam.ventilator.http.CloudHelper;
 import com.robam.ventilator.response.GetDeviceRes;
-import com.robam.ventilator.response.GetUserInfoRes;
 import com.robam.ventilator.ui.pages.DeviceUserPage;
 
 import java.lang.ref.WeakReference;

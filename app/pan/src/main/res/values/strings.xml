@@ -15,7 +15,7 @@
     <string name="pan_cancel">取消</string>
     <string name="pan_curve_hint">烹饪曲线需搭配智能灶具进行烹饪</string>
     <string name="pan_match_stove">匹配灶具</string>
-    <string name="pan_stop_creation_hint">是否结束当前创作烹饪工作？</string>
+    <string name="pan_stop_creation_hint">确认结束当前创作</string>
     <string name="pan_stop_creation">结束创作</string>
     <string name="pan_continue_creation">继续创作</string>
     <string name="pan_connect_retry">重新连接</string>

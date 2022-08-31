@@ -41,6 +41,8 @@ public class HomePage extends StoveBasePage {
     private ImageView imageView;
     private ImageView ivLock;
 
+    private IDialog iDialogStop, iDialogAffirm;
+
     @Override
     protected int getLayoutId() {
         return R.layout.stove_page_layout_home;
@@ -76,7 +78,7 @@ public class HomePage extends StoveBasePage {
         rvMainFunctionAdapter = new RvMainFunctionAdapter();
 
         rvMain.setAdapter(rvMainFunctionAdapter);
-        setOnClickListener(R.id.iv_float, R.id.ll_left_stove, R.id.ll_right_stove);
+        setOnClickListener(R.id.iv_float, R.id.ll_left_stove, R.id.ll_right_stove, R.id.iv_lock);
     }
 
     @Override
@@ -104,14 +106,7 @@ public class HomePage extends StoveBasePage {
                 startActivity(intent);
             }
         });
-        //长按锁屏
-        ClickUtils.setLongClick(new Handler(), ivLock, 2000, new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                screenLock();
-                return true;
-            }
-        });
+
     }
 
     //锁屏
@@ -128,7 +123,57 @@ public class HomePage extends StoveBasePage {
                 return true;
             }
         });
+        //分别设置左右灶
+        LinearLayout leftStove = iDialog.getRootView().findViewById(R.id.ll_left_stove);
+        LinearLayout rightStove = iDialog.getRootView().findViewById(R.id.ll_right_stove);
+        leftStove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stopCook();
+            }
+        });
+        rightStove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stopCook();
+            }
+        });
         iDialog.show();
+    }
+
+    //锁屏确认
+    private void affirmLock() {
+        if (null == iDialogAffirm) {
+            iDialogAffirm = StoveDialogFactory.createDialogByType(getContext(), DialogConstant.DIALOG_TYPE_STOVE_COMMON);
+            iDialogAffirm.setCancelable(false);
+            iDialogAffirm.setContentText(R.string.stove_affirm_lock_hint);
+            iDialogAffirm.setOKText(R.string.stove_ok);
+            iDialogAffirm.setListeners(new IDialog.DialogOnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (v.getId() == R.id.tv_ok)
+                        screenLock();
+                }
+            }, R.id.tv_cancel, R.id.tv_ok);
+        }
+        iDialogAffirm.show();
+    }
+    //确认结束烹饪
+    private void stopCook() {
+        if (null == iDialogStop) {
+            iDialogStop = StoveDialogFactory.createDialogByType(getContext(), DialogConstant.DIALOG_TYPE_STOVE_COMMON);
+            iDialogStop.setCancelable(false);
+            iDialogStop.setContentText(R.string.stove_stop_cook_hint);
+            iDialogStop.setOKText(R.string.stove_stop_cook);
+            iDialogStop.setListeners(new IDialog.DialogOnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (v.getId() == R.id.tv_ok)
+                        ;
+                }
+            }, R.id.tv_cancel, R.id.tv_ok);
+        }
+        iDialogStop.show();
     }
 
     /**
@@ -151,16 +196,12 @@ public class HomePage extends StoveBasePage {
             intent.setClassName(getContext(), "com.robam.ventilator.ui.activity.ShortcutActivity");
             startActivity(intent);
         } else if (id == R.id.ll_left_stove) {
-            if (!llLeftStove.isSelected()) {
-                //左灶
-                llLeftStove.setSelected(true);
-                llRightStove.setSelected(false);
-            }
+            stopCook();
         } else if (id == R.id.ll_right_stove) {
-            if (!llRightStove.isSelected()) {
-                llRightStove.setSelected(true);
-                llLeftStove.setSelected(false);
-            }
+
+        } else if (id == R.id.iv_lock) {
+            //锁屏提示
+            affirmLock();
         }
     }
 }

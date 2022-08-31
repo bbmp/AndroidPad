@@ -1,19 +1,17 @@
 package com.robam.ventilator.ui.activity;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
-import com.robam.ventilator.bean.AccountInfo;
+import com.robam.common.bean.AccountInfo;
 import com.robam.ventilator.bean.Device;
 import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.ui.adapter.RvAddDeviceAdapter;

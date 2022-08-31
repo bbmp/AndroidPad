@@ -4,23 +4,21 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.VerticalSpaceItemDecoration;
-import com.robam.common.ui.view.MCountdownView;
-import com.robam.common.utils.DateUtil;
-import com.robam.pan.bean.RecipeStep;
+import com.robam.pan.bean.CurveStep;
+import com.robam.pan.bean.PanRecipeDetail;
 import com.robam.pan.constant.DialogConstant;
 import com.robam.pan.R;
 import com.robam.pan.base.PanBaseActivity;
 import com.robam.pan.constant.PanConstant;
 import com.robam.pan.factory.PanDialogFactory;
 import com.robam.pan.ui.adapter.RvStep2Adapter;
-import com.robam.pan.ui.adapter.RvStepAdapter;
 
 import java.util.ArrayList;
 
@@ -33,8 +31,8 @@ public class CurveRestoreActivity extends PanBaseActivity {
     //当前步骤
     private TextView tvStep;
 
-    //步骤
-    private ArrayList<RecipeStep> recipeSteps;
+    //菜谱详情
+    private PanRecipeDetail panRecipeDetail;
 
     private Handler mHandler = new Handler();
     private Runnable runnable;
@@ -52,7 +50,7 @@ public class CurveRestoreActivity extends PanBaseActivity {
         showLeft();
         showCenter();
         if (null != getIntent())
-            recipeSteps = (ArrayList<RecipeStep>) getIntent().getSerializableExtra(PanConstant.EXTRA_RECIPE_STEP);
+            panRecipeDetail = (PanRecipeDetail) getIntent().getSerializableExtra(PanConstant.EXTRA_RECIPE_DETAIL);
         rvStep = findViewById(R.id.rv_step);
         tvStop = findViewById(R.id.tv_stop_cook);
         tvStep = findViewById(R.id.tv_cur_step);
@@ -69,11 +67,21 @@ public class CurveRestoreActivity extends PanBaseActivity {
 
     @Override
     protected void initData() {
-        if (null != recipeSteps) {
-
-            //步骤
-            rvStep2Adapter.setList(recipeSteps);
-            Countdown();
+        if (null != panRecipeDetail) {
+            if (null != panRecipeDetail.curveStepDtoList) {
+                ArrayList<CurveStep> curveSteps = new ArrayList<>();
+                curveSteps.addAll(panRecipeDetail.curveStepDtoList);
+                //处理时长
+                int i = 0;
+                for (i=0; i<curveSteps.size() - 1; i++) {
+                    curveSteps.get(i).needTime = curveSteps.get(i+1).markTime - curveSteps.get(i).markTime;
+                }
+                //最后一步
+                curveSteps.get(i).needTime = panRecipeDetail.needTime - curveSteps.get(i).markTime;
+                //步骤
+                rvStep2Adapter.setList(curveSteps);
+                Countdown();
+            }
         }
     }
     //启动倒计时
@@ -86,17 +94,21 @@ public class CurveRestoreActivity extends PanBaseActivity {
             public void run() {
 
                 if (curStep >= rvStep2Adapter.getData().size()) {
-                    //工作结束
+                    //还原结束
                     //去烹饪结束
-                    startActivity(CurveSaveActivity.class);
+                    Intent intent = new Intent();
+                    if (null != panRecipeDetail)
+                        intent.putExtra(PanConstant.EXTRA_RECIPE_DETAIL, panRecipeDetail);
+                    intent.setClass(CurveRestoreActivity.this, RestoreCompleteActivity.class);
+                    startActivity(intent);
                     finish();
                     return;
                 }
-                RecipeStep recipeStep = rvStep2Adapter.getData().get(curStep);
+                CurveStep curveStep = rvStep2Adapter.getData().get(curStep);
 
-                if (recipeStep.needTime > 0) {
-                    recipeStep.elapsedTime++;
-                    if (recipeStep.elapsedTime == recipeStep.needTime) {
+                if (curveStep.needTime > 0) {
+                    curveStep.elapsedTime++;
+                    if (curveStep.elapsedTime == curveStep.needTime) {
                         nextStep();
                     }
                     rvStep2Adapter.notifyItemChanged(curStep);

@@ -9,11 +9,15 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
+import com.robam.common.ui.helper.VerticalSpaceItemDecoration;
 import com.robam.pan.R;
 import com.robam.pan.base.PanBaseActivity;
+import com.robam.pan.bean.CurveStep;
 import com.robam.pan.bean.PanRecipeDetail;
 import com.robam.pan.bean.RecipeStep;
 import com.robam.pan.constant.DialogConstant;
@@ -24,7 +28,9 @@ import com.robam.pan.response.GetRecipeDetailRes;
 import com.robam.pan.ui.adapter.RvStepAdapter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 //菜谱选中页面
 public class RecipeSelectedActivity extends PanBaseActivity {
@@ -35,8 +41,9 @@ public class RecipeSelectedActivity extends PanBaseActivity {
     private RecyclerView rvStep;
     private RvStepAdapter rvStepAdapter;
     private TextView tvRecipeName;
-    //菜谱步骤
-    private ArrayList<RecipeStep> recipeSteps = new ArrayList<>();
+    //锅菜谱详情
+    private PanRecipeDetail panRecipeDetail;
+
 
     @Override
     protected int getLayoutId() {
@@ -58,7 +65,7 @@ public class RecipeSelectedActivity extends PanBaseActivity {
         tvRecipeName = findViewById(R.id.tv_recipe_name);
         //步骤
         rvStep.setLayoutManager(new LinearLayoutManager(this));
-        rvStep.addItemDecoration(new HorizontalSpaceItemDecoration((int) getContext().getResources().getDimension(com.robam.common.R.dimen.dp_40)));
+        rvStep.addItemDecoration(new VerticalSpaceItemDecoration((int) getContext().getResources().getDimension(com.robam.common.R.dimen.dp_15)));
         rvStepAdapter = new RvStepAdapter();
         rvStep.setAdapter(rvStepAdapter);
 
@@ -111,7 +118,8 @@ public class RecipeSelectedActivity extends PanBaseActivity {
 //        iDialog.show();
         Intent intent = new Intent();
         intent.setClass(this, CurveRestoreActivity.class);
-        intent.putExtra(PanConstant.EXTRA_RECIPE_STEP, recipeSteps);
+        if (null != panRecipeDetail)
+            intent.putExtra(PanConstant.EXTRA_RECIPE_DETAIL, panRecipeDetail);
         startActivity(intent);
     }
 
@@ -132,13 +140,19 @@ public class RecipeSelectedActivity extends PanBaseActivity {
     }
 
     private void setData(PanRecipeDetail panRecipeDetail) {
+        //菜谱详情
+        this.panRecipeDetail = panRecipeDetail;
         //名字
         tvRecipeName.setText(panRecipeDetail.name);
-        //步骤
-        if (null != panRecipeDetail.steps) {
-            recipeSteps.clear();
-            recipeSteps.addAll(panRecipeDetail.steps);
+        //曲线步骤
+        ArrayList<CurveStep> curveSteps = new ArrayList<>();
+        if (null != panRecipeDetail.curveStepDtoList) {
+            curveSteps.addAll(panRecipeDetail.curveStepDtoList);
         }
-        rvStepAdapter.setList(recipeSteps);
+//        Map<String, String> params = null;
+//        if (null != panRecipeDetail.temperatureCurveParams) {
+//            params = new Gson().fromJson(panRecipeDetail.temperatureCurveParams, new TypeToken<HashMap<String, String>>(){}.getType());
+//        }
+        rvStepAdapter.setList(curveSteps);
     }
 }

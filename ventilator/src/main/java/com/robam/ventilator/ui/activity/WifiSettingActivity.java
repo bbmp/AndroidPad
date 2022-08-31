@@ -1,7 +1,6 @@
 package com.robam.ventilator.ui.activity;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.Group;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -19,12 +18,11 @@ import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
-import com.robam.common.ui.activity.BaseActivity;
 import com.robam.common.ui.view.SwitchButton;
 import com.robam.common.utils.PermissionUtils;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
-import com.robam.ventilator.bean.AccountInfo;
+import com.robam.common.bean.AccountInfo;
 import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.manager.VenWifiManager;
 import com.robam.ventilator.ui.adapter.RvWifiAdapter;

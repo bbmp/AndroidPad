@@ -10,6 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/sp_48"
+        android:gravity="center"
         android:textColor="@color/stove_mode"
         android:text="@string/stove_stop_cook_hint"
         app:layout_constraintLeft_toLeftOf="parent"

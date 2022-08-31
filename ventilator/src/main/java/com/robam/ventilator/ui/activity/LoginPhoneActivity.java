@@ -1,30 +1,22 @@
 package com.robam.ventilator.ui.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.robam.common.bean.BaseResponse;
 import com.robam.common.http.RetrofitCallback;
-import com.robam.common.ui.activity.BaseActivity;
 import com.robam.common.ui.view.MCountdownView;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MMKVUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
-import com.robam.ventilator.bean.AccountInfo;
-import com.robam.ventilator.bean.UserInfo;
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.UserInfo;
 import com.robam.ventilator.device.VentilatorFactory;
 import com.robam.ventilator.http.CloudHelper;
-import com.robam.ventilator.request.GetVerifyCodeReq;
 import com.robam.ventilator.response.GetTokenRes;
 import com.robam.ventilator.response.GetUserInfoRes;
 import com.robam.ventilator.response.GetVerifyCodeRes;

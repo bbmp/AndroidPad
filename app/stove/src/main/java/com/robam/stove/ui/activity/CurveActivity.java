@@ -3,6 +3,7 @@ package com.robam.stove.ui.activity;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import android.os.Bundle;
 import android.view.View;
@@ -12,13 +13,20 @@ import android.widget.TextView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.BaseResponse;
+import com.robam.common.http.RetrofitCallback;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBaseActivity;
+import com.robam.stove.bean.Stove;
+import com.robam.stove.bean.StoveCurveInfo;
 import com.robam.stove.bean.StoveRecipe;
 import com.robam.stove.constant.DialogConstant;
 import com.robam.stove.factory.StoveDialogFactory;
+import com.robam.stove.http.CloudHelper;
+import com.robam.stove.response.GetCurveCookbooksRes;
 import com.robam.stove.ui.adapter.RvCurveAdapter;
 import com.robam.stove.ui.adapter.RvStepAdapter;
 
@@ -32,7 +40,7 @@ public class CurveActivity extends StoveBaseActivity {
     private RvCurveAdapter rvCurveAdapter;
     private TextView tvRight;
     private ImageView ivRight;
-    private List<StoveRecipe> stoveRecipeList = new ArrayList<>();
+    private List<StoveCurveInfo> stoveCurveInfos = new ArrayList<>();
     private TextView tvDelete; //确认删除
 
 
@@ -55,23 +63,7 @@ public class CurveActivity extends StoveBaseActivity {
         rvRecipe.addItemDecoration(new HorizontalSpaceItemDecoration((int)getResources().getDimension(com.robam.common.R.dimen.dp_8), (int)getResources().getDimension(com.robam.common.R.dimen.dp_32)));
         rvCurveAdapter = new RvCurveAdapter();
         rvRecipe.setAdapter(rvCurveAdapter);
-        setOnClickListener(R.id.ll_left, R.id.ll_right, R.id.tv_delete);
-    }
 
-    @Override
-    protected void initData() {
-        //for test
-
-        stoveRecipeList.add(new StoveRecipe("创作烹饪曲线", ""));   //第一个固定是添加曲线
-        stoveRecipeList.add(new StoveRecipe("蜜汁烤鸡翅", ""));
-        stoveRecipeList.add(new StoveRecipe("脆皮猪肘", ""));
-        stoveRecipeList.add(new StoveRecipe("脆皮猪肘", ""));
-        stoveRecipeList.add(new StoveRecipe("烤牛排烤牛排烤牛排", ""));
-        stoveRecipeList.add(new StoveRecipe("烤牛排", ""));
-        stoveRecipeList.add(new StoveRecipe("烤牛排", ""));
-        stoveRecipeList.add(new StoveRecipe("烤牛排", ""));
-        stoveRecipeList.add(new StoveRecipe("烤牛排", ""));
-        rvCurveAdapter.setList(stoveRecipeList);
         rvCurveAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
@@ -87,14 +79,14 @@ public class CurveActivity extends StoveBaseActivity {
             public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                 //某一条菜删除
                 if (view.getId() == R.id.iv_select) {
-                    StoveRecipe stoveRecipe = (StoveRecipe) adapter.getItem(position);
+                    StoveCurveInfo stoveCurveInfo = (StoveCurveInfo) adapter.getItem(position);
                     if (rvCurveAdapter.getStatus() == RvCurveAdapter.STATUS_ALL) {
                         //全选-》删除
-                        stoveRecipe.setSelected(false);
+                        stoveCurveInfo.setSelected(false);
                         ivRight.setImageResource(R.drawable.stove_shape_button_unselected);
                         rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_DELETE);
                     } else if (rvCurveAdapter.getStatus() == RvCurveAdapter.STATUS_DELETE) {
-                        stoveRecipe.setSelected(!stoveRecipe.isSelected());
+                        stoveCurveInfo.setSelected(!stoveCurveInfo.isSelected());
                         //检测是否全选
                         if (isAll()) {
                             ivRight.setImageResource(R.drawable.stove_shape_button_selected);
@@ -106,9 +98,42 @@ public class CurveActivity extends StoveBaseActivity {
                 }
             }
         });
-        if (stoveRecipeList.size() > 1)
+
+        setOnClickListener(R.id.ll_left, R.id.ll_right, R.id.tv_delete);
+    }
+
+    @Override
+    protected void initData() {
+        getCurveList();
+
+    }
+    //获取烹饪曲线列表
+    private void getCurveList() {
+        CloudHelper.queryCurveCookbooks(this, AccountInfo.getInstance().getUser().getValue().id, GetCurveCookbooksRes.class,
+                new RetrofitCallback<GetCurveCookbooksRes>() {
+                    @Override
+                    public void onSuccess(GetCurveCookbooksRes getCurveCookbooksRes) {
+                        if (null != getCurveCookbooksRes && getCurveCookbooksRes.payload != null)
+                            setData(getCurveCookbooksRes.payload);
+                    }
+
+                    @Override
+                    public void onFaild(String err) {
+
+                    }
+                });
+    }
+
+    //设置烹饪曲线
+    private void setData(List<StoveCurveInfo> payload) {
+        stoveCurveInfos.clear();
+        stoveCurveInfos.add(0, new StoveCurveInfo("创作烹饪曲线"));
+        stoveCurveInfos.addAll(payload);
+        rvCurveAdapter.setList(stoveCurveInfos);
+        if (stoveCurveInfos.size() > 1)
             showRight();
     }
+
     //炉头选择
     private void selectStove() {
         //炉头选择提示
@@ -156,8 +181,8 @@ public class CurveActivity extends StoveBaseActivity {
                 //返回-》删除
                 tvRight.setText(R.string.stove_select_all);
                 ivRight.setImageResource(R.drawable.stove_shape_button_unselected);
-                stoveRecipeList.remove(0);
-                rvCurveAdapter.setList(stoveRecipeList);
+                stoveCurveInfos.remove(0);
+                rvCurveAdapter.setList(stoveCurveInfos);
                 rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_DELETE);
                 tvDelete.setVisibility(View.VISIBLE);
             }
@@ -166,8 +191,8 @@ public class CurveActivity extends StoveBaseActivity {
                 //设置非删除状态
                 tvRight.setText(R.string.stove_delete);
                 ivRight.setImageDrawable(null);
-                stoveRecipeList.add(0, new StoveRecipe("创作烹饪曲线", ""));
-                rvCurveAdapter.setList(stoveRecipeList);
+                stoveCurveInfos.add(0, new StoveCurveInfo("创作烹饪曲线"));
+                rvCurveAdapter.setList(stoveCurveInfos);
                 allUnelect();
                 rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_BACK);
                 tvDelete.setVisibility(View.GONE);
@@ -177,12 +202,12 @@ public class CurveActivity extends StoveBaseActivity {
             //确认删除
             delete();
             //设置非删除状态
-            if (stoveRecipeList.size() <= 1)
+            if (stoveCurveInfos.size() <= 1)
                 hideRight();
             tvRight.setText(R.string.stove_delete);
             ivRight.setImageDrawable(null);
-            stoveRecipeList.add(0, new StoveRecipe("创作烹饪曲线", ""));
-            rvCurveAdapter.setList(stoveRecipeList);
+            stoveCurveInfos.add(0, new StoveCurveInfo("创作烹饪曲线"));
+            rvCurveAdapter.setList(stoveCurveInfos);
             allUnelect();
             rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_BACK);
             tvDelete.setVisibility(View.GONE);
@@ -191,31 +216,46 @@ public class CurveActivity extends StoveBaseActivity {
 
     //全选
     private void allSelect() {
-        for (int i=0; i<stoveRecipeList.size(); i++) {
-            stoveRecipeList.get(i).setSelected(true);
+        for (int i=0; i<stoveCurveInfos.size(); i++) {
+            stoveCurveInfos.get(i).setSelected(true);
         }
     }
     //取消全选
     private void allUnelect() {
-        for (int i=0; i<stoveRecipeList.size(); i++) {
-            stoveRecipeList.get(i).setSelected(false);
+        for (int i=0; i<stoveCurveInfos.size(); i++) {
+            stoveCurveInfos.get(i).setSelected(false);
         }
     }
     //检查是否全选
     private boolean isAll() {
-        for (int i=0; i<stoveRecipeList.size(); i++) {
-            if (!stoveRecipeList.get(i).isSelected())
+        for (int i=0; i<stoveCurveInfos.size(); i++) {
+            if (!stoveCurveInfos.get(i).isSelected())
                 return false;
         }
         return true;
     }
     //删除
     private void delete() {
-        Iterator<StoveRecipe> iterator = stoveRecipeList.iterator();
+        Iterator<StoveCurveInfo> iterator = stoveCurveInfos.iterator();
         while (iterator.hasNext()) {
-            StoveRecipe stoveRecipe = iterator.next();
-            if (stoveRecipe.isSelected())
+            StoveCurveInfo stoveCurveInfo = iterator.next();
+            if (stoveCurveInfo.isSelected()) {
                 iterator.remove();
+                //删除
+                CloudHelper.delCurve(this, AccountInfo.getInstance().getUser().getValue().id, stoveCurveInfo.curveCookbookId, BaseResponse.class,
+                        new RetrofitCallback<BaseResponse>() {
+                            @Override
+                            public void onSuccess(BaseResponse baseResponse) {
+                                if (null != baseResponse)
+                                    ;
+                            }
+
+                            @Override
+                            public void onFaild(String err) {
+
+                            }
+                        });
+            }
         }
     }
 }

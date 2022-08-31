@@ -18,6 +18,7 @@
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/drawable/pan_shape_border_bg.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/drawable/pan_shape_progress_bg.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/drawable/pan_shape_scrollbar_bg.xml" value="0.1775" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_activity_layout_cook_complete.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_activity_layout_curve.xml" value="0.11788194444444444" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_activity_layout_curve_create.xml" value="0.11788194444444444" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/layout/pan_activity_layout_curve_edit.xml" value="0.11788194444444444" />

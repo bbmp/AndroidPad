@@ -1,24 +1,17 @@
 package com.robam.ventilator.ui.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
-import com.robam.common.ui.activity.BaseActivity;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.PasswordEditText;
 import com.robam.common.utils.ToastUtils;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
-import com.robam.ventilator.bean.AccountInfo;
 import com.robam.ventilator.constant.DialogConstant;
 import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.factory.VentilatorDialogFactory;

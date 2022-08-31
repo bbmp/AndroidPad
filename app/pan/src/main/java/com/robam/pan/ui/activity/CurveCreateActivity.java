@@ -21,7 +21,7 @@ public class CurveCreateActivity extends PanBaseActivity {
     protected void initView() {
         showLeft();
         showCenter();
-        setOnClickListener(R.id.ll_left, R.id.iv_stop_create);
+        setOnClickListener(R.id.ll_left, R.id.btn_stop_create);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class CurveCreateActivity extends PanBaseActivity {
     @Override
     public void onClick(View view) {
         int id = view.getId();
-        if (id == R.id.ll_left || id == R.id.iv_stop_create) {
+        if (id == R.id.ll_left || id == R.id.btn_stop_create) {
             stopCook();
         }
     }
@@ -42,8 +42,7 @@ public class CurveCreateActivity extends PanBaseActivity {
         IDialog iDialog = PanDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_PAN_COMMON);
         iDialog.setCancelable(false);
         iDialog.setContentText(R.string.pan_stop_creation_hint);
-        iDialog.setCancelText(R.string.pan_stop_creation);
-        iDialog.setOKText(R.string.pan_continue_creation);
+        iDialog.setOKText(R.string.pan_stop_creation);
         iDialog.setListeners(new IDialog.DialogOnClickListener() {
             @Override
             public void onClick(View v) {

@@ -1,8 +1,5 @@
 package com.robam.ventilator.ui.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -15,8 +12,8 @@ import com.robam.common.utils.MMKVUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
-import com.robam.ventilator.bean.AccountInfo;
-import com.robam.ventilator.bean.UserInfo;
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.UserInfo;
 import com.robam.ventilator.http.CloudHelper;
 import com.robam.ventilator.response.GetTokenRes;
 import com.robam.ventilator.response.GetUserInfoRes;

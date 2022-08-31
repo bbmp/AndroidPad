@@ -6,10 +6,9 @@ import android.content.Intent;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.util.Log;
 
 import com.robam.common.utils.LogUtils;
-import com.robam.ventilator.bean.AccountInfo;
+import com.robam.common.bean.AccountInfo;
 
 public class VentilatorReceiver extends BroadcastReceiver {
     @Override

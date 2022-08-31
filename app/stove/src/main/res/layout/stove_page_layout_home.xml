@@ -35,7 +35,7 @@
         android:layout_marginRight="@dimen/dp_320"
         android:gravity="center"
         android:orientation="horizontal"
-        android:background="@drawable/stove_shape_button_selector"
+        android:background="@drawable/stove_shape_button_bg_cancel"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/ll_right_stove"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -66,7 +66,7 @@
         android:layout_height="@dimen/dp_56"
         android:gravity="center"
         android:orientation="horizontal"
-        android:background="@drawable/stove_shape_button_selector"
+        android:background="@drawable/stove_shape_button_bg_cancel"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toRightOf="@id/ll_left_stove"
         app:layout_constraintBottom_toBottomOf="@id/ll_left_stove">

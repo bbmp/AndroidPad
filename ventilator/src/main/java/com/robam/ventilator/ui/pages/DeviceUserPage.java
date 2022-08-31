@@ -1,6 +1,5 @@
 package com.robam.ventilator.ui.pages;
 
-import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,9 +18,9 @@ import com.robam.common.utils.ImageUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBasePage;
-import com.robam.ventilator.bean.AccountInfo;
+import com.robam.common.bean.AccountInfo;
 import com.robam.ventilator.bean.Device;
-import com.robam.ventilator.bean.UserInfo;
+import com.robam.common.bean.UserInfo;
 import com.robam.ventilator.constant.DialogConstant;
 import com.robam.ventilator.factory.VentilatorDialogFactory;
 import com.robam.ventilator.http.CloudHelper;
