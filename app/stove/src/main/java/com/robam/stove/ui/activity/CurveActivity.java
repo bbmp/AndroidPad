@@ -15,6 +15,7 @@ import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.BaseResponse;
+import com.robam.common.bean.UserInfo;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
@@ -109,19 +110,22 @@ public class CurveActivity extends StoveBaseActivity {
     }
     //获取烹饪曲线列表
     private void getCurveList() {
-        CloudHelper.queryCurveCookbooks(this, AccountInfo.getInstance().getUser().getValue().id, GetCurveCookbooksRes.class,
-                new RetrofitCallback<GetCurveCookbooksRes>() {
-                    @Override
-                    public void onSuccess(GetCurveCookbooksRes getCurveCookbooksRes) {
-                        if (null != getCurveCookbooksRes && getCurveCookbooksRes.payload != null)
-                            setData(getCurveCookbooksRes.payload);
-                    }
+        UserInfo info = AccountInfo.getInstance().getUser().getValue();
+        if (null != info) {
+            CloudHelper.queryCurveCookbooks(this, info.id, GetCurveCookbooksRes.class,
+                    new RetrofitCallback<GetCurveCookbooksRes>() {
+                        @Override
+                        public void onSuccess(GetCurveCookbooksRes getCurveCookbooksRes) {
+                            if (null != getCurveCookbooksRes && getCurveCookbooksRes.payload != null)
+                                setData(getCurveCookbooksRes.payload);
+                        }
 
-                    @Override
-                    public void onFaild(String err) {
+                        @Override
+                        public void onFaild(String err) {
 
-                    }
-                });
+                        }
+                    });
+        }
     }
 
     //设置烹饪曲线

@@ -77,9 +77,6 @@ public class RecipeCookActivity extends StoveBaseActivity {
             //
             tvSwitch.setVisibility(View.VISIBLE);
             tvPause.setVisibility(View.VISIBLE);
-            //图片
-            ImageUtils.loadImage(this, stoveRecipeDetail.imgSmall, ivRecipe);
-            //火力
 
             //步骤
             ArrayList<RecipeStep> recipeSteps = new ArrayList<>();
@@ -96,6 +93,8 @@ public class RecipeCookActivity extends StoveBaseActivity {
         if (curStep >= stoveRecipeDetail.steps.size())
             return;
         RecipeStep recipeStep = stoveRecipeDetail.steps.get(curStep);
+        //图片
+        ImageUtils.loadImage(this, recipeStep.image, ivRecipe);
         if (null != recipeStep.params && recipeStep.params.size() > 0) {
             StepParams params = recipeStep.params.get(0);//取首個
             if (null != params.params) {
