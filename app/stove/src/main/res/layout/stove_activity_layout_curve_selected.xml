@@ -28,14 +28,16 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_step"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:verticalScrollbarPosition="left"
         android:scrollbars="vertical"
         android:scrollbarThumbVertical="@drawable/stove_shape_scrollbar_bg"
-        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginVertical="@dimen/dp_15"
+        android:layout_marginRight="@dimen/dp_90"
         app:layout_constraintLeft_toLeftOf="@id/pan_guideline4"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_recipe_name"/>
+        app:layout_constraintTop_toBottomOf="@id/tv_recipe_name"
+        app:layout_constraintBottom_toBottomOf="parent"/>
     <TextView
         android:id="@+id/tv_start_cook"
         android:layout_width="@dimen/dp_175"
@@ -47,6 +49,7 @@
         android:text="@string/stove_start_working"
         android:textColor="@color/stove_white"
         android:textSize="@dimen/sp_30"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 

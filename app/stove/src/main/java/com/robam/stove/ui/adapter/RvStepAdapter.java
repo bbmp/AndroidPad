@@ -10,6 +10,7 @@ import com.robam.common.utils.ImageUtils;
 import com.robam.stove.R;
 import com.robam.stove.bean.RecipeStep;
 
+//云端菜谱
 public class RvStepAdapter extends BaseQuickAdapter<RecipeStep, BaseViewHolder> {
     public RvStepAdapter() {
         super(R.layout.stove_item_recipe_step);

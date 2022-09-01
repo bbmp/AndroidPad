@@ -24,8 +24,11 @@ import android.widget.TextView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.google.android.material.tabs.TabLayout;
+import com.robam.common.IDeviceType;
+import com.robam.common.bean.AccountInfo;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
+import com.robam.common.utils.ToastUtils;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBaseActivity;
 import com.robam.stove.bean.StoveRecipe;
@@ -88,8 +91,7 @@ public class RecipeActivity extends StoveBaseActivity {
                         //处理搜索
                         searchResult(text);
                     } else {
-                        rvRecipeAdapter.setList(stoveRecipeList);
-                        hideEmpty();
+                        ToastUtils.showShort(RecipeActivity.this, R.string.stove_input_empty);
                     }
                     return false;
                 }
@@ -113,7 +115,7 @@ public class RecipeActivity extends StoveBaseActivity {
     }
     //获取灶具菜谱
     private void getStoveRecipe() {
-        CloudHelper.getRecipesByDevice(this, "RRQZ", "all", 1, 20, GetRecipesByDeviceRes.class,
+        CloudHelper.getRecipesByDevice(this, IDeviceType.RRQZ, "all", 1, 20, GetRecipesByDeviceRes.class,
                 new RetrofitCallback<GetRecipesByDeviceRes>() {
                     @Override
                     public void onSuccess(GetRecipesByDeviceRes getRecipesByDeviceRes) {
@@ -144,15 +146,39 @@ public class RecipeActivity extends StoveBaseActivity {
 
     //搜索结果
     private void searchResult(String text) {
-        List<StoveRecipe> recipeList = new ArrayList<>();
-        for (int i=0; i<stoveRecipeList.size(); i++) {
-            if (stoveRecipeList.get(i).getName().contains(text))
-                recipeList.add(stoveRecipeList.get(i));
-        }
-        rvRecipeAdapter.setList(recipeList);
-        if (recipeList.size() == 0)
-            showEmpty();
-        else
-            hideEmpty();
+        CloudHelper.getCookbooksByName(this, text, false, 0L, false, true,
+                GetRecipesByDeviceRes.class, new RetrofitCallback<GetRecipesByDeviceRes>() {
+
+                    @Override
+                    public void onSuccess(GetRecipesByDeviceRes getRecipesByDeviceRes) {
+                        if (null != getRecipesByDeviceRes && null != getRecipesByDeviceRes.cookbooks) {
+                            List<StoveRecipe> recipeList = new ArrayList<>();
+                            //过滤其他设备菜谱
+                            for (StoveRecipe stoveRecipe: getRecipesByDeviceRes.cookbooks) {
+                                List<StoveRecipe.DCS> dcsList = stoveRecipe.dcs;
+                                if (null != dcsList) {
+                                    for (StoveRecipe.DCS dcs: dcsList) {
+                                        if (IDeviceType.RRQZ.equals(dcs.dc)) {
+                                            recipeList.add(stoveRecipe);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            rvRecipeAdapter.setList(recipeList);
+                            if (recipeList.size() == 0)
+                                showEmpty();
+                            else
+                                hideEmpty();
+                        } else
+                            showEmpty();
+                    }
+
+                    @Override
+                    public void onFaild(String err) {
+                        showEmpty();
+                    }
+                });
+
     }
 }

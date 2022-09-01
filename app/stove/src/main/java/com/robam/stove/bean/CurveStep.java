@@ -1,6 +1,8 @@
 package com.robam.stove.bean;
 
-public class CurveStep {
+import java.io.Serializable;
+
+public class CurveStep implements Serializable {
     public int no;
     //步骤名
     public String markName;

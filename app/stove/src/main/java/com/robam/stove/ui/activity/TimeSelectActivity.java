@@ -49,7 +49,7 @@ public class TimeSelectActivity extends StoveBaseActivity {
                         rvTimeAdapter.setPickPosition(position);
                         tvNum.setText(rvTimeAdapter.getItem(position));
                         //设置工作时长
-                        Stove.getInstance().workHours = Integer.parseInt(rvTimeAdapter.getItem(position));
+                        Stove.getInstance().workHours = rvTimeAdapter.getItem(position);
                     }
                 }).build();
         rvTime.setLayoutManager(pickerLayoutManager);
@@ -76,7 +76,7 @@ public class TimeSelectActivity extends StoveBaseActivity {
         //默认第一个
         tvNum.setText(lists.get(0));
         //工作时长
-        Stove.getInstance().workHours = Integer.parseInt(lists.get(0));
+        Stove.getInstance().workHours = lists.get(0);
     }
 
     @Override
@@ -109,5 +109,9 @@ public class TimeSelectActivity extends StoveBaseActivity {
         IDialog iDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_OPEN_FIRE);
         iDialog.setCancelable(false);
         iDialog.show();
+        //进入工作状态
+        Stove.getInstance().workMode = StoveConstant.MODE_TIMING;
+        //开右灶
+        Stove.getInstance().rightStove.setValue(true);
     }
 }

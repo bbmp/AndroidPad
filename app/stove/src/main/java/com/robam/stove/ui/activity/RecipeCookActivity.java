@@ -139,8 +139,7 @@ public class RecipeCookActivity extends StoveBaseActivity {
             @Override
             public void onClick(View v) {
                 if (v.getId() == R.id.tv_ok) {
-                    //去曲线保存页
-                    startActivity(CurveSaveActivity.class);
+
                     finish();
                 }
             }
@@ -158,9 +157,8 @@ public class RecipeCookActivity extends StoveBaseActivity {
 
                 if (curStep >= rvStep2Adapter.getData().size()) {
                     //工作结束
-                    //去曲线保存页
-                    startActivity(CurveSaveActivity.class);
-                    finish();
+                    //提示烹饪完成
+                    workComplete();
                     return;
                 }
                 RecipeStep recipeStep = rvStep2Adapter.getData().get(curStep);
@@ -181,6 +179,20 @@ public class RecipeCookActivity extends StoveBaseActivity {
         };
         mHandler.postDelayed(runnable, 1000L);
     }
+    //烹饪正常结束提示
+    private void workComplete() {
+        IDialog iDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_COMPLETE);
+        iDialog.setCancelable(false);
+        iDialog.setListeners(new IDialog.DialogOnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //回首页
+                startActivity(MainActivity.class);
+            }
+        }, R.id.tv_ok);
+        iDialog.show();
+    }
+
     //切換步驟
     private void nextStep() {
         curStep++; //下一步

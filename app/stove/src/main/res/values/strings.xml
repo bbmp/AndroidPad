@@ -37,4 +37,6 @@
     <string name="stove_step2">步骤%s/%s</string>
     <string name="stove_switch_step">双击切换步骤</string>
     <string name="stove_affirm_lock_hint">确认进入锁定状态\n仅可关火操作</string>
+    <string name="stove_complete">完成</string>
+    <string name="stove_cook_complete_hint">烹饪结束，快来享受美食</string>
 </resources>

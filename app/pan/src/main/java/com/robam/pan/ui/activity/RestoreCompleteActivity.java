@@ -1,8 +1,5 @@
 package com.robam.pan.ui.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
@@ -20,7 +17,7 @@ public class RestoreCompleteActivity extends PanBaseActivity {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.pan_activity_layout_cook_complete;
+        return R.layout.pan_activity_layout_restore_complete;
     }
 
     @Override
@@ -37,7 +34,9 @@ public class RestoreCompleteActivity extends PanBaseActivity {
 
     @Override
     protected void initData() {
-        tvRecipeName.setText(panRecipeDetail.name);
+        if (null != panRecipeDetail) {
+            tvRecipeName.setText(panRecipeDetail.name);
+        }
     }
 
     @Override

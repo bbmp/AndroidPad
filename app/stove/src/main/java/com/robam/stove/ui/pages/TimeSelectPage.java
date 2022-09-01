@@ -26,7 +26,7 @@ public class TimeSelectPage extends StoveBasePage {
      */
     private PickerLayoutManager pickerLayoutManager;
 
-    private RvTimeAdapter rvTimeAdapter, rvTempAdapter;
+    private RvTimeAdapter rvTimeAdapter;
 
     private TabLayout.Tab tab;
 
@@ -52,10 +52,12 @@ public class TimeSelectPage extends StoveBasePage {
         rvTimeAdapter.setPickPosition(position);
         if (null != tab) {
             TextView textView = tab.getCustomView().findViewById(R.id.tv_mode);
-            tab.getCustomView().findViewById(R.id.tv_time).setVisibility(View.VISIBLE);
-            tab.getCustomView().findViewById(R.id.tv_temp).setVisibility(View.GONE);
+//            tab.getCustomView().findViewById(R.id.tv_time).setVisibility(View.VISIBLE);
+//            tab.getCustomView().findViewById(R.id.tv_temp).setVisibility(View.GONE);
             textView.setText(rvTimeAdapter.getItem(position));
         }
+        //默认时间
+        Stove.getInstance().workHours = rvTimeAdapter.getItem(position);
     }
 
     @Override
@@ -97,6 +99,7 @@ public class TimeSelectPage extends StoveBasePage {
                     public void onPicked(RecyclerView recyclerView, int position) {
                         //指示器更新
                         rvTimeAdapter.setPickPosition(position);
+                        Stove.getInstance().workHours = rvTimeAdapter.getItem(position);
                         if (null != tab) {
                             TextView textView = tab.getCustomView().findViewById(R.id.tv_mode);
                             textView.setText(rvTimeAdapter.getItem(position));

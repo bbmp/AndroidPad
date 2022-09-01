@@ -44,6 +44,8 @@ public class TempSelectPage extends StoveBasePage {
             TextView textView = tab.getCustomView().findViewById(R.id.tv_mode);
             textView.setText(rvTempAdapter.getItem(position));
         }
+        //默认温度
+        Stove.getInstance().workTemp = rvTempAdapter.getItem(position);
     }
 
     @Override
@@ -84,6 +86,7 @@ public class TempSelectPage extends StoveBasePage {
                     public void onPicked(RecyclerView recyclerView, int position) {
                         //指示器更新
                         rvTempAdapter.setPickPosition(position);
+                        Stove.getInstance().workTemp = rvTempAdapter.getItem(position);
                         if (null != tab) {
                             TextView textView = tab.getCustomView().findViewById(R.id.tv_mode);
                             textView.setText(rvTempAdapter.getItem(position));

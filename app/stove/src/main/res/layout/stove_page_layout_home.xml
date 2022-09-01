@@ -29,7 +29,7 @@
 
     <LinearLayout
         android:id="@+id/ll_left_stove"
-        android:layout_width="@dimen/dp_244"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_56"
         android:layout_marginBottom="@dimen/dp_24"
         android:layout_marginRight="@dimen/dp_320"
@@ -43,11 +43,13 @@
         <ImageView
             android:layout_width="@dimen/dp_38"
             android:layout_height="@dimen/dp_38"
-            android:layout_marginRight="@dimen/dp_10"/>
+            android:layout_marginLeft="@dimen/dp_20"/>
         <TextView
             android:id="@+id/tv_left_stove"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_40"
             android:textSize="@dimen/sp_30"
             android:textColor="@color/stove_white"
             android:text="@string/stove_left_stove"/>
@@ -62,7 +64,7 @@
         app:layout_constraintBottom_toBottomOf="parent"/>
     <LinearLayout
         android:id="@+id/ll_right_stove"
-        android:layout_width="@dimen/dp_244"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_56"
         android:gravity="center"
         android:orientation="horizontal"
@@ -74,12 +76,14 @@
             android:id="@+id/tv_right_stove"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_20"
+            android:layout_marginLeft="@dimen/dp_40"
             android:textSize="@dimen/sp_30"
             android:textColor="@color/stove_white"
             android:text="@string/stove_right_stove"/>
         <ImageView
             android:layout_width="@dimen/dp_38"
-            android:layout_height="@dimen/dp_38"/>
+            android:layout_height="@dimen/dp_38"
+            android:layout_marginRight="@dimen/dp_20"/>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

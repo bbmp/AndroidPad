@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -106,7 +107,17 @@ public class HomePage extends StoveBasePage {
                 startActivity(intent);
             }
         });
-
+        Stove.getInstance().leftStove.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean) {
+                    //开火状态
+                    tvLeftStove.setText("左灶 " + Stove.getInstance().workHours + "min");
+                } else {
+                    //关火状态
+                }
+            }
+        });
     }
 
     //锁屏

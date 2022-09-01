@@ -1,6 +1,5 @@
 package com.robam.stove.ui.adapter;
 
-import android.view.View;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -13,10 +12,9 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.robam.common.utils.ImageUtils;
 import com.robam.stove.R;
-import com.robam.stove.bean.StoveCurveInfo;
-import com.robam.stove.bean.StoveRecipe;
+import com.robam.stove.bean.StoveCurveDetail;
 
-public class RvCurveAdapter extends BaseQuickAdapter<StoveCurveInfo, BaseViewHolder> {
+public class RvCurveAdapter extends BaseQuickAdapter<StoveCurveDetail, BaseViewHolder> {
     private RequestOptions maskOption = new RequestOptions()
             .centerCrop()
             .placeholder(R.drawable.stove_recipe_img_bg) //预加载图片
@@ -48,21 +46,21 @@ public class RvCurveAdapter extends BaseQuickAdapter<StoveCurveInfo, BaseViewHol
 
 
     @Override
-    protected void convert(@NonNull BaseViewHolder baseViewHolder, StoveCurveInfo stoveCurveInfo) {
+    protected void convert(@NonNull BaseViewHolder baseViewHolder, StoveCurveDetail stoveCurveDetail) {
         if (status == STATUS_ALL) {
             baseViewHolder.getView(R.id.iv_select).setSelected(true);
             baseViewHolder.setVisible(R.id.iv_select, true);
         }
         //删除状态
         else if (status == STATUS_DELETE) {
-            baseViewHolder.getView(R.id.iv_select).setSelected(stoveCurveInfo.isSelected());
+            baseViewHolder.getView(R.id.iv_select).setSelected(stoveCurveDetail.isSelected());
             baseViewHolder.setVisible(R.id.iv_select, true);
         } else {
             baseViewHolder.setVisible(R.id.iv_select, false);
         }
 
         ImageView imageView = baseViewHolder.getView(R.id.iv_recipe);
-        ImageUtils.loadImage(getContext(), stoveCurveInfo.imageCover, maskOption, imageView);
-        baseViewHolder.setText(R.id.tv_recipe, stoveCurveInfo.name);
+        ImageUtils.loadImage(getContext(), stoveCurveDetail.imageCover, maskOption, imageView);
+        baseViewHolder.setText(R.id.tv_recipe, stoveCurveDetail.name);
     }
 }

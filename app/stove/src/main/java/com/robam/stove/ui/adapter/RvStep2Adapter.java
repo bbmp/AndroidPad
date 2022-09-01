@@ -14,7 +14,7 @@ import com.robam.common.utils.DateUtil;
 import com.robam.stove.R;
 import com.robam.stove.bean.RecipeStep;
 
-//工作界面
+//云端菜谱工作界面
 public class RvStep2Adapter extends BaseQuickAdapter<RecipeStep, BaseViewHolder> {
     private int curStep;
     //倒计时

@@ -1,5 +1,7 @@
 package com.robam.stove.bean;
 
+import java.util.List;
+
 public class StoveRecipe {
     //菜谱id
     public long id;
@@ -7,6 +9,8 @@ public class StoveRecipe {
     private String imgSmall;
     //菜谱名称
     private String name;
+
+    public List<DCS> dcs;
 
 
     public StoveRecipe(String name, String imgUrl) {
@@ -22,4 +26,7 @@ public class StoveRecipe {
         return name;
     }
 
+    public class DCS {
+        public String dc;
+    }
 }

@@ -170,6 +170,8 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
         IDialog iDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_OPEN_FIRE);
         iDialog.setCancelable(false);
         iDialog.show();
+        //进入工作状态
+        Stove.getInstance().leftStove.setValue(true);
     }
 
     /**

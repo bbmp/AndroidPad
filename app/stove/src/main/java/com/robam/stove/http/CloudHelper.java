@@ -7,9 +7,11 @@ import com.robam.common.http.RetrofitCallback;
 import com.robam.common.http.RetrofitClient;
 import com.robam.common.utils.LogUtils;
 import com.robam.stove.constant.HostServer;
+import com.robam.stove.request.GetCurveDetailReq;
 import com.robam.stove.request.GetRecipeDetailReq;
 import com.robam.stove.request.GetRecipesByDeviceReq;
 import com.robam.stove.request.GetUserReq;
+import com.robam.stove.request.RecipeSearchReq;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -53,6 +55,23 @@ public class CloudHelper {
     //删除曲线
     public static <T extends BaseResponse> void delCurve(ILife iLife, long userid, long curveid, Class<T> entity, final RetrofitCallback<T> callback) {
         Call<ResponseBody> call = svr.delCurve(userid, curveid);
+        enqueue(iLife, entity, call, callback);
+    }
+    //获取曲线详情
+    public static <T extends BaseResponse> void getCurvebookDetail(ILife iLife, long curveid, Class<T> entity, final RetrofitCallback<T> callback) {
+        String json = new GetCurveDetailReq(curveid).toString();
+        RequestBody requestBody =
+                RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
+        Call<ResponseBody> call = svr.getCurveCookDetail(requestBody);
+        enqueue(iLife, entity, call, callback);
+    }
+    //菜谱搜索
+    public static <T extends BaseResponse> void getCookbooksByName(ILife iLife, String name, boolean contain3rd, long userId, boolean notNeedSearchHistory,
+                                                                   boolean needStatisticCookbook, Class<T> entity, final RetrofitCallback<T> callback) {
+        String json = new RecipeSearchReq(name, contain3rd, userId, notNeedSearchHistory, needStatisticCookbook).toString();
+        RequestBody requestBody =
+                RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
+        Call<ResponseBody> call = svr.getCookbooksByName(requestBody);
         enqueue(iLife, entity, call, callback);
     }
 

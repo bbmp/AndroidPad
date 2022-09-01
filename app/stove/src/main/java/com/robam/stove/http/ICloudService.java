@@ -20,6 +20,10 @@ public interface ICloudService {
     String queryCurveCookbooks = "/rest/cks/api/curve_cookbook/v2/cooking_curve/queryByUserId";
     //删除烹饪曲线
     String delCurveUrl= "/rest/cks/api/curve_cookbook/deleteCurveCookbook";
+    //曲线详情
+    String curveCookDetailUrl= "/rest/cks/api/curve_cookbook/v2/cooking_curve/query";
+    //菜谱搜索
+    String getCookbooksByName = "/rest/cks/api/cookbook/by-name/search";
 
     @POST(getRecipesByDevice)
     @Headers("Content-Type: application/json")
@@ -35,4 +39,12 @@ public interface ICloudService {
 
     @GET(delCurveUrl)
     Call<ResponseBody> delCurve(@Query("userId") long userId, @Query("curveCookbookId") long curveid);
+
+    @POST(curveCookDetailUrl)
+    @Headers("Content-Type: application/json")
+    Call<ResponseBody> getCurveCookDetail(@Body RequestBody body);
+
+    @POST(getCookbooksByName)
+    @Headers("Content-Type: application/json")
+    Call<ResponseBody> getCookbooksByName(@Body RequestBody body);
 }

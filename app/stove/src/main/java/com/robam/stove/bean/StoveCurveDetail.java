@@ -1,8 +1,10 @@
 package com.robam.stove.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class StoveCurveInfo {
+//曲线详情
+public class StoveCurveDetail implements Serializable {
     //曲线id
     public long curveCookbookId;
     //曲线名称
@@ -11,6 +13,8 @@ public class StoveCurveInfo {
     public String imageCover;
     //温度
     public String temperatureCurveParams;
+    //电机
+    public String curveStageParams;
     //
     public int needTime;
     //步骤
@@ -18,7 +22,7 @@ public class StoveCurveInfo {
     //是否选中,用于显示
     private boolean selected;
 
-    public StoveCurveInfo(String name) {
+    public StoveCurveDetail(String name) {
         this.name = name;
     }
 

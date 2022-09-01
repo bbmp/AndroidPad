@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.stove.constant.DialogConstant;
+import com.robam.stove.ui.dialog.CompleteDialog;
 import com.robam.stove.ui.dialog.CurveEditDialog;
 import com.robam.stove.ui.dialog.LockDialog;
 import com.robam.stove.ui.dialog.OpenFireDialog;
@@ -32,6 +33,9 @@ public class StoveDialogFactory {
                 break;
             case DialogConstant.DIALOG_TYPE_WAITING:
                 iDialog = new WaitingDialog(context);
+                break;
+            case DialogConstant.DIALOG_TYPE_COMPLETE:
+                iDialog = new CompleteDialog(context);
                 break;
         }
         return iDialog;

@@ -2,6 +2,8 @@ package com.robam.stove.bean;
 
 import android.content.Context;
 
+import androidx.lifecycle.MutableLiveData;
+
 import com.robam.common.manager.FunctionManager;
 import com.robam.stove.R;
 
@@ -32,7 +34,13 @@ public class Stove {
     /**
      * 工作时长
      */
-    public int workHours;
+    public String workHours;
+    //工作温度
+    public String workTemp;
+    //左灶
+    public MutableLiveData<Boolean> leftStove = new MutableLiveData<>(false);
+    //右灶
+    public MutableLiveData<Boolean> rightStove = new MutableLiveData<>(false);
 
     public void init(Context context) {
         if (null == stoveFunBeans)
