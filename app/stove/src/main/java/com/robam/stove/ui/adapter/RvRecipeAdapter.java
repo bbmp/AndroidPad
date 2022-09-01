@@ -9,12 +9,13 @@ import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.module.LoadMoreModule;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.robam.common.utils.ImageUtils;
 import com.robam.stove.R;
 import com.robam.stove.bean.StoveRecipe;
 
-public class RvRecipeAdapter extends BaseQuickAdapter<StoveRecipe, BaseViewHolder> {
+public class RvRecipeAdapter extends BaseQuickAdapter<StoveRecipe, BaseViewHolder> implements LoadMoreModule {
     private RequestOptions maskOption = new RequestOptions()
             .circleCrop()
             .placeholder(R.drawable.stove_main_item_bg) //预加载图片

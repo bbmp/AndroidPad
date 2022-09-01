@@ -5,6 +5,27 @@ import android.view.MotionEvent;
 import android.view.View;
 
 public class ClickUtils {
+    public static void setDoubleClick(final View view) {
+        final long[] firClick = {0};
+
+        final long[] secClick = {0};
+        view.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+
+                    firClick[0] = secClick[0];
+
+                    secClick[0] = System.currentTimeMillis();
+
+                    if (secClick[0] - firClick[0] < 500) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+    }
     public static void setLongClick(final Handler handler, final View longClickView, final long delayMillis, final View.OnLongClickListener longClickListener) {
         longClickView.setOnTouchListener(new View.OnTouchListener() {
             private int TOUCH_MAX = 50;

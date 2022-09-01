@@ -407,8 +407,10 @@
         <entry key="..\:/AndroidStudioProjects/AndroidPad/app/stove/src/main/res/layout/stove_dialog_layout_open_fire.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/app/stove/src/main/res/layout/stove_dialog_layout_select_stove.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/app/stove/src/main/res/layout/stove_item_main_function.xml" value="0.1" />
+        <entry key="..\:/AndroidStudioProjects/AndroidPad/app/stove/src/main/res/layout/stove_item_recipe_step.xml" value="0.11956521739130435" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/app/stove/src/main/res/layout/stove_page_layout_home.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/app/stove/src/main/res/layout/stove_page_layout_mode_select.xml" value="0.22916666666666666" />
+        <entry key="..\:/AndroidStudioProjects/AndroidPad/app/stove/src/main/res/layout/stove_recipe_item.xml" value="0.11956521739130435" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/app/stove/src/main/res/layout/stove_view_layout_title.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/cabinet/src/main/res/drawable/cabinet_main_item_bg.xml" value="0.188" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/cabinet/src/main/res/layout/cabinet_activity_layout_appointing.xml" value="0.1" />
@@ -437,6 +439,7 @@
         <entry key="..\:/AndroidStudioProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_page_layout_home.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_picker_item.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_view_layout_title.xml" value="0.1" />
+        <entry key="..\:/AndroidStudioProjects/AndroidPad/roki/src/main/res/layout/roki_layout_foot_tell_roki.xml" value="0.11956521739130435" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/roki/src/main/res/layout/roki_view_layout_wizard.xml" value="0.14130434782608695" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/steam/src/main/res/drawable/steam_ic_bg_button.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProjects/AndroidPad/steam/src/main/res/drawable/steam_text_color_selector.xml" value="0.1" />
