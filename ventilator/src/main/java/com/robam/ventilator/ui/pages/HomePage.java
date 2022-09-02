@@ -30,7 +30,7 @@ import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MMKVUtils;
 import com.robam.common.utils.ScreenUtils;
 import com.robam.common.utils.ToastUtils;
-import com.robam.stove.ui.activity.MainActivity;
+import com.robam.dishwasher.ui.activity.MainActivity;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBasePage;
 import com.robam.common.bean.AccountInfo;

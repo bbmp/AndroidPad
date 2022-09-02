@@ -37,7 +37,7 @@ public class FunctionManager {
             LogUtils.e("getFuntionList return " + cls.getName());
             return funtionList;
         } catch (Exception e) {
-//            CrashReport.postCatchedException(e);
+            LogUtils.e(e.getMessage());
         }
         return null;
     }

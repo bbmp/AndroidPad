@@ -106,16 +106,6 @@ public class CurveRestoreActivity extends PanBaseActivity {
             @Override
 
             public void run() {
-                CurveStep curveStep = rvStep2Adapter.getData().get(curStep);
-
-                if (curveStep.needTime > 0) {
-                    curveStep.elapsedTime++;
-                    if (curveStep.elapsedTime == curveStep.needTime) {
-                        nextStep();
-                    }
-                    rvStep2Adapter.notifyItemChanged(curStep);
-
-                }
                 //判断是否结束
                 if (curStep >= rvStep2Adapter.getData().size()) {
                     //还原结束
@@ -128,6 +118,17 @@ public class CurveRestoreActivity extends PanBaseActivity {
                     finish();
                     return;
                 }
+                CurveStep curveStep = rvStep2Adapter.getData().get(curStep);
+
+                if (curveStep.needTime > 0) {
+                    curveStep.elapsedTime++;
+                    if (curveStep.elapsedTime == curveStep.needTime) {
+                        nextStep();
+                    }
+                    rvStep2Adapter.notifyItemChanged(curStep);
+
+                }
+
                 mHandler.postDelayed(runnable, 1000L);
 
             }

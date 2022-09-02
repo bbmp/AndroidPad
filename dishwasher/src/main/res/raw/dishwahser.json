@@ -1,0 +1,119 @@
+[
+  {
+    "backgroundImg": "",
+    "funtionCode": 1,
+    "funtionName": "智能洗",
+    "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
+    "desc" : "自动识别匹配餐具脏污程度进行清洗",
+    "mode": {
+        "code": 1,
+        "name": "智能洗",
+        "time": 20,
+        "temp": 40
+      }
+  },
+  {
+    "backgroundImg": "",
+    "funtionCode": 2,
+    "funtionName": "强力洗",
+    "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
+    "desc" : "清洗重度脏污餐具、残渣干结餐具",
+    "mode": {
+      "code": 1,
+      "name": "强力洗",
+      "time": 40,
+      "temp": 55
+    }
+  },
+  {
+    "backgroundImg": "",
+    "funtionCode": 3,
+    "funtionName": "快速洗",
+    "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
+    "desc" : "清洗轻度脏污餐具，无需干燥",
+    "mode": {
+      "code": 1,
+      "name": "快速洗",
+      "time": 45,
+      "temp": 65
+    }
+  },
+  {
+    "backgroundImg": "",
+    "funtionCode": 4,
+    "funtionName": "日常洗",
+    "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
+    "desc" : "清洗中度脏污餐具",
+    "mode": {
+      "code": 1,
+      "name": "日常洗",
+      "time": 65,
+      "temp": 55
+    }
+  },
+  {
+    "backgroundImg": "",
+    "funtionCode": 5,
+    "funtionName": "节能洗",
+    "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
+    "desc" : "清洗未干结的中度脏污餐具",
+    "mode": {
+      "code": 1,
+      "name": "节能洗",
+      "time": 125,
+      "temp": 55
+    }
+  },
+  {
+    "backgroundImg": "",
+    "funtionCode": 6,
+    "funtionName": "晶亮洗",
+    "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
+    "desc" : "清洗精致易碎、轻度脏污餐具",
+    "mode": {
+      "code": 1,
+      "name": "晶亮洗",
+      "time": 600,
+      "temp": 55
+    }
+  },
+  {
+    "backgroundImg": "",
+    "funtionCode": 7,
+    "funtionName": "护婴洗",
+    "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
+    "desc" : "清洗需要持续高温除菌餐具",
+    "mode": {
+      "code": 1,
+      "name": "护婴洗",
+      "time": 650,
+      "temp": 55
+    }
+  },
+  {
+    "backgroundImg": "",
+    "funtionCode": 8,
+    "funtionName": "自清洁",
+    "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
+    "desc" : "洗碗机内腔的清洁",
+    "mode": {
+      "code": 1,
+      "name": "自清洁",
+      "time": 130,
+      "temp": 55
+    }
+  },
+  {
+    "backgroundImg": "",
+    "funtionCode": 9,
+    "funtionName": "护婴\n净存",
+    "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
+    "desc" : "餐具在洗碗机内部的储存",
+    "mode": {
+      "code": 1,
+      "name": "护婴\n净存",
+      "time": 0,
+      "temp": 0
+    }
+  }
+]
