@@ -1,48 +1,45 @@
 package com.robam.pan.ui.activity;
 
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.ui.dialog.IDialog;
-import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.common.ui.helper.VerticalSpaceItemDecoration;
 import com.robam.pan.R;
 import com.robam.pan.base.PanBaseActivity;
 import com.robam.pan.bean.CurveStep;
-import com.robam.pan.bean.PanRecipeDetail;
-import com.robam.pan.bean.RecipeStep;
+import com.robam.pan.bean.PanCurveDetail;
 import com.robam.pan.constant.DialogConstant;
 import com.robam.pan.constant.PanConstant;
 import com.robam.pan.factory.PanDialogFactory;
 import com.robam.pan.http.CloudHelper;
+import com.robam.pan.response.GetCurveDetailRes;
 import com.robam.pan.response.GetRecipeDetailRes;
-import com.robam.pan.ui.adapter.RvStepAdapter;
+import com.robam.pan.ui.adapter.RvStep3Adapter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-//菜谱选中页面
+//菜谱和曲线选中页面
 public class RecipeSelectedActivity extends PanBaseActivity {
     private TextView tvRight;
     //菜谱id
     private long recipeId;
+    //曲线id
+    private long curveId;
     //步骤
     private RecyclerView rvStep;
-    private RvStepAdapter rvStepAdapter;
+    private RvStep3Adapter rvStep3Adapter;
     private TextView tvRecipeName;
-    //锅菜谱详情
-    private PanRecipeDetail panRecipeDetail;
+    //曲线详情
+    private PanCurveDetail panCurveDetail;
+    //开始烹饪
+    private TextView tvStartCook;
 
 
     @Override
@@ -54,27 +51,34 @@ public class RecipeSelectedActivity extends PanBaseActivity {
     protected void initView() {
         showLeft();
         showCenter();
-        showRight();
 
-        if (null != getIntent())
+        if (null != getIntent()) {
+            curveId = getIntent().getLongExtra(PanConstant.EXTRA_CURVE_ID, 0);
             recipeId = getIntent().getLongExtra(PanConstant.EXTRA_RECIPE_ID, 0);
+        }
 
         tvRight = findViewById(R.id.tv_right);
         tvRight.setText(R.string.pan_recipe_detail);
         rvStep = findViewById(R.id.rv_step);
         tvRecipeName = findViewById(R.id.tv_recipe_name);
+        tvStartCook = findViewById(R.id.tv_start_cook);
         //步骤
         rvStep.setLayoutManager(new LinearLayoutManager(this));
         rvStep.addItemDecoration(new VerticalSpaceItemDecoration((int) getContext().getResources().getDimension(com.robam.common.R.dimen.dp_15)));
-        rvStepAdapter = new RvStepAdapter();
-        rvStep.setAdapter(rvStepAdapter);
+        rvStep3Adapter = new RvStep3Adapter();
+        rvStep.setAdapter(rvStep3Adapter);
 
         setOnClickListener(R.id.tv_right, R.id.tv_start_cook);
     }
 
     @Override
     protected void initData() {
-        getRecipeDetail();
+        if (curveId != 0)  //获取曲线详情
+            getCurveDetail();
+        else if (recipeId != 0) {
+            showRight();  //显示菜谱详情
+            getRecipeDetail();  //先获取菜谱详情
+        }
     }
 
     @Override
@@ -118,8 +122,8 @@ public class RecipeSelectedActivity extends PanBaseActivity {
 //        iDialog.show();
         Intent intent = new Intent();
         intent.setClass(this, CurveRestoreActivity.class);
-        if (null != panRecipeDetail)
-            intent.putExtra(PanConstant.EXTRA_RECIPE_DETAIL, panRecipeDetail);
+        if (null != panCurveDetail)
+            intent.putExtra(PanConstant.EXTRA_CURVE_DETAIL, panCurveDetail);
         startActivity(intent);
     }
 
@@ -128,8 +132,11 @@ public class RecipeSelectedActivity extends PanBaseActivity {
         CloudHelper.getRecipeDetail(this, recipeId, "1", "1", GetRecipeDetailRes.class, new RetrofitCallback<GetRecipeDetailRes>() {
             @Override
             public void onSuccess(GetRecipeDetailRes getRecipeDetailRes) {
-                if (null != getRecipeDetailRes && null != getRecipeDetailRes.cookbook)
-                    setData(getRecipeDetailRes.cookbook);
+                if (null != getRecipeDetailRes && null != getRecipeDetailRes.cookbook) {
+                    curveId = getRecipeDetailRes.cookbook.curveCookbookId; //曲线id
+                    if (curveId != 0)
+                        getCurveDetail(); //获取曲线详情
+                }
             }
 
             @Override
@@ -139,20 +146,30 @@ public class RecipeSelectedActivity extends PanBaseActivity {
         });
     }
 
-    private void setData(PanRecipeDetail panRecipeDetail) {
-        //菜谱详情
-        this.panRecipeDetail = panRecipeDetail;
-        //名字
-        tvRecipeName.setText(panRecipeDetail.name);
-        //曲线步骤
-        ArrayList<CurveStep> curveSteps = new ArrayList<>();
-        if (null != panRecipeDetail.curveStepDtoList) {
-            curveSteps.addAll(panRecipeDetail.curveStepDtoList);
-        }
-//        Map<String, String> params = null;
-//        if (null != panRecipeDetail.temperatureCurveParams) {
-//            params = new Gson().fromJson(panRecipeDetail.temperatureCurveParams, new TypeToken<HashMap<String, String>>(){}.getType());
-//        }
-        rvStepAdapter.setList(curveSteps);
+    //获取曲线详情
+    private void getCurveDetail() {
+        CloudHelper.getCurvebookDetail(this, curveId, GetCurveDetailRes.class, new RetrofitCallback<GetCurveDetailRes>() {
+            @Override
+            public void onSuccess(GetCurveDetailRes getCurveDetailRes) {
+                if (null != getCurveDetailRes && null != getCurveDetailRes.payload) {
+                    panCurveDetail = getCurveDetailRes.payload;
+                    //这里用了曲线名
+                    tvRecipeName.setText(panCurveDetail.name);
+
+                    List<CurveStep> curveSteps = new ArrayList<>();
+                    if (null != panCurveDetail.stepList) {
+                        curveSteps.addAll(panCurveDetail.stepList);
+                        tvStartCook.setVisibility(View.VISIBLE);
+                    }
+                    rvStep3Adapter.setList(curveSteps);
+                }
+            }
+
+            @Override
+            public void onFaild(String err) {
+
+            }
+        });
     }
+
 }

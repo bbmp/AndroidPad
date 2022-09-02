@@ -19,35 +19,45 @@
         android:id="@+id/tv_fire"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_100"
         android:textSize="@dimen/sp_40"
+        tools:text=""
         android:textColor="@color/stove_white"
         app:layout_constraintLeft_toLeftOf="@id/stove_guideline"
-        app:layout_constraintRight_toLeftOf="@id/tv_temp"
         app:layout_constraintTop_toBottomOf="@id/ll_title"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_chainStyle="packed"/>
-
+        app:layout_constraintBottom_toTopOf="@id/tv_time"
+        app:layout_constraintVertical_chainStyle="packed"/>
     <TextView
         android:id="@+id/tv_temp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_40"
-        android:textSize="@dimen/sp_40"
         android:textColor="@color/stove_white"
+        android:textSize="@dimen/sp_40"
+        android:layout_marginLeft="@dimen/dp_40"
+        tools:text=""
         app:layout_constraintLeft_toRightOf="@id/tv_fire"
-        app:layout_constraintRight_toLeftOf="@id/tv_time"
         app:layout_constraintBaseline_toBaselineOf="@id/tv_fire"/>
+
     <TextView
         android:id="@+id/tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_40"
-        android:textSize="@dimen/sp_40"
-        android:text=""
+        android:layout_marginTop="@dimen/dp_60"
+        android:textSize="@dimen/sp_100"
+        tools:text=""
         android:textColor="@color/stove_white"
-        app:layout_constraintLeft_toRightOf="@id/tv_temp"
-        app:layout_constraintBaseline_toBaselineOf="@id/tv_temp"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintLeft_toLeftOf="@id/tv_fire"
+        app:layout_constraintTop_toBottomOf="@id/tv_fire"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/stove_white"
+        android:textSize="@dimen/sp_60"
+        android:text="min"
+        app:layout_constraintLeft_toRightOf="@id/tv_time"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_time"/>
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/stove_guideline"
         android:layout_width="wrap_content"

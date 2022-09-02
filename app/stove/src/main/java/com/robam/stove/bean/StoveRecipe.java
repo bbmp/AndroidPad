@@ -9,7 +9,7 @@ public class StoveRecipe {
     private String imgSmall;
     //菜谱名称
     private String name;
-
+    //设备类型
     public List<DCS> dcs;
 
 

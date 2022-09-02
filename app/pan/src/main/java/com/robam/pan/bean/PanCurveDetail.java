@@ -1,10 +1,9 @@
-package com.robam.stove.bean;
+package com.robam.pan.bean;
 
 import java.io.Serializable;
 import java.util.List;
 
-//曲线详情
-public class StoveCurveDetail implements Serializable {
+public class PanCurveDetail implements Serializable {
     //曲线id
     public long curveCookbookId;
     //曲线名称
@@ -23,11 +22,9 @@ public class StoveCurveDetail implements Serializable {
     public String deviceParams;
     //是否选中,用于显示
     private boolean selected;
-
-    public StoveCurveDetail(String name) {
+    public PanCurveDetail(String name) {
         this.name = name;
     }
-
     public boolean isSelected() {
         return selected;
     }
@@ -35,5 +32,4 @@ public class StoveCurveDetail implements Serializable {
     public void setSelected(boolean selected) {
         this.selected = selected;
     }
-
 }

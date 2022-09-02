@@ -1,8 +1,7 @@
-package com.robam.stove.request;
+package com.robam.pan.request;
 
 import com.google.gson.Gson;
-
-//曲线详情
+//获取曲线详情
 public class GetCurveDetailReq {
     //曲线id
     public long id;

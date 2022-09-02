@@ -5,6 +5,7 @@ import android.widget.TextView;
 
 import com.robam.pan.R;
 import com.robam.pan.base.PanBaseActivity;
+import com.robam.pan.bean.PanCurveDetail;
 import com.robam.pan.bean.PanRecipeDetail;
 import com.robam.pan.constant.PanConstant;
 
@@ -12,8 +13,8 @@ import com.robam.pan.constant.PanConstant;
 public class RestoreCompleteActivity extends PanBaseActivity {
     private TextView tvRecipeName;
 
-    //菜谱详情
-    private PanRecipeDetail panRecipeDetail;
+    //曲线详情
+    private PanCurveDetail panCurveDetail;
 
     @Override
     protected int getLayoutId() {
@@ -22,11 +23,10 @@ public class RestoreCompleteActivity extends PanBaseActivity {
 
     @Override
     protected void initView() {
-        showLeft();
         showCenter();
 
         if (null != getIntent())
-            panRecipeDetail = (PanRecipeDetail) getIntent().getSerializableExtra(PanConstant.EXTRA_RECIPE_DETAIL);
+            panCurveDetail = (PanCurveDetail) getIntent().getSerializableExtra(PanConstant.EXTRA_CURVE_DETAIL);
         tvRecipeName = findViewById(R.id.tv_recipe_name);
 
         setOnClickListener(R.id.btn_back_home);
@@ -34,8 +34,8 @@ public class RestoreCompleteActivity extends PanBaseActivity {
 
     @Override
     protected void initData() {
-        if (null != panRecipeDetail) {
-            tvRecipeName.setText(panRecipeDetail.name);
+        if (null != panCurveDetail) {
+            tvRecipeName.setText(panCurveDetail.name);
         }
     }
 

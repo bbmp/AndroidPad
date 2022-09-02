@@ -53,7 +53,6 @@ public class RecipeActivity extends StoveBaseActivity {
 //    private List<String> classifyList = new ArrayList<>();
     //弱引用，防止内存泄漏
 //    private List<WeakReference<Fragment>> fragments = new ArrayList<>();
-    private List<StoveRecipe> stoveRecipeList = new ArrayList<>();
 
     @Override
     protected int getLayoutId() {
@@ -119,20 +118,42 @@ public class RecipeActivity extends StoveBaseActivity {
                 new RetrofitCallback<GetRecipesByDeviceRes>() {
                     @Override
                     public void onSuccess(GetRecipesByDeviceRes getRecipesByDeviceRes) {
-                        if (null != getRecipesByDeviceRes && getRecipesByDeviceRes.cookbooks != null) {
-                            stoveRecipeList.addAll(getRecipesByDeviceRes.cookbooks);
-                            rvRecipeAdapter.setList(stoveRecipeList);
-                            hideEmpty();
-                        } else
-                            showEmpty();
+
+                        setData(getRecipesByDeviceRes);
                     }
 
                     @Override
                     public void onFaild(String err) {
-                        showEmpty();
+                        setData(null);
                     }
                 });
     }
+
+    //设置菜谱列表
+    private void setData(GetRecipesByDeviceRes getRecipesByDeviceRes) {
+        List<StoveRecipe> stoveRecipes = new ArrayList<>();
+        if (null != getRecipesByDeviceRes && null != getRecipesByDeviceRes.cookbooks) {
+            //过滤其他设备菜谱
+            for (StoveRecipe stoveRecipe: getRecipesByDeviceRes.cookbooks) {
+                List<StoveRecipe.DCS> dcsList = stoveRecipe.dcs;
+                if (null != dcsList) {
+                    for (StoveRecipe.DCS dcs: dcsList) {
+                        if (IDeviceType.RRQZ.equals(dcs.dc)) {
+                            stoveRecipes.add(stoveRecipe);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        if (stoveRecipes.size() > 0) {
+            rvRecipeAdapter.setList(stoveRecipes);
+            hideEmpty();
+        }
+        else
+            showEmpty();
+    }
+
     //获取不到数据
     private void showEmpty() {
         tvEmpty.setVisibility(View.VISIBLE);
@@ -151,32 +172,13 @@ public class RecipeActivity extends StoveBaseActivity {
 
                     @Override
                     public void onSuccess(GetRecipesByDeviceRes getRecipesByDeviceRes) {
-                        if (null != getRecipesByDeviceRes && null != getRecipesByDeviceRes.cookbooks) {
-                            List<StoveRecipe> recipeList = new ArrayList<>();
-                            //过滤其他设备菜谱
-                            for (StoveRecipe stoveRecipe: getRecipesByDeviceRes.cookbooks) {
-                                List<StoveRecipe.DCS> dcsList = stoveRecipe.dcs;
-                                if (null != dcsList) {
-                                    for (StoveRecipe.DCS dcs: dcsList) {
-                                        if (IDeviceType.RRQZ.equals(dcs.dc)) {
-                                            recipeList.add(stoveRecipe);
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                            rvRecipeAdapter.setList(recipeList);
-                            if (recipeList.size() == 0)
-                                showEmpty();
-                            else
-                                hideEmpty();
-                        } else
-                            showEmpty();
+
+                        setData(getRecipesByDeviceRes);
                     }
 
                     @Override
                     public void onFaild(String err) {
-                        showEmpty();
+                        setData(null);
                     }
                 });
 

@@ -85,12 +85,6 @@ public class CurveRestoreActivity extends StoveBaseActivity {
 
             public void run() {
 
-                if (curTime >= lastMark) {
-                    //工作结束
-                    //提示烹饪完成
-                    workComplete();
-                    return;
-                }
                 String value = params.get(curTime);
                 if (!TextUtils.isEmpty(value)) {
                     String[] values = value.split("-");
@@ -100,8 +94,14 @@ public class CurveRestoreActivity extends StoveBaseActivity {
                     }
                 }
                 curTime++;
-                tvTime.setText(DateUtil.secForMatTime3(curTime) + "min");
+                tvTime.setText(DateUtil.secForMatTime3(curTime));
 
+                if (curTime >= lastMark) {
+                    //工作结束
+                    //提示烹饪完成
+                    workComplete();
+                    return;
+                }
                 mHandler.postDelayed(runnable, 1000L);
 
             }

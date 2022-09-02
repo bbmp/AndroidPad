@@ -1,19 +1,30 @@
 package com.robam.pan.bean;
 
+import java.util.List;
+
 public class PanRecipe {
     //菜谱id
-    public long id;
+    public long id = 15312;
     //图片
     private String imgSmall;
     //菜谱名称
     private String name;
+    //设备类型
+    public List<DCS> dcs;
+    //曲线id
+    public long curveId;
 
-    //是否选中,用于显示
-    private boolean selected;
 
     public PanRecipe(String name, String imgUrl) {
         this.name = name;
         this.imgSmall = imgUrl;
+    }
+
+    public PanRecipe(long id, String imgSmall, String name, long curveId) {
+        this.id = id;
+        this.imgSmall = imgSmall;
+        this.name = name;
+        this.curveId = curveId;
     }
 
     public String getImgUrl() {
@@ -23,11 +34,9 @@ public class PanRecipe {
     public String getName() {
         return name;
     }
-    public boolean isSelected() {
-        return selected;
-    }
 
-    public void setSelected(boolean selected) {
-        this.selected = selected;
+
+    public class DCS {
+        public String dc;
     }
 }

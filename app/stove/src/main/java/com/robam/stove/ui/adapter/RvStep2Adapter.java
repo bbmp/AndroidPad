@@ -37,9 +37,15 @@ public class RvStep2Adapter extends BaseQuickAdapter<RecipeStep, BaseViewHolder>
             baseViewHolder.setText(R.id.tv_cur_step, String.format(getContext().getString(R.string.stove_cur_step), recipeStep.getNo()+"", getData().size()+""));
             baseViewHolder.setTextColorRes(R.id.tv_cur_step, R.color.stove_step);
             tvCountdown = baseViewHolder.getView(R.id.tv_countdown);
-            tvCountdown.setText(DateUtil.secForMatTime(recipeStep.needTime - recipeStep.elapsedTime));
+            if (recipeStep.needTime - recipeStep.elapsedTime <= 0)
+                tvCountdown.setText("");
+            else
+                tvCountdown.setText(DateUtil.secForMatTime(recipeStep.needTime - recipeStep.elapsedTime));
             ProgressBar pbTime = baseViewHolder.getView(R.id.pb_time);
-            pbTime.setProgress(recipeStep.elapsedTime * 100 / recipeStep.needTime);
+            if (recipeStep.needTime <= 0)
+                pbTime.setProgress(100);
+            else
+                pbTime.setProgress(recipeStep.elapsedTime * 100 / recipeStep.needTime);
             tvCurStep.setTextSize(TypedValue.COMPLEX_UNIT_PX, getContext().getResources().getDimensionPixelSize(com.robam.common.R.dimen.sp_32));
             baseViewHolder.setTextColorRes(R.id.tv_step_des, R.color.stove_white);
             baseViewHolder.setText(R.id.tv_step_des, String.format(getContext().getString(R.string.stove_recipe_step_des), recipeStep.getNo() + "", recipeStep.getDesc()));

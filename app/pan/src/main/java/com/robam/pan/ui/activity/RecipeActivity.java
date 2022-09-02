@@ -1,12 +1,10 @@
 package com.robam.pan.ui.activity;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -16,15 +14,16 @@ import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.robam.common.IDeviceType;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
+import com.robam.common.utils.ToastUtils;
 import com.robam.pan.R;
 import com.robam.pan.base.PanBaseActivity;
 import com.robam.pan.bean.PanRecipe;
 import com.robam.pan.constant.PanConstant;
 import com.robam.pan.http.CloudHelper;
 import com.robam.pan.response.GetRecipesByDeviceRes;
-import com.robam.pan.ui.adapter.RvFavoriteAdapter;
 import com.robam.pan.ui.adapter.RvRecipeAdapter;
 
 import java.util.ArrayList;
@@ -38,7 +37,6 @@ public class RecipeActivity extends PanBaseActivity {
     private EditText etSearch;
     private TextView tvEmpty;
 
-    private List<PanRecipe> panRecipeList = new ArrayList<>();
 
     @Override
     protected int getLayoutId() {
@@ -76,8 +74,7 @@ public class RecipeActivity extends PanBaseActivity {
                         //处理搜索
                         searchResult(text);
                     } else {
-                        rvRecipeAdapter.setList(panRecipeList);
-                        hideEmpty();
+                        ToastUtils.showShort(RecipeActivity.this, R.string.pan_input_empty);
                     }
                     return false;
                 }
@@ -91,25 +88,46 @@ public class RecipeActivity extends PanBaseActivity {
        getPanRecipe();
     }
 
-    //获取灶具菜谱
+    //获取锅菜谱
     private void getPanRecipe() {
-        CloudHelper.getRecipesByDevice(this, "RZNG", "all", 1, 20, GetRecipesByDeviceRes.class,
+        CloudHelper.getRecipesByDevice(this, IDeviceType.RZNG, "all", 1, 20, GetRecipesByDeviceRes.class,
                 new RetrofitCallback<GetRecipesByDeviceRes>() {
                     @Override
                     public void onSuccess(GetRecipesByDeviceRes getRecipesByDeviceRes) {
-                        if (null != getRecipesByDeviceRes && getRecipesByDeviceRes.cookbooks != null) {
-                            panRecipeList.addAll(getRecipesByDeviceRes.cookbooks);
-                            rvRecipeAdapter.setList(panRecipeList);
-                            hideEmpty();
-                        } else
-                            showEmpty();
+
+                        setData(getRecipesByDeviceRes);
                     }
 
                     @Override
                     public void onFaild(String err) {
-                        showEmpty();
+                        setData(null);
                     }
                 });
+    }
+
+    //设置菜谱数据
+    private void setData(GetRecipesByDeviceRes getRecipesByDeviceRes) {
+        List<PanRecipe> panRecipes = new ArrayList<>();
+        if (null != getRecipesByDeviceRes && null != getRecipesByDeviceRes.cookbooks) {
+            //过滤其他设备菜谱
+            for (PanRecipe panRecipe: getRecipesByDeviceRes.cookbooks) {
+                List<PanRecipe.DCS> dcsList = panRecipe.dcs;
+                if (null != dcsList) {
+                    for (PanRecipe.DCS dcs: dcsList) {
+                        if (IDeviceType.RZNG.equals(dcs.dc)) {
+                            panRecipes.add(panRecipe);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        if (panRecipes.size() > 0) {
+            rvRecipeAdapter.setList(panRecipes);
+            hideEmpty();
+        }
+        else
+            showEmpty();
     }
 
     //获取不到数据
@@ -124,15 +142,19 @@ public class RecipeActivity extends PanBaseActivity {
     }
     //搜索结果
     private void searchResult(String text) {
-        List<PanRecipe> recipeList = new ArrayList<>();
-        for (int i=0; i<panRecipeList.size(); i++) {
-            if (panRecipeList.get(i).getName().contains(text))
-                recipeList.add(panRecipeList.get(i));
-        }
-        rvRecipeAdapter.setList(recipeList);
-        if (recipeList.size() == 0)
-            showEmpty();
-        else
-            hideEmpty();
+        CloudHelper.getCookbooksByName(this, text, false, 0L, false, true,
+                GetRecipesByDeviceRes.class, new RetrofitCallback<GetRecipesByDeviceRes>() {
+
+                    @Override
+                    public void onSuccess(GetRecipesByDeviceRes getRecipesByDeviceRes) {
+
+                        setData(getRecipesByDeviceRes);
+                    }
+
+                    @Override
+                    public void onFaild(String err) {
+                        setData(null);
+                    }
+                });
     }
 }

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.BaseResponse;
 import com.robam.common.bean.UserInfo;
@@ -115,30 +116,38 @@ public class CurveActivity extends StoveBaseActivity {
     //获取烹饪曲线列表
     private void getCurveList() {
         UserInfo info = AccountInfo.getInstance().getUser().getValue();
-        if (null != info) {
-            CloudHelper.queryCurveCookbooks(this, info.id, GetCurveCookbooksRes.class,
-                    new RetrofitCallback<GetCurveCookbooksRes>() {
-                        @Override
-                        public void onSuccess(GetCurveCookbooksRes getCurveCookbooksRes) {
-                            if (null != getCurveCookbooksRes && getCurveCookbooksRes.payload != null)
-                                setData(getCurveCookbooksRes.payload);
-                        }
 
-                        @Override
-                        public void onFaild(String err) {
+        CloudHelper.queryCurveCookbooks(this, (info != null) ? info.id:0, GetCurveCookbooksRes.class,
+                new RetrofitCallback<GetCurveCookbooksRes>() {
+                    @Override
+                    public void onSuccess(GetCurveCookbooksRes getCurveCookbooksRes) {
 
-                        }
-                    });
-        }
+                        setData(getCurveCookbooksRes);
+                    }
+
+                    @Override
+                    public void onFaild(String err) {
+                        setData(null);
+                    }
+                });
+
     }
 
     //设置烹饪曲线
-    private void setData(List<StoveCurveDetail> payload) {
+    private void setData(GetCurveCookbooksRes getCurveCookbooksRes) {
         stoveCurveDetails.clear();
         stoveCurveDetails.add(0, new StoveCurveDetail("创作烹饪曲线"));
-        //需过滤掉其他曲线
-        stoveCurveDetails.addAll(payload);
+        //需过滤掉其他曲线,锅和灶一起
+        if (null != getCurveCookbooksRes && null != getCurveCookbooksRes.payload) {
+            for (StoveCurveDetail stoveCurveDetail : getCurveCookbooksRes.payload) {
+                if (stoveCurveDetail.deviceParams.contains(IDeviceType.RRQZ) ||
+                        stoveCurveDetail.deviceParams.contains(IDeviceType.RZNG))
+                    stoveCurveDetails.add(stoveCurveDetail);
+            }
+        }
+
         rvCurveAdapter.setList(stoveCurveDetails);
+        //是否显示删除
         if (stoveCurveDetails.size() > 1)
             showRight();
     }
@@ -245,13 +254,15 @@ public class CurveActivity extends StoveBaseActivity {
     }
     //删除
     private void delete() {
+        UserInfo info = AccountInfo.getInstance().getUser().getValue();
+
         Iterator<StoveCurveDetail> iterator = stoveCurveDetails.iterator();
         while (iterator.hasNext()) {
             StoveCurveDetail stoveCurveDetail = iterator.next();
             if (stoveCurveDetail.isSelected()) {
                 iterator.remove();
                 //删除
-                CloudHelper.delCurve(this, AccountInfo.getInstance().getUser().getValue().id, stoveCurveDetail.curveCookbookId, BaseResponse.class,
+                CloudHelper.delCurve(this, (info != null) ? info.id:0, stoveCurveDetail.curveCookbookId, BaseResponse.class,
                         new RetrofitCallback<BaseResponse>() {
                             @Override
                             public void onSuccess(BaseResponse baseResponse) {

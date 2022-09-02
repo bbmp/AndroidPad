@@ -12,9 +12,10 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.robam.common.utils.ImageUtils;
 import com.robam.pan.R;
+import com.robam.pan.bean.PanCurveDetail;
 import com.robam.pan.bean.PanRecipe;
 
-public class RvFavoriteAdapter extends BaseQuickAdapter<PanRecipe, BaseViewHolder> {
+public class RvCurveAdapter extends BaseQuickAdapter<PanCurveDetail, BaseViewHolder> {
     private RequestOptions maskOption = new RequestOptions()
             .centerCrop()
             .placeholder(R.drawable.pan_recipe_img_bg) //预加载图片
@@ -39,27 +40,27 @@ public class RvFavoriteAdapter extends BaseQuickAdapter<PanRecipe, BaseViewHolde
         notifyDataSetChanged();
     }
 
-    public RvFavoriteAdapter() {
+    public RvCurveAdapter() {
         super(R.layout.pan_item_recipe_favorite);
         addChildClickViewIds(R.id.iv_select);
     }
 
     @Override
-    protected void convert(@NonNull BaseViewHolder baseViewHolder, PanRecipe panRecipe) {
+    protected void convert(@NonNull BaseViewHolder baseViewHolder, PanCurveDetail panCurveDetail) {
         if (status == STATUS_ALL) {
             baseViewHolder.getView(R.id.iv_select).setSelected(true);
             baseViewHolder.setVisible(R.id.iv_select, true);
         }
         //删除状态
         else if (status == STATUS_DELETE) {
-            baseViewHolder.getView(R.id.iv_select).setSelected(panRecipe.isSelected());
+            baseViewHolder.getView(R.id.iv_select).setSelected(panCurveDetail.isSelected());
             baseViewHolder.setVisible(R.id.iv_select, true);
         } else {
             baseViewHolder.setVisible(R.id.iv_select, false);
         }
 
         ImageView imageView = baseViewHolder.getView(R.id.iv_recipe);
-        ImageUtils.loadImage(getContext(), panRecipe.getImgUrl(), maskOption, imageView);
-        baseViewHolder.setText(R.id.tv_recipe, panRecipe.getName());
+        ImageUtils.loadImage(getContext(), panCurveDetail.imageCover, maskOption, imageView);
+        baseViewHolder.setText(R.id.tv_recipe, panCurveDetail.name);
     }
 }

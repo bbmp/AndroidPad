@@ -12,15 +12,22 @@ import android.widget.TextView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.robam.common.IDeviceType;
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.BaseResponse;
+import com.robam.common.bean.UserInfo;
+import com.robam.common.http.RetrofitCallback;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
+import com.robam.pan.bean.PanCurveDetail;
 import com.robam.pan.constant.DialogConstant;
 import com.robam.pan.R;
 import com.robam.pan.base.PanBaseActivity;
-import com.robam.pan.bean.PanRecipe;
 import com.robam.pan.constant.PanConstant;
 import com.robam.pan.factory.PanDialogFactory;
-import com.robam.pan.ui.adapter.RvFavoriteAdapter;
+import com.robam.pan.http.CloudHelper;
+import com.robam.pan.response.GetCurveCookbooksRes;
+import com.robam.pan.ui.adapter.RvCurveAdapter;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -29,10 +36,10 @@ import java.util.List;
 //烹饪曲线
 public class CurveActivity extends PanBaseActivity {
     private RecyclerView rvRecipe;
-    private RvFavoriteAdapter rvFavoriteAdapter;
+    private RvCurveAdapter rvCurveAdapter;
     private TextView tvRight;
     private ImageView ivRight;
-    private List<PanRecipe> panRecipeList = new ArrayList<>();
+    private List<PanCurveDetail> panCurveDetails = new ArrayList<>();
     private TextView tvDelete; //确认删除
 
     @Override
@@ -52,67 +59,93 @@ public class CurveActivity extends PanBaseActivity {
         tvDelete = findViewById(R.id.tv_delete);
         rvRecipe.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
         rvRecipe.addItemDecoration(new HorizontalSpaceItemDecoration((int)getResources().getDimension(com.robam.common.R.dimen.dp_8), (int)getResources().getDimension(com.robam.common.R.dimen.dp_32)));
-        rvFavoriteAdapter = new RvFavoriteAdapter();
-        rvRecipe.setAdapter(rvFavoriteAdapter);
+        rvCurveAdapter = new RvCurveAdapter();
+        rvRecipe.setAdapter(rvCurveAdapter);
+
+        rvCurveAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                //删除状态不响应
+                if (rvCurveAdapter.getStatus() != rvCurveAdapter.STATUS_BACK)
+                    return;
+                if (position == 0) //曲线创作
+                    selectStove();
+                else {
+                    //曲线选中页
+                    PanCurveDetail panCurveDetail = (PanCurveDetail) adapter.getItem(position);
+                    Intent intent = new Intent();
+                    intent.setClass(CurveActivity.this, RecipeSelectedActivity.class);
+                    intent.putExtra(PanConstant.EXTRA_CURVE_ID, panCurveDetail.curveCookbookId);
+                    startActivity(intent);
+                }
+            }
+        });
+        rvCurveAdapter.setOnItemChildClickListener(new OnItemChildClickListener() {
+            @Override
+            public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
+                //某一条菜删除
+                if (view.getId() == R.id.iv_select) {
+                    PanCurveDetail panCurveDetail = (PanCurveDetail) adapter.getItem(position);
+                    if (rvCurveAdapter.getStatus() == rvCurveAdapter.STATUS_ALL) {
+                        //全选-》删除
+                        panCurveDetail.setSelected(false);
+                        ivRight.setImageResource(R.drawable.pan_shape_button_unselected);
+                        rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_DELETE);
+                    } else if (rvCurveAdapter.getStatus() == rvCurveAdapter.STATUS_DELETE) {
+                        panCurveDetail.setSelected(!panCurveDetail.isSelected());
+                        //检测是否全选
+                        if (isAll()) {
+                            ivRight.setImageResource(R.drawable.pan_shape_button_selected);
+                            rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_ALL);
+                        }
+                        else
+                            rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_DELETE);
+                    }
+                }
+            }
+        });
         setOnClickListener(R.id.ll_left, R.id.ll_right, R.id.tv_delete);
     }
 
     @Override
     protected void initData() {
-//test
+        getCurveList();
+    }
 
-        panRecipeList.add(new PanRecipe("创作烹饪曲线", ""));   //第一个固定是添加曲线
-        panRecipeList.add(new PanRecipe("蜜汁烤鸡翅", ""));
-        panRecipeList.add(new PanRecipe("脆皮猪肘", ""));
-        panRecipeList.add(new PanRecipe("脆皮猪肘", ""));
-        panRecipeList.add(new PanRecipe("烤牛排烤牛排烤牛排", ""));
-        panRecipeList.add(new PanRecipe("烤牛排", ""));
-        panRecipeList.add(new PanRecipe("烤牛排", ""));
-        panRecipeList.add(new PanRecipe("烤牛排", ""));
-        panRecipeList.add(new PanRecipe("烤牛排", ""));
-        rvFavoriteAdapter.setList(panRecipeList);
-        rvFavoriteAdapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                //删除状态不响应
-                //删除状态不响应
-                if (rvFavoriteAdapter.getStatus() != rvFavoriteAdapter.STATUS_BACK)
-                    return;
-                if (position == 0) //曲线创作
-                    selectStove();
-                else {
-                    Intent intent = new Intent();
-                    intent.setClass(CurveActivity.this, RecipeSelectedActivity.class);
-                    intent.putExtra(PanConstant.EXTRA_RECIPE_ID, 15292L);
-                    startActivity(intent);
-                }
-            }
-        });
-        rvFavoriteAdapter.setOnItemChildClickListener(new OnItemChildClickListener() {
-            @Override
-            public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
-                //某一条菜删除
-                if (view.getId() == R.id.iv_select) {
-                    PanRecipe panRecipe = (PanRecipe) adapter.getItem(position);
-                    if (rvFavoriteAdapter.getStatus() == rvFavoriteAdapter.STATUS_ALL) {
-                        //全选-》删除
-                        panRecipe.setSelected(false);
-                        ivRight.setImageResource(R.drawable.pan_shape_button_unselected);
-                        rvFavoriteAdapter.setStatus(RvFavoriteAdapter.STATUS_DELETE);
-                    } else if (rvFavoriteAdapter.getStatus() == rvFavoriteAdapter.STATUS_DELETE) {
-                        panRecipe.setSelected(!panRecipe.isSelected());
-                        //检测是否全选
-                        if (isAll()) {
-                            ivRight.setImageResource(R.drawable.pan_shape_button_selected);
-                            rvFavoriteAdapter.setStatus(RvFavoriteAdapter.STATUS_ALL);
-                        }
-                        else
-                            rvFavoriteAdapter.setStatus(RvFavoriteAdapter.STATUS_DELETE);
+    //获取烹饪曲线列表
+    private void getCurveList() {
+        UserInfo info = AccountInfo.getInstance().getUser().getValue();
+
+        CloudHelper.queryCurveCookbooks(this, (info != null) ? info.id:0, GetCurveCookbooksRes.class,
+                new RetrofitCallback<GetCurveCookbooksRes>() {
+                    @Override
+                    public void onSuccess(GetCurveCookbooksRes getCurveCookbooksRes) {
+                        setData(getCurveCookbooksRes);
                     }
-                }
+
+                    @Override
+                    public void onFaild(String err) {
+                        setData(null);
+                    }
+                });
+    }
+
+    //设置烹饪曲线
+    private void setData(GetCurveCookbooksRes getCurveCookbooksRes) {
+        panCurveDetails.clear();
+        panCurveDetails.add(0, new PanCurveDetail("创作烹饪曲线"));
+        //需过滤掉其他曲线,锅和灶一起
+        if (null != getCurveCookbooksRes && null != getCurveCookbooksRes.payload) {
+            for (PanCurveDetail panCurveDetail : getCurveCookbooksRes.payload) {
+                if (panCurveDetail.deviceParams.contains(IDeviceType.RRQZ) ||
+                        panCurveDetail.deviceParams.contains(IDeviceType.RZNG))
+                    panCurveDetails.add(panCurveDetail);
             }
-        });
-        if (panRecipeList.size() > 1)
+        }
+
+        rvCurveAdapter.setList(panCurveDetails);
+        //是否显示删除
+        if (panCurveDetails.size() > 1)
             showRight();
     }
 
@@ -143,36 +176,36 @@ public class CurveActivity extends PanBaseActivity {
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.ll_right) {
-            if (rvFavoriteAdapter.getStatus() == RvFavoriteAdapter.STATUS_DELETE)
+            if (rvCurveAdapter.getStatus() == RvCurveAdapter.STATUS_DELETE)
             {
                 //删除-》全选
                 allSelect();
                 ivRight.setImageResource(R.drawable.pan_shape_button_selected);
-                rvFavoriteAdapter.setStatus(RvFavoriteAdapter.STATUS_ALL);
-            } else if (rvFavoriteAdapter.getStatus() == RvFavoriteAdapter.STATUS_ALL){
+                rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_ALL);
+            } else if (rvCurveAdapter.getStatus() == RvCurveAdapter.STATUS_ALL){
                 //全选-》取消全选
                 allUnelect();
                 ivRight.setImageResource(R.drawable.pan_shape_button_unselected);
-                rvFavoriteAdapter.setStatus(RvFavoriteAdapter.STATUS_DELETE);
+                rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_DELETE);
 
             } else {
                 //返回-》删除
                 tvRight.setText(R.string.pan_select_all);
                 ivRight.setImageResource(R.drawable.pan_shape_button_unselected);
-                panRecipeList.remove(0);
-                rvFavoriteAdapter.setList(panRecipeList);
-                rvFavoriteAdapter.setStatus(RvFavoriteAdapter.STATUS_DELETE);
+                panCurveDetails.remove(0);
+                rvCurveAdapter.setList(panCurveDetails);
+                rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_DELETE);
                 tvDelete.setVisibility(View.VISIBLE);
             }
         } else if (id == R.id.ll_left) {
-            if (rvFavoriteAdapter.getStatus() != RvFavoriteAdapter.STATUS_BACK) {
+            if (rvCurveAdapter.getStatus() != RvCurveAdapter.STATUS_BACK) {
                 //设置非删除状态
                 tvRight.setText(R.string.pan_delete);
                 ivRight.setImageDrawable(null);
-                panRecipeList.add(0, new PanRecipe("创作烹饪曲线", ""));
-                rvFavoriteAdapter.setList(panRecipeList);
+                panCurveDetails.add(0, new PanCurveDetail("创作烹饪曲线"));
+                rvCurveAdapter.setList(panCurveDetails);
                 allUnelect();
-                rvFavoriteAdapter.setStatus(RvFavoriteAdapter.STATUS_BACK);
+                rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_BACK);
                 tvDelete.setVisibility(View.GONE);
             } else
                 finish();
@@ -180,45 +213,62 @@ public class CurveActivity extends PanBaseActivity {
             //确认删除
             delete();
             //设置非删除状态
-            if (panRecipeList.size() <= 1)
+            if (panCurveDetails.size() <= 1)
                 hideRight();
             tvRight.setText(R.string.pan_delete);
             ivRight.setImageDrawable(null);
-            panRecipeList.add(0, new PanRecipe("创作烹饪曲线", ""));
-            rvFavoriteAdapter.setList(panRecipeList);
+            panCurveDetails.add(0, new PanCurveDetail("创作烹饪曲线"));
+            rvCurveAdapter.setList(panCurveDetails);
             allUnelect();
-            rvFavoriteAdapter.setStatus(RvFavoriteAdapter.STATUS_BACK);
+            rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_BACK);
             tvDelete.setVisibility(View.GONE);
         }
     }
 
     //全选
     private void allSelect() {
-        for (int i=0; i<panRecipeList.size(); i++) {
-            panRecipeList.get(i).setSelected(true);
+        for (int i=0; i<panCurveDetails.size(); i++) {
+            panCurveDetails.get(i).setSelected(true);
         }
     }
     //取消全选
     private void allUnelect() {
-        for (int i=0; i<panRecipeList.size(); i++) {
-            panRecipeList.get(i).setSelected(false);
+        for (int i=0; i<panCurveDetails.size(); i++) {
+            panCurveDetails.get(i).setSelected(false);
         }
     }
     //检查是否全选
     private boolean isAll() {
-        for (int i=0; i<panRecipeList.size(); i++) {
-            if (!panRecipeList.get(i).isSelected())
+        for (int i=0; i<panCurveDetails.size(); i++) {
+            if (!panCurveDetails.get(i).isSelected())
                 return false;
         }
         return true;
     }
-    //删除
+    //删除曲线
     private void delete() {
-        Iterator<PanRecipe> iterator = panRecipeList.iterator();
+        UserInfo info = AccountInfo.getInstance().getUser().getValue();
+
+        Iterator<PanCurveDetail> iterator = panCurveDetails.iterator();
         while (iterator.hasNext()) {
-            PanRecipe panRecipe = iterator.next();
-            if (panRecipe.isSelected())
+            PanCurveDetail panCurveDetail = iterator.next();
+            if (panCurveDetail.isSelected()) {
                 iterator.remove();
+                //删除
+                CloudHelper.delCurve(this, (info != null) ? info.id:0, panCurveDetail.curveCookbookId, BaseResponse.class,
+                        new RetrofitCallback<BaseResponse>() {
+                            @Override
+                            public void onSuccess(BaseResponse baseResponse) {
+                                if (null != baseResponse)
+                                    ;
+                            }
+
+                            @Override
+                            public void onFaild(String err) {
+
+                            }
+                        });
+            }
         }
     }
 }

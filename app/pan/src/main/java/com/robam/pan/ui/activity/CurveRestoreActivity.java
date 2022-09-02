@@ -9,9 +9,13 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.VerticalSpaceItemDecoration;
+import com.robam.common.utils.LogUtils;
 import com.robam.pan.bean.CurveStep;
+import com.robam.pan.bean.PanCurveDetail;
 import com.robam.pan.bean.PanRecipeDetail;
 import com.robam.pan.constant.DialogConstant;
 import com.robam.pan.R;
@@ -21,6 +25,8 @@ import com.robam.pan.factory.PanDialogFactory;
 import com.robam.pan.ui.adapter.RvStep2Adapter;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 //曲线还原,
 public class CurveRestoreActivity extends PanBaseActivity {
@@ -31,8 +37,8 @@ public class CurveRestoreActivity extends PanBaseActivity {
     //当前步骤
     private TextView tvStep;
 
-    //菜谱详情
-    private PanRecipeDetail panRecipeDetail;
+    //曲线详情
+    private PanCurveDetail panCurveDetail;
 
     private Handler mHandler = new Handler();
     private Runnable runnable;
@@ -50,7 +56,7 @@ public class CurveRestoreActivity extends PanBaseActivity {
         showLeft();
         showCenter();
         if (null != getIntent())
-            panRecipeDetail = (PanRecipeDetail) getIntent().getSerializableExtra(PanConstant.EXTRA_RECIPE_DETAIL);
+            panCurveDetail = (PanCurveDetail) getIntent().getSerializableExtra(PanConstant.EXTRA_CURVE_DETAIL);
         rvStep = findViewById(R.id.rv_step);
         tvStop = findViewById(R.id.tv_stop_cook);
         tvStep = findViewById(R.id.tv_cur_step);
@@ -67,17 +73,25 @@ public class CurveRestoreActivity extends PanBaseActivity {
 
     @Override
     protected void initData() {
-        if (null != panRecipeDetail) {
-            if (null != panRecipeDetail.curveStepDtoList) {
+        if (null != panCurveDetail) {
+            Map<Integer, String> params = null;
+            try {
+                //温度参数
+                params = new Gson().fromJson(panCurveDetail.temperatureCurveParams, new TypeToken<LinkedHashMap<Integer, String>>(){}.getType());
+            } catch (Exception e) {
+                LogUtils.e(e.getMessage());
+                params = null;
+            }
+            if (null != panCurveDetail.stepList) {
                 ArrayList<CurveStep> curveSteps = new ArrayList<>();
-                curveSteps.addAll(panRecipeDetail.curveStepDtoList);
+                curveSteps.addAll(panCurveDetail.stepList);
                 //处理时长
                 int i = 0;
                 for (i=0; i<curveSteps.size() - 1; i++) {
                     curveSteps.get(i).needTime = curveSteps.get(i+1).markTime - curveSteps.get(i).markTime;
                 }
                 //最后一步
-                curveSteps.get(i).needTime = panRecipeDetail.needTime - curveSteps.get(i).markTime;
+                curveSteps.get(i).needTime = panCurveDetail.needTime - curveSteps.get(i).markTime;
                 //步骤
                 rvStep2Adapter.setList(curveSteps);
                 Countdown();
@@ -92,18 +106,6 @@ public class CurveRestoreActivity extends PanBaseActivity {
             @Override
 
             public void run() {
-
-                if (curStep >= rvStep2Adapter.getData().size()) {
-                    //还原结束
-                    //去烹饪结束
-                    Intent intent = new Intent();
-                    if (null != panRecipeDetail)
-                        intent.putExtra(PanConstant.EXTRA_RECIPE_DETAIL, panRecipeDetail);
-                    intent.setClass(CurveRestoreActivity.this, RestoreCompleteActivity.class);
-                    startActivity(intent);
-                    finish();
-                    return;
-                }
                 CurveStep curveStep = rvStep2Adapter.getData().get(curStep);
 
                 if (curveStep.needTime > 0) {
@@ -114,7 +116,18 @@ public class CurveRestoreActivity extends PanBaseActivity {
                     rvStep2Adapter.notifyItemChanged(curStep);
 
                 }
-
+                //判断是否结束
+                if (curStep >= rvStep2Adapter.getData().size()) {
+                    //还原结束
+                    //去烹饪结束
+                    Intent intent = new Intent();
+                    if (null != panCurveDetail)
+                        intent.putExtra(PanConstant.EXTRA_CURVE_DETAIL, panCurveDetail);
+                    intent.setClass(CurveRestoreActivity.this, RestoreCompleteActivity.class);
+                    startActivity(intent);
+                    finish();
+                    return;
+                }
                 mHandler.postDelayed(runnable, 1000L);
 
             }

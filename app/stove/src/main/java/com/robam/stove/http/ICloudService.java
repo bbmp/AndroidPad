@@ -25,6 +25,7 @@ public interface ICloudService {
     //菜谱搜索
     String getCookbooksByName = "/rest/cks/api/cookbook/by-name/search";
 
+
     @POST(getRecipesByDevice)
     @Headers("Content-Type: application/json")
     Call<ResponseBody> getRecipesByDevice(@Body RequestBody body);

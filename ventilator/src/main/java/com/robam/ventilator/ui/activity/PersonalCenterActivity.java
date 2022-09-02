@@ -83,12 +83,17 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
         if (null == userInfo) { //未登录
             group1.setVisibility(View.GONE);
             group2.setVisibility(View.VISIBLE);
+            vpDevice.setVisibility(View.GONE);
+            llDot.setVisibility(View.GONE);
+            tvName.setText("");
+            tvPhone.setText("");
+            ivHead.setImageDrawable(null);
         } else {
-            group1.setVisibility(View.VISIBLE);
-            group2.setVisibility(View.GONE);
             ImageUtils.loadImage(this, userInfo.figureUrl, ivHead);
             tvName.setText(userInfo.nickname);
             tvPhone.setText(userInfo.phone);
+            group1.setVisibility(View.VISIBLE);
+            group2.setVisibility(View.GONE);
 
         }
         //获取绑定的设备
@@ -117,6 +122,9 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
                         //设置指示器
                         PageIndicator pageIndicator = new PageIndicator(PersonalCenterActivity.this, llDot, fragments.size());
                         vpDevice.addOnPageChangeListener(pageIndicator);
+                        //获取到设备显示
+                        vpDevice.setVisibility(View.VISIBLE);
+                        llDot.setVisibility(View.VISIBLE);
                     }
                 }
 

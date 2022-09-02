@@ -13,8 +13,8 @@ import com.robam.pan.bean.CurveStep;
 import com.robam.pan.bean.RecipeStep;
 
 //曲线步骤
-public class RvStepAdapter extends BaseQuickAdapter<CurveStep, BaseViewHolder> {
-    public RvStepAdapter() {
+public class RvStep3Adapter extends BaseQuickAdapter<CurveStep, BaseViewHolder> {
+    public RvStep3Adapter() {
         super(R.layout.pan_item_recipe_step);
     }
 

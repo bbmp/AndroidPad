@@ -3,6 +3,7 @@ package com.robam.pan.request;
 import com.google.gson.Gson;
 
 public class GetRecipeDetailReq {
+    //菜谱id
     private long cookbookId;
     private String entranceCode;
     private String needStepsInfo;

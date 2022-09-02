@@ -1,8 +1,11 @@
 package com.robam.pan.ui.activity;
 
+import android.os.Handler;
 import android.view.View;
+import android.widget.TextView;
 
 import com.robam.common.ui.dialog.IDialog;
+import com.robam.common.utils.DateUtil;
 import com.robam.pan.constant.DialogConstant;
 import com.robam.pan.R;
 import com.robam.pan.base.PanBaseActivity;
@@ -10,7 +13,11 @@ import com.robam.pan.factory.PanDialogFactory;
 
 //曲线创作中
 public class CurveCreateActivity extends PanBaseActivity {
-
+    private Handler mHandler = new Handler();
+    private Runnable runnable;
+    //从0开始
+    private int curTime = 0;
+    private TextView tvFire, tvTemp, tvTime;
 
     @Override
     protected int getLayoutId() {
@@ -21,20 +28,44 @@ public class CurveCreateActivity extends PanBaseActivity {
     protected void initView() {
         showLeft();
         showCenter();
-        setOnClickListener(R.id.ll_left, R.id.btn_stop_create);
+
+        tvFire = findViewById(R.id.tv_fire);
+        tvTemp = findViewById(R.id.tv_temp);
+        tvTime = findViewById(R.id.tv_time);
+        setOnClickListener(R.id.ll_left, R.id.iv_stop_create);
     }
 
     @Override
     protected void initData() {
-
+        startCreate();
     }
 
     @Override
     public void onClick(View view) {
         int id = view.getId();
-        if (id == R.id.ll_left || id == R.id.btn_stop_create) {
+        if (id == R.id.ll_left || id == R.id.iv_stop_create) {
             stopCook();
         }
+    }
+
+    //开始创建
+    private void startCreate() {
+
+        runnable = new Runnable() {
+
+            @Override
+
+            public void run() {
+
+                curTime += 2;
+                tvTime.setText(DateUtil.secForMatTime3(curTime));
+
+                mHandler.postDelayed(runnable, 2000L);
+
+            }
+
+        };
+        mHandler.post(runnable);
     }
 
     //创作结束提示
@@ -47,7 +78,7 @@ public class CurveCreateActivity extends PanBaseActivity {
             @Override
             public void onClick(View v) {
                 //结束创作
-                if (v.getId() == R.id.tv_cancel) {
+                if (v.getId() == R.id.tv_ok) {
                     //保存曲线
                     startActivity(CurveSaveActivity.class);
                     finish();
@@ -55,5 +86,14 @@ public class CurveCreateActivity extends PanBaseActivity {
             }
         }, R.id.tv_cancel, R.id.tv_ok);
         iDialog.show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        mHandler.removeCallbacks(runnable);
+
+        mHandler.removeCallbacksAndMessages(null);
     }
 }

@@ -17,7 +17,7 @@ import com.robam.stove.bean.StoveRecipe;
 
 public class RvRecipeAdapter extends BaseQuickAdapter<StoveRecipe, BaseViewHolder> implements LoadMoreModule {
     private RequestOptions maskOption = new RequestOptions()
-            .circleCrop()
+            .centerCrop()
             .placeholder(R.drawable.stove_main_item_bg) //预加载图片
             .error(R.drawable.stove_main_item_bg) //加载失败图片
             .priority(Priority.HIGH) //优先级

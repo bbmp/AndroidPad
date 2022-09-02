@@ -10,7 +10,7 @@
         android:id="@+id/tv_step_des"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/dp_64"
+        android:layout_marginLeft="@dimen/dp_30"
         tools:text="迭迭香烤牛排"
         android:textSize="@dimen/sp_42"
         android:textColor="@color/stove_white"

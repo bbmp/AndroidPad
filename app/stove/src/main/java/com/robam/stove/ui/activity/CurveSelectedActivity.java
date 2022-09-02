@@ -61,11 +61,11 @@ public class CurveSelectedActivity extends StoveBaseActivity {
 
     @Override
     protected void initData() {
-        getCuveDetail();
+        getCurveDetail();
 
     }
     //曲线详情
-    private void getCuveDetail() {
+    private void getCurveDetail() {
         CloudHelper.getCurvebookDetail(this, curveid, GetCurveDetailRes.class, new RetrofitCallback<GetCurveDetailRes>() {
             @Override
             public void onSuccess(GetCurveDetailRes getCurveDetailRes) {

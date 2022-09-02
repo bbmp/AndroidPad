@@ -50,6 +50,7 @@
         android:text="@string/pan_start_cook"
         android:textColor="@color/pan_white"
         android:textSize="@dimen/sp_30"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 

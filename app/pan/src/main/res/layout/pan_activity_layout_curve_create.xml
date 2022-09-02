@@ -16,17 +16,16 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tv_huoli"
+        android:id="@+id/tv_fire"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_104"
-        android:layout_marginLeft="@dimen/dp_80"
+        android:layout_marginLeft="@dimen/dp_100"
         android:textSize="@dimen/sp_40"
+        tools:text=""
         android:textColor="@color/pan_white"
-        tools:text="火力"
         app:layout_constraintLeft_toLeftOf="@id/pan_guideline7"
         app:layout_constraintTop_toBottomOf="@id/ll_title"
-        app:layout_constraintBottom_toTopOf="@id/btn_stop_create"
+        app:layout_constraintBottom_toTopOf="@id/tv_time"
         app:layout_constraintVertical_chainStyle="packed"/>
     <TextView
         android:id="@+id/tv_temp"
@@ -35,32 +34,38 @@
         android:textColor="@color/pan_white"
         android:textSize="@dimen/sp_40"
         android:layout_marginLeft="@dimen/dp_40"
-        app:layout_constraintLeft_toRightOf="@id/tv_huoli"
-        app:layout_constraintBaseline_toBaselineOf="@id/tv_huoli"/>
+        tools:text=""
+        app:layout_constraintLeft_toRightOf="@id/tv_fire"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_fire"/>
 
     <TextView
         android:id="@+id/tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_40"
+        android:layout_marginTop="@dimen/dp_60"
+        android:textSize="@dimen/sp_100"
+        tools:text=""
         android:textColor="@color/pan_white"
-        app:layout_constraintLeft_toRightOf="@id/tv_temp"
-        app:layout_constraintBaseline_toBaselineOf="@id/tv_huoli"/>
-
+        app:layout_constraintLeft_toLeftOf="@id/tv_fire"
+        app:layout_constraintTop_toBottomOf="@id/tv_fire"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <TextView
-        android:id="@+id/btn_stop_create"
-        android:layout_width="@dimen/dp_175"
-        android:layout_height="@dimen/dp_56"
-        android:textSize="@dimen/sp_30"
-        android:gravity="center"
-        android:background="@drawable/pan_shape_button_bg_ok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:textColor="@color/pan_white"
-        android:text="@string/pan_stop_cook"
-        android:layout_marginTop="@dimen/dp_90"
-        android:layout_marginRight="@dimen/dp_90"
-        app:layout_constraintTop_toBottomOf="@id/tv_huoli"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="@dimen/sp_60"
+        android:text="min"
+        app:layout_constraintLeft_toRightOf="@id/tv_time"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_time"/>
+    <ImageView
+        android:id="@+id/iv_stop_create"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
+        android:layout_marginRight="@dimen/dp_95"
+        android:src="@color/pan_white"
+        app:layout_constraintTop_toTopOf="@id/tv_time"
+        app:layout_constraintBottom_toBottomOf="@id/tv_time"
         app:layout_constraintRight_toRightOf="parent"/>
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/pan_guideline7"
