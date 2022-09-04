@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
     <TextView
-        android:id="@+id/tv_funtion_name"
+        android:id="@+id/tv_mode_name"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_centerInParent="true"

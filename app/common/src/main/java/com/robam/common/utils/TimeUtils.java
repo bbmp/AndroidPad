@@ -284,9 +284,15 @@ public class TimeUtils {
         short sec = (short) (seconds % 60);
 
         if(hour>0){
-            return  hour + "h" + min + "min";
+            if (min > 0)
+                return  hour + "h" + min + "min";
+            else
+                return hour + "h";
         }else{
-            return   min + "min";
+            if (min > 0)
+                return   min + "min";
+            else
+                return "";
         }
 
     }

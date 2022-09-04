@@ -13,7 +13,7 @@ public class DishWasher {
         return DishWasherHolder.instance;
     }
 
-    private List<DishWaherFunBean> dishWaherFunBeans;
+    private List<DishWaherModeBean> dishWaherModeBeans;
 
     private static class DishWasherHolder {
         private static final DishWasher instance = new DishWasher();
@@ -36,11 +36,21 @@ public class DishWasher {
     public int auxMode;
 
     public void init(Context context) {
-        if (null == dishWaherFunBeans)
-            dishWaherFunBeans = FunctionManager.getFuntionList(context, DishWaherFunBean.class, R.raw.dishwahser);
+        if (null == dishWaherModeBeans)
+            dishWaherModeBeans = FunctionManager.getFuntionList(context, DishWaherModeBean.class, R.raw.dishwahser);
     }
 
-    public List<DishWaherFunBean> getDishWaherFunBeans() {
-        return dishWaherFunBeans;
+    public List<DishWaherModeBean> getDishWaherModeBeans() {
+        return dishWaherModeBeans;
+    }
+    //当前模式
+    public DishWaherModeBean getDishWaherModeBean(int code) {
+        if (null != dishWaherModeBeans) {
+            for (int i = 0; i< dishWaherModeBeans.size(); i++) {
+                if (dishWaherModeBeans.get(i).code == code)
+                    return dishWaherModeBeans.get(i);
+            }
+        }
+        return null;
     }
 }

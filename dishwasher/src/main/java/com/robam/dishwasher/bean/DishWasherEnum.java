@@ -1,9 +1,9 @@
 package com.robam.dishwasher.bean;
 
-import com.robam.dishwasher.constant.ModeConstant;
+import com.robam.dishwasher.constant.DishWasherConstant;
 
 public enum DishWasherEnum {
-    SMART(ModeConstant.MODE_SMART,"智能洗"),
+    SMART(DishWasherConstant.MODE_SMART,"智能洗"),
     POWFULL(2,"强力洗"),
     QUICK(3,"快速洗"),
     DAILY(4,"日常洗"),

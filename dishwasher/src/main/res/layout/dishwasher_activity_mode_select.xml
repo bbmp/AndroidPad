@@ -43,13 +43,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/sp_60"
-        android:text="60"
+        android:text=""
         android:textColor="@color/dishwasher_white"
         app:layout_constraintLeft_toRightOf="@id/tv_time"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ll_title"
         app:layout_constraintBottom_toTopOf="@id/ll_foot"/>
     <TextView
+        android:id="@+id/tv_temp_unit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="℃"

@@ -1,23 +1,26 @@
 package com.robam.dishwasher.ui.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
-import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.RelativeSizeSpan;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.robam.common.utils.TimeUtils;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.base.DishWasherBaseActivity;
+import com.robam.dishwasher.bean.DishWaherModeBean;
 import com.robam.dishwasher.bean.DishWasher;
-import com.robam.dishwasher.bean.DishWasherEnum;
-import com.robam.dishwasher.constant.ModeConstant;
+import com.robam.dishwasher.constant.DishWasherConstant;
 
 public class ModeSelectActivity extends DishWasherBaseActivity {
     private RadioGroup radioGroup;
+    //模式
     private TextView tvMode;
+    private TextView tvTime, tvTemp, tvTempUnit;
     private RadioButton rButton1, rButton2, rButton3, rButton4;
     private TextView tvStartHint;
 
@@ -32,6 +35,9 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
         showCenter();
         radioGroup = findViewById(R.id.rg_aux);
         tvMode = findViewById(R.id.tv_mode);
+        tvTime = findViewById(R.id.tv_time);
+        tvTemp = findViewById(R.id.tv_temp);
+        tvTempUnit = findViewById(R.id.tv_temp_unit);
         rButton1 = findViewById(R.id.rb_button1);
         rButton2 = findViewById(R.id.rb_button2);
         rButton3 = findViewById(R.id.rb_button3);
@@ -44,13 +50,13 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (checkedId == R.id.rb_button1) {
-                    DishWasher.getInstance().auxMode = ModeConstant.AUX_PAN_POWFULL;
+                    DishWasher.getInstance().auxMode = DishWasherConstant.AUX_PAN_POWFULL;
                 } else if (checkedId == R.id.rb_button2) {
-                    DishWasher.getInstance().auxMode = ModeConstant.AUX_KILL_POWFULL;
+                    DishWasher.getInstance().auxMode = DishWasherConstant.AUX_KILL_POWFULL;
                 } else if (checkedId == R.id.rb_button3) {
-                    DishWasher.getInstance().auxMode = ModeConstant.AUX_FLUSH;
+                    DishWasher.getInstance().auxMode = DishWasherConstant.AUX_FLUSH;
                 } else if (checkedId == R.id.rb_button4) {
-                    DishWasher.getInstance().auxMode = ModeConstant.AUX_DOWN_WASH;
+                    DishWasher.getInstance().auxMode = DishWasherConstant.AUX_DOWN_WASH;
                 } else
                     DishWasher.getInstance().auxMode = -1;
             }
@@ -59,36 +65,61 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
 
     @Override
     protected void initData() {
-        //当前工作模式
-        tvMode.setText(DishWasherEnum.match(DishWasher.getInstance().workMode));
-        switch (DishWasher.getInstance().workMode) {
-            case ModeConstant.MODE_FLUSH:
-            case ModeConstant.MODE_SELFCLEAN:{
-                //是否立即启动
-                radioGroup.setVisibility(View.GONE);
-                tvStartHint.setVisibility(View.VISIBLE);
-            }
-            break;
-            case ModeConstant.MODE_SMART:
-            case ModeConstant.MODE_QUICK: {
-                rButton1.setVisibility(View.INVISIBLE);
-                rButton4.setVisibility(View.INVISIBLE);
-            }
-            break;
-            case ModeConstant.MODE_POWFULL:
-            case ModeConstant.MODE_SAVING:
-            case ModeConstant.MODE_DAILY:
-            case ModeConstant.MODE_BABYCARE: {
+        //当前模式
+        DishWaherModeBean modeBean = DishWasher.getInstance().getDishWaherModeBean(DishWasher.getInstance().workMode);
+        if (null != modeBean) {
+            setData(modeBean);
+            switch (modeBean.code) {
+                case DishWasherConstant.MODE_FLUSH:
+                case DishWasherConstant.MODE_SELFCLEAN: {
+                    //是否立即启动
+                    radioGroup.setVisibility(View.GONE);
+                    tvStartHint.setVisibility(View.VISIBLE);
+                }
+                break;
+                case DishWasherConstant.MODE_SMART:
+                case DishWasherConstant.MODE_QUICK: {
+                    rButton1.setVisibility(View.INVISIBLE);
+                    rButton4.setVisibility(View.INVISIBLE);
+                }
+                break;
+                case DishWasherConstant.MODE_POWFULL:
+                case DishWasherConstant.MODE_SAVING:
+                case DishWasherConstant.MODE_DAILY:
+                case DishWasherConstant.MODE_BABYCARE: {
 
+                }
+                break;
+                case DishWasherConstant.MODE_BRIGHT: {
+                    rButton1.setVisibility(View.INVISIBLE);
+                    rButton4.setVisibility(View.INVISIBLE);
+                    rButton2.setText(R.string.dishwasher_flush);
+                    rButton3.setText(R.string.dishwasher_down_wash);
+                }
+                break;
             }
-            break;
-            case ModeConstant.MODE_BRIGHT: {
-                rButton1.setVisibility(View.INVISIBLE);
-                rButton4.setVisibility(View.INVISIBLE);
-                rButton2.setText(R.string.dishwasher_flush);
-                rButton3.setText(R.string.dishwasher_down_wash);
-            }
-            break;
+        }
+    }
+
+    //模式参数设置
+    private void setData(DishWaherModeBean modeBean) {
+        tvMode.setText(modeBean.name);
+        String time = TimeUtils.secToHourMinH(modeBean.time);
+        SpannableString spannableString = new SpannableString(time);
+        int pos = time.indexOf("h");
+        if (pos >= 0)
+            spannableString.setSpan(new RelativeSizeSpan(0.5f), pos, pos + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        pos = time.indexOf("min");
+        if (pos >= 0)
+            spannableString.setSpan(new RelativeSizeSpan(0.5f), pos, pos + 3, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tvTime.setText(spannableString);
+        int temp = modeBean.temp;
+        if (temp > 0) {
+            tvTemp.setText(temp + "");
+            tvTempUnit.setVisibility(View.VISIBLE);
+        } else {
+            tvTemp.setText("");
+            tvTempUnit.setVisibility(View.GONE);
         }
     }
 

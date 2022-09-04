@@ -1,6 +1,6 @@
 package com.robam.dishwasher.constant;
 
-public class ModeConstant {
+public class DishWasherConstant {
     public final static int MODE_SMART = 1;
     public final static int MODE_POWFULL = 2;
     public final static int MODE_QUICK = 3;

@@ -25,7 +25,7 @@ public class CircleProgressView extends View {
     private Paint mBackPaint, mProgPaint;   // 绘制画笔
     private RectF mRectF;       // 绘制区域
     private int[] mColorArray;  // 圆环渐变色
-    private int mProgress;      // 圆环进度(0-100)
+    private float mProgress;      // 圆环进度(0-100)
 
     public CircleProgressView(Context context) {
         this(context, null);
@@ -52,7 +52,7 @@ public class CircleProgressView extends View {
         // 初始化进度圆环画笔
         mProgPaint = new Paint();
         mProgPaint.setStyle(Paint.Style.STROKE);    // 只描边，不填充
-        mProgPaint.setStrokeCap(Paint.Cap.ROUND);   // 设置圆角
+//        mProgPaint.setStrokeCap(Paint.Cap.ROUND);   // 设置圆角
         mProgPaint.setAntiAlias(true);              // 设置抗锯齿
         mProgPaint.setDither(true);                 // 设置抖动
         mProgPaint.setStrokeWidth(typedArray.getDimension(R.styleable.common_CircleProgressView_common_progWidth, 10));
@@ -88,7 +88,21 @@ public class CircleProgressView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawArc(mRectF, 0, 360, false, mBackPaint);
-        canvas.drawArc(mRectF, 270, 360 * mProgress / 100, false, mProgPaint);
+        if (mProgress <= 24.75) {
+            canvas.drawArc(mRectF, 270, 360 * mProgress / 100, false, mProgPaint);
+        } else if (mProgress > 24.75 && mProgress < 25.25) {
+            canvas.drawArc(mRectF, 270, (float) (360 * 24.75 / 100), false, mProgPaint);
+        } else if (mProgress >= 25.25 && mProgress <= 49.75) {
+            canvas.drawArc(mRectF, 270, (float) (360 * 24.75 / 100), false, mProgPaint);
+            canvas.drawArc(mRectF, (float) (360 * 0.25 / 100), (float) (360 * (mProgress-25.25) / 100), false, mProgPaint);
+        } else if (mProgress > 49.75 && mProgress < 50.25) {
+            canvas.drawArc(mRectF, 270, (float) (360 * 24.75 / 100), false, mProgPaint);
+            canvas.drawArc(mRectF, (float) (360 * 0.25 / 100), (float) (360 * (24.5) / 100), false, mProgPaint);
+        } else {
+            canvas.drawArc(mRectF, 270, (float) (360 * 24.75 / 100), false, mProgPaint);
+            canvas.drawArc(mRectF, (float) (360 * 0.25 / 100), (float) (360 * (24.5) / 100), false, mProgPaint);
+            canvas.drawArc(mRectF, 90 + (float) (360 * 0.25 / 100), (float) (360 * (mProgress-50.25) / 100), false, mProgPaint);
+        }
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -98,7 +112,7 @@ public class CircleProgressView extends View {
      *
      * @return 当前进度（0-100）
      */
-    public int getProgress() {
+    public float getProgress() {
         return mProgress;
     }
 
@@ -107,7 +121,7 @@ public class CircleProgressView extends View {
      *
      * @param progress 当前进度（0-100）
      */
-    public void setProgress(int progress) {
+    public void setProgress(float progress) {
         this.mProgress = progress;
         invalidate();
     }
@@ -121,7 +135,7 @@ public class CircleProgressView extends View {
     public void setProgress(int progress, long animTime) {
         if (animTime <= 0) setProgress(progress);
         else {
-            ValueAnimator animator = ValueAnimator.ofInt(mProgress, progress);
+            ValueAnimator animator = ValueAnimator.ofFloat(mProgress, progress);
             animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {

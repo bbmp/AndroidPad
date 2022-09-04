@@ -9,9 +9,9 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.robam.common.utils.LogUtils;
 import com.robam.dishwasher.R;
-import com.robam.dishwasher.bean.DishWaherFunBean;
+import com.robam.dishwasher.bean.DishWaherModeBean;
 
-public class RvMainFunctionAdapter extends BaseQuickAdapter<DishWaherFunBean, BaseViewHolder> {
+public class RvMainModeAdapter extends BaseQuickAdapter<DishWaherModeBean, BaseViewHolder> {
     private int pickPosition;
 //    private RequestOptions options = RequestOptions.bitmapTransform(new MultiTransformation(new BlurTransformation(30, 3)));
 
@@ -20,8 +20,8 @@ public class RvMainFunctionAdapter extends BaseQuickAdapter<DishWaherFunBean, Ba
         notifyDataSetChanged();
     }
 
-    public RvMainFunctionAdapter() {
-        super(R.layout.dishwasher_item_main_function);
+    public RvMainModeAdapter() {
+        super(R.layout.dishwasher_item_main_mode);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class RvMainFunctionAdapter extends BaseQuickAdapter<DishWaherFunBean, Ba
     }
 
     @Override
-    public DishWaherFunBean getItem(int position) {
+    public DishWaherModeBean getItem(int position) {
         int count = getHeaderLayoutCount() + getData().size();
         position = position % count ;
         return super.getItem(position);
@@ -50,10 +50,10 @@ public class RvMainFunctionAdapter extends BaseQuickAdapter<DishWaherFunBean, Ba
     }
 
     @Override
-    protected void convert(@NonNull BaseViewHolder baseViewHolder, DishWaherFunBean dishWaherFunBean) {
-        if (null != dishWaherFunBean) {
-            TextView textView = baseViewHolder.getView(R.id.tv_funtion_name);
-            textView.setText(dishWaherFunBean.funtionName);
+    protected void convert(@NonNull BaseViewHolder baseViewHolder, DishWaherModeBean dishWaherModeBean) {
+        if (null != dishWaherModeBean) {
+            TextView textView = baseViewHolder.getView(R.id.tv_mode_name);
+            textView.setText(dishWaherModeBean.name);
             ImageView imageView = baseViewHolder.getView(R.id.iv_round_bg);
         }
     }
