@@ -14,6 +14,7 @@ import com.robam.stove.bean.ModeBean;
 import com.robam.stove.bean.Stove;
 import com.robam.stove.ui.adapter.RvTimeAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TimeSelectPage extends StoveBasePage {
@@ -29,14 +30,17 @@ public class TimeSelectPage extends StoveBasePage {
     private RvTimeAdapter rvTimeAdapter;
 
     private TabLayout.Tab tab;
+    //当前模式
+    private ModeBean curMode;
 
-    private int type;//时间or温度
+    //当前时间
+    private String curTime;
 
-    private IModeSelect iModeSelect;
+//    private IModeSelect iModeSelect;
 
-    public TimeSelectPage(TabLayout.Tab tab, IModeSelect iModeSelect) {
+    public TimeSelectPage(TabLayout.Tab tab, ModeBean modeBean) {
         this.tab = tab;
-        this.iModeSelect = iModeSelect;
+        this.curMode = modeBean;
     }
 
     //时间设置
@@ -57,7 +61,7 @@ public class TimeSelectPage extends StoveBasePage {
             textView.setText(rvTimeAdapter.getItem(position));
         }
         //默认时间
-        Stove.getInstance().workHours = rvTimeAdapter.getItem(position);
+        curTime = rvTimeAdapter.getItem(position);
     }
 
     @Override
@@ -78,9 +82,38 @@ public class TimeSelectPage extends StoveBasePage {
         rvTimeAdapter = new RvTimeAdapter(1);
 //        rvTempAdapter = new RvTimeAdapter(0);
 
+        updateTimeTab(curMode);
+//        if (null != iModeSelect)
+//            iModeSelect.updateTab(Stove.getInstance().workMode);
+    }
 
-        if (null != iModeSelect)
-            iModeSelect.updateTab(Stove.getInstance().workMode);
+    public void updateTimeTab(ModeBean modeBean) {
+        if (null == rvTimeAdapter)
+            return;
+        rvSelect.setAdapter(rvTimeAdapter);
+
+        ArrayList<String> timeList = new ArrayList<>();
+        for (int i = modeBean.minTime; i <= modeBean.maxTime; i++) {
+            timeList.add(i + "");
+        }
+
+        rvTimeAdapter.setList(timeList);
+        int offset = modeBean.defTime - modeBean.minTime;
+        int position = Integer.MAX_VALUE / 2-(Integer.MAX_VALUE / 2)%timeList.size() + offset;
+        pickerLayoutManager.scrollToPosition(position);
+        rvTimeAdapter.setPickPosition(position);
+        if (null != tab) {
+            TextView textView = tab.getCustomView().findViewById(R.id.tv_mode);
+//            tab.getCustomView().findViewById(R.id.tv_time).setVisibility(View.VISIBLE);
+//            tab.getCustomView().findViewById(R.id.tv_temp).setVisibility(View.GONE);
+            textView.setText(rvTimeAdapter.getItem(position));
+        }
+        //默认时间
+        curTime = rvTimeAdapter.getItem(position);
+    }
+    //获取当前时间
+    public String getCurTime() {
+        return curTime;
     }
 
     /**
@@ -99,7 +132,7 @@ public class TimeSelectPage extends StoveBasePage {
                     public void onPicked(RecyclerView recyclerView, int position) {
                         //指示器更新
                         rvTimeAdapter.setPickPosition(position);
-                        Stove.getInstance().workHours = rvTimeAdapter.getItem(position);
+                        curTime = rvTimeAdapter.getItem(position);
                         if (null != tab) {
                             TextView textView = tab.getCustomView().findViewById(R.id.tv_mode);
                             textView.setText(rvTimeAdapter.getItem(position));

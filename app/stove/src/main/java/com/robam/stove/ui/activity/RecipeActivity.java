@@ -6,12 +6,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -49,6 +51,8 @@ public class RecipeActivity extends StoveBaseActivity {
 
     private EditText etSearch;
     private TextView tvEmpty;
+
+    private TextView btnConnect;
     //分类
 //    private List<String> classifyList = new ArrayList<>();
     //弱引用，防止内存泄漏
@@ -67,6 +71,7 @@ public class RecipeActivity extends StoveBaseActivity {
         etSearch = findViewById(R.id.et_search);
         rvRecipe = findViewById(R.id.rv_recipe);
         tvEmpty = findViewById(R.id.tv_empty_hint);
+        btnConnect = findViewById(R.id.btn_connect);
         rvRecipe.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
         rvRecipe.addItemDecoration(new HorizontalSpaceItemDecoration((int)getResources().getDimension(com.robam.common.R.dimen.dp_8), (int)getResources().getDimension(com.robam.common.R.dimen.dp_32)));
         rvRecipeAdapter = new RvRecipeAdapter();
@@ -97,19 +102,24 @@ public class RecipeActivity extends StoveBaseActivity {
                 return false;
             }
         });
+        setOnClickListener(R.id.btn_connect);
     }
 
     @Override
     protected void initData() {
-        getStoveRecipe();
+       getStoveRecipe();
+
     }
 
     @Override
     public void onClick(View view) {
         super.onClick(view);
         int id = view.getId();
-        if (id == R.id.et_search) {
-
+        if (id == R.id.btn_connect) {
+            //去连网
+            Intent intent = new Intent();
+            intent.setClassName(this, "com.robam.ventilator.ui.activity.WifiSettingActivity");
+            startActivity(intent);
         }
     }
     //获取灶具菜谱
@@ -149,6 +159,7 @@ public class RecipeActivity extends StoveBaseActivity {
         if (stoveRecipes.size() > 0) {
             rvRecipeAdapter.setList(stoveRecipes);
             hideEmpty();
+            btnConnect.setVisibility(View.GONE);
         }
         else
             showEmpty();

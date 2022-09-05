@@ -15,6 +15,7 @@ import com.robam.stove.constant.DialogConstant;
 import com.robam.stove.constant.StoveConstant;
 import com.robam.stove.factory.StoveDialogFactory;
 import com.robam.stove.ui.adapter.RvTimeAdapter;
+import com.robam.stove.ui.dialog.SelectStoveDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,8 @@ public class TimeSelectActivity extends StoveBaseActivity {
     private RvTimeAdapter rvTimeAdapter;
     private PickerLayoutManager pickerLayoutManager;
     private TextView tvNum;
+    //工作时长
+    private String workHours;
 
     @Override
     protected int getLayoutId() {
@@ -49,7 +52,7 @@ public class TimeSelectActivity extends StoveBaseActivity {
                         rvTimeAdapter.setPickPosition(position);
                         tvNum.setText(rvTimeAdapter.getItem(position));
                         //设置工作时长
-                        Stove.getInstance().workHours = rvTimeAdapter.getItem(position);
+                        workHours = rvTimeAdapter.getItem(position);
                     }
                 }).build();
         rvTime.setLayoutManager(pickerLayoutManager);
@@ -76,7 +79,7 @@ public class TimeSelectActivity extends StoveBaseActivity {
         //默认第一个
         tvNum.setText(lists.get(0));
         //工作时长
-        Stove.getInstance().workHours = lists.get(0);
+        workHours = lists.get(0);
     }
 
     @Override
@@ -91,27 +94,41 @@ public class TimeSelectActivity extends StoveBaseActivity {
     //炉头选择
     private void selectStove() {
         //炉头选择提示
-        IDialog iDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_SELECT_STOVE);
+        SelectStoveDialog iDialog = new SelectStoveDialog(this);
         iDialog.setCancelable(false);
         iDialog.setListeners(new IDialog.DialogOnClickListener() {
             @Override
             public void onClick(View v) {
                 int id = v.getId();
-                if (id == R.id.view_left || id == R.id.view_right)
-                    openFire();
+                if (id == R.id.view_left)
+                    openFire(StoveConstant.STOVE_LEFT);  //左灶
+                else if (id == R.id.view_right)
+                    openFire(StoveConstant.STOVE_RIGHT);   //右灶
             }
         }, R.id.select_stove_dialog, R.id.view_left, R.id.view_right);
+        //检查炉头状态
+        iDialog.checkStoveStatus();
         iDialog.show();
     }
 
     //点火提示
-    private void openFire() {
+    private void openFire(int stove) {
         IDialog iDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_OPEN_FIRE);
         iDialog.setCancelable(false);
+        if (stove == StoveConstant.STOVE_LEFT) {
+            iDialog.setContentText(R.string.stove_open_left_hint);
+            //进入工作状态
+            //选择左灶
+            Stove.getInstance().leftWorkMode = StoveConstant.MODE_TIMING;
+            Stove.getInstance().leftWorkHours = workHours;
+            Stove.getInstance().leftStove.setValue(true);
+        } else {
+            iDialog.setContentText(R.string.stove_open_right_hint);
+            //选择右灶
+            Stove.getInstance().rightWorkMode = StoveConstant.MODE_TIMING;
+            Stove.getInstance().rightWorkHours = workHours;
+            Stove.getInstance().rightStove.setValue(true);
+        }
         iDialog.show();
-        //进入工作状态
-        Stove.getInstance().workMode = StoveConstant.MODE_TIMING;
-        //开右灶
-        Stove.getInstance().rightStove.setValue(true);
     }
 }

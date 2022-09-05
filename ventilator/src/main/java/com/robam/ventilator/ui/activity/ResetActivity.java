@@ -44,6 +44,7 @@ public class ResetActivity extends VentilatorBaseActivity {
     private void resetDialog() {
         IDialog iDialog = VentilatorDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_VENTILATOR_COMMON);
         iDialog.setCancelable(false);
+        iDialog.setContentText(R.string.ventilator_reset_ok);
         iDialog.setOKText(R.string.ventilator_reset);
         iDialog.setListeners(new IDialog.DialogOnClickListener() {
             @Override

@@ -27,18 +27,29 @@ public class Stove {
      * 当前功能
      */
     public int funCode;
+
     /**
-     * 工作模式
+     * 左灶工作模式
      */
-    public int workMode;
+    public int leftWorkMode;
     /**
-     * 工作时长
+     * 左灶工作时长
      */
-    public String workHours;
-    //工作温度
-    public String workTemp;
+    public String leftWorkHours;
+    //左灶工作温度
+    public String leftWorkTemp;
     //左灶
     public MutableLiveData<Boolean> leftStove = new MutableLiveData<>(false);
+    /**
+     * 右灶工作模式
+     */
+    public int rightWorkMode;
+    /**
+     * 右灶工作时长
+     */
+    public String rightWorkHours;
+    //右灶工作温度
+    public String rightWorkTemp;
     //右灶
     public MutableLiveData<Boolean> rightStove = new MutableLiveData<>(false);
 

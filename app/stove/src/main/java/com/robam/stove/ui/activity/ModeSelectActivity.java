@@ -23,6 +23,7 @@ import com.robam.stove.bean.Stove;
 import com.robam.stove.constant.DialogConstant;
 import com.robam.stove.constant.StoveConstant;
 import com.robam.stove.factory.StoveDialogFactory;
+import com.robam.stove.ui.dialog.SelectStoveDialog;
 import com.robam.stove.ui.pages.ModeSelectPage;
 import com.robam.stove.ui.pages.TempSelectPage;
 import com.robam.stove.ui.pages.TimeSelectPage;
@@ -46,6 +47,9 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
 
     private TimeSelectPage timeSelectPage;
     private TempSelectPage tempSelectPage;
+
+    //当前模式
+    private int curMode;
 
     @Override
     protected int getLayoutId() {
@@ -100,7 +104,7 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
             modes.addAll(modeBeans);
             //默认模式
             ModeBean defaultBean = modes.get(0);
-            Stove.getInstance().workMode = defaultBean.code;
+            curMode = defaultBean.code;
             modeTab = tabLayout.newTab();
             modeTab.setId(0);
             View modeView = LayoutInflater.from(getContext()).inflate(R.layout.stove_view_layout_tab_mode, null);
@@ -119,7 +123,7 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
             tvTime.setText(defaultBean.defTime + "");
             timeTab.setCustomView(timeView);
             tabLayout.addTab(timeTab);
-            timeSelectPage = new TimeSelectPage(timeTab, this);
+            timeSelectPage = new TimeSelectPage(timeTab, defaultBean);
 
             fragments.add(new WeakReference<>(timeSelectPage));
             //温度tab
@@ -130,7 +134,7 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
             tvTemp.setText(defaultBean.defTemp + "");
             tempTab.setCustomView(tempView);
             tabLayout.addTab(tempTab);
-            tempSelectPage = new TempSelectPage(tempTab,  this);
+            tempSelectPage = new TempSelectPage(tempTab,  defaultBean);
             fragments.add(new WeakReference<>(tempSelectPage));
 
             //添加设置适配器
@@ -152,26 +156,47 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
     //炉头选择
     private void selectStove() {
         //炉头选择提示
-        IDialog iDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_SELECT_STOVE);
+        SelectStoveDialog iDialog = new SelectStoveDialog(this);
         iDialog.setCancelable(false);
+
         iDialog.setListeners(new IDialog.DialogOnClickListener() {
             @Override
             public void onClick(View v) {
                 int id = v.getId();
-                if (id == R.id.view_left || id == R.id.view_right)
-                    openFire();
+                if (id == R.id.view_left)
+                    openFire(StoveConstant.STOVE_LEFT); //左灶
+                else if (id == R.id.view_right)
+                    openFire(StoveConstant.STOVE_RIGHT); //右灶
             }
         }, R.id.select_stove_dialog, R.id.view_left, R.id.view_right);
+        //检查炉头状态
+        iDialog.checkStoveStatus();
         iDialog.show();
     }
 
+
     //点火提示
-    private void openFire() {
+    private void openFire(int stove) {
         IDialog iDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_OPEN_FIRE);
         iDialog.setCancelable(false);
+        if (stove == StoveConstant.STOVE_LEFT) {
+            iDialog.setContentText(R.string.stove_open_left_hint);
+            //进入工作状态
+            //选择左灶
+            Stove.getInstance().leftWorkMode = curMode;
+            Stove.getInstance().leftWorkHours = timeSelectPage.getCurTime();
+            Stove.getInstance().leftWorkTemp = tempSelectPage.getCurTemp();
+            Stove.getInstance().leftStove.setValue(true);
+        } else {
+            iDialog.setContentText(R.string.stove_open_right_hint);
+            //选择右灶
+            Stove.getInstance().rightWorkMode = curMode;
+            Stove.getInstance().rightWorkHours = timeSelectPage.getCurTime();
+            Stove.getInstance().rightWorkTemp = tempSelectPage.getCurTemp();
+            Stove.getInstance().rightStove.setValue(true);
+        }
         iDialog.show();
-        //进入工作状态
-        Stove.getInstance().leftStove.setValue(true);
+
     }
 
     /**
@@ -182,20 +207,22 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
             for (ModeBean modeBean: modes) {
                 if (mode == modeBean.code) {
                     if (mode != StoveConstant.MODE_FRY) {
-                        ArrayList<String> timeList = new ArrayList<>();
-                        for (int i = modeBean.minTime; i <= modeBean.maxTime; i++) {
-                            timeList.add(i + "");
-                        }
-                        timeSelectPage.setTimeList(timeList, modeBean.defTime - modeBean.minTime);
+//                        ArrayList<String> timeList = new ArrayList<>();
+//                        for (int i = modeBean.minTime; i <= modeBean.maxTime; i++) {
+//                            timeList.add(i + "");
+//                        }
+//                        timeSelectPage.setTimeList(timeList, modeBean.defTime - modeBean.minTime);
+                        timeSelectPage.updateTimeTab(modeBean);
                         ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.GONE);
                         ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(1).setVisibility(View.VISIBLE);
                     } else {
                         //煎炸温度
-                        ArrayList<String> tempList = new ArrayList<>();
-                        for (int i = modeBean.minTemp; i <= modeBean.maxTemp; i++) {
-                            tempList.add(i + "");
-                        }
-                        tempSelectPage.setTempList(tempList, modeBean.defTemp - modeBean.minTemp);
+//                        ArrayList<String> tempList = new ArrayList<>();
+//                        for (int i = modeBean.minTemp; i <= modeBean.maxTemp; i++) {
+//                            tempList.add(i + "");
+//                        }
+//                        tempSelectPage.setTempList(tempList, modeBean.defTemp - modeBean.minTemp);
+                        tempSelectPage.updateTempTab(modeBean);
                         ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.VISIBLE);
                         ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(1).setVisibility(View.GONE);
                     }
@@ -210,6 +237,7 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
     public void updateTab(int mode) {
         if (modeTab != null) {
             //模式变更，温度和时间值也要变更
+            curMode = mode;
             initTimeParams(mode);
         }
     }

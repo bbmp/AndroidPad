@@ -34,7 +34,7 @@ public class WifiSettingActivity extends VentilatorBaseActivity {
     private RecyclerView rvWifi;
     private WifiManager mWifiManager;
     private RvWifiAdapter rvWifiAdapter;
-    private VentilatorReceiver ventilatorReceiver;
+//    private VentilatorReceiver ventilatorReceiver;
     private Group group;
     private SwitchButton switchButton;
 
@@ -127,12 +127,12 @@ public class WifiSettingActivity extends VentilatorBaseActivity {
     }
 
     private void registerWifiReceiver() {
-        ventilatorReceiver = new VentilatorReceiver();
-        IntentFilter filter =new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
-        filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);//监听wifi是开关变化的状态
-        filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);//监听wifi连接状态
-        filter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);//监听wifi列表变化（开启一个热点或者关闭一个热点）
-        registerReceiver(ventilatorReceiver, filter);
+//        ventilatorReceiver = new VentilatorReceiver();
+//        IntentFilter filter =new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
+//        filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);//监听wifi是开关变化的状态
+//        filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);//监听wifi连接状态
+//        filter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);//监听wifi列表变化（开启一个热点或者关闭一个热点）
+//        registerReceiver(ventilatorReceiver, filter);
         mWifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
     }
 
@@ -173,9 +173,9 @@ public class WifiSettingActivity extends VentilatorBaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (null != ventilatorReceiver) {
-            unregisterReceiver(ventilatorReceiver);
-            ventilatorReceiver = null;
-        }
+//        if (null != ventilatorReceiver) {
+//            unregisterReceiver(ventilatorReceiver);
+//            ventilatorReceiver = null;
+//        }
     }
 }

@@ -13,6 +13,10 @@ public class StoveConstant {
     public final static int MODE_FRY = 3;  //煎炸
     public final static int MODE_TIMING = 4;   //定时
 
+    //
+    public final static int STOVE_LEFT = 0;
+    public final static int STOVE_RIGHT = 1;
+
     public final static String EXTRA_RECIPE_ID = "recipeid";
     public final static String EXTRA_RECIPE_STEP = "recipestep";
     public final static String EXTRA_RECIPE_DETAIL = "recipedetail";

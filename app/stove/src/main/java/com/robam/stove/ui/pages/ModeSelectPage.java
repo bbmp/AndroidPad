@@ -12,6 +12,7 @@ import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBasePage;
 import com.robam.stove.bean.ModeBean;
+import com.robam.stove.bean.Stove;
 import com.robam.stove.ui.adapter.RvModeAdapter;
 
 import java.util.List;
@@ -47,9 +48,13 @@ public class ModeSelectPage extends StoveBasePage {
     public void setList(List<ModeBean> selectList) {
         rvModeAdapter.setList(selectList);
 
-        pickerLayoutManager.scrollToPosition(Integer.MAX_VALUE / 2 - (Integer.MAX_VALUE/2) % selectList.size());
-        rvModeAdapter.setPickPosition(Integer.MAX_VALUE / 2 - (Integer.MAX_VALUE/2) % selectList.size());
+        //初始位置
+        int initPos = Integer.MAX_VALUE / 2 - (Integer.MAX_VALUE/2) % selectList.size();
+        pickerLayoutManager.scrollToPosition(initPos);
+        rvModeAdapter.setPickPosition(initPos);
 
+        if (null != iModeSelect)
+            iModeSelect.updateTab(rvModeAdapter.getItem(initPos).code);
     }
     @Override
     protected int getLayoutId() {
@@ -90,6 +95,7 @@ public class ModeSelectPage extends StoveBasePage {
                     public void onPicked(RecyclerView recyclerView, int position) {
 
                         rvModeAdapter.setPickPosition(position);
+
                         if (null != tab) {
                             //切换模式
                             TextView textView = tab.getCustomView().findViewById(R.id.tv_mode);

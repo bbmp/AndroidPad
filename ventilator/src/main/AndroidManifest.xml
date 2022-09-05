@@ -85,7 +85,15 @@
             android:screenOrientation="landscape" />
         <service android:name="org.eclipse.paho.android.service.MqttService" /> <!-- mqtt服务-->
         <service android:name=".ui.service.AlarmService" android:exported="true" android:enabled="true"/>
-        <receiver android:name=".ui.receiver.AlarmReceiver" />
+        <receiver android:name=".ui.receiver.AlarmReceiver" android:exported="false"/>
+        <receiver android:name=".ui.receiver.VentilatorReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.net.wifi.SCAN_RESULTS"/>
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED"/>
+                <action android:name="android.net.wifi.STATE_CHANGE"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

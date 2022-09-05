@@ -3,10 +3,12 @@
     <string name="stove_back">返回</string>
     <string name="stove_left_stove">左灶</string>
     <string name="stove_right_stove">右灶</string>
-    <string name="stove_open_fire_hint">为确保安全，不能远程开火，请在左灶点火</string>
-    <string name="stove_select_stove_hint">请选择工作炉头，并将锅具放置于对应炉头</string>
+    <string name="stove_open_left_hint">请在左灶点火\n为确保安全,不能远程开火</string>
+    <string name="stove_open_right_hint">请在右灶点火\n为确保安全,不能远程开火</string>
+    <string name="stove_select_stove_hint">请选择炉头，并将锅具放置于对应炉头</string>
     <string name="stove_close_fire_use">关火后可以使用</string>
     <string name="stove_stove_leisure">空闲</string>
+    <string name="stove_stove_using">占用</string>
     <string name="stove_stop_cook_hint">确认结束当前烹饪</string>
     <string name="stove_cancel">取消</string>
     <string name="stove_stop_cook">结束烹饪</string>
@@ -39,4 +41,6 @@
     <string name="stove_affirm_lock_hint">确认进入锁定状态\n仅可关火操作</string>
     <string name="stove_complete">完成</string>
     <string name="stove_cook_complete_hint">烹饪结束，快来享受美食</string>
+    <string name="stove_go_connect">去连网</string>
+    <string name="stove_not_connect">网络未连接</string>
 </resources>

@@ -56,6 +56,9 @@
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/stove_shape_button_selector.xml" value="0.1695" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/stove_shape_progress_bg.xml" value="0.176" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/stove_shape_scrollbar_bg.xml" value="0.1775" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/stove_shape_stove_bg_selected.xml" value="0.1775" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/stove_shape_stove_bg_selector.xml" value="0.1775" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/stove_shape_stove_bg_unselected.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/stove_tab_text_color_selector.xml" value="0.261" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/stove_text_color_selector.xml" value="0.261" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/stove_waiting_bg.xml" value="0.1775" />
@@ -75,9 +78,9 @@
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_activity_layout_time_select.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_dialog_layout_common.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_dialog_layout_complete.xml" value="0.1" />
-        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_dialog_layout_lock.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_dialog_layout_lock.xml" value="0.15" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_dialog_layout_open_fire.xml" value="0.1" />
-        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_dialog_layout_select_stove.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_dialog_layout_select_stove.xml" value="0.25" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_dialog_layout_share.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_dialog_layout_waiting.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_item_curve_recipe.xml" value="0.1" />
@@ -134,6 +137,7 @@
         <entry key="..\:/AndroidProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_activity_layout_work.xml" value="0.12" />
         <entry key="..\:/AndroidProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_dialog_layout_common.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_page_layout_home.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_picker_item.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/dishwasher/src/main/res/layout/dishwasher_view_layout_title.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/drawable/ic_dashboard_black_24dp.xml" value="0.1835" />
         <entry key="..\:/AndroidProjects/AndroidPad/roki/src/main/res/drawable/roki_.xml" value="0.185" />

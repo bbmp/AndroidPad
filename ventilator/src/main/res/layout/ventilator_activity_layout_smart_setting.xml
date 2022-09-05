@@ -78,12 +78,12 @@
         app:layout_constraintTop_toBottomOf="@id/bt_reset"
         app:layout_constraintBottom_toTopOf="@id/tv_wash"
         app:layout_constraintLeft_toLeftOf="@id/ventilator_guideline4"
-        app:layout_constraintRight_toLeftOf="@id/sb_auto_set1"
+        app:layout_constraintRight_toLeftOf="@id/sb_auto_air"
         android:layout_marginLeft="@dimen/dp_64"/>
 
 
     <com.robam.common.ui.view.SwitchButton
-        android:id="@+id/sb_auto_set1"
+        android:id="@+id/sb_auto_air"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/dp_64"
@@ -117,13 +117,13 @@
         android:gravity="center_vertical"
         android:textColor="@color/ventilator_white"
         app:layout_constraintLeft_toLeftOf="@id/ventilator_guideline4"
-        app:layout_constraintRight_toLeftOf="@id/sb_auto_set2"
+        app:layout_constraintRight_toLeftOf="@id/sb_auto_oil"
         app:layout_constraintTop_toBottomOf="@id/tv_auto_change_air"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 
     <com.robam.common.ui.view.SwitchButton
-        android:id="@+id/sb_auto_set2"
+        android:id="@+id/sb_auto_oil"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/dp_64"

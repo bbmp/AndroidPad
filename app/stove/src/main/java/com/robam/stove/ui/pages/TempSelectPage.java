@@ -9,9 +9,11 @@ import com.robam.common.ui.IModeSelect;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBasePage;
+import com.robam.stove.bean.ModeBean;
 import com.robam.stove.bean.Stove;
 import com.robam.stove.ui.adapter.RvTimeAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TempSelectPage extends StoveBasePage {
@@ -23,11 +25,15 @@ public class TempSelectPage extends StoveBasePage {
     private RvTimeAdapter rvTempAdapter;
     private TabLayout.Tab tab;
 
-    private IModeSelect iModeSelect;
+//    private IModeSelect iModeSelect;
+    //当前模式
+    private ModeBean curMode;
+    //当前温度
+    private String curTemp;
 
-    public TempSelectPage(TabLayout.Tab tab, IModeSelect iModeSelect) {
+    public TempSelectPage(TabLayout.Tab tab, ModeBean modeBean) {
         this.tab = tab;
-        this.iModeSelect = iModeSelect;
+        this.curMode = modeBean;
     }
 
     public void setTempList(List<String> selectList, int offset) {
@@ -45,7 +51,7 @@ public class TempSelectPage extends StoveBasePage {
             textView.setText(rvTempAdapter.getItem(position));
         }
         //默认温度
-        Stove.getInstance().workTemp = rvTempAdapter.getItem(position);
+        curTemp = rvTempAdapter.getItem(position);
     }
 
     @Override
@@ -65,9 +71,36 @@ public class TempSelectPage extends StoveBasePage {
     protected void initData() {
         rvTempAdapter = new RvTimeAdapter(0);
 
+        updateTempTab(curMode);
+//        if (null != iModeSelect)
+//            iModeSelect.updateTab(Stove.getInstance().workMode);
+    }
 
-        if (null != iModeSelect)
-            iModeSelect.updateTab(Stove.getInstance().workMode);
+    public void updateTempTab(ModeBean modeBean) {
+        if (null == rvTempAdapter)
+            return;
+        rvSelect.setAdapter(rvTempAdapter);
+        //煎炸温度
+        ArrayList<String> tempList = new ArrayList<>();
+        for (int i = modeBean.minTemp; i <= modeBean.maxTemp; i++) {
+            tempList.add(i + "");
+        }
+        rvTempAdapter.setList(tempList);
+        int offset = modeBean.defTemp - modeBean.minTemp;
+
+        int position = Integer.MAX_VALUE / 2-(Integer.MAX_VALUE / 2)%tempList.size() + offset;
+        pickerLayoutManager.scrollToPosition(position);
+        rvTempAdapter.setPickPosition(position);
+        if (null != tab) {
+            TextView textView = tab.getCustomView().findViewById(R.id.tv_mode);
+            textView.setText(rvTempAdapter.getItem(position));
+        }
+        //默认温度
+        curTemp = rvTempAdapter.getItem(position);
+    }
+    //获取当前温度
+    public String getCurTemp() {
+        return curTemp;
     }
 
     /**
@@ -86,7 +119,7 @@ public class TempSelectPage extends StoveBasePage {
                     public void onPicked(RecyclerView recyclerView, int position) {
                         //指示器更新
                         rvTempAdapter.setPickPosition(position);
-                        Stove.getInstance().workTemp = rvTempAdapter.getItem(position);
+                        curTemp = rvTempAdapter.getItem(position);
                         if (null != tab) {
                             TextView textView = tab.getCustomView().findViewById(R.id.tv_mode);
                             textView.setText(rvTempAdapter.getItem(position));

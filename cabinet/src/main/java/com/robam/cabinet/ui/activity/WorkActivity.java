@@ -1,6 +1,7 @@
 package com.robam.cabinet.ui.activity;
 
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.robam.cabinet.R;
@@ -12,6 +13,7 @@ import com.robam.cabinet.factory.CabinetDialogFactory;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.MCountdownView;
 import com.robam.common.utils.DateUtil;
+import com.robam.common.utils.LogUtils;
 
 /**
  *  工作界面
@@ -23,6 +25,8 @@ public class WorkActivity extends CabinetBaseActivity {
     private MCountdownView tvCountdown;
 
     private TextView tvMode;
+
+    private ImageView ivStart;
 
     @Override
     protected int getLayoutId() {
@@ -36,7 +40,8 @@ public class WorkActivity extends CabinetBaseActivity {
 
         tvMode = findViewById(R.id.tv_mode);
         tvCountdown = findViewById(R.id.tv_countdown);
-        setOnClickListener(R.id.ll_left);
+        ivStart = findViewById(R.id.iv_start);
+        setOnClickListener(R.id.ll_left, R.id.iv_start);
     }
 
     @Override
@@ -60,15 +65,12 @@ public class WorkActivity extends CabinetBaseActivity {
             public void onCountDown(int currentSecond) {
 //                SteamOven.getInstance().orderLeftTime = currentSecond;
                 String time = DateUtil.secForMatTime3(currentSecond);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        tvCountdown.setText(time);
-                        //工作完成
-                        if (currentSecond <= 0)
-                            workComplete();
-                    }
-                });
+
+                tvCountdown.setText(time);
+                //工作完成
+                if (currentSecond <= 0)
+                    workComplete();
+
              }
         });
         tvCountdown.start();
@@ -96,6 +98,9 @@ public class WorkActivity extends CabinetBaseActivity {
         int id = view.getId();
         if (id == R.id.ll_left) {
             workStop();
+        } else if (id == R.id.iv_start) {
+            startActivity(MainActivity.class);
+            finish();
         }
     }
 
@@ -114,5 +119,11 @@ public class WorkActivity extends CabinetBaseActivity {
             }
         }, R.id.tv_cancel, R.id.tv_ok);
         iDialog.show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        tvCountdown.stop();
     }
 }
