@@ -42,11 +42,11 @@ public class SimpleModeActivity extends VentilatorBaseActivity {
 
     @Override
     protected void initData() {
-        funList.add(new VenFunBean(1, "fun1", "logo_roki", "mode1", "into"));
-        funList.add(new VenFunBean(1, "fun2", "logo_roki", "mode2", "into"));
-        funList.add(new VenFunBean(1, "fun3", "logo_roki", "mode3", "into"));
-        funList.add(new VenFunBean(1, "fun4", "logo_roki", "mode4", "into"));
-        funList.add(new VenFunBean(1, "fun5", "logo_roki", "mode5", "into"));
+        funList.add(new VenFunBean(1, "fun1", "logo_roki", -1, "into"));
+        funList.add(new VenFunBean(1, "fun2", "logo_roki", -1, "into"));
+        funList.add(new VenFunBean(1, "fun3", "logo_roki", -1, "into"));
+        funList.add(new VenFunBean(1, "fun4", "logo_roki", -1, "into"));
+        funList.add(new VenFunBean(1, "fun5", "logo_roki", -1, "into"));
         rvMainFunctonAdapter = new RvMainFunctonAdapter();
         rvSimple.setAdapter(rvMainFunctonAdapter);
         rvMainFunctonAdapter.setList(funList);

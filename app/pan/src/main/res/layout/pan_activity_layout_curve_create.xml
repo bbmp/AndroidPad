@@ -63,7 +63,7 @@
         android:layout_width="@dimen/dp_60"
         android:layout_height="@dimen/dp_60"
         android:layout_marginRight="@dimen/dp_95"
-        android:src="@color/pan_white"
+        android:src="@drawable/pan_stop_create"
         app:layout_constraintTop_toTopOf="@id/tv_time"
         app:layout_constraintBottom_toBottomOf="@id/tv_time"
         app:layout_constraintRight_toRightOf="parent"/>

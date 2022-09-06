@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_38"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:paddingHorizontal="@dimen/dp_24"
     android:paddingTop="@dimen/dp_24">
@@ -10,13 +11,17 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_weight="1"
         android:gravity="center_vertical"
-        android:visibility="invisible">
+        android:visibility="invisible"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/ll_left_center"
+        app:layout_constraintTop_toTopOf="parent">
         <ImageView
             android:id="@+id/iv_left"
             android:layout_width="@dimen/dp_38"
-            android:layout_height="@dimen/dp_38"/>
+            android:layout_height="@dimen/dp_38"
+            android:src="@drawable/pan_back"/>
         <View
             android:id="@+id/view_left"
             android:layout_width="@dimen/dp_6"
@@ -34,13 +39,17 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_weight="1"
         android:gravity="center"
-        android:visibility="invisible">
+        android:visibility="invisible"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/ll_left"
+        app:layout_constraintRight_toLeftOf="@id/ll_center">
         <ImageView
             android:id="@+id/iv_left_center"
             android:layout_width="@dimen/dp_38"
-            android:layout_height="@dimen/dp_38"/>
+            android:layout_height="@dimen/dp_38"
+            android:src="@drawable/pan_home"/>
         <View
             android:id="@+id/view_left_center"
             android:layout_width="@dimen/dp_6"
@@ -50,7 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_32"
-            android:text="@string/pan_back"
+            android:text="@string/pan_home"
             android:textColor="@color/pan_white"/>
     </LinearLayout>
     <LinearLayout
@@ -58,9 +67,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_weight="1"
         android:gravity="center"
-        android:visibility="invisible">
+        android:visibility="invisible"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/ll_left_center"
+        app:layout_constraintRight_toLeftOf="@id/ll_right_center">
         <TextClock
             android:id="@+id/tc_center"
             android:layout_width="wrap_content"
@@ -89,9 +101,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_weight="1"
         android:gravity="center"
-        android:visibility="invisible">
+        android:visibility="invisible"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/ll_center"
+        app:layout_constraintRight_toLeftOf="@id/ll_right">
         <ImageView
             android:id="@+id/iv_right_center"
             android:layout_width="@dimen/dp_38"
@@ -105,7 +120,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_32"
-            android:text="@string/pan_back"
+            android:text=""
             android:textColor="@color/pan_white"/>
     </LinearLayout>
     <LinearLayout
@@ -113,9 +128,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_weight="1"
         android:gravity="center_vertical|right"
-        android:visibility="invisible">
+        android:visibility="invisible"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/ll_right_center"
+        app:layout_constraintRight_toRightOf="parent">
         <ImageView
             android:id="@+id/iv_right"
             android:layout_width="@dimen/dp_38"
@@ -129,7 +147,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_32"
-            android:text="@string/pan_back"
+            android:text=""
             android:textColor="@color/pan_white"/>
     </LinearLayout>
-</LinearLayout>
+    <ImageView
+        android:id="@+id/iv_float"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
+        android:layout_marginTop="@dimen/dp_m_12"
+        android:layout_marginLeft="@dimen/dp_30"
+        android:background="@color/pan_white25"
+        app:layout_constraintLeft_toRightOf="@id/ll_center"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

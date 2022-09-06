@@ -85,7 +85,7 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
             //灶具
             string = getResources().getString(R.string.ventilator_match_hint4);
             spannableString = new SpannableString(string);
-            Drawable drawable = getResources().getDrawable(R.drawable.logo_roki);
+            Drawable drawable = getResources().getDrawable(R.drawable.ventilator_r);
             drawable.setBounds(0, 0, (int) getResources().getDimension(com.robam.common.R.dimen.dp_32),
                     (int) getResources().getDimension(com.robam.common.R.dimen.dp_32));
             int pos = string.indexOf("[");
@@ -99,7 +99,7 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
             //锅
             string = getResources().getString(R.string.ventilator_match_hint3);
             spannableString = new SpannableString(string);
-            Drawable drawable = getResources().getDrawable(R.drawable.logo_roki);
+            Drawable drawable = getResources().getDrawable(R.drawable.ventilator_r);
             drawable.setBounds(0, 0, (int) getResources().getDimension(com.robam.common.R.dimen.dp_32),
                     (int) getResources().getDimension(com.robam.common.R.dimen.dp_32));
             int pos = string.indexOf("[");
@@ -113,7 +113,7 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
             //消毒柜
             string = getResources().getString(R.string.ventilator_match_hint1);
             spannableString = new SpannableString(string);
-            Drawable drawable = getResources().getDrawable(R.drawable.logo_roki);
+            Drawable drawable = getResources().getDrawable(R.drawable.ventilator_r);
             drawable.setBounds(0, 0, (int) getResources().getDimension(com.robam.common.R.dimen.dp_32),
                     (int) getResources().getDimension(com.robam.common.R.dimen.dp_32));
             int pos = string.indexOf("[");

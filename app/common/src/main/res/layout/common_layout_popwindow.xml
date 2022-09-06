@@ -8,7 +8,7 @@
         android:layout_width="@dimen/dp_60"
         android:layout_height="@dimen/dp_60"
         android:layout_marginTop="@dimen/dp_12"
-        android:background="@color/common_white35"
+        android:src="@drawable/common_float"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.robam.common.device.Stove;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.VerticalSpaceItemDecoration;
 import com.robam.common.utils.LogUtils;
@@ -111,8 +112,14 @@ public class CurveRestoreActivity extends PanBaseActivity {
                     //还原结束
                     //去烹饪结束
                     Intent intent = new Intent();
-                    if (null != panCurveDetail)
+                    if (null != panCurveDetail) {
                         intent.putExtra(PanConstant.EXTRA_CURVE_DETAIL, panCurveDetail);
+                        //关火
+                        if (panCurveDetail.stove == Stove.STOVE_LEFT)
+                            Stove.getInstance().leftStove.setValue(false);
+                        if (panCurveDetail.stove == Stove.STOVE_RIGHT)
+                            Stove.getInstance().rightStove.setValue(false);
+                    }
                     intent.setClass(CurveRestoreActivity.this, RestoreCompleteActivity.class);
                     startActivity(intent);
                     finish();
@@ -157,6 +164,13 @@ public class CurveRestoreActivity extends PanBaseActivity {
             public void onClick(View v) {
                 //停止烹饪
                 if (v.getId() == R.id.tv_ok) {
+                    //关闭炉头
+                    if (null != panCurveDetail) {
+                        if (panCurveDetail.stove == Stove.STOVE_LEFT)
+                            Stove.getInstance().leftStove.setValue(false);
+                        if (panCurveDetail.stove == Stove.STOVE_RIGHT)
+                            Stove.getInstance().rightStove.setValue(false);
+                    }
                     //回首页
                     startActivity(MainActivity.class);
                 }

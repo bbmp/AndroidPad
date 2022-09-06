@@ -17,7 +17,7 @@ import com.robam.pan.bean.PanRecipe;
 //云端菜谱
 public class RvRecipeAdapter extends BaseQuickAdapter<PanRecipe, BaseViewHolder> {
     private RequestOptions maskOption = new RequestOptions()
-            .circleCrop()
+            .centerCrop()
             .placeholder(R.drawable.pan_main_item_bg) //预加载图片
             .error(R.drawable.pan_main_item_bg) //加载失败图片
             .priority(Priority.HIGH) //优先级

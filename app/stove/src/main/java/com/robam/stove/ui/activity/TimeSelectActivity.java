@@ -10,7 +10,7 @@ import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBaseActivity;
 import com.robam.stove.bean.ModeBean;
-import com.robam.stove.bean.Stove;
+import com.robam.common.device.Stove;
 import com.robam.stove.constant.DialogConstant;
 import com.robam.stove.constant.StoveConstant;
 import com.robam.stove.factory.StoveDialogFactory;
@@ -64,7 +64,9 @@ public class TimeSelectActivity extends StoveBaseActivity {
         List<String> lists = new ArrayList();
 
         //定时功能一种模式
-        List<ModeBean> modeBeans = Stove.getInstance().getModeBeans(StoveConstant.FUN_TIMING);
+        List<ModeBean> modeBeans = null;
+        if (null != getIntent())
+            modeBeans = (ArrayList<ModeBean>) getIntent().getSerializableExtra(StoveConstant.EXTRA_MODE_LIST);
         if (null != modeBeans && modeBeans.size() > 0) {
             ModeBean modeBean = modeBeans.get(0);//取第一个模式
             for (int i = modeBean.minTime; i <= modeBean.maxTime; i++)
@@ -101,9 +103,9 @@ public class TimeSelectActivity extends StoveBaseActivity {
             public void onClick(View v) {
                 int id = v.getId();
                 if (id == R.id.view_left)
-                    openFire(StoveConstant.STOVE_LEFT);  //左灶
+                    openFire(Stove.STOVE_LEFT);  //左灶
                 else if (id == R.id.view_right)
-                    openFire(StoveConstant.STOVE_RIGHT);   //右灶
+                    openFire(Stove.STOVE_RIGHT);   //右灶
             }
         }, R.id.select_stove_dialog, R.id.view_left, R.id.view_right);
         //检查炉头状态
@@ -115,7 +117,7 @@ public class TimeSelectActivity extends StoveBaseActivity {
     private void openFire(int stove) {
         IDialog iDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_OPEN_FIRE);
         iDialog.setCancelable(false);
-        if (stove == StoveConstant.STOVE_LEFT) {
+        if (stove == Stove.STOVE_LEFT) {
             iDialog.setContentText(R.string.stove_open_left_hint);
             //进入工作状态
             //选择左灶

@@ -5,8 +5,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.robam.common.device.Stove;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.VerticalSpaceItemDecoration;
@@ -21,6 +23,7 @@ import com.robam.pan.http.CloudHelper;
 import com.robam.pan.response.GetCurveDetailRes;
 import com.robam.pan.response.GetRecipeDetailRes;
 import com.robam.pan.ui.adapter.RvStep3Adapter;
+import com.robam.pan.ui.dialog.SelectStoveDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +79,9 @@ public class RecipeSelectedActivity extends PanBaseActivity {
         if (curveId != 0)  //获取曲线详情
             getCurveDetail();
         else if (recipeId != 0) {
-            showRight();  //显示菜谱详情
+            showRight();
+            ImageView ivRight = findViewById(R.id.iv_right);
+            ivRight.setImageResource(R.drawable.pan_recipe_detail);//显示菜谱详情
             getRecipeDetail();  //先获取菜谱详情
         }
     }
@@ -102,28 +107,51 @@ public class RecipeSelectedActivity extends PanBaseActivity {
     //炉头选择
     private void selectStove() {
         //炉头选择提示
-        IDialog iDialog = PanDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_SELECT_STOVE);
+        //炉头选择提示
+        SelectStoveDialog iDialog = new SelectStoveDialog(this);
         iDialog.setCancelable(false);
         iDialog.setListeners(new IDialog.DialogOnClickListener() {
             @Override
             public void onClick(View v) {
                 int id = v.getId();
-                if (id == R.id.view_left || id == R.id.view_right)
-                    openFire();
+                if (id == R.id.view_left)
+                    openFire(Stove.STOVE_LEFT);  //左灶
+                else if (id == R.id.view_right)
+                    openFire(Stove.STOVE_RIGHT);   //右灶
             }
         }, R.id.select_stove_dialog, R.id.view_left, R.id.view_right);
+        //检查炉头状态
+        iDialog.checkStoveStatus();
         iDialog.show();
     }
 
     //点火提示
-    private void openFire() {
-//        IDialog iDialog = PanDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_OPEN_FIRE);
-//        iDialog.setCancelable(false);
-//        iDialog.show();
+    private void openFire(int stove) {
+        IDialog iDialog = PanDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_OPEN_FIRE);
+        iDialog.setCancelable(false);
+        if (stove == Stove.STOVE_LEFT) {
+            iDialog.setContentText(R.string.pan_open_left_hint);
+            //进入工作状态
+            //选择左灶
+            Stove.getInstance().leftWorkMode = 1;
+            Stove.getInstance().leftWorkHours = "0";
+            Stove.getInstance().leftWorkTemp = "0";
+            Stove.getInstance().leftStove.setValue(true);
+        } else {
+            iDialog.setContentText(R.string.pan_open_right_hint);
+            //选择右灶
+            Stove.getInstance().rightWorkMode = 1;
+            Stove.getInstance().rightWorkHours = "0";
+            Stove.getInstance().rightWorkTemp = "0";
+            Stove.getInstance().rightStove.setValue(true);
+        }
+        iDialog.show();
         Intent intent = new Intent();
         intent.setClass(this, CurveRestoreActivity.class);
-        if (null != panCurveDetail)
+        if (null != panCurveDetail) {
+            panCurveDetail.stove = stove; //选中哪个炉头
             intent.putExtra(PanConstant.EXTRA_CURVE_DETAIL, panCurveDetail);
+        }
         startActivity(intent);
     }
 

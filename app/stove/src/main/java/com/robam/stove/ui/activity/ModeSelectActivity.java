@@ -19,7 +19,7 @@ import com.robam.common.ui.dialog.IDialog;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBaseActivity;
 import com.robam.stove.bean.ModeBean;
-import com.robam.stove.bean.Stove;
+import com.robam.common.device.Stove;
 import com.robam.stove.constant.DialogConstant;
 import com.robam.stove.constant.StoveConstant;
 import com.robam.stove.factory.StoveDialogFactory;
@@ -60,6 +60,7 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
     protected void initView() {
         showLeft();
         showCenter();
+        showRightCenter();
 
         tabLayout = findViewById(R.id.tabLayout);
         noScrollViewPager = findViewById(R.id.pager);
@@ -99,7 +100,9 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
     @Override
     protected void initData() {
         //当前功能的模式
-        List<ModeBean> modeBeans = Stove.getInstance().getModeBeans(Stove.getInstance().funCode);
+        ArrayList<ModeBean> modeBeans = null;
+        if (null != getIntent())
+            modeBeans = (ArrayList<ModeBean>) getIntent().getSerializableExtra(StoveConstant.EXTRA_MODE_LIST);
         if (null != modeBeans) {
             modes.addAll(modeBeans);
             //默认模式
@@ -164,9 +167,9 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
             public void onClick(View v) {
                 int id = v.getId();
                 if (id == R.id.view_left)
-                    openFire(StoveConstant.STOVE_LEFT); //左灶
+                    openFire(Stove.STOVE_LEFT); //左灶
                 else if (id == R.id.view_right)
-                    openFire(StoveConstant.STOVE_RIGHT); //右灶
+                    openFire(Stove.STOVE_RIGHT); //右灶
             }
         }, R.id.select_stove_dialog, R.id.view_left, R.id.view_right);
         //检查炉头状态
@@ -179,7 +182,7 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
     private void openFire(int stove) {
         IDialog iDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_OPEN_FIRE);
         iDialog.setCancelable(false);
-        if (stove == StoveConstant.STOVE_LEFT) {
+        if (stove == Stove.STOVE_LEFT) {
             iDialog.setContentText(R.string.stove_open_left_hint);
             //进入工作状态
             //选择左灶

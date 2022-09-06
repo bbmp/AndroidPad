@@ -1,6 +1,8 @@
 package com.robam.stove.ui.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,9 +16,12 @@ import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.UserInfo;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.ui.helper.GridSpaceItemDecoration;
 import com.robam.common.utils.ImageUtils;
+import com.robam.common.utils.QrUtils;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBaseActivity;
 import com.robam.stove.bean.Material;
@@ -40,6 +45,8 @@ public class RecipeDetailActivity extends StoveBaseActivity {
     private ImageView ivRecipe;
     //菜谱名字
     private TextView tvRecipeName;
+    //时间
+    private ImageView ivTime;
     //时长
     private TextView tvTime;
     //食材
@@ -47,9 +54,13 @@ public class RecipeDetailActivity extends StoveBaseActivity {
     //步骤
     private RecyclerView rvStep;
     private RvStepAdapter rvStepAdapter;
+    //二维码
+    private ImageView ivQrcode;
     //菜谱详情
     private StoveRecipeDetail stoveRecipeDetail;
     private long recipeId;
+    //二维码url
+    private String url = "https://h5.myroki.com/dist/index.html#/recipeDetail?cookbookId=" + "%d&entranceCode=code1&isFromWx=true&userId=%d";
 
     private RequestOptions maskOption = new RequestOptions()
             .centerCrop()
@@ -69,7 +80,9 @@ public class RecipeDetailActivity extends StoveBaseActivity {
     @Override
     protected void initView() {
         showLeft();
+        showLeftCenter();
         showCenter();
+
         if (null != getIntent())
             recipeId = getIntent().getLongExtra(StoveConstant.EXTRA_RECIPE_ID, 0);
         rvMaterial = findViewById(R.id.rv_material);
@@ -78,11 +91,13 @@ public class RecipeDetailActivity extends StoveBaseActivity {
         group3 = findViewById(R.id.stove_group3);  //步骤
         tvQrcode = findViewById(R.id.tv_qrcode);
         tvMaterial = findViewById(R.id.tv_material);
+        ivQrcode = findViewById(R.id.iv_qrcode);// 二维码
         tvStep = findViewById(R.id.tv_step);
         rvStep = findViewById(R.id.rv_step);
         ivRecipe = findViewById(R.id.iv_recipe_img);
         tvRecipeName = findViewById(R.id.tv_recipe_name);
         tvTime = findViewById(R.id.tv_time);
+        ivTime = findViewById(R.id.iv_time);
         //食材
         rvMaterial.setLayoutManager(new GridLayoutManager(this, 2));
         rvMaterial.addItemDecoration(new GridSpaceItemDecoration((int) getResources().getDimension(com.robam.common.R.dimen.dp_126)));
@@ -92,7 +107,7 @@ public class RecipeDetailActivity extends StoveBaseActivity {
         rvStep.setLayoutManager(new LinearLayoutManager(this));
         rvStepAdapter = new RvStepAdapter();
         rvStep.setAdapter(rvStepAdapter);
-        setOnClickListener(R.id.tv_qrcode, R.id.tv_material, R.id.tv_step, R.id.btn_start);
+        setOnClickListener(R.id.ll_left_center, R.id.tv_qrcode, R.id.tv_material, R.id.tv_step, R.id.btn_start);
 
     }
 
@@ -122,6 +137,15 @@ public class RecipeDetailActivity extends StoveBaseActivity {
     }
     //获取到的数据
     private void setData(StoveRecipeDetail stoveRecipeDetail) {
+        //二维码
+        UserInfo userInfo = AccountInfo.getInstance().getUser().getValue();
+        String qrUrl = String.format(url, stoveRecipeDetail.id, (userInfo != null) ? userInfo.id:0);
+        Bitmap imgBit = QrUtils.create2DCode(qrUrl, (int)getResources().getDimension(com.robam.common.R.dimen.dp_156),
+                (int)getResources().getDimension(com.robam.common.R.dimen.dp_156), Color.WHITE);
+        if (null != imgBit)
+            ivQrcode.setImageBitmap(imgBit);
+        //时间
+        ivTime.setImageResource(R.drawable.stove_time);
         //图片
         ImageUtils.loadImage(this, stoveRecipeDetail.imgSmall, maskOption, ivRecipe);
         //名字
@@ -181,6 +205,8 @@ public class RecipeDetailActivity extends StoveBaseActivity {
             if (null != stoveRecipeDetail)
                 intent.putExtra(StoveConstant.EXTRA_RECIPE_DETAIL, stoveRecipeDetail);
             startActivity(intent);
+        } else if (id == R.id.ll_left_center) { //回主页
+            startActivity(MainActivity.class);
         }
     }
 }

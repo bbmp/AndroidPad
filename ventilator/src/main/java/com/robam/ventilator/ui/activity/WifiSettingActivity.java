@@ -141,6 +141,9 @@ public class WifiSettingActivity extends VentilatorBaseActivity {
             List<ScanResult> wifiList = VenWifiManager.getWifiListBy(mWifiManager);
 
             rvWifiAdapter.setList(wifiList);
+            //当前连接wifi
+            WifiInfo info = mWifiManager.getConnectionInfo();
+            rvWifiAdapter.setInfo(info);
         }
     }
 

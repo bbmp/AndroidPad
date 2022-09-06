@@ -22,6 +22,9 @@ public class PanCurveDetail implements Serializable {
     public String deviceParams;
     //是否选中,用于显示
     private boolean selected;
+    //左灶还是右灶
+    public int stove;
+
     public PanCurveDetail(String name) {
         this.name = name;
     }

@@ -55,7 +55,7 @@
 <!--        app:layout_constraintTop_toTopOf="@id/tv_mode"/>-->
     <ImageView
         android:id="@+id/iv_select"
-        android:layout_width="@dimen/dp_82"
+        android:layout_width="@dimen/dp_98"
         android:layout_height="@dimen/dp_24"
         android:layout_marginTop="@dimen/dp_2"
         android:scaleType="fitXY"

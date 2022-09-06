@@ -7,11 +7,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.robam.common.device.Pan;
+import com.robam.common.device.Stove;
+import com.robam.common.ui.view.MCountdownView;
 import com.robam.common.utils.ToastUtils;
 import com.robam.pan.constant.Constant;
 import com.robam.pan.R;
@@ -30,9 +34,11 @@ public class HomePage extends PanBasePage {
     private RvMainFunctionAdapter rvMainFunctionAdapter;
     //快炒
     private LinearLayout llQuick, llStir;
-    private TextView tvQuick, tvStir;
-    //浮标
-    private ImageView ivFloat;
+    //快炒
+    private TextView tvQuick;
+    //十秒翻炒
+    private MCountdownView tvStir;
+
     @Override
     protected int getLayoutId() {
         return R.layout.pan_page_layout_home;
@@ -46,7 +52,6 @@ public class HomePage extends PanBasePage {
         llStir = findViewById(R.id.ll_stir_fry);
         tvQuick = findViewById(R.id.tv_quick);
         tvStir = findViewById(R.id.tv_stir);
-        ivFloat = findViewById(R.id.iv_float);
         rvMain.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
         rvMainFunctionAdapter = new RvMainFunctionAdapter();
         rvMainFunctionAdapter.setOnItemClickListener(new OnItemClickListener() {
@@ -67,7 +72,7 @@ public class HomePage extends PanBasePage {
 
         });
         rvMain.setAdapter(rvMainFunctionAdapter);
-        setOnClickListener(ivFloat, llQuick, llStir);
+        setOnClickListener(llQuick, llStir);
     }
 
     @Override
@@ -77,28 +82,84 @@ public class HomePage extends PanBasePage {
         functionList.add(new PanFunBean(2, "我的最爱", "", "favorite", "com.robam.pan.ui.activity.FavoriteActivity"));
         functionList.add(new PanFunBean(3, "烹饪曲线", "", "curve", "com.robam.pan.ui.activity.CurveActivity"));
         rvMainFunctionAdapter.setList(functionList);
+        Stove.getInstance().leftStove.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean) {
+                    //开火状态
+
+                } else {
+                    //关火状态
+                    Stove.getInstance().leftWorkMode = 0;
+                    Stove.getInstance().leftWorkHours = "";
+                    Stove.getInstance().leftWorkTemp = "";
+                }
+            }
+        });
+        //初始左灶状态
+        Stove.getInstance().rightStove.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean) {
+                    //开火状态
+                } else {
+                    //关火状态
+
+                    Stove.getInstance().rightWorkMode = 0;
+                    Stove.getInstance().rightWorkHours = "";
+                    Stove.getInstance().rightWorkTemp = "";
+                }
+            }
+        });
+        //检测锅温度
+        Pan.getInstance().panTemp.observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                if (integer < 60)
+                    ;
+            }
+        });
     }
 
     @Override
     public void onClick(View view) {
         int id = view.getId();
-        if (id == R.id.iv_float) {
-            getActivity().finish();
-        } else if (id == R.id.ll_quick_fry) {
+        if (id == R.id.ll_quick_fry) {
             if (!llQuick.isSelected()) {
                 //关闭当前模式，持续快炒中
                 llQuick.setSelected(true);
                 tvQuick.setText(R.string.pan_quick_frying);
                 llStir.setSelected(false);
                 tvStir.setText(R.string.pan_stir_fry);
+                tvStir.stop();
             }
         } else if (id == R.id.ll_stir_fry) {
             if (!llStir.isSelected()) {
                 llStir.setSelected(true);
-                tvStir.setText(R.string.pan_stir_frying);
+                tvStir.setText("十秒翻炒 " + "10s");
                 llQuick.setSelected(false);
                 tvQuick.setText(R.string.pan_quick_fry);
+                tvStir.setTotalTime(10);
+                tvStir.addOnCountDownListener(new MCountdownView.OnCountDownListener() {
+                    @Override
+                    public void onCountDown(int currentSecond) {
+                        if (currentSecond <= 0) {
+                            llStir.setSelected(false);
+                            tvStir.setText(R.string.pan_stir_fry);
+                            return;
+                        }
+                        tvStir.setText("十秒翻炒 " + currentSecond + "s");
+                    }
+                });
+                tvStir.start();
             }
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (null != tvStir)
+            tvStir.stop();
     }
 }

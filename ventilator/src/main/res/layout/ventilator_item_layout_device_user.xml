@@ -32,7 +32,7 @@
         android:layout_width="@dimen/dp_46"
         android:layout_height="@dimen/dp_46"
         android:layout_marginRight="@dimen/dp_50"
-        android:src="@drawable/logo_roki"
+        android:src="@drawable/ventilator_delete"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>

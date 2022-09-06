@@ -41,7 +41,6 @@
         android:layout_height="0dp"
         android:layout_marginVertical="@dimen/dp_20"
         android:layout_marginLeft="@dimen/dp_54"
-        android:src="@drawable/pan_main_item_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintLeft_toLeftOf="parent"

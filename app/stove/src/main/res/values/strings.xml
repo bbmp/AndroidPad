@@ -43,4 +43,6 @@
     <string name="stove_cook_complete_hint">烹饪结束，快来享受美食</string>
     <string name="stove_go_connect">去连网</string>
     <string name="stove_not_connect">网络未连接</string>
+    <string name="stove_home">主页</string>
+    <string name="stove_screen_lock">童锁</string>
 </resources>

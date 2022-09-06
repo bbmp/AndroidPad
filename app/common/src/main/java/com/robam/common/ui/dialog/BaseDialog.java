@@ -86,8 +86,8 @@ public abstract class BaseDialog implements IDialog{
                     public void onClick(View v) {
                         if (null != onClickListener)
                             onClickListener.onClick(v);
-                        if (null != mDialog)
-                            mDialog.dismiss();
+
+                        dismiss();
                     }
                 });
             }

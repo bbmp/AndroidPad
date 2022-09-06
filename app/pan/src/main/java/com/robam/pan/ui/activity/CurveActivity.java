@@ -89,13 +89,13 @@ public class CurveActivity extends PanBaseActivity {
                     if (rvCurveAdapter.getStatus() == rvCurveAdapter.STATUS_ALL) {
                         //全选-》删除
                         panCurveDetail.setSelected(false);
-                        ivRight.setImageResource(R.drawable.pan_shape_button_unselected);
+                        ivRight.setImageResource(R.drawable.pan_unselected);
                         rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_DELETE);
                     } else if (rvCurveAdapter.getStatus() == rvCurveAdapter.STATUS_DELETE) {
                         panCurveDetail.setSelected(!panCurveDetail.isSelected());
                         //检测是否全选
                         if (isAll()) {
-                            ivRight.setImageResource(R.drawable.pan_shape_button_selected);
+                            ivRight.setImageResource(R.drawable.pan_selected);
                             rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_ALL);
                         }
                         else
@@ -180,18 +180,18 @@ public class CurveActivity extends PanBaseActivity {
             {
                 //删除-》全选
                 allSelect();
-                ivRight.setImageResource(R.drawable.pan_shape_button_selected);
+                ivRight.setImageResource(R.drawable.pan_selected);
                 rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_ALL);
             } else if (rvCurveAdapter.getStatus() == RvCurveAdapter.STATUS_ALL){
                 //全选-》取消全选
                 allUnelect();
-                ivRight.setImageResource(R.drawable.pan_shape_button_unselected);
+                ivRight.setImageResource(R.drawable.pan_unselected);
                 rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_DELETE);
 
             } else {
                 //返回-》删除
                 tvRight.setText(R.string.pan_select_all);
-                ivRight.setImageResource(R.drawable.pan_shape_button_unselected);
+                ivRight.setImageResource(R.drawable.pan_unselected);
                 panCurveDetails.remove(0);
                 rvCurveAdapter.setList(panCurveDetails);
                 rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_DELETE);

@@ -26,7 +26,7 @@
         android:id="@+id/iv_lock"
         android:layout_width="@dimen/dp_60"
         android:layout_height="@dimen/dp_60"
-        android:src="@drawable/logo_roki"
+        android:src="@drawable/ventilator_screen_lock"
         android:layout_marginBottom="@dimen/dp_24"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

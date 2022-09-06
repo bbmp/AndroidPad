@@ -10,15 +10,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
-    <ImageView
-        android:id="@+id/iv_float"
-        android:layout_width="@dimen/dp_60"
-        android:layout_height="@dimen/dp_60"
-        android:layout_marginTop="@dimen/dp_10"
-        android:layout_marginRight="@dimen/dp_472"
-        android:background="@color/pan_white25"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_main"
         android:layout_width="wrap_content"
@@ -45,7 +37,8 @@
         <ImageView
             android:layout_width="@dimen/dp_38"
             android:layout_height="@dimen/dp_38"
-            android:layout_marginRight="@dimen/dp_10"/>
+            android:layout_marginRight="@dimen/dp_10"
+            android:src="@drawable/pan_fry"/>
         <TextView
             android:id="@+id/tv_quick"
             android:layout_width="wrap_content"
@@ -67,8 +60,9 @@
         <ImageView
             android:layout_width="@dimen/dp_38"
             android:layout_height="@dimen/dp_38"
-            android:layout_marginRight="@dimen/dp_10"/>
-        <TextView
+            android:layout_marginRight="@dimen/dp_10"
+            android:src="@drawable/pan_fry"/>
+        <com.robam.common.ui.view.MCountdownView
             android:id="@+id/tv_stir"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

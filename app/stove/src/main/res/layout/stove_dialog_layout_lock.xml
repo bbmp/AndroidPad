@@ -21,7 +21,8 @@
         <ImageView
             android:layout_width="@dimen/dp_38"
             android:layout_height="@dimen/dp_38"
-            android:layout_marginLeft="@dimen/dp_20" />
+            android:layout_marginLeft="@dimen/dp_20"
+            android:src="@drawable/stove_close_fire"/>
 
         <TextView
             android:id="@+id/tv_left_stove"
@@ -51,7 +52,7 @@
         android:layout_width="@dimen/dp_60"
         android:layout_height="@dimen/dp_60"
         android:layout_marginBottom="@dimen/dp_24"
-        android:src="@drawable/stove_main_item_bg"
+        android:src="@drawable/stove_screen_home_lock"
         app:layout_constraintBottom_toTopOf="@id/tv_lock"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
@@ -81,7 +82,8 @@
         <ImageView
             android:layout_width="@dimen/dp_38"
             android:layout_height="@dimen/dp_38"
-            android:layout_marginRight="@dimen/dp_20" />
+            android:layout_marginRight="@dimen/dp_20"
+            android:src="@drawable/stove_close_fire"/>
     </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline

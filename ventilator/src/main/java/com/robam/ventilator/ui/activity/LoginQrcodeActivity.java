@@ -1,6 +1,7 @@
 package com.robam.ventilator.ui.activity;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -62,7 +63,8 @@ public class LoginQrcodeActivity extends VentilatorBaseActivity {
     private void getQrCode() {
         String preUuid = UUID.randomUUID().toString();
 
-        final Bitmap imgBit = QrUtils.create2DCode("UUID-LOGIN" + preUuid);
+        final Bitmap imgBit = QrUtils.create2DCode("UUID-LOGIN" + preUuid, (int)getResources().getDimension(com.robam.common.R.dimen.dp_194),
+                (int)getResources().getDimension(com.robam.common.R.dimen.dp_194), Color.WHITE);
         if (ivQrcode != null) {
             ivQrcode.setImageBitmap(imgBit);
         }

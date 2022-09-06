@@ -14,7 +14,7 @@ public class RvShortcutFunAdapter extends BaseQuickAdapter<VenFunBean, BaseViewH
 
     @Override
     protected void convert(@NonNull BaseViewHolder baseViewHolder, VenFunBean venFunBean) {
-        int id = getContext().getResources().getIdentifier(venFunBean.backgroundImg, "drawable", getContext().getPackageName());
-        baseViewHolder.setImageResource(R.id.iv_fun, id);
+        if (null != venFunBean)
+            baseViewHolder.setImageResource(R.id.iv_fun, venFunBean.iconRes);
     }
 }

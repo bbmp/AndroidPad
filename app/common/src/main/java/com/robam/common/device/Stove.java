@@ -1,13 +1,7 @@
-package com.robam.stove.bean;
-
-import android.content.Context;
+package com.robam.common.device;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.robam.common.manager.FunctionManager;
-import com.robam.stove.R;
-
-import java.util.List;
 
 /**
  * 灶具
@@ -17,12 +11,13 @@ public class Stove {
         return StoveHolder.instance;
     }
 
-
+    //
+    public final static int STOVE_LEFT = 0;
+    public final static int STOVE_RIGHT = 1;
     private static class StoveHolder {
         private static final Stove instance = new Stove();
     }
 
-    private List<StoveFunBean> stoveFunBeans;
     /**
      * 当前功能
      */
@@ -53,22 +48,4 @@ public class Stove {
     //右灶
     public MutableLiveData<Boolean> rightStove = new MutableLiveData<>(false);
 
-    public void init(Context context) {
-        if (null == stoveFunBeans)
-            stoveFunBeans = FunctionManager.getFuntionList(context, StoveFunBean.class, R.raw.stove);
-    }
-
-    public List<StoveFunBean> getStoveFunBeans() {
-        return stoveFunBeans;
-    }
-    //当前功能下的模式
-    public List<ModeBean> getModeBeans(int funCode) {
-        if (null != stoveFunBeans) {
-            for (int i=0; i<stoveFunBeans.size(); i++) {
-                if (stoveFunBeans.get(i).funtionCode == funCode)
-                    return stoveFunBeans.get(i).mode;
-            }
-        }
-        return null;
-    }
 }

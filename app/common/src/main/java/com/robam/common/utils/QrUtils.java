@@ -18,16 +18,16 @@ public class QrUtils {
      * @return
      * @throws WriterException
      */
-    public static Bitmap create2DCode(String str) {
-        return create2DCode(str, Color.TRANSPARENT);
+    public static Bitmap create2DCode(String str, int width, int height) {
+        return create2DCode(str, width, height, Color.TRANSPARENT);
     }
 
-    public static Bitmap create2DCode(String str, int backgroundColor) {
+    public static Bitmap create2DCode(String str, int qrWidth, int qrHeight, int backgroundColor) {
         // 生成二维矩阵,编码时指定大小,不要生成了图片以后再进行缩放,这样会模糊导致识别失败
         BitMatrix matrix;
         try {
             matrix = new MultiFormatWriter().encode(str, BarcodeFormat.QR_CODE,
-                    400, 400);
+                    qrWidth, qrHeight);
 
 
             int width = matrix.getWidth();

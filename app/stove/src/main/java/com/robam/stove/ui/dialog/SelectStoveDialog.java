@@ -8,7 +8,7 @@ import android.widget.TextView;
 import com.robam.common.ui.dialog.BaseDialog;
 import com.robam.common.ui.dialog.FullDialog;
 import com.robam.stove.R;
-import com.robam.stove.bean.Stove;
+import com.robam.common.device.Stove;
 
 public class SelectStoveDialog extends BaseDialog {
     private TextView mContent;

@@ -89,13 +89,13 @@ public class CurveActivity extends StoveBaseActivity {
                     if (rvCurveAdapter.getStatus() == RvCurveAdapter.STATUS_ALL) {
                         //全选-》删除
                         stoveCurveDetail.setSelected(false);
-                        ivRight.setImageResource(R.drawable.stove_shape_button_unselected);
+                        ivRight.setImageResource(R.drawable.stove_unselected);
                         rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_DELETE);
                     } else if (rvCurveAdapter.getStatus() == RvCurveAdapter.STATUS_DELETE) {
                         stoveCurveDetail.setSelected(!stoveCurveDetail.isSelected());
                         //检测是否全选
                         if (isAll()) {
-                            ivRight.setImageResource(R.drawable.stove_shape_button_selected);
+                            ivRight.setImageResource(R.drawable.stove_selected);
                             rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_ALL);
                         }
                         else
@@ -187,18 +187,18 @@ public class CurveActivity extends StoveBaseActivity {
 //                panRecipeList.add(0, new PanRecipe("创作烹饪曲线", ""));
 //                rvFavoriteAdapter.setList(panRecipeList);
                 allSelect();
-                ivRight.setImageResource(R.drawable.stove_shape_button_selected);
+                ivRight.setImageResource(R.drawable.stove_selected);
                 rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_ALL);
             } else if (rvCurveAdapter.getStatus() == RvCurveAdapter.STATUS_ALL){
                 //全选-》取消全选
                 allUnelect();
-                ivRight.setImageResource(R.drawable.stove_shape_button_unselected);
+                ivRight.setImageResource(R.drawable.stove_unselected);
                 rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_DELETE);
 
             } else {
                 //返回-》删除
                 tvRight.setText(R.string.stove_select_all);
-                ivRight.setImageResource(R.drawable.stove_shape_button_unselected);
+                ivRight.setImageResource(R.drawable.stove_unselected);
                 stoveCurveDetails.remove(0);
                 rvCurveAdapter.setList(stoveCurveDetails);
                 rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_DELETE);

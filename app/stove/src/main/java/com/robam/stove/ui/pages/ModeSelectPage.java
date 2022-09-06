@@ -1,9 +1,7 @@
 package com.robam.stove.ui.pages;
 
-import android.view.View;
 import android.widget.TextView;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.tabs.TabLayout;
@@ -12,7 +10,6 @@ import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBasePage;
 import com.robam.stove.bean.ModeBean;
-import com.robam.stove.bean.Stove;
 import com.robam.stove.ui.adapter.RvModeAdapter;
 
 import java.util.List;

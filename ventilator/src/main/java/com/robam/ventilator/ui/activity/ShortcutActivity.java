@@ -61,9 +61,9 @@ public class ShortcutActivity extends VentilatorBaseActivity {
     protected void initData() {
         //主功能
         List<VenFunBean> funList = new ArrayList<>();
-        funList.add(new VenFunBean(1, "fun1", "logo_roki", "mode1", "into"));
-        funList.add(new VenFunBean(1, "fun2", "logo_roki", "mode2", "into"));
-        funList.add(new VenFunBean(1, "fun3", "logo_roki", "mode3", "into"));
+        funList.add(new VenFunBean(1, "fun1", "logo_roki", R.drawable.ventilator_gear_weak, "into"));
+        funList.add(new VenFunBean(1, "fun2", "logo_roki", R.drawable.ventilator_gear_medium, "into"));
+        funList.add(new VenFunBean(1, "fun3", "logo_roki", R.drawable.ventilator_gear_max, "into"));
         rvShortcutFunAdapter = new RvShortcutFunAdapter();
         recyclerView.setAdapter(rvShortcutFunAdapter);
         rvShortcutFunAdapter.setList(funList);

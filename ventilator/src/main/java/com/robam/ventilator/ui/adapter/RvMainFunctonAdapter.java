@@ -35,7 +35,7 @@ public class RvMainFunctonAdapter extends BaseQuickAdapter<VenFunBean, BaseViewH
                 baseViewHolder.getView(R.id.ventilator_main_item).setScaleX(1.0f);
                 baseViewHolder.getView(R.id.ventilator_main_item).setScaleY(1.0f);
             }
-                baseViewHolder.setImageResource(R.id.iv_fun, R.drawable.logo_roki);
+            baseViewHolder.setImageResource(R.id.iv_fun, venFun.iconRes);
         }
     }
 }

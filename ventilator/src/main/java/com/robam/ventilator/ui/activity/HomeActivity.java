@@ -14,9 +14,11 @@ import android.util.DisplayMetrics;
 import android.view.View;
 
 import com.clj.fastble.BleManager;
+import com.robam.common.bean.AccountInfo;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.ui.activity.BaseActivity;
 import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.NetworkUtils;
 import com.robam.common.utils.PermissionUtils;
 import com.robam.common.utils.StringUtils;
 import com.robam.common.utils.WindowsUtils;
@@ -46,9 +48,6 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-        float x = getResources().getDimension(com.robam.common.R.dimen.dp_10);
 
 //        WindowsUtils.initPopupWindow(this, new View.OnClickListener() {
 //            @Override
@@ -124,6 +123,9 @@ public class HomeActivity extends BaseActivity {
 //初始化主设备mqtt收发 烟机端只要网络连接上就需要启动mqtt服务，锅和灶不用登录
         //监听网络状态
         MqttManager.getInstance().start(this, VentilatorFactory.getPlatform(), VentilatorFactory.getProtocol());
+        //初始网络状态
+        if (NetworkUtils.isConnect(this))
+            AccountInfo.getInstance().getConnect().setValue(true);
     }
 
     private void checkPermissions() {

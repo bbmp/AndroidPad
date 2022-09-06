@@ -1,6 +1,8 @@
 package com.robam.stove.bean;
 
-public class ModeBean {
+import java.io.Serializable;
+
+public class ModeBean implements Serializable {
     //模式
     public int code;
     /**

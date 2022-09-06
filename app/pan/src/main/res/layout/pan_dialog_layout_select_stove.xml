@@ -54,15 +54,17 @@
         app:layout_constraintBottom_toBottomOf="@id/view_left"/>
 
     <TextView
+        android:id="@+id/tv_left_close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_32"
         android:layout_marginTop="@dimen/dp_26"
-        android:textColor="@color/pan_white"
         android:text="@string/pan_close_fire_use"
+        android:textColor="@color/pan_white"
+        android:textSize="@dimen/sp_32"
+        android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="@id/view_left"
         app:layout_constraintRight_toRightOf="@id/view_left"
-        app:layout_constraintTop_toBottomOf="@id/view_left"/>
+        app:layout_constraintTop_toBottomOf="@id/view_left" />
 
     <View
         android:id="@+id/view_right"
@@ -96,4 +98,16 @@
         app:layout_constraintRight_toRightOf="@id/view_right"
         app:layout_constraintTop_toBottomOf="@id/tv_right_stove"
         app:layout_constraintBottom_toBottomOf="@id/view_right"/>
+    <TextView
+        android:id="@+id/tv_right_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_26"
+        android:text="@string/pan_close_fire_use"
+        android:textColor="@color/pan_white"
+        android:textSize="@dimen/sp_32"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="@id/view_right"
+        app:layout_constraintRight_toRightOf="@id/view_right"
+        app:layout_constraintTop_toBottomOf="@id/view_right" />
 </androidx.constraintlayout.widget.ConstraintLayout>

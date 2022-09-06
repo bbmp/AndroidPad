@@ -13,13 +13,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.robam.common.manager.FunctionManager;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.common.utils.ClickUtils;
 import com.robam.common.utils.ImageUtils;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBasePage;
-import com.robam.stove.bean.Stove;
+import com.robam.common.device.Stove;
 import com.robam.stove.bean.StoveFunBean;
 import com.robam.stove.constant.DialogConstant;
 import com.robam.stove.constant.StoveConstant;
@@ -89,8 +90,7 @@ public class HomePage extends StoveBasePage {
     @Override
     protected void initData() {
         //初始化数据
-        Stove.getInstance().init(getContext());
-        List<StoveFunBean> functionList = Stove.getInstance().getStoveFunBeans();
+        List<StoveFunBean> functionList = FunctionManager.getFuntionList(getContext(), StoveFunBean.class, R.raw.stove);
 
         rvMainFunctionAdapter.setList(functionList);
 
@@ -107,6 +107,7 @@ public class HomePage extends StoveBasePage {
 
                 Stove.getInstance().funCode = stoveFunBean.funtionCode;
                 Intent intent = new Intent();
+                intent.putExtra(StoveConstant.EXTRA_MODE_LIST, stoveFunBean.mode);
                 intent.setClassName(getContext(), stoveFunBean.into);
                 startActivity(intent);
             }
@@ -179,13 +180,13 @@ public class HomePage extends StoveBasePage {
             leftStove.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    stopCook(StoveConstant.STOVE_LEFT);
+                    stopCook(Stove.STOVE_LEFT);
                 }
             });
             rightStove.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    stopCook(StoveConstant.STOVE_RIGHT);
+                    stopCook(Stove.STOVE_RIGHT);
                 }
             });
         }
@@ -222,9 +223,9 @@ public class HomePage extends StoveBasePage {
                 @Override
                 public void onClick(View v) {
                     if (v.getId() == R.id.tv_ok) {
-                        if (stove == StoveConstant.STOVE_LEFT)
+                        if (stove == Stove.STOVE_LEFT)
                             Stove.getInstance().leftStove.setValue(false);
-                        if (stove == StoveConstant.STOVE_RIGHT)
+                        if (stove == Stove.STOVE_RIGHT)
                             Stove.getInstance().rightStove.setValue(false);
                     }
                     iDialogStop = null;
@@ -254,9 +255,9 @@ public class HomePage extends StoveBasePage {
             intent.setClassName(getContext(), "com.robam.ventilator.ui.activity.ShortcutActivity");
             startActivity(intent);
         } else if (id == R.id.ll_left_stove) {
-            stopCook(StoveConstant.STOVE_LEFT);
+            stopCook(Stove.STOVE_LEFT);
         } else if (id == R.id.ll_right_stove) {
-            stopCook(StoveConstant.STOVE_RIGHT);
+            stopCook(Stove.STOVE_RIGHT);
         } else if (id == R.id.iv_lock) {
             //锁屏提示
             affirmLock();

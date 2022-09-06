@@ -72,6 +72,7 @@
         android:layout_width="@dimen/dp_38"
         android:layout_height="@dimen/dp_38"
         android:layout_marginLeft="@dimen/dp_24"
+        android:src="@drawable/stove_edit"
         app:layout_constraintLeft_toRightOf="@id/tv_curve_name"
         app:layout_constraintTop_toTopOf="@id/tv_curve_name"
         app:layout_constraintBottom_toBottomOf="@id/tv_curve_name"/>

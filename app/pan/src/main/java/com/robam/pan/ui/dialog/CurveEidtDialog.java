@@ -7,6 +7,7 @@ import android.widget.LinearLayout;
 
 import com.robam.common.ui.dialog.BaseDialog;
 import com.robam.common.ui.dialog.FullDialog;
+import com.robam.common.utils.WindowsUtils;
 import com.robam.pan.R;
 
 public class CurveEidtDialog extends BaseDialog {
@@ -19,12 +20,19 @@ public class CurveEidtDialog extends BaseDialog {
     @Override
     protected void initView() {
         rootView = LayoutInflater.from(mContext).inflate(R.layout.pan_activity_layout_curve_edit, null);
-        llLeftCenter = rootView.findViewById(R.id.ll_left_center);
-        llLeftCenter.setVisibility(View.VISIBLE);
         llCenter = rootView.findViewById(R.id.ll_center);
         llCenter.setVisibility(View.VISIBLE);
         if (mDialog == null) {
             mDialog = new FullDialog(mContext, rootView);
         }
+        //关闭浮窗
+        WindowsUtils.hidePopupWindow();
+    }
+
+    @Override
+    public void dismiss() {
+        super.dismiss();
+        //显示浮窗
+        WindowsUtils.showPopupWindow();
     }
 }

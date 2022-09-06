@@ -30,7 +30,7 @@ import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MMKVUtils;
 import com.robam.common.utils.ScreenUtils;
 import com.robam.common.utils.ToastUtils;
-import com.robam.stove.ui.activity.MainActivity;
+import com.robam.pan.ui.activity.MainActivity;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBasePage;
 import com.robam.common.bean.AccountInfo;
@@ -140,6 +140,14 @@ public class HomePage extends VentilatorBasePage {
             public void onDrawerOpened(View drawerView) {
                 //抽屉打开时会回调的方法
                 LogUtils.i("---onDrawerOpened---");
+                if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
+                    findViewById(R.id.iv_left_left).setVisibility(View.VISIBLE);
+                    findViewById(R.id.iv_left_right).setVisibility(View.INVISIBLE);
+                }
+                if (drawerLayout.isDrawerOpen(Gravity.RIGHT)) {
+                    findViewById(R.id.iv_right_left).setVisibility(View.INVISIBLE);
+                    findViewById(R.id.iv_right_right).setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
@@ -148,6 +156,10 @@ public class HomePage extends VentilatorBasePage {
 
                 llSetting.setBackgroundColor(getContext().getResources().getColor(R.color.ventilator_transparent));
                 llProducts.setBackgroundColor(getContext().getResources().getColor(R.color.ventilator_transparent));
+                findViewById(R.id.iv_left_left).setVisibility(View.INVISIBLE); //箭头切换
+                findViewById(R.id.iv_left_right).setVisibility(View.VISIBLE);
+                findViewById(R.id.iv_right_left).setVisibility(View.VISIBLE);
+                findViewById(R.id.iv_right_right).setVisibility(View.INVISIBLE);
             }
 
             @Override
@@ -161,10 +173,10 @@ public class HomePage extends VentilatorBasePage {
     @Override
     protected void initData() {
         //主功能
-        funList.add(new VenFunBean(1, "fun1", "logo_roki", "mode1", "into"));
-        funList.add(new VenFunBean(1, "fun2", "logo_roki", "mode2", "into"));
-        funList.add(new VenFunBean(1, "fun3", "logo_roki", "mode3", "into"));
-        funList.add(new VenFunBean(1, "fun4", "logo_roki", "mode4", "into"));
+        funList.add(new VenFunBean(1, "fun1", "logo_roki", R.drawable.ventilator_oil_clean, "into"));
+        funList.add(new VenFunBean(1, "fun2", "logo_roki", R.drawable.ventilator_gear_weak, "into"));
+        funList.add(new VenFunBean(1, "fun3", "logo_roki", R.drawable.ventilator_gear_medium, "into"));
+        funList.add(new VenFunBean(1, "fun4", "logo_roki", R.drawable.ventilator_gear_max, "into"));
         rvFunctionAdapter = new RvMainFunctonAdapter();
         recyclerView.setAdapter(rvFunctionAdapter);
         rvFunctionAdapter.setList(funList);
@@ -186,15 +198,14 @@ public class HomePage extends VentilatorBasePage {
         settingAdapter = new RvSettingAdapter();
         rvLeft.setAdapter(settingAdapter);
         //设置功能
-        settingList.add(new VenFunBean(1, "个人中心", "", "personal_center", "com.robam.ventilator.ui.activity.PersonalCenterActivity"));
-        settingList.add(new VenFunBean(2, "网络设置", "", "wifi_connect", "com.robam.ventilator.ui.activity.WifiSettingActivity"));
-        settingList.add(new VenFunBean(3, "时间设定", "", "date_setting", "com.robam.ventilator.ui.activity.DateSettingActivity"));
-        settingList.add(new VenFunBean(4, "屏幕亮度", "", "screen_brightness", "com.robam.ventilator.ui.activity.ScreenBrightnessActivity"));
-        settingList.add(new VenFunBean(5, "恢复出厂", "", "reset", "com.robam.ventilator.ui.activity.ResetActivity"));
-        settingList.add(new VenFunBean(6, "关于售后", "", "sale_service", "com.robam.ventilator.ui.activity.SaleServiceActivity"));
-        settingList.add(new VenFunBean(7, "关于产品", "", "about_product", "com.robam.ventilator.ui.activity.AboutActivity"));
-        settingList.add(new VenFunBean(8, "智能设置", "", "smart_setting", "com.robam.ventilator.ui.activity.SmartSettingActivity"));
-        settingList.add(new VenFunBean(9, "极简模式", "", "simple_mode", "com.robam.ventilator.ui.activity.SimpleModeActivity"));
+        settingList.add(new VenFunBean(1, "个人中心", "", -1, "com.robam.ventilator.ui.activity.PersonalCenterActivity"));
+        settingList.add(new VenFunBean(2, "网络设置", "", -1, "com.robam.ventilator.ui.activity.WifiSettingActivity"));
+        settingList.add(new VenFunBean(3, "时间设定", "", -1, "com.robam.ventilator.ui.activity.DateSettingActivity"));
+        settingList.add(new VenFunBean(4, "屏幕亮度", "", -1, "com.robam.ventilator.ui.activity.ScreenBrightnessActivity"));
+        settingList.add(new VenFunBean(5, "恢复出厂", "", -1, "com.robam.ventilator.ui.activity.ResetActivity"));
+        settingList.add(new VenFunBean(6, "关于售后", "", -1, "com.robam.ventilator.ui.activity.SaleServiceActivity"));
+        settingList.add(new VenFunBean(7, "关于产品", "", -1, "com.robam.ventilator.ui.activity.AboutActivity"));
+        settingList.add(new VenFunBean(8, "智能设置", "", -1, "com.robam.ventilator.ui.activity.SmartSettingActivity"));
         settingAdapter.setList(settingList);
 
         settingAdapter.setOnItemClickListener(new OnItemClickListener() {

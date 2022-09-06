@@ -6,13 +6,10 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.lifecycle.Observer;
-
-import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.robam.common.ui.dialog.BaseDialog;
 import com.robam.common.ui.dialog.FullDialog;
 import com.robam.stove.R;
-import com.robam.stove.bean.Stove;
+import com.robam.common.device.Stove;
 import com.robam.stove.constant.StoveConstant;
 
 public class LockDialog extends BaseDialog {

@@ -4,6 +4,8 @@ import androidx.constraintlayout.widget.Group;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,9 +14,12 @@ import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.UserInfo;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.ui.helper.GridSpaceItemDecoration;
 import com.robam.common.utils.ImageUtils;
+import com.robam.common.utils.QrUtils;
 import com.robam.pan.R;
 import com.robam.pan.bean.Material;
 import com.robam.pan.base.PanBaseActivity;
@@ -36,6 +41,8 @@ public class RecipeDetailActivity extends PanBaseActivity {
     private ImageView ivRecipe;
     //菜谱名字
     private TextView tvRecipeName;
+    //时间
+    private ImageView ivTime;
     //时长
     private TextView tvTime;
     private RvMaterialAdapter rvMaterialAdapter;
@@ -50,7 +57,10 @@ public class RecipeDetailActivity extends PanBaseActivity {
             .override((int) (370), (int) (370));
     //菜谱id
     private long recipeId;
-
+    //二维码
+    private ImageView ivQrcode;
+    //二维码url
+    private String url = "https://h5.myroki.com/dist/index.html#/recipeDetail?cookbookId=" + "%d&entranceCode=code1&isFromWx=true&userId=%d";
 
     @Override
     protected int getLayoutId() {
@@ -69,8 +79,10 @@ public class RecipeDetailActivity extends PanBaseActivity {
         group2 = findViewById(R.id.pan_group2);
         tvRecipeName = findViewById(R.id.tv_recipe_name);
         tvTime = findViewById(R.id.tv_time);
+        ivTime = findViewById(R.id.iv_time);
         tvQrcode = findViewById(R.id.tv_qrcode);
         tvMaterial = findViewById(R.id.tv_material);
+        ivQrcode = findViewById(R.id.iv_qrcode);// 二维码
         ivRecipe = findViewById(R.id.iv_recipe_img);
         rvMaterial.setLayoutManager(new GridLayoutManager(this, 2));
         rvMaterial.addItemDecoration(new GridSpaceItemDecoration((int) getResources().getDimension(com.robam.common.R.dimen.dp_126)));
@@ -124,6 +136,15 @@ public class RecipeDetailActivity extends PanBaseActivity {
     }
     //获取到的数据
     private void setData(PanRecipeDetail panRecipeDetail) {
+        //二维码
+        UserInfo userInfo = AccountInfo.getInstance().getUser().getValue();
+        String qrUrl = String.format(url, panRecipeDetail.id, (userInfo != null) ? userInfo.id:0);
+        Bitmap imgBit = QrUtils.create2DCode(qrUrl, (int)getResources().getDimension(com.robam.common.R.dimen.dp_156),
+                (int)getResources().getDimension(com.robam.common.R.dimen.dp_156), Color.WHITE);
+        if (null != imgBit)
+            ivQrcode.setImageBitmap(imgBit);
+        //时间
+        ivTime.setImageResource(R.drawable.pan_time);
         //图片
         ImageUtils.loadImage(this, panRecipeDetail.imgSmall, maskOption, ivRecipe);
         //名字

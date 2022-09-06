@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 public class PanRecipeDetail implements Serializable {
+    //菜谱id
     public long id;
     //名字
     public String name;
