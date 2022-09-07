@@ -1,8 +1,5 @@
 package com.robam.pan.ui.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
@@ -16,7 +13,7 @@ public class CurveEditActivity extends PanBaseActivity {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.pan_activity_layout_curve_edit;
+        return R.layout.pan_dialog_layout_curve_edit;
     }
 
     @Override

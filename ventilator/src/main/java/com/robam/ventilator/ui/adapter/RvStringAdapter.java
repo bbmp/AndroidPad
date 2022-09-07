@@ -13,6 +13,6 @@ public class RvStringAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
 
     @Override
     protected void convert(@NonNull BaseViewHolder baseViewHolder, String s) {
-        baseViewHolder.setText(com.robam.cabinet.R.id.tv_picker_name, s);
+        baseViewHolder.setText(R.id.tv_picker_name, s);
     }
 }

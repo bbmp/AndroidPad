@@ -80,9 +80,9 @@
     <ImageView
         android:id="@+id/iv_select_check"
         android:src="@drawable/cabinet_ic_mode_select"
-        android:layout_width="@dimen/dp_82"
+        android:layout_width="@dimen/dp_98"
         android:layout_height="@dimen/dp_24"
-        android:layout_marginTop="@dimen/dp_3"
+        android:layout_marginTop="@dimen/dp_2"
         app:layout_constraintTop_toBottomOf="@id/tv_num"
         app:layout_constraintBottom_toBottomOf="@id/view_time"
         app:layout_constraintLeft_toLeftOf="@id/view_time"

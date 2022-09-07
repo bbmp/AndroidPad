@@ -40,7 +40,7 @@
     <ImageView
         android:id="@+id/iv_wifi"
         android:layout_alignParentEnd="true"
-        android:src="@drawable/ventilator_ic_wifi"
+        android:src="@drawable/ventilator_net_wifi"
         android:layout_marginStart="@dimen/dp_3"
         android:layout_width="@dimen/dp_38"
         android:layout_height="@dimen/dp_38"

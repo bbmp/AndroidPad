@@ -59,7 +59,7 @@
         android:textColor="@color/stove_white"
         android:textSize="@dimen/sp_48"
         app:layout_constraintBottom_toTopOf="@id/iv_time"
-        app:layout_constraintRight_toRightOf="@id/view_board"
+        app:layout_constraintRight_toLeftOf="@id/iv_qrcode"
         app:layout_constraintLeft_toRightOf="@id/iv_recipe_img"
         app:layout_constraintTop_toTopOf="@id/view_board"
         app:layout_constraintVertical_chainStyle="packed" />

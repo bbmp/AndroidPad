@@ -19,7 +19,7 @@ public class Cabinet {
     /**
      * 工作模式
      */
-    public short workMode;
+    public int workMode;
     /**
      * 工作时长
      */

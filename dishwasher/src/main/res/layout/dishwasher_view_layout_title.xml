@@ -6,16 +6,6 @@
     android:orientation="horizontal"
     android:paddingHorizontal="@dimen/dp_24"
     android:paddingTop="@dimen/dp_24">
-    <ImageView
-        android:id="@+id/iv_float"
-        android:layout_width="@dimen/dp_60"
-        android:layout_height="@dimen/dp_60"
-        android:layout_marginTop="@dimen/dp_m_12"
-        android:layout_marginLeft="@dimen/dp_30"
-        android:background="@color/dishwasher_white25"
-        app:layout_constraintLeft_toRightOf="@id/ll_center"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"/>
     <LinearLayout
         android:id="@+id/ll_left"
         android:layout_width="0dp"
@@ -30,7 +20,8 @@
         <ImageView
             android:id="@+id/iv_left"
             android:layout_width="@dimen/dp_38"
-            android:layout_height="@dimen/dp_38"/>
+            android:layout_height="@dimen/dp_38"
+            android:src="@drawable/dishwasher_back"/>
         <View
             android:id="@+id/view_left"
             android:layout_width="@dimen/dp_6"
@@ -102,7 +93,8 @@
         <ImageView
             android:id="@+id/iv_center"
             android:layout_width="@dimen/dp_38"
-            android:layout_height="@dimen/dp_38"/>
+            android:layout_height="@dimen/dp_38"
+            android:src="@drawable/dishwasher_wifi"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/ll_right_center"
@@ -145,7 +137,8 @@
         <ImageView
             android:id="@+id/iv_right"
             android:layout_width="@dimen/dp_38"
-            android:layout_height="@dimen/dp_38"/>
+            android:layout_height="@dimen/dp_38"
+            android:src="@drawable/dishwasher_appointment"/>
         <View
             android:id="@+id/view_right"
             android:layout_width="@dimen/dp_6"
@@ -155,7 +148,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_32"
-            android:text="@string/dishwasher_back"
+            android:text=""
             android:textColor="@color/dishwasher_white"/>
     </LinearLayout>
+    <ImageView
+        android:id="@+id/iv_float"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
+        android:layout_marginTop="@dimen/dp_m_12"
+        android:layout_marginLeft="@dimen/dp_30"
+        android:background="@color/dishwasher_white25"
+        app:layout_constraintLeft_toRightOf="@id/ll_center"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

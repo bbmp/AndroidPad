@@ -90,6 +90,7 @@ public class AppointingActivity extends CabinetBaseActivity {
 
     @Override
     public void onClick(View view) {
+        super.onClick(view);
         int id = view.getId();
         if (id == R.id.ll_left) {
             //结束倒计时

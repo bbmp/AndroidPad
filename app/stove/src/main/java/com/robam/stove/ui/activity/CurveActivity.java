@@ -52,6 +52,7 @@ public class CurveActivity extends StoveBaseActivity {
     protected void initView() {
         showLeft();
         showCenter();
+        showRightCenter();
         tvRight = findViewById(R.id.tv_right);
         //
         tvRight.setText(R.string.stove_delete);
@@ -148,8 +149,10 @@ public class CurveActivity extends StoveBaseActivity {
 
         rvCurveAdapter.setList(stoveCurveDetails);
         //是否显示删除
-        if (stoveCurveDetails.size() > 1)
+        if (stoveCurveDetails.size() > 1) {
             showRight();
+            ivRight.setImageResource(R.drawable.stove_delete);
+        }
     }
 
     //炉头选择
@@ -177,6 +180,7 @@ public class CurveActivity extends StoveBaseActivity {
     }
     @Override
     public void onClick(View view) {
+        super.onClick(view);
         int id = view.getId();
         if (id == R.id.ll_right) {
             if (rvCurveAdapter.getStatus() == RvCurveAdapter.STATUS_DELETE)
@@ -208,12 +212,12 @@ public class CurveActivity extends StoveBaseActivity {
             if (rvCurveAdapter.getStatus() != RvCurveAdapter.STATUS_BACK) {
                 //设置非删除状态
                 tvRight.setText(R.string.stove_delete);
-                ivRight.setImageDrawable(null);
+                ivRight.setImageResource(R.drawable.stove_delete);
                 stoveCurveDetails.add(0, new StoveCurveDetail("创作烹饪曲线"));
                 rvCurveAdapter.setList(stoveCurveDetails);
                 allUnelect();
                 rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_BACK);
-                tvDelete.setVisibility(View.GONE);
+                tvDelete.setVisibility(View.INVISIBLE);
             } else
                 finish();
         } else if (id == R.id.tv_delete) {
@@ -223,12 +227,12 @@ public class CurveActivity extends StoveBaseActivity {
             if (stoveCurveDetails.size() <= 1)
                 hideRight();
             tvRight.setText(R.string.stove_delete);
-            ivRight.setImageDrawable(null);
+            ivRight.setImageResource(R.drawable.stove_delete);
             stoveCurveDetails.add(0, new StoveCurveDetail("创作烹饪曲线"));
             rvCurveAdapter.setList(stoveCurveDetails);
             allUnelect();
             rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_BACK);
-            tvDelete.setVisibility(View.GONE);
+            tvDelete.setVisibility(View.INVISIBLE);
         }
     }
 

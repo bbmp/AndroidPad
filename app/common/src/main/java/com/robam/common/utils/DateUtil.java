@@ -783,7 +783,10 @@ public class DateUtil {
         if (time <= 0)
             return "00:00";
         else {
-            minute = time / 60 + 1;
+            if (time % 60 == 0)
+                minute = time / 60;
+            else
+                minute = time / 60 + 1;
             if (minute < 60) {
                 timeStr = "00" + ":" + unitFormat(minute);
             } else {
@@ -809,7 +812,10 @@ public class DateUtil {
         if (time <= 0)
             return "00";
         else {
-            minute = time / 60 + 1;
+            if (time % 60 == 0)
+                minute = time / 60;
+            else
+                minute = time / 60 + 1;
 
             timeStr = String.valueOf(minute) ;
 

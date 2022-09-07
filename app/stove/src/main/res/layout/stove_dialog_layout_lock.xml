@@ -1,95 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/stove_lock">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/stove_transparent">
 
-    <LinearLayout
-        android:id="@+id/ll_left_stove"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_56"
-        android:layout_marginBottom="@dimen/dp_24"
-        android:layout_marginRight="@dimen/dp_160"
-        android:background="@drawable/stove_shape_button_bg_cancel"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/stove_guideline2">
-
-        <ImageView
-            android:layout_width="@dimen/dp_38"
-            android:layout_height="@dimen/dp_38"
-            android:layout_marginLeft="@dimen/dp_20"
-            android:src="@drawable/stove_close_fire"/>
-
-        <TextView
-            android:id="@+id/tv_left_stove"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_20"
-            android:layout_marginRight="@dimen/dp_40"
-            android:text="@string/stove_left_stove"
-            android:textColor="@color/stove_white"
-            android:textSize="@dimen/sp_30" />
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/tv_lock"
-        android:layout_width="wrap_content"
+    <include
+        android:id="@+id/ll_title"
+        layout="@layout/stove_view_layout_title"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_24"
-        android:text="@string/stove_lock"
-        android:textColor="@color/stove_white"
-        android:textSize="@dimen/sp_32"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
-
-    <ImageView
-        android:id="@+id/iv_lock"
-        android:layout_width="@dimen/dp_60"
-        android:layout_height="@dimen/dp_60"
-        android:layout_marginBottom="@dimen/dp_24"
-        android:src="@drawable/stove_screen_home_lock"
-        app:layout_constraintBottom_toTopOf="@id/tv_lock"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
-
-    <LinearLayout
-        android:id="@+id/ll_right_stove"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_56"
-        android:layout_marginLeft="@dimen/dp_160"
-        android:background="@drawable/stove_shape_button_bg_cancel"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@id/ll_left_stove"
-        app:layout_constraintLeft_toRightOf="@id/stove_guideline2">
-
-        <TextView
-            android:id="@+id/tv_right_stove"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_40"
-            android:layout_marginRight="@dimen/dp_20"
-            android:text="@string/stove_right_stove"
-            android:textColor="@color/stove_white"
-            android:textSize="@dimen/sp_30" />
-
-        <ImageView
-            android:layout_width="@dimen/dp_38"
-            android:layout_height="@dimen/dp_38"
-            android:layout_marginRight="@dimen/dp_20"
-            android:src="@drawable/stove_close_fire"/>
-    </LinearLayout>
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/stove_guideline2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

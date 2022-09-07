@@ -82,6 +82,7 @@ public class RecipeDetailActivity extends StoveBaseActivity {
         showLeft();
         showLeftCenter();
         showCenter();
+        showRightCenter();
 
         if (null != getIntent())
             recipeId = getIntent().getLongExtra(StoveConstant.EXTRA_RECIPE_ID, 0);
@@ -207,6 +208,8 @@ public class RecipeDetailActivity extends StoveBaseActivity {
             startActivity(intent);
         } else if (id == R.id.ll_left_center) { //回主页
             startActivity(MainActivity.class);
+        } else if (id == R.id.ll_left) {  //返回
+            finish();
         }
     }
 }

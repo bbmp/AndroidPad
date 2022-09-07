@@ -1,6 +1,8 @@
 package com.robam.cabinet.bean;
 
-public class CabModeBean {
+import java.io.Serializable;
+
+public class CabModeBean implements Serializable {
     //模式
     public int code;
     /**

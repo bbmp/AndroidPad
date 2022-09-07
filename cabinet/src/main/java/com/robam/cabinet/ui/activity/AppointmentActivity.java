@@ -109,11 +109,13 @@ public class AppointmentActivity extends CabinetBaseActivity {
     public void onClick(View view) {
         super.onClick(view);
         int id = view.getId();
-        if (id == R.id.btn_cancel)
+        if (id == R.id.btn_cancel) {
             finish();
-        else if (id == R.id.btn_ok) { //确认预约
+        } else if (id == R.id.btn_ok) { //确认预约
             Cabinet.getInstance().orderTime = orderTime;
             startActivity(AppointingActivity.class);
+            finish();
+        } else if (id == R.id.ll_left) {
             finish();
         }
     }

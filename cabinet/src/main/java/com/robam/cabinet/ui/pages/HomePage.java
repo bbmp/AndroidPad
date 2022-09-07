@@ -13,8 +13,10 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.robam.cabinet.R;
 import com.robam.cabinet.base.CabinetBasePage;
 import com.robam.cabinet.bean.CabFunBean;
+import com.robam.cabinet.constant.CabinetConstant;
 import com.robam.cabinet.ui.adapter.RvDotAdapter;
 import com.robam.cabinet.ui.adapter.RvMainFunctionAdapter;
+import com.robam.common.manager.FunctionManager;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.common.utils.ImageUtils;
 
@@ -28,7 +30,6 @@ public class HomePage extends CabinetBasePage {
     private RvDotAdapter rvDotAdapter;
     private ImageView imageView;
     //主功能
-    private List<CabFunBean> functionList = new ArrayList<>();
 
     @Override
     protected int getLayoutId() {
@@ -37,7 +38,7 @@ public class HomePage extends CabinetBasePage {
 
     @Override
     protected void initView() {
-        showFloat();
+        showCenter();
 
         rvMain = findViewById(R.id.rv_main);
         rvDot = findViewById(R.id.rv_dot);
@@ -70,37 +71,36 @@ public class HomePage extends CabinetBasePage {
 
     @Override
     protected void initData() {
-//        List<CabFunBean> cabFunBeans = FunctionManager.getFuntionList(getContext());
-        functionList.add(new CabFunBean(1, "消毒", "", "disinfect", "com.robam.cabinet.ui.activity.ModeSelectActivity"));
-        functionList.add(new CabFunBean(2, "快洁", "", "clean", "com.robam.cabinet.ui.activity.ModeSelectActivity"));
-        functionList.add(new CabFunBean(3, "烘干", "", "dry", "com.robam.cabinet.ui.activity.ModeSelectActivity"));
-        functionList.add(new CabFunBean(4, "净存", "", "flush", "com.robam.cabinet.ui.activity.ModeSelectActivity"));
-        functionList.add(new CabFunBean(5, "智能", "", "smart", "com.robam.cabinet.ui.activity.ModeSelectActivity"));
-        rvMainFunctionAdapter.setList(functionList);
-        List<String> dotList = new ArrayList<>();
-        for (CabFunBean cabFunBean : functionList) {
-            dotList.add(cabFunBean.funtionName);
-        }
+//初始化数据
+        List<CabFunBean> functionList = FunctionManager.getFuntionList(getContext(), CabFunBean.class, R.raw.cabinet);
 
-        rvDotAdapter.setList(dotList);
-        //初始位置第一个
-        rvDotAdapter.setPickPosition(0);
-        int initPos = Integer.MAX_VALUE / 2 - (Integer.MAX_VALUE / 2) % functionList.size();
-        rvMainFunctionAdapter.setPickPosition(initPos);
-        pickerLayoutManager.scrollToPosition(initPos);
-        setBackground(initPos);
-
-        rvMainFunctionAdapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                CabFunBean cabFunBean = (CabFunBean) adapter.getItem(position);
-
-                Intent intent = new Intent();
-                intent.putExtra("mode", cabFunBean);
-                intent.setClassName(getContext(), cabFunBean.into);
-                startActivity(intent);
+        if (null != functionList) {
+            rvMainFunctionAdapter.setList(functionList);
+            List<String> dotList = new ArrayList<>();
+            for (CabFunBean cabFunBean : functionList) {
+                dotList.add(cabFunBean.funtionName);
             }
-        });
+
+            rvDotAdapter.setList(dotList);
+            //初始位置第一个
+            rvDotAdapter.setPickPosition(0);
+            int initPos = Integer.MAX_VALUE / 2 - (Integer.MAX_VALUE / 2) % functionList.size();
+            rvMainFunctionAdapter.setPickPosition(initPos);
+            pickerLayoutManager.scrollToPosition(initPos);
+            setBackground(initPos);
+
+            rvMainFunctionAdapter.setOnItemClickListener(new OnItemClickListener() {
+                @Override
+                public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                    CabFunBean cabFunBean = (CabFunBean) adapter.getItem(position);
+
+                    Intent intent = new Intent();
+                    intent.putExtra(CabinetConstant.EXTRA_MODE_BEAN, cabFunBean.mode);
+                    intent.setClassName(getContext(), cabFunBean.into);
+                    startActivity(intent);
+                }
+            });
+        }
     }
 
     /**

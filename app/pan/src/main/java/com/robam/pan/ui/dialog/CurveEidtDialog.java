@@ -19,7 +19,7 @@ public class CurveEidtDialog extends BaseDialog {
 
     @Override
     protected void initView() {
-        rootView = LayoutInflater.from(mContext).inflate(R.layout.pan_activity_layout_curve_edit, null);
+        rootView = LayoutInflater.from(mContext).inflate(R.layout.pan_dialog_layout_curve_edit, null);
         llCenter = rootView.findViewById(R.id.ll_center);
         llCenter.setVisibility(View.VISIBLE);
         if (mDialog == null) {

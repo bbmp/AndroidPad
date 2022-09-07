@@ -44,6 +44,7 @@ public class CurveSelectedActivity extends StoveBaseActivity {
     protected void initView() {
         showLeft();
         showCenter();
+        showRightCenter();
 
         if (null != getIntent())
             curveid = getIntent().getLongExtra(StoveConstant.EXTRA_CURVE_ID, -1);
@@ -100,6 +101,8 @@ public class CurveSelectedActivity extends StoveBaseActivity {
                 intent.putExtra(StoveConstant.EXTRA_CURVE_DETAIL, stoveCurveDetail);
             intent.setClass(this, CurveRestoreActivity.class);
             startActivity(intent);
+            finish();
+        } else if (id == R.id.ll_left) { //返回
             finish();
         }
 

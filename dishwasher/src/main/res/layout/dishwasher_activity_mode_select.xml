@@ -98,34 +98,35 @@
             android:layout_weight="1"
             android:textSize="@dimen/sp_44"
             android:textColor="@color/dishwasher_white"
-            android:text="@string/dishwasher_pan_powfull"/>
+            android:text="@string/dishwasher_pan_powfull"
+            android:button="@drawable/dishwasher_radiobutton_selector"/>
         <com.robam.common.ui.view.CancelRadioButton
             android:id="@+id/rb_button2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:drawableLeft="@drawable/dishwasher_main_item_bg"
             android:textSize="@dimen/sp_44"
             android:textColor="@color/dishwasher_white"
-            android:text="@string/dishwasher_kill_powfull"/>
+            android:text="@string/dishwasher_kill_powfull"
+            android:button="@drawable/dishwasher_radiobutton_selector"/>
         <com.robam.common.ui.view.CancelRadioButton
             android:id="@+id/rb_button3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:drawableLeft="@drawable/dishwasher_main_item_bg"
             android:textSize="@dimen/sp_44"
             android:textColor="@color/dishwasher_white"
-            android:text="@string/dishwasher_flush"/>
+            android:text="@string/dishwasher_flush"
+            android:button="@drawable/dishwasher_radiobutton_selector"/>
         <com.robam.common.ui.view.CancelRadioButton
             android:id="@+id/rb_button4"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:drawableLeft="@drawable/dishwasher_main_item_bg"
             android:textSize="@dimen/sp_44"
             android:textColor="@color/dishwasher_white"
-            android:text="@string/dishwasher_down_wash"/>
+            android:text="@string/dishwasher_down_wash"
+            android:button="@drawable/dishwasher_radiobutton_selector"/>
     </RadioGroup>
 
     <androidx.appcompat.widget.AppCompatButton

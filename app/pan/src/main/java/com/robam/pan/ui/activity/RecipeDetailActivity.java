@@ -70,6 +70,7 @@ public class RecipeDetailActivity extends PanBaseActivity {
     @Override
     protected void initView() {
         showLeft();
+        showLeftCenter();
         showCenter();
 
         if (null != getIntent())
@@ -88,7 +89,7 @@ public class RecipeDetailActivity extends PanBaseActivity {
         rvMaterial.addItemDecoration(new GridSpaceItemDecoration((int) getResources().getDimension(com.robam.common.R.dimen.dp_126)));
         rvMaterialAdapter = new RvMaterialAdapter();
         rvMaterial.setAdapter(rvMaterialAdapter);
-        setOnClickListener(R.id.tv_qrcode, R.id.tv_material);
+        setOnClickListener(R.id.ll_left_center, R.id.tv_qrcode, R.id.tv_material);
     }
 
     @Override
@@ -102,20 +103,23 @@ public class RecipeDetailActivity extends PanBaseActivity {
     public void onClick(View view) {
         super.onClick(view);
         int id = view.getId();
-        if (id == R.id.tv_material) {
+        if (id == R.id.tv_material) { //食材
             if (!tvMaterial.isSelected()){
                 tvMaterial.setSelected(true);
                 tvQrcode.setSelected(false);
                 group1.setVisibility(View.GONE);
                 group2.setVisibility(View.VISIBLE);
             }
-        } else if (id == R.id.tv_qrcode) {
+        } else if (id == R.id.tv_qrcode) { //二维码
             if (!tvQrcode.isSelected()) {
                 tvQrcode.setSelected(true);
                 tvMaterial.setSelected(false);
                 group1.setVisibility(View.VISIBLE);
                 group2.setVisibility(View.GONE);
             }
+        } else if (id == R.id.ll_left_center) { //回首页
+            startActivity(MainActivity.class);
+            finish();
         }
     }
 

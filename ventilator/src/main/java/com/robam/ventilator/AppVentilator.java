@@ -7,7 +7,6 @@ import android.serialport.helper.SerialPortHelper;
 import com.clj.fastble.BleManager;
 import com.robam.common.http.RetrofitClient;
 import com.robam.common.mqtt.MqttManager;
-import com.robam.pan.constant.HostServer;
 import com.robam.ventilator.device.VentilatorAbstractControl;
 import com.robam.ventilator.device.VentilatorFactory;
 import com.robam.ventilator.device.VentilatorLocalControl;
@@ -22,8 +21,6 @@ public class AppVentilator {
                 .setMaxSize(23)
                 .setPath("/dev/ttyS1").build();
         SerialPortHelper.getInstance().init(serialPortConfig);
-        //http init
-        RetrofitClient.getInstance().init(HostServer.apiHost, null);
         //ble init
         BleManager.getInstance().init(application);
         BleManager.getInstance()

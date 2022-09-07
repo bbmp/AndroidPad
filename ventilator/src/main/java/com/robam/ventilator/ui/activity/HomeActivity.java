@@ -49,13 +49,13 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void initView() {
 
-//        WindowsUtils.initPopupWindow(this, new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                //浮窗点击 快捷入口
-//                startActivity(ShortcutActivity.class);
-//            }
-//        });
+        WindowsUtils.initPopupWindow(this, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //浮窗点击 快捷入口
+                startActivity(ShortcutActivity.class);
+            }
+        });
     }
 
     @Override

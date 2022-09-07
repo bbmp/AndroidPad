@@ -14,4 +14,6 @@
     <string name="cabinet_work_stop_hint">确认结束当前工作？</string>
     <string name="cabinet_complete">完成</string>
     <string name="cabinet_screen_lock_hint">屏幕已锁定，长按本图标进行解锁</string>
+    <string name="cabinet_screen_lock">童锁</string>
+    <string name="cabinet_unlock_hint">请长按2s童锁解除锁定</string>
 </resources>

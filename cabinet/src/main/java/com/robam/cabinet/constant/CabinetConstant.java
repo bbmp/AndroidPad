@@ -14,4 +14,6 @@ public class CabinetConstant {
     public final static int MODE_DRY = 3;
     public final static int MODE_FLUSH = 4;
     public final static int MODE_SMART = 5;
+
+    public final static String EXTRA_MODE_BEAN = "modebean";
 }

@@ -6,9 +6,9 @@ import com.robam.common.ui.HeadPage;
 import com.robam.steamoven.R;
 
 public abstract class SteamBasePage extends HeadPage {
-    public void showFloat() {
-        findViewById(R.id.iv_float).setVisibility(View.VISIBLE);
-    }
+//    public void showFloat() {
+//        findViewById(R.id.iv_float).setVisibility(View.VISIBLE);
+//    }
     public void showLeft() {
         findViewById(R.id.ll_left).setVisibility(View.VISIBLE);
     }

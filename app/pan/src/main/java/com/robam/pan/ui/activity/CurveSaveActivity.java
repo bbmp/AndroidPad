@@ -15,6 +15,8 @@ import com.robam.pan.factory.PanDialogFactory;
 //曲线保存
 public class CurveSaveActivity extends PanBaseActivity {
     private TextView tvBack, tvSave;
+    //曲线名字
+    private TextView tvCurveName;
 
     @Override
     protected int getLayoutId() {
@@ -24,6 +26,8 @@ public class CurveSaveActivity extends PanBaseActivity {
     @Override
     protected void initView() {
         showCenter();
+
+        tvCurveName = findViewById(R.id.tv_curve_name);
         setOnClickListener(R.id.tv_back, R.id.tv_save, R.id.iv_edit_name);
     }
 
@@ -66,6 +70,7 @@ public class CurveSaveActivity extends PanBaseActivity {
                     ToastUtils.showShort(CurveSaveActivity.this, R.string.pan_input_empty);
                     return;
                 }
+                tvCurveName.setText(editText.getText());
                 iDialog.dismiss();
             }
         });

@@ -39,8 +39,6 @@ public class WorkActivity extends DishWasherBaseActivity {
 
     @Override
     protected void initView() {
-        //显示快捷图标
-        showFloat();
         showLeft();
         showCenter();
 

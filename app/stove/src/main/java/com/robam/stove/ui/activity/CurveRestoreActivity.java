@@ -48,6 +48,7 @@ public class CurveRestoreActivity extends StoveBaseActivity {
     protected void initView() {
         showLeft();
         showCenter();
+        showRightCenter();
 
         if (null != getIntent())
             stoveCurveDetail = (StoveCurveDetail) getIntent().getSerializableExtra(StoveConstant.EXTRA_CURVE_DETAIL);
@@ -125,6 +126,7 @@ public class CurveRestoreActivity extends StoveBaseActivity {
 
     @Override
     public void onClick(View view) {
+        super.onClick(view);
         int id = view.getId();
         if (id == R.id.ll_left) {
             stopCook();

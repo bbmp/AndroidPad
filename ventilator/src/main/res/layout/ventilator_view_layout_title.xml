@@ -94,7 +94,7 @@
             android:id="@+id/iv_center"
             android:layout_width="@dimen/dp_38"
             android:layout_height="@dimen/dp_38"
-            android:src="@drawable/ventilator_ic_wifi"/>
+            android:src="@drawable/ventilator_wifi"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/ll_right_center"

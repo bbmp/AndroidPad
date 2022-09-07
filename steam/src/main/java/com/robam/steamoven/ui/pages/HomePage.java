@@ -55,7 +55,6 @@ public class HomePage extends SteamBasePage {
     @Override
     protected void initView() {
         showCenter();
-        showFloat();
 
         rvMain = findViewById(R.id.rv_main);
         rvDot = findViewById(R.id.rv_dot);

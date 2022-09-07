@@ -38,4 +38,11 @@ public interface IDeviceType {
     String KZNZ_ZN = "火鸡灶";
     String RRQZ_AND_RDCZ_ZN = "灶具";
     String RCBH_ZN = "藏宝盒";
+
+    String SERIES_STOVE = "9B328";
+    String SERIES_PAN   = "KP100";
+    String SERIES_STEAM = "CQ928";
+    String SERIES_DISHWASHER = "WB758";
+    String SERIES_CABINET = "XG858";
+    String SERIES_VENTILATOR = "5068s";
 }

@@ -6,7 +6,7 @@ import com.robam.common.ui.dialog.IDialog;
 import com.robam.stove.constant.DialogConstant;
 import com.robam.stove.ui.dialog.CompleteDialog;
 import com.robam.stove.ui.dialog.CurveEditDialog;
-import com.robam.stove.ui.dialog.LockDialog;
+import com.robam.stove.ui.dialog.HomeLockDialog;
 import com.robam.stove.ui.dialog.OpenFireDialog;
 import com.robam.stove.ui.dialog.SelectStoveDialog;
 import com.robam.stove.ui.dialog.StoveCommonDialog;
@@ -28,8 +28,8 @@ public class StoveDialogFactory {
             case DialogConstant.DIALOG_TYPE_CURVE_EDIT:
                 iDialog = new CurveEditDialog(context);
                 break;
-            case DialogConstant.DIALOG_TYPE_LOCK:
-                iDialog = new LockDialog(context);
+            case DialogConstant.DIALOG_TYPE_HOME_LOCK:
+                iDialog = new HomeLockDialog(context);
                 break;
             case DialogConstant.DIALOG_TYPE_WAITING:
                 iDialog = new WaitingDialog(context);

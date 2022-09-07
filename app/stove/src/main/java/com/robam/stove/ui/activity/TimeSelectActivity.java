@@ -91,6 +91,8 @@ public class TimeSelectActivity extends StoveBaseActivity {
         if (id == R.id.btn_start) {
             //炉头选择
             selectStove();
+        } else if (id == R.id.ll_left) { //返回
+            finish();
         }
     }
     //炉头选择

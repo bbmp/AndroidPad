@@ -153,6 +153,8 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
         if (id == R.id.btn_start) {
             //选择炉头
             selectStove();
+        } else if (id == R.id.ll_left) { //返回
+            finish();
         }
     }
 

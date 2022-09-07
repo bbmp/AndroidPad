@@ -6,13 +6,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.view.KeyEvent;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
-import com.robam.cabinet.manager.CabinetActivityManager;
-import com.robam.common.ui.helper.GridSpaceItemDecoration;
+import com.robam.common.IDeviceType;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
@@ -70,17 +70,19 @@ public class ShortcutActivity extends VentilatorBaseActivity {
         rvShortcutFunAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                finish();
             }
         });
         //设备
         List<Device> deviceList = new ArrayList<>();
-        deviceList.add(new Device("油烟机", "5068s"));
-        deviceList.add(new Device("油烟机", "5068s"));
+        deviceList.add(new Device("消毒柜", IDeviceType.SERIES_CABINET));
+        deviceList.add(new Device("油烟机", IDeviceType.SERIES_VENTILATOR));
 
         List<Device> deviceList2 = new ArrayList<>();
-        deviceList2.add(new Device("油烟机", "5068s"));
-        deviceList2.add(new Device("洗碗机", "5068s"));
-        deviceList2.add(new Device("洗碗机", "5068s"));
+        deviceList2.add(new Device("无人锅", IDeviceType.SERIES_PAN));
+        deviceList2.add(new Device("灶具", IDeviceType.SERIES_STOVE));
+        deviceList2.add(new Device("一体机", IDeviceType.SERIES_STEAM));
+        deviceList2.add(new Device("洗碗机", IDeviceType.SERIES_DISHWASHER));
 
         rvShortcutWorkAdapter = new RvShortcutDeviceAdapter();
         rvDeviceWork.setAdapter(rvShortcutWorkAdapter);
@@ -91,15 +93,40 @@ public class ShortcutActivity extends VentilatorBaseActivity {
         rvShortcutOnlineAdapter.setList(deviceList2);
 
         setOnClickListener(R.id.activity_short);
+        //工作设备
+        rvShortcutWorkAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                shortCutForward(adapter, position);
+            }
+        });
+        //在线设备
         rvShortcutOnlineAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                Activity activity = CabinetActivityManager.getInstance().currentActivity();
-                if (null != activity) {
-                    startActivity(activity.getClass());
-                }
+                shortCutForward(adapter, position);
             }
         });
+    }
+    //快捷入口跳转
+    private void shortCutForward(@NonNull BaseQuickAdapter<?, ?> adapter, int position) {
+        Device device = (Device) adapter.getItem(position);
+        Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        if (IDeviceType.SERIES_DISHWASHER.equals(device.getDisplayType()))
+            intent.setClassName(ShortcutActivity.this, "com.robam.dishwasher.ui.activity.MainActivity");
+        else if (IDeviceType.SERIES_STEAM.equals(device.getDisplayType()))
+            intent.setClassName(ShortcutActivity.this, "com.robam.steamoven.ui.activity.MainActivity");
+        else if (IDeviceType.SERIES_STOVE.equals(device.getDisplayType()))
+            intent.setClassName(ShortcutActivity.this, "com.robam.stove.ui.activity.MainActivity");
+        else if (IDeviceType.SERIES_PAN.equals(device.getDisplayType()))
+            intent.setClassName(ShortcutActivity.this, "com.robam.pan.ui.activity.MainActivity");
+        else if (IDeviceType.SERIES_CABINET.equals(device.getDisplayType()))
+            intent.setClassName(ShortcutActivity.this, "com.robam.cabinet.ui.activity.MainActivity");
+        else
+            intent.setClassName(ShortcutActivity.this, "com.robam.ventilator.ui.activity.HomeActivity");
+        startActivity(intent);
+        finish();
     }
 
     @Override

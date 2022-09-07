@@ -33,6 +33,7 @@ public class CurveCreateActivity extends StoveBaseActivity {
     protected void initView() {
         showLeft();
         showCenter();
+        showRightCenter();
 
         tvFire = findViewById(R.id.tv_fire);
         tvTemp = findViewById(R.id.tv_temp);
@@ -47,6 +48,7 @@ public class CurveCreateActivity extends StoveBaseActivity {
 
     @Override
     public void onClick(View view) {
+        super.onClick(view);
         int id = view.getId();
         //停止创建曲线
         if (id == R.id.ll_left || id == R.id.iv_stop_create) {

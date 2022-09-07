@@ -67,6 +67,7 @@ public class RecipeActivity extends StoveBaseActivity {
     protected void initView() {
         showLeft();
         showCenter();
+        showRightCenter();
 
         etSearch = findViewById(R.id.et_search);
         rvRecipe = findViewById(R.id.rv_recipe);
@@ -120,6 +121,8 @@ public class RecipeActivity extends StoveBaseActivity {
             Intent intent = new Intent();
             intent.setClassName(this, "com.robam.ventilator.ui.activity.WifiSettingActivity");
             startActivity(intent);
+        } else if (id == R.id.ll_left) { //返回
+            finish();
         }
     }
     //获取灶具菜谱

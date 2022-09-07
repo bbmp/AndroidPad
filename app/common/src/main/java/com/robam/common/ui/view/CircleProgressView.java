@@ -122,6 +122,10 @@ public class CircleProgressView extends View {
      * @param progress 当前进度（0-100）
      */
     public void setProgress(float progress) {
+        if (progress > 100)
+            progress = 100;
+        if (progress < 0)
+            progress = 0;
         this.mProgress = progress;
         invalidate();
     }

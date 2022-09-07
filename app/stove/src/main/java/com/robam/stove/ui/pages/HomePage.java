@@ -26,7 +26,7 @@ import com.robam.stove.constant.DialogConstant;
 import com.robam.stove.constant.StoveConstant;
 import com.robam.stove.factory.StoveDialogFactory;
 import com.robam.stove.ui.adapter.RvMainFunctionAdapter;
-import com.robam.stove.ui.dialog.LockDialog;
+import com.robam.stove.ui.dialog.HomeLockDialog;
 
 import java.util.List;
 
@@ -47,7 +47,7 @@ public class HomePage extends StoveBasePage {
 
     private IDialog iDialogStop, iDialogAffirm;
 
-    private LockDialog lockDialog;
+    private HomeLockDialog homeLockDialog;
 
     @Override
     protected int getLayoutId() {
@@ -92,26 +92,28 @@ public class HomePage extends StoveBasePage {
         //初始化数据
         List<StoveFunBean> functionList = FunctionManager.getFuntionList(getContext(), StoveFunBean.class, R.raw.stove);
 
-        rvMainFunctionAdapter.setList(functionList);
+        if (null != functionList) {
+            rvMainFunctionAdapter.setList(functionList);
 
-        //初始位置
-        int initPos = Integer.MAX_VALUE / 2 - (Integer.MAX_VALUE / 2) % functionList.size();
-        rvMainFunctionAdapter.setPickPosition(initPos);
-        pickerLayoutManager.scrollToPosition(initPos);
-        setBackground(initPos);
+            //初始位置
+            int initPos = Integer.MAX_VALUE / 2 - (Integer.MAX_VALUE / 2) % functionList.size();
+            rvMainFunctionAdapter.setPickPosition(initPos);
+            pickerLayoutManager.scrollToPosition(initPos);
+            setBackground(initPos);
 
-        rvMainFunctionAdapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                StoveFunBean stoveFunBean = (StoveFunBean) adapter.getItem(position);
+            rvMainFunctionAdapter.setOnItemClickListener(new OnItemClickListener() {
+                @Override
+                public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                    StoveFunBean stoveFunBean = (StoveFunBean) adapter.getItem(position);
 
-                Stove.getInstance().funCode = stoveFunBean.funtionCode;
-                Intent intent = new Intent();
-                intent.putExtra(StoveConstant.EXTRA_MODE_LIST, stoveFunBean.mode);
-                intent.setClassName(getContext(), stoveFunBean.into);
-                startActivity(intent);
-            }
-        });
+                    Stove.getInstance().funCode = stoveFunBean.funtionCode;
+                    Intent intent = new Intent();
+                    intent.putExtra(StoveConstant.EXTRA_MODE_LIST, stoveFunBean.mode);
+                    intent.setClassName(getContext(), stoveFunBean.into);
+                    startActivity(intent);
+                }
+            });
+        }
         Stove.getInstance().leftStove.observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
@@ -128,8 +130,8 @@ public class HomePage extends StoveBasePage {
                     Stove.getInstance().leftWorkMode = 0;
                     Stove.getInstance().leftWorkHours = "";
                     Stove.getInstance().leftWorkTemp = "";
-                    if (null != lockDialog) { //关闭锁屏时的灶
-                        lockDialog.closeLeftStove();
+                    if (null != homeLockDialog) { //关闭锁屏时的灶
+                        homeLockDialog.closeLeftStove();
                     }
                 }
             }
@@ -151,8 +153,8 @@ public class HomePage extends StoveBasePage {
                     Stove.getInstance().rightWorkMode = 0;
                     Stove.getInstance().rightWorkHours = "";
                     Stove.getInstance().rightWorkTemp = "";
-                    if (null != lockDialog) {
-                        lockDialog.closeRightStove();
+                    if (null != homeLockDialog) {
+                        homeLockDialog.closeRightStove();
                     }
                 }
             }
@@ -161,22 +163,22 @@ public class HomePage extends StoveBasePage {
 
     //锁屏
     private void screenLock() {
-        if (null == lockDialog) {
-            lockDialog = new LockDialog(getContext());
-            lockDialog.setCancelable(false);
+        if (null == homeLockDialog) {
+            homeLockDialog = new HomeLockDialog(getContext());
+            homeLockDialog.setCancelable(false);
             //长按解锁
-            ImageView imageView = lockDialog.getRootView().findViewById(R.id.iv_lock);
+            ImageView imageView = homeLockDialog.getRootView().findViewById(R.id.iv_lock);
             ClickUtils.setLongClick(new Handler(), imageView, 2000, new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    lockDialog.dismiss();
-                    lockDialog = null;
+                    homeLockDialog.dismiss();
+                    homeLockDialog = null;
                     return true;
                 }
             });
             //分别设置左右灶,不关闭对话框
-            LinearLayout leftStove = lockDialog.getRootView().findViewById(R.id.ll_left_stove);
-            LinearLayout rightStove = lockDialog.getRootView().findViewById(R.id.ll_right_stove);
+            LinearLayout leftStove = homeLockDialog.getRootView().findViewById(R.id.ll_left_stove);
+            LinearLayout rightStove = homeLockDialog.getRootView().findViewById(R.id.ll_right_stove);
             leftStove.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -190,8 +192,8 @@ public class HomePage extends StoveBasePage {
                 }
             });
         }
-        lockDialog.checkStoveStatus();
-        lockDialog.show();
+        homeLockDialog.checkStoveStatus();
+        homeLockDialog.show();
     }
 
     //锁屏确认

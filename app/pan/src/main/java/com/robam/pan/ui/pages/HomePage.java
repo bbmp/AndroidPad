@@ -136,7 +136,6 @@ public class HomePage extends PanBasePage {
         } else if (id == R.id.ll_stir_fry) {
             if (!llStir.isSelected()) {
                 llStir.setSelected(true);
-                tvStir.setText("十秒翻炒 " + "10s");
                 llQuick.setSelected(false);
                 tvQuick.setText(R.string.pan_quick_fry);
                 tvStir.setTotalTime(10);

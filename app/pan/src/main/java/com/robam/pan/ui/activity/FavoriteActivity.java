@@ -57,7 +57,7 @@ public class FavoriteActivity extends PanBaseActivity {
                 Intent intent = new Intent();
                 intent.setClass(FavoriteActivity.this, RecipeSelectedActivity.class);
                 intent.putExtra(PanConstant.EXTRA_RECIPE_ID, recipe.id);
-                intent.putExtra(PanConstant.EXTRA_CURVE_ID, recipe.curveId);
+//                intent.putExtra(PanConstant.EXTRA_CURVE_ID, recipe.curveId);
                 startActivity(intent);
             }
         });

@@ -52,6 +52,8 @@ public class RecipeCookActivity extends StoveBaseActivity {
     protected void initView() {
         showLeft();
         showCenter();
+        showRightCenter();
+
         if (null != getIntent())
             stoveRecipeDetail = (StoveRecipeDetail) getIntent().getSerializableExtra(StoveConstant.EXTRA_RECIPE_DETAIL);
         rvStep = findViewById(R.id.rv_step);
@@ -110,6 +112,7 @@ public class RecipeCookActivity extends StoveBaseActivity {
 
     @Override
     public void onClick(View view) {
+        super.onClick(view);
         int id = view.getId();
         if (id == R.id.tv_pause_cook) {
             //暂停烹饪

@@ -3,7 +3,7 @@ package com.robam.cabinet.factory;
 import android.content.Context;
 
 import com.robam.cabinet.constant.DialogConstant;
-import com.robam.cabinet.ui.dialog.ScreenLockDialog;
+import com.robam.cabinet.ui.dialog.LockDialog;
 import com.robam.cabinet.ui.dialog.WorkCompleteDialog;
 import com.robam.cabinet.ui.dialog.WorkStopDialog;
 import com.robam.common.ui.dialog.IDialog;
@@ -19,7 +19,7 @@ public class CabinetDialogFactory {
                 iDialog = new WorkCompleteDialog(context);
                 break;
             case DialogConstant.DIALOG_TYPE_SCREEN_LOCK:
-                iDialog = new ScreenLockDialog(context);
+                iDialog = new LockDialog(context);
                 break;
         }
         return iDialog;

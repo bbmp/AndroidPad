@@ -36,6 +36,8 @@ public class CurveSaveActivity extends StoveBaseActivity {
     @Override
     protected void initView() {
         showCenter();
+        showRightCenter();
+
         lineChart = findViewById(R.id.lineChart);
         lineChartManager = new LineChartManager(lineChart);
         setOnClickListener(R.id.tv_back, R.id.tv_save, R.id.iv_edit_name);
@@ -48,6 +50,7 @@ public class CurveSaveActivity extends StoveBaseActivity {
 
     @Override
     public void onClick(View view) {
+        super.onClick(view);
         int id = view.getId();
         if (id == R.id.tv_back) {
             //回到首页

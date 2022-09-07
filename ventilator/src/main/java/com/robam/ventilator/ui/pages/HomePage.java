@@ -30,7 +30,6 @@ import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MMKVUtils;
 import com.robam.common.utils.ScreenUtils;
 import com.robam.common.utils.ToastUtils;
-import com.robam.pan.ui.activity.MainActivity;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBasePage;
 import com.robam.common.bean.AccountInfo;
@@ -187,9 +186,7 @@ public class HomePage extends VentilatorBasePage {
                 if (position == 0)
                     screenLock();
                 else {
-                    Intent intent = new Intent(getContext(), MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(intent);
+                   //挡位
                 }
                 rvFunctionAdapter.setPickPosition(position);
             }

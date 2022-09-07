@@ -45,4 +45,5 @@
     <string name="stove_not_connect">网络未连接</string>
     <string name="stove_home">主页</string>
     <string name="stove_screen_lock">童锁</string>
+    <string name="stove_unlock_hint">请长按2s童锁解除锁定</string>
 </resources>

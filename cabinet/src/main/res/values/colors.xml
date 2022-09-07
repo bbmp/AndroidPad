@@ -7,4 +7,5 @@
     <color name="cabinet_white70">#B3FFFFFF</color>
     <color name="cabinet_mode70">#B3f6f6f6</color>
     <color name="cabinet_mode">#fff6f6f6</color>
+    <color name="cabinet_lock">#ff72afff</color>
 </resources>

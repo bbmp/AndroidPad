@@ -20,7 +20,8 @@
         <ImageView
             android:id="@+id/iv_left"
             android:layout_width="@dimen/dp_38"
-            android:layout_height="@dimen/dp_38"/>
+            android:layout_height="@dimen/dp_38"
+            android:src="@drawable/cabinet_back"/>
         <View
             android:id="@+id/view_left"
             android:layout_width="@dimen/dp_6"
@@ -92,7 +93,8 @@
         <ImageView
             android:id="@+id/iv_center"
             android:layout_width="@dimen/dp_38"
-            android:layout_height="@dimen/dp_38"/>
+            android:layout_height="@dimen/dp_38"
+            android:src="@drawable/cabinet_wifi"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/ll_right_center"
@@ -108,7 +110,8 @@
         <ImageView
             android:id="@+id/iv_right_center"
             android:layout_width="@dimen/dp_38"
-            android:layout_height="@dimen/dp_38"/>
+            android:layout_height="@dimen/dp_38"
+            android:src="@drawable/cabinet_screen_unlock"/>
         <View
             android:id="@+id/view_right_center"
             android:layout_width="@dimen/dp_6"
@@ -118,7 +121,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_32"
-            android:text="@string/cabinet_back"
+            android:text="@string/cabinet_screen_lock"
             android:textColor="@color/cabinet_white"/>
     </LinearLayout>
     <LinearLayout
@@ -135,7 +138,8 @@
         <ImageView
             android:id="@+id/iv_right"
             android:layout_width="@dimen/dp_38"
-            android:layout_height="@dimen/dp_38"/>
+            android:layout_height="@dimen/dp_38"
+            android:src="@drawable/cabinet_appointment"/>
         <View
             android:id="@+id/view_right"
             android:layout_width="@dimen/dp_6"
@@ -145,7 +149,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_32"
-            android:text="@string/cabinet_back"
+            android:text=""
             android:textColor="@color/cabinet_white"/>
     </LinearLayout>
     <ImageView

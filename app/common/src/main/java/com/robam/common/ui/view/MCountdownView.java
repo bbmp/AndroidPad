@@ -67,7 +67,8 @@ public class MCountdownView extends AppCompatTextView implements Runnable {
     public void start() {
         mRecordText = getText();
         setEnabled(false);
-        mCurrentSecond = mTotalSecond;
+        //从+1开始
+        mCurrentSecond = mTotalSecond + 1;
         post(this);
         strat = true ;
     }

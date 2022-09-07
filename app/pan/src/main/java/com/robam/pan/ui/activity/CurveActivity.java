@@ -145,8 +145,10 @@ public class CurveActivity extends PanBaseActivity {
 
         rvCurveAdapter.setList(panCurveDetails);
         //是否显示删除
-        if (panCurveDetails.size() > 1)
+        if (panCurveDetails.size() > 1) {
             showRight();
+            ivRight.setImageResource(R.drawable.pan_delete);
+        }
     }
 
     //炉头选择
@@ -201,12 +203,12 @@ public class CurveActivity extends PanBaseActivity {
             if (rvCurveAdapter.getStatus() != RvCurveAdapter.STATUS_BACK) {
                 //设置非删除状态
                 tvRight.setText(R.string.pan_delete);
-                ivRight.setImageDrawable(null);
+                ivRight.setImageResource(R.drawable.pan_delete);
                 panCurveDetails.add(0, new PanCurveDetail("创作烹饪曲线"));
                 rvCurveAdapter.setList(panCurveDetails);
                 allUnelect();
                 rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_BACK);
-                tvDelete.setVisibility(View.GONE);
+                tvDelete.setVisibility(View.INVISIBLE);
             } else
                 finish();
         } else if (id == R.id.tv_delete) {
@@ -216,12 +218,12 @@ public class CurveActivity extends PanBaseActivity {
             if (panCurveDetails.size() <= 1)
                 hideRight();
             tvRight.setText(R.string.pan_delete);
-            ivRight.setImageDrawable(null);
+            ivRight.setImageResource(R.drawable.pan_delete);
             panCurveDetails.add(0, new PanCurveDetail("创作烹饪曲线"));
             rvCurveAdapter.setList(panCurveDetails);
             allUnelect();
             rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_BACK);
-            tvDelete.setVisibility(View.GONE);
+            tvDelete.setVisibility(View.INVISIBLE);
         }
     }
 
