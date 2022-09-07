@@ -7,7 +7,10 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.serialport.helper.SerialPortHelper;
 import android.serialport.helper.SphResultCallback;
 import android.util.DisplayMetrics;
@@ -48,7 +51,15 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (Settings.canDrawOverlays(this)) {
 
+            } else {
+                Uri uri = Uri.parse("package:" + getPackageName());
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, uri);
+                startActivityForResult(intent, 100);
+            }
+        }
         WindowsUtils.initPopupWindow(this, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
