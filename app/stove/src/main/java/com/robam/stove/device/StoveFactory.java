@@ -4,16 +4,16 @@ import android.content.Context;
 
 import com.robam.common.device.IPlat;
 import com.robam.common.device.TbangPlat;
-import com.robam.common.mqtt.IProtocol;
-import com.robam.stove.protocol.MqttStove;
+import com.robam.common.module.IPublicStoveApi;
+import com.robam.stove.module.PublicStoveApi;
 
 public class StoveFactory {
     public final static String TUOBANG = "tuobang" ;
     public final static String CQ926 = "DB620" ;
     //平台
     private static IPlat platform ;
-    //mqtt协议
-    private static IProtocol protocol ;
+    //对外开放接口
+    private static IPublicStoveApi stoveApi = new PublicStoveApi() ;
 
 
     public static void initPlat(Context context, String plat) {
@@ -21,16 +21,11 @@ public class StoveFactory {
             platform = new TbangPlat();
     }
 
-    public static void initMqttProtocol() {
-        if (null == protocol)
-            protocol = new MqttStove();
-    }
-
     public static IPlat getPlatform() {
         return platform;
     }
 
-    public static IProtocol getProtocol() {
-        return protocol;
+    public static IPublicStoveApi getPublicApi() {
+        return stoveApi;
     }
 }

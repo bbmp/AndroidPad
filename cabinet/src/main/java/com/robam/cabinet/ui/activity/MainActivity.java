@@ -28,11 +28,9 @@ public class MainActivity extends CabinetBaseActivity {
 
     @Override
     protected void initData() {
-        //使用哪个平台
-        CabinetFactory.initPlat(this, CabinetFactory.TUOBANG);
+
         //开启远程控制
         CabinetAbstractControl.getInstance().init(new CabinetMqttControl());
-        //mqtt协议解析和打包
-        CabinetFactory.initMqttProtocol();
+
     }
 }

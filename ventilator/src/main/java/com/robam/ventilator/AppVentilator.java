@@ -33,8 +33,6 @@ public class AppVentilator {
         VentilatorFactory.initPlat(application, VentilatorFactory.TUOBANG);
         //开启本地控制
         VentilatorAbstractControl.getInstance().init(new VentilatorLocalControl());
-        //协议解析和打包
-        VentilatorFactory.initMqttProtocol();
 
     }
 

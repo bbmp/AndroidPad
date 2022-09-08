@@ -1,7 +1,5 @@
 package com.robam.ventilator.ui.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -9,26 +7,22 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.provider.Settings;
 import android.serialport.helper.SerialPortHelper;
-import android.serialport.helper.SphResultCallback;
-import android.util.DisplayMetrics;
 import android.view.View;
 
-import com.clj.fastble.BleManager;
 import com.robam.common.bean.AccountInfo;
+import com.robam.common.module.IPublicPanApi;
+import com.robam.common.module.IPublicStoveApi;
+import com.robam.common.module.ModuleProtocolHelper;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.ui.activity.BaseActivity;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.NetworkUtils;
 import com.robam.common.utils.PermissionUtils;
-import com.robam.common.utils.StringUtils;
 import com.robam.common.utils.WindowsUtils;
 import com.robam.ventilator.R;
-import com.robam.ventilator.bean.Ventilator;
 import com.robam.ventilator.device.VentilatorFactory;
-import com.robam.ventilator.protocol.serial.SerialVentilator;
 import com.robam.ventilator.ui.service.AlarmService;
 
 //主页
@@ -51,6 +45,8 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+        IPublicPanApi iPublicPanApi = ModuleProtocolHelper.getModuleProtocol(IPublicPanApi.class, "com.robam.pan.device.PanFactory");
+
         if (Build.VERSION.SDK_INT >= 23) {
             if (Settings.canDrawOverlays(this)) {
 

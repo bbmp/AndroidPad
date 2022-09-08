@@ -1,5 +1,6 @@
-package com.robam.dishwasher.protocol.mqtt;
+package com.robam.dishwasher.module;
 
+import com.robam.common.module.IPublicDishWasherApi;
 import com.robam.common.mqtt.IProtocol;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MqttPublic;
@@ -7,7 +8,7 @@ import com.robam.common.mqtt.MqttPublic;
 import java.nio.ByteBuffer;
 
 //洗碗机私有协议
-public class MqttDishWasher implements IProtocol {
+public class PulbicDishWasherApi implements IPublicDishWasherApi {
     private void onDecodeMsg(int msgId, byte[] payload, int offset) {
         //远程被控制
     }

@@ -12,7 +12,7 @@ import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
 import com.robam.common.bean.AccountInfo;
-import com.robam.ventilator.bean.Device;
+import com.robam.common.bean.Device;
 import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.ui.adapter.RvAddDeviceAdapter;
 

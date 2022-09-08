@@ -340,11 +340,13 @@
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_shape_button_bg_ok.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_shape_button_ok_bg.xml" value="0.3015" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_shape_button_selected.xml" value="0.259" />
+        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_shape_button_selector.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_shape_button_unselected.xml" value="0.259" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_shape_online_bg.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_shape_scrollbar_bg.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_shape_work_bg.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_text_color_selected.xml" value="0.221" />
+        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_text_color_selector.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_waiting_bg.xml" value="0.171" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/common_layout_popwindow.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/fragment_full_screen.xml" value="0.175" />
@@ -376,6 +378,9 @@
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_fragment_full_screen.xml" value="0.175" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_home_fragment.xml" value="0.175" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_home_layout_content.xml" value="0.15" />
+        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_item_device_normal.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_item_device_offline.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_item_device_work.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_item_layout_add_device.xml" value="0.11788194444444444" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_item_layout_bind_device.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_item_layout_button.xml" value="0.1" />

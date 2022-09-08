@@ -79,4 +79,9 @@
     <string name="ventilator_not_administrator">您不是管理员</string>
     <string name="ventilator_share_hint">请打开ROKI APP, 扫一扫分享</string>
     <string name="ventilator_smart_reset_hint">确认恢复初始设置</string>
+    <string name="ventilator_detail">查看详情</string>
+    <string name="ventilator_check_connect_status">请检查网络\n连接状态</string>
+    <string name="ventilator_right_stove">右灶</string>
+    <string name="ventilator_left_stove">左灶</string>
+    <string name="ventilator_close_fire">关火</string>
 </resources>

@@ -16,10 +16,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.google.gson.Gson;
+import com.robam.common.IDeviceType;
 import com.robam.common.bean.RTopic;
+import com.robam.common.device.Stove;
 import com.robam.common.http.RetrofitCallback;
+import com.robam.common.module.IPublicCabinetApi;
+import com.robam.common.module.IPublicDishWasherApi;
+import com.robam.common.module.IPublicPanApi;
+import com.robam.common.module.IPublicStoveApi;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MsgKeys;
@@ -33,7 +40,7 @@ import com.robam.common.utils.ToastUtils;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBasePage;
 import com.robam.common.bean.AccountInfo;
-import com.robam.ventilator.bean.Device;
+import com.robam.common.bean.Device;
 import com.robam.ventilator.bean.ProductMutiItem;
 import com.robam.common.bean.UserInfo;
 import com.robam.ventilator.bean.VenFunBean;
@@ -224,7 +231,7 @@ public class HomePage extends VentilatorBasePage {
             }
         });
         //右边菜单
-        rvProductsAdapter  = new RvProductsAdapter();
+        rvProductsAdapter  = new RvProductsAdapter(this);
         rvRight.setAdapter(rvProductsAdapter);
         productList.add(new ProductMutiItem(ProductMutiItem.IMAGE, ""));
         productList.add(new ProductMutiItem(ProductMutiItem.BUTTON, ""));
@@ -240,6 +247,44 @@ public class HomePage extends VentilatorBasePage {
                 ProductMutiItem productMutiItem = (ProductMutiItem) adapter.getItem(position);
                 if (productMutiItem.getItemType() == ProductMutiItem.BUTTON) {  //添加产品
                     startActivity(new Intent(getContext(), AddDeviceMainActivity.class));
+                } else if (productMutiItem.getItemType() == ProductMutiItem.DEVICE) {
+                    //跳转设备首页
+                    Intent intent = new Intent();
+                    Device device = productMutiItem.getDevice();
+                    switch (device.dc) {
+                        case IDeviceType.RYYJ:
+                            intent.setClassName(getContext(), IPublicStoveApi.STOVE_HOME);
+                            startActivity(intent);
+                            break;
+                        case IDeviceType.RZNG:
+                            intent.setClassName(getContext(), IPublicPanApi.PAN_HOME);
+                            startActivity(intent);
+                            break;
+                        case IDeviceType.RXWJ:
+                            intent.setClassName(getContext(), IPublicDishWasherApi.DISHWASHER_HOME);
+                            startActivity(intent);
+                            break;
+                        case IDeviceType.RXDG:
+                            intent.setClassName(getContext(), IPublicCabinetApi.CABINET_HOME);
+                            startActivity(intent);
+                            break;
+                        case IDeviceType.RZKY:
+                            intent.setClassName(getContext(), IPublicCabinetApi.CABINET_HOME);
+                            break;
+                    }
+                }
+            }
+        });
+        rvProductsAdapter.setOnItemChildClickListener(new OnItemChildClickListener() {
+            @Override
+            public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
+                if (view.getId() == R.id.btn_left_close) {
+                    ProductMutiItem productMutiItem = (ProductMutiItem) adapter.getItem(position);
+                    Device device = productMutiItem.getDevice();
+                    device.status = 1;
+                    device.workStatus = 1;
+                    Stove.getInstance().leftWorkMode = 1;
+                    rvProductsAdapter.notifyItemChanged(position);
                 }
             }
         });
@@ -272,12 +317,20 @@ public class HomePage extends VentilatorBasePage {
             CloudHelper.getDevices(this, userInfo.id, GetDeviceRes.class, new RetrofitCallback<GetDeviceRes>() {
                 @Override
                 public void onSuccess(GetDeviceRes getDeviceRes) {
-                    if (null != getDeviceRes) {
+                    if (null != getDeviceRes && null != getDeviceRes.devices) {
                         List<Device> deviceList = getDeviceRes.devices;
                         productList.clear();
                         productList.add(new ProductMutiItem(ProductMutiItem.IMAGE, ""));
                         for (Device device: deviceList) {
-                            productList.add(new ProductMutiItem(ProductMutiItem.DEVICE, device));
+                            if (IDeviceType.RYYJ.equals(device.dc) || IDeviceType.RZKY.equals(device.dc) ||
+                                IDeviceType.RXWJ.equals(device.dc) || IDeviceType.RXDG.equals(device.dc))
+                                productList.add(new ProductMutiItem(ProductMutiItem.DEVICE, device));
+                            List<Device> subDevices = device.subDevices;
+                            if (null != subDevices) {
+                                for (Device subDevice : subDevices)
+                                    if (IDeviceType.RZNG.equals(subDevice.dc))
+                                        productList.add(new ProductMutiItem(ProductMutiItem.DEVICE, subDevice));
+                            }
 //                            queryDeviceStatus(device);
                         }
                         //查询设备状态

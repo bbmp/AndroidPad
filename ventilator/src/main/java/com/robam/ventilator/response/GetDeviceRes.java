@@ -1,7 +1,7 @@
 package com.robam.ventilator.response;
 
 import com.robam.common.bean.BaseResponse;
-import com.robam.ventilator.bean.Device;
+import com.robam.common.bean.Device;
 
 import java.util.List;
 

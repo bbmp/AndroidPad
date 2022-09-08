@@ -2,9 +2,10 @@ package com.robam.cabinet.device;
 
 import android.content.Context;
 
-import com.robam.cabinet.protocol.mqtt.MqttCabinet;
+import com.robam.cabinet.module.PublicCabinetApi;
 import com.robam.common.device.IPlat;
 import com.robam.common.device.TbangPlat;
+import com.robam.common.module.IPublicCabinetApi;
 import com.robam.common.mqtt.IProtocol;
 
 public class CabinetFactory {
@@ -13,7 +14,7 @@ public class CabinetFactory {
     //平台
     private static IPlat platform ;
     //mqtt协议
-    private static IProtocol protocol ;
+    private static IPublicCabinetApi cabinetApi = new PublicCabinetApi();
 
 
     public static void initPlat(Context context, String plat) {
@@ -21,16 +22,11 @@ public class CabinetFactory {
             platform = new TbangPlat();
     }
 
-    public static void initMqttProtocol() {
-        if (null == protocol)
-            protocol = new MqttCabinet();
-    }
-
     public static IPlat getPlatform() {
         return platform;
     }
 
-    public static IProtocol getProtocol() {
-        return protocol;
+    public static IPublicCabinetApi getPublicApi() {
+        return cabinetApi;
     }
 }

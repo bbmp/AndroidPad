@@ -26,11 +26,9 @@ public class MainActivity extends DishWasherBaseActivity {
 
     @Override
     protected void initData() {
-        //使用哪个平台
-        DishWasherFactory.initPlat(this, DishWasherFactory.TUOBANG);
+
         //开启远程控制
         DishWasherAbstractControl.getInstance().init(new DishWasherMqttControl());
-        //mqtt协议解析和打包
-        DishWasherFactory.initMqttProtocol();
+
     }
 }

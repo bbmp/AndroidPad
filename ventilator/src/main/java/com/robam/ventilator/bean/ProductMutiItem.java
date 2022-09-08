@@ -1,6 +1,7 @@
 package com.robam.ventilator.bean;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
+import com.robam.common.bean.Device;
 
 public class ProductMutiItem implements MultiItemEntity {
     private int itemType;

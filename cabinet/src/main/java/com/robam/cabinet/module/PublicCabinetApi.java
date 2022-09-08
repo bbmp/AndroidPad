@@ -1,10 +1,11 @@
-package com.robam.stove.protocol;
+package com.robam.cabinet.module;
 
+import com.robam.common.module.IPublicCabinetApi;
 import com.robam.common.mqtt.IProtocol;
 import com.robam.common.mqtt.MqttMsg;
 
-//mqtt协议解析和打包
-public class MqttStove implements IProtocol {
+//消毒柜远程控制
+public class PublicCabinetApi implements IPublicCabinetApi {
     @Override
     public byte[] encode(MqttMsg msg) {
         return new byte[0];

@@ -4,16 +4,16 @@ import android.content.Context;
 
 import com.robam.common.device.IPlat;
 import com.robam.common.device.TbangPlat;
-import com.robam.common.mqtt.IProtocol;
-import com.robam.pan.protocol.mqtt.MqttPan;
+import com.robam.common.module.IPublicPanApi;
+import com.robam.pan.module.PublicPanApi;
 
 public class PanFactory {
     public final static String TUOBANG = "tuobang" ;
     public final static String CQ926 = "DB620" ;
     //平台
     private static IPlat platform ;
-    //mqtt协议
-    private static IProtocol protocol ;
+    //对外开放接口
+    private static IPublicPanApi panApi = new PublicPanApi();
 
 
     public static void initPlat(Context context, String plat) {
@@ -21,16 +21,11 @@ public class PanFactory {
             platform = new TbangPlat();
     }
 
-    public static void initMqttProtocol() {
-        if (null == protocol)
-            protocol = new MqttPan();
-    }
-
     public static IPlat getPlatform() {
         return platform;
     }
 
-    public static IProtocol getProtocol() {
-        return protocol;
+    public static IPublicPanApi getPublicApi() {
+        return panApi;
     }
 }

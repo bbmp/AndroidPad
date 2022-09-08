@@ -1,6 +1,18 @@
-package com.robam.ventilator.bean;
+package com.robam.common.bean;
+
+import androidx.lifecycle.LiveData;
+
+import java.util.List;
 
 public class Device {
+    public final static int OFFLINE = 0;
+    public final static int ONLINE  = 1;
+    //在线状态
+    public int status = 1;
+
+    //工作状态
+    public int workStatus = 1;
+
     /**
      * 拥有者编码
      */
@@ -40,8 +52,7 @@ public class Device {
      * 展示的设备类型名称
      */
     public String displayType;
-
-
+    //
     public String categoryName;
 
 
@@ -50,11 +61,11 @@ public class Device {
     public String categoryIconUrl;
 
     public String deviceTypeIconUrl;
-    //在线状态
-    private int status;
 
-    //工作状态
-    private int workStatus;
+    //子设备
+    public List<Device> subDevices;
+
+
 
     public Device() {
     }
@@ -64,20 +75,20 @@ public class Device {
         this.displayType = displayType;
     }
 
+
+    public String getDisplayType() {
+        return displayType;
+    }
+
+   public String getCategoryName() {
+        return categoryName;
+   }
+
     public int getStatus() {
         return status;
     }
 
-    public String getCategoryName() {
-        return categoryName;
-    }
-
-
     public int getWorkStatus() {
         return workStatus;
-    }
-
-    public String getDisplayType() {
-        return displayType;
     }
 }

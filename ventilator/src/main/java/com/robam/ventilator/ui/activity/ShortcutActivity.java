@@ -1,11 +1,9 @@
 package com.robam.ventilator.ui.activity;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.view.KeyEvent;
 import android.view.View;
@@ -16,7 +14,7 @@ import com.robam.common.IDeviceType;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
-import com.robam.ventilator.bean.Device;
+import com.robam.common.bean.Device;
 import com.robam.ventilator.bean.VenFunBean;
 import com.robam.ventilator.ui.adapter.RvShortcutFunAdapter;
 import com.robam.ventilator.ui.adapter.RvShortcutDeviceAdapter;

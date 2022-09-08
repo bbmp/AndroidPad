@@ -29,11 +29,9 @@ public class MainActivity extends StoveBaseActivity {
 
     @Override
     protected void initData() {
-        //使用哪个平台
-        StoveFactory.initPlat(this, StoveFactory.TUOBANG);
+
         //开启远程控制, 蓝牙控制
         StoveAbstractControl.getInstance().init(new StoveBluetoothControl());
-        //mqtt协议解析和打包
-        StoveFactory.initMqttProtocol();
+
     }
 }

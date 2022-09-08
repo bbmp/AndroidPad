@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.robam.ventilator.R;
-import com.robam.ventilator.bean.Device;
+import com.robam.common.bean.Device;
 
 public class RvAddDeviceAdapter extends BaseQuickAdapter<Device, BaseViewHolder> {
     public RvAddDeviceAdapter() {

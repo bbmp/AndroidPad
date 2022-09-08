@@ -13,17 +13,12 @@ public class VentilatorFactory {
     //平台
     private static IPlat platform ;
     //mqtt协议
-    private static IProtocol protocol ;
+    private static IProtocol protocol = new MqttVentilator();
 
 
     public static void initPlat(Context context, String plat) {
         if (TUOBANG.equals(plat))
             platform = new TbangPlat();
-    }
-
-    public static void initMqttProtocol() {
-        if (null == protocol)
-            protocol = new MqttVentilator();
     }
 
     public static IPlat getPlatform() {

@@ -29,11 +29,8 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        //使用哪个平台
-        PanFactory.initPlat(this, PanFactory.TUOBANG);
         //开启远程控制, 蓝牙控制
         PanAbstractControl.getInstance().init(new PanBluetoothControl());
-        //mqtt协议解析和打包
-        PanFactory.initMqttProtocol();
+
     }
 }
