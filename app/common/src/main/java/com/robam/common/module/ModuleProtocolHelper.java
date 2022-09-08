@@ -17,9 +17,9 @@ public class ModuleProtocolHelper {
             iProtocol = moduleProtocol.get(clazz);
         else {
             try {
-                Class testClass = Class.forName(loadClass);
-                Method saddMethod1 = testClass.getMethod("getPublicApi");
-                iProtocol = (IProtocol) saddMethod1.invoke(null, null);
+                Class implClass = Class.forName(loadClass);
+                Method method = implClass.getMethod("getPublicApi");
+                iProtocol = (IProtocol) method.invoke(null);
                 moduleProtocol.put(clazz, iProtocol);
             } catch (Exception e) {
                 e.printStackTrace();
