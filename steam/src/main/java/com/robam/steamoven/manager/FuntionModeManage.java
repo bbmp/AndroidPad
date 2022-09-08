@@ -5,7 +5,7 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.robam.steamoven.bean.FuntionBean;
-import com.robam.steamoven.bean.model.ModeBean;
+import com.robam.steamoven.bean.ModeBean;
 import com.robam.steamoven.bean.RecipeClassify;
 import com.robam.steamoven.bean.model.RecipeClassifyMode;
 

@@ -11,13 +11,11 @@ import com.robam.common.ui.IModeSelect;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBasePage;
-import com.robam.steamoven.bean.model.ModeBean;
+import com.robam.steamoven.bean.ModeBean;
 import com.robam.steamoven.ui.adapter.RvDotAdapter;
 import com.robam.steamoven.ui.adapter.RvModeAdapter;
-import com.robam.steamoven.ui.adapter.RvTimeAdapter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ModeSelectPage extends SteamBasePage {

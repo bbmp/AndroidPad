@@ -1,17 +1,18 @@
-package com.robam.steamoven.bean.model;
+package com.robam.steamoven.bean;
 
 import com.robam.steamoven.constant.SteamModeEnum;
 
 import org.litepal.annotation.Column;
 import org.litepal.crud.LitePalSupport;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * 各模式对应参数根据功能说明书修改 ， code根据电源板协议对应
  */
-public class ModeBean extends LitePalSupport {
+public class ModeBean implements Serializable {
     @Column
     public int funCode ;
     /**

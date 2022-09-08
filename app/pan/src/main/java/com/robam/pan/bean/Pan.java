@@ -1,4 +1,4 @@
-package com.robam.common.device;
+package com.robam.pan.bean;
 
 import androidx.lifecycle.MutableLiveData;
 

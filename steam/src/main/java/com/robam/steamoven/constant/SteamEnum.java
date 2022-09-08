@@ -32,11 +32,5 @@ public enum SteamEnum {
      *
      * @return
      */
-    public static List<FuntionBean> getFunList(){
-        List<FuntionBean> list = new ArrayList<>();
-        for (SteamEnum bean: SteamEnum.values()) {
-            list.add(new FuntionBean(bean.fun, bean.name, bean.backgroundImg, "", bean.into));
-        }
-        return list;
-    }
+
 }

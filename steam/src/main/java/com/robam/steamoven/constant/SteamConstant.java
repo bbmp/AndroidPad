@@ -9,5 +9,7 @@ public class SteamConstant {
     public final static int FUN_MULTI = 5; //多段
     public final static int FUN_RECIPE = 6; //菜谱
     public final static int FUN_AUX = 7; //辅助
-    public final static int FUN_CURVE = 8;// 曲线
+    public final static int FUN_CURVE = 8;// 曲线f
+
+    public final static String EXTRA_MODE_LIST = "modelist";
 }

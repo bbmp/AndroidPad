@@ -7,7 +7,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.robam.common.utils.LogUtils;
 import com.robam.steamoven.R;
-import com.robam.steamoven.bean.model.ModeBean;
+import com.robam.steamoven.bean.ModeBean;
 
 public class RvModeAdapter extends BaseQuickAdapter<ModeBean, BaseViewHolder> {
     private int pickPosition;

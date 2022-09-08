@@ -1,6 +1,5 @@
 package com.robam.steamoven.ui.activity;
 
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,16 +16,12 @@ import com.google.android.material.tabs.TabLayout;
 import com.robam.common.ui.IModeSelect;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
-import com.robam.steamoven.bean.FuntionBean;
 import com.robam.steamoven.bean.SteamOven;
-import com.robam.steamoven.bean.model.ModeBean;
-import com.robam.steamoven.constant.Constant;
+import com.robam.steamoven.bean.ModeBean;
 import com.robam.steamoven.constant.ModeConstant;
-import com.robam.steamoven.constant.SteamOvenSteamEnum;
+import com.robam.steamoven.constant.SteamConstant;
 import com.robam.steamoven.ui.pages.ModeSelectPage;
 import com.robam.steamoven.ui.pages.TimeSelectPage;
-
-import org.litepal.LitePal;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -99,11 +94,8 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
 
     @Override
     protected void initData() {
-        FuntionBean funtionBean = (FuntionBean) getIntent().getParcelableExtra(Constant.FUNTION_BEAN);
-        //当前功能
-        SteamOven.getInstance().workType = (short) funtionBean.funtionCode;
-        //功能下的模式
-        modes =  LitePal.where("funCode = ?", funtionBean.funtionCode + "").find(ModeBean.class);
+        if (null != getIntent())
+            modes = (ArrayList<ModeBean>) getIntent().getSerializableExtra(SteamConstant.EXTRA_MODE_LIST);
 
         //
         if (null != modes && modes.size() > 0) {

@@ -24,6 +24,7 @@ import com.robam.steamoven.base.SteamBasePage;
 import com.robam.steamoven.bean.FuntionBean;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.Constant;
+import com.robam.steamoven.constant.SteamConstant;
 import com.robam.steamoven.manager.DataInitManage;
 import com.robam.steamoven.manager.FuntionModeManage;
 import com.robam.steamoven.ui.adapter.RvDotAdapter;
@@ -83,7 +84,7 @@ public class HomePage extends SteamBasePage {
                 scollToPosition(position);
                 Intent intent = new Intent();
                 FuntionBean funtionBean = (FuntionBean) adapter.getItem(position);
-                intent.putExtra(Constant.FUNTION_BEAN, funtionBean);
+                intent.putExtra(SteamConstant.EXTRA_MODE_LIST, funtionBean.mode);
                 if (funtionBean.into == null || funtionBean.into.length() == 0) {
                     ToastUtils.showShort(getContext(), "功能还未实现，请等待版本更新");
                     return;

@@ -1,10 +1,5 @@
 package com.robam.steamoven.constant;
 
-import com.robam.steamoven.bean.model.ModeBean;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author r210190
  *  工作模式对应枚举
