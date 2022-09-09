@@ -103,8 +103,8 @@ public class SerialVentilator {
         result[5] = MSG_TYPE_CONTROL;
         System.arraycopy(payload, 0, result, 6, payload.length);
         short crc = Crc16Utils.calcCrc16(result, 1, result.length - 3);
-        result[result.length - 2] = (byte)(crc & 0xff);
-        result[result.length - 1] = (byte)((crc >> 8) & 0xff);
+        result[result.length - 1] = (byte)(crc & 0xff);
+        result[result.length - 2] = (byte)((crc >> 8) & 0xff);
         return result;
     }
 
@@ -120,8 +120,8 @@ public class SerialVentilator {
         result[6] = 0x00;
         result[7] = 0x00;
         short crc = Crc16Utils.calcCrc16(result, 1, result.length - 3);
-        result[result.length - 2] = (byte)(crc & 0xff);
-        result[result.length - 1] = (byte)((crc >> 8) & 0xff);
+        result[result.length - 1] = (byte)(crc & 0xff);
+        result[result.length - 2] = (byte)((crc >> 8) & 0xff);
         return result;
     }
     //开机

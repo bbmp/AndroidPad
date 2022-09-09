@@ -9,7 +9,7 @@
         android:layout_height="@dimen/dp_80"
         android:gravity="center"
         android:textColor="@color/ventilator_white"
-        android:background="@drawable/ventilator_ic_main_item_bg"
+        android:background="@drawable/ventilator_main_item_bg"
         android:lineSpacingMultiplier="0.8"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

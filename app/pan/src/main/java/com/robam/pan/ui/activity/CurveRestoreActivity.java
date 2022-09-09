@@ -17,7 +17,6 @@ import com.robam.common.ui.helper.VerticalSpaceItemDecoration;
 import com.robam.common.utils.LogUtils;
 import com.robam.pan.bean.CurveStep;
 import com.robam.pan.bean.PanCurveDetail;
-import com.robam.pan.bean.PanRecipeDetail;
 import com.robam.pan.constant.DialogConstant;
 import com.robam.pan.R;
 import com.robam.pan.base.PanBaseActivity;

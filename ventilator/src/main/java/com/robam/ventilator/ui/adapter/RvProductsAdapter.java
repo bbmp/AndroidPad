@@ -1,21 +1,18 @@
 package com.robam.ventilator.ui.adapter;
 
 
-import android.app.Activity;
-import android.app.UiAutomation;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.Observer;
 
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.Device;
-import com.robam.common.device.Stove;
 import com.robam.common.utils.ImageUtils;
+import com.robam.common.device.Stove;
 import com.robam.ventilator.R;
 import com.robam.ventilator.bean.ProductMutiItem;
 
