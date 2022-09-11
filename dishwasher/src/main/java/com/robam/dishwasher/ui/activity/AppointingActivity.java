@@ -2,6 +2,7 @@ package com.robam.dishwasher.ui.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -11,10 +12,13 @@ import com.robam.common.ui.view.MCountdownView;
 import com.robam.common.utils.DateUtil;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.base.DishWasherBaseActivity;
+import com.robam.dishwasher.bean.DishWaherModeBean;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.dishwasher.bean.DishWasherEnum;
 import com.robam.dishwasher.constant.DialogConstant;
+import com.robam.dishwasher.constant.DishWasherConstant;
 import com.robam.dishwasher.device.DishWasherFactory;
+import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.factory.DishWasherDialogFactory;
 
 /**
@@ -31,6 +35,8 @@ public class AppointingActivity extends DishWasherBaseActivity {
     private TextView tvMode;
     //工作时长
     private TextView tvWorkHours;
+    //当前模式
+    private DishWaherModeBean modeBean = null;
 
     @Override
     protected int getLayoutId() {
@@ -51,11 +57,15 @@ public class AppointingActivity extends DishWasherBaseActivity {
 
     @Override
     protected void initData() {
-        setCountDownTime();
-        //工作时长
-        tvWorkHours.setText(DishWasher.getInstance().workHours + "min");
-        //工作模式
-        tvMode.setText(DishWasherEnum.match(DishWasher.getInstance().workMode));
+        if (null != getIntent())
+            modeBean = (DishWaherModeBean) getIntent().getSerializableExtra(DishWasherConstant.EXTRA_MODEBEAN);
+        if (null != modeBean) {
+            setCountDownTime();
+            //工作时长
+            tvWorkHours.setText(HomeDishWasher.getInstance().workHours + "min");
+            //工作模式
+            tvMode.setText(DishWasherEnum.match(HomeDishWasher.getInstance().workMode));
+        }
 
     }
 
@@ -63,7 +73,7 @@ public class AppointingActivity extends DishWasherBaseActivity {
      * 设置倒计时
      */
     private void setCountDownTime() {
-        String orderTime = DishWasher.getInstance().orderTime;
+        String orderTime = HomeDishWasher.getInstance().orderTime;
 
         int housGap = DateUtil.getHousGap(orderTime);
         int minGap = DateUtil.getMinGap(orderTime);
@@ -93,7 +103,11 @@ public class AppointingActivity extends DishWasherBaseActivity {
     //开始工作
     private void toStartWork() {
 //        CabinetAbstractControl.getInstance().startWork();
-        startActivity(WorkActivity.class);
+        Intent intent = new Intent();
+        if (null != modeBean)
+            intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, modeBean);
+        intent.setClass(this, WorkActivity.class);
+        startActivity(intent);
         finish();
     }
 
@@ -106,8 +120,11 @@ public class AppointingActivity extends DishWasherBaseActivity {
         } else if (id == R.id.iv_start) {
             //立即开始
             tvCountdown.stop();
+            Intent intent = new Intent();
+            if (null != modeBean)
+                intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, modeBean);
+            intent.setClass(this, WorkActivity.class);
             finish();
-            startActivity(WorkActivity.class);
         }
     }
     //取消预约

@@ -6,21 +6,22 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ModuleProtocolHelper {
-    private static Map<Class<? extends IProtocol>, IProtocol> moduleProtocol = new HashMap<>();
+public class ModulePubliclHelper {
+    //保存接口和实现对象
+    private static Map<Class<? extends IProtocol>, IProtocol> modulePublic = new HashMap<>();
 
-    public static <T extends IProtocol> T getModuleProtocol(Class<T> clazz, String loadClass) {
+    public static <T extends IProtocol> T getModulePublic(Class<T> clazz, String loadClass) {
         if (null == clazz)
             return null;
         IProtocol iProtocol = null;
-        if (moduleProtocol.containsKey(clazz))
-            iProtocol = moduleProtocol.get(clazz);
+        if (modulePublic.containsKey(clazz))
+            iProtocol = modulePublic.get(clazz);
         else {
             try {
                 Class implClass = Class.forName(loadClass);
                 Method method = implClass.getMethod("getPublicApi");
                 iProtocol = (IProtocol) method.invoke(null);
-                moduleProtocol.put(clazz, iProtocol);
+                modulePublic.put(clazz, iProtocol);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -30,9 +31,9 @@ public class ModuleProtocolHelper {
     }
 
     public static void register(Class<? extends IProtocol> clazz, IProtocol iProtocol) {
-        if (moduleProtocol.containsKey(clazz))
+        if (modulePublic.containsKey(clazz))
             return;
 
-        moduleProtocol.put(clazz, iProtocol);
+        modulePublic.put(clazz, iProtocol);
     }
 }

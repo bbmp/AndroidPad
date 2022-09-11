@@ -15,6 +15,7 @@ import com.robam.dishwasher.base.DishWasherBaseActivity;
 import com.robam.dishwasher.bean.DishWaherModeBean;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.dishwasher.constant.DishWasherConstant;
+import com.robam.dishwasher.device.HomeDishWasher;
 
 public class ModeSelectActivity extends DishWasherBaseActivity {
     private RadioGroup radioGroup;
@@ -23,6 +24,8 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
     private TextView tvTime, tvTemp, tvTempUnit;
     private RadioButton rButton1, rButton2, rButton3, rButton4;
     private TextView tvStartHint;
+    //当前模式
+    private DishWaherModeBean modeBean = null;
 
     @Override
     protected int getLayoutId() {
@@ -50,23 +53,24 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (checkedId == R.id.rb_button1) {
-                    DishWasher.getInstance().auxMode = DishWasherConstant.AUX_PAN_POWFULL;
+                    HomeDishWasher.getInstance().auxMode = DishWasherConstant.AUX_PAN_POWFULL;
                 } else if (checkedId == R.id.rb_button2) {
-                    DishWasher.getInstance().auxMode = DishWasherConstant.AUX_KILL_POWFULL;
+                    HomeDishWasher.getInstance().auxMode = DishWasherConstant.AUX_KILL_POWFULL;
                 } else if (checkedId == R.id.rb_button3) {
-                    DishWasher.getInstance().auxMode = DishWasherConstant.AUX_FLUSH;
+                    HomeDishWasher.getInstance().auxMode = DishWasherConstant.AUX_FLUSH;
                 } else if (checkedId == R.id.rb_button4) {
-                    DishWasher.getInstance().auxMode = DishWasherConstant.AUX_DOWN_WASH;
+                    HomeDishWasher.getInstance().auxMode = DishWasherConstant.AUX_DOWN_WASH;
                 } else
-                    DishWasher.getInstance().auxMode = -1;
+                    HomeDishWasher.getInstance().auxMode = -1;
             }
         });
     }
 
     @Override
     protected void initData() {
-        //当前模式
-        DishWaherModeBean modeBean = DishWasher.getInstance().getDishWaherModeBean(DishWasher.getInstance().workMode);
+
+        if (null != getIntent())
+            modeBean = (DishWaherModeBean) getIntent().getSerializableExtra(DishWasherConstant.EXTRA_MODEBEAN);
         if (null != modeBean) {
             setData(modeBean);
             switch (modeBean.code) {
@@ -129,10 +133,18 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
         int id = view.getId();
         if (id == R.id.ll_right) {
             //预约
-            startActivity(new Intent(this, AppointmentActivity.class));
+            Intent intent = new Intent();
+            if (null != modeBean)
+                intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, modeBean);
+            intent.setClass(this, AppointmentActivity.class);
+            startActivity(intent);
         } else if (id == R.id.btn_start) {
             //开始工作
-            startActivity(WorkActivity.class);
+            Intent intent = new Intent();
+            if (null != modeBean)
+                intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, modeBean);
+            intent.setClass(this, WorkActivity.class);
+            startActivity(intent);
             finish();
         } else if (id == R.id.ll_left) {
             //返回

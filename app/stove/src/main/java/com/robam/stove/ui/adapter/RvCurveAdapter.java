@@ -14,6 +14,8 @@ import com.robam.common.utils.ImageUtils;
 import com.robam.stove.R;
 import com.robam.stove.bean.StoveCurveDetail;
 
+import java.util.List;
+
 public class RvCurveAdapter extends BaseQuickAdapter<StoveCurveDetail, BaseViewHolder> {
     private RequestOptions maskOption = new RequestOptions()
             .centerCrop()
@@ -36,7 +38,7 @@ public class RvCurveAdapter extends BaseQuickAdapter<StoveCurveDetail, BaseViewH
 
     public void setStatus(int status) {
         this.status = status;
-        notifyDataSetChanged();
+       notifyItemRangeChanged(0, getItemCount(), "update select");
     }
 
     public RvCurveAdapter() {
@@ -62,5 +64,26 @@ public class RvCurveAdapter extends BaseQuickAdapter<StoveCurveDetail, BaseViewH
         ImageView imageView = baseViewHolder.getView(R.id.iv_recipe);
         ImageUtils.loadImage(getContext(), stoveCurveDetail.imageCover, maskOption, imageView);
         baseViewHolder.setText(R.id.tv_recipe, stoveCurveDetail.name);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull BaseViewHolder baseViewHolder, int position, @NonNull List<Object> payloads) {
+        if (null == payloads || payloads.isEmpty())
+            super.onBindViewHolder(baseViewHolder, position, payloads);
+        else {
+            //局部更新
+            StoveCurveDetail stoveCurveDetail = getData().get(position);
+            if (status == STATUS_ALL) {
+                baseViewHolder.getView(R.id.iv_select).setSelected(true);
+                baseViewHolder.setVisible(R.id.iv_select, true);
+            }
+            //删除状态
+            else if (status == STATUS_DELETE) {
+                baseViewHolder.getView(R.id.iv_select).setSelected(stoveCurveDetail.isSelected());
+                baseViewHolder.setVisible(R.id.iv_select, true);
+            } else {
+                baseViewHolder.setVisible(R.id.iv_select, false);
+            }
+        }
     }
 }

@@ -4,12 +4,29 @@ import android.serialport.helper.SerialPortHelper;
 
 import androidx.lifecycle.LiveData;
 
+import com.robam.common.bean.Device;
 import com.robam.steamoven.protocol.serial.ProtoParse;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SteamOven extends LiveData<SteamOven> {
+public class SteamOven extends Device {
+    public SteamOven(Device device) {
+        this.ownerId = device.ownerId;
+        this.guid = device.guid;
+        this.bid = device.bid;
+        this.dc = device.dc;
+        this.dt = device.dt;
+        this.displayType = device.displayType;
+        this.categoryName = device.categoryName;
+        this.deviceTypeIconUrl = device.deviceTypeIconUrl;
+        this.subDevices = device.subDevices;
+    }
+
+    public SteamOven(String name, String displayType) {
+        super(name, displayType);
+    }
+
     /**
      * 电源板状态
      */
@@ -310,14 +327,6 @@ public class SteamOven extends LiveData<SteamOven> {
 
     }
 
-    public static SteamOven getInstance() {
-        return SteamOvenHolder.instance;
-    }
-
-
-    private static class SteamOvenHolder {
-        private static final SteamOven instance = new SteamOven();
-    }
 
     /**
      * 获取多段总段数
@@ -337,7 +346,7 @@ public class SteamOven extends LiveData<SteamOven> {
     public List<SettingMultiModeBean> getMultiMode() {
 
         List<SettingMultiModeBean> settingMultiModeBeans = new ArrayList<>();
-        settingMultiModeBeans.addAll(getInstance().multiMode);
+        settingMultiModeBeans.addAll(multiMode);
         while (settingMultiModeBeans.size() < 3){
             settingMultiModeBeans.add(new SettingMultiModeBean());
         }
@@ -359,7 +368,7 @@ public class SteamOven extends LiveData<SteamOven> {
      * @param settingMultiModeBean
      */
     public void addMultiMode(SettingMultiModeBean settingMultiModeBean) {
-        getInstance().multiMode.add(settingMultiModeBean);
+        multiMode.add(settingMultiModeBean);
         if (multiMode.size() == 1){
             this.mode = settingMultiModeBean.mode;
             this.setUpTemp = settingMultiModeBean.setTemp;
@@ -421,7 +430,7 @@ public class SteamOven extends LiveData<SteamOven> {
      */
     public int getTotalTime() {
         int total = 0 ;
-        for (SettingMultiModeBean settingMultiModeBean : getInstance().multiMode) {
+        for (SettingMultiModeBean settingMultiModeBean : multiMode) {
             total += settingMultiModeBean.setTime ;
         }
         return total;
@@ -596,5 +605,10 @@ public class SteamOven extends LiveData<SteamOven> {
 //                }
                 break;
         }
+    }
+
+    @Override
+    public void onReceivedMsg(int msgId, String guid, byte[] payload, int offset) {
+
     }
 }

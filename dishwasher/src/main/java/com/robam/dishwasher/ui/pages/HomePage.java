@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.robam.common.manager.FunctionManager;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.common.ui.view.ExtImageSpan;
 import com.robam.common.utils.ImageUtils;
@@ -22,6 +23,8 @@ import com.robam.dishwasher.R;
 import com.robam.dishwasher.base.DishWasherBasePage;
 import com.robam.dishwasher.bean.DishWaherModeBean;
 import com.robam.dishwasher.bean.DishWasher;
+import com.robam.dishwasher.constant.DishWasherConstant;
+import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.ui.adapter.RvMainModeAdapter;
 
 import java.util.List;
@@ -94,8 +97,7 @@ public class HomePage extends DishWasherBasePage {
 
     @Override
     protected void initData() {
-        DishWasher.getInstance().init(getContext());
-        List<DishWaherModeBean> modeBeanList = DishWasher.getInstance().getDishWaherModeBeans();
+        List<DishWaherModeBean> modeBeanList = FunctionManager.getFuntionList(getContext(), DishWaherModeBean.class,R.raw.dishwahser);
 
         rvMainModeAdapter.setList(modeBeanList);
 
@@ -112,9 +114,9 @@ public class HomePage extends DishWasherBasePage {
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 DishWaherModeBean dishWaherModeBean = (DishWaherModeBean) adapter.getItem(position);
 
-                DishWasher.getInstance().workMode = dishWaherModeBean.code;
+                HomeDishWasher.getInstance().workMode = dishWaherModeBean.code;
                 Intent intent = new Intent();
-//                intent.putExtra("mode", dishWaherFunBean);
+                intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, dishWaherModeBean);
                 intent.setClassName(getContext(), dishWaherModeBean.into);
                 startActivity(intent);
             }

@@ -15,6 +15,8 @@ import com.robam.pan.R;
 import com.robam.pan.bean.PanCurveDetail;
 import com.robam.pan.bean.PanRecipe;
 
+import java.util.List;
+
 public class RvCurveAdapter extends BaseQuickAdapter<PanCurveDetail, BaseViewHolder> {
     private RequestOptions maskOption = new RequestOptions()
             .centerCrop()
@@ -37,7 +39,7 @@ public class RvCurveAdapter extends BaseQuickAdapter<PanCurveDetail, BaseViewHol
 
     public void setStatus(int status) {
         this.status = status;
-        notifyDataSetChanged();
+        notifyItemRangeChanged(0, getItemCount(), "update select");
     }
 
     public RvCurveAdapter() {
@@ -62,5 +64,26 @@ public class RvCurveAdapter extends BaseQuickAdapter<PanCurveDetail, BaseViewHol
         ImageView imageView = baseViewHolder.getView(R.id.iv_recipe);
         ImageUtils.loadImage(getContext(), panCurveDetail.imageCover, maskOption, imageView);
         baseViewHolder.setText(R.id.tv_recipe, panCurveDetail.name);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull BaseViewHolder baseViewHolder, int position, @NonNull List<Object> payloads) {
+        if (null == payloads || payloads.isEmpty())
+            super.onBindViewHolder(baseViewHolder, position, payloads);
+        else {
+            //局部更新
+            PanCurveDetail panCurveDetail = getData().get(position);
+            if (status == STATUS_ALL) {
+                baseViewHolder.getView(R.id.iv_select).setSelected(true);
+                baseViewHolder.setVisible(R.id.iv_select, true);
+            }
+            //删除状态
+            else if (status == STATUS_DELETE) {
+                baseViewHolder.getView(R.id.iv_select).setSelected(panCurveDetail.isSelected());
+                baseViewHolder.setVisible(R.id.iv_select, true);
+            } else {
+                baseViewHolder.setVisible(R.id.iv_select, false);
+            }
+        }
     }
 }

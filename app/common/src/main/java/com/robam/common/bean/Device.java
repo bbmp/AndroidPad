@@ -1,10 +1,11 @@
 package com.robam.common.bean;
 
-import androidx.lifecycle.LiveData;
+import com.robam.common.utils.LogUtils;
 
 import java.util.List;
 
 public class Device {
+    public final static String EXTRA_GUID = "guid";
     public final static int OFFLINE = 0;
     public final static int ONLINE  = 1;
     //在线状态
@@ -90,5 +91,10 @@ public class Device {
 
     public int getWorkStatus() {
         return workStatus;
+    }
+
+
+    public void onReceivedMsg(int msgId, String guid, byte[] payload, int offset) {
+        LogUtils.e("onReceivedMsg");
     }
 }

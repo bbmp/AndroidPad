@@ -2,6 +2,7 @@ package com.robam.ventilator.protocol.mqtt;
 
 import android.text.TextUtils;
 
+import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.RTopic;
 import com.robam.common.mqtt.IProtocol;
 import com.robam.common.mqtt.MqttMsg;
@@ -9,9 +10,12 @@ import com.robam.common.mqtt.MqttPublic;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.mqtt.RTopicParser;
 import com.robam.common.utils.ByteUtils;
+import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MsgUtils;
 import com.robam.common.utils.StringUtils;
+import com.robam.stove.device.StoveFactory;
+import com.robam.stove.protocol.mqtt.MqttStove;
 import com.robam.ventilator.device.VentilatorFactory;
 
 import java.nio.ByteBuffer;
@@ -25,7 +29,7 @@ public class MqttVentilator implements IProtocol {
     public static final ByteOrder BYTE_ORDER = ByteOrder.LITTLE_ENDIAN;
 
 
-    private void onDecodeMsg(int msgId, byte[] payload, int offset) {
+    private void onDecodeMsg(int msgId, String guid, byte[] payload, int offset) {
 //从payload中取值角标
         //远程被控制
         switch (msgId) {
@@ -35,6 +39,9 @@ public class MqttVentilator implements IProtocol {
             case MsgKeys.setDeviceAttribute_Req:
                 //属性个数
                 short number = ByteUtils.toShort(payload[offset]);
+                break;
+            default:
+
                 break;
         }
     }
@@ -131,7 +138,10 @@ public class MqttVentilator implements IProtocol {
             short msgId = ByteUtils.toShort(payload[offset++]);
 
             // paser payload
-            onDecodeMsg(msgId, payload, offset);
+            onDecodeMsg(msgId, srcGuid, payload, offset);
+            //分发到各设备
+            for (int i=0; i<AccountInfo.getInstance().deviceList.size(); i++)
+                AccountInfo.getInstance().deviceList.get(i).onReceivedMsg(msgId, srcGuid, payload, offset);
 
             return msgId;
         } catch (Exception e) {

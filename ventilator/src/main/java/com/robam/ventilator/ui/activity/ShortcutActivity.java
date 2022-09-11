@@ -10,12 +10,18 @@ import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.robam.cabinet.bean.Cabinet;
 import com.robam.common.IDeviceType;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
+import com.robam.dishwasher.bean.DishWasher;
+import com.robam.pan.bean.Pan;
+import com.robam.steamoven.bean.SteamOven;
+import com.robam.stove.bean.Stove;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
 import com.robam.common.bean.Device;
 import com.robam.ventilator.bean.VenFunBean;
+import com.robam.ventilator.bean.Ventilator;
 import com.robam.ventilator.ui.adapter.RvShortcutFunAdapter;
 import com.robam.ventilator.ui.adapter.RvShortcutDeviceAdapter;
 
@@ -73,14 +79,14 @@ public class ShortcutActivity extends VentilatorBaseActivity {
         });
         //设备
         List<Device> deviceList = new ArrayList<>();
-        deviceList.add(new Device("消毒柜", IDeviceType.SERIES_CABINET));
-        deviceList.add(new Device("油烟机", IDeviceType.SERIES_VENTILATOR));
+        deviceList.add(new Cabinet("消毒柜", IDeviceType.SERIES_CABINET));
+        deviceList.add(new Ventilator("油烟机", IDeviceType.SERIES_VENTILATOR));
 
         List<Device> deviceList2 = new ArrayList<>();
-        deviceList2.add(new Device("无人锅", IDeviceType.SERIES_PAN));
-        deviceList2.add(new Device("灶具", IDeviceType.SERIES_STOVE));
-        deviceList2.add(new Device("一体机", IDeviceType.SERIES_STEAM));
-        deviceList2.add(new Device("洗碗机", IDeviceType.SERIES_DISHWASHER));
+        deviceList2.add(new Pan("无人锅", IDeviceType.SERIES_PAN));
+        deviceList2.add(new Stove("灶具", IDeviceType.SERIES_STOVE));
+        deviceList2.add(new SteamOven("一体机", IDeviceType.SERIES_STEAM));
+        deviceList2.add(new DishWasher("洗碗机", IDeviceType.SERIES_DISHWASHER));
 
         rvShortcutWorkAdapter = new RvShortcutDeviceAdapter();
         rvDeviceWork.setAdapter(rvShortcutWorkAdapter);

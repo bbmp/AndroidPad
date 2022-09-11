@@ -21,6 +21,7 @@ import com.robam.dishwasher.base.DishWasherBaseActivity;
 import com.robam.dishwasher.bean.DishWaherModeBean;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.dishwasher.constant.DialogConstant;
+import com.robam.dishwasher.constant.DishWasherConstant;
 import com.robam.dishwasher.factory.DishWasherDialogFactory;
 
 public class WorkActivity extends DishWasherBaseActivity {
@@ -31,7 +32,8 @@ public class WorkActivity extends DishWasherBaseActivity {
 
     private TextView tvTime;
     private TextView tvMode;
-
+    //当前模式
+    private DishWaherModeBean modeBean = null;
     @Override
     protected int getLayoutId() {
         return R.layout.dishwasher_activity_layout_work;
@@ -62,7 +64,9 @@ public class WorkActivity extends DishWasherBaseActivity {
     @Override
     protected void initData() {
         //当前模式
-        DishWaherModeBean modeBean = DishWasher.getInstance().getDishWaherModeBean(DishWasher.getInstance().workMode);
+        if (null != getIntent())
+            modeBean = (DishWaherModeBean) getIntent().getSerializableExtra(DishWasherConstant.EXTRA_MODEBEAN);
+
         if (null != modeBean) {
             setData(modeBean);
 

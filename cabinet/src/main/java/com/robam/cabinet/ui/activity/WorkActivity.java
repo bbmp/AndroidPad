@@ -9,6 +9,7 @@ import com.robam.cabinet.base.CabinetBaseActivity;
 import com.robam.cabinet.bean.Cabinet;
 import com.robam.cabinet.constant.CabinetEnum;
 import com.robam.cabinet.constant.DialogConstant;
+import com.robam.cabinet.device.HomeCabinet;
 import com.robam.cabinet.factory.CabinetDialogFactory;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.MCountdownView;
@@ -47,7 +48,7 @@ public class WorkActivity extends CabinetBaseActivity {
     @Override
     protected void initData() {
         //工作模式
-        tvMode.setText(CabinetEnum.match(Cabinet.getInstance().workMode));
+        tvMode.setText(CabinetEnum.match(HomeCabinet.getInstance().workMode));
         //工作时长
         setCountDownTime();
     }
@@ -55,7 +56,7 @@ public class WorkActivity extends CabinetBaseActivity {
      * 设置倒计时
      */
     private void setCountDownTime() {
-        int workHours = Cabinet.getInstance().workHours;
+        int workHours = HomeCabinet.getInstance().workHours;
 
         int totalTime = workHours * 60;
 //        SteamOven.getInstance().orderTime = totalTime;
@@ -80,7 +81,7 @@ public class WorkActivity extends CabinetBaseActivity {
         //工作完成提示
         IDialog iDialog = CabinetDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_WORK_COMPLETE);
         iDialog.setCancelable(false);
-        iDialog.setContentText(CabinetEnum.match(Cabinet.getInstance().workMode) + "完成");
+        iDialog.setContentText(CabinetEnum.match(HomeCabinet.getInstance().workMode) + "完成");
         iDialog.setListeners(new IDialog.DialogOnClickListener() {
             @Override
             public void onClick(View v) {

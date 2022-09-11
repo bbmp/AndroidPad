@@ -12,8 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
-import com.robam.pan.bean.Pan;
-import com.robam.common.device.Stove;
+import com.robam.common.module.IPublicStoveApi;
+import com.robam.common.module.ModulePubliclHelper;
+import com.robam.pan.device.HomePan;
 import com.robam.common.ui.view.MCountdownView;
 import com.robam.common.utils.ToastUtils;
 import com.robam.pan.constant.Constant;
@@ -81,37 +82,37 @@ public class HomePage extends PanBasePage {
         functionList.add(new PanFunBean(2, "我的最爱", "", "favorite", "com.robam.pan.ui.activity.FavoriteActivity"));
         functionList.add(new PanFunBean(3, "烹饪曲线", "", "curve", "com.robam.pan.ui.activity.CurveActivity"));
         rvMainFunctionAdapter.setList(functionList);
-        Stove.getInstance().leftStove.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if (aBoolean) {
-                    //开火状态
+        IPublicStoveApi iPublicStoveApi = ModulePubliclHelper.getModulePublic(IPublicStoveApi.class,
+                IPublicStoveApi.STOVE_PUBLIC);
+        if (null != iPublicStoveApi) {
+            iPublicStoveApi.getLeftStove().observe(this, new Observer<Boolean>() {
+                @Override
+                public void onChanged(Boolean aBoolean) {
+                    if (aBoolean) {
+                        //开火状态
 
-                } else {
-                    //关火状态
-                    Stove.getInstance().leftWorkMode = 0;
-                    Stove.getInstance().leftWorkHours = "";
-                    Stove.getInstance().leftWorkTemp = "";
-                }
-            }
-        });
-        //初始左灶状态
-        Stove.getInstance().rightStove.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if (aBoolean) {
-                    //开火状态
-                } else {
-                    //关火状态
+                    } else {
+                        //关火状态
 
-                    Stove.getInstance().rightWorkMode = 0;
-                    Stove.getInstance().rightWorkHours = "";
-                    Stove.getInstance().rightWorkTemp = "";
+                    }
                 }
-            }
-        });
+            });
+            //初始左灶状态
+            iPublicStoveApi.getRightStove().observe(this, new Observer<Boolean>() {
+                @Override
+                public void onChanged(Boolean aBoolean) {
+                    if (aBoolean) {
+                        //开火状态
+                    } else {
+                        //关火状态
+
+
+                    }
+                }
+            });
+        }
         //检测锅温度
-        Pan.getInstance().panTemp.observe(this, new Observer<Integer>() {
+        HomePan.getInstance().panTemp.observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
                 if (integer < 60)

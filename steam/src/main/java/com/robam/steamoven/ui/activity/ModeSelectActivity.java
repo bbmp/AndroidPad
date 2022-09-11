@@ -46,6 +46,8 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
 
     private SelectPagerAdapter selectPagerAdapter;
 
+    private SteamOven steamOven;
+
     @Override
     protected int getLayoutId() {
         return R.layout.steam_activity_mode_select;
@@ -103,7 +105,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             //默认模式
             ModeBean defaultBean = modes.get(0);
             //当前模式
-            SteamOven.getInstance().workMode = (short) defaultBean.code;
+            steamOven.workMode = (short) defaultBean.code;
             modeTab = tabLayout.newTab();
             modeTab.setId(index++);
             View modeView = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab_mode, null);
@@ -114,7 +116,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             Fragment modeFragment = new ModeSelectPage(modeTab, modes, this);
             fragments.add(new WeakReference<>(modeFragment));
 
-            if (SteamOven.getInstance().workType == ModeConstant.MODE_JIASHI_BAKE) {
+            if (steamOven.workType == ModeConstant.MODE_JIASHI_BAKE) {
                 //加湿烤
                 steamTab = tabLayout.newTab();
                 steamTab.setId(index++);

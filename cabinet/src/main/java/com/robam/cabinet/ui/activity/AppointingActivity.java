@@ -7,6 +7,7 @@ import com.robam.cabinet.R;
 import com.robam.cabinet.base.CabinetBaseActivity;
 import com.robam.cabinet.bean.Cabinet;
 import com.robam.cabinet.constant.CabinetEnum;
+import com.robam.cabinet.device.HomeCabinet;
 import com.robam.common.ui.view.MCountdownView;
 import com.robam.common.utils.DateUtil;
 
@@ -45,16 +46,16 @@ public class AppointingActivity extends CabinetBaseActivity {
     protected void initData() {
         setCountDownTime();
         //工作时长
-        tvWorkHours.setText(Cabinet.getInstance().workHours + "min");
+        tvWorkHours.setText(HomeCabinet.getInstance().workHours + "min");
         //工作模式
-        tvMode.setText(CabinetEnum.match(Cabinet.getInstance().workMode));
+        tvMode.setText(CabinetEnum.match(HomeCabinet.getInstance().workMode));
     }
 
     /**
      * 设置倒计时
      */
     private void setCountDownTime() {
-        String orderTime = Cabinet.getInstance().orderTime;
+        String orderTime = HomeCabinet.getInstance().orderTime;
 
         tvAppointmentHint.setText(String.format(getString(R.string.cabinet_work_order_hint1), orderTime ));
         int housGap = DateUtil.getHousGap(orderTime);

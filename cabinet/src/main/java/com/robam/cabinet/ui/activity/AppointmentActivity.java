@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.robam.cabinet.R;
 import com.robam.cabinet.base.CabinetBaseActivity;
 import com.robam.cabinet.bean.Cabinet;
+import com.robam.cabinet.device.HomeCabinet;
 import com.robam.cabinet.ui.adapter.RvStringAdapter;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.common.utils.DateUtil;
@@ -112,7 +113,7 @@ public class AppointmentActivity extends CabinetBaseActivity {
         if (id == R.id.btn_cancel) {
             finish();
         } else if (id == R.id.btn_ok) { //确认预约
-            Cabinet.getInstance().orderTime = orderTime;
+            HomeCabinet.getInstance().orderTime = orderTime;
             startActivity(AppointingActivity.class);
             finish();
         } else if (id == R.id.ll_left) {

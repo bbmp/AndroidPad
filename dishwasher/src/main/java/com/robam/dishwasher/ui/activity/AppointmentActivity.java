@@ -12,6 +12,7 @@ import com.robam.common.utils.DateUtil;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.base.DishWasherBaseActivity;
 import com.robam.dishwasher.bean.DishWasher;
+import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.ui.adapter.RvStringAdapter;
 
 import java.util.ArrayList;
@@ -113,7 +114,7 @@ public class AppointmentActivity extends DishWasherBaseActivity {
         if (id == R.id.btn_cancel)
             finish();
         else if (id == R.id.btn_ok) { //确认预约
-            DishWasher.getInstance().orderTime = orderTime;
+            HomeDishWasher.getInstance().orderTime = orderTime;
             startActivity(AppointingActivity.class);
             finish();
         }

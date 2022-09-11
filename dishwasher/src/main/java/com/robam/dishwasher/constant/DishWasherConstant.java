@@ -15,4 +15,6 @@ public class DishWasherConstant {
     public final static int AUX_KILL_POWFULL = 11;
     public final static int AUX_FLUSH = 12;
     public final static int AUX_DOWN_WASH = 13;
+
+    public final static String EXTRA_MODEBEAN = "modebean";
 }

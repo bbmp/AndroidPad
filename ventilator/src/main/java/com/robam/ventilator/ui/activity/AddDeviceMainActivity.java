@@ -9,6 +9,11 @@ import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
+import com.robam.cabinet.bean.Cabinet;
+import com.robam.dishwasher.bean.DishWasher;
+import com.robam.pan.bean.Pan;
+import com.robam.steamoven.bean.SteamOven;
+import com.robam.stove.bean.Stove;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
 import com.robam.common.bean.AccountInfo;
@@ -66,11 +71,11 @@ public class AddDeviceMainActivity extends VentilatorBaseActivity {
     @Override
     protected void initData() {
         List<Device> deviceList2 = new ArrayList<>();
-        deviceList2.add(new Device("明火自动翻炒锅", "KP100"));
-        deviceList2.add(new Device("燃气灶", "9B328"));
-        deviceList2.add(new Device("洗碗机", "WB758"));
-        deviceList2.add(new Device("消毒柜", "XG858"));
-        deviceList2.add(new Device("蒸烤一体机", "CQ928"));
+        deviceList2.add(new Pan("明火自动翻炒锅", "KP100"));
+        deviceList2.add(new Stove("燃气灶", "9B328"));
+        deviceList2.add(new DishWasher("洗碗机", "WB758"));
+        deviceList2.add(new Cabinet("消毒柜", "XG858"));
+        deviceList2.add(new SteamOven("蒸烤一体机", "CQ928"));
         rvAddDeviceAdapter.setList(deviceList2);
     }
 }

@@ -41,6 +41,7 @@ public class CurveActivity extends StoveBaseActivity {
     private ImageView ivRight;
     private List<StoveCurveDetail> stoveCurveDetails = new ArrayList<>();
     private TextView tvDelete; //确认删除
+    private LinearLayoutManager linearLayoutManager;
 
 
     @Override
@@ -59,7 +60,8 @@ public class CurveActivity extends StoveBaseActivity {
         ivRight = findViewById(R.id.iv_right);
         rvRecipe = findViewById(R.id.rv_recipe);
         tvDelete = findViewById(R.id.tv_delete);
-        rvRecipe.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
+        linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
+        rvRecipe.setLayoutManager(linearLayoutManager);
         rvRecipe.addItemDecoration(new HorizontalSpaceItemDecoration((int)getResources().getDimension(com.robam.common.R.dimen.dp_8), (int)getResources().getDimension(com.robam.common.R.dimen.dp_32)));
         rvCurveAdapter = new RvCurveAdapter();
         rvRecipe.setAdapter(rvCurveAdapter);

@@ -15,6 +15,7 @@ import com.robam.cabinet.bean.CabModeBean;
 import com.robam.cabinet.bean.Cabinet;
 import com.robam.cabinet.constant.CabinetConstant;
 import com.robam.cabinet.constant.DialogConstant;
+import com.robam.cabinet.device.HomeCabinet;
 import com.robam.cabinet.factory.CabinetDialogFactory;
 import com.robam.cabinet.ui.adapter.RvTimeAdapter;
 import com.robam.common.ui.dialog.IDialog;
@@ -56,7 +57,7 @@ public class ModeSelectActivity extends CabinetBaseActivity {
                         rvTimeAdapter.setPickPosition(position);
                         tvNum.setText(rvTimeAdapter.getItem(position).toString());
                         //设置工作时长
-                        Cabinet.getInstance().workHours = Integer.parseInt(rvTimeAdapter.getItem(position));
+                        HomeCabinet.getInstance().workHours = Integer.parseInt(rvTimeAdapter.getItem(position));
                     }
                 }).build();
         rvMode.setLayoutManager(pickerLayoutManager);
@@ -70,7 +71,7 @@ public class ModeSelectActivity extends CabinetBaseActivity {
             cabModeBean = (CabModeBean) getIntent().getSerializableExtra(CabinetConstant.EXTRA_MODE_BEAN);
         if (null != cabModeBean) {
             //当前模式
-            Cabinet.getInstance().workMode = cabModeBean.code;
+            HomeCabinet.getInstance().workMode = cabModeBean.code;
 
             List<String> lists = new ArrayList();
 
@@ -87,7 +88,7 @@ public class ModeSelectActivity extends CabinetBaseActivity {
             //默认
             tvNum.setText(lists.get(0) + "");
             //工作时长
-            Cabinet.getInstance().workHours = Integer.parseInt(lists.get(0));
+            HomeCabinet.getInstance().workHours = Integer.parseInt(lists.get(0));
         }
     }
 

@@ -3,6 +3,7 @@ package com.robam.ventilator.ui.pages;
 import android.content.Intent;
 import android.os.Handler;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,8 +20,13 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.google.gson.Gson;
+import com.robam.cabinet.bean.Cabinet;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.RTopic;
+import com.robam.dishwasher.bean.DishWasher;
+import com.robam.pan.bean.Pan;
+import com.robam.steamoven.bean.SteamOven;
+import com.robam.stove.device.HomeStove;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.module.IPublicCabinetApi;
 import com.robam.common.module.IPublicDishWasherApi;
@@ -36,14 +42,13 @@ import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MMKVUtils;
 import com.robam.common.utils.ScreenUtils;
 import com.robam.common.utils.ToastUtils;
-import com.robam.common.device.Stove;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBasePage;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
-import com.robam.ventilator.bean.ProductMutiItem;
 import com.robam.common.bean.UserInfo;
 import com.robam.ventilator.bean.VenFunBean;
+import com.robam.ventilator.bean.Ventilator;
 import com.robam.ventilator.constant.DialogConstant;
 import com.robam.ventilator.device.VentilatorFactory;
 import com.robam.ventilator.factory.VentilatorDialogFactory;
@@ -83,7 +88,6 @@ public class HomePage extends VentilatorBasePage {
     //系统设置
     private RvSettingAdapter settingAdapter;
     //产品中心
-    private List<ProductMutiItem> productList = new ArrayList<>();
     private RvProductsAdapter rvProductsAdapter;
     private TextView tvPerformance, tvComfort;
     private Group group;
@@ -233,9 +237,20 @@ public class HomePage extends VentilatorBasePage {
         //右边菜单
         rvProductsAdapter  = new RvProductsAdapter(this);
         rvRight.setAdapter(rvProductsAdapter);
-        productList.add(new ProductMutiItem(ProductMutiItem.IMAGE, ""));
-        productList.add(new ProductMutiItem(ProductMutiItem.BUTTON, ""));
-        rvProductsAdapter.setList(productList);
+
+        View head = LayoutInflater.from(getContext()).inflate(R.layout.ventilator_item_layout_image, null);
+        ImageView ivHead = head.findViewById(R.id.iv_head);
+        ivHead.setImageResource(R.drawable.ventilator_ic_bg);
+        rvProductsAdapter.addHeaderView(head);
+        View foot = LayoutInflater.from(getContext()).inflate(R.layout.ventilator_item_layout_button, null);
+        //添加产品
+        foot.findViewById(R.id.tv_add_product).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(), AddDeviceMainActivity.class));
+            }
+        });
+        rvProductsAdapter.addFooterView(foot);
 
         rvProductsAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
@@ -244,34 +259,30 @@ public class HomePage extends VentilatorBasePage {
                 if (drawerLayout.isDrawerOpen(Gravity.RIGHT)) {
                     drawerLayout.closeDrawer(Gravity.RIGHT);
                 }
-                ProductMutiItem productMutiItem = (ProductMutiItem) adapter.getItem(position);
-                if (productMutiItem.getItemType() == ProductMutiItem.BUTTON) {  //添加产品
-                    startActivity(new Intent(getContext(), AddDeviceMainActivity.class));
-                } else if (productMutiItem.getItemType() == ProductMutiItem.DEVICE) {
-                    //跳转设备首页
-                    Intent intent = new Intent();
-                    Device device = productMutiItem.getDevice();
-                    switch (device.dc) {
-                        case IDeviceType.RYYJ:
-                            intent.setClassName(getContext(), IPublicStoveApi.STOVE_HOME);
-                            startActivity(intent);
-                            break;
-                        case IDeviceType.RZNG:
-                            intent.setClassName(getContext(), IPublicPanApi.PAN_HOME);
-                            startActivity(intent);
-                            break;
-                        case IDeviceType.RXWJ:
-                            intent.setClassName(getContext(), IPublicDishWasherApi.DISHWASHER_HOME);
-                            startActivity(intent);
-                            break;
-                        case IDeviceType.RXDG:
-                            intent.setClassName(getContext(), IPublicCabinetApi.CABINET_HOME);
-                            startActivity(intent);
-                            break;
-                        case IDeviceType.RZKY:
-                            intent.setClassName(getContext(), IPublicCabinetApi.CABINET_HOME);
-                            break;
-                    }
+                Device device = (Device) adapter.getItem(position);
+
+                //跳转设备首页
+                Intent intent = new Intent();
+                switch (device.dc) {
+                    case IDeviceType.RYYJ:
+                        intent.setClassName(getContext(), IPublicStoveApi.STOVE_HOME);
+                        startActivity(intent);
+                        break;
+                    case IDeviceType.RZNG:
+                        intent.setClassName(getContext(), IPublicPanApi.PAN_HOME);
+                        startActivity(intent);
+                        break;
+                    case IDeviceType.RXWJ:
+                        intent.setClassName(getContext(), IPublicDishWasherApi.DISHWASHER_HOME);
+                        startActivity(intent);
+                        break;
+                    case IDeviceType.RXDG:
+                        intent.setClassName(getContext(), IPublicCabinetApi.CABINET_HOME);
+                        startActivity(intent);
+                        break;
+                    case IDeviceType.RZKY:
+                        intent.setClassName(getContext(), IPublicCabinetApi.CABINET_HOME);
+                        break;
                 }
             }
         });
@@ -279,12 +290,12 @@ public class HomePage extends VentilatorBasePage {
             @Override
             public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                 if (view.getId() == R.id.btn_left_close) {
-                    ProductMutiItem productMutiItem = (ProductMutiItem) adapter.getItem(position);
-                    Device device = productMutiItem.getDevice();
+                    Device device = (Device) adapter.getItem(position);
                     device.status = 1;
                     device.workStatus = 1;
-                    Stove.getInstance().leftWorkMode = 1;
-                    rvProductsAdapter.notifyItemChanged(position);
+                    HomeStove.getInstance().leftWorkMode = 1;
+                    //加head需要加1
+                    rvProductsAdapter.notifyItemChanged(position + 1);
                 }
             }
         });
@@ -319,24 +330,29 @@ public class HomePage extends VentilatorBasePage {
                 public void onSuccess(GetDeviceRes getDeviceRes) {
                     if (null != getDeviceRes && null != getDeviceRes.devices) {
                         List<Device> deviceList = getDeviceRes.devices;
-                        productList.clear();
-                        productList.add(new ProductMutiItem(ProductMutiItem.IMAGE, ""));
+                        AccountInfo.getInstance().deviceList.clear();
                         for (Device device: deviceList) {
-                            if (IDeviceType.RYYJ.equals(device.dc) || IDeviceType.RZKY.equals(device.dc) ||
-                                IDeviceType.RXWJ.equals(device.dc) || IDeviceType.RXDG.equals(device.dc))
-                                productList.add(new ProductMutiItem(ProductMutiItem.DEVICE, device));
+                            if (IDeviceType.RYYJ.equals(device.dc)) //烟机
+                                AccountInfo.getInstance().deviceList.add(new Ventilator(device));
+                            else if (IDeviceType.RZKY.equals(device.dc)) //一体机
+                                AccountInfo.getInstance().deviceList.add(new SteamOven(device));
+                            else if (IDeviceType.RXWJ.equals(device.dc)) //洗碗机
+                                AccountInfo.getInstance().deviceList.add(new DishWasher(device));
+                            else if (IDeviceType.RXDG.equals(device.dc))  //消毒柜
+                                AccountInfo.getInstance().deviceList.add(new Cabinet(device));
                             List<Device> subDevices = device.subDevices;
                             if (null != subDevices) {
-                                for (Device subDevice : subDevices)
-                                    if (IDeviceType.RZNG.equals(subDevice.dc))
-                                        productList.add(new ProductMutiItem(ProductMutiItem.DEVICE, subDevice));
+                                for (Device subDevice : subDevices) {
+                                    if (IDeviceType.RZNG.equals(subDevice.dc)) //锅
+                                        AccountInfo.getInstance().deviceList.add(new Pan(subDevice));
+                                }
                             }
 //                            queryDeviceStatus(device);
                         }
                         //查询设备状态
-                        productList.add(new ProductMutiItem(ProductMutiItem.BUTTON, ""));
                         if (null != rvProductsAdapter)
-                            rvProductsAdapter.setList(productList);
+                            rvProductsAdapter.setList(AccountInfo.getInstance().deviceList);
+                        AccountInfo.getInstance().deviceList.get(0).onReceivedMsg(0, "srcGuid", null, 0);
                     }
                 }
 
@@ -347,11 +363,10 @@ public class HomePage extends VentilatorBasePage {
             });
         } else {
             //logout
-            productList.clear();
-            productList.add(new ProductMutiItem(ProductMutiItem.IMAGE, ""));
-            productList.add(new ProductMutiItem(ProductMutiItem.BUTTON, ""));
+            AccountInfo.getInstance().deviceList.clear();
+
             if (null != rvProductsAdapter)
-                rvProductsAdapter.setList(productList);
+                rvProductsAdapter.setList(AccountInfo.getInstance().deviceList);
         }
     }
 

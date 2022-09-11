@@ -6,10 +6,10 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.robam.stove.device.HomeStove;
 import com.robam.common.ui.dialog.BaseDialog;
 import com.robam.common.ui.dialog.FullDialog;
 import com.robam.stove.R;
-import com.robam.common.device.Stove;
 import com.robam.stove.constant.StoveConstant;
 
 public class HomeLockDialog extends BaseDialog {
@@ -36,20 +36,20 @@ public class HomeLockDialog extends BaseDialog {
     //检查炉头状态
     public void checkStoveStatus() {
         //左灶工作中
-        if (Stove.getInstance().leftWorkMode != 0) {
+        if (HomeStove.getInstance().leftWorkMode != 0) {
             llLeftStove.setVisibility(View.VISIBLE);
-            if (Stove.getInstance().leftWorkMode == StoveConstant.MODE_FRY)
-                tvLeftStove.setText("左灶 " + Stove.getInstance().leftWorkTemp + "℃");
+            if (HomeStove.getInstance().leftWorkMode == StoveConstant.MODE_FRY)
+                tvLeftStove.setText("左灶 " + HomeStove.getInstance().leftWorkTemp + "℃");
             else
-                tvLeftStove.setText("左灶 " + Stove.getInstance().leftWorkHours + "min");
+                tvLeftStove.setText("左灶 " + HomeStove.getInstance().leftWorkHours + "min");
         }
         //右灶工作中
-        if (Stove.getInstance().rightWorkMode != 0) {
+        if (HomeStove.getInstance().rightWorkMode != 0) {
             llRightStove.setVisibility(View.VISIBLE);
-            if (Stove.getInstance().rightWorkMode == StoveConstant.MODE_FRY)
-                tvRightStove.setText("右灶 " + Stove.getInstance().rightWorkTemp + "℃");
+            if (HomeStove.getInstance().rightWorkMode == StoveConstant.MODE_FRY)
+                tvRightStove.setText("右灶 " + HomeStove.getInstance().rightWorkTemp + "℃");
             else
-                tvRightStove.setText("右灶 " + Stove.getInstance().rightWorkHours + "min");
+                tvRightStove.setText("右灶 " + HomeStove.getInstance().rightWorkHours + "min");
         }
     }
 

@@ -11,7 +11,8 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.robam.common.device.Stove;
+import com.robam.common.module.IPublicStoveApi;
+import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.VerticalSpaceItemDecoration;
 import com.robam.common.utils.LogUtils;
@@ -114,10 +115,7 @@ public class CurveRestoreActivity extends PanBaseActivity {
                     if (null != panCurveDetail) {
                         intent.putExtra(PanConstant.EXTRA_CURVE_DETAIL, panCurveDetail);
                         //关火
-                        if (panCurveDetail.stove == Stove.STOVE_LEFT)
-                            Stove.getInstance().leftStove.setValue(false);
-                        if (panCurveDetail.stove == Stove.STOVE_RIGHT)
-                            Stove.getInstance().rightStove.setValue(false);
+                        closeFire();
                     }
                     intent.setClass(CurveRestoreActivity.this, RestoreCompleteActivity.class);
                     startActivity(intent);
@@ -143,6 +141,18 @@ public class CurveRestoreActivity extends PanBaseActivity {
         mHandler.postDelayed(runnable, 1000L);
     }
 
+    //关火操作
+    private void closeFire() {
+        IPublicStoveApi iPublicStoveApi = ModulePubliclHelper.getModulePublic(IPublicStoveApi.class,
+                IPublicStoveApi.STOVE_PUBLIC);
+        if (null != iPublicStoveApi) {
+            if (panCurveDetail.stove == IPublicStoveApi.STOVE_LEFT)
+                iPublicStoveApi.getLeftStove().setValue(false);
+            if (panCurveDetail.stove == IPublicStoveApi.STOVE_RIGHT)
+                iPublicStoveApi.getRightStove().setValue(false);
+        }
+    }
+
     @Override
     public void onClick(View view) {
         int id = view.getId();
@@ -165,10 +175,7 @@ public class CurveRestoreActivity extends PanBaseActivity {
                 if (v.getId() == R.id.tv_ok) {
                     //关闭炉头
                     if (null != panCurveDetail) {
-                        if (panCurveDetail.stove == Stove.STOVE_LEFT)
-                            Stove.getInstance().leftStove.setValue(false);
-                        if (panCurveDetail.stove == Stove.STOVE_RIGHT)
-                            Stove.getInstance().rightStove.setValue(false);
+                        closeFire();
                     }
                     //回首页
                     startActivity(MainActivity.class);

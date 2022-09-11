@@ -40,6 +40,8 @@ public class TimeSelectPage extends SteamBasePage {
 
     private IModeSelect iModeSelect;//回调接口
 
+    private SteamOven steamOven;
+
     public TimeSelectPage(TabLayout.Tab tab, int type, IModeSelect iModeSelect) {
         this.tab = tab;
         this.type = type;
@@ -83,7 +85,7 @@ public class TimeSelectPage extends SteamBasePage {
         rvSelect2.setAdapter(rvTimeAdapter);
 
         if (null != iModeSelect)  //默认模式
-            iModeSelect.updateTab(SteamOven.getInstance().workMode);
+            iModeSelect.updateTab(steamOven.workMode);
     }
 
 

@@ -8,8 +8,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.robam.common.device.Stove;
 import com.robam.common.http.RetrofitCallback;
+import com.robam.common.module.IPublicStoveApi;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.VerticalSpaceItemDecoration;
 import com.robam.pan.R;
@@ -115,9 +115,9 @@ public class RecipeSelectedActivity extends PanBaseActivity {
             public void onClick(View v) {
                 int id = v.getId();
                 if (id == R.id.view_left)
-                    openFire(Stove.STOVE_LEFT);  //左灶
+                    openFire(IPublicStoveApi.STOVE_LEFT);  //左灶
                 else if (id == R.id.view_right)
-                    openFire(Stove.STOVE_RIGHT);   //右灶
+                    openFire(IPublicStoveApi.STOVE_RIGHT);   //右灶
             }
         }, R.id.select_stove_dialog, R.id.view_left, R.id.view_right);
         //检查炉头状态
@@ -129,21 +129,15 @@ public class RecipeSelectedActivity extends PanBaseActivity {
     private void openFire(int stove) {
         IDialog iDialog = PanDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_OPEN_FIRE);
         iDialog.setCancelable(false);
-        if (stove == Stove.STOVE_LEFT) {
+        if (stove == IPublicStoveApi.STOVE_LEFT) {
             iDialog.setContentText(R.string.pan_open_left_hint);
             //进入工作状态
             //选择左灶
-            Stove.getInstance().leftWorkMode = 1;
-            Stove.getInstance().leftWorkHours = "0";
-            Stove.getInstance().leftWorkTemp = "0";
-            Stove.getInstance().leftStove.setValue(true);
+
         } else {
             iDialog.setContentText(R.string.pan_open_right_hint);
             //选择右灶
-            Stove.getInstance().rightWorkMode = 1;
-            Stove.getInstance().rightWorkHours = "0";
-            Stove.getInstance().rightWorkTemp = "0";
-            Stove.getInstance().rightStove.setValue(true);
+
         }
         iDialog.show();
         Intent intent = new Intent();

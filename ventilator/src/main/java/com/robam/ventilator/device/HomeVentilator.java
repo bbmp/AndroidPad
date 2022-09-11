@@ -1,25 +1,12 @@
-package com.robam.ventilator.bean;
+package com.robam.ventilator.device;
 
-import android.os.PowerManager;
-
-import com.robam.common.bean.Device;
-import com.robam.common.utils.LogUtils;
-
-public class Ventilator extends Device {
-    public Ventilator(Device device) {
-        this.ownerId = device.ownerId;
-        this.guid = device.guid;
-        this.bid = device.bid;
-        this.dc = device.dc;
-        this.dt = device.dt;
-        this.displayType = device.displayType;
-        this.categoryName = device.categoryName;
-        this.deviceTypeIconUrl = device.deviceTypeIconUrl;
-        this.subDevices = device.subDevices;
+public class HomeVentilator {
+    //当前进入的灶具锅首页
+    public static HomeVentilator getInstance() {
+        return HomeVentilator.VentilatorHolder.instance;
     }
-
-    public Ventilator(String name, String displayType) {
-        super(name, displayType);
+    private static class VentilatorHolder {
+        private static final HomeVentilator instance = new HomeVentilator();
     }
 
     /**
@@ -85,9 +72,4 @@ public class Ventilator extends Device {
      * byte20  参数9 预留
      */
     public byte param9 = (byte) 0x00;
-
-    @Override
-    public void onReceivedMsg(int msgId, String guid, byte[] payload, int offset) {
-        LogUtils.e("onReceivedMsg");
-    }
 }

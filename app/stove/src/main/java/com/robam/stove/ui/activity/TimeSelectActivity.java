@@ -5,12 +5,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.robam.common.module.IPublicStoveApi;
+import com.robam.stove.device.HomeStove;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBaseActivity;
 import com.robam.stove.bean.ModeBean;
-import com.robam.common.device.Stove;
 import com.robam.stove.constant.DialogConstant;
 import com.robam.stove.constant.StoveConstant;
 import com.robam.stove.factory.StoveDialogFactory;
@@ -105,9 +106,9 @@ public class TimeSelectActivity extends StoveBaseActivity {
             public void onClick(View v) {
                 int id = v.getId();
                 if (id == R.id.view_left)
-                    openFire(Stove.STOVE_LEFT);  //左灶
+                    openFire(IPublicStoveApi.STOVE_LEFT);  //左灶
                 else if (id == R.id.view_right)
-                    openFire(Stove.STOVE_RIGHT);   //右灶
+                    openFire(IPublicStoveApi.STOVE_RIGHT);   //右灶
             }
         }, R.id.select_stove_dialog, R.id.view_left, R.id.view_right);
         //检查炉头状态
@@ -119,19 +120,19 @@ public class TimeSelectActivity extends StoveBaseActivity {
     private void openFire(int stove) {
         IDialog iDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_OPEN_FIRE);
         iDialog.setCancelable(false);
-        if (stove == Stove.STOVE_LEFT) {
+        if (stove == IPublicStoveApi.STOVE_LEFT) {
             iDialog.setContentText(R.string.stove_open_left_hint);
             //进入工作状态
             //选择左灶
-            Stove.getInstance().leftWorkMode = StoveConstant.MODE_TIMING;
-            Stove.getInstance().leftWorkHours = workHours;
-            Stove.getInstance().leftStove.setValue(true);
+            HomeStove.getInstance().leftWorkMode = StoveConstant.MODE_TIMING;
+            HomeStove.getInstance().leftWorkHours = workHours;
+            HomeStove.getInstance().leftStove.setValue(true);
         } else {
             iDialog.setContentText(R.string.stove_open_right_hint);
             //选择右灶
-            Stove.getInstance().rightWorkMode = StoveConstant.MODE_TIMING;
-            Stove.getInstance().rightWorkHours = workHours;
-            Stove.getInstance().rightStove.setValue(true);
+            HomeStove.getInstance().rightWorkMode = StoveConstant.MODE_TIMING;
+            HomeStove.getInstance().rightWorkHours = workHours;
+            HomeStove.getInstance().rightStove.setValue(true);
         }
         iDialog.show();
     }

@@ -15,7 +15,7 @@ public class PanFactory {
     //平台
     private static IPlat platform ;
     //对外开放接口
-//    private static IPublicPanApi panApi = new PublicPanApi();
+    private static IPublicPanApi panApi = new PublicPanApi();
     private static IProtocol iProtocol = new MqttPan();
 
 
@@ -28,9 +28,9 @@ public class PanFactory {
         return platform;
     }
 
-//    public static IPublicPanApi getPublicApi() {
-//        return panApi;
-//    }
+    public static IPublicPanApi getPublicApi() {
+        return panApi;
+    }
 
     public static IProtocol getProtocol() {
         return iProtocol;

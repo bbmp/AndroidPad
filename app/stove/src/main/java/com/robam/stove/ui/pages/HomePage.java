@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.robam.common.module.IPublicStoveApi;
+import com.robam.stove.device.HomeStove;
 import com.robam.common.manager.FunctionManager;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.PickerLayoutManager;
@@ -20,7 +22,6 @@ import com.robam.common.utils.ClickUtils;
 import com.robam.common.utils.ImageUtils;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBasePage;
-import com.robam.common.device.Stove;
 import com.robam.stove.bean.StoveFunBean;
 import com.robam.stove.constant.DialogConstant;
 import com.robam.stove.constant.StoveConstant;
@@ -106,7 +107,7 @@ public class HomePage extends StoveBasePage {
                 public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                     StoveFunBean stoveFunBean = (StoveFunBean) adapter.getItem(position);
 
-                    Stove.getInstance().funCode = stoveFunBean.funtionCode;
+                    HomeStove.getInstance().funCode = stoveFunBean.funtionCode;
                     Intent intent = new Intent();
                     intent.putExtra(StoveConstant.EXTRA_MODE_LIST, stoveFunBean.mode);
                     intent.setClassName(getContext(), stoveFunBean.into);
@@ -114,22 +115,22 @@ public class HomePage extends StoveBasePage {
                 }
             });
         }
-        Stove.getInstance().leftStove.observe(this, new Observer<Boolean>() {
+        HomeStove.getInstance().leftStove.observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean) {
                     //开火状态
                     llLeftStove.setVisibility(View.VISIBLE);
-                    if (Stove.getInstance().leftWorkMode == StoveConstant.MODE_FRY)
-                        tvLeftStove.setText("左灶 " + Stove.getInstance().leftWorkTemp + "℃");
+                    if (HomeStove.getInstance().leftWorkMode == StoveConstant.MODE_FRY)
+                        tvLeftStove.setText("左灶 " + HomeStove.getInstance().leftWorkTemp + "℃");
                     else
-                        tvLeftStove.setText("左灶 " + Stove.getInstance().leftWorkHours + "min");
+                        tvLeftStove.setText("左灶 " + HomeStove.getInstance().leftWorkHours + "min");
                 } else {
                     //关火状态
                     llLeftStove.setVisibility(View.INVISIBLE);
-                    Stove.getInstance().leftWorkMode = 0;
-                    Stove.getInstance().leftWorkHours = "";
-                    Stove.getInstance().leftWorkTemp = "";
+                    HomeStove.getInstance().leftWorkMode = 0;
+                    HomeStove.getInstance().leftWorkHours = "";
+                    HomeStove.getInstance().leftWorkTemp = "";
                     if (null != homeLockDialog) { //关闭锁屏时的灶
                         homeLockDialog.closeLeftStove();
                     }
@@ -137,22 +138,22 @@ public class HomePage extends StoveBasePage {
             }
         });
         //初始左灶状态
-        Stove.getInstance().rightStove.observe(this, new Observer<Boolean>() {
+        HomeStove.getInstance().rightStove.observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean) {
                     //开火状态
                     llRightStove.setVisibility(View.VISIBLE);
-                    if (Stove.getInstance().rightWorkMode == StoveConstant.MODE_FRY)
-                        tvRightStove.setText("右灶 " + Stove.getInstance().rightWorkTemp + "℃");
+                    if (HomeStove.getInstance().rightWorkMode == StoveConstant.MODE_FRY)
+                        tvRightStove.setText("右灶 " + HomeStove.getInstance().rightWorkTemp + "℃");
                     else
-                        tvRightStove.setText("右灶 " + Stove.getInstance().rightWorkHours + "min");
+                        tvRightStove.setText("右灶 " + HomeStove.getInstance().rightWorkHours + "min");
                 } else {
                     //关火状态
                     llRightStove.setVisibility(View.INVISIBLE);
-                    Stove.getInstance().rightWorkMode = 0;
-                    Stove.getInstance().rightWorkHours = "";
-                    Stove.getInstance().rightWorkTemp = "";
+                    HomeStove.getInstance().rightWorkMode = 0;
+                    HomeStove.getInstance().rightWorkHours = "";
+                    HomeStove.getInstance().rightWorkTemp = "";
                     if (null != homeLockDialog) {
                         homeLockDialog.closeRightStove();
                     }
@@ -182,13 +183,13 @@ public class HomePage extends StoveBasePage {
             leftStove.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    stopCook(Stove.STOVE_LEFT);
+                    stopCook(IPublicStoveApi.STOVE_LEFT);
                 }
             });
             rightStove.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    stopCook(Stove.STOVE_RIGHT);
+                    stopCook(IPublicStoveApi.STOVE_RIGHT);
                 }
             });
         }
@@ -225,10 +226,10 @@ public class HomePage extends StoveBasePage {
                 @Override
                 public void onClick(View v) {
                     if (v.getId() == R.id.tv_ok) {
-                        if (stove == Stove.STOVE_LEFT)
-                            Stove.getInstance().leftStove.setValue(false);
-                        if (stove == Stove.STOVE_RIGHT)
-                            Stove.getInstance().rightStove.setValue(false);
+                        if (stove == IPublicStoveApi.STOVE_LEFT)
+                            HomeStove.getInstance().leftStove.setValue(false);
+                        if (stove == IPublicStoveApi.STOVE_RIGHT)
+                            HomeStove.getInstance().rightStove.setValue(false);
                     }
                     iDialogStop = null;
                 }
@@ -257,9 +258,9 @@ public class HomePage extends StoveBasePage {
             intent.setClassName(getContext(), "com.robam.ventilator.ui.activity.ShortcutActivity");
             startActivity(intent);
         } else if (id == R.id.ll_left_stove) {
-            stopCook(Stove.STOVE_LEFT);
+            stopCook(IPublicStoveApi.STOVE_LEFT);
         } else if (id == R.id.ll_right_stove) {
-            stopCook(Stove.STOVE_RIGHT);
+            stopCook(IPublicStoveApi.STOVE_RIGHT);
         } else if (id == R.id.iv_lock) {
             //锁屏提示
             affirmLock();

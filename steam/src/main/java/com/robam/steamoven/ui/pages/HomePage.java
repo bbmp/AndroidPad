@@ -43,6 +43,7 @@ public class HomePage extends SteamBasePage {
     private RelativeLayout llMain;
     private PickerLayoutManager pickerLayoutManager;
     private ImageView imageView;
+    private SteamOven steamOven;
 
     public static HomePage newInstance() {
         return new HomePage();
@@ -90,7 +91,7 @@ public class HomePage extends SteamBasePage {
                     return;
                 }
                 intent.setClassName(getContext(), funtionBean.into);
-                SteamOven.getInstance().workMode = (short) funtionBean.funtionCode;
+                steamOven.workMode = (short) funtionBean.funtionCode;
                 startActivity(intent);
             }
 

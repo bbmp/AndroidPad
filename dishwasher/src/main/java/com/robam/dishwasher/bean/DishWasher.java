@@ -2,22 +2,33 @@ package com.robam.dishwasher.bean;
 
 import android.content.Context;
 
+import com.robam.common.bean.Device;
 import com.robam.common.manager.FunctionManager;
 import com.robam.dishwasher.R;
 
 import java.util.List;
 
 //洗碗机
-public class DishWasher {
-    public static DishWasher getInstance() {
-        return DishWasherHolder.instance;
+public class DishWasher extends Device{
+    public DishWasher(Device device) {
+        this.ownerId = device.ownerId;
+        this.guid = device.guid;
+        this.bid = device.bid;
+        this.dc = device.dc;
+        this.dt = device.dt;
+        this.displayType = device.displayType;
+        this.categoryName = device.categoryName;
+        this.deviceTypeIconUrl = device.deviceTypeIconUrl;
+        this.subDevices = device.subDevices;
+    }
+
+    public DishWasher(String name, String displayType) {
+        super(name, displayType);
     }
 
     private List<DishWaherModeBean> dishWaherModeBeans;
 
-    private static class DishWasherHolder {
-        private static final DishWasher instance = new DishWasher();
-    }
+
     /**
      * 预约开始时间
      */
@@ -35,22 +46,9 @@ public class DishWasher {
      */
     public int auxMode;
 
-    public void init(Context context) {
-        if (null == dishWaherModeBeans)
-            dishWaherModeBeans = FunctionManager.getFuntionList(context, DishWaherModeBean.class, R.raw.dishwahser);
-    }
 
-    public List<DishWaherModeBean> getDishWaherModeBeans() {
-        return dishWaherModeBeans;
-    }
-    //当前模式
-    public DishWaherModeBean getDishWaherModeBean(int code) {
-        if (null != dishWaherModeBeans) {
-            for (int i = 0; i< dishWaherModeBeans.size(); i++) {
-                if (dishWaherModeBeans.get(i).code == code)
-                    return dishWaherModeBeans.get(i);
-            }
-        }
-        return null;
+    @Override
+    public void onReceivedMsg(int msgId, String guid, byte[] payload, int offset) {
+
     }
 }

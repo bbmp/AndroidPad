@@ -2,6 +2,9 @@ package com.robam.common.bean;
 
 import androidx.lifecycle.MutableLiveData;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AccountInfo {
     private static AccountInfo instance;
 
@@ -9,6 +12,9 @@ public class AccountInfo {
     private MutableLiveData<UserInfo> user = new MutableLiveData<>(null);
     private MutableLiveData<Boolean> connect = new MutableLiveData<>(false); //联网情况
     private AccountInfo() {}
+
+    //设备列表
+    public List<Device> deviceList = new ArrayList<>();
 
     private static class Holder {
         private static AccountInfo instance = new AccountInfo();

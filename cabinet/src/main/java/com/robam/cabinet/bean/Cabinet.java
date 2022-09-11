@@ -1,17 +1,27 @@
 package com.robam.cabinet.bean;
 
+import com.robam.common.bean.Device;
+
 /**
  * 消毒柜
  */
-public class Cabinet {
-    public static Cabinet getInstance() {
-        return CabinetHolder.instance;
+public class Cabinet extends Device{
+    public Cabinet(Device device) {
+        this.ownerId = device.ownerId;
+        this.guid = device.guid;
+        this.bid = device.bid;
+        this.dc = device.dc;
+        this.dt = device.dt;
+        this.displayType = device.displayType;
+        this.categoryName = device.categoryName;
+        this.deviceTypeIconUrl = device.deviceTypeIconUrl;
+        this.subDevices = device.subDevices;
     }
 
-
-    private static class CabinetHolder {
-        private static final Cabinet instance = new Cabinet();
+    public Cabinet(String name, String displayType) {
+        super(name, displayType);
     }
+
     /**
      * 预约开始时间
      */
@@ -24,4 +34,9 @@ public class Cabinet {
      * 工作时长
      */
     public int workHours;
+
+    @Override
+    public void onReceivedMsg(int msgId, String guid, byte[] payload, int offset) {
+
+    }
 }

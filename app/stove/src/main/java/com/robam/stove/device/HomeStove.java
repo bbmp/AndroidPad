@@ -1,23 +1,17 @@
-package com.robam.common.device;
+package com.robam.stove.device;
 
 import androidx.lifecycle.MutableLiveData;
 
+public class HomeStove {
 
-/**
- * 灶具
- */
-public class Stove {
-    public static Stove getInstance() {
-        return StoveHolder.instance;
+
+    //当前进入的灶具锅首页
+    public static HomeStove getInstance() {
+        return HomeStove.StoveHolder.instance;
     }
-
-    //
-    public final static int STOVE_LEFT = 0;
-    public final static int STOVE_RIGHT = 1;
     private static class StoveHolder {
-        private static final Stove instance = new Stove();
+        private static final HomeStove instance = new HomeStove();
     }
-
     /**
      * 当前功能
      */
@@ -47,5 +41,4 @@ public class Stove {
     public String rightWorkTemp;
     //右灶
     public MutableLiveData<Boolean> rightStove = new MutableLiveData<>(false);
-
 }

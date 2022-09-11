@@ -5,7 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import com.robam.common.device.Stove;
+import com.robam.common.module.IPublicStoveApi;
+import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.ui.dialog.BaseDialog;
 import com.robam.common.ui.dialog.FullDialog;
 import com.robam.pan.R;
@@ -43,20 +44,24 @@ public class SelectStoveDialog extends BaseDialog {
 
     //检查炉头状态
     public void checkStoveStatus() {
-        if (Stove.getInstance().leftWorkMode != 0) {  //工作中
-            viewLeft.setEnabled(false);
-            tvLeftStove.setEnabled(false);
-            tvLeftStatus.setEnabled(false);
-            tvLeftStatus.setText(R.string.pan_stove_using);
-            tvLeftClose.setVisibility(View.VISIBLE);
-        }
-        if (Stove.getInstance().rightWorkMode != 0) {
-            //工作中
-            viewRight.setEnabled(false);
-            tvRightStove.setEnabled(false);
-            tvRightStatus.setEnabled(false);
-            tvRightStatus.setText(R.string.pan_stove_using);
-            tvRightClose.setVisibility(View.VISIBLE);
+        IPublicStoveApi iPublicStoveApi = ModulePubliclHelper.getModulePublic(IPublicStoveApi.class,
+                IPublicStoveApi.STOVE_PUBLIC);
+        if (null != iPublicStoveApi) {
+            if (iPublicStoveApi.getLeftWorkMode() != 0) {  //工作中
+                viewLeft.setEnabled(false);
+                tvLeftStove.setEnabled(false);
+                tvLeftStatus.setEnabled(false);
+                tvLeftStatus.setText(R.string.pan_stove_using);
+                tvLeftClose.setVisibility(View.VISIBLE);
+            }
+            if (iPublicStoveApi.getRightWorkMode() != 0) {
+                //工作中
+                viewRight.setEnabled(false);
+                tvRightStove.setEnabled(false);
+                tvRightStatus.setEnabled(false);
+                tvRightStatus.setText(R.string.pan_stove_using);
+                tvRightClose.setVisibility(View.VISIBLE);
+            }
         }
     }
 }

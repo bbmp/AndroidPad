@@ -5,10 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.robam.stove.device.HomeStove;
 import com.robam.common.ui.dialog.BaseDialog;
 import com.robam.common.ui.dialog.FullDialog;
 import com.robam.stove.R;
-import com.robam.common.device.Stove;
 
 public class SelectStoveDialog extends BaseDialog {
     private TextView mContent;
@@ -44,14 +44,14 @@ public class SelectStoveDialog extends BaseDialog {
 
     //检查炉头状态
     public void checkStoveStatus() {
-        if (Stove.getInstance().leftWorkMode != 0) {  //工作中
+        if (HomeStove.getInstance().leftWorkMode != 0) {  //工作中
             viewLeft.setEnabled(false);
             tvLeftStove.setEnabled(false);
             tvLeftStatus.setEnabled(false);
             tvLeftStatus.setText(R.string.stove_stove_using);
             tvLeftClose.setVisibility(View.VISIBLE);
         }
-        if (Stove.getInstance().rightWorkMode != 0) {
+        if (HomeStove.getInstance().rightWorkMode != 0) {
             //工作中
             viewRight.setEnabled(false);
             tvRightStove.setEnabled(false);
