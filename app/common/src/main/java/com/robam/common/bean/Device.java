@@ -9,10 +9,10 @@ public class Device {
     public final static int OFFLINE = 0;
     public final static int ONLINE  = 1;
     //在线状态
-    public int status = 1;
+    public int status = OFFLINE;
 
     //工作状态
-    public int workStatus = 1;
+    public int workStatus = 0;
 
     /**
      * 拥有者编码

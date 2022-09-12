@@ -16,14 +16,14 @@ public class RTopicParser {
         try {
             Preconditions.checkNotNull(topicString);
             String[] list = topicString.split("/");
-            Preconditions.checkState(list.length >= 3);
+            Preconditions.checkState(list.length >= 4);
 
-            String topicType = list[0];
-            String guid = list[1] + list[2];
+            String topicType = list[1];
+            String guid = list[2] + list[3];
             if (RTopic.TOPIC_UNICAST.equals(topicType)) {
-                return new RTopic(RTopic.TOPIC_UNICAST, list[1], list[2]);
+                return new RTopic(RTopic.TOPIC_UNICAST, list[2], list[3]);
             } else if (RTopic.TOPIC_BROADCAST.equals(topicType)) {
-                return new RTopic(RTopic.TOPIC_BROADCAST, list[1], list[2]);
+                return new RTopic(RTopic.TOPIC_BROADCAST, list[2], list[3]);
             } else {
                 Preconditions.checkState(false, "invalid topic");
             }

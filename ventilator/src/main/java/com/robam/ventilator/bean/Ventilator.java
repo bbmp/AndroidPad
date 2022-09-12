@@ -3,7 +3,10 @@ package com.robam.ventilator.bean;
 import android.os.PowerManager;
 
 import com.robam.common.bean.Device;
+import com.robam.common.mqtt.MsgKeys;
+import com.robam.common.utils.ByteUtils;
 import com.robam.common.utils.LogUtils;
+import com.robam.ventilator.device.VentilatorFactory;
 
 public class Ventilator extends Device {
     public Ventilator(Device device) {
@@ -88,6 +91,20 @@ public class Ventilator extends Device {
 
     @Override
     public void onReceivedMsg(int msgId, String guid, byte[] payload, int offset) {
-        LogUtils.e("onReceivedMsg");
+        if (!this.guid.equals(guid))
+            return;
+
+        switch (msgId) {
+            case MsgKeys.getDeviceAttribute_Req:
+
+                break;
+            case MsgKeys.setDeviceAttribute_Req:
+                //属性个数
+                short number = ByteUtils.toShort(payload[offset]);
+                break;
+            default:
+
+                break;
+        }
     }
 }

@@ -216,8 +216,10 @@ public class MqttSteamOven implements IProtocol {
                 buf.put((byte) 1);
                 buf.put((byte) 0);
                 break;
-            case MsgKeys.getDeviceAttribute_Rep:
-
+            case MsgKeys.getSteameOvenStatus_Req:
+                break;
+            case MsgKeys.getDeviceAttribute_Req: //属性查询
+                buf.put((byte) 0x00);
                 break;
         }
     }

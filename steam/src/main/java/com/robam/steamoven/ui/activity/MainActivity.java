@@ -26,11 +26,9 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        //使用哪个平台
-        SteamFactory.initPlat(this, SteamFactory.TUOBANG);
+
         //开启远程控制
         SteamAbstractControl.getInstance().init(new SteamMqttControl());
-        //协议解析和打包
-        SteamFactory.initMqttProtocol(SteamFactory.CQ926);
+
     }
 }

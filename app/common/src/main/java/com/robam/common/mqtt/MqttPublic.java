@@ -78,9 +78,10 @@ public abstract class MqttPublic implements IProtocol{
             String dt = srcGuid.substring(0 , 5) ;
             String signNum = srcGuid.substring(5 , 17) ;
             short msgId = ByteUtils.toShort(payload[offset++]);
+            LogUtils.e( "收到消息： " + "topic = " + topic + " ,msgId = " + msgId);
 
             // paser payload
-            onDecodeMsg(msgId, payload, offset);
+            onDecodeMsg(msgId, srcGuid, payload, offset);
 
             return msgId;
         } catch (Exception e) {
@@ -93,7 +94,7 @@ public abstract class MqttPublic implements IProtocol{
         return -1;
     }
 
-    protected abstract void onDecodeMsg(int msgId, byte[] payload, int offset);
+    protected abstract void onDecodeMsg(int msgId, String srcGuid, byte[] payload, int offset);
 
     protected abstract void onEncodeMsg(ByteBuffer buf, MqttMsg msg);
 }

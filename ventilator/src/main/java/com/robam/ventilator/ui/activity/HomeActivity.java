@@ -9,19 +9,24 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.serialport.helper.SerialPortHelper;
+import android.serialport.helper.SphResultCallback;
 import android.view.View;
 
 import androidx.lifecycle.Observer;
 
 import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.ui.activity.BaseActivity;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.NetworkUtils;
 import com.robam.common.utils.PermissionUtils;
+import com.robam.common.utils.StringUtils;
 import com.robam.common.utils.WindowsUtils;
 import com.robam.ventilator.R;
+import com.robam.ventilator.device.HomeVentilator;
 import com.robam.ventilator.device.VentilatorFactory;
+import com.robam.ventilator.protocol.serial.SerialVentilator;
 import com.robam.ventilator.ui.service.AlarmService;
 
 //主页
@@ -83,40 +88,40 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void initData() {
         //打开串口
-//        SerialPortHelper.getInstance().openDevice(new SphResultCallback() {
-//            @Override
-//            public void onSendData(byte[] sendCom) {
-//
-//            }
-//
-//            @Override
-//            public void onReceiveData(byte[] data) {
-//                LogUtils.e(StringUtils.bytes2Hex(data));
-//                SerialVentilator.parseSerial(data);
-//            }
-//
-//            @Override
-//            public void onOpenSuccess() {
-//                //开机
-//                if (HomeVentilator.getInstance().startup == 0x00)
-//                    SerialPortHelper.getInstance().addCommands(SerialVentilator.powerOn());
-//                //循环查询
-////                byte data[] = SerialVentilator.packQueryCmd();
-////                while (true) {
-////                    SerialPortHelper.getInstance().addCommands(data);
-////                    try {
-////                        Thread.sleep(3000);
-////                    } catch (InterruptedException e) {
-////                        e.printStackTrace();
-////                    }
-////                }
-//            }
-//
-//            @Override
-//            public void onOpenFailed() {
-//                LogUtils.i("serial open failed" + Thread.currentThread().getName());
-//            }
-//        });
+        SerialPortHelper.getInstance().openDevice(new SphResultCallback() {
+            @Override
+            public void onSendData(byte[] sendCom) {
+
+            }
+
+            @Override
+            public void onReceiveData(byte[] data) {
+                LogUtils.e(StringUtils.bytes2Hex(data));
+                SerialVentilator.parseSerial(data);
+            }
+
+            @Override
+            public void onOpenSuccess() {
+                //开机
+                if (HomeVentilator.getInstance().startup == 0x00)
+                    SerialPortHelper.getInstance().addCommands(SerialVentilator.powerOn());
+                //循环查询
+//                byte data[] = SerialVentilator.packQueryCmd();
+//                while (true) {
+//                    SerialPortHelper.getInstance().addCommands(data);
+//                    try {
+//                        Thread.sleep(3000);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+            }
+
+            @Override
+            public void onOpenFailed() {
+                LogUtils.i("serial open failed" + Thread.currentThread().getName());
+            }
+        });
         //打开蓝牙
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (!bluetoothAdapter.isEnabled())
@@ -135,8 +140,12 @@ public class HomeActivity extends BaseActivity {
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean)
                     MqttManager.getInstance().start(HomeActivity.this, VentilatorFactory.getPlatform(), VentilatorFactory.getProtocol());
-                else
+                else {
+                    //断网
                     MqttManager.getInstance().close();
+                    for (Device device: AccountInfo.getInstance().deviceList)
+                        device.status = Device.OFFLINE;
+                }
             }
         });
     }

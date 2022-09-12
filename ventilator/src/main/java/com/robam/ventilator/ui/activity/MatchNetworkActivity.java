@@ -26,6 +26,7 @@ import com.clj.fastble.data.BleScanState;
 import com.clj.fastble.exception.BleException;
 import com.clj.fastble.scan.BleScanRuleConfig;
 import com.clj.fastble.utils.HexUtil;
+import com.robam.common.manager.BlueToothManager;
 import com.robam.common.ui.view.ExtImageSpan;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.PermissionUtils;
@@ -144,7 +145,8 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
 
     //已授权
     private void onPermissionGranted() {
-        setScanRule();
+        String[] names = new String[] {"ROBAM"};
+        BlueToothManager.setScanRule(names);
         startScan();
     }
 
@@ -180,21 +182,9 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
         }
     }
 
-    //扫描规则
-    private void setScanRule() {
-        String[] names = new String[] {"ROBAM"};
-        BleScanRuleConfig scanRuleConfig = new BleScanRuleConfig.Builder()
-//                .setServiceUuids(serviceUuids)      // 只扫描指定的服务的设备，可选
-                .setDeviceName(true, names)   // 只扫描指定广播名的设备，可选
-//                .setDeviceMac(mac)                  // 只扫描指定mac的设备，可选
-                .setAutoConnect(true)      // 连接时的autoConnect参数，可选，默认false
-                .setScanTimeOut(10000)              // 扫描超时时间，可选，默认10秒
-                .build();
-        BleManager.getInstance().initScanRule(scanRuleConfig);
-    }
     //开始扫描
     private void startScan() {
-        BleManager.getInstance().scan(new BleScanCallback() {
+        BlueToothManager.startScan(new BleScanCallback() {
             @Override
             public void onScanStarted(boolean success) {
                 LogUtils.e("onScanStarted");
@@ -228,7 +218,7 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
     }
     //连接设备
     private void connect(final BleDevice bleDevice) {
-        BleManager.getInstance().connect(bleDevice, new BleGattCallback() {
+        BlueToothManager.connect(bleDevice, new BleGattCallback() {
             @Override
             public void onStartConnect() {
                 LogUtils.e("onStartConnect");
@@ -306,19 +296,12 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
                     }
                 });
     }
-    //取消通知
-    private void stopNotify(BleDevice bleDevice, BluetoothGattCharacteristic characteristic) {
-        BleManager.getInstance().stopNotify(
-                bleDevice,
-                characteristic.getService().getUuid().toString(),
-                characteristic.getUuid().toString());
-    }
+
     //订阅可靠通知
     private void indicate(BleDevice bleDevice, BluetoothGattCharacteristic characteristic) {
-        BleManager.getInstance().indicate(
+        BlueToothManager.indicate(
                 bleDevice,
-                characteristic.getService().getUuid().toString(),
-                characteristic.getUuid().toString(),
+                characteristic,
                 new BleIndicateCallback() {
 
                     @Override
@@ -340,11 +323,5 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
                     }
                 });
     }
-    //取消订阅
-    private void stopIndicate(BleDevice bleDevice, BluetoothGattCharacteristic characteristic) {
-        BleManager.getInstance().stopIndicate(
-                bleDevice,
-                characteristic.getService().getUuid().toString(),
-                characteristic.getUuid().toString());
-    }
+
 }

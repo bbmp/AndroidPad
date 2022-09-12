@@ -19,7 +19,7 @@ public class AppVentilator {
         //串口初始化
         SerialPortConfig serialPortConfig = new SerialPortConfig.Builder()
                 .setMaxSize(23)
-                .setPath("/dev/ttyS1").build();
+                .setPath("/dev/ttyS3").build();
         SerialPortHelper.getInstance().init(serialPortConfig);
         //ble init
         BleManager.getInstance().init(application);

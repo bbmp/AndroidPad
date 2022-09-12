@@ -6,6 +6,7 @@ import android.util.Log;
 import com.robam.common.bean.RTopic;
 import com.robam.common.device.IPlat;
 import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.StringUtils;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -80,7 +81,7 @@ public class MqttManager {
             LogUtils.e( "连接成功 ");
             try {
                 String topic = new RTopic(RTopic.TOPIC_UNICAST, iPlat.getDt()
-                        , iPlat.getMac()).getTopic();
+                        , iPlat.getDeviceOnlySign()).getTopic();
                 mqttAndroidClient.subscribe(topic, 2, iPlat.getDeviceOnlySign(), mqttActionListener);//订阅主题，参数：主题、服务质量
             } catch (MqttException e) {
                 e.printStackTrace();
@@ -105,7 +106,30 @@ public class MqttManager {
             e.printStackTrace();
         }
     }
-
+    /**
+     * 单个订阅设备
+     */
+    public void subscribe(String dt, String guid) {
+        try {
+            String topic = new RTopic(RTopic.TOPIC_UNICAST, dt
+                    , guid).getTopic();
+            mqttAndroidClient.subscribe(topic, 2, null, mqttActionListener);//订阅主题，参数：主题、服务质量
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+    }
+    /**
+     * 取消订阅
+     */
+    public void unSubscribe(String dt, String guid) {
+        try {
+            String topic = new RTopic(RTopic.TOPIC_UNICAST, dt
+                    , guid).getTopic();
+            mqttAndroidClient.unsubscribe(topic);
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+    }
     /**
      * 连接MQTT服务器
      */
@@ -164,30 +188,29 @@ public class MqttManager {
 
         @Override
         public void messageArrived(String topic, MqttMessage message) throws Exception {
-            LogUtils.e( "收到消息： " + Arrays.toString(message.getPayload()));
             int msgId = iProtocol.decode(topic, message.getPayload());
 //            if (null != mqttMsgCallback && null != message)
 //                mqttMsgCallback.messageArrived(message.getPayload());
             //统一 处理响应
-            if (msgId == MsgKeys.getDeviceAttribute_Req){
-                MqttMsg msg = new MqttMsg.Builder()
-                        .setMsgId(MsgKeys.getDeviceAttribute_Rep)
-                        .setGuid(iPlat.getDeviceOnlySign())
-                        .setDt(iPlat.getDt())
-                        .setSignNum(iPlat.getMac())
-                        .setTopic(new RTopic(RTopic.TOPIC_UNICAST, iPlat.getDt(), iPlat.getMac()))
-                        .build();
-                publish(msg, iProtocol);
-            }else if (msgId == MsgKeys.setDeviceAttribute_Req){
-                MqttMsg msg = new MqttMsg.Builder()
-                        .setMsgId(MsgKeys.setDeviceAttribute_Req)
-                        .setGuid(iPlat.getDeviceOnlySign())
-                        .setDt(iPlat.getDt())
-                        .setSignNum(iPlat.getMac())
-                        .setTopic(new RTopic(RTopic.TOPIC_UNICAST, iPlat.getDt(), iPlat.getMac()))
-                        .build();
-                publish(msg, iProtocol);
-            }
+//            if (msgId == MsgKeys.getDeviceAttribute_Req){
+//                MqttMsg msg = new MqttMsg.Builder()
+//                        .setMsgId(MsgKeys.getDeviceAttribute_Rep)
+//                        .setGuid(iPlat.getDeviceOnlySign())
+//                        .setDt(iPlat.getDt())
+//                        .setSignNum(iPlat.getMac())
+//                        .setTopic(new RTopic(RTopic.TOPIC_UNICAST, iPlat.getDt(), iPlat.getMac()))
+//                        .build();
+//                publish(msg, iProtocol);
+//            }else if (msgId == MsgKeys.setDeviceAttribute_Req){
+//                MqttMsg msg = new MqttMsg.Builder()
+//                        .setMsgId(MsgKeys.setDeviceAttribute_Req)
+//                        .setGuid(iPlat.getDeviceOnlySign())
+//                        .setDt(iPlat.getDt())
+//                        .setSignNum(iPlat.getMac())
+//                        .setTopic(new RTopic(RTopic.TOPIC_UNICAST, iPlat.getDt(), iPlat.getMac()))
+//                        .build();
+//                publish(msg, iProtocol);
+//            }
 
         }
 
@@ -220,7 +243,7 @@ public class MqttManager {
         try {
             byte[] data = protocol.encode(msg);
             LogUtils.e( "发送的主题： " + topic);
-            LogUtils.e( "发送的消息： " + Arrays.toString(data));
+            LogUtils.e( "发送的消息： " + StringUtils.bytes2Hex(data));
             //参数分别为：主题、消息的字节数组、服务质量、是否在服务器保留断开连接后的最后一条消息
             mqttAndroidClient.publish(topic, data, qos.intValue(), retained.booleanValue());
         } catch (Exception e) {
@@ -254,7 +277,7 @@ public class MqttManager {
                 .setGuid(iPlat.getDeviceOnlySign())
                 .setDt(iPlat.getDt())
                 .setSignNum(iPlat.getMac())
-                .setTopic(new RTopic(RTopic.TOPIC_BROADCAST, iPlat.getDt(), iPlat.getMac()))
+                .setTopic(new RTopic(RTopic.TOPIC_BROADCAST, iPlat.getDt(), iPlat.getDeviceOnlySign()))
                 .build();
 
         publish(msg, iProtocol);

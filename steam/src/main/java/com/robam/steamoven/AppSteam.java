@@ -6,10 +6,11 @@ import android.serialport.helper.SerialPortHelper;
 
 import com.clj.fastble.BleManager;
 import com.robam.common.http.RetrofitClient;
+import com.robam.steamoven.device.SteamFactory;
 
 public class AppSteam {
 
-    public void init(Application application) {
+    public void onCreate(Application application) {
         //检测食物
 //        FoodMaterialHelper.init(this);
         //串口初始化
@@ -26,5 +27,7 @@ public class AppSteam {
                 .setConnectOverTime(20000)
                 .setOperateTimeout(5000);
 
+        //使用哪个平台
+        SteamFactory.initPlat(application, SteamFactory.TUOBANG);
     }
 }

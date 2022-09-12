@@ -347,9 +347,9 @@ public class HomePage extends VentilatorBasePage {
                                         AccountInfo.getInstance().deviceList.add(new Pan(subDevice));
                                 }
                             }
-//                            queryDeviceStatus(device);
                         }
-                        //查询设备状态
+                        //订阅设备主题
+                        subscribeDevice();
                         if (null != rvProductsAdapter)
                             rvProductsAdapter.setList(AccountInfo.getInstance().deviceList);
                         AccountInfo.getInstance().deviceList.get(0).onReceivedMsg(0, "srcGuid", null, 0);
@@ -369,17 +369,10 @@ public class HomePage extends VentilatorBasePage {
                 rvProductsAdapter.setList(AccountInfo.getInstance().deviceList);
         }
     }
-
-    private void queryDeviceStatus(Device device) {
-        if (device.getDisplayType() .equals("DB610D")) {
-            MqttMsg msg = new MqttMsg.Builder()
-                    .setMsgId(MsgKeys.getSteameOvenStatus_Req)
-                    .setGuid(VentilatorFactory.getPlatform().getDeviceOnlySign())
-                    .setDt(VentilatorFactory.getPlatform().getDt())
-                    .setSignNum(VentilatorFactory.getPlatform().getMac())
-                    .setTopic(new RTopic(RTopic.TOPIC_UNICAST, VentilatorFactory.getPlatform().getDt(), VentilatorFactory.getPlatform().getMac()))
-                    .build();
-            MqttManager.getInstance().publish(msg, VentilatorFactory.getProtocol());
+    //循环订阅
+    private void subscribeDevice() {
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            MqttManager.getInstance().subscribe(device.dt, device.guid);
         }
     }
 

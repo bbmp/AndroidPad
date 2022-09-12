@@ -5,6 +5,8 @@ import android.serialport.helper.SerialPortHelper;
 import androidx.lifecycle.LiveData;
 
 import com.robam.common.bean.Device;
+import com.robam.common.mqtt.MsgKeys;
+import com.robam.common.utils.ByteUtils;
 import com.robam.steamoven.protocol.serial.ProtoParse;
 
 import java.util.ArrayList;
@@ -609,6 +611,23 @@ public class SteamOven extends Device {
 
     @Override
     public void onReceivedMsg(int msgId, String guid, byte[] payload, int offset) {
-
+        if (this.guid.equals(guid)) //非当前设备
+            return;
+        switch (msgId) {
+            case MsgKeys.getDeviceAttribute_Req:
+                break;
+            case MsgKeys.getDeviceAttribute_Rep: {
+                //属性个数
+                short number = ByteUtils.toShort(payload[offset]);
+                offset++;
+                while (number > 0) {
+                    short key =  ByteUtils.toShort(payload[offset]);
+                    offset++;
+                    short length =  ByteUtils.toShort(payload[offset]);
+                    offset++;
+                }
+            }
+                break;
+        }
     }
 }

@@ -13,17 +13,12 @@ public class SteamFactory {
     //平台
     private static IPlat platform ;
     //mqtt协议
-    private static IProtocol protocol ;
+    private static IProtocol protocol = new MqttSteamOven();
 
 
     public static void initPlat(Context context, String plat) {
         if (TUOBANG.equals(plat))
             platform = new TbangPlat();
-    }
-
-    public static void initMqttProtocol(String dt) {
-        if (CQ926.equals(dt))
-            protocol = new MqttSteamOven();
     }
 
     public static IPlat getPlatform() {

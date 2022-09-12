@@ -8,7 +8,7 @@ public class MqttMsg {
      */
     protected short msgId;
 
-
+    //源头guid
     private String guid;
     /**
      * 数据
