@@ -12,6 +12,7 @@ public class Pan extends Device {
 
     public Pan(Device device) {
         this.ownerId = device.ownerId;
+        this.mac = device.mac;
         this.guid = device.guid;
         this.bid = device.bid;
         this.dc = device.dc;

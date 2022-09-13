@@ -25,6 +25,14 @@ public class DeviceUtils {
         }
         return guid.substring(0, venderLen);
     }
+    public static String getDeviceNumber(String guid) {
+        int venderLen = VENDOR_LENGTH;
+        if (guid.length() == GUID_LENGTH) {
+            venderLen = 0;
+        }
+        return guid.substring(venderLen + DEVICE_TYPE_LENGTH);
+
+    }
 
 
     public static boolean isStove(String guid) {//判断是否为灶具

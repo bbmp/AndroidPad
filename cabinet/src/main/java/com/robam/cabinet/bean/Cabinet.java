@@ -8,6 +8,7 @@ import com.robam.common.bean.Device;
 public class Cabinet extends Device{
     public Cabinet(Device device) {
         this.ownerId = device.ownerId;
+        this.mac = device.mac;
         this.guid = device.guid;
         this.bid = device.bid;
         this.dc = device.dc;

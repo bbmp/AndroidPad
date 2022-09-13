@@ -1,7 +1,9 @@
 package com.robam.common.bean;
 
+import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.utils.LogUtils;
 
+import java.nio.ByteBuffer;
 import java.util.List;
 
 public class Device {
@@ -93,8 +95,9 @@ public class Device {
         return workStatus;
     }
 
-
+    //此设备数据
     public void onReceivedMsg(int msgId, String guid, byte[] payload, int offset) {
         LogUtils.e("onReceivedMsg");
     }
+
 }

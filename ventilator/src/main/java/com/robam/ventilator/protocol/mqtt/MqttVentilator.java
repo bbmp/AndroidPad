@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.robam.cabinet.bean.Cabinet;
 import com.robam.cabinet.device.CabinetFactory;
+import com.robam.common.ITerminalType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.RTopic;
@@ -77,7 +78,11 @@ public class MqttVentilator extends MqttPublic {
                 buf.put((byte) 1);
                 buf.put((byte) 0);
                 break;
-            case MsgKeys.getDeviceAttribute_Rep:
+            case MsgKeys.getDeviceAttribute_Req:  //属性查询
+                buf.put((byte) 0x00);
+                break;
+            case MsgKeys.GetFanStatus_Req: //烟机状态查询
+                buf.put((byte) ITerminalType.PAD);
                 break;
         }
     }
@@ -86,7 +91,11 @@ public class MqttVentilator extends MqttPublic {
     protected void onDecodeMsg(int msgId, String srcGuid, byte[] payload, int offset) {
         //分发到各设备
         for (Device device: AccountInfo.getInstance().deviceList) {
-            device.onReceivedMsg(msgId, srcGuid, payload, offset);
+            if (srcGuid.equals(device.guid)) {
+                LogUtils.e("srcGuid " + srcGuid);
+                device.onReceivedMsg(msgId, srcGuid, payload, offset);
+                break;
+            }
         }
     }
 

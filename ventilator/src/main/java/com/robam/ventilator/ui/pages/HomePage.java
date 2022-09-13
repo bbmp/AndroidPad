@@ -22,7 +22,9 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.google.gson.Gson;
 import com.robam.cabinet.bean.Cabinet;
 import com.robam.common.IDeviceType;
+import com.robam.common.bean.BaseResponse;
 import com.robam.common.bean.RTopic;
+import com.robam.common.utils.DeviceUtils;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.pan.bean.Pan;
 import com.robam.steamoven.bean.SteamOven;
@@ -93,7 +95,6 @@ public class HomePage extends VentilatorBasePage {
     private Group group;
     private DrawerLayout drawerLayout;
     private LinearLayout llSetting, llProducts;
-    private static final String PASSWORD_LOGIN = "mobilePassword";
 
     public static HomePage newInstance() {
         return new HomePage();
@@ -306,17 +307,6 @@ public class HomePage extends VentilatorBasePage {
                 getDeviceInfo(userInfo);
             }
         });
-        //未登录
-        if (null == AccountInfo.getInstance().getUser().getValue()) {
-           String json = MMKVUtils.getUser();
-           try {
-               //密码登录 自动登录
-               UserInfo info = new Gson().fromJson(json, UserInfo.class);
-               getToken(info.phone, info.password);
-           } catch (Exception e) {
-
-           }
-        }
     }
 
     /**
@@ -348,11 +338,12 @@ public class HomePage extends VentilatorBasePage {
                                 }
                             }
                         }
+                        //绑定设备
+                        bindDevice();
                         //订阅设备主题
                         subscribeDevice();
                         if (null != rvProductsAdapter)
                             rvProductsAdapter.setList(AccountInfo.getInstance().deviceList);
-                        AccountInfo.getInstance().deviceList.get(0).onReceivedMsg(0, "srcGuid", null, 0);
                     }
                 }
 
@@ -369,10 +360,32 @@ public class HomePage extends VentilatorBasePage {
                 rvProductsAdapter.setList(AccountInfo.getInstance().deviceList);
         }
     }
+    //绑定设备
+    private void bindDevice() {
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device.guid.equals(VentilatorFactory.getPlatform().getDeviceOnlySign())) //已绑定
+                return;
+        }
+        CloudHelper.bindDevice(this, AccountInfo.getInstance().getUser().getValue().id,
+                VentilatorFactory.getPlatform().getDeviceOnlySign(), IDeviceType.RYYJ_ZN, true, BaseResponse.class, new RetrofitCallback<BaseResponse>() {
+                    @Override
+                    public void onSuccess(BaseResponse baseResponse) {
+                        if (null != baseResponse)
+                            LogUtils.e("绑定成功" + VentilatorFactory.getPlatform().getDeviceOnlySign());
+                    }
+
+                    @Override
+                    public void onFaild(String err) {
+
+                    }
+                });
+        //子设备绑定
+    }
+
     //循环订阅
     private void subscribeDevice() {
         for (Device device: AccountInfo.getInstance().deviceList) {
-            MqttManager.getInstance().subscribe(device.dt, device.guid);
+            MqttManager.getInstance().subscribe(DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid));
         }
     }
 
@@ -449,48 +462,5 @@ public class HomePage extends VentilatorBasePage {
             }
         }, R.id.tv_cancel, R.id.tv_ok);
         iDialog.show();
-    }
-    //获取token
-    private void getToken(String phone, String pwd) {
-        CloudHelper.getToken(this, PASSWORD_LOGIN, phone, "", pwd, "roki_client", "test", "RKDRD",
-                GetTokenRes.class, new RetrofitCallback<GetTokenRes>() {
-                    @Override
-                    public void onSuccess(GetTokenRes getTokenRes) {
-                        if (null != getTokenRes) {
-                            getUserInfo(getTokenRes.getAccess_token());
-                        } else {
-                            ToastUtils.showShort(getContext(), R.string.ventilator_request_failed);
-                        }
-                    }
-
-                    @Override
-                    public void onFaild(String err) {
-                        LogUtils.e("getToken" + err);
-                    }
-                });
-    }
-    //获取用户信息
-    private void getUserInfo(String access_token) {
-        CloudHelper.getUserInfo(this, access_token, GetUserInfoRes.class, new RetrofitCallback<GetUserInfoRes>() {
-            @Override
-            public void onSuccess(GetUserInfoRes getUserInfoRes) {
-                if (null != getUserInfoRes && null != getUserInfoRes.getUser()) {
-                    UserInfo info = getUserInfoRes.getUser();
-                    info.loginType = PASSWORD_LOGIN;
-                    //保存用户信息及登录状态
-                    //登录成功
-                    AccountInfo.getInstance().getUser().setValue(info);
-                    //绑定设备
-//                    bindDevice(getUserInfoRes.getUser().id);
-                } else {
-                    ToastUtils.showShort(getContext(), R.string.ventilator_request_failed);
-                }
-            }
-
-            @Override
-            public void onFaild(String err) {
-                LogUtils.e("getUserInfo" + err);
-            }
-        });
     }
 }

@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 import com.robam.common.bean.Device;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.ByteUtils;
+import com.robam.common.utils.MsgUtils;
 import com.robam.steamoven.protocol.serial.ProtoParse;
 
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.List;
 public class SteamOven extends Device {
     public SteamOven(Device device) {
         this.ownerId = device.ownerId;
+        this.mac = device.mac;
         this.guid = device.guid;
         this.bid = device.bid;
         this.dc = device.dc;
@@ -447,186 +449,99 @@ public class SteamOven extends Device {
     }
 
 
-    public void marshaller(byte[] payload) {
-        //命令打包
-        if (payload == null || payload.length == 0) {
-//            ToastUtils.show("payload数据异常");
-            return;
-        }
-        byte[] bytes = ProtoParse.packCtrlCmd(payload);
-        //发送数据
-        SerialPortHelper.getInstance().addCommands(bytes);
-    }
-
-    public void unmarshaller(byte[] payload) {
-        if (payload == null) {
-            return;
-        }
-        switch (payload[0]) {
-            case ProtoParse.MSG_TYPE_CMD://功能选择返回
-                //系统状态
-                sysState = payload[2];
-                //--------------故障状态-------------
-                fault_temp_up = (payload[3] & 0x01) != 0;
-                fault_temp_down = (payload[3] & 0x02) != 0;
-                fault_disp_comm = (payload[3] & 0x04) != 0;
-                fault_fan_up = (payload[3] & 0x08) != 0;
-                fault_heat = (payload[3] & 0x10) != 0;
-                fault_water_level = (payload[3] & 0x20) != 0;
-                fault_heater_fan = (payload[3] & 0x40) != 0;
-                fault_steam_temp = (payload[3] & 0x80) != 0;
-                fault_up_and_down_motor = (payload[4] & 0x01) != 0;
-                //蜂鸣器
-                beep_type = payload[5];
-                //工作状态
-                workState = payload[6];
-                //下层工作状态
-                workStateDown = payload[7];
-                //---------------工作标志位---------------
-                //上照明状态
-                upLampState = (payload[8] & 0x01);
-                //下照明状态
-                downLampState = (payload[8] & 0x02);
-                //水箱状态
-                waterBoxState = (payload[8] & 0x04) == 0 ? 0 : 1;
-                //门控状态
-                doorState = (payload[8] & 0x08) == 0 ? 0 : 1;
-                //门控状态（微波 锁）
-                doorStateRippleLock = (payload[8] & 0x10);
-                //升降电机状态
-                uppdem = (payload[8] & 0x20) == 0 ? 0 : 1;
-                //降电机状态
-                downpdem = (payload[8] & 0x40) == 0 ? 0 : 1;
-                //旋转烤盘
-//                getInstance().rotatePan = (result[8] & 0x40) == 0 ? 0 : 1;
-//                i = (result[8] & 0x80);
-//                //门锁
-//                getInstance().upLampState = (result[9] & 0x01);
-                //废水箱标识位
-                fWaterBoxState = (payload[9] & 0x02) == 0 ? 0 : 1;
-                //水位状态
-                waterLevelState = (payload[9] & 0x04) == 0 ? 0 : 1;
-
-                //工作类型
-                workType = payload[10];
-                //工作模式
-                workMode = payload[11];
-                //设置上温度
-                setTempUp = payload[12] & 0xff;
-                //设置下温度
-                setTempDown = payload[14];
-                //当前上温度
-                upTemp = payload[16] & 0xff;
-                //当前下温度
-                downTemp = payload[18];
-                //除垢步骤
-                descaleNum = payload[21];
-
-                //蒸汽量大小
-//                getInstance().descaleNum = result[22];
-//                Thread th = Thread.currentThread();
-
-                //除垢变化量
-                descaleNumVariation = payload[24]& 0xff;
-
-//                if (steamOvenChangeAction != null) {
-//                    steamOvenChangeAction.onSteamOvenChange(getInstance());
-//                }
-                break;
-            case ProtoParse.MSG_TYPE_POOL://功能查询返回
-//                //系统状态
-//                getInstance().sysState = result[2];
-//                //--------------故障状态-------------
-//                getInstance().fault_temp_up = (result[3] & 0x01) != 0;
-//                getInstance().fault_temp_down = (result[3] & 0x02) != 0;
-//                getInstance().fault_disp_comm = (result[3] & 0x04) != 0;
-//                getInstance().fault_fan_up = (result[3] & 0x08) != 0;
-//                getInstance().fault_heat = (result[3] & 0x10) != 0;
-//                getInstance().fault_water_level = (result[3] & 0x20) != 0;
-//                getInstance().fault_heater_fan = (result[3] & 0x40) != 0;
-//                getInstance().fault_steam_temp = (result[3] & 0x80) != 0;
-//                getInstance().fault_up_and_down_motor = (result[4] & 0x01) != 0;
-//                //蜂鸣器
-//                getInstance().beep_type = result[5];
-//                //工作状态
-//                getInstance().workState = result[6];
-//                //下层工作状态
-//                getInstance().workStateDown = result[7];
-//                //---------------工作标志位---------------
-//                //上照明状态
-//                getInstance().upLampState = (result[8] & 0x01);
-//                //下照明状态
-//                getInstance().downLampState = (result[8] & 0x02);
-//                //水箱状态
-//                getInstance().waterBoxState = (result[8] & 0x04);
-//                //门控状态（锁）
-//                getInstance().doorStateLock = (result[8] & 0x08);
-//                //门控状态（微波 锁）
-//                getInstance().doorStateRippleLock = (result[8] & 0x10);
-//                //升降电机状态
-//                getInstance().uppdem = (result[8] & 0x20) == 0 ? 0 : 1;
-//                //降电机状态
-//                getInstance().downpdem = (result[8] & 0x40) == 0 ? 0 : 1;
-//                //旋转烤盘
-////                getInstance().rotatePan = (result[8] & 0x40) == 0 ? 0 : 1;
-////                i = (result[8] & 0x80);
-////                //门锁
-////                getInstance().upLampState = (result[9] & 0x01);
-////                //旋转烤架开关
-////                getInstance().pdem = (result[9] & 0x02);
-//                //水箱状态
-//                getInstance().waterLevelState = (result[9] & 0x04) == 0 ? 0 : 1;
-////                getInstance().waterLevelState = (result[9] & 0x08);
-//                //门状态
-//                getInstance().doorState = (result[9] & 0x10) == 0 ? 0 : 1;
-//
-//                //工作类型
-//                getInstance().workType = result[10];
-//                //工作模式
-//                getInstance().workMode = result[11];
-//                //设置上温度
-//                getInstance().setTempUp = result[12] & 0xff;
-//                //设置下温度
-//                getInstance().setTempDown = result[14];
-//                //当前上温度
-//                getInstance().upTemp = result[16] & 0xff;
-//                //当前下温度
-//                getInstance().downTemp = result[18];
-//                //除垢步骤
-//                getInstance().descaleNum = result[21];
-//
-//                //蒸汽量大小
-////                getInstance().descaleNum = result[22];
-////                Thread th = Thread.currentThread();
-//
-//                //除垢变化量
-//                getInstance().descaleNumVariation = result[24]& 0xff;
-//
-//                if (steamOvenChangeAction != null) {
-//                    steamOvenChangeAction.onSteamOvenChange(getInstance());
-//                }
-                break;
-        }
-    }
 
     @Override
     public void onReceivedMsg(int msgId, String guid, byte[] payload, int offset) {
-        if (this.guid.equals(guid)) //非当前设备
+        if (!this.guid.equals(guid)) //非当前设备
             return;
         switch (msgId) {
             case MsgKeys.getDeviceAttribute_Req:
                 break;
             case MsgKeys.getDeviceAttribute_Rep: {
-                //属性个数
-                short number = ByteUtils.toShort(payload[offset]);
-                offset++;
-                while (number > 0) {
-                    short key =  ByteUtils.toShort(payload[offset]);
-                    offset++;
-                    short length =  ByteUtils.toShort(payload[offset]);
-                    offset++;
-                }
             }
+                break;
+            case MsgKeys.getSteameOvenStatus_Rep:
+                //
+                short status = ByteUtils.toShort(payload[offset++]);
+                short powerOnStatus = ByteUtils.toShort(payload[offset++]);
+                short workOnStatus = ByteUtils.toShort(payload[offset++]);
+                short alarm = ByteUtils.toShort(payload[offset++]);
+                short mode = ByteUtils.toShort(payload[offset++]);
+                short temp = ByteUtils.toShort(payload[offset++]);
+                short leftTime = ByteUtils.toShort(payload[offset++]);
+                offset++;
+                short light = ByteUtils.toShort(payload[offset++]);
+                short waterStatus = ByteUtils.toShort(payload[offset++]);
+                short setTemp = ByteUtils.toShort(payload[offset++]);
+                short setTime = ByteUtils.toShort(payload[offset++]);
+                short min = ByteUtils.toShort(payload[offset++]);
+                short hour = ByteUtils.toShort(payload[offset++]);
+                short recipeId = ByteUtils.toShort(payload[offset++]);
+                offset++;
+                short recipeSteps = ByteUtils.toShort(payload[offset++]);
+                short setDownTemp = ByteUtils.toShort(payload[offset++]);
+                short downTemp = ByteUtils.toShort(payload[offset++]);
+                short steam = ByteUtils.toShort(payload[offset++]);
+                short segments_Key = ByteUtils.toShort(payload[offset++]);
+                short step_Key = ByteUtils.toShort(payload[offset++]);
+                short preFalg = ByteUtils.toShort(payload[offset++]);
+                short modelType = ByteUtils.toShort(payload[offset++]);
+
+                short argument = ByteUtils.toShort(payload[offset++]);
+
+                while (argument > 0) {
+                    short argumentKey = ByteUtils.toShort(payload[offset++]);
+                    switch (argumentKey) {
+                        case 3:
+
+                            short cpStepLength = ByteUtils.toShort(payload[offset++]);
+                            short cpStepValue = ByteUtils.toShort(payload[offset++]);
+                            break;
+                        case 4:
+                            short steamLength = ByteUtils.toShort(payload[offset++]);
+                            short steamValue = ByteUtils.toShort(payload[offset++]);
+                            break;
+                        case 5:
+                            short MultiStepCookingStepsLength = ByteUtils.toShort(payload[offset++]);
+                            short MultiStepCookingStepsValue = ByteUtils.toShort(payload[offset++]);
+                            break;
+                        case 6:
+                            short SteamOvenAutoRecipeModeLength = ByteUtils.toShort(payload[offset++]);
+                            short AutoRecipeModeValue = ByteUtils.toShort(payload[offset++]);
+                            break;
+                        case 7:
+                            short MultiStepCurrentStepsLength = ByteUtils.toShort(payload[offset++]);
+                            short MultiStepCurrentStepsValue = ByteUtils.toShort(payload[offset++]);
+                            break;
+                        case 8:
+                            short SteameOvenPreFlagLength = ByteUtils.toShort(payload[offset++]);
+                            short SteameOvenPreFlagValue = ByteUtils.toShort(payload[offset++]);
+                            break;
+                        case 9:
+                            short weatherDescalingLength = ByteUtils.toShort(payload[offset++]);
+                            short weatherDescalingValue = ByteUtils.toShort(payload[offset++]);
+                            break;
+                        case 10:
+                            short doorStatusLength = ByteUtils.toShort(payload[offset++]);
+                            short doorStatusValue = ByteUtils.toShort(payload[offset++]);
+                            break;
+                        case 11:
+                            short time_H_length = ByteUtils.toShort(payload[offset++]);
+                            short time_H_Value = ByteUtils.toShort(payload[offset++]);
+                            break;
+                        case 12:
+                            offset++ ;
+                            short SteameOvenLeftMin = ByteUtils.toShort(payload[offset++]);
+                            short SteameOvenLeftHours = ByteUtils.toShort(payload[offset++]);
+                            break;
+                    }
+                    argument--;
+                }
+                break;
+            case MsgKeys.getDeviceEventReport: //事件上报
+                //设备型号
+                short categoryCodeEvent = ByteUtils.toShort(payload[offset++]);
+                short event = ByteUtils.toShort(payload[offset++]);
                 break;
         }
     }

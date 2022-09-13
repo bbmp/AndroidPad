@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 
 public class ByteUtils {
-
+    public final static ByteOrder BYTE_ORDER = ByteOrder.LITTLE_ENDIAN;
     public static final Charset CHARSET = Charset.forName("utf-8");
 
     // byte 与 int 的相互转换

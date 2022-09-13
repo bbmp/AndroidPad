@@ -14,19 +14,27 @@ import android.view.View;
 
 import androidx.lifecycle.Observer;
 
+import com.google.gson.Gson;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
+import com.robam.common.bean.UserInfo;
+import com.robam.common.http.RetrofitCallback;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.ui.activity.BaseActivity;
 import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.MMKVUtils;
 import com.robam.common.utils.NetworkUtils;
 import com.robam.common.utils.PermissionUtils;
 import com.robam.common.utils.StringUtils;
+import com.robam.common.utils.ToastUtils;
 import com.robam.common.utils.WindowsUtils;
 import com.robam.ventilator.R;
 import com.robam.ventilator.device.HomeVentilator;
 import com.robam.ventilator.device.VentilatorFactory;
+import com.robam.ventilator.http.CloudHelper;
 import com.robam.ventilator.protocol.serial.SerialVentilator;
+import com.robam.ventilator.response.GetTokenRes;
+import com.robam.ventilator.response.GetUserInfoRes;
 import com.robam.ventilator.ui.service.AlarmService;
 
 //主页
@@ -41,6 +49,8 @@ public class HomeActivity extends BaseActivity {
 
     private BluetoothAdapter bluetoothAdapter;
     private Intent intent;
+    private static final String PASSWORD_LOGIN = "mobilePassword";
+
 
     @Override
     protected int getLayoutId() {
@@ -132,17 +142,29 @@ public class HomeActivity extends BaseActivity {
         startService(intent);
 //初始化主设备mqtt收发 烟机端只要网络连接上就需要启动mqtt服务，锅和灶不用登录
         //初始网络状态
-        if (NetworkUtils.isConnect(this))
+        if (NetworkUtils.isConnect(this) && !AccountInfo.getInstance().getConnect().getValue())
             AccountInfo.getInstance().getConnect().setValue(true);
         //监听网络状态
         AccountInfo.getInstance().getConnect().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                if (aBoolean)
+                if (aBoolean) {
                     MqttManager.getInstance().start(HomeActivity.this, VentilatorFactory.getPlatform(), VentilatorFactory.getProtocol());
+                    //未登录
+                    if (null == AccountInfo.getInstance().getUser().getValue()) {
+                        String json = MMKVUtils.getUser();
+                        try {
+                            //密码登录 自动登录
+                            UserInfo info = new Gson().fromJson(json, UserInfo.class);
+                            getToken(info.phone, info.password);
+                        } catch (Exception e) {
+
+                        }
+                    }
+                }
                 else {
                     //断网
-                    MqttManager.getInstance().close();
+                    MqttManager.getInstance().stop();
                     for (Device device: AccountInfo.getInstance().deviceList)
                         device.status = Device.OFFLINE;
                 }
@@ -189,5 +211,49 @@ public class HomeActivity extends BaseActivity {
         SerialPortHelper.getInstance().closeDevice();
         //关闭定时任务
         stopService(intent);
+    }
+
+    //获取token
+    private void getToken(String phone, String pwd) {
+        CloudHelper.getToken(this, PASSWORD_LOGIN, phone, "", pwd, "roki_client", "test", "RKDRD",
+                GetTokenRes.class, new RetrofitCallback<GetTokenRes>() {
+                    @Override
+                    public void onSuccess(GetTokenRes getTokenRes) {
+                        if (null != getTokenRes) {
+                            getUserInfo(getTokenRes.getAccess_token());
+                        } else {
+                            ToastUtils.showShort(getContext(), R.string.ventilator_request_failed);
+                        }
+                    }
+
+                    @Override
+                    public void onFaild(String err) {
+                        LogUtils.e("getToken" + err);
+                    }
+                });
+    }
+    //获取用户信息
+    private void getUserInfo(String access_token) {
+        CloudHelper.getUserInfo(this, access_token, GetUserInfoRes.class, new RetrofitCallback<GetUserInfoRes>() {
+            @Override
+            public void onSuccess(GetUserInfoRes getUserInfoRes) {
+                if (null != getUserInfoRes && null != getUserInfoRes.getUser()) {
+                    UserInfo info = getUserInfoRes.getUser();
+                    info.loginType = PASSWORD_LOGIN;
+                    //保存用户信息及登录状态
+                    //登录成功
+                    AccountInfo.getInstance().getUser().setValue(info);
+                    //绑定设备
+//                    bindDevice(getUserInfoRes.getUser().id);
+                } else {
+                    ToastUtils.showShort(getContext(), R.string.ventilator_request_failed);
+                }
+            }
+
+            @Override
+            public void onFaild(String err) {
+                LogUtils.e("getUserInfo" + err);
+            }
+        });
     }
 }

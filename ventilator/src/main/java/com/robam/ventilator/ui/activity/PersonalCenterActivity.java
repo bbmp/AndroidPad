@@ -14,9 +14,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.robam.common.IDeviceType;
 import com.robam.common.http.RetrofitCallback;
+import com.robam.common.mqtt.MqttManager;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.PageIndicator;
+import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.ImageUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.ventilator.R;
@@ -134,7 +137,10 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
                 }
             });
         } else {
+            //停止取消所有订阅
+            MqttManager.getInstance().stop();
             //logout
+            AccountInfo.getInstance().deviceList.clear();
         }
     }
 

@@ -446,4 +446,147 @@ public interface MsgKeys {
      * 设置消毒柜峰谷定时开启（应答）
      */
     short SetSteriPVConfig_Rep = 150;
+    //---------------------------洗碗机--------------------------------------
+
+    /**
+     * 设置洗碗机电源
+     */
+    short setDishWasherPower=128;
+
+    /**
+     * 洗碗机电源设置答复
+     */
+    short getDishWasherPower=129;
+
+    /**
+     * 设置洗碗机童锁
+     */
+    short setDishWasherChildLock=130;
+    /**
+     * 洗碗机童锁设置答复
+     */
+    short getDishWasherChildLock=131;
+    /**
+     * 设置洗碗机工作模式
+     */
+    short setDishWasherWorkMode=132;
+    /**
+     * 洗碗机工作模式设置答复
+     */
+    short getDishWasherWorkMode=133;
+    /**
+     * 洗碗机状态查询
+     */
+    short setDishWasherStatus=134;
+    /**
+     * 洗碗机状态查询回复
+     */
+    short getDishWasherStatus=135;
+    /**
+     * 洗碗机用户操作设置设置
+     */
+    short setDishWasherUserOperate=136;
+    /**
+     * 洗碗机用户操作设置设置回复
+     */
+    short getDishWasherUserOperate=137;
+    /**
+     * 报警事件上报
+     */
+    short getAlarmEventReport=140;
+    /**
+     * 事件上报
+     */
+    short getEventReport=141;
+
+    //---------------------------无人锅--------------------------------------
+    /**
+     * 获取温控锅温度(请求)
+     */
+    short GetPotTemp_Req = 128;
+    /**
+     * 获取温控锅温度(返回)
+     */
+    short SetPotTemp_Rep = 129;
+
+    /**
+     * 144干烧预警及烟锅联动上报
+     */
+    short SetPotCom_Req = 144;
+
+    /**
+     * 干烧预警及烟锅联动上报回复
+     */
+    short GetPotCom_Rep = 145;
+
+    /**
+     * 干烧预警开关设置查询
+     */
+    short SetPotSwitch_Req = 146;
+
+    /**
+     * 干烧预警开关查询回复
+     */
+    short GetPotSwitch_Rep = 147;
+
+    /**
+     * 温控锅主动上报
+     */
+    short ActiveTemp_Rep = 142;
+
+    /**
+     * 温控锅报警上报
+     */
+    short PotAlarm_Report = 143;
+
+    /**
+     * 温控锅按键键值上报
+     */
+    short PotKey_Report = 141;
+
+    /**
+     * 无人锅温控P档菜谱下发
+     */
+    short POT_P_MENU_Req = 148;
+    /**
+     * 无人锅温控P档菜谱下发回复
+     */
+    short POT_P_MENU_Rep = 149;
+    /**
+     * 无人锅菜谱电机指令
+     */
+    short POT_Electric_Req = 150;
+    /**
+     * 无人锅菜谱电机指令回复
+     */
+    short POT_Electric_Rep = 151;
+    /**
+     * 温控锅智能互动
+     */
+    short POT_INTERACTION_Req = 153;
+
+    /**
+     * 温控锅智能互动回复
+     */
+    short POT_INTERACTION_Rep = 154;
+    /**
+     * 自动温控平台菜谱/曲线还原
+     * 灶参数下发
+     */
+    short POT_CURVETEMP_Req = 156;
+    /**
+     * 自动温控平台菜谱/曲线还原
+     * 灶参数下发回复
+     */
+    short POT_CURVETEMP_Rep = 157;
+    /**
+     * 自动温控平台菜谱/曲线还原
+     * 锅参数下发(电机)
+     */
+    short POT_CURVEElectric_Req = 158;
+    /**
+     * 自动温控平台菜谱/曲线还原
+     * 锅参数下发(电机)
+     */
+    short POT_CURVEElectric_Rep = 159;
 }

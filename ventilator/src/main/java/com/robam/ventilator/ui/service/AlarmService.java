@@ -17,6 +17,7 @@ import com.robam.common.bean.RTopic;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MsgKeys;
+import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.dishwasher.device.DishWasherFactory;
@@ -35,7 +36,7 @@ import com.robam.ventilator.ui.receiver.AlarmReceiver;
 public class AlarmService extends Service {
 
     private static final int PENDING_REQUEST = 0;
-    private static final int INTERVAL = 5000;
+    private static final int INTERVAL = 15000;
     private AlarmManager alarmManager;
     private PendingIntent pIntent;
 
@@ -65,37 +66,66 @@ public class AlarmService extends Service {
             } catch (Exception e) {}
             alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAtTime, pIntent);
         }
+        if (!MqttManager.getInstance().isConnected()) {
+            MqttManager.getInstance().reConnect(new MqttManager.IConncect() {
+                @Override
+                public void onSuccess() {
+                    //重连成功 重新订阅
+                    for (Device device: AccountInfo.getInstance().deviceList) {
+                        MqttManager.getInstance().subscribe(DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid));
+                    }
+                }
+            });
+            return super.onStartCommand(intent, flags, startId);
+        }
         //循环查询
         for (Device device: AccountInfo.getInstance().deviceList) {
+            device.status = Device.ONLINE; //离线状态
             if (device instanceof Pan) { //查询锅
                 MqttMsg msg = new MqttMsg.Builder()
-                        .setMsgId(MsgKeys.getDeviceAttribute_Req)
+                        .setMsgId(MsgKeys.GetPotTemp_Req)
                         .setGuid(VentilatorFactory.getPlatform().getDeviceOnlySign())
                         .setDt(device.dt)
                         .setSignNum(device.mac)
-                        .setTopic(new RTopic(RTopic.TOPIC_UNICAST, device.dt, device.guid))
+                        .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                         .build();
                 MqttManager.getInstance().publish(msg, PanFactory.getProtocol());
             } else if (device instanceof Stove) {
                 MqttMsg msg = new MqttMsg.Builder()
-                        .setMsgId(MsgKeys.getDeviceAttribute_Req)
+                        .setMsgId(MsgKeys.SetStoveStatus_Req)
                         .setGuid(VentilatorFactory.getPlatform().getDeviceOnlySign()) //源guid
                         .setDt(device.dt)
                         .setSignNum(device.mac)
-                        .setTopic(new RTopic(RTopic.TOPIC_UNICAST, device.dt, device.guid))
+                        .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                         .build();
                 MqttManager.getInstance().publish(msg, StoveFactory.getProtocol());
+            } else if (device instanceof Ventilator) {
+                MqttMsg msg = new MqttMsg.Builder()
+                        .setMsgId(MsgKeys.GetFanStatus_Req)
+                        .setGuid(VentilatorFactory.getPlatform().getDeviceOnlySign()) //源guid
+                        .setDt(device.dt)
+                        .setSignNum(device.mac)
+                        .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
+                        .build();
+                MqttManager.getInstance().publish(msg, VentilatorFactory.getProtocol());
 //            } else if (device instanceof Cabinet) {
 //                MqttManager.getInstance().publish(msg, CabinetFactory.getProtocol());
-//            } else if (device instanceof DishWasher) {
-//                MqttManager.getInstance().publish(msg, DishWasherFactory.getProtocol());
+            } else if (device instanceof DishWasher) {
+                MqttMsg msg = new MqttMsg.Builder()
+                        .setMsgId(MsgKeys.setDishWasherStatus)
+                        .setGuid(VentilatorFactory.getPlatform().getDeviceOnlySign()) //源guid
+                        .setDt(device.dt)
+                        .setSignNum(device.mac)
+                        .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
+                        .build();
+                MqttManager.getInstance().publish(msg, DishWasherFactory.getProtocol());
             } else if (device instanceof SteamOven) {
                 MqttMsg msg = new MqttMsg.Builder()
                         .setMsgId(MsgKeys.getSteameOvenStatus_Req) //查询一体机
                         .setGuid(VentilatorFactory.getPlatform().getDeviceOnlySign())
                         .setDt(device.dt)
                         .setSignNum(device.mac)
-                        .setTopic(new RTopic(RTopic.TOPIC_UNICAST, device.dt, device.guid))
+                        .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                         .build();
                 MqttManager.getInstance().publish(msg, SteamFactory.getProtocol());
             }

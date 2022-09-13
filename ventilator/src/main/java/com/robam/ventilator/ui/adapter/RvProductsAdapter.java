@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
@@ -15,6 +16,8 @@ import com.robam.stove.device.HomeStove;
 import com.robam.common.utils.ImageUtils;
 import com.robam.ventilator.R;
 import com.robam.ventilator.bean.Ventilator;
+
+import java.util.List;
 
 public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> {
     private LifecycleOwner mOwner;
@@ -137,10 +140,9 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
 
     }
 
-    @NonNull
     @Override
-    public BaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return super.onCreateViewHolder(parent, viewType);
+    public void onViewRecycled(@NonNull BaseViewHolder holder) {
+        super.onViewRecycled(holder);
     }
 
     @Override

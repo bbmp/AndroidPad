@@ -43,6 +43,9 @@ public class MqttManager {
     }
 
     public void start(Context context, IPlat plat, IProtocol protocol) {
+        if (null != mqttAndroidClient)
+            return;
+
         iPlat = plat;
         iProtocol = protocol;
         CLIENTID = iPlat.getDeviceOnlySign();
@@ -54,7 +57,7 @@ public class MqttManager {
         mMqttConnectOptions.setKeepAliveInterval(60); //设置心跳包发送间隔，单位：秒
         mMqttConnectOptions.setUserName(USERNAME); //设置用户名
         mMqttConnectOptions.setPassword(PASSWORD.toCharArray()); //设置密码
-        mMqttConnectOptions.setAutomaticReconnect(true);
+//        mMqttConnectOptions.setAutomaticReconnect(true);
         // last will message
         String message = "{\"terminal_uid\":\"" + CLIENTID + "\"}";
         String topic = getPublishTopic();
@@ -68,7 +71,7 @@ public class MqttManager {
                 Log.i(TAG, "Exception Occured", e);
             }
         }
-        doClientConnection();
+        doConnect();
     }
 
     /**
@@ -81,7 +84,8 @@ public class MqttManager {
             LogUtils.e( "连接成功 ");
             try {
                 String topic = new RTopic(RTopic.TOPIC_UNICAST, iPlat.getDt()
-                        , iPlat.getDeviceOnlySign()).getTopic();
+                        , iPlat.getMac()).getTopic();
+                LogUtils.e("订阅主题 " + topic);
                 mqttAndroidClient.subscribe(topic, 2, iPlat.getDeviceOnlySign(), mqttActionListener);//订阅主题，参数：主题、服务质量
             } catch (MqttException e) {
                 e.printStackTrace();
@@ -109,37 +113,82 @@ public class MqttManager {
     /**
      * 单个订阅设备
      */
-    public void subscribe(String dt, String guid) {
+    public void subscribe(String dt, String number) {
         try {
-            String topic = new RTopic(RTopic.TOPIC_UNICAST, dt
-                    , guid).getTopic();
+            String topic = new RTopic(RTopic.TOPIC_BROADCAST, dt
+                    , number).getTopic();
+            LogUtils.e("订阅主题" + topic);
             mqttAndroidClient.subscribe(topic, 2, null, mqttActionListener);//订阅主题，参数：主题、服务质量
-        } catch (MqttException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
     /**
      * 取消订阅
      */
-    public void unSubscribe(String dt, String guid) {
+    public void unSubscribe(String dt, String number) {
         try {
             String topic = new RTopic(RTopic.TOPIC_UNICAST, dt
-                    , guid).getTopic();
+                    , number).getTopic();
             mqttAndroidClient.unsubscribe(topic);
-        } catch (MqttException e) {
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isConnected() {
+        try {
+            return mqttAndroidClient.isConnected();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    /**
+     * 连接
+     */
+    public void doConnect() {
+        try {
+            mqttAndroidClient.connect(mMqttConnectOptions, null, iMqttActionListener);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
     /**
-     * 连接MQTT服务器
+     * 重连
      */
-    private void doClientConnection() {
-        if (!mqttAndroidClient.isConnected()) {
-            try {
-                mqttAndroidClient.connect(mMqttConnectOptions, null, iMqttActionListener);
-            } catch (MqttException e) {
-                e.printStackTrace();
-            }
+    public interface IConncect {
+        void onSuccess();
+    }
+    public void reConnect(IConncect iConncect) {
+        try {
+            mqttAndroidClient.connect(mMqttConnectOptions, null, new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    if (null != iConncect)
+                        iConncect.onSuccess();
+                    LogUtils.e( "重连成功 ");
+                    try {
+                        String topic = new RTopic(RTopic.TOPIC_UNICAST, iPlat.getDt()
+                                , iPlat.getMac()).getTopic();
+                        LogUtils.e("订阅主题 " + topic);
+                        mqttAndroidClient.subscribe(topic, 2, iPlat.getDeviceOnlySign(), mqttActionListener);//订阅主题，参数：主题、服务质量
+                    } catch (MqttException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+
+                }
+            });
+        } catch (Exception e) {
+
         }
     }
 
@@ -164,10 +213,10 @@ public class MqttManager {
     /**
      *  断开连接
      */
-    private void stop() {
+    public void stop() {
         try {
             mqttAndroidClient.disconnect(); //断开连接
-        } catch (MqttException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -176,6 +225,8 @@ public class MqttManager {
      */
     public void close() {
         try {
+            if (isConnected())
+                mqttAndroidClient.disconnect();
             mqttAndroidClient.close(); //关闭
         } catch (Exception e) {
             e.printStackTrace();
@@ -277,7 +328,7 @@ public class MqttManager {
                 .setGuid(iPlat.getDeviceOnlySign())
                 .setDt(iPlat.getDt())
                 .setSignNum(iPlat.getMac())
-                .setTopic(new RTopic(RTopic.TOPIC_BROADCAST, iPlat.getDt(), iPlat.getDeviceOnlySign()))
+                .setTopic(new RTopic(RTopic.TOPIC_BROADCAST, iPlat.getDt(), iPlat.getMac()))
                 .build();
 
         publish(msg, iProtocol);
