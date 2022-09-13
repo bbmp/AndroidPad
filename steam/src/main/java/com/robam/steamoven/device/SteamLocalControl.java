@@ -4,12 +4,12 @@ package com.robam.steamoven.device;
 //只有主入口进入时才会开启串口控制
 public class SteamLocalControl implements SteamFunction{
     @Override
-    public void shutDown() {
+    public void shutDown(String... args) {
 
     }
 
     @Override
-    public void powerOn() {
+    public void powerOn(String... args) {
 //        byte[] payload = SerialPortMsgHelper.powerOn();
 //        SteamOven.getInstance().marshaller(payload);
 //        DeviceFactory.getPlatform().screenOn();

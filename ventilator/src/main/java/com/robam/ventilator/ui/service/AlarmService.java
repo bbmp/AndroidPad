@@ -80,7 +80,7 @@ public class AlarmService extends Service {
         }
         //循环查询
         for (Device device: AccountInfo.getInstance().deviceList) {
-            device.status = Device.ONLINE; //离线状态
+            device.queryNum++;
             if (device instanceof Pan) { //查询锅
                 MqttMsg msg = new MqttMsg.Builder()
                         .setMsgId(MsgKeys.GetPotTemp_Req)

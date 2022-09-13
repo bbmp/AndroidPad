@@ -1,9 +1,9 @@
 package com.robam.steamoven.device;
 
 public interface SteamFunction {
-    void shutDown();
+    void shutDown(String... args);
 
-    void powerOn();
+    void powerOn(String... args);
 
     void orderWork();
 

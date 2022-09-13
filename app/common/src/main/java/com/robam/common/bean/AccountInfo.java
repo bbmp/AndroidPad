@@ -11,6 +11,7 @@ public class AccountInfo {
     private MutableLiveData<Boolean> isLogin = new MutableLiveData<>(false);
     private MutableLiveData<UserInfo> user = new MutableLiveData<>(null);
     private MutableLiveData<Boolean> connect = new MutableLiveData<>(false); //联网情况
+    private MutableLiveData<String> guid = new MutableLiveData<>(""); //设备状态变化
     private AccountInfo() {}
 
     //设备列表

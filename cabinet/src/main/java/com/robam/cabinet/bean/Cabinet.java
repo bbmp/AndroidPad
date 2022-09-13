@@ -37,7 +37,7 @@ public class Cabinet extends Device{
     public int workHours;
 
     @Override
-    public void onReceivedMsg(int msgId, String guid, byte[] payload, int offset) {
+    public void unmarshaller(int msgId, String guid, byte[] payload, int offset) {
 
     }
 }

@@ -16,6 +16,7 @@ public class Device {
     //工作状态
     public int workStatus = 0;
 
+    public int queryNum = 0;//查询次数
     /**
      * 拥有者编码
      */
@@ -83,7 +84,7 @@ public class Device {
         return displayType;
     }
 
-   public String getCategoryName() {
+    public String getCategoryName() {
         return categoryName;
    }
 
@@ -96,8 +97,7 @@ public class Device {
     }
 
     //此设备数据
-    public void onReceivedMsg(int msgId, String guid, byte[] payload, int offset) {
-        LogUtils.e("onReceivedMsg");
+    public void unmarshaller(int msgId, String guid, byte[] payload, int offset) {
+        LogUtils.e("unmarshaller");
     }
-
 }

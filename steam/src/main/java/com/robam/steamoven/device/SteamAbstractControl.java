@@ -15,13 +15,13 @@ public class SteamAbstractControl implements SteamFunction {
         function = steamFunction;
     }
     @Override
-    public void shutDown() {
-        function.shutDown();
+    public void shutDown(String... args) {
+        function.shutDown(args);
     }
 
     @Override
-    public void powerOn() {
-        function.powerOn();
+    public void powerOn(String... args) {
+        function.powerOn(args);
     }
 
     @Override

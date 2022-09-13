@@ -3,10 +3,14 @@ package com.robam.ventilator.bean;
 import android.os.PowerManager;
 
 import com.robam.common.bean.Device;
+import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.ByteUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.ventilator.device.VentilatorFactory;
+import com.robam.ventilator.protocol.mqtt.MqttVentilator;
+
+import java.nio.ByteBuffer;
 
 public class Ventilator extends Device {
     public Ventilator(Device device) {
@@ -91,7 +95,7 @@ public class Ventilator extends Device {
     public byte param9 = (byte) 0x00;
 
     @Override
-    public void onReceivedMsg(int msgId, String guid, byte[] payload, int offset) {
+    public void unmarshaller(int msgId, String guid, byte[] payload, int offset) {
         if (!this.guid.equals(guid))
             return;
 

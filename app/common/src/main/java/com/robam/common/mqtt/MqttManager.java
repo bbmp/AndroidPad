@@ -282,6 +282,24 @@ public class MqttManager {
     }
 
     /**
+     * @param msg
+     * @param data
+     */
+    public void publish(MqttMsg msg, byte[] data) {
+        //获取发布主题
+        String topic = msg.getrTopic().getTopic();
+        Integer qos = 0;
+        Boolean retained = false;
+        try {
+            LogUtils.e( "发送的主题： " + topic);
+            LogUtils.e( "发送的消息： " + StringUtils.bytes2Hex(data));
+            //参数分别为：主题、消息的字节数组、服务质量、是否在服务器保留断开连接后的最后一条消息
+            mqttAndroidClient.publish(topic, data, qos.intValue(), retained.booleanValue());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    /**
      * 发布 （模拟其他客户端发布消息）
      *  具体协议实现
      * @param

@@ -4,7 +4,9 @@ import android.content.Context;
 
 import com.robam.common.device.IPlat;
 import com.robam.common.device.TbangPlat;
+import com.robam.common.module.IPublicVentilatorApi;
 import com.robam.common.mqtt.IProtocol;
+import com.robam.ventilator.module.PublicVentilatorApi;
 import com.robam.ventilator.protocol.mqtt.MqttVentilator;
 
 public class VentilatorFactory {
@@ -15,6 +17,7 @@ public class VentilatorFactory {
     //mqtt协议
     private static IProtocol protocol = new MqttVentilator();
 
+    private static IPublicVentilatorApi ventilatorApi = new PublicVentilatorApi();
 
     public static void initPlat(Context context, String plat) {
         if (TUOBANG.equals(plat))
@@ -27,5 +30,9 @@ public class VentilatorFactory {
 
     public static IProtocol getProtocol() {
         return protocol;
+    }
+
+    public static IPublicVentilatorApi getPublicApi() {
+        return ventilatorApi;
     }
 }

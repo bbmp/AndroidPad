@@ -51,7 +51,7 @@ public class DishWasher extends Device{
 
 
     @Override
-    public void onReceivedMsg(int msgId, String guid, byte[] payload, int offset) {
+    public void unmarshaller(int msgId, String guid, byte[] payload, int offset) {
         switch (msgId) {
             case MsgKeys.getDishWasherStatus:
                 short powerStatus =

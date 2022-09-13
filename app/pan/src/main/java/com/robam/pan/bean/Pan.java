@@ -28,7 +28,7 @@ public class Pan extends Device {
     }
 
     @Override
-    public void onReceivedMsg(int msgId, String guid, byte[] payload, int offset) {
+    public void unmarshaller(int msgId, String guid, byte[] payload, int offset) {
         if (!this.guid.equals(guid))
             return; //非当前设备
         switch (msgId) {
