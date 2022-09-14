@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
+import com.robam.common.IDeviceType;
 import com.robam.common.bean.BaseResponse;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.ui.dialog.IDialog;
@@ -87,7 +88,18 @@ public class DeviceUserPage extends VentilatorBasePage {
     protected void initData() {
         tvDeviceName.setText(device.categoryName);
         tvModel.setText(device.displayType);
-        ImageUtils.loadImage(getContext(), device.deviceTypeIconUrl, ivDevice);
+        if (device.dc.equals(IDeviceType.RRQZ))
+            ivDevice.setImageResource(R.drawable.ventilator_stove);
+        else if (device.dc.equals(IDeviceType.RXDG))
+            ivDevice.setImageResource(R.drawable.ventilator_cabinet);
+        else if (device.dc.equals(IDeviceType.RZKY))
+            ivDevice.setImageResource(R.drawable.ventilator_steam);
+        else if (device.dc.equals(IDeviceType.RZNG))
+            ivDevice.setImageResource(R.drawable.ventilator_pan);
+        else if (device.dc.equals(IDeviceType.RYYJ))
+            ivDevice.setImageResource(R.drawable.ventilator_ventilator);
+        else if (device.dc.equals(IDeviceType.RXWJ))
+            ivDevice.setImageResource(R.drawable.ventilator_dishwasher);
         getDeviceUsers(device);
     }
 

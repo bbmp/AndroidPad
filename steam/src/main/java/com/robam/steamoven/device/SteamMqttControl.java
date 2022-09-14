@@ -18,7 +18,6 @@ public class SteamMqttControl implements SteamFunction {
         MqttMsg msg = new MqttMsg.Builder()
                 .setMsgId(MsgKeys.DeviceConnected_Noti)
                 .setGuid(args[0])
-                .setSignNum(SteamFactory.getPlatform().getMac())
                 .setTopic(new RTopic(RTopic.TOPIC_BROADCAST, DeviceUtils.getDeviceTypeId(args[1]),
                         DeviceUtils.getDeviceNumber(args[1])))
                 .build();

@@ -13,6 +13,8 @@ import com.robam.ventilator.request.GetUserReq;
 import com.robam.ventilator.request.GetVerifyCodeReq;
 import com.robam.ventilator.request.LoginQrcodeReq;
 
+import java.lang.ref.WeakReference;
+
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
@@ -114,11 +116,12 @@ public class CloudHelper {
 
     //统一处理回调
     private static <T extends BaseResponse> void enqueue(ILife iLife, final Class<T> entity, Call<ResponseBody> call, final RetrofitCallback<T> callback) {
+        WeakReference<ILife> iLifeWeakReference = new WeakReference<>(iLife);
         call.enqueue(new retrofit2.Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 //生命周期判断
-                if (iLife.isDestroyed()) {
+                if (null == iLifeWeakReference.get() || iLifeWeakReference.get().isDestroyed()) {
                     LogUtils.e("page isDestroyed");
                     return;
                 }
@@ -143,7 +146,7 @@ public class CloudHelper {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable throwable) {
-                if (iLife.isDestroyed()) {
+                if (null == iLifeWeakReference.get() || iLifeWeakReference.get().isDestroyed()) {
                     return;
                 }
                 if (null != callback)

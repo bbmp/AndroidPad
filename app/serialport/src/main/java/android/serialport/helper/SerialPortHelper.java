@@ -32,12 +32,6 @@ public class SerialPortHelper {
      *  循环指令
      */
     private byte[] payload = new byte[]{1, 0, 0, 0, 1, 2, 4,3};
-    /**
-     * 线程池
-     */
-    private ExecutorService executorService = new ThreadPoolExecutor(1, 1,
-            0L, TimeUnit.MILLISECONDS,
-            new LinkedBlockingQueue<>());
 
     private static SerialPortHelper INSTANCE = new SerialPortHelper();
 
@@ -69,36 +63,31 @@ public class SerialPortHelper {
                     "you must 'new SerialPortHelper(String path)' or call 'openDevice(String path)' ");
         }
 
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
+        try {
+            serialPort = new SerialPort //
+                    .Builder(serialPortConfig.path, serialPortConfig.baudRate) // 串口地址地址，波特率
+                    .parity(serialPortConfig.parity) // 校验位；0:无校验位(NONE，默认)；1:奇校验位(ODD);2:偶校验位(EVEN)
+                    .dataBits(serialPortConfig.dataBits) // 数据位,默认8；可选值为5~8
+                    .stopBits(serialPortConfig.stopBits) // 停止位，默认1；1:1位停止位；2:2位停止位
+                    .flags(0)
+                    .build();
+            // 创建数据处理
+            processingData = new SphDataProcess(serialPort, serialPortConfig.maxSize);
+            processingData.setRecevieMaxSize(isReceiveMaxSize);
+            processingData.setSphResultCallback(onResultCallback);
+            // 开启读写线程
+            sphThreads = new SphThreads(processingData);
 
-                try {
-                    serialPort = new SerialPort //
-                            .Builder(serialPortConfig.path, serialPortConfig.baudRate) // 串口地址地址，波特率
-                            .parity(serialPortConfig.parity) // 校验位；0:无校验位(NONE，默认)；1:奇校验位(ODD);2:偶校验位(EVEN)
-                            .dataBits(serialPortConfig.dataBits) // 数据位,默认8；可选值为5~8
-                            .stopBits(serialPortConfig.stopBits) // 停止位，默认1；1:1位停止位；2:2位停止位
-                            .flags(0)
-                            .build();
-                    // 创建数据处理
-                    processingData = new SphDataProcess(serialPort, serialPortConfig.maxSize);
-                    processingData.setRecevieMaxSize(isReceiveMaxSize);
-                    processingData.setSphResultCallback(onResultCallback);
-                    // 开启读写线程
-                    sphThreads = new SphThreads(processingData);
+            if (null != onResultCallback)
+                onResultCallback.onOpenSuccess();
 
-                    if (null != onResultCallback)
-                        onResultCallback.onOpenSuccess();
+        } catch (Exception e) {
+            Log.e(TAG,"cannot open the device !!! " +
+                    "path:"+serialPortConfig.path);
+            if (null != onResultCallback)
+                onResultCallback.onOpenFailed();
+        }
 
-                } catch (Exception e) {
-                    Log.e(TAG,"cannot open the device !!! " +
-                            "path:"+serialPortConfig.path);
-                    if (null != onResultCallback)
-                        onResultCallback.onOpenFailed();
-                }
-            }
-        });
     }
 
     /**

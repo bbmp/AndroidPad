@@ -23,31 +23,9 @@ public class Pan extends Device {
         this.subDevices = device.subDevices;
     }
 
-    public Pan(String name, String displayType) {
-        super(name, displayType);
+    public Pan(String name, String dc, String displayType) {
+        super(name, dc, displayType);
     }
 
-    @Override
-    public void unmarshaller(int msgId, String guid, byte[] payload, int offset) {
-        if (!this.guid.equals(guid))
-            return; //非当前设备
-        switch (msgId) {
-            case MsgKeys.getDeviceAttribute_Req:  //属性查询
-                break;
-            case MsgKeys.getDeviceAttribute_Rep: {  //属性查询回复
-                //属性个数
-                short number = ByteUtils.toShort(payload[offset]);
-                offset++;
-                while (number > 0) {
-                    short key =  ByteUtils.toShort(payload[offset]);
-                    offset++;
-                    short length =  ByteUtils.toShort(payload[offset]);
-                    offset++;
-                }
-            }
-            break;
-        }
-
-    }
 
 }

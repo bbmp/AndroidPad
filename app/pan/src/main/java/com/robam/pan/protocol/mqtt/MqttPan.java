@@ -13,9 +13,12 @@ import com.robam.common.utils.ByteUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MsgUtils;
 import com.robam.common.utils.StringUtils;
+import com.robam.pan.constant.PanConstant;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.HashMap;
+import java.util.Map;
 
 //锅mqtt
 public class MqttPan extends MqttPublic {
@@ -36,14 +39,18 @@ public class MqttPan extends MqttPublic {
     }
 
     @Override
-    protected void onDecodeMsg(int msgId, String srcGuid, byte[] payload, int offset) {
+    protected Map onDecodeMsg(int msgId, String srcGuid, byte[] payload, int offset) {
+        //解析到的字段存放
+        Map map = new HashMap();
         switch (msgId) {
             case MsgKeys.SetPotTemp_Rep: //查询返回
                 float temp = ByteUtils.toFloat(payload, offset++, ByteUtils.BYTE_ORDER);
                 offset++;
                 offset++;
                 offset++;
+                //锅状态
                 short status = ByteUtils.toShort(payload[offset++]);
+                map.put(PanConstant.Pot_status, status);
                 //参数个数
                 short count = ByteUtils.toShort(payload[offset++]);
                 while (count >= 0) {
@@ -90,6 +97,7 @@ public class MqttPan extends MqttPublic {
                 }
                 break;
         }
+        return map;
     }
 
     @Override

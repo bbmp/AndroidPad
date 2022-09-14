@@ -6,6 +6,7 @@ import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MqttPublic;
 
 import java.nio.ByteBuffer;
+import java.util.Map;
 
 //洗碗机私有协议
 public class PulbicDishWasherApi implements IPublicDishWasherApi {
@@ -23,7 +24,7 @@ public class PulbicDishWasherApi implements IPublicDishWasherApi {
     }
 
     @Override
-    public int decode(String topic, byte[] payload) {
-        return 0;
+    public Map decode(String topic, byte[] payload) {
+        return null;
     }
 }

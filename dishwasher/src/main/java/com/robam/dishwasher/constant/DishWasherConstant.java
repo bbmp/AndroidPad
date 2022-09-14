@@ -17,4 +17,8 @@ public class DishWasherConstant {
     public final static int AUX_DOWN_WASH = 13;
 
     public final static String EXTRA_MODEBEAN = "modebean";
+
+    public final static String powerStatus = "powerStatus";//电源状态
+    public final static String DishWasherWorkMode = "DishWasherWorkMode";//洗碗机工作模式
+    public final static String DishWasherRemainingWorkingTime = "DishWasherRemainingWorkingTime";//剩余工作时间
 }

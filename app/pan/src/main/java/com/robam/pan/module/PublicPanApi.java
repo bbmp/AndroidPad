@@ -6,6 +6,8 @@ import com.robam.common.module.IPublicPanApi;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.pan.device.HomePan;
 
+import java.util.Map;
+
 //锅mqtt协议，通过烟机转发
 public class PublicPanApi implements IPublicPanApi {
     @Override
@@ -14,8 +16,8 @@ public class PublicPanApi implements IPublicPanApi {
     }
 
     @Override
-    public int decode(String topic, byte[] payload) {
-        return 0;
+    public Map decode(String topic, byte[] payload) {
+        return null;
     }
 
     @Override

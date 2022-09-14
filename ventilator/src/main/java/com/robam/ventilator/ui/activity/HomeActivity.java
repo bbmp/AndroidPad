@@ -149,7 +149,7 @@ public class HomeActivity extends BaseActivity {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean) {
-                    MqttManager.getInstance().start(HomeActivity.this, VentilatorFactory.getPlatform(), VentilatorFactory.getProtocol());
+                    MqttManager.getInstance().start(HomeActivity.this, VentilatorFactory.getPlatform(), VentilatorFactory.getPublicApi());
                     //未登录
                     if (null == AccountInfo.getInstance().getUser().getValue()) {
                         String json = MMKVUtils.getUser();

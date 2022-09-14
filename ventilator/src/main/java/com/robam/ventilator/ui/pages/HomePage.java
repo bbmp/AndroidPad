@@ -52,6 +52,7 @@ import com.robam.common.bean.UserInfo;
 import com.robam.ventilator.bean.VenFunBean;
 import com.robam.ventilator.bean.Ventilator;
 import com.robam.ventilator.constant.DialogConstant;
+import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.device.VentilatorFactory;
 import com.robam.ventilator.factory.VentilatorDialogFactory;
 import com.robam.ventilator.http.CloudHelper;
@@ -59,6 +60,7 @@ import com.robam.ventilator.response.GetDeviceRes;
 import com.robam.ventilator.response.GetTokenRes;
 import com.robam.ventilator.response.GetUserInfoRes;
 import com.robam.ventilator.ui.activity.AddDeviceMainActivity;
+import com.robam.ventilator.ui.activity.MatchNetworkActivity;
 import com.robam.ventilator.ui.activity.SimpleModeActivity;
 import com.robam.ventilator.ui.adapter.RvMainFunctonAdapter;
 import com.robam.ventilator.ui.adapter.RvProductsAdapter;
@@ -224,15 +226,14 @@ public class HomePage extends VentilatorBasePage {
                 if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
                     drawerLayout.closeDrawer(Gravity.LEFT);
                 }
+                
                 VenFunBean venFunBean = (VenFunBean) adapter.getItem(position);
-                if (venFunBean.funtionCode == 9) {
-                    simpleMode(); //进入极简模式
-                } else {
-                    Intent intent = new Intent();
 
-                    intent.setClassName(getContext(), venFunBean.into);
-                    startActivity(intent);
-                }
+                Intent intent = new Intent();
+
+                intent.setClassName(getContext(), venFunBean.into);
+                startActivity(intent);
+
             }
         });
         //右边菜单
@@ -248,6 +249,10 @@ public class HomePage extends VentilatorBasePage {
         foot.findViewById(R.id.tv_add_product).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //close products menu
+                if (drawerLayout.isDrawerOpen(Gravity.RIGHT)) {
+                    drawerLayout.closeDrawer(Gravity.RIGHT);
+                }
                 startActivity(new Intent(getContext(), AddDeviceMainActivity.class));
             }
         });
@@ -261,11 +266,13 @@ public class HomePage extends VentilatorBasePage {
                     drawerLayout.closeDrawer(Gravity.RIGHT);
                 }
                 Device device = (Device) adapter.getItem(position);
-
+                //非在线状态
+                if (device.status != Device.ONLINE)
+                    return;
                 //跳转设备首页
                 Intent intent = new Intent();
                 switch (device.dc) {
-                    case IDeviceType.RYYJ:
+                    case IDeviceType.RRQZ:
                         intent.setClassName(getContext(), IPublicStoveApi.STOVE_HOME);
                         startActivity(intent);
                         break;
@@ -282,7 +289,7 @@ public class HomePage extends VentilatorBasePage {
                         startActivity(intent);
                         break;
                     case IDeviceType.RZKY:
-                        intent.setClassName(getContext(), IPublicCabinetApi.CABINET_HOME);
+
                         break;
                 }
             }
@@ -292,11 +299,22 @@ public class HomePage extends VentilatorBasePage {
             public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                 if (view.getId() == R.id.btn_left_close) {
                     Device device = (Device) adapter.getItem(position);
-                    device.status = 1;
-                    device.workStatus = 1;
-                    HomeStove.getInstance().leftWorkMode = 1;
-                    //加head需要加1
-                    rvProductsAdapter.notifyItemChanged(position + 1);
+//                    device.status = 1;
+//                    device.workStatus = 1;
+//                    HomeStove.getInstance().leftWorkMode = 1;
+//                    //加head需要加1
+//                    rvProductsAdapter.notifyItemChanged(position + 1);
+                } else if (view.getId() == R.id.btn_detail) {
+                    //查看详情
+                    Device device = (Device) adapter.getItem(position);
+                    Intent intent = new Intent();
+                    intent.putExtra(VentilatorConstant.EXTRA_MODEL, device.dc);
+                    intent.setClass(getContext(), MatchNetworkActivity.class);
+                    startActivity(intent);
+                }
+                //close products menu
+                if (drawerLayout.isDrawerOpen(Gravity.RIGHT)) {
+                    drawerLayout.closeDrawer(Gravity.RIGHT);
                 }
             }
         });
@@ -305,6 +323,18 @@ public class HomePage extends VentilatorBasePage {
             @Override
             public void onChanged(UserInfo userInfo) {
                 getDeviceInfo(userInfo);
+            }
+        });
+        //监听设备状态
+        AccountInfo.getInstance().getGuid().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                for (int i=0; i<AccountInfo.getInstance().deviceList.size(); i++) {
+                    if (AccountInfo.getInstance().deviceList.get(i).guid.equals(s)) {
+                        rvProductsAdapter.notifyDataSetChanged();
+                        break;
+                    }
+                }
             }
         });
     }
@@ -322,9 +352,10 @@ public class HomePage extends VentilatorBasePage {
                         List<Device> deviceList = getDeviceRes.devices;
                         AccountInfo.getInstance().deviceList.clear();
                         for (Device device: deviceList) {
-                            if (IDeviceType.RYYJ.equals(device.dc)) //烟机
-                                AccountInfo.getInstance().deviceList.add(new Ventilator(device));
-                            else if (IDeviceType.RZKY.equals(device.dc)) //一体机
+//                            if (IDeviceType.RYYJ.equals(device.dc)) //过滤掉烟机
+//                                AccountInfo.getInstance().deviceList.add(new Ventilator(device));
+//                            else
+                            if (IDeviceType.RZKY.equals(device.dc)) //一体机
                                 AccountInfo.getInstance().deviceList.add(new SteamOven(device));
                             else if (IDeviceType.RXWJ.equals(device.dc)) //洗碗机
                                 AccountInfo.getInstance().deviceList.add(new DishWasher(device));
@@ -339,7 +370,7 @@ public class HomePage extends VentilatorBasePage {
                             }
                         }
                         //绑定设备
-                        bindDevice();
+                        bindDevice(deviceList);
                         //订阅设备主题
                         subscribeDevice();
                         if (null != rvProductsAdapter)
@@ -360,12 +391,13 @@ public class HomePage extends VentilatorBasePage {
                 rvProductsAdapter.setList(AccountInfo.getInstance().deviceList);
         }
     }
-    //绑定设备
-    private void bindDevice() {
-        for (Device device: AccountInfo.getInstance().deviceList) {
+    //绑定设备 返回列表中无主设备
+    private void bindDevice(List<Device> deviceList) {
+        for (Device device: deviceList) {
             if (device.guid.equals(VentilatorFactory.getPlatform().getDeviceOnlySign())) //已绑定
                 return;
         }
+        //绑定主设备
         CloudHelper.bindDevice(this, AccountInfo.getInstance().getUser().getValue().id,
                 VentilatorFactory.getPlatform().getDeviceOnlySign(), IDeviceType.RYYJ_ZN, true, BaseResponse.class, new RetrofitCallback<BaseResponse>() {
                     @Override

@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 
 import androidx.core.util.Preconditions;
 
+import com.robam.cabinet.bean.Cabinet;
+import com.robam.cabinet.device.CabinetFactory;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.RTopic;
@@ -14,16 +16,25 @@ import com.robam.common.utils.ByteUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MsgUtils;
 import com.robam.common.utils.StringUtils;
+import com.robam.dishwasher.bean.DishWasher;
+import com.robam.dishwasher.constant.DishWasherConstant;
+import com.robam.dishwasher.device.DishWasherFactory;
+import com.robam.pan.bean.Pan;
+import com.robam.pan.device.PanFactory;
 import com.robam.steamoven.bean.SteamOven;
+import com.robam.steamoven.constant.SteamConstant;
 import com.robam.steamoven.device.SteamFactory;
 import com.robam.stove.bean.Stove;
 import com.robam.stove.device.StoveFactory;
 import com.robam.ventilator.bean.Ventilator;
+import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.device.VentilatorFactory;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Map;
 
+//转发api
 public class PublicVentilatorApi implements IPublicVentilatorApi {
     protected final int BufferSize = 1024 * 2;
     protected static final int GUID_SIZE = 17;
@@ -35,8 +46,10 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
     public byte[] encode(MqttMsg msg) {
         try {
             // guid
-            String targetGuid = msg.getrTopic().getSignNum();
+            String targetGuid = msg.getrTopic().getDeviceType() + msg.getrTopic().getSignNum();
+            LogUtils.e("targetGuid " + targetGuid);
 
+            //拦截转发
             for (Device device: AccountInfo.getInstance().deviceList) {
                 // data params
                 if (device.guid.equals(targetGuid)) {
@@ -46,10 +59,16 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
                         return StoveFactory.getProtocol().encode(msg);
                     else if (device instanceof Ventilator)
                         return VentilatorFactory.getProtocol().encode(msg);
+                    else if (device instanceof Pan)
+                        return PanFactory.getProtocol().encode(msg);
+                    else if (device instanceof DishWasher)
+                        return DishWasherFactory.getProtocol().encode(msg);
+                    else if (device instanceof Cabinet)
+                        return CabinetFactory.getProtocol().encode(msg);
                 }
             }
 
-            return null;
+            return VentilatorFactory.getProtocol().encode(msg);
         } catch (Exception e) {
 
         }
@@ -58,7 +77,7 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
 
     @SuppressLint("RestrictedApi")
     @Override
-    public int decode(String topic, byte[] payload) {
+    public Map decode(String topic, byte[] payload) {
         try {
             Preconditions.checkNotNull(payload);
 
@@ -74,21 +93,46 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
             offset += GUID_SIZE;
 
             short msgId = ByteUtils.toShort(payload[offset++]);
-            LogUtils.e( "收到消息： " + "topic = " + topic + " ,msgId = " + msgId);
+            LogUtils.e( "收到消息： " + "topic = " + topic + " ,msgId = " + msgId + " srcguid " + srcGuid);
 
             //分发到各设备
             for (Device device: AccountInfo.getInstance().deviceList) {
                 if (srcGuid.equals(device.guid)) {
-                    if (device instanceof SteamOven)
-                        return SteamFactory.getProtocol().decode(topic, payload);
+                    if (device instanceof SteamOven) {
+                        Map map = SteamFactory.getProtocol().decode(topic, payload);
+                        if (map.containsKey(SteamConstant.SteameOvenStatus)) { //有响应
+                            device.queryNum = 0; //查询超过一次无响应离线
+                            device.status = Device.ONLINE;
+                            AccountInfo.getInstance().getGuid().setValue(device.guid);  //更新设备状态
+                        }
+                        return map;
+                    }
                     else if (device instanceof Stove)
                         return StoveFactory.getProtocol().decode(topic, payload);
-                    else if (device instanceof Ventilator)
-                        return VentilatorFactory.getProtocol().decode(topic, payload);
+                    else if (device instanceof Ventilator) {
+                        Map map = VentilatorFactory.getProtocol().decode(topic, payload);
+                        if (map.containsKey(VentilatorConstant.FanStatus)) {
+                            device.queryNum = 0;
+                            device.status = Device.ONLINE;
+                            AccountInfo.getInstance().getGuid().setValue(device.guid);  //更新设备状态
+                        }
+                    }
+                    else if (device instanceof Pan)
+                        return PanFactory.getProtocol().decode(topic, payload);
+                    else if (device instanceof DishWasher) {
+                        Map map = DishWasherFactory.getProtocol().decode(topic, payload);
+                        if (map.containsKey(DishWasherConstant.powerStatus)) {
+                            device.queryNum = 0;
+                            device.status = Device.ONLINE;
+                            AccountInfo.getInstance().getGuid().setValue(device.guid);  //更新设备状态
+                        }
+                    }
+                    else if (device instanceof Cabinet)
+                        return CabinetFactory.getProtocol().decode(topic, payload);
                 }
             }
 
-            return msgId;
+            return null;
         } catch (Exception e) {
             String log = String.format(
                     "mqtt decode error. topic:%s\nerror:%s\nbyte[]:%s",
@@ -96,6 +140,6 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
             LogUtils.e(log);
             e.printStackTrace();
         }
-        return -1;
+        return null;
     }
 }

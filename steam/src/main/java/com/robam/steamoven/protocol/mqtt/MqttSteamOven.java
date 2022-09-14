@@ -17,12 +17,15 @@ import com.robam.common.utils.MsgUtils;
 import com.robam.common.utils.StringUtils;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.QualityKeys;
+import com.robam.steamoven.constant.SteamConstant;
 import com.robam.steamoven.device.SteamAbstractControl;
 import com.robam.steamoven.device.SteamFactory;
 import com.robam.steamoven.protocol.SerialToMqttHelper;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MqttSteamOven extends MqttPublic {
     private final int BufferSize = 1024 * 2;
@@ -59,171 +62,102 @@ public class MqttSteamOven extends MqttPublic {
 
 
     @Override
-    protected void onDecodeMsg(int msgId, String srcGuid, byte[] payload, int offset) {
+    protected Map onDecodeMsg(int msgId, String srcGuid, byte[] payload, int offset) {
+        //解析字段存放在map中
+        Map map = new HashMap();
         //从payload中取值角标
         switch (msgId) {
             case MsgKeys.getDeviceAttribute_Req:
-
                 break;
-            case MsgKeys.setDeviceAttribute_Req:
-                //属性个数
-                short number = ByteUtils.toShort(payload[offset]);
+            case MsgKeys.getDeviceAttribute_Rep: {
+            }
+            break;
+            case MsgKeys.getSteameOvenStatus_Rep:
+                //
+                short status = ByteUtils.toShort(payload[offset++]);
+                map.put(SteamConstant.SteameOvenStatus, status);
+                short powerOnStatus = ByteUtils.toShort(payload[offset++]);
+                short workOnStatus = ByteUtils.toShort(payload[offset++]);
+                short alarm = ByteUtils.toShort(payload[offset++]);
+                short mode = ByteUtils.toShort(payload[offset++]);
+                short temp = ByteUtils.toShort(payload[offset++]);
+                short leftTime = ByteUtils.toShort(payload[offset++]);
                 offset++;
-                while (number > 0) {
-                    short key =  ByteUtils.toShort(payload[offset]);
-                    offset++;
-                    short length =  ByteUtils.toShort(payload[offset]);
-                    offset++;
-                    switch (key) {
-                        case QualityKeys.powerCtrl:
-                            short powerCtrl =  ByteUtils.toShort(payload[offset]);
+                short light = ByteUtils.toShort(payload[offset++]);
+                short waterStatus = ByteUtils.toShort(payload[offset++]);
+                short setTemp = ByteUtils.toShort(payload[offset++]);
+                short setTime = ByteUtils.toShort(payload[offset++]);
+                short min = ByteUtils.toShort(payload[offset++]);
+                short hour = ByteUtils.toShort(payload[offset++]);
+                short recipeId = ByteUtils.toShort(payload[offset++]);
+                offset++;
+                short recipeSteps = ByteUtils.toShort(payload[offset++]);
+                short setDownTemp = ByteUtils.toShort(payload[offset++]);
+                short downTemp = ByteUtils.toShort(payload[offset++]);
+                short steam = ByteUtils.toShort(payload[offset++]);
+                short segments_Key = ByteUtils.toShort(payload[offset++]);
+                short step_Key = ByteUtils.toShort(payload[offset++]);
+                short preFalg = ByteUtils.toShort(payload[offset++]);
+                short modelType = ByteUtils.toShort(payload[offset++]);
 
-                            break;
-                        case QualityKeys.workCtrl:
-                            short workCtrl =  ByteUtils.toShort(payload[offset]);
+                short argument = ByteUtils.toShort(payload[offset++]);
 
-                            offset++;
-                            break;
-                        case QualityKeys.setOrderSecs:
-                            byte[]  setOrderSecs = new byte[length];
-                            for (int i = 0 ; i < length ; i ++ ){
-                                short setOrderSec =  ByteUtils.toShort(payload[offset]);
-                                setOrderSecs[i] = (byte) setOrderSec ;
-                                offset ++ ;
-                            }
-                            int orderTime = ByteUtils.byteToInt2(setOrderSecs);
-                            break;
-                        case QualityKeys.lightSwitch:
-                            short lightSwitch =  ByteUtils.toShort(payload[offset]);
+                while (argument > 0) {
+                    short argumentKey = ByteUtils.toShort(payload[offset++]);
+                    switch (argumentKey) {
+                        case 3:
 
-                            offset++;
+                            short cpStepLength = ByteUtils.toShort(payload[offset++]);
+                            short cpStepValue = ByteUtils.toShort(payload[offset++]);
                             break;
-                        case QualityKeys.rotateSwitch:
-                            offset++;
+                        case 4:
+                            short steamLength = ByteUtils.toShort(payload[offset++]);
+                            short steamValue = ByteUtils.toShort(payload[offset++]);
                             break;
-                        case QualityKeys.waterBoxCtrl:
-                            short waterBoxCtrl =  ByteUtils.toShort(payload[offset]);
-
-                            offset++;
+                        case 5:
+                            short MultiStepCookingStepsLength = ByteUtils.toShort(payload[offset++]);
+                            short MultiStepCookingStepsValue = ByteUtils.toShort(payload[offset++]);
                             break;
-                        case QualityKeys.steamCtrl:
-                            short steamCtrl =  ByteUtils.toShort(payload[offset]);
-//                            SteamOven.getInstance().steamCtrl = steamCtrl;
-                            offset++;
+                        case 6:
+                            short SteamOvenAutoRecipeModeLength = ByteUtils.toShort(payload[offset++]);
+                            short AutoRecipeModeValue = ByteUtils.toShort(payload[offset++]);
                             break;
-                        case QualityKeys.recipeId:
-                            short recipeId =  ByteUtils.toShort(payload[offset]);
-//                            cq926Control.recipeId = recipeId;
-                            offset++;
+                        case 7:
+                            short MultiStepCurrentStepsLength = ByteUtils.toShort(payload[offset++]);
+                            short MultiStepCurrentStepsValue = ByteUtils.toShort(payload[offset++]);
                             break;
-                        case QualityKeys.recipeSetSecs:
-                            byte[]  recipeSetSecs = new byte[length];
-                            for (int i = 0 ; i < length ; i ++ ){
-                                short recipeSetSec =  ByteUtils.toShort(payload[offset]);
-                                recipeSetSecs[i] = (byte) recipeSetSec ;
-                                offset ++ ;
-                            }
-                            int time = ByteUtils.byteToInt2(recipeSetSecs);
-//                            cq926Control.recipeSetSecs = time;
+                        case 8:
+                            short SteameOvenPreFlagLength = ByteUtils.toShort(payload[offset++]);
+                            short SteameOvenPreFlagValue = ByteUtils.toShort(payload[offset++]);
                             break;
-                        case QualityKeys.sectionNumber:
-                            short sectionNumber =  ByteUtils.toShort(payload[offset]);
-//                            cq926Control.sectionNumber = sectionNumber;
-                            offset++;
+                        case 9:
+                            short weatherDescalingLength = ByteUtils.toShort(payload[offset++]);
+                            short weatherDescalingValue = ByteUtils.toShort(payload[offset++]);
                             break;
-                        case QualityKeys.mode:
-                            short mode =  ByteUtils.toShort(payload[offset]);
-                            offset++;
+                        case 10:
+                            short doorStatusLength = ByteUtils.toShort(payload[offset++]);
+                            short doorStatusValue = ByteUtils.toShort(payload[offset++]);
                             break;
-                        case QualityKeys.setUpTemp:
-                            int setUpTemp =  ByteUtils.toShort(payload[offset]);
-                            offset++;
+                        case 11:
+                            short time_H_length = ByteUtils.toShort(payload[offset++]);
+                            short time_H_Value = ByteUtils.toShort(payload[offset++]);
                             break;
-                        case QualityKeys.setDownTemp:
-                            int setDownTemp =  ByteUtils.toShort(payload[offset]);
-                            offset++;
-                            break;
-                        case QualityKeys.setTime:
-                            byte[]  setTimeByte = new byte[length];
-                            for (int i = 0 ; i < length ; i ++ ){
-                                short setTime =  ByteUtils.toShort(payload[offset]);
-                                setTimeByte[i] = (byte) setTime ;
-                                offset ++ ;
-                            }
-                            int setTime = ByteUtils.byteToInt2(setTimeByte);
-                            break;
-                        case QualityKeys.restTime:
-                            break;
-                        case QualityKeys.steam:
-                            int steam = ByteUtils.toShort(payload[offset]);
-                            offset++;
-                            break;
-                        case QualityKeys.mode2:
-                            short mode2 = ByteUtils.toShort(payload[offset]);
-                            offset++;
-                            break;
-                        case QualityKeys.setUpTemp2:
-                            int setUpTemp2 = ByteUtils.toShort(payload[offset]);
-                            offset++;
-                            break;
-                        case QualityKeys.setDownTemp2:
-                            int setDownTemp2 = ByteUtils.toShort(payload[offset]);
-                            offset++;
-                            break;
-                        case QualityKeys.setTime2:
-                            byte[]  setTime2Byte = new byte[length];
-                            for (int i = 0 ; i < length ; i ++ ){
-                                short setTime2 = ByteUtils.toShort(payload[offset]);
-                                setTime2Byte[i] = (byte) setTime2 ;
-                                offset ++ ;
-                            }
-                            int setTime2 = ByteUtils.byteToInt2(setTime2Byte);
-                            break;
-                        case QualityKeys.restTime2:
-                            break;
-                        case QualityKeys.steam2:
-                            int steam2 = ByteUtils.toShort(payload[offset]);
-                            offset++;
-                            break;
-                        case QualityKeys.mode3:
-                            short mode3 = ByteUtils.toShort(payload[offset]);
-                            offset++;
-                            break;
-                        case QualityKeys.setUpTemp3:
-                            int setUpTemp3 = ByteUtils.toShort(payload[offset]);
-                            offset++;
-                            break;
-                        case QualityKeys.setDownTemp3:
-                            int setDownTemp3 = ByteUtils.toShort(payload[offset]);
-                            offset++;
-                            break;
-                        case QualityKeys.setTime3:
-                            byte[]  setTime3Byte = new byte[length];
-                            for (int i = 0 ; i < length ; i ++ ){
-                                short setTime3 = ByteUtils.toShort(payload[offset]);
-                                setTime3Byte[i] = (byte) setTime3 ;
-                                offset ++ ;
-                            }
-                            int setTime3 = ByteUtils.byteToInt2(setTime3Byte);
-                            break;
-                        case QualityKeys.restTime3:
-                            break;
-                        case QualityKeys.steam3:
-                            int steam3 = ByteUtils.toShort(payload[offset]);
-                            offset++;
-                            break;
-                        default:
-                            offset += length;
+                        case 12:
+                            offset++ ;
+                            short SteameOvenLeftMin = ByteUtils.toShort(payload[offset++]);
+                            short SteameOvenLeftHours = ByteUtils.toShort(payload[offset++]);
                             break;
                     }
-                    number -- ;
+                    argument--;
                 }
-                //被控制,一体机应用时会被控制
-
-//                SteamControl.onMqttControl();
                 break;
-            default:
+            case MsgKeys.getDeviceEventReport: //事件上报
+                //设备型号
+                short categoryCodeEvent = ByteUtils.toShort(payload[offset++]);
+                short event = ByteUtils.toShort(payload[offset++]);
+                LogUtils.e("categoryCodeEvent " + categoryCodeEvent + " event=" + event);
                 break;
         }
+        return map;
     }
 }

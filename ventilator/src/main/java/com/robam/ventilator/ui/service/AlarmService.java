@@ -80,34 +80,35 @@ public class AlarmService extends Service {
         }
         //循环查询
         for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device.queryNum == 1) { //已经查过一次
+                device.status = Device.OFFLINE;
+                AccountInfo.getInstance().getGuid().setValue(device.guid); //更新设备状态
+            }
             device.queryNum++;
             if (device instanceof Pan) { //查询锅
                 MqttMsg msg = new MqttMsg.Builder()
                         .setMsgId(MsgKeys.GetPotTemp_Req)
                         .setGuid(VentilatorFactory.getPlatform().getDeviceOnlySign())
                         .setDt(device.dt)
-                        .setSignNum(device.mac)
                         .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                         .build();
-                MqttManager.getInstance().publish(msg, PanFactory.getProtocol());
+                MqttManager.getInstance().publish(msg, VentilatorFactory.getPublicApi());
             } else if (device instanceof Stove) {
                 MqttMsg msg = new MqttMsg.Builder()
                         .setMsgId(MsgKeys.SetStoveStatus_Req)
                         .setGuid(VentilatorFactory.getPlatform().getDeviceOnlySign()) //源guid
                         .setDt(device.dt)
-                        .setSignNum(device.mac)
                         .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                         .build();
-                MqttManager.getInstance().publish(msg, StoveFactory.getProtocol());
+                MqttManager.getInstance().publish(msg, VentilatorFactory.getPublicApi());
             } else if (device instanceof Ventilator) {
                 MqttMsg msg = new MqttMsg.Builder()
                         .setMsgId(MsgKeys.GetFanStatus_Req)
                         .setGuid(VentilatorFactory.getPlatform().getDeviceOnlySign()) //源guid
                         .setDt(device.dt)
-                        .setSignNum(device.mac)
                         .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                         .build();
-                MqttManager.getInstance().publish(msg, VentilatorFactory.getProtocol());
+                MqttManager.getInstance().publish(msg, VentilatorFactory.getPublicApi());
 //            } else if (device instanceof Cabinet) {
 //                MqttManager.getInstance().publish(msg, CabinetFactory.getProtocol());
             } else if (device instanceof DishWasher) {
@@ -115,19 +116,17 @@ public class AlarmService extends Service {
                         .setMsgId(MsgKeys.setDishWasherStatus)
                         .setGuid(VentilatorFactory.getPlatform().getDeviceOnlySign()) //源guid
                         .setDt(device.dt)
-                        .setSignNum(device.mac)
                         .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                         .build();
-                MqttManager.getInstance().publish(msg, DishWasherFactory.getProtocol());
+                MqttManager.getInstance().publish(msg, VentilatorFactory.getPublicApi());
             } else if (device instanceof SteamOven) {
                 MqttMsg msg = new MqttMsg.Builder()
                         .setMsgId(MsgKeys.getSteameOvenStatus_Req) //查询一体机
                         .setGuid(VentilatorFactory.getPlatform().getDeviceOnlySign())
                         .setDt(device.dt)
-                        .setSignNum(device.mac)
                         .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                         .build();
-                MqttManager.getInstance().publish(msg, SteamFactory.getProtocol());
+                MqttManager.getInstance().publish(msg, VentilatorFactory.getPublicApi());
             }
         }
 

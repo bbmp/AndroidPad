@@ -16,4 +16,24 @@ public class VentilatorLocalControl implements VentilatorFunction{
         byte[] data = SerialVentilator.powerOn();
         SerialPortHelper.getInstance().addCommands(data);
     }
+
+    @Override
+    public void setFanStatus(int status) {
+
+    }
+
+    @Override
+    public void setFanGear(int gear) {
+
+    }
+
+    @Override
+    public void setFanLight(int light) {
+
+    }
+
+    @Override
+    public void setFanAll(int gear, int light) {
+
+    }
 }

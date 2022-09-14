@@ -25,6 +25,10 @@ public class RTopic {
         return signNum;
     }
 
+    public String getDeviceType() {
+        return deviceType;
+    }
+
     public String getTopic() {
         return String.format(TOPIC_FORMAT, topicType, deviceType, signNum);
     }

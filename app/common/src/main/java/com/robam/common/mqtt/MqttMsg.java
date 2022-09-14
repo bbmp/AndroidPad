@@ -19,17 +19,17 @@ public class MqttMsg {
      */
     private RTopic rTopic;
     private String dt;
-    private String signNum;
+    private String userId;
 
     public MqttMsg(short msgId) {
         this.msgId = msgId;
     }
 
-    public MqttMsg(short msgId, String guid, String dt, String signNum, RTopic topic, byte[] data) {
+    public MqttMsg(short msgId, String guid, String dt, String userid, RTopic topic, byte[] data) {
         this.msgId = msgId;
         this.guid = guid;
         this.dt = dt;
-        this.signNum = signNum;
+        this.userId = userid;
         this.rTopic = topic;
         this.data = data;
     }
@@ -58,7 +58,7 @@ public class MqttMsg {
         private byte[] payload;
         private RTopic topic;
         private String dt;
-        private String signNum;
+        private String userId;
         private String guid;
 
         public Builder setMsgId(short msgId) {
@@ -81,8 +81,8 @@ public class MqttMsg {
             return this;
         }
 
-        public Builder setSignNum(String signNum) {
-            this.signNum = signNum;
+        public Builder setUserId(String userid) {
+            this.userId = userid;
             return this;
         }
 
@@ -92,7 +92,7 @@ public class MqttMsg {
         }
 
         public MqttMsg build() {
-            return new MqttMsg(msgId, guid, dt, signNum, topic, payload);
+            return new MqttMsg(msgId, guid, dt, userId, topic, payload);
         }
     }
 }

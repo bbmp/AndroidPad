@@ -17,4 +17,9 @@ public class VentilatorConstant {
     public final static String EXTRA_FIRST = "ven";
     public final static String EXTRA_WIFI_SSID = "ssid";
     public final static String EXTRA_MODEL = "model";// 设备类型
+
+    /**
+     * 工作状态[1Byte]（0关机，1开机）
+     */
+    public final static String FanStatus = "FanStatus";
 }

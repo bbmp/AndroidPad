@@ -2,6 +2,7 @@ package com.robam.ventilator.ui.adapter;
 
 
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,6 +13,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.Device;
+import com.robam.common.utils.LogUtils;
 import com.robam.stove.device.HomeStove;
 import com.robam.common.utils.ImageUtils;
 import com.robam.ventilator.R;
@@ -26,16 +28,16 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
         super(R.layout.ventilator_item_layout_device);
         this.mOwner = owner;
         //左灶关火
-        addChildClickViewIds(R.id.btn_left_close);
+        addChildClickViewIds(R.id.btn_left_close, R.id.btn_detail);
     }
     @Override
     protected void convert(@NonNull BaseViewHolder baseViewHolder, Device device) {
         if (null != device) {
-
             baseViewHolder.setText(R.id.tv_device_name, device.getCategoryName());
             baseViewHolder.setText(R.id.tv_model, device.getDisplayType());
-            ImageUtils.loadImage(getContext(), device.deviceTypeIconUrl, baseViewHolder.getView(R.id.iv_device));
+            ImageView ivDevice = baseViewHolder.getView(R.id.iv_device);
             if (IDeviceType.RXDG.equals(device.dc)) {
+                ivDevice.setImageResource(R.drawable.ventilator_cabinet);
                 if (device.getStatus() == Device.OFFLINE) {//离线
                     baseViewHolder.setVisible(R.id.layout_offline, true);
                     baseViewHolder.setGone(R.id.layout_work, true);
@@ -57,7 +59,8 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
                         //故障
                     }
                 }
-            } else if (IDeviceType.RYYJ.equals(device.dc)) {//灶具
+            } else if (IDeviceType.RRQZ.equals(device.dc)) {//灶具
+                ivDevice.setImageResource(R.drawable.ventilator_stove);
                 if (device.getStatus() == Device.OFFLINE) {
                     baseViewHolder.setVisible(R.id.layout_offline, true);
                     baseViewHolder.setGone(R.id.layout_work, true);
@@ -90,8 +93,11 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
                     }
                 }
             } else if (IDeviceType.RZKY.equals(device.dc)) { //一体机
+                ivDevice.setImageResource(R.drawable.ventilator_steam);
                 if (device.getStatus() == Device.OFFLINE) {//离线
                     baseViewHolder.setVisible(R.id.layout_offline, true);
+                    baseViewHolder.setVisible(R.id.btn_detail, true);
+                    baseViewHolder.setText(R.id.tv_hint, R.string.ventilator_check_connect_status);
                     baseViewHolder.setGone(R.id.layout_work, true);
                     baseViewHolder.setText(R.id.tv_online, R.string.ventilator_offline);
                     baseViewHolder.setImageResource(R.id.iv_online, R.drawable.ventilator_shape_offline_bg);
@@ -114,6 +120,7 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
                     }
                 }
             } else if (IDeviceType.RXWJ.equals(device.dc)) { //洗碗机
+                ivDevice.setImageResource(R.drawable.ventilator_dishwasher);
                 if (device.getStatus() == Device.OFFLINE) {//离线
                     baseViewHolder.setVisible(R.id.layout_offline, true);
                     baseViewHolder.setGone(R.id.layout_work, true);
@@ -128,6 +135,54 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
                         baseViewHolder.setGone(R.id.layout_work, true);
                         baseViewHolder.setGone(R.id.btn_detail, true);
                         baseViewHolder.setText(R.id.tv_hint, "会洗锅的\n洗碗机");
+                    } else if (device.getWorkStatus() != 0) {
+                        baseViewHolder.setGone(R.id.layout_offline, true);
+                        baseViewHolder.setVisible(R.id.layout_work, true);
+                    } else {
+                        //故障
+                    }
+                }
+            } else if (IDeviceType.RZNG.equals(device.dc)) {//无人锅
+                ivDevice.setImageResource(R.drawable.ventilator_pan);
+                if (device.getStatus() == Device.OFFLINE) {//离线
+                    baseViewHolder.setVisible(R.id.layout_offline, true);
+                    baseViewHolder.setGone(R.id.layout_work, true);
+                    baseViewHolder.setText(R.id.tv_online, R.string.ventilator_offline);
+                    baseViewHolder.setImageResource(R.id.iv_online, R.drawable.ventilator_shape_offline_bg);
+                } else {
+                    //在线
+                    baseViewHolder.setText(R.id.tv_online, R.string.ventilator_online);
+                    baseViewHolder.setImageResource(R.id.iv_online, R.drawable.ventilator_shape_online_bg);
+                    if (device.getWorkStatus() == 0) {
+                        baseViewHolder.setVisible(R.id.layout_offline, true);
+                        baseViewHolder.setGone(R.id.layout_work, true);
+                        baseViewHolder.setGone(R.id.btn_detail, true);
+                        baseViewHolder.setText(R.id.tv_hint, "轻松烹饪\n智享厨房");
+                    } else if (device.getWorkStatus() != 0) {
+                        baseViewHolder.setGone(R.id.layout_offline, true);
+                        baseViewHolder.setVisible(R.id.layout_work, true);
+                    } else {
+                        //故障
+                    }
+                }
+            } else if (IDeviceType.RYYJ.equals(device.dc)) {//油烟机
+                ivDevice.setImageResource(R.drawable.ventilator_ventilator);
+                if (device.getStatus() == Device.OFFLINE) {//离线
+                    baseViewHolder.setVisible(R.id.layout_offline, true);
+                    baseViewHolder.setVisible(R.id.btn_detail, true);
+                    baseViewHolder.setText(R.id.tv_hint, R.string.ventilator_check_connect_status);
+                    baseViewHolder.setGone(R.id.layout_work, true);
+                    baseViewHolder.setText(R.id.tv_online, R.string.ventilator_offline);
+                    baseViewHolder.setImageResource(R.id.iv_online, R.drawable.ventilator_shape_offline_bg);
+                } else {
+                    //在线
+                    baseViewHolder.setText(R.id.tv_online, R.string.ventilator_online);
+                    baseViewHolder.setImageResource(R.id.iv_online, R.drawable.ventilator_shape_online_bg);
+                    if (device.getWorkStatus() == 0) {
+                        baseViewHolder.setVisible(R.id.layout_offline, true);
+                        baseViewHolder.setGone(R.id.layout_work, true);
+                        baseViewHolder.setGone(R.id.btn_detail, true);
+                        baseViewHolder.setText(R.id.tv_hint, "轻松烹饪\n智享厨房");
                     } else if (device.getWorkStatus() != 0) {
                         baseViewHolder.setGone(R.id.layout_offline, true);
                         baseViewHolder.setVisible(R.id.layout_work, true);

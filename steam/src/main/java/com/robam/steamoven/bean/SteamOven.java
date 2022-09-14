@@ -27,8 +27,8 @@ public class SteamOven extends Device {
         this.subDevices = device.subDevices;
     }
 
-    public SteamOven(String name, String displayType) {
-        super(name, displayType);
+    public SteamOven(String name, String dc, String displayType) {
+        super(name, dc, displayType);
     }
 
     /**
@@ -448,101 +448,4 @@ public class SteamOven extends Device {
         orderTime = 0 ;
     }
 
-
-
-    @Override
-    public void unmarshaller(int msgId, String guid, byte[] payload, int offset) {
-        if (!this.guid.equals(guid)) //非当前设备
-            return;
-        switch (msgId) {
-            case MsgKeys.getDeviceAttribute_Req:
-                break;
-            case MsgKeys.getDeviceAttribute_Rep: {
-            }
-                break;
-            case MsgKeys.getSteameOvenStatus_Rep:
-                //
-                short status = ByteUtils.toShort(payload[offset++]);
-                short powerOnStatus = ByteUtils.toShort(payload[offset++]);
-                short workOnStatus = ByteUtils.toShort(payload[offset++]);
-                short alarm = ByteUtils.toShort(payload[offset++]);
-                short mode = ByteUtils.toShort(payload[offset++]);
-                short temp = ByteUtils.toShort(payload[offset++]);
-                short leftTime = ByteUtils.toShort(payload[offset++]);
-                offset++;
-                short light = ByteUtils.toShort(payload[offset++]);
-                short waterStatus = ByteUtils.toShort(payload[offset++]);
-                short setTemp = ByteUtils.toShort(payload[offset++]);
-                short setTime = ByteUtils.toShort(payload[offset++]);
-                short min = ByteUtils.toShort(payload[offset++]);
-                short hour = ByteUtils.toShort(payload[offset++]);
-                short recipeId = ByteUtils.toShort(payload[offset++]);
-                offset++;
-                short recipeSteps = ByteUtils.toShort(payload[offset++]);
-                short setDownTemp = ByteUtils.toShort(payload[offset++]);
-                short downTemp = ByteUtils.toShort(payload[offset++]);
-                short steam = ByteUtils.toShort(payload[offset++]);
-                short segments_Key = ByteUtils.toShort(payload[offset++]);
-                short step_Key = ByteUtils.toShort(payload[offset++]);
-                short preFalg = ByteUtils.toShort(payload[offset++]);
-                short modelType = ByteUtils.toShort(payload[offset++]);
-
-                short argument = ByteUtils.toShort(payload[offset++]);
-
-                while (argument > 0) {
-                    short argumentKey = ByteUtils.toShort(payload[offset++]);
-                    switch (argumentKey) {
-                        case 3:
-
-                            short cpStepLength = ByteUtils.toShort(payload[offset++]);
-                            short cpStepValue = ByteUtils.toShort(payload[offset++]);
-                            break;
-                        case 4:
-                            short steamLength = ByteUtils.toShort(payload[offset++]);
-                            short steamValue = ByteUtils.toShort(payload[offset++]);
-                            break;
-                        case 5:
-                            short MultiStepCookingStepsLength = ByteUtils.toShort(payload[offset++]);
-                            short MultiStepCookingStepsValue = ByteUtils.toShort(payload[offset++]);
-                            break;
-                        case 6:
-                            short SteamOvenAutoRecipeModeLength = ByteUtils.toShort(payload[offset++]);
-                            short AutoRecipeModeValue = ByteUtils.toShort(payload[offset++]);
-                            break;
-                        case 7:
-                            short MultiStepCurrentStepsLength = ByteUtils.toShort(payload[offset++]);
-                            short MultiStepCurrentStepsValue = ByteUtils.toShort(payload[offset++]);
-                            break;
-                        case 8:
-                            short SteameOvenPreFlagLength = ByteUtils.toShort(payload[offset++]);
-                            short SteameOvenPreFlagValue = ByteUtils.toShort(payload[offset++]);
-                            break;
-                        case 9:
-                            short weatherDescalingLength = ByteUtils.toShort(payload[offset++]);
-                            short weatherDescalingValue = ByteUtils.toShort(payload[offset++]);
-                            break;
-                        case 10:
-                            short doorStatusLength = ByteUtils.toShort(payload[offset++]);
-                            short doorStatusValue = ByteUtils.toShort(payload[offset++]);
-                            break;
-                        case 11:
-                            short time_H_length = ByteUtils.toShort(payload[offset++]);
-                            short time_H_Value = ByteUtils.toShort(payload[offset++]);
-                            break;
-                        case 12:
-                            offset++ ;
-                            short SteameOvenLeftMin = ByteUtils.toShort(payload[offset++]);
-                            short SteameOvenLeftHours = ByteUtils.toShort(payload[offset++]);
-                            break;
-                    }
-                    argument--;
-                }
-                break;
-            case MsgKeys.getDeviceEventReport: //事件上报
-                //设备型号
-                short categoryCodeEvent = ByteUtils.toShort(payload[offset++]);
-                short event = ByteUtils.toShort(payload[offset++]);
-                break;
-        }
-    }
 }

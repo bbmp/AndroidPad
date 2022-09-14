@@ -36,7 +36,12 @@ public class AccountInfo {
     public MutableLiveData<UserInfo> getUser() {
         return user;
     }
-//    private final RxLiveData<UserInfo> userData = new RxLiveData<>();
+
+    public MutableLiveData<String> getGuid() {
+        return guid;
+    }
+
+    //    private final RxLiveData<UserInfo> userData = new RxLiveData<>();
 //
 //    public RxLiveData<UserInfo> getUserData() {
 //        return userData;

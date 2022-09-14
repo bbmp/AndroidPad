@@ -22,16 +22,10 @@ public class Stove extends Device {
         this.subDevices = device.subDevices;
     }
 
-    public Stove(String name, String displayType) {
-        super(name, displayType);
+    public Stove(String name, String dc, String displayType) {
+        super(name, dc, displayType);
     }
 
-
-
-    @Override
-    public void unmarshaller(int msgId, String guid, byte[] payload, int offset) {
-
-    }
 
     /**
      * 当前功能

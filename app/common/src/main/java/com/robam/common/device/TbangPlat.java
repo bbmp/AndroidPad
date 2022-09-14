@@ -40,7 +40,7 @@ public class TbangPlat implements IPlat{
 
     @Override
     public String getDt() {
-        return "5068S";
+        return "5917S";
     }
 
     @Override

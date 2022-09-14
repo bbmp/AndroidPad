@@ -21,16 +21,20 @@
     <TextView
         android:id="@+id/tv_wifi_name"
         android:layout_marginLeft="@dimen/dp_8"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textSize="@dimen/sp_34"
         android:textColor="@color/ventilator_white"
+        android:maxLines="1"
+        android:ellipsize="end"
         tools:text="物联研究院"
         app:layout_constraintLeft_toRightOf="@id/iv_select"
+        app:layout_constraintRight_toLeftOf="@id/iv_lock"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <ImageView
+        android:id="@+id/iv_lock"
         android:src="@drawable/ventilator_ic_lock"
         android:layout_width="@dimen/dp_38"
         android:layout_height="@dimen/dp_38"

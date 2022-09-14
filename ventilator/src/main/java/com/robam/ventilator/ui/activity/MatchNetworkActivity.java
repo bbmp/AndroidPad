@@ -13,6 +13,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +27,7 @@ import com.clj.fastble.data.BleScanState;
 import com.clj.fastble.exception.BleException;
 import com.clj.fastble.scan.BleScanRuleConfig;
 import com.clj.fastble.utils.HexUtil;
+import com.robam.common.IDeviceType;
 import com.robam.common.manager.BlueToothManager;
 import com.robam.common.ui.view.ExtImageSpan;
 import com.robam.common.utils.LogUtils;
@@ -41,6 +43,7 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
     private TextView tvHint;
     private String model = ""; //设备类型
     private TextView tvNext, tvOk;
+    private ImageView ivDevice;
 
     @Override
     protected int getLayoutId() {
@@ -56,6 +59,7 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
         tvHint = findViewById(R.id.tv_match_hint);
         tvNext = findViewById(R.id.tv_next);
         tvOk = findViewById(R.id.tv_ok);
+        ivDevice = findViewById(R.id.iv_device);
 
         setOnClickListener(R.id.tv_next, R.id.tv_ok);
     }
@@ -82,8 +86,9 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
     protected void initData() {
         SpannableString spannableString = null;
         String string = null;
-        if ("9B328".equals(model)) {
+        if (IDeviceType.RRQZ.equals(model)) {
             //灶具
+            ivDevice.setImageResource(R.drawable.ventilator_stove);
             string = getResources().getString(R.string.ventilator_match_hint4);
             spannableString = new SpannableString(string);
             Drawable drawable = getResources().getDrawable(R.drawable.ventilator_r);
@@ -96,8 +101,9 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
             pos = string.indexOf("\"");
             if (pos >= 0)
                 spannableString.setSpan(new ExtImageSpan(drawable), pos + 1, pos + 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        } else if ("KP100".equals(model)) {
+        } else if (IDeviceType.RZNG.equals(model)) {
             //锅
+            ivDevice.setImageResource(R.drawable.ventilator_pan);
             string = getResources().getString(R.string.ventilator_match_hint3);
             spannableString = new SpannableString(string);
             Drawable drawable = getResources().getDrawable(R.drawable.ventilator_r);
@@ -110,8 +116,9 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
             pos = string.indexOf("\"");
             if (pos >= 0)
                 spannableString.setSpan(new ExtImageSpan(drawable), pos + 1, pos + 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        } else if ("XG858".equals(model)) {
+        } else if (IDeviceType.RXDG.equals(model)) {
             //消毒柜
+            ivDevice.setImageResource(R.drawable.ventilator_cabinet);
             string = getResources().getString(R.string.ventilator_match_hint1);
             spannableString = new SpannableString(string);
             Drawable drawable = getResources().getDrawable(R.drawable.ventilator_r);
@@ -126,13 +133,15 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
                 spannableString.setSpan(new ExtImageSpan(drawable), pos + 1, pos + 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             tvNext.setVisibility(View.GONE);
             tvOk.setVisibility(View.VISIBLE);
-        } else if ("WB758".equals(model)) {
+        } else if (IDeviceType.RXWJ.equals(model)) {
             //洗碗机
+            ivDevice.setImageResource(R.drawable.ventilator_dishwasher);
             string = getResources().getString(R.string.ventilator_match_hint6);
             spannableString = new SpannableString(string);
             tvNext.setVisibility(View.GONE);
             tvOk.setVisibility(View.VISIBLE);
         } else {
+            ivDevice.setImageResource(R.drawable.ventilator_steam);
             string = getResources().getString(R.string.ventilator_match_hint7);
             spannableString = new SpannableString(string);
             tvNext.setVisibility(View.GONE);

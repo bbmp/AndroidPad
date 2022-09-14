@@ -12,4 +12,9 @@ public class SteamConstant {
     public final static int FUN_CURVE = 8;// 曲线f
 
     public final static String EXTRA_MODE_LIST = "modelist";
+
+    /**
+     * 一体机状态
+     */
+    public final static String SteameOvenStatus = "SteameOvenStatus";
 }

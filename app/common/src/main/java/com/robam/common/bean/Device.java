@@ -16,7 +16,7 @@ public class Device {
     //工作状态
     public int workStatus = 0;
 
-    public int queryNum = 0;//查询次数
+    public int queryNum = 0;   //查询次数
     /**
      * 拥有者编码
      */
@@ -74,8 +74,9 @@ public class Device {
     public Device() {
     }
 
-    public Device(String name, String displayType) {
+    public Device(String name, String dc, String displayType) {
         this.categoryName = name;
+        this.dc = dc;
         this.displayType = displayType;
     }
 
@@ -96,8 +97,4 @@ public class Device {
         return workStatus;
     }
 
-    //此设备数据
-    public void unmarshaller(int msgId, String guid, byte[] payload, int offset) {
-        LogUtils.e("unmarshaller");
-    }
 }

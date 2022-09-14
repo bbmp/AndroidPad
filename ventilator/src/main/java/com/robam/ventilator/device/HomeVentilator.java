@@ -1,13 +1,15 @@
 package com.robam.ventilator.device;
 
 public class HomeVentilator {
-    //当前进入的灶具锅首页
+    //当前进入的烟机
     public static HomeVentilator getInstance() {
         return HomeVentilator.VentilatorHolder.instance;
     }
     private static class VentilatorHolder {
         private static final HomeVentilator instance = new HomeVentilator();
     }
+    //工作状态
+    public byte status = 0;
 
     /**
      * byte6 开机/关机

@@ -239,7 +239,7 @@ public class MqttManager {
 
         @Override
         public void messageArrived(String topic, MqttMessage message) throws Exception {
-            int msgId = iProtocol.decode(topic, message.getPayload());
+            iProtocol.decode(topic, message.getPayload());
 //            if (null != mqttMsgCallback && null != message)
 //                mqttMsgCallback.messageArrived(message.getPayload());
             //统一 处理响应
@@ -345,7 +345,7 @@ public class MqttManager {
                 .setMsgId(MsgKeys.DeviceConnected_Noti)
                 .setGuid(iPlat.getDeviceOnlySign())
                 .setDt(iPlat.getDt())
-                .setSignNum(iPlat.getMac())
+                .setUserId(iPlat.getMac())
                 .setTopic(new RTopic(RTopic.TOPIC_BROADCAST, iPlat.getDt(), iPlat.getMac()))
                 .build();
 

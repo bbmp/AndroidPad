@@ -79,14 +79,14 @@ public class ShortcutActivity extends VentilatorBaseActivity {
         });
         //设备
         List<Device> deviceList = new ArrayList<>();
-        deviceList.add(new Cabinet("消毒柜", IDeviceType.SERIES_CABINET));
-        deviceList.add(new Ventilator("油烟机", IDeviceType.SERIES_VENTILATOR));
+        deviceList.add(new Cabinet("消毒柜", IDeviceType.RXDG, "XG858"));
+        deviceList.add(new Ventilator("油烟机", IDeviceType.RYYJ, "5068s"));
 
         List<Device> deviceList2 = new ArrayList<>();
-        deviceList2.add(new Pan("无人锅", IDeviceType.SERIES_PAN));
-        deviceList2.add(new Stove("灶具", IDeviceType.SERIES_STOVE));
-        deviceList2.add(new SteamOven("一体机", IDeviceType.SERIES_STEAM));
-        deviceList2.add(new DishWasher("洗碗机", IDeviceType.SERIES_DISHWASHER));
+        deviceList2.add(new Pan("无人锅", IDeviceType.RZNG, "KP100"));
+        deviceList2.add(new Stove("灶具", IDeviceType.RRQZ, "9B328"));
+        deviceList2.add(new SteamOven("一体机", IDeviceType.RZKY, "CQ928"));
+        deviceList2.add(new DishWasher("洗碗机", IDeviceType.RXWJ, "WB758"));
 
         rvShortcutWorkAdapter = new RvShortcutDeviceAdapter();
         rvDeviceWork.setAdapter(rvShortcutWorkAdapter);

@@ -10,6 +10,7 @@ import android.view.View;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.robam.cabinet.bean.Cabinet;
+import com.robam.common.IDeviceType;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.pan.bean.Pan;
 import com.robam.steamoven.bean.SteamOven;
@@ -59,7 +60,7 @@ public class AddDeviceMainActivity extends VentilatorBaseActivity {
                         }
                     }
                     Intent intent = new Intent();
-                    intent.putExtra(VentilatorConstant.EXTRA_MODEL, device.getDisplayType());
+                    intent.putExtra(VentilatorConstant.EXTRA_MODEL, device.dc);
                     intent.setClass(AddDeviceMainActivity.this, MatchNetworkActivity.class);
                     //开始配网流程
                     startActivity(intent);
@@ -71,11 +72,11 @@ public class AddDeviceMainActivity extends VentilatorBaseActivity {
     @Override
     protected void initData() {
         List<Device> deviceList2 = new ArrayList<>();
-        deviceList2.add(new Pan("明火自动翻炒锅", "KP100"));
-        deviceList2.add(new Stove("燃气灶", "9B328"));
-        deviceList2.add(new DishWasher("洗碗机", "WB758"));
-        deviceList2.add(new Cabinet("消毒柜", "XG858"));
-        deviceList2.add(new SteamOven("蒸烤一体机", "CQ928"));
+        deviceList2.add(new Pan("明火自动翻炒锅", IDeviceType.RZNG, "KP100"));
+        deviceList2.add(new Stove("燃气灶", IDeviceType.RRQZ, "9B328"));
+        deviceList2.add(new DishWasher("洗碗机", IDeviceType.RXWJ, "WB758"));
+        deviceList2.add(new Cabinet("消毒柜", IDeviceType.RXDG, "XG858"));
+        deviceList2.add(new SteamOven("蒸烤一体机", IDeviceType.RZKY, "CQ928"));
         rvAddDeviceAdapter.setList(deviceList2);
     }
 }

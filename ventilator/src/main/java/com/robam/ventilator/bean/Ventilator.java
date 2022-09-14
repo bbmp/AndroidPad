@@ -26,8 +26,8 @@ public class Ventilator extends Device {
         this.subDevices = device.subDevices;
     }
 
-    public Ventilator(String name, String displayType) {
-        super(name, displayType);
+    public Ventilator(String name, String dc, String displayType) {
+        super(name, dc, displayType);
     }
 
     /**
@@ -94,37 +94,4 @@ public class Ventilator extends Device {
      */
     public byte param9 = (byte) 0x00;
 
-    @Override
-    public void unmarshaller(int msgId, String guid, byte[] payload, int offset) {
-        if (!this.guid.equals(guid))
-            return;
-
-        switch (msgId) {
-            case MsgKeys.getDeviceAttribute_Req:
-
-                break;
-            case MsgKeys.setDeviceAttribute_Req:
-                //属性个数
-                short number = ByteUtils.toShort(payload[offset]);
-                break;
-            case MsgKeys.GetFanStatus_Rep: //烟机查询返回
-                status = Device.ONLINE;
-                short fanStatus =
-                        ByteUtils.toShort(payload[offset++]);
-                short fanLevel =
-                        ByteUtils.toShort(payload[offset++]);
-                short fanLight =
-                        ByteUtils.toShort(payload[offset++]);
-                short needClean =
-                        ByteUtils.toShort(payload[offset++]);
-
-//                short argumentLength = (short) (payload.length - offset);
-
-//                short aValue = ByteUtils.toShort(payload[offset]);
-                break;
-            default:
-
-                break;
-        }
-    }
 }

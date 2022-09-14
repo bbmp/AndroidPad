@@ -9,6 +9,7 @@
         android:layout_width="@dimen/dp_98"
         android:layout_height="@dimen/dp_98"
         android:layout_marginLeft="@dimen/dp_30"
+        android:layout_marginTop="@dimen/dp_2"
         android:scaleType="centerInside"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>

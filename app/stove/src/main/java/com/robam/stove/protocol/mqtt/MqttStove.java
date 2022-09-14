@@ -6,25 +6,21 @@ import com.robam.common.mqtt.MqttPublic;
 import com.robam.common.mqtt.MsgKeys;
 
 import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.Map;
 
 //灶具mqtt实现
 public class MqttStove extends MqttPublic {
-    @Override
-    public byte[] encode(MqttMsg msg) {
-        return new byte[0];
-    }
+
 
     @Override
-    public int decode(String topic, byte[] payload) {
-        return 0;
-    }
-
-    @Override
-    protected void onDecodeMsg(int msgId, String srcGuid, byte[] payload, int offset) {
+    protected Map onDecodeMsg(int msgId, String srcGuid, byte[] payload, int offset) {
+        Map map = new HashMap();
         switch (msgId) {
             case MsgKeys.SetStoveStatus_Rep: //灶具查询返回
                 break;
         }
+        return map;
     }
 
     @Override

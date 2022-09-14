@@ -23,4 +23,24 @@ public class VentilatorAbstractControl implements VentilatorFunction{
     public void powerOn() {
         function.powerOn();
     }
+
+    @Override
+    public void setFanStatus(int status) {
+        function.setFanStatus(status);
+    }
+
+    @Override
+    public void setFanGear(int gear) {
+        function.setFanGear(gear);
+    }
+
+    @Override
+    public void setFanLight(int light) {
+        function.setFanLight(light);
+    }
+
+    @Override
+    public void setFanAll(int gear, int light) {
+        function.setFanAll(gear, light);
+    }
 }

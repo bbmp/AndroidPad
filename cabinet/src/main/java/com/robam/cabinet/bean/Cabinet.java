@@ -19,8 +19,8 @@ public class Cabinet extends Device{
         this.subDevices = device.subDevices;
     }
 
-    public Cabinet(String name, String displayType) {
-        super(name, displayType);
+    public Cabinet(String name, String dc, String displayType) {
+        super(name, dc, displayType);
     }
 
     /**
@@ -36,8 +36,4 @@ public class Cabinet extends Device{
      */
     public int workHours;
 
-    @Override
-    public void unmarshaller(int msgId, String guid, byte[] payload, int offset) {
-
-    }
 }

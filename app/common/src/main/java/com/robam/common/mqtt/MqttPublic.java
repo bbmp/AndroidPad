@@ -13,6 +13,7 @@ import com.robam.common.utils.StringUtils;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Map;
 
 /**
  *  mqtt协议公共打包和解析
@@ -57,7 +58,7 @@ public abstract class MqttPublic implements IProtocol{
 
     @SuppressLint("RestrictedApi")
     @Override
-    public int decode(String topic, byte[] payload) {
+    public Map decode(String topic, byte[] payload) {
 
         try {
             Preconditions.checkNotNull(payload);
@@ -81,9 +82,9 @@ public abstract class MqttPublic implements IProtocol{
             LogUtils.e( "收到消息： " + "topic = " + topic + " ,msgId = " + msgId);
 
             // paser payload
-            onDecodeMsg(msgId, srcGuid, payload, offset);
+            Map map = onDecodeMsg(msgId, srcGuid, payload, offset);
 
-            return msgId;
+            return map;
         } catch (Exception e) {
             String log = String.format(
                     "mqtt decode error. topic:%s\nerror:%s\nbyte[]:%s",
@@ -91,10 +92,10 @@ public abstract class MqttPublic implements IProtocol{
             LogUtils.e(log);
             e.printStackTrace();
         }
-        return -1;
+        return null;
     }
 
-    protected abstract void onDecodeMsg(int msgId, String srcGuid, byte[] payload, int offset);
+    protected abstract Map onDecodeMsg(int msgId, String srcGuid, byte[] payload, int offset);
 
     protected abstract void onEncodeMsg(ByteBuffer buf, MqttMsg msg);
 }
