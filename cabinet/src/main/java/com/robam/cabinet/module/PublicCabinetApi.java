@@ -8,13 +8,5 @@ import java.util.Map;
 
 //消毒柜远程控制
 public class PublicCabinetApi implements IPublicCabinetApi {
-    @Override
-    public byte[] encode(MqttMsg msg) {
-        return new byte[0];
-    }
 
-    @Override
-    public MqttMsg decode(String topic, byte[] payload) {
-        return null;
-    }
 }

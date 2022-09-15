@@ -10,21 +10,5 @@ import java.util.Map;
 
 //洗碗机私有协议
 public class PulbicDishWasherApi implements IPublicDishWasherApi {
-    private void onDecodeMsg(int msgId, byte[] payload, int offset) {
-        //远程被控制
-    }
 
-    private void onEncodeMsg(ByteBuffer buf, MqttMsg msg) {
-        //协议打包，上传通知
-    }
-
-    @Override
-    public byte[] encode(MqttMsg msg) {
-        return new byte[0];
-    }
-
-    @Override
-    public MqttMsg decode(String topic, byte[] payload) {
-        return null;
-    }
 }

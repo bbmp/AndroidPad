@@ -36,7 +36,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Map;
 
-//转发api
+//协议转发api
 public class TransmitApi implements IProtocol {
     protected final int BufferSize = 1024 * 2;
     protected static final int GUID_SIZE = 17;

@@ -8,32 +8,32 @@ import java.util.Map;
 
 public class ModulePubliclHelper {
     //保存接口和实现对象
-    private static Map<Class<? extends IProtocol>, IProtocol> modulePublic = new HashMap<>();
+    private static Map<Class<? extends IPublicApi>, IPublicApi> modulePublic = new HashMap<>();
 
-    public static <T extends IProtocol> T getModulePublic(Class<T> clazz, String loadClass) {
+    public static <T extends IPublicApi> T getModulePublic(Class<T> clazz, String loadClass) {
         if (null == clazz)
             return null;
-        IProtocol iProtocol = null;
+        IPublicApi iPublicApi = null;
         if (modulePublic.containsKey(clazz))
-            iProtocol = modulePublic.get(clazz);
+            iPublicApi = modulePublic.get(clazz);
         else {
             try {
                 Class implClass = Class.forName(loadClass);
                 Method method = implClass.getMethod("getPublicApi");
-                iProtocol = (IProtocol) method.invoke(null);
-                modulePublic.put(clazz, iProtocol);
+                iPublicApi = (IPublicApi) method.invoke(null);
+                modulePublic.put(clazz, iPublicApi);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
-        return (T) iProtocol;
+        return (T) iPublicApi;
     }
 
-    public static void register(Class<? extends IProtocol> clazz, IProtocol iProtocol) {
+    public static void register(Class<? extends IPublicApi> clazz, IPublicApi iPublicApi) {
         if (modulePublic.containsKey(clazz))
             return;
 
-        modulePublic.put(clazz, iProtocol);
+        modulePublic.put(clazz, iPublicApi);
     }
 }

@@ -8,17 +8,8 @@ import com.robam.pan.device.HomePan;
 
 import java.util.Map;
 
-//锅mqtt协议，通过烟机转发
+//锅
 public class PublicPanApi implements IPublicPanApi {
-    @Override
-    public byte[] encode(MqttMsg msg) {
-        return new byte[0];
-    }
-
-    @Override
-    public MqttMsg decode(String topic, byte[] payload) {
-        return null;
-    }
 
     @Override
     public MutableLiveData<Integer> getPanTemp() {

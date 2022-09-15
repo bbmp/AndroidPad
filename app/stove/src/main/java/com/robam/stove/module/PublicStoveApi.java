@@ -8,17 +8,9 @@ import com.robam.stove.device.HomeStove;
 
 import java.util.Map;
 
-//mqtt协议解析和打包
+//
 public class PublicStoveApi implements IPublicStoveApi {
-    @Override
-    public byte[] encode(MqttMsg msg) {
-        return new byte[0];
-    }
 
-    @Override
-    public MqttMsg decode(String topic, byte[] payload) {
-        return null;
-    }
 
     @Override
     public MutableLiveData<Boolean> getLeftStove() {
