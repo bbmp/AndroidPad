@@ -20,7 +20,7 @@
         android:id="@+id/iv_waiting"
         android:layout_width="@dimen/dp_55"
         android:layout_height="@dimen/dp_55"
-        android:src="@drawable/logo_roki"
+        android:src="@drawable/ventilator_progress"
         app:layout_constraintLeft_toLeftOf="@id/view_board"
         app:layout_constraintRight_toRightOf="@id/view_board"
         app:layout_constraintTop_toTopOf="@id/view_board"

@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.robam.common.mqtt.IProtocol;
 
 //锅对外接口
-public interface IPublicPanApi extends IProtocol {
+public interface IPublicPanApi extends IPublicApi {
     String PAN_HOME = "com.robam.pan.ui.activity.MainActivity";
     //只会有一个锅连接
     MutableLiveData<Integer> getPanTemp();

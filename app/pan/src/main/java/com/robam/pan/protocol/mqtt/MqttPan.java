@@ -39,10 +39,9 @@ public class MqttPan extends MqttPublic {
     }
 
     @Override
-    protected Map onDecodeMsg(int msgId, String srcGuid, byte[] payload, int offset) {
-        //解析到的字段存放
-        Map map = new HashMap();
-        switch (msgId) {
+    protected void onDecodeMsg(MqttMsg msg, byte[] payload, int offset) throws Exception{
+
+        switch (msg.getID()) {
             case MsgKeys.SetPotTemp_Rep: //查询返回
                 float temp = ByteUtils.toFloat(payload, offset++, ByteUtils.BYTE_ORDER);
                 offset++;
@@ -50,7 +49,7 @@ public class MqttPan extends MqttPublic {
                 offset++;
                 //锅状态
                 short status = ByteUtils.toShort(payload[offset++]);
-                map.put(PanConstant.Pot_status, status);
+                msg.put(PanConstant.Pot_status, status);
                 //参数个数
                 short count = ByteUtils.toShort(payload[offset++]);
                 while (count >= 0) {
@@ -97,7 +96,6 @@ public class MqttPan extends MqttPublic {
                 }
                 break;
         }
-        return map;
     }
 
     @Override

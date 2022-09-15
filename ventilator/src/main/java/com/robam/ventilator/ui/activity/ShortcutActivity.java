@@ -12,7 +12,12 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.robam.cabinet.bean.Cabinet;
 import com.robam.common.IDeviceType;
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.UserInfo;
+import com.robam.common.constant.ComnConstant;
+import com.robam.common.http.RetrofitCallback;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
+import com.robam.common.utils.LogUtils;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.pan.bean.Pan;
 import com.robam.steamoven.bean.SteamOven;
@@ -22,6 +27,8 @@ import com.robam.ventilator.base.VentilatorBaseActivity;
 import com.robam.common.bean.Device;
 import com.robam.ventilator.bean.VenFunBean;
 import com.robam.ventilator.bean.Ventilator;
+import com.robam.ventilator.http.CloudHelper;
+import com.robam.ventilator.response.GetDeviceRes;
 import com.robam.ventilator.ui.adapter.RvShortcutFunAdapter;
 import com.robam.ventilator.ui.adapter.RvShortcutDeviceAdapter;
 
@@ -88,6 +95,8 @@ public class ShortcutActivity extends VentilatorBaseActivity {
         deviceList2.add(new SteamOven("一体机", IDeviceType.RZKY, "CQ928"));
         deviceList2.add(new DishWasher("洗碗机", IDeviceType.RXWJ, "WB758"));
 
+        getDeviceInfo(AccountInfo.getInstance().getUser().getValue());
+
         rvShortcutWorkAdapter = new RvShortcutDeviceAdapter();
         rvDeviceWork.setAdapter(rvShortcutWorkAdapter);
         rvShortcutWorkAdapter.setList(deviceList);
@@ -117,15 +126,16 @@ public class ShortcutActivity extends VentilatorBaseActivity {
         Device device = (Device) adapter.getItem(position);
         Intent intent = new Intent();
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        if (IDeviceType.SERIES_DISHWASHER.equals(device.getDisplayType()))
+        intent.putExtra(ComnConstant.EXTRA_GUID, device.guid); //传入启动设备
+        if (IDeviceType.RXWJ.equals(device.dc))
             intent.setClassName(ShortcutActivity.this, "com.robam.dishwasher.ui.activity.MainActivity");
-        else if (IDeviceType.SERIES_STEAM.equals(device.getDisplayType()))
+        else if (IDeviceType.RZKY.equals(device.dc))
             intent.setClassName(ShortcutActivity.this, "com.robam.steamoven.ui.activity.MainActivity");
-        else if (IDeviceType.SERIES_STOVE.equals(device.getDisplayType()))
+        else if (IDeviceType.RRQZ.equals(device.dc))
             intent.setClassName(ShortcutActivity.this, "com.robam.stove.ui.activity.MainActivity");
-        else if (IDeviceType.SERIES_PAN.equals(device.getDisplayType()))
+        else if (IDeviceType.RZNG.equals(device.dc))
             intent.setClassName(ShortcutActivity.this, "com.robam.pan.ui.activity.MainActivity");
-        else if (IDeviceType.SERIES_CABINET.equals(device.getDisplayType()))
+        else if (IDeviceType.RXDG.equals(device.dc))
             intent.setClassName(ShortcutActivity.this, "com.robam.cabinet.ui.activity.MainActivity");
         else
             intent.setClassName(ShortcutActivity.this, "com.robam.ventilator.ui.activity.HomeActivity");
@@ -145,5 +155,46 @@ public class ShortcutActivity extends VentilatorBaseActivity {
         int id = view.getId();
         if (id == R.id.activity_short)
             finish();
+    }
+
+    private void getDeviceInfo(UserInfo userInfo) {
+        List<Device> deviceList = new ArrayList<>();
+        if (null != userInfo) {
+            CloudHelper.getDevices(this, userInfo.id, GetDeviceRes.class, new RetrofitCallback<GetDeviceRes>() {
+                @Override
+                public void onSuccess(GetDeviceRes getDeviceRes) {
+                    if (null != getDeviceRes && null != getDeviceRes.devices) {
+                        List<Device> deviceList = getDeviceRes.devices;
+                        for (Device device: deviceList) {
+                            if (IDeviceType.RYYJ.equals(device.dc))    //烟机
+                                deviceList.add(new Ventilator(device));
+                            else if (IDeviceType.RZKY.equals(device.dc)) //一体机
+                                deviceList.add(new SteamOven(device));
+                            else if (IDeviceType.RXWJ.equals(device.dc)) //洗碗机
+                                deviceList.add(new DishWasher(device));
+                            else if (IDeviceType.RXDG.equals(device.dc))  //消毒柜
+                                deviceList.add(new Cabinet(device));
+                            List<Device> subDevices = device.subDevices;  //子设备
+                            if (null != subDevices) {
+                                for (Device subDevice : subDevices) {
+                                    if (IDeviceType.RZNG.equals(subDevice.dc)) //锅
+                                        deviceList.add(new Pan(subDevice));
+                                    else if (IDeviceType.RRQZ.equals(subDevice.dc))
+                                        deviceList.add(new Stove(subDevice));
+                                }
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onFaild(String err) {
+                    LogUtils.e("getDevices" + err);
+                }
+            });
+        } else {
+            //未登录只展示烟机
+            deviceList.add(new Ventilator("油烟机", IDeviceType.RYYJ, "5068s"));
+        }
     }
 }

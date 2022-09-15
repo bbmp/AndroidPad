@@ -166,6 +166,7 @@ public class MqttManager {
     }
     public void reConnect(IConncect iConncect) {
         try {
+            LogUtils.e( "reConnect ");
             mqttAndroidClient.connect(mMqttConnectOptions, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
@@ -206,7 +207,7 @@ public class MqttManager {
 
         @Override
         public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-//            Log.i(TAG, "订阅失败 " + exception.getMessage());
+            LogUtils.e("订阅失败 ");
         }
     };
 

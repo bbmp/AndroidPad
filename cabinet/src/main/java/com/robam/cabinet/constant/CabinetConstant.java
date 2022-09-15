@@ -16,4 +16,9 @@ public class CabinetConstant {
     public final static int MODE_SMART = 5;
 
     public final static String EXTRA_MODE_BEAN = "modebean";
+
+    /**
+     * 消毒柜工作状态[1Byte]（0关机，1开机）
+     */
+    public final static String SteriStatus = "SteriStatus";
 }

@@ -29,18 +29,17 @@ public class MqttVentilator extends MqttPublic {
     public static final ByteOrder BYTE_ORDER = ByteOrder.LITTLE_ENDIAN;
 
 
-    private Map decodeMsg(int msgId, String guid, byte[] payload, int offset) {
-        Map map = new HashMap();
+    private void decodeMsg(MqttMsg msg, byte[] payload, int offset) throws Exception {
 //从payload中取值角标
         //远程被控制
-        switch (msgId) {
+        switch (msg.getID()) {
             case MsgKeys.getDeviceAttribute_Req:
 
                 break;
             case MsgKeys.GetFanStatus_Rep: //烟机查询返回
                 short fanStatus =
                         ByteUtils.toShort(payload[offset++]);
-                map.put(VentilatorConstant.FanStatus, fanStatus);
+                msg.putOpt(VentilatorConstant.FanStatus, fanStatus);
                 short fanLevel =
                         ByteUtils.toShort(payload[offset++]);
                 short fanLight =
@@ -56,7 +55,6 @@ public class MqttVentilator extends MqttPublic {
 
                 break;
         }
-        return map;
     }
     //烟机端的协议
     private void encodeMsg(ByteBuffer buf, MqttMsg msg) {
@@ -113,18 +111,18 @@ public class MqttVentilator extends MqttPublic {
     }
 
     @Override
-    protected Map onDecodeMsg(int msgId, String srcGuid, byte[] payload, int offset) {
-        switch (msgId) {
+    protected void onDecodeMsg(MqttMsg msg, byte[] payload, int offset) throws Exception{
+        switch (msg.getID()) {
             case MsgKeys.GetFanStatus_Req: { //查询烟机
                 //控制端类型
                 short terminalType = ByteUtils.toShort(payload[offset]);
-                MqttMsg msg = new MqttMsg.Builder()
+                MqttMsg newMsg = new MqttMsg.Builder()
                         .setMsgId(MsgKeys.GetFanStatus_Rep)
                         .setGuid(VentilatorFactory.getPlatform().getDeviceOnlySign())
                         .setDt(VentilatorFactory.getPlatform().getDt())
-                        .setTopic(new RTopic(RTopic.TOPIC_BROADCAST, DeviceUtils.getDeviceTypeId(srcGuid), DeviceUtils.getDeviceNumber(srcGuid)))
+                        .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(msg.getGuid()), DeviceUtils.getDeviceNumber(msg.getGuid())))
                         .build();
-                MqttManager.getInstance().publish(msg, VentilatorFactory.getProtocol());
+                MqttManager.getInstance().publish(newMsg, VentilatorFactory.getProtocol());
             }
                 break;
             case MsgKeys.SetFanStatus_Req: { //设置烟机
@@ -190,7 +188,8 @@ public class MqttVentilator extends MqttPublic {
             }
                 break;
         }
-        return decodeMsg(msgId, srcGuid, payload, offset);
+
+        decodeMsg(msg, payload, offset);
     }
 
     @Override

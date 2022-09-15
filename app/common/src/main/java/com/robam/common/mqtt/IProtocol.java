@@ -5,5 +5,5 @@ import java.util.Map;
 public interface IProtocol {
     byte[] encode(MqttMsg msg);
 
-    Map decode(String topic, byte[] payload);
+    MqttMsg decode(String topic, byte[] payload);
 }

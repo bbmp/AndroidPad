@@ -56,7 +56,6 @@ public class AlarmService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        LogUtils.e("AlarmService onStartCommand");
         //通过AlarmManager定时启动广播
 
         if (null != alarmManager) {
@@ -78,6 +77,7 @@ public class AlarmService extends Service {
             });
             return super.onStartCommand(intent, flags, startId);
         }
+        LogUtils.e("AlarmService onStartCommand " + AccountInfo.getInstance().deviceList.size());
         //循环查询
         for (Device device: AccountInfo.getInstance().deviceList) {
             if (device.queryNum == 1) { //已经查过一次
@@ -92,7 +92,7 @@ public class AlarmService extends Service {
                         .setDt(device.dt)
                         .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                         .build();
-                MqttManager.getInstance().publish(msg, VentilatorFactory.getPublicApi());
+                MqttManager.getInstance().publish(msg, VentilatorFactory.getTransmitApi());
             } else if (device instanceof Stove) {
                 MqttMsg msg = new MqttMsg.Builder()
                         .setMsgId(MsgKeys.SetStoveStatus_Req)
@@ -100,7 +100,7 @@ public class AlarmService extends Service {
                         .setDt(device.dt)
                         .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                         .build();
-                MqttManager.getInstance().publish(msg, VentilatorFactory.getPublicApi());
+                MqttManager.getInstance().publish(msg, VentilatorFactory.getTransmitApi());
             } else if (device instanceof Ventilator) {
                 MqttMsg msg = new MqttMsg.Builder()
                         .setMsgId(MsgKeys.GetFanStatus_Req)
@@ -108,7 +108,7 @@ public class AlarmService extends Service {
                         .setDt(device.dt)
                         .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                         .build();
-                MqttManager.getInstance().publish(msg, VentilatorFactory.getPublicApi());
+                MqttManager.getInstance().publish(msg, VentilatorFactory.getTransmitApi());
 //            } else if (device instanceof Cabinet) {
 //                MqttManager.getInstance().publish(msg, CabinetFactory.getProtocol());
             } else if (device instanceof DishWasher) {
@@ -118,7 +118,7 @@ public class AlarmService extends Service {
                         .setDt(device.dt)
                         .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                         .build();
-                MqttManager.getInstance().publish(msg, VentilatorFactory.getPublicApi());
+                MqttManager.getInstance().publish(msg, VentilatorFactory.getTransmitApi());
             } else if (device instanceof SteamOven) {
                 MqttMsg msg = new MqttMsg.Builder()
                         .setMsgId(MsgKeys.getSteameOvenStatus_Req) //查询一体机
@@ -126,7 +126,7 @@ public class AlarmService extends Service {
                         .setDt(device.dt)
                         .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                         .build();
-                MqttManager.getInstance().publish(msg, VentilatorFactory.getPublicApi());
+                MqttManager.getInstance().publish(msg, VentilatorFactory.getTransmitApi());
             }
         }
 
