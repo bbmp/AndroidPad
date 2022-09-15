@@ -5,11 +5,13 @@ import android.annotation.SuppressLint;
 import androidx.core.util.Preconditions;
 
 import com.robam.cabinet.bean.Cabinet;
+import com.robam.cabinet.constant.CabinetConstant;
 import com.robam.cabinet.device.CabinetFactory;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.RTopic;
 import com.robam.common.module.IPublicVentilatorApi;
+import com.robam.common.mqtt.IProtocol;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.RTopicParser;
 import com.robam.common.utils.ByteUtils;
@@ -35,7 +37,7 @@ import java.nio.ByteOrder;
 import java.util.Map;
 
 //转发api
-public class PublicVentilatorApi implements IPublicVentilatorApi {
+public class TransmitApi implements IProtocol {
     protected final int BufferSize = 1024 * 2;
     protected static final int GUID_SIZE = 17;
     protected final int CMD_CODE_SIZE = 1;
@@ -51,8 +53,8 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
 
             //拦截转发
             for (Device device: AccountInfo.getInstance().deviceList) {
-                // data params
                 if (device.guid.equals(targetGuid)) {
+                    // data params
                     if (device instanceof SteamOven)
                         return SteamFactory.getProtocol().encode(msg);
                     else if (device instanceof Stove)
@@ -77,7 +79,7 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
 
     @SuppressLint("RestrictedApi")
     @Override
-    public Map decode(String topic, byte[] payload) {
+    public MqttMsg decode(String topic, byte[] payload) {
         try {
             Preconditions.checkNotNull(payload);
 
@@ -90,49 +92,53 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
             int offset = 0;
             // guid
             String srcGuid = MsgUtils.getString(payload, offset, GUID_SIZE);
-            offset += GUID_SIZE;
 
-            short msgId = ByteUtils.toShort(payload[offset++]);
-            LogUtils.e( "收到消息： " + "topic = " + topic + " ,msgId = " + msgId + " srcguid " + srcGuid);
-
+            MqttMsg msg = null;
             //分发到各设备
             for (Device device: AccountInfo.getInstance().deviceList) {
-                if (srcGuid.equals(device.guid)) {
+                if (device.guid.equals(srcGuid)) {
                     if (device instanceof SteamOven) {
-                        Map map = SteamFactory.getProtocol().decode(topic, payload);
-                        if (map.containsKey(SteamConstant.SteameOvenStatus)) { //有响应
+                        msg = SteamFactory.getProtocol().decode(topic, payload);
+                        if (null != msg && null != msg.opt(SteamConstant.SteameOvenStatus)) { //有响应
                             device.queryNum = 0; //查询超过一次无响应离线
                             device.status = Device.ONLINE;
+                            ((SteamOven) device).workMode = (short) msg.opt(SteamConstant.SteameOvenMode);
                             AccountInfo.getInstance().getGuid().setValue(device.guid);  //更新设备状态
                         }
-                        return map;
-                    }
-                    else if (device instanceof Stove)
+                        return msg;
+                    } else if (device instanceof Stove)
                         return StoveFactory.getProtocol().decode(topic, payload);
                     else if (device instanceof Ventilator) {
-                        Map map = VentilatorFactory.getProtocol().decode(topic, payload);
-                        if (map.containsKey(VentilatorConstant.FanStatus)) {
+                        msg = VentilatorFactory.getProtocol().decode(topic, payload);
+                        if (null != msg && null != msg.opt(VentilatorConstant.FanStatus)) {
                             device.queryNum = 0;
                             device.status = Device.ONLINE;
                             AccountInfo.getInstance().getGuid().setValue(device.guid);  //更新设备状态
                         }
-                    }
-                    else if (device instanceof Pan)
+                        return msg;
+                    } else if (device instanceof Pan)
                         return PanFactory.getProtocol().decode(topic, payload);
                     else if (device instanceof DishWasher) {
-                        Map map = DishWasherFactory.getProtocol().decode(topic, payload);
-                        if (map.containsKey(DishWasherConstant.powerStatus)) {
+                        msg = DishWasherFactory.getProtocol().decode(topic, payload);
+                        if (msg != null && null != msg.opt(DishWasherConstant.powerStatus)) {
                             device.queryNum = 0;
                             device.status = Device.ONLINE;
                             AccountInfo.getInstance().getGuid().setValue(device.guid);  //更新设备状态
                         }
+                        return msg;
+                    } else if (device instanceof Cabinet) {
+                        msg = CabinetFactory.getProtocol().decode(topic, payload);
+                        if (null != msg && null != msg.opt(CabinetConstant.SteriStatus)) {
+                            device.queryNum = 0;
+                            device.status = Device.ONLINE;
+                            AccountInfo.getInstance().getGuid().setValue(device.guid);  //更新设备状态
+                        }
+                        return msg;
                     }
-                    else if (device instanceof Cabinet)
-                        return CabinetFactory.getProtocol().decode(topic, payload);
                 }
             }
 
-            return null;
+            return VentilatorFactory.getProtocol().decode(topic, payload);
         } catch (Exception e) {
             String log = String.format(
                     "mqtt decode error. topic:%s\nerror:%s\nbyte[]:%s",

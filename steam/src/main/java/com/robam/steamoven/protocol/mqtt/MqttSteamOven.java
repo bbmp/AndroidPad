@@ -62,26 +62,27 @@ public class MqttSteamOven extends MqttPublic {
 
 
     @Override
-    protected Map onDecodeMsg(int msgId, String srcGuid, byte[] payload, int offset) {
-        //解析字段存放在map中
-        Map map = new HashMap();
+    protected void onDecodeMsg(MqttMsg msg, byte[] payload, int offset) throws Exception {
         //从payload中取值角标
-        switch (msgId) {
+        switch (msg.getID()) {
             case MsgKeys.getDeviceAttribute_Req:
                 break;
             case MsgKeys.getDeviceAttribute_Rep: {
             }
             break;
             case MsgKeys.getSteameOvenStatus_Rep:
-                //
+                //状态
                 short status = ByteUtils.toShort(payload[offset++]);
-                map.put(SteamConstant.SteameOvenStatus, status);
+                msg.putOpt(SteamConstant.SteameOvenStatus, status);
                 short powerOnStatus = ByteUtils.toShort(payload[offset++]);
                 short workOnStatus = ByteUtils.toShort(payload[offset++]);
+                msg.putOpt(SteamConstant.SteameOvenWorknStatus, workOnStatus);
                 short alarm = ByteUtils.toShort(payload[offset++]);
                 short mode = ByteUtils.toShort(payload[offset++]);
+                msg.putOpt(SteamConstant.SteameOvenMode, mode);
                 short temp = ByteUtils.toShort(payload[offset++]);
                 short leftTime = ByteUtils.toShort(payload[offset++]);
+                msg.putOpt(SteamConstant.SteameOvenLeftTime, leftTime); //工作剩余时间
                 offset++;
                 short light = ByteUtils.toShort(payload[offset++]);
                 short waterStatus = ByteUtils.toShort(payload[offset++]);
@@ -158,6 +159,5 @@ public class MqttSteamOven extends MqttPublic {
                 LogUtils.e("categoryCodeEvent " + categoryCodeEvent + " event=" + event);
                 break;
         }
-        return map;
     }
 }

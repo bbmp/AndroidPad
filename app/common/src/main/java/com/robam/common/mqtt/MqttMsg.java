@@ -2,7 +2,9 @@ package com.robam.common.mqtt;
 
 import com.robam.common.bean.RTopic;
 
-public class MqttMsg {
+import org.json.JSONObject;
+
+public class MqttMsg extends JSONObject {
     /**
      * msgId
      */
@@ -20,15 +22,18 @@ public class MqttMsg {
     private RTopic rTopic;
     private String dt;
     private String userId;
+    //设备类型
+    private String dc;
 
     public MqttMsg(short msgId) {
         this.msgId = msgId;
     }
 
-    public MqttMsg(short msgId, String guid, String dt, String userid, RTopic topic, byte[] data) {
+    public MqttMsg(short msgId, String guid, String dt, String dc, String userid, RTopic topic, byte[] data) {
         this.msgId = msgId;
         this.guid = guid;
         this.dt = dt;
+        this.dc = dc;
         this.userId = userid;
         this.rTopic = topic;
         this.data = data;
@@ -40,6 +45,9 @@ public class MqttMsg {
         return msgId;
     }
 
+    public String getDc() {
+        return dc;
+    }
 
     public byte[] getBytes() {
         return data;
@@ -58,6 +66,7 @@ public class MqttMsg {
         private byte[] payload;
         private RTopic topic;
         private String dt;
+        private String dc;
         private String userId;
         private String guid;
 
@@ -81,6 +90,11 @@ public class MqttMsg {
             return this;
         }
 
+        public Builder setDc(String dc) {
+            this.dc = dc;
+            return this;
+        }
+
         public Builder setUserId(String userid) {
             this.userId = userid;
             return this;
@@ -92,7 +106,7 @@ public class MqttMsg {
         }
 
         public MqttMsg build() {
-            return new MqttMsg(msgId, guid, dt, userId, topic, payload);
+            return new MqttMsg(msgId, guid, dt, dc, userId, topic, payload);
         }
     }
 }

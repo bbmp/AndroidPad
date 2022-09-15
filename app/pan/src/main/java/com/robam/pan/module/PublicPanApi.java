@@ -16,7 +16,7 @@ public class PublicPanApi implements IPublicPanApi {
     }
 
     @Override
-    public Map decode(String topic, byte[] payload) {
+    public MqttMsg decode(String topic, byte[] payload) {
         return null;
     }
 

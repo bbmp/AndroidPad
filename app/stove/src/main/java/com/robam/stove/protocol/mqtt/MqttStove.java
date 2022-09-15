@@ -14,13 +14,11 @@ public class MqttStove extends MqttPublic {
 
 
     @Override
-    protected Map onDecodeMsg(int msgId, String srcGuid, byte[] payload, int offset) {
-        Map map = new HashMap();
-        switch (msgId) {
+    protected void onDecodeMsg(MqttMsg msg, byte[] payload, int offset) throws Exception {
+        switch (msg.getID()) {
             case MsgKeys.SetStoveStatus_Rep: //灶具查询返回
                 break;
         }
-        return map;
     }
 
     @Override

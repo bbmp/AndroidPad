@@ -9,7 +9,7 @@ public class SteamConstant {
     public final static int FUN_MULTI = 5; //多段
     public final static int FUN_RECIPE = 6; //菜谱
     public final static int FUN_AUX = 7; //辅助
-    public final static int FUN_CURVE = 8;// 曲线f
+    public final static int FUN_CURVE = 8;// 曲线
 
     public final static String EXTRA_MODE_LIST = "modelist";
 
@@ -17,4 +17,14 @@ public class SteamConstant {
      * 一体机状态
      */
     public final static String SteameOvenStatus = "SteameOvenStatus";
+
+    /**
+     * 一体机工作状态
+     */
+    public final static String SteameOvenWorknStatus = "SteameOvenWorknStatus";
+    /**
+     * 一体机工作模式
+     */
+    public final static String SteameOvenMode = "SteameOvenMode";
+    public final static String SteameOvenLeftTime = "SteameOvenLeftTime";
 }

@@ -16,22 +16,21 @@ import java.util.Map;
 public class MqttDishWasher extends MqttPublic {
 
     @Override
-    protected Map onDecodeMsg(int msgId, String srcGuid, byte[] payload, int offset) {
+    protected void onDecodeMsg(MqttMsg msg, byte[] payload, int offset) throws Exception{
         //解析需要的字段存放
-        Map map = new HashMap();
-        switch (msgId) {
+        switch (msg.getID()) {
             case MsgKeys.getDishWasherStatus:
                 short powerStatus =
                         ByteUtils.toShort(payload[offset++]);
-                map.put(DishWasherConstant.powerStatus, powerStatus);
+                msg.putOpt(DishWasherConstant.powerStatus, powerStatus);
                 short stoveLock =
                         ByteUtils.toShort(payload[offset++]);
                 short dishWasherWorkMode =
                         ByteUtils.toShort(payload[offset++]);
-                map.put(DishWasherConstant.DishWasherWorkMode, dishWasherWorkMode);
+                msg.putOpt(DishWasherConstant.DishWasherWorkMode, dishWasherWorkMode);
                 int dishWasherRemainingWorkingTime =
                         ByteUtils.toInt32(payload, offset++, ByteUtils.BYTE_ORDER);
-                map.put(DishWasherConstant.DishWasherRemainingWorkingTime, dishWasherRemainingWorkingTime);
+                msg.putOpt(DishWasherConstant.DishWasherRemainingWorkingTime, dishWasherRemainingWorkingTime);
                 offset++;
                 short lowerLayerWasher =
                         ByteUtils.toShort(payload[offset++]);
@@ -68,13 +67,12 @@ public class MqttDishWasher extends MqttPublic {
                 short argument = ByteUtils.toShort(payload[offset++]);
                 break;
         }
-        return map;
     }
 
     @Override
     protected void onEncodeMsg(ByteBuffer buf, MqttMsg msg) {
         switch (msg.getID()) {
-            case MsgKeys.setDishWasherStatus:
+            case MsgKeys.setDishWasherStatus: //洗碗机状态查询
                 buf.put((byte) ITerminalType.PAD);
                 break;
         }

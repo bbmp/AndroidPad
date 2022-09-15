@@ -19,46 +19,39 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
-import com.google.gson.Gson;
 import com.robam.cabinet.bean.Cabinet;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.BaseResponse;
-import com.robam.common.bean.RTopic;
+import com.robam.common.constant.ComnConstant;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.pan.bean.Pan;
 import com.robam.steamoven.bean.SteamOven;
-import com.robam.stove.device.HomeStove;
+import com.robam.common.module.IPublicSteamApi;
+import com.robam.stove.bean.Stove;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.module.IPublicCabinetApi;
 import com.robam.common.module.IPublicDishWasherApi;
 import com.robam.common.module.IPublicPanApi;
 import com.robam.common.module.IPublicStoveApi;
 import com.robam.common.mqtt.MqttManager;
-import com.robam.common.mqtt.MqttMsg;
-import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.common.utils.ClickUtils;
 import com.robam.common.utils.LogUtils;
-import com.robam.common.utils.MMKVUtils;
 import com.robam.common.utils.ScreenUtils;
-import com.robam.common.utils.ToastUtils;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBasePage;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.UserInfo;
 import com.robam.ventilator.bean.VenFunBean;
-import com.robam.ventilator.bean.Ventilator;
 import com.robam.ventilator.constant.DialogConstant;
 import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.device.VentilatorFactory;
 import com.robam.ventilator.factory.VentilatorDialogFactory;
 import com.robam.ventilator.http.CloudHelper;
 import com.robam.ventilator.response.GetDeviceRes;
-import com.robam.ventilator.response.GetTokenRes;
-import com.robam.ventilator.response.GetUserInfoRes;
 import com.robam.ventilator.ui.activity.AddDeviceMainActivity;
 import com.robam.ventilator.ui.activity.MatchNetworkActivity;
 import com.robam.ventilator.ui.activity.SimpleModeActivity;
@@ -160,6 +153,9 @@ public class HomePage extends VentilatorBasePage {
                 if (drawerLayout.isDrawerOpen(Gravity.RIGHT)) {
                     findViewById(R.id.iv_right_left).setVisibility(View.INVISIBLE);
                     findViewById(R.id.iv_right_right).setVisibility(View.VISIBLE);
+                    //断开服务，重新请求订阅，避免设备添加后看不到
+//                    MqttManager.getInstance().stop();
+//                    getDeviceInfo(AccountInfo.getInstance().getUser().getValue());
                 }
             }
 
@@ -271,6 +267,7 @@ public class HomePage extends VentilatorBasePage {
                     return;
                 //跳转设备首页
                 Intent intent = new Intent();
+                intent.putExtra(ComnConstant.EXTRA_GUID, device.guid);
                 switch (device.dc) {
                     case IDeviceType.RRQZ:
                         intent.setClassName(getContext(), IPublicStoveApi.STOVE_HOME);
@@ -289,7 +286,8 @@ public class HomePage extends VentilatorBasePage {
                         startActivity(intent);
                         break;
                     case IDeviceType.RZKY:
-
+                        intent.setClassName(getContext(), IPublicSteamApi.STEAM_HOME);
+                        startActivity(intent);
                         break;
                 }
             }
@@ -352,20 +350,22 @@ public class HomePage extends VentilatorBasePage {
                         List<Device> deviceList = getDeviceRes.devices;
                         AccountInfo.getInstance().deviceList.clear();
                         for (Device device: deviceList) {
-//                            if (IDeviceType.RYYJ.equals(device.dc)) //过滤掉烟机
-//                                AccountInfo.getInstance().deviceList.add(new Ventilator(device));
-//                            else
                             if (IDeviceType.RZKY.equals(device.dc)) //一体机
                                 AccountInfo.getInstance().deviceList.add(new SteamOven(device));
                             else if (IDeviceType.RXWJ.equals(device.dc)) //洗碗机
                                 AccountInfo.getInstance().deviceList.add(new DishWasher(device));
                             else if (IDeviceType.RXDG.equals(device.dc))  //消毒柜
                                 AccountInfo.getInstance().deviceList.add(new Cabinet(device));
-                            List<Device> subDevices = device.subDevices;
-                            if (null != subDevices) {
-                                for (Device subDevice : subDevices) {
-                                    if (IDeviceType.RZNG.equals(subDevice.dc)) //锅
-                                        AccountInfo.getInstance().deviceList.add(new Pan(subDevice));
+                            else if (IDeviceType.RYYJ.equals(device.dc) && device.guid.equals(VentilatorFactory.getPlatform().getDeviceOnlySign())) {
+                                //当前烟机子设备
+                                List<Device> subDevices = device.subDevices;
+                                if (null != subDevices) {
+                                    for (Device subDevice : subDevices) {
+                                        if (IDeviceType.RZNG.equals(subDevice.dc)) //锅
+                                            AccountInfo.getInstance().deviceList.add(new Pan(subDevice));
+                                        else if (IDeviceType.RRQZ.equals(subDevice.dc)) //灶具
+                                            AccountInfo.getInstance().deviceList.add(new Stove(subDevice));
+                                    }
                                 }
                             }
                         }

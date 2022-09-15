@@ -58,7 +58,7 @@ public abstract class MqttPublic implements IProtocol{
 
     @SuppressLint("RestrictedApi")
     @Override
-    public Map decode(String topic, byte[] payload) {
+    public MqttMsg decode(String topic, byte[] payload) {
 
         try {
             Preconditions.checkNotNull(payload);
@@ -79,12 +79,17 @@ public abstract class MqttPublic implements IProtocol{
             String dt = srcGuid.substring(0 , 5) ;
             String signNum = srcGuid.substring(5 , 17) ;
             short msgId = ByteUtils.toShort(payload[offset++]);
-            LogUtils.e( "收到消息： " + "topic = " + topic + " ,msgId = " + msgId);
+            MqttMsg msg = new MqttMsg.Builder()
+                    .setMsgId(msgId)
+                    .setGuid(srcGuid)
+                    .setDt(dt)
+                    .build();
+            LogUtils.e( "收到消息： " + "topic = " + topic + " ,msgId = " + msgId + " srcguid " + srcGuid);
 
             // paser payload
-            Map map = onDecodeMsg(msgId, srcGuid, payload, offset);
+            onDecodeMsg(msg, payload, offset);
 
-            return map;
+            return msg;
         } catch (Exception e) {
             String log = String.format(
                     "mqtt decode error. topic:%s\nerror:%s\nbyte[]:%s",
@@ -95,7 +100,7 @@ public abstract class MqttPublic implements IProtocol{
         return null;
     }
 
-    protected abstract Map onDecodeMsg(int msgId, String srcGuid, byte[] payload, int offset);
+    protected abstract void onDecodeMsg(MqttMsg msg, byte[] payload, int offset) throws Exception;
 
     protected abstract void onEncodeMsg(ByteBuffer buf, MqttMsg msg);
 }

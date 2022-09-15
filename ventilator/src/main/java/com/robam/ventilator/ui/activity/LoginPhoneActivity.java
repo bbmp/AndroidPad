@@ -7,6 +7,7 @@ import android.widget.EditText;
 import com.google.gson.Gson;
 import com.robam.common.bean.BaseResponse;
 import com.robam.common.http.RetrofitCallback;
+import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.MCountdownView;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MMKVUtils;
@@ -15,7 +16,9 @@ import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.UserInfo;
+import com.robam.ventilator.constant.DialogConstant;
 import com.robam.ventilator.device.VentilatorFactory;
+import com.robam.ventilator.factory.VentilatorDialogFactory;
 import com.robam.ventilator.http.CloudHelper;
 import com.robam.ventilator.response.GetTokenRes;
 import com.robam.ventilator.response.GetUserInfoRes;
@@ -25,6 +28,7 @@ public class LoginPhoneActivity extends VentilatorBaseActivity {
     private MCountdownView mCountdownView;
     private EditText etPhone, etVerify;
     private static final String CODE_LOGIN = "mobileSmsCode";
+    private IDialog waitDialog;
 
     @Override
     protected int getLayoutId() {
@@ -46,6 +50,19 @@ public class LoginPhoneActivity extends VentilatorBaseActivity {
     @Override
     protected void initData() {
 
+    }
+    //登录等待中
+    private void showWaitDialog() {
+        if (null == waitDialog) {
+            waitDialog = VentilatorDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_WAITING);
+            waitDialog.setCancelable(false);
+        }
+        waitDialog.show();
+    }
+    //关闭
+    private void cancelWaitDialog() {
+        if (null != waitDialog)
+            waitDialog.dismiss();
     }
 
     @Override
@@ -71,6 +88,7 @@ public class LoginPhoneActivity extends VentilatorBaseActivity {
                 return;
             }
 
+            showWaitDialog();
             getToken(phone, verifyCode);
         } else if (id == R.id.tv_getverifycode) {
             String phone = etPhone.getText().toString();
@@ -92,12 +110,15 @@ public class LoginPhoneActivity extends VentilatorBaseActivity {
                         if (null != getTokenRes) {
                             getUserInfo(getTokenRes.getAccess_token());
                         } else {
+                            cancelWaitDialog();
                             ToastUtils.showShort(LoginPhoneActivity.this, R.string.ventilator_request_failed);
                         }
                     }
 
                     @Override
                     public void onFaild(String err) {
+                        cancelWaitDialog();
+                        ToastUtils.showShort(LoginPhoneActivity.this, R.string.ventilator_net_err);
                         LogUtils.e("getToken" + err);
                     }
                 });
@@ -107,6 +128,7 @@ public class LoginPhoneActivity extends VentilatorBaseActivity {
         CloudHelper.getUserInfo(this, access_token, GetUserInfoRes.class, new RetrofitCallback<GetUserInfoRes>() {
             @Override
             public void onSuccess(GetUserInfoRes getUserInfoRes) {
+                cancelWaitDialog();
                 if (null != getUserInfoRes && null != getUserInfoRes.getUser()) {
                     UserInfo info = getUserInfoRes.getUser();
                     info.loginType = CODE_LOGIN;
@@ -126,6 +148,8 @@ public class LoginPhoneActivity extends VentilatorBaseActivity {
 
             @Override
             public void onFaild(String err) {
+                cancelWaitDialog();
+                ToastUtils.showShort(LoginPhoneActivity.this, R.string.ventilator_net_err);
                 LogUtils.e("getUserInfo" + err);
             }
         });
@@ -155,6 +179,7 @@ public class LoginPhoneActivity extends VentilatorBaseActivity {
 
             @Override
             public void onFaild(String err) {
+                ToastUtils.showShort(LoginPhoneActivity.this, R.string.ventilator_net_err);
                 LogUtils.e("getVerifyCode" + err);
             }
         });

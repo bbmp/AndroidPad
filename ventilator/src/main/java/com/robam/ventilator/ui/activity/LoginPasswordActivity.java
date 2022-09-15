@@ -6,6 +6,7 @@ import android.widget.EditText;
 
 import com.google.gson.Gson;
 import com.robam.common.http.RetrofitCallback;
+import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MD5Utils;
 import com.robam.common.utils.MMKVUtils;
@@ -14,6 +15,8 @@ import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.UserInfo;
+import com.robam.ventilator.constant.DialogConstant;
+import com.robam.ventilator.factory.VentilatorDialogFactory;
 import com.robam.ventilator.http.CloudHelper;
 import com.robam.ventilator.response.GetTokenRes;
 import com.robam.ventilator.response.GetUserInfoRes;
@@ -23,6 +26,7 @@ public class LoginPasswordActivity extends VentilatorBaseActivity {
 
     //输入手机号和密码
     private EditText etPhone, etPwd;
+    private IDialog waitDialog;
 
     @Override
     protected int getLayoutId() {
@@ -42,6 +46,20 @@ public class LoginPasswordActivity extends VentilatorBaseActivity {
     @Override
     protected void initData() {
 
+    }
+
+    //登录等待中
+    private void showWaitDialog() {
+        if (null == waitDialog) {
+            waitDialog = VentilatorDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_WAITING);
+            waitDialog.setCancelable(false);
+        }
+        waitDialog.show();
+    }
+    //关闭
+    private void cancelWaitDialog() {
+        if (null != waitDialog)
+            waitDialog.dismiss();
     }
 
     @Override
@@ -65,6 +83,8 @@ public class LoginPasswordActivity extends VentilatorBaseActivity {
                 ToastUtils.showShort(this, R.string.ventilator_input_password_hint);
                 return;
             }
+
+            showWaitDialog();
             //获取token
             getToken(phone, pwd);
         }
@@ -78,12 +98,15 @@ public class LoginPasswordActivity extends VentilatorBaseActivity {
                         if (null != getTokenRes) {
                             getUserInfo(getTokenRes.getAccess_token());
                         } else {
+                            cancelWaitDialog();
                             ToastUtils.showShort(LoginPasswordActivity.this, R.string.ventilator_request_failed);
                         }
                     }
 
                     @Override
                     public void onFaild(String err) {
+                        cancelWaitDialog();
+                        ToastUtils.showShort(LoginPasswordActivity.this, R.string.ventilator_net_err);
                         LogUtils.e("getToken" + err);
                     }
                 });
@@ -93,6 +116,7 @@ public class LoginPasswordActivity extends VentilatorBaseActivity {
         CloudHelper.getUserInfo(this, access_token, GetUserInfoRes.class, new RetrofitCallback<GetUserInfoRes>() {
             @Override
             public void onSuccess(GetUserInfoRes getUserInfoRes) {
+                cancelWaitDialog();
                 if (null != getUserInfoRes && null != getUserInfoRes.getUser()) {
                     UserInfo info = getUserInfoRes.getUser();
                     info.loginType = PASSWORD_LOGIN;
@@ -112,6 +136,8 @@ public class LoginPasswordActivity extends VentilatorBaseActivity {
 
             @Override
             public void onFaild(String err) {
+                cancelWaitDialog();
+                ToastUtils.showShort(LoginPasswordActivity.this, R.string.ventilator_net_err);
                 LogUtils.e("getUserInfo" + err);
             }
         });
