@@ -23,10 +23,6 @@ public class SerialPortHelper {
      */
     private boolean isReceiveMaxSize;
 
-    /**
-     * 数据处理
-     */
-    private SphDataProcess processingData;
 
     /**
      *  循环指令
@@ -71,12 +67,12 @@ public class SerialPortHelper {
                     .stopBits(serialPortConfig.stopBits) // 停止位，默认1；1:1位停止位；2:2位停止位
                     .flags(0)
                     .build();
-            // 创建数据处理
-            processingData = new SphDataProcess(serialPort, serialPortConfig.maxSize);
-            processingData.setRecevieMaxSize(isReceiveMaxSize);
-            processingData.setSphResultCallback(onResultCallback);
+
             // 开启读写线程
-            sphThreads = new SphThreads(processingData);
+            sphThreads = new SphThreads(serialPort, serialPortConfig.maxSize);
+            sphThreads.setRecevieMaxSize(isReceiveMaxSize);
+            sphThreads.setSphResultCallback(onResultCallback);
+            sphThreads.start();
 
             if (null != onResultCallback)
                 onResultCallback.onOpenSuccess();
@@ -102,7 +98,7 @@ public class SerialPortHelper {
         }
 
         // 添加发送命令
-        processingData.addCommands(commands);
+        sphThreads.addCommands(commands);
 
     }
 
