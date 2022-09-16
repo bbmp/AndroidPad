@@ -9,8 +9,11 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.robam.common.manager.DynamicLineChartManager;
 import com.robam.common.module.IPublicStoveApi;
 import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.ui.dialog.IDialog;
@@ -27,6 +30,7 @@ import com.robam.pan.ui.adapter.RvStep2Adapter;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 //曲线还原,
@@ -47,6 +51,11 @@ public class CurveRestoreActivity extends PanBaseActivity {
 
     private int curStep = 0;
 
+    private LineChart cookChart;
+    private DynamicLineChartManager dm;
+    private Map<String, String> params = null;
+    private ArrayList<Entry> restoreList = new ArrayList<>();  //还原列表
+
     @Override
     protected int getLayoutId() {
         return R.layout.pan_activity_layout_curve_restore;
@@ -61,6 +70,7 @@ public class CurveRestoreActivity extends PanBaseActivity {
         rvStep = findViewById(R.id.rv_step);
         tvStop = findViewById(R.id.tv_stop_cook);
         tvStep = findViewById(R.id.tv_cur_step);
+        cookChart = findViewById(R.id.cook_chart);
         linearLayoutManager = new LinearLayoutManager(this);
         rvStep.setLayoutManager(linearLayoutManager);
         rvStep.addItemDecoration(new VerticalSpaceItemDecoration((int) getResources().getDimension(com.robam.common.R.dimen.dp_30)));
@@ -75,10 +85,18 @@ public class CurveRestoreActivity extends PanBaseActivity {
     @Override
     protected void initData() {
         if (null != panCurveDetail) {
-            Map<Integer, String> params = null;
+
             try {
                 //温度参数
-                params = new Gson().fromJson(panCurveDetail.temperatureCurveParams, new TypeToken<LinkedHashMap<Integer, String>>(){}.getType());
+                params = new Gson().fromJson(panCurveDetail.temperatureCurveParams, new TypeToken<LinkedHashMap<String, String>>(){}.getType());
+                ArrayList<Entry> entryList = new ArrayList<>();
+                for (Map.Entry<String, String> entry : params.entrySet()) {
+                    String[] data = entry.getValue().split("-");
+                    entryList.add(new Entry(Float.parseFloat(entry.getKey()), Float.parseFloat(data[0]))); //时间和温度
+                }
+                dm = new DynamicLineChartManager(cookChart, this);
+                dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.pan_white_40), entryList, true);
+                dm.initLineDataSet("", getResources().getColor(R.color.pan_chart), restoreList, true);
             } catch (Exception e) {
                 LogUtils.e(e.getMessage());
                 params = null;
@@ -89,10 +107,10 @@ public class CurveRestoreActivity extends PanBaseActivity {
                 //处理时长
                 int i = 0;
                 for (i=0; i<curveSteps.size() - 1; i++) {
-                    curveSteps.get(i).needTime = curveSteps.get(i+1).markTime - curveSteps.get(i).markTime;
+                    curveSteps.get(i).needTime = (int) (Float.parseFloat(curveSteps.get(i+1).markTime) - Float.parseFloat(curveSteps.get(i).markTime));
                 }
                 //最后一步
-                curveSteps.get(i).needTime = panCurveDetail.needTime - curveSteps.get(i).markTime;
+                curveSteps.get(i).needTime = (int) (panCurveDetail.needTime - Float.parseFloat(curveSteps.get(i).markTime));
                 //步骤
                 rvStep2Adapter.setList(curveSteps);
                 Countdown();
@@ -126,6 +144,7 @@ public class CurveRestoreActivity extends PanBaseActivity {
 
                 if (curveStep.needTime > 0) {
                     curveStep.elapsedTime++;
+
                     if (curveStep.elapsedTime == curveStep.needTime) {
                         nextStep();
                     }

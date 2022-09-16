@@ -2,10 +2,16 @@ package com.robam.common.device;
 
 import android.content.Context;
 
+import com.robam.common.utils.LogUtils;
+import com.topband.tbapi.TBManager;
+
 public class TbangPlat implements IPlat{
+    private TBManager tbManager;
+
     @Override
     public void init(Context context) {
-
+        tbManager = new TBManager(context);
+        tbManager.init();
     }
 
     @Override
@@ -30,12 +36,14 @@ public class TbangPlat implements IPlat{
 
     @Override
     public void openPowerLamp() {
-
+        tbManager.setGpioDirection(5, 1, 0);
+        tbManager.setGpio(5, 1);
     }
 
     @Override
     public void closePowerLamp() {
-
+        tbManager.setGpioDirection(5, 1, 0);
+        tbManager.setGpio(5, 0);
     }
 
     @Override
@@ -50,6 +58,7 @@ public class TbangPlat implements IPlat{
 
     @Override
     public String getMac() {
+        LogUtils.e("mac = " + tbManager.getWiFiMac().replace(":" , ""));
         return "121212121212";
     }
 }

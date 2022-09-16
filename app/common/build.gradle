@@ -36,7 +36,8 @@ android {
 }
 
 dependencies {
-
+// 依赖 libs 目录下所有的 jar 和 aar 包
+    api fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
     api "androidx.appcompat:appcompat:$versions.appcompat"
     api "com.google.android.material:material:$versions.material"
     testImplementation 'junit:junit:4.13.2'

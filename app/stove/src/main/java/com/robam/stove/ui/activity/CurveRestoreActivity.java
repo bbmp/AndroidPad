@@ -37,7 +37,7 @@ public class CurveRestoreActivity extends StoveBaseActivity {
     private Runnable runnable;
     //从0开始
     private int curTime = 0;
-    private int lastMark = 0; //最后点
+    private float lastMark = 0; //最后点
     private TextView tvFire, tvTemp, tvTime;
     @Override
     protected int getLayoutId() {
@@ -61,9 +61,9 @@ public class CurveRestoreActivity extends StoveBaseActivity {
     @Override
     protected void initData() {
         if (null != stoveCurveDetail) {
-            Map<Integer, String> params = null;
+            Map<String, String> params = null;
             try {
-                params = new Gson().fromJson(stoveCurveDetail.temperatureCurveParams, new TypeToken<LinkedHashMap<Integer, String>>(){}.getType());
+                params = new Gson().fromJson(stoveCurveDetail.temperatureCurveParams, new TypeToken<LinkedHashMap<String, String>>(){}.getType());
             } catch (Exception e) {
                 LogUtils.e(e.getMessage());
                 params = null;
@@ -74,12 +74,14 @@ public class CurveRestoreActivity extends StoveBaseActivity {
     }
 
     //开始还原
-    private void startRestore(Map<Integer, String> params) {
+    private void startRestore(Map<String, String> params) {
 
-        Iterator<Integer> iterator = params.keySet().iterator();
+        Iterator<String> iterator = params.keySet().iterator();
+        String last = "0";
         while (iterator.hasNext()) {
-            lastMark = iterator.next();
+            last = iterator.next();
         }
+        lastMark = Float.parseFloat(last);
         runnable = new Runnable() {
 
             @Override

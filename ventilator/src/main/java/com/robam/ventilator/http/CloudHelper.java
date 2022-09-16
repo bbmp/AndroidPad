@@ -8,6 +8,7 @@ import com.robam.common.http.RetrofitClient;
 import com.robam.common.utils.LogUtils;
 import com.robam.ventilator.constant.HostServer;
 import com.robam.ventilator.request.BindDeviceReq;
+import com.robam.ventilator.request.GetDeviceParamsReq;
 import com.robam.ventilator.request.GetDeviceUserReq;
 import com.robam.ventilator.request.GetUserReq;
 import com.robam.ventilator.request.GetVerifyCodeReq;
@@ -111,6 +112,15 @@ public class CloudHelper {
         RequestBody requestBody =
                 RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
         Call<ResponseBody> call = svr.unbindDevice(requestBody);
+        enqueue(iLife, entity, call, callback);
+    }
+    //获取设备参数
+    public static <T extends BaseResponse> void getDeviceParams(ILife iLife, long userid, String deviceType, String category,
+                                                                  Class<T> entity, final RetrofitCallback<T> callback) {
+        String json = new GetDeviceParamsReq(userid, deviceType, category).toString();
+        RequestBody requestBody =
+                RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
+        Call<ResponseBody> call = svr.getDeviceParams(requestBody);
         enqueue(iLife, entity, call, callback);
     }
 

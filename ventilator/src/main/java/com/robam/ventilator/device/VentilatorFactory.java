@@ -20,8 +20,10 @@ public class VentilatorFactory {
     private static IProtocol transmitApi = new TransmitApi();
 
     public static void initPlat(Context context, String plat) {
-        if (TUOBANG.equals(plat))
+        if (TUOBANG.equals(plat)) {
             platform = new TbangPlat();
+            platform.init(context);
+        }
     }
 
     public static IPlat getPlatform() {

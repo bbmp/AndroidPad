@@ -116,15 +116,21 @@ public class HomeActivity extends BaseActivity {
                 if (HomeVentilator.getInstance().startup == 0x00)
                     SerialPortHelper.getInstance().addCommands(SerialVentilator.powerOn());
                 //循环查询
-//                byte data[] = SerialVentilator.packQueryCmd();
-//                while (true) {
-//                    SerialPortHelper.getInstance().addCommands(data);
-//                    try {
-//                        Thread.sleep(3000);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
+//                new Thread() {
+//                    @Override
+//                    public void run() {
+//                        byte data[] = SerialVentilator.packQueryCmd();
+//                        while (true) {
+//                            SerialPortHelper.getInstance().addCommands(data);
+//                            try {
+//                                Thread.sleep(3000);
+//                            } catch (InterruptedException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
 //                    }
-//                }
+//                }.start();
+
             }
 
             @Override
@@ -185,7 +191,7 @@ public class HomeActivity extends BaseActivity {
                 //权限未给
                 LogUtils.e("requestPermission onFailed");
             }
-        }, Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.ACCESS_FINE_LOCATION);
+        }, Manifest.permission.BLUETOOTH, Manifest.permission.ACCESS_FINE_LOCATION);
     }
     //已授权
     @SuppressLint("MissingPermission")

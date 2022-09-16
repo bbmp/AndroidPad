@@ -394,6 +394,21 @@ public class HomePage extends VentilatorBasePage {
     //绑定设备 返回列表中无主设备
     private void bindDevice(List<Device> deviceList) {
         for (Device device: deviceList) {
+            //test
+//            if (device.dc.equals(IDeviceType.RZKY)) {
+//                CloudHelper.getDeviceParams(this, AccountInfo.getInstance().getUser().getValue().id, device.dt, device.dc, BaseResponse.class,
+//                        new RetrofitCallback<BaseResponse>() {
+//                            @Override
+//                            public void onSuccess(BaseResponse baseResponse) {
+//
+//                            }
+//
+//                            @Override
+//                            public void onFaild(String err) {
+//
+//                            }
+//                        });
+//            }
             if (device.guid.equals(VentilatorFactory.getPlatform().getDeviceOnlySign())) //已绑定
                 return;
         }

@@ -8,10 +8,16 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.robam.common.http.RetrofitCallback;
+import com.robam.common.manager.DynamicLineChartManager;
 import com.robam.common.module.IPublicStoveApi;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.VerticalSpaceItemDecoration;
+import com.robam.common.utils.LogUtils;
 import com.robam.pan.R;
 import com.robam.pan.base.PanBaseActivity;
 import com.robam.pan.bean.CurveStep;
@@ -26,7 +32,9 @@ import com.robam.pan.ui.adapter.RvStep3Adapter;
 import com.robam.pan.ui.dialog.SelectStoveDialog;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 //菜谱和曲线选中页面
 public class RecipeSelectedActivity extends PanBaseActivity {
@@ -43,6 +51,10 @@ public class RecipeSelectedActivity extends PanBaseActivity {
     private PanCurveDetail panCurveDetail;
     //开始烹饪
     private TextView tvStartCook;
+    //
+    private LineChart cookChart;
+
+    private DynamicLineChartManager dm;
 
 
     @Override
@@ -62,6 +74,7 @@ public class RecipeSelectedActivity extends PanBaseActivity {
 
         tvRight = findViewById(R.id.tv_right);
         tvRight.setText(R.string.pan_recipe_detail);
+        cookChart = findViewById(R.id.cook_chart);
         rvStep = findViewById(R.id.rv_step);
         tvRecipeName = findViewById(R.id.tv_recipe_name);
         tvStartCook = findViewById(R.id.tv_start_cook);
@@ -184,6 +197,8 @@ public class RecipeSelectedActivity extends PanBaseActivity {
                         tvStartCook.setVisibility(View.VISIBLE);
                     }
                     rvStep3Adapter.setList(curveSteps);
+                    //画曲线
+                    drawCurve(panCurveDetail);
                 }
             }
 
@@ -192,6 +207,31 @@ public class RecipeSelectedActivity extends PanBaseActivity {
 
             }
         });
+    }
+    //曲线绘制
+    private void drawCurve(PanCurveDetail panCurveDetail) {
+        Map<String, String> params = null;
+        try {
+            params = new Gson().fromJson(panCurveDetail.temperatureCurveParams, new TypeToken<LinkedHashMap<String, String>>(){}.getType());
+            ArrayList<Entry> entryList = new ArrayList<>();
+            ArrayList<Entry> appointList = new ArrayList<>();
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                String[] data = entry.getValue().split("-");
+                entryList.add(new Entry(Float.parseFloat(entry.getKey()), Float.parseFloat(data[0]))); //时间和温度
+            }
+            List<CurveStep> stepList = panCurveDetail.stepList;
+            if (null != stepList) {
+                for (CurveStep curveStep: stepList) {
+                    appointList.add(new Entry(Float.parseFloat(curveStep.markTime), curveStep.markTemp));
+                }
+            }
+            dm = new DynamicLineChartManager(cookChart, this);
+            dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.pan_chart), entryList, true);
+            cookChart.notifyDataSetChanged();
+        } catch (Exception e) {
+            LogUtils.e(e.getMessage());
+            params = null;
+        }
     }
 
 }

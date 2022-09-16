@@ -66,6 +66,13 @@ public class AlarmService extends Service {
             alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAtTime, pIntent);
         }
         if (!MqttManager.getInstance().isConnected()) {
+            //全部离线
+            for (Device device: AccountInfo.getInstance().deviceList) {
+                if (device.status == Device.ONLINE) {
+                    device.status = Device.OFFLINE;
+                    AccountInfo.getInstance().getGuid().setValue(device.guid); //更新设备状态
+                }
+            }
             MqttManager.getInstance().reConnect(new MqttManager.IConncect() {
                 @Override
                 public void onSuccess() {

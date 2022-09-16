@@ -291,7 +291,10 @@ public class DynamicLineChartManager {
         lineChart.invalidate();
     }
 
-
+    public void update() {
+        lineData.notifyDataChanged();
+        lineChart.invalidate();
+    }
 
     /**
      * 动态添加数据（一条折线图）

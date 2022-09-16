@@ -13,6 +13,8 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public interface ICloudService {
+    //获取设备参数
+    String getDeviceByParams = "/rest/dms/api/device-configuration/get-by-params/new";
     //获取验证码
     String getVerifyCode = "/rest/api/cas/verify-code/get";
 
@@ -74,4 +76,8 @@ public interface ICloudService {
     @POST(unbindDevice)
     @Headers("Content-Type: application/json")
     Call<ResponseBody> unbindDevice(@Body RequestBody body);
+
+    @POST(getDeviceByParams)
+    @Headers("Content-Type: application/json")
+    Call<ResponseBody> getDeviceParams(@Body RequestBody body);
 }

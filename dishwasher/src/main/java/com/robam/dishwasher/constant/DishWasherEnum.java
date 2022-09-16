@@ -1,6 +1,4 @@
-package com.robam.dishwasher.bean;
-
-import com.robam.dishwasher.constant.DishWasherConstant;
+package com.robam.dishwasher.constant;
 
 public enum DishWasherEnum {
     SMART(DishWasherConstant.MODE_SMART,"智能洗"),

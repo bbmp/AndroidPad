@@ -27,12 +27,13 @@ versions.leakcanary = "2.7"
 versions.litepal = "3.2.3"
 versions.mmkv = "1.2.10"
 versions.zxing_core="3.2.1"
+versions.room = "1.1.1"
 
 
 ext.versions = versions
 
 def build_versions = [:]
 build_versions.min_sdk = 21
-build_versions.target_sdk = 32
-build_versions.compile_sdk = 32
+build_versions.target_sdk = 30
+build_versions.compile_sdk = 30
 ext.build_versions = build_versions

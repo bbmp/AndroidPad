@@ -1,9 +1,6 @@
 package com.robam.dishwasher.ui.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
@@ -13,11 +10,9 @@ import com.robam.common.utils.DateUtil;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.base.DishWasherBaseActivity;
 import com.robam.dishwasher.bean.DishWaherModeBean;
-import com.robam.dishwasher.bean.DishWasher;
-import com.robam.dishwasher.bean.DishWasherEnum;
+import com.robam.dishwasher.constant.DishWasherEnum;
 import com.robam.dishwasher.constant.DialogConstant;
 import com.robam.dishwasher.constant.DishWasherConstant;
-import com.robam.dishwasher.device.DishWasherFactory;
 import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.factory.DishWasherDialogFactory;
 

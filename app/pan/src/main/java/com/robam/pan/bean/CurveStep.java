@@ -9,7 +9,7 @@ public class CurveStep implements Serializable {
     //步骤描述
     public String description;
     //标记时间
-    public int markTime;
+    public String markTime;
     //温度
     public int markTemp;
     //图片
