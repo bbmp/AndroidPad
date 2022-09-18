@@ -83,8 +83,8 @@ public abstract class MqttPublic implements IProtocol{
                     .setMsgId(msgId)
                     .setGuid(srcGuid)
                     .setDt(dt)
+                    .setTopic(rTopic)
                     .build();
-            LogUtils.e( "收到消息： " + "topic = " + topic + " ,msgId = " + msgId + " srcguid " + srcGuid);
 
             // paser payload
             onDecodeMsg(msg, payload, offset);

@@ -158,15 +158,16 @@ public class DynamicLineChartManager {
         }else{
             lineDataSet = new LineDataSet(list, name);
         }
+        lineDataSet.enableDashedLine(10f, 5f, 0f);
         lineDataSet.setLineWidth(1.5f);
-        lineDataSet.setCircleRadius(1.5f);
+        lineDataSet.setCircleRadius(3f);
         lineDataSet.setColor(color);
         lineDataSet.setCircleColor(color);
         lineDataSet.setHighLightColor(color);
         //不显示折线上的值
         lineDataSet.setDrawValues(false);
         //设置曲线值的圆点是实心还是空心
-        lineDataSet.setDrawCircleHole(false);
+        lineDataSet.setDrawCircleHole(true);
         //设置曲线填充
         lineDataSet.setDrawFilled(isDrawFilled);
         //设置填充

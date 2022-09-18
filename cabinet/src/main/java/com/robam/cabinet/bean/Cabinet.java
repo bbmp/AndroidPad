@@ -1,6 +1,8 @@
 package com.robam.cabinet.bean;
 
+import com.robam.cabinet.constant.CabinetConstant;
 import com.robam.common.bean.Device;
+import com.robam.common.mqtt.MqttMsg;
 
 /**
  * 消毒柜
@@ -36,4 +38,13 @@ public class Cabinet extends Device{
      */
     public int workHours;
 
+    @Override
+    public boolean onMsgReceived(MqttMsg msg) {
+        if (null != msg && null != msg.opt(CabinetConstant.SteriStatus)) {
+            queryNum = 0;
+            status = Device.ONLINE;
+            return true;
+        }
+        return super.onMsgReceived(msg);
+    }
 }

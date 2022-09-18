@@ -20,6 +20,7 @@ import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.bean.ModeBean;
 import com.robam.steamoven.constant.ModeConstant;
 import com.robam.steamoven.constant.SteamConstant;
+import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.ui.pages.ModeSelectPage;
 import com.robam.steamoven.ui.pages.TimeSelectPage;
 
@@ -45,8 +46,6 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
     private ModeSelectPage steamFragment;
 
     private SelectPagerAdapter selectPagerAdapter;
-
-    private SteamOven steamOven;
 
     @Override
     protected int getLayoutId() {
@@ -105,7 +104,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             //默认模式
             ModeBean defaultBean = modes.get(0);
             //当前模式
-            steamOven.workMode = (short) defaultBean.code;
+            HomeSteamOven.getInstance().workMode = (short) defaultBean.code;
             modeTab = tabLayout.newTab();
             modeTab.setId(index++);
             View modeView = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab_mode, null);
@@ -116,7 +115,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             Fragment modeFragment = new ModeSelectPage(modeTab, modes, this);
             fragments.add(new WeakReference<>(modeFragment));
 
-            if (steamOven.workType == ModeConstant.MODE_JIASHI_BAKE) {
+            if (HomeSteamOven.getInstance().workMode == ModeConstant.MODE_JIASHI_BAKE) {
                 //加湿烤
                 steamTab = tabLayout.newTab();
                 steamTab.setId(index++);

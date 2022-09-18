@@ -54,6 +54,7 @@ public class CurveRestoreActivity extends PanBaseActivity {
     private LineChart cookChart;
     private DynamicLineChartManager dm;
     private Map<String, String> params = null;
+
     private ArrayList<Entry> restoreList = new ArrayList<>();  //还原列表
 
     @Override
@@ -96,6 +97,8 @@ public class CurveRestoreActivity extends PanBaseActivity {
                 }
                 dm = new DynamicLineChartManager(cookChart, this);
                 dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.pan_white_40), entryList, true);
+                //添加第一个点
+                restoreList.add(entryList.get(0));
                 dm.initLineDataSet("", getResources().getColor(R.color.pan_chart), restoreList, true);
             } catch (Exception e) {
                 LogUtils.e(e.getMessage());
@@ -118,6 +121,7 @@ public class CurveRestoreActivity extends PanBaseActivity {
         }
     }
     //启动倒计时
+    int count = 0;
     private void Countdown() {
 
         runnable = new Runnable() {
@@ -141,6 +145,12 @@ public class CurveRestoreActivity extends PanBaseActivity {
                     return;
                 }
                 CurveStep curveStep = rvStep2Adapter.getData().get(curStep);
+                count++; //总时间
+                if (params.containsKey(count+"")) {
+                    String[] data = params.get(count+"").split("-");
+                    restoreList.add(new Entry(count, Float.parseFloat(data[0])));
+                    cookChart.invalidate();
+                }
 
                 if (curveStep.needTime > 0) {
                     curveStep.elapsedTime++;

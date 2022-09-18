@@ -112,83 +112,88 @@ public class MqttVentilator extends MqttPublic {
 
     @Override
     protected void onDecodeMsg(MqttMsg msg, byte[] payload, int offset) throws Exception{
-        switch (msg.getID()) {
-            case MsgKeys.GetFanStatus_Req: { //查询烟机
-                //控制端类型
-                short terminalType = ByteUtils.toShort(payload[offset]);
-                MqttMsg newMsg = new MqttMsg.Builder()
-                        .setMsgId(MsgKeys.GetFanStatus_Rep)
-                        .setGuid(VentilatorFactory.getPlatform().getDeviceOnlySign())
-                        .setDt(VentilatorFactory.getPlatform().getDt())
-                        .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(msg.getGuid()), DeviceUtils.getDeviceNumber(msg.getGuid())))
-                        .build();
-                MqttManager.getInstance().publish(newMsg, VentilatorFactory.getProtocol());
-            }
+        String targetGuid = msg.getrTopic().getDeviceType() + msg.getrTopic().getSignNum();
+        LogUtils.e("ventilator targuid = " + targetGuid);
+        //控制烟机需校验是否是本机
+        if (targetGuid.equals(VentilatorFactory.getPlatform().getDeviceOnlySign())) {
+            switch (msg.getID()) {
+                case MsgKeys.GetFanStatus_Req: { //查询烟机
+                    //控制端类型
+                    short terminalType = ByteUtils.toShort(payload[offset]);
+                    MqttMsg newMsg = new MqttMsg.Builder()
+                            .setMsgId(MsgKeys.GetFanStatus_Rep)
+                            .setGuid(VentilatorFactory.getPlatform().getDeviceOnlySign())
+                            .setDt(VentilatorFactory.getPlatform().getDt())
+                            .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(msg.getGuid()), DeviceUtils.getDeviceNumber(msg.getGuid())))
+                            .build();
+                    MqttManager.getInstance().publish(newMsg, VentilatorFactory.getProtocol());
+                }
                 break;
-            case MsgKeys.SetFanStatus_Req: { //设置烟机
-                //控制端类型
-                short terminalType = ByteUtils.toShort(payload[offset++]);
-                //userid
-                ByteUtils.toString(payload, offset, 10);
-                offset += 10;
-                //工作状态
-                short status = ByteUtils.toShort(payload[offset++]);
+                case MsgKeys.SetFanStatus_Req: { //设置烟机
+                    //控制端类型
+                    short terminalType = ByteUtils.toShort(payload[offset++]);
+                    //userid
+                    ByteUtils.toString(payload, offset, 10);
+                    offset += 10;
+                    //工作状态
+                    short status = ByteUtils.toShort(payload[offset++]);
 
-                VentilatorAbstractControl.getInstance().setFanStatus(status);
-            }
+                    VentilatorAbstractControl.getInstance().setFanStatus(status);
+                }
                 break;
-            case MsgKeys.SetFanLevel_Req: {//设置烟机挡位
-                //控制端类型
-                short terminalType = ByteUtils.toShort(payload[offset++]);
-                //
-                //userid
-                ByteUtils.toString(payload, offset++, 10);
-                offset += 10;
-                //挡位
-                short gear = ByteUtils.toShort(payload[offset++]);
+                case MsgKeys.SetFanLevel_Req: {//设置烟机挡位
+                    //控制端类型
+                    short terminalType = ByteUtils.toShort(payload[offset++]);
+                    //
+                    //userid
+                    ByteUtils.toString(payload, offset++, 10);
+                    offset += 10;
+                    //挡位
+                    short gear = ByteUtils.toShort(payload[offset++]);
 
-                VentilatorAbstractControl.getInstance().setFanGear(gear);
-            }
+                    VentilatorAbstractControl.getInstance().setFanGear(gear);
+                }
                 break;
-            case MsgKeys.SetFanLight_Req: { //设置烟机灯
-                //控制端类型
-                short terminalType = ByteUtils.toShort(payload[offset++]);
-                //
-                //userid
-                ByteUtils.toString(payload, offset++, 10);
-                offset += 10;
-                //灯开关
-                short light = ByteUtils.toShort(payload[offset++]);
+                case MsgKeys.SetFanLight_Req: { //设置烟机灯
+                    //控制端类型
+                    short terminalType = ByteUtils.toShort(payload[offset++]);
+                    //
+                    //userid
+                    ByteUtils.toString(payload, offset++, 10);
+                    offset += 10;
+                    //灯开关
+                    short light = ByteUtils.toShort(payload[offset++]);
 
-                VentilatorAbstractControl.getInstance().setFanLight(light);
-            }
+                    VentilatorAbstractControl.getInstance().setFanLight(light);
+                }
                 break;
-            case MsgKeys.SetFanAllParams_Req: { //设置烟机整体状态
-                //控制端类型
-                short terminalType = ByteUtils.toShort(payload[offset++]);
-                //userid
-                ByteUtils.toString(payload, offset++, 10);
-                offset += 10;
-                //挡位
-                short gear = ByteUtils.toShort(payload[offset++]);
-                //灯开关
-                short light = ByteUtils.toShort(payload[offset++]);
+                case MsgKeys.SetFanAllParams_Req: { //设置烟机整体状态
+                    //控制端类型
+                    short terminalType = ByteUtils.toShort(payload[offset++]);
+                    //userid
+                    ByteUtils.toString(payload, offset++, 10);
+                    offset += 10;
+                    //挡位
+                    short gear = ByteUtils.toShort(payload[offset++]);
+                    //灯开关
+                    short light = ByteUtils.toShort(payload[offset++]);
 
-                VentilatorAbstractControl.getInstance().setFanAll(gear, light);
-            }
+                    VentilatorAbstractControl.getInstance().setFanAll(gear, light);
+                }
                 break;
-            case MsgKeys.RestFanCleanTime_Req: {
-                //控制端类型
-                short terminalType = ByteUtils.toShort(payload[offset++]);
-                //userid
-                ByteUtils.toString(payload, offset++, 10);
-                offset += 10;
-                //参数个数
-                short num = ByteUtils.toShort(payload[offset++]);
-            }
+                case MsgKeys.RestFanCleanTime_Req: {
+                    //控制端类型
+                    short terminalType = ByteUtils.toShort(payload[offset++]);
+                    //userid
+                    ByteUtils.toString(payload, offset++, 10);
+                    offset += 10;
+                    //参数个数
+                    short num = ByteUtils.toShort(payload[offset++]);
+                }
                 break;
+            }
         }
-
+        //其他通知类消息
         decodeMsg(msg, payload, offset);
     }
 

@@ -3,6 +3,7 @@ package com.robam.stove.bean;
 import androidx.lifecycle.MutableLiveData;
 
 import com.robam.common.bean.Device;
+import com.robam.common.mqtt.MqttMsg;
 
 
 /**
@@ -57,4 +58,9 @@ public class Stove extends Device {
     //右灶
     public MutableLiveData<Boolean> rightStove = new MutableLiveData<>(false);
 
+    @Override
+    public boolean onMsgReceived(MqttMsg msg) {
+
+        return super.onMsgReceived(msg);
+    }
 }

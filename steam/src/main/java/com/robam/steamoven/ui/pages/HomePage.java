@@ -25,6 +25,7 @@ import com.robam.steamoven.bean.FuntionBean;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.SteamConstant;
+import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.manager.DataInitManage;
 import com.robam.steamoven.manager.FuntionModeManage;
 import com.robam.steamoven.ui.adapter.RvDotAdapter;
@@ -43,7 +44,6 @@ public class HomePage extends SteamBasePage {
     private RelativeLayout llMain;
     private PickerLayoutManager pickerLayoutManager;
     private ImageView imageView;
-    private SteamOven steamOven;
 
     public static HomePage newInstance() {
         return new HomePage();
@@ -91,7 +91,7 @@ public class HomePage extends SteamBasePage {
                     return;
                 }
                 intent.setClassName(getContext(), funtionBean.into);
-                steamOven.workMode = (short) funtionBean.funtionCode;
+                HomeSteamOven.getInstance().funCode = (short) funtionBean.funtionCode;
                 startActivity(intent);
             }
 

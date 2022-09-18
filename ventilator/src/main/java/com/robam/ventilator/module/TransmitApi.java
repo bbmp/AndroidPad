@@ -49,7 +49,7 @@ public class TransmitApi implements IProtocol {
         try {
             // guid
             String targetGuid = msg.getrTopic().getDeviceType() + msg.getrTopic().getSignNum();
-            LogUtils.e("targetGuid " + targetGuid);
+            LogUtils.e("encode targetGuid " + targetGuid);
 
             //拦截转发
             for (Device device: AccountInfo.getInstance().deviceList) {
@@ -59,8 +59,6 @@ public class TransmitApi implements IProtocol {
                         return SteamFactory.getProtocol().encode(msg);
                     else if (device instanceof Stove)
                         return StoveFactory.getProtocol().encode(msg);
-                    else if (device instanceof Ventilator)
-                        return VentilatorFactory.getProtocol().encode(msg);
                     else if (device instanceof Pan)
                         return PanFactory.getProtocol().encode(msg);
                     else if (device instanceof DishWasher)
@@ -83,56 +81,50 @@ public class TransmitApi implements IProtocol {
         try {
             Preconditions.checkNotNull(payload);
 
-            RTopic rTopic = RTopicParser.parse(topic);
-            Preconditions.checkNotNull(rTopic);
+//            RTopic rTopic = RTopicParser.parse(topic);
+//            Preconditions.checkNotNull(rTopic);
 
             Preconditions.checkState(payload.length >= GUID_SIZE + CMD_CODE_SIZE,
                     "数据长度不符");
 
             int offset = 0;
-            // guid
+            // guid 哪个设备发过来
             String srcGuid = MsgUtils.getString(payload, offset, GUID_SIZE);
+            offset += GUID_SIZE;
 
+            short msgId = ByteUtils.toShort(payload[offset++]);
+            LogUtils.e( "收到消息： " + "topic = " + topic + " ,msgId = " + msgId + " srcguid = " + srcGuid);
             MqttMsg msg = null;
             //分发到各设备
             for (Device device: AccountInfo.getInstance().deviceList) {
                 if (device.guid.equals(srcGuid)) {
                     if (device instanceof SteamOven) {
                         msg = SteamFactory.getProtocol().decode(topic, payload);
-                        if (null != msg && null != msg.opt(SteamConstant.SteameOvenStatus)) { //有响应
-                            device.queryNum = 0; //查询超过一次无响应离线
-                            device.status = Device.ONLINE;
-                            ((SteamOven) device).workMode = (short) msg.opt(SteamConstant.SteameOvenMode);
+                        //是否更新设备状态
+                        if (device.onMsgReceived(msg))
                             AccountInfo.getInstance().getGuid().setValue(device.guid);  //更新设备状态
-                        }
+
                         return msg;
-                    } else if (device instanceof Stove)
-                        return StoveFactory.getProtocol().decode(topic, payload);
-                    else if (device instanceof Ventilator) {
-                        msg = VentilatorFactory.getProtocol().decode(topic, payload);
-                        if (null != msg && null != msg.opt(VentilatorConstant.FanStatus)) {
-                            device.queryNum = 0;
-                            device.status = Device.ONLINE;
+                    } else if (device instanceof Stove) {
+                        msg = StoveFactory.getProtocol().decode(topic, payload);
+                        //
+                        if (device.onMsgReceived(msg))
                             AccountInfo.getInstance().getGuid().setValue(device.guid);  //更新设备状态
-                        }
                         return msg;
-                    } else if (device instanceof Pan)
+                    }
+                    else if (device instanceof Pan)
                         return PanFactory.getProtocol().decode(topic, payload);
                     else if (device instanceof DishWasher) {
                         msg = DishWasherFactory.getProtocol().decode(topic, payload);
-                        if (msg != null && null != msg.opt(DishWasherConstant.powerStatus)) {
-                            device.queryNum = 0;
-                            device.status = Device.ONLINE;
+                        if (device.onMsgReceived(msg))
                             AccountInfo.getInstance().getGuid().setValue(device.guid);  //更新设备状态
-                        }
+
                         return msg;
                     } else if (device instanceof Cabinet) {
                         msg = CabinetFactory.getProtocol().decode(topic, payload);
-                        if (null != msg && null != msg.opt(CabinetConstant.SteriStatus)) {
-                            device.queryNum = 0;
-                            device.status = Device.ONLINE;
+                        if (device.onMsgReceived(msg))
                             AccountInfo.getInstance().getGuid().setValue(device.guid);  //更新设备状态
-                        }
+
                         return msg;
                     }
                 }

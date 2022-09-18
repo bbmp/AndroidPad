@@ -5,9 +5,11 @@ import android.serialport.helper.SerialPortHelper;
 import androidx.lifecycle.LiveData;
 
 import com.robam.common.bean.Device;
+import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.ByteUtils;
 import com.robam.common.utils.MsgUtils;
+import com.robam.steamoven.constant.SteamConstant;
 import com.robam.steamoven.protocol.serial.ProtoParse;
 
 import java.util.ArrayList;
@@ -448,4 +450,14 @@ public class SteamOven extends Device {
         orderTime = 0 ;
     }
 
+    @Override
+    public boolean onMsgReceived(MqttMsg msg) {
+        if (null != msg && null != msg.opt(SteamConstant.SteameOvenStatus)) {
+            queryNum = 0; //查询超过一次无响应离线
+            status = Device.ONLINE;
+            workMode = (short) msg.opt(SteamConstant.SteameOvenMode);
+            return true;
+        }
+        return super.onMsgReceived(msg);
+    }
 }

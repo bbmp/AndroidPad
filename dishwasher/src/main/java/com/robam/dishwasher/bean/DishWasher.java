@@ -4,9 +4,11 @@ import android.content.Context;
 
 import com.robam.common.bean.Device;
 import com.robam.common.manager.FunctionManager;
+import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.ByteUtils;
 import com.robam.dishwasher.R;
+import com.robam.dishwasher.constant.DishWasherConstant;
 
 import java.util.List;
 
@@ -50,4 +52,13 @@ public class DishWasher extends Device{
     public int auxMode;
 
 
+    @Override
+    public boolean onMsgReceived(MqttMsg msg) {
+        if (msg != null && null != msg.opt(DishWasherConstant.powerStatus)) {
+            queryNum = 0;
+            status = Device.ONLINE;
+            return true;
+        }
+        return super.onMsgReceived(msg);
+    }
 }

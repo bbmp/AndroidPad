@@ -96,5 +96,8 @@ public class Device {
     public int getWorkStatus() {
         return workStatus;
     }
-
+    //更新设备参数用
+    public boolean onMsgReceived(MqttMsg msg) {
+        return false;
+    }
 }

@@ -11,6 +11,7 @@ import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBasePage;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.bean.ModeBean;
+import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.ui.adapter.RvTimeAdapter;
 
 import java.util.List;
@@ -40,7 +41,6 @@ public class TimeSelectPage extends SteamBasePage {
 
     private IModeSelect iModeSelect;//回调接口
 
-    private SteamOven steamOven;
 
     public TimeSelectPage(TabLayout.Tab tab, int type, IModeSelect iModeSelect) {
         this.tab = tab;
@@ -85,7 +85,7 @@ public class TimeSelectPage extends SteamBasePage {
         rvSelect2.setAdapter(rvTimeAdapter);
 
         if (null != iModeSelect)  //默认模式
-            iModeSelect.updateTab(steamOven.workMode);
+            iModeSelect.updateTab(HomeSteamOven.getInstance().workMode);
     }
 
 
