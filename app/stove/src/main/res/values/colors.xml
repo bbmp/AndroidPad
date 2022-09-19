@@ -12,4 +12,5 @@
     <color name="stove_lock">#80000d2a</color>
     <color name="stove_color_foot">#881E2229</color>
     <color name="stove_step">#ff72afff</color>
+    <color name="stove_chart">#FF3D00</color>
 </resources>

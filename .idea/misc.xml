@@ -9,13 +9,19 @@
         <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_input_delete_ic.xml" value="0.2115" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_password_off_ic.xml" value="0.2115" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_password_on_ic.xml" value="0.2115" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_shape_button_mark.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_shape_counter_down.xml" value="0.2115" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_shape_step_bg.xml" value="0.139" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_shape_triangle.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/layout/common_blurredview.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/layout/common_header_page.xml" value="0.10208333333333333" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/layout/common_layout_markview.xml" value="0.22" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/layout/common_layout_markview_step.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/layout/common_layout_popwindow.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/drawable/pan_main_item_bg.xml" value="0.1725" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/drawable/pan_recipe_img_bg.xml" value="0.261" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/drawable/pan_shape_border_bg.xml" value="0.1775" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/drawable/pan_shape_button_bg_ok.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/drawable/pan_shape_button_selector.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/drawable/pan_shape_delete_selector.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/drawable/pan_shape_progress_bg.xml" value="0.1775" />

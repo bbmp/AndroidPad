@@ -296,6 +296,16 @@ public class TimeUtils {
         }
 
     }
+    public static String secToMinSecond(int seconds) {
+        String result = "";
+        short min = (short) (seconds / 60);
+        short sec = (short) (seconds % 60);
+        if (min > 0)
+            result = min + "min";
+        if (sec > 0)
+            result = result + sec + "s";
+        return result;
+    }
     public static String getlastWeekTime() {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, -7);

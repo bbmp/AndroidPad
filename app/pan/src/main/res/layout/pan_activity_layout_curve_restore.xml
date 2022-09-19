@@ -39,10 +39,10 @@
         app:layout_constraintTop_toBottomOf="@id/cook_chart"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/tv_gear"
+        app:layout_constraintRight_toLeftOf="@id/tv_temp"
         app:layout_constraintHorizontal_chainStyle="packed"/>
     <TextView
-        android:id="@+id/tv_gear"
+        android:id="@+id/tv_temp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_70"

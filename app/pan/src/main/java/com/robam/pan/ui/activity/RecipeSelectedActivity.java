@@ -226,7 +226,10 @@ public class RecipeSelectedActivity extends PanBaseActivity {
                 }
             }
             dm = new DynamicLineChartManager(cookChart, this);
-            dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.pan_chart), entryList, true);
+            dm.setLabelCount(5, 5);
+            dm.setAxisLine(true, false);
+            dm.setGridLine(false, false);
+            dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.pan_chart), entryList, true, false);
             cookChart.notifyDataSetChanged();
         } catch (Exception e) {
             LogUtils.e(e.getMessage());

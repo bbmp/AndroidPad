@@ -67,6 +67,9 @@ public class DynamicLineChartManager {
         lineChart.setDragDecelerationEnabled(true);//拖拽滚动时，手放开是否会持续滚动，默认是true（false是拖到哪是哪，true拖拽之后还会有缓冲）
         lineChart.setDragDecelerationFrictionCoef(0.99f);//与上面那个属性配合，持续滚动时的速度快慢，[0,1) 0代表立即停止。
         lineChart.setScaleEnabled(false);
+        lineChart.setNoDataText("没有曲线数据"); //没有数据时显示的文字
+        lineChart.setHighlightPerTapEnabled(false); //禁止点击
+        lineChart.setHighlightPerDragEnabled(false); //禁止拖动
 //        lineDataSet.setHighlightEnabled(false);
         /***折线图例 标签 设置***/
         Legend legend = lineChart.getLegend();
@@ -83,6 +86,7 @@ public class DynamicLineChartManager {
 
 
         //X轴设置显示位置在底部
+        xAxis.setAxisMinimum(0f);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setGranularity(1f);
         xAxis.setLabelCount(5);
@@ -108,7 +112,7 @@ public class DynamicLineChartManager {
             }
         });
 
-        yAxis.setDrawGridLines(true);
+        yAxis.setDrawGridLines(false);
         yAxis.setAxisLineColor(Color.TRANSPARENT);
         if (colorMulti != 0){
             yAxis.setGridColor(colorMulti);
@@ -126,7 +130,7 @@ public class DynamicLineChartManager {
 
         //X轴设置显示位置在底部
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setAxisLineColor(Color.TRANSPARENT);//设置X轴颜色
+        xAxis.setAxisLineColor(Color.parseColor("#2fFFFFFF"));//设置X轴颜色
         xAxis.setDrawAxisLine(true);//是否绘制X轴
         xAxis.setDrawGridLines(false);//是否绘制X轴网格线
         xAxis.setGridColor(Color.parseColor("#2fFFFFFF"));
@@ -141,6 +145,46 @@ public class DynamicLineChartManager {
 //        //设置在曲线图中显示的最大数量
 //        lineChart.setVisibleXRangeMaximum(7);
     }
+    //设置坐标轴label数量
+    public void setLabelCount(int xCount, int yCount) {
+        xAxis.setLabelCount(xCount, false);
+        yAxis.setLabelCount(yCount, false);
+    }
+    //是否绘制坐标轴
+    public void setAxisLine(boolean xAxisLine, boolean yAxisLine) {
+        xAxis.setDrawAxisLine(xAxisLine);//是否绘制X轴
+        if (xAxisLine)
+            xAxis.setAxisLineColor(Color.parseColor("#2fFFFFFF"));
+        yAxis.setDrawAxisLine(yAxisLine);
+        if (yAxisLine)
+            yAxis.setAxisLineColor(Color.parseColor("#2fFFFFFF"));
+    }
+    //是否绘制网格线
+    public void setGridLine(boolean xGridLine, boolean yGridLine) {
+        xAxis.setDrawGridLines(xGridLine);
+        if (xGridLine)
+            xAxis.setGridColor(Color.parseColor("#2fFFFFFF"));
+        yAxis.setDrawGridLines(yGridLine);
+        if (yGridLine)
+            yAxis.setGridColor(Color.parseColor("#2fFFFFFF"));
+    }
+    //是否缩放
+    public void setScaled(List list) {
+        float ratio = (float) list.size()/(float) 5;
+        lineChart.zoom(ratio, 1.0f, 0, 0);
+        lineChart.setDragEnabled(true);
+
+        lineChart.setScaleEnabled(true);
+        lineChart.setScaleEnabled(true);
+        lineChart.setScaleXEnabled(true);
+//        xAxis.setAxisMaximum(20);
+        xAxis.setAvoidFirstLastClipping(true);
+    }
+    //设置hilightcolor
+    public void setHilightColor() {
+
+        lineDataSet.setHighLightColor(Color.TRANSPARENT);
+    }
 
     /**
      *  初始化折线(一条线)
@@ -152,13 +196,13 @@ public class DynamicLineChartManager {
      * @param list    曲线列表数据
      * @param isDrawFilled  是否填充
      */
-    public void initLineDataSet(String name, int color,List list,boolean isDrawFilled) {
+    public void initLineDataSet(String name, int color, List list,boolean isDrawFilled, boolean isDash) {
+        Drawable drawable = null;
         if(list==null||list.isEmpty()){
             lineDataSet = new LineDataSet(null, name);
         }else{
             lineDataSet = new LineDataSet(list, name);
         }
-        lineDataSet.enableDashedLine(10f, 5f, 0f);
         lineDataSet.setLineWidth(1.5f);
         lineDataSet.setCircleRadius(3f);
         lineDataSet.setColor(color);
@@ -172,7 +216,11 @@ public class DynamicLineChartManager {
         lineDataSet.setDrawFilled(isDrawFilled);
         //设置填充
 //        if (Utils.getSDKInt() >= 18) {
-        Drawable drawable = ContextCompat.getDrawable(context, R.drawable.common_chart_fill);
+        if (isDash) {//虚线
+            lineDataSet.enableDashedLine(10f, 5f, 0f);
+            drawable = ContextCompat.getDrawable(context, R.drawable.common_chart_dash_fill);
+        } else
+            drawable = ContextCompat.getDrawable(context, R.drawable.common_chart_fill);
         lineDataSet.setFillDrawable(drawable);
 //        } else {
 //            lineDataSet.setFillColor(context.getResources().getColor(R.color.line_chart_easy));
@@ -199,17 +247,14 @@ public class DynamicLineChartManager {
      * @param list    曲线列表数据
      * @param isDrawFilled  是否填充
      */
-    public void initLineDataSet(String name, int color,List list,boolean isDrawFilled , int colorMulti) {
-        if(list==null||list.isEmpty()){
-            lineDataSet = new LineDataSet(null, name);
-        }else{
-            lineDataSet = new LineDataSet(list, name);
-        }
-        this.colorMulti = colorMulti ;
+    public void initLineDataSet(String name, int color,List list,boolean isDrawFilled) {
+
+        LineDataSet lineDataSet = new LineDataSet(list, name);
+
         lineDataSet.setLineWidth(1.5f);
-        lineDataSet.setCircleRadius(1.5f);
+        lineDataSet.setCircleRadius(R.dimen.dp_10);
         lineDataSet.setColor(color);
-        lineDataSet.setCircleColor(color);
+        lineDataSet.setCircleColor(Color.parseColor("#ffff9a4d"));
         lineDataSet.setHighLightColor(color);
         //不显示折线上的值
         lineDataSet.setDrawValues(false);
@@ -217,22 +262,14 @@ public class DynamicLineChartManager {
         lineDataSet.setDrawCircleHole(false);
         //设置曲线填充
         lineDataSet.setDrawFilled(isDrawFilled);
-        //设置填充
-//        if (Utils.getSDKInt() >= 18) {
-        Drawable drawable = ContextCompat.getDrawable(context, R.drawable.common_chart_fill);
-        lineDataSet.setFillDrawable(drawable);
-//        } else {
-//            lineDataSet.setFillColor(context.getResources().getColor(R.color.line_chart_easy));
-//        }
+
         lineDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
         lineDataSet.setValueTextSize(10f);
         lineDataSet.setDrawCircles(true);//是否绘制两个点之间的圆点
-        lineDataSet.setDrawCirclesLast(true);//只绘制最后一个圆点
+//        lineDataSet.setDrawCirclesLast(true);//只绘制最后一个圆点
 
         lineDataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
         lineDataSets.add(lineDataSet);
-        lineData.notifyDataChanged();
-        lineChart.invalidate();
 
     }
 
@@ -297,37 +334,20 @@ public class DynamicLineChartManager {
         lineChart.invalidate();
     }
 
-    /**
-     * 动态添加数据（一条折线图）
-     *逐点添加
-     * @param entry 数据点
-     * @param setID 曲线ID
-     */
-    public void addEntry(Entry entry,int setID) {
 
-        lineData.addEntry(entry, 1);
-        //通知数据已经改变
-        lineData.notifyDataChanged();
-        lineChart.notifyDataSetChanged();
-        lineChart.invalidate();
-        //设置在曲线图中显示的最大数量
-//        lineChart.setVisibleXRangeMaximum(7);
-        //移到某个位置
-//        lineChart.moveViewToX(lineData.getEntryCount() - 6);
-    }
 
-    public void addEntry(Entry entry) {
+    public void addEntry(Entry entry, int dataSetIndex) {
         if (lineDataSet.getEntryCount() == 0) {
             lineData.addDataSet(lineDataSet);
         }
-        lineChart.setData(lineData);
+//        lineChart.setData(lineData);
 
-        lineData.addEntry(entry, 0);
+        lineData.addEntry(entry, dataSetIndex);
         //通知数据已经改变
         lineData.notifyDataChanged();
         lineChart.notifyDataSetChanged();
         //设置在曲线图中显示的最大数量
-//        lineChart.setVisibleXRangeMaximum(7);
+        lineChart.setVisibleXRangeMaximum(300);
         //移到某个位置
         lineChart.moveViewToX(lineData.getEntryCount() - 5);
     }

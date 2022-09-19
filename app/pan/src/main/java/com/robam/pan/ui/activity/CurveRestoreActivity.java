@@ -41,6 +41,10 @@ public class CurveRestoreActivity extends PanBaseActivity {
     private RvStep2Adapter rvStep2Adapter;
     //当前步骤
     private TextView tvStep;
+    //火力
+    private TextView tvFire;
+    //温度
+    private TextView tvTemp;
 
     //曲线详情
     private PanCurveDetail panCurveDetail;
@@ -50,7 +54,7 @@ public class CurveRestoreActivity extends PanBaseActivity {
     private LinearLayoutManager linearLayoutManager;
 
     private int curStep = 0;
-
+    private int count = 0; //总时间
     private LineChart cookChart;
     private DynamicLineChartManager dm;
     private Map<String, String> params = null;
@@ -72,6 +76,8 @@ public class CurveRestoreActivity extends PanBaseActivity {
         tvStop = findViewById(R.id.tv_stop_cook);
         tvStep = findViewById(R.id.tv_cur_step);
         cookChart = findViewById(R.id.cook_chart);
+        tvFire = findViewById(R.id.tv_fire);
+        tvTemp = findViewById(R.id.tv_temp);
         linearLayoutManager = new LinearLayoutManager(this);
         rvStep.setLayoutManager(linearLayoutManager);
         rvStep.addItemDecoration(new VerticalSpaceItemDecoration((int) getResources().getDimension(com.robam.common.R.dimen.dp_30)));
@@ -96,10 +102,13 @@ public class CurveRestoreActivity extends PanBaseActivity {
                     entryList.add(new Entry(Float.parseFloat(entry.getKey()), Float.parseFloat(data[0]))); //时间和温度
                 }
                 dm = new DynamicLineChartManager(cookChart, this);
-                dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.pan_white_40), entryList, true);
+                dm.setLabelCount(1, 1);
+                dm.setAxisLine(true, false);
+                dm.setGridLine(false, false);
+                dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.pan_white_40), entryList, true, true);
                 //添加第一个点
                 restoreList.add(entryList.get(0));
-                dm.initLineDataSet("", getResources().getColor(R.color.pan_chart), restoreList, true);
+                dm.initLineDataSet("", getResources().getColor(R.color.pan_chart), restoreList, true, false);
             } catch (Exception e) {
                 LogUtils.e(e.getMessage());
                 params = null;
@@ -121,7 +130,6 @@ public class CurveRestoreActivity extends PanBaseActivity {
         }
     }
     //启动倒计时
-    int count = 0;
     private void Countdown() {
 
         runnable = new Runnable() {
@@ -145,12 +153,17 @@ public class CurveRestoreActivity extends PanBaseActivity {
                     return;
                 }
                 CurveStep curveStep = rvStep2Adapter.getData().get(curStep);
-                count++; //总时间
-                if (params.containsKey(count+"")) {
-                    String[] data = params.get(count+"").split("-");
-                    restoreList.add(new Entry(count, Float.parseFloat(data[0])));
-                    cookChart.invalidate();
-                }
+                //曲线绘制
+                try {
+                    count++; //总时间
+                    if (params.containsKey(count + "")) {
+                        String[] data = params.get(count + "").split("-");
+                        restoreList.add(new Entry(count, Float.parseFloat(data[0])));//温度
+                        cookChart.invalidate();
+                        tvFire.setText("火力：" + data[1] + "档");
+                        tvTemp.setText("温度：" + data[0] + "℃");
+                    }
+                } catch (Exception e) {}
 
                 if (curveStep.needTime > 0) {
                     curveStep.elapsedTime++;
@@ -167,6 +180,14 @@ public class CurveRestoreActivity extends PanBaseActivity {
             }
 
         };
+        //第一个点
+        try {
+            if (params.containsKey("0")) {
+                String[] data = params.get(count + "").split("-");
+                tvFire.setText("火力：" + data[1] + "档");
+                tvTemp.setText("温度：" + data[0] + "℃");
+            }
+        } catch (Exception e) {}
         mHandler.postDelayed(runnable, 1000L);
     }
 
