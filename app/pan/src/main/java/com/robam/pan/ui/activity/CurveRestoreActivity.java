@@ -38,7 +38,7 @@ public class CurveRestoreActivity extends PanBaseActivity {
     private RecyclerView rvStep;
     private TextView tvStop;
     //步骤
-    private RvStep2Adapter rvStep2Adapter;
+    RvStep2Adapter rvStep2Adapter;
     //当前步骤
     private TextView tvStep;
     //火力
@@ -47,19 +47,19 @@ public class CurveRestoreActivity extends PanBaseActivity {
     private TextView tvTemp;
 
     //曲线详情
-    private PanCurveDetail panCurveDetail;
+    PanCurveDetail panCurveDetail;
 
     private Handler mHandler = new Handler();
     private Runnable runnable;
     private LinearLayoutManager linearLayoutManager;
 
-    private int curStep = 0;
-    private int count = 0; //总时间
+    int curStep = 0;
+    int curTime = 0; //当前时间
     private LineChart cookChart;
     private DynamicLineChartManager dm;
     private Map<String, String> params = null;
 
-    private ArrayList<Entry> restoreList = new ArrayList<>();  //还原列表
+    ArrayList<Entry> restoreList = new ArrayList<>();  //还原列表
 
     @Override
     protected int getLayoutId() {
@@ -155,10 +155,10 @@ public class CurveRestoreActivity extends PanBaseActivity {
                 CurveStep curveStep = rvStep2Adapter.getData().get(curStep);
                 //曲线绘制
                 try {
-                    count++; //总时间
-                    if (params.containsKey(count + "")) {
-                        String[] data = params.get(count + "").split("-");
-                        restoreList.add(new Entry(count, Float.parseFloat(data[0])));//温度
+                    curTime++; //总时间
+                    if (params.containsKey(curTime + "")) {
+                        String[] data = params.get(curTime + "").split("-");
+                        restoreList.add(new Entry(curTime, Float.parseFloat(data[0])));//温度
                         cookChart.invalidate();
                         tvFire.setText("火力：" + data[1] + "档");
                         tvTemp.setText("温度：" + data[0] + "℃");
@@ -183,7 +183,7 @@ public class CurveRestoreActivity extends PanBaseActivity {
         //第一个点
         try {
             if (params.containsKey("0")) {
-                String[] data = params.get(count + "").split("-");
+                String[] data = params.get(curTime + "").split("-");
                 tvFire.setText("火力：" + data[1] + "档");
                 tvTemp.setText("温度：" + data[0] + "℃");
             }

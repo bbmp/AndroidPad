@@ -9,9 +9,10 @@
         android:layout_width="@dimen/dp_20"
         android:layout_height="@dimen/dp_20"
         android:layout_marginRight="@dimen/dp_28"
+        android:layout_marginTop="@dimen/dp_76"
         android:background="@drawable/common_shape_triangle"
         app:layout_constraintRight_toRightOf="@id/tv_mark"
-        app:layout_constraintBottom_toTopOf="@id/tv_mark"/>
+        app:layout_constraintTop_toTopOf="parent"/>
     <TextView
         android:id="@+id/tv_mark"
         android:layout_width="@dimen/dp_175"
@@ -19,8 +20,18 @@
         android:textColor="@color/common_white"
         android:textSize="@dimen/sp_30"
         android:gravity="center"
-        android:text="添加标记"
+        android:text="标记步骤"
         android:background="@drawable/common_shape_button_mark"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/iv_triangle"/>
+    <TextView
+        android:id="@+id/tv_step"
+        android:layout_width="@dimen/dp_28"
+        android:layout_height="@dimen/dp_28"
+        android:gravity="center"
+        android:textColor="@color/common_white"
+        android:textSize="@dimen/sp_20"
+        android:background="@drawable/common_shape_step_bg"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

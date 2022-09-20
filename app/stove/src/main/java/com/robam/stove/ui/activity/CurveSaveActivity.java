@@ -11,13 +11,16 @@ import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.robam.common.manager.DynamicLineChartManager;
 import com.robam.common.manager.LineChartManager;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.ClearEditText;
+import com.robam.common.ui.view.MarkViewStep;
 import com.robam.common.utils.ToastUtils;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBaseActivity;
 import com.robam.stove.constant.DialogConstant;
+import com.robam.stove.constant.StoveConstant;
 import com.robam.stove.factory.StoveDialogFactory;
 
 import java.util.ArrayList;
@@ -25,8 +28,10 @@ import java.util.List;
 
 //曲线保存
 public class CurveSaveActivity extends StoveBaseActivity {
-    private LineChart lineChart;//曲线图带限制线
-    private LineChartManager lineChartManager;
+    //
+    private LineChart cookChart;
+
+    private DynamicLineChartManager dm;
 
     @Override
     protected int getLayoutId() {
@@ -38,14 +43,13 @@ public class CurveSaveActivity extends StoveBaseActivity {
         showCenter();
         showRightCenter();
 
-        lineChart = findViewById(R.id.lineChart);
-        lineChartManager = new LineChartManager(lineChart);
+        cookChart = findViewById(R.id.cook_chart);
         setOnClickListener(R.id.tv_back, R.id.tv_save, R.id.iv_edit_name);
     }
 
     @Override
     protected void initData() {
-        setLineChartData();
+        drawCurve();
     }
 
     @Override
@@ -88,38 +92,34 @@ public class CurveSaveActivity extends StoveBaseActivity {
         });
     }
 
-    private void setLineChartData() {
-        //设置X轴数据
-        ArrayList xValues = new ArrayList<>();
-        for (int i = 0; i < 12; i++) {
-            xValues.add((float) i);
-        }
-        //设置Y轴数据
-        List<Float> yValue = new ArrayList<>();
-        //一条曲线模拟数据
-        for (int j = 0; j < 12; j++) {
-            yValue.add((float) (Math.random() * 80));
-        }
+    //曲线绘制
+    private void drawCurve() {
+        if (null != getIntent()) {
+            ArrayList<Entry> entryList = getIntent().getParcelableArrayListExtra(StoveConstant.EXTRA_ENTRY_LIST);
 
-        //设置数据并显示一条曲线
-        lineChartManager.showLineChart(xValues, yValue, "", Color.BLUE);
-        lineChartManager.setDescription("");
-        //Y轴0-100 分10格
-//        lineChartManager.setYAxis(100, 0, 11);
-        //警戒线80 红色
-//        lineChartManager.setHightLimitLine(80, "高温报警", Color.RED);
+            ArrayList<Entry> stepList = getIntent().getParcelableArrayListExtra(StoveConstant.EXTRA_STEP_LIST);
 
-        lineChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-            @Override
-            public void onValueSelected(Entry e, Highlight h) {
-//                Log.e(TAG, "----e:" + e.toString());
+            if (null != entryList) {
+                dm = new DynamicLineChartManager(cookChart, this);
+                dm.setLabelCount(5, 5);
+                dm.setAxisLine(true, false);
+                dm.setGridLine(false, false);
+                dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.stove_chart), entryList, true, false);
+                cookChart.notifyDataSetChanged();
+                if (null != stepList) {
+                    MarkViewStep mv = new MarkViewStep(this, cookChart.getXAxis().getValueFormatter());
+                    mv.setChartView(cookChart);
+                    cookChart.setMarker(mv);
+                    List<Highlight> highlights = new ArrayList<>();
+                    int dataIndex = 1;
+                    for (Entry entry: stepList) {
+                        highlights.add(new Highlight(entry.getX(), entry.getY(), 0, dataIndex));
+                        dataIndex++;
+                    }
+                    cookChart.highlightValues(highlights.toArray(new Highlight[highlights.size()]));
+                }
             }
-
-            @Override
-            public void onNothingSelected() {
-
-            }
-        });
+        }
 
     }
 }

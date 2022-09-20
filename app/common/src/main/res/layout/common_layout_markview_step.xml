@@ -10,7 +10,7 @@
         android:layout_height="@dimen/dp_28"
         android:gravity="center"
         android:textColor="@color/common_white"
-        android:textSize="@dimen/sp_24"
+        android:textSize="@dimen/sp_20"
         android:background="@drawable/common_shape_step_bg"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>

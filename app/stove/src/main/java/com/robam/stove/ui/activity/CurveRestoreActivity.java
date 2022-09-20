@@ -9,8 +9,11 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.robam.common.manager.DynamicLineChartManager;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.utils.DateUtil;
 import com.robam.common.utils.LogUtils;
@@ -22,6 +25,7 @@ import com.robam.stove.constant.DialogConstant;
 import com.robam.stove.constant.StoveConstant;
 import com.robam.stove.factory.StoveDialogFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -39,6 +43,10 @@ public class CurveRestoreActivity extends StoveBaseActivity {
     private int curTime = 0;
     private float lastMark = 0; //最后点
     private TextView tvFire, tvTemp, tvTime;
+    private LineChart cookChart;
+    private DynamicLineChartManager dm;
+    private Map<String, String> params = null;
+    private ArrayList<Entry> restoreList = new ArrayList<>();  //还原列表
     @Override
     protected int getLayoutId() {
         return R.layout.stove_activity_layout_curve_restore;
@@ -55,6 +63,7 @@ public class CurveRestoreActivity extends StoveBaseActivity {
         tvFire = findViewById(R.id.tv_fire);
         tvTemp = findViewById(R.id.tv_temp);
         tvTime = findViewById(R.id.tv_time);
+        cookChart = findViewById(R.id.cook_chart);
         setOnClickListener(R.id.ll_left);
     }
 
@@ -64,6 +73,19 @@ public class CurveRestoreActivity extends StoveBaseActivity {
             Map<String, String> params = null;
             try {
                 params = new Gson().fromJson(stoveCurveDetail.temperatureCurveParams, new TypeToken<LinkedHashMap<String, String>>(){}.getType());
+                ArrayList<Entry> entryList = new ArrayList<>();
+                for (Map.Entry<String, String> entry : params.entrySet()) {
+                    String[] data = entry.getValue().split("-");
+                    entryList.add(new Entry(Float.parseFloat(entry.getKey()), Float.parseFloat(data[0]))); //时间和温度
+                }
+                dm = new DynamicLineChartManager(cookChart, this);
+                dm.setLabelCount(5, 5);
+                dm.setAxisLine(true, false);
+                dm.setGridLine(false, true);
+                dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.stove_white_40), entryList, true, true);
+                //添加第一个点
+                restoreList.add(entryList.get(0));
+                dm.initLineDataSet("", getResources().getColor(R.color.stove_chart), restoreList, true, false);
             } catch (Exception e) {
                 LogUtils.e(e.getMessage());
                 params = null;
@@ -81,23 +103,25 @@ public class CurveRestoreActivity extends StoveBaseActivity {
         while (iterator.hasNext()) {
             last = iterator.next();
         }
-        lastMark = Float.parseFloat(last);
+        lastMark = Float.parseFloat(last);  //最后点时间
         runnable = new Runnable() {
 
             @Override
 
             public void run() {
 
-                String value = params.get(curTime);
-                if (!TextUtils.isEmpty(value)) {
-                    String[] values = value.split("-");
-                    if (null != values && values.length >= 2) {
-                        tvFire.setText("火力 " + values[1] + "档");
-                        tvTemp.setText(values[0] + "℃");
-                    }
-                }
                 curTime++;
                 tvTime.setText(DateUtil.secForMatTime3(curTime));
+                //曲线绘制
+                try {
+                    if (params.containsKey(curTime + "")) {
+                        String[] data = params.get(curTime + "").split("-");
+                        restoreList.add(new Entry(curTime, Float.parseFloat(data[0])));//温度
+                        cookChart.invalidate();
+                        tvFire.setText("火力：" + data[1] + "档");
+                        tvTemp.setText("温度：" + data[0] + "℃");
+                    }
+                } catch (Exception e) {}
 
                 if (curTime >= lastMark) {
                     //工作结束
@@ -110,7 +134,16 @@ public class CurveRestoreActivity extends StoveBaseActivity {
             }
 
         };
-        mHandler.post(runnable);
+        //第一个点
+        try {
+            tvTime.setText("1");
+            if (params.containsKey("0")) {
+                String[] data = params.get("0").split("-");
+                tvFire.setText("火力：" + data[1] + "档");
+                tvTemp.setText("温度：" + data[0] + "℃");
+            }
+        } catch (Exception e) {}
+        mHandler.postDelayed(runnable, 1000);
     }
     //还原结束提示
     private void workComplete() {

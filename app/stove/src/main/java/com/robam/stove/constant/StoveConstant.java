@@ -20,4 +20,7 @@ public class StoveConstant {
     public final static String EXTRA_CURVE_ID = "curveid";
     public final static String EXTRA_CURVE_DETAIL = "curvedetail";
     public final static String EXTRA_MODE_LIST = "modelist";
+    public final static String EXTRA_ENTRY_LIST = "entry_list";
+    public final static String EXTRA_STEP_LIST = "step_list";
+
 }

@@ -9,12 +9,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.manager.DynamicLineChartManager;
 import com.robam.common.ui.helper.VerticalSpaceItemDecoration;
+import com.robam.common.ui.view.MarkViewStep;
 import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.TimeUtils;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBaseActivity;
 import com.robam.stove.bean.CurveStep;
@@ -42,6 +45,12 @@ public class CurveSelectedActivity extends StoveBaseActivity {
     private TextView tvStartCook;
     //曲线详情
     private StoveCurveDetail stoveCurveDetail;
+    //火力
+    private TextView tvFire;
+    //温度
+    private TextView tvTemp;
+    //时间
+    private TextView tvTime;
     //
     private LineChart cookChart;
 
@@ -64,6 +73,9 @@ public class CurveSelectedActivity extends StoveBaseActivity {
         tvCurveName = findViewById(R.id.tv_recipe_name);
         tvStartCook = findViewById(R.id.tv_start_cook);
         cookChart = findViewById(R.id.cook_chart);
+        tvFire = findViewById(R.id.tv_fire);
+        tvTemp = findViewById(R.id.tv_temp);
+        tvTime = findViewById(R.id.tv_time);
         //步骤
         rvStep.setLayoutManager(new LinearLayoutManager(this));
         rvStep.addItemDecoration(new VerticalSpaceItemDecoration((int) getContext().getResources().getDimension(com.robam.common.R.dimen.dp_15)));
@@ -127,25 +139,37 @@ public class CurveSelectedActivity extends StoveBaseActivity {
     private void drawCurve(StoveCurveDetail stoveCurveDetail) {
         Map<String, String> params = null;
         try {
+            String[] data = new String[3];
             params = new Gson().fromJson(stoveCurveDetail.temperatureCurveParams, new TypeToken<LinkedHashMap<String, String>>(){}.getType());
             ArrayList<Entry> entryList = new ArrayList<>();
-            ArrayList<Entry> appointList = new ArrayList<>();
             for (Map.Entry<String, String> entry : params.entrySet()) {
-                String[] data = entry.getValue().split("-");
+                data = entry.getValue().split("-");
                 entryList.add(new Entry(Float.parseFloat(entry.getKey()), Float.parseFloat(data[0]))); //时间和温度
             }
-            List<CurveStep> stepList = stoveCurveDetail.stepList;
-            if (null != stepList) {
-                for (CurveStep curveStep: stepList) {
-                    appointList.add(new Entry(Float.parseFloat(curveStep.markTime), curveStep.markTemp));
-                }
-            }
+
             dm = new DynamicLineChartManager(cookChart, this);
             dm.setLabelCount(5, 5);
             dm.setAxisLine(true, false);
             dm.setGridLine(false, false);
             dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.stove_chart), entryList, true, false);
             cookChart.notifyDataSetChanged();
+            List<CurveStep> stepList = stoveCurveDetail.stepList;
+            if (null != stepList) {
+                MarkViewStep mv = new MarkViewStep(this, cookChart.getXAxis().getValueFormatter());
+                mv.setChartView(cookChart);
+                cookChart.setMarker(mv);
+                List<Highlight> highlights = new ArrayList<>();
+                int dataIndex = 1;
+                for (CurveStep step : stepList) {
+                    highlights.add(new Highlight(Float.parseFloat(step.markTime), step.markTemp, 0, dataIndex));
+                    dataIndex++;
+                }
+                cookChart.highlightValues(highlights.toArray(new Highlight[highlights.size()]));
+            }
+            //最后一点
+            tvFire.setText("火力：" + data[1] + "档");
+            tvTemp.setText("温度：" + data[0] + "℃");
+            tvTime.setText("时间：" + TimeUtils.secToMinSecond(stoveCurveDetail.needTime));
         } catch (Exception e) {
             LogUtils.e(e.getMessage());
             params = null;

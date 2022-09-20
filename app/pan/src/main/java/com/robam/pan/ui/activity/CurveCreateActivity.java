@@ -1,22 +1,31 @@
 package com.robam.pan.ui.activity;
 
+import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Handler;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.ChartTouchListener;
+import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.robam.common.manager.DynamicLineChartManager;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.MarkViewAdd;
 import com.robam.common.utils.DateUtil;
+import com.robam.common.utils.LogUtils;
 import com.robam.pan.constant.DialogConstant;
 import com.robam.pan.R;
 import com.robam.pan.base.PanBaseActivity;
+import com.robam.pan.constant.PanConstant;
 import com.robam.pan.factory.PanDialogFactory;
 
 import java.util.ArrayList;
+import java.util.List;
 
 //曲线创作中
 public class CurveCreateActivity extends PanBaseActivity {
@@ -29,7 +38,7 @@ public class CurveCreateActivity extends PanBaseActivity {
     private LineChart cookChart;
 
     private DynamicLineChartManager dm;
-    private ArrayList<Entry> entryList = new ArrayList<>();  //还原列表
+    private ArrayList<Entry> entryList = new ArrayList<>();  //创作列表
     private ArrayList<Entry> stepList = new ArrayList<>(); //标记列表
     @Override
     protected int getLayoutId() {
@@ -63,7 +72,7 @@ public class CurveCreateActivity extends PanBaseActivity {
 
     //开始创建
     private void startCreate() {
-
+        List<Highlight> highlights = new ArrayList<>();
         runnable = new Runnable() {
 
             @Override
@@ -75,7 +84,9 @@ public class CurveCreateActivity extends PanBaseActivity {
                 Entry entry = new Entry(curTime, (float) (Math.random()*20 + 130));
                 dm.addEntry(entry, 0);
                 tvTemp.setText("温度：" + (int) entry.getY() + "℃");
-                cookChart.highlightValue(entry.getX(), entry.getY(), 0);
+//                cookChart.highlightValue(entry.getX(), entry.getY(), 0);
+                highlights.set(highlights.size() - 1, new Highlight(entry.getX(), entry.getY(), 0)); //标记highlight只能加最后，maskview中坐标会覆盖
+                cookChart.highlightValues(highlights.toArray(new Highlight[highlights.size()]));
                 mHandler.postDelayed(runnable, 2000L);
 
             }
@@ -92,23 +103,70 @@ public class CurveCreateActivity extends PanBaseActivity {
         dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.pan_chart), entryList, true, false);
         tvFire.setText("火力：" + "档");
         tvTemp.setText("温度：" + (int) entry.getY() + "℃");
-        dm.setHilightColor();
         MarkViewAdd mv = new MarkViewAdd(this, cookChart.getXAxis().getValueFormatter());
-        mv.setMarkerViewAddListener(new MarkViewAdd.MarkerViewAddListener() {
-            @Override
-            public void onMarkerViewAdd() {
-                //添加标记
-//                Entry entry = new Entry(curTime, (float) (Math.random()*20 + 130));
-//
-//                stepList.add(entry);
-//                dm.addEntry(entry, 1);
-            }
-        });
         mv.setChartView(cookChart);
         cookChart.setMarker(mv);
-        cookChart.highlightValue(entry.getX(), entry.getY(), 0);
+
+        highlights.add(new Highlight(entry.getX(), entry.getY(), 0));  //标记步骤highlight
+        cookChart.highlightValues(highlights.toArray(new Highlight[highlights.size()]));
         //第二条线
-//        dm.initLineDataSet("", Color.TRANSPARENT, stepList, false);
+        dm.initLineDataSet("", getResources().getColor(R.color.pan_chart), stepList, false);
+        cookChart.setOnChartGestureListener(new OnChartGestureListener() {
+            @Override
+            public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
+            }
+
+            @Override
+            public void onChartGestureMove(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
+
+            }
+
+            @Override
+            public void onChartGestureEnd(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
+
+            }
+
+            @Override
+            public void onChartLongPressed(MotionEvent me) {
+
+            }
+
+            @Override
+            public void onChartDoubleTapped(MotionEvent me) {
+
+            }
+
+            @Override
+            public void onChartSingleTapped(MotionEvent me) {
+                if (null != mv) {
+                    Rect rect = new Rect((int) mv.drawingPosX, (int) mv.drawingPosY, (int) mv.drawingPosX + mv.getWidth(), (int) mv.drawingPosY + mv.getHeight());
+                    if (cookChart.isDrawMarkersEnabled() && cookChart.valuesToHighlight() && rect.contains((int) me.getX(), (int) me.getY())) {
+                        LogUtils.e("click" + Thread.currentThread().getName());
+                        Entry entry = entryList.get(entryList.size() - 1); //最后一个点
+                        highlights.add(0, new Highlight(entry.getX(), entry.getY(), 1, highlights.size())); //第二条线highlight,加前面
+
+                        cookChart.highlightValues(highlights.toArray(new Highlight[highlights.size()]));
+                        dm.addEntry(entry, 1);
+
+                    }
+                }
+            }
+
+            @Override
+            public void onChartFling(MotionEvent me1, MotionEvent me2, float velocityX, float velocityY) {
+
+            }
+
+            @Override
+            public void onChartScale(MotionEvent me, float scaleX, float scaleY) {
+
+            }
+
+            @Override
+            public void onChartTranslate(MotionEvent me, float dX, float dY) {
+
+            }
+        });
         mHandler.post(runnable);
     }
 
@@ -124,7 +182,11 @@ public class CurveCreateActivity extends PanBaseActivity {
                 //结束创作
                 if (v.getId() == R.id.tv_ok) {
                     //保存曲线
-                    startActivity(CurveSaveActivity.class);
+                    Intent intent = new Intent();
+                    intent.putParcelableArrayListExtra(PanConstant.EXTRA_ENTRY_LIST, entryList);
+                    intent.putParcelableArrayListExtra(PanConstant.EXTRA_STEP_LIST, stepList);
+                    intent.setClass(CurveCreateActivity.this, CurveSaveActivity.class);
+                    startActivity(intent);
                     finish();
                 }
             }

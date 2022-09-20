@@ -30,6 +30,8 @@ public class MarkViewStep extends MarkerView {
     @Override
     public void refreshContent(Entry e, Highlight highlight) {
         //展示自定义X轴值 后的X轴内容
+        int index = highlight.getDataIndex();
+        tvStep.setText(index + "");
 
         super.refreshContent(e, highlight);
     }

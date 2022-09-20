@@ -18,6 +18,7 @@ import com.robam.common.module.IPublicStoveApi;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.VerticalSpaceItemDecoration;
 import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.TimeUtils;
 import com.robam.pan.R;
 import com.robam.pan.base.PanBaseActivity;
 import com.robam.pan.bean.CurveStep;
@@ -51,6 +52,12 @@ public class RecipeSelectedActivity extends PanBaseActivity {
     private PanCurveDetail panCurveDetail;
     //开始烹饪
     private TextView tvStartCook;
+    //火力
+    private TextView tvFire;
+    //温度
+    private TextView tvTemp;
+    //时间
+    private TextView tvTime;
     //
     private LineChart cookChart;
 
@@ -75,6 +82,9 @@ public class RecipeSelectedActivity extends PanBaseActivity {
         tvRight = findViewById(R.id.tv_right);
         tvRight.setText(R.string.pan_recipe_detail);
         cookChart = findViewById(R.id.cook_chart);
+        tvFire = findViewById(R.id.tv_fire);
+        tvTemp = findViewById(R.id.tv_temp);
+        tvTime = findViewById(R.id.tv_time);
         rvStep = findViewById(R.id.rv_step);
         tvRecipeName = findViewById(R.id.tv_recipe_name);
         tvStartCook = findViewById(R.id.tv_start_cook);
@@ -212,11 +222,12 @@ public class RecipeSelectedActivity extends PanBaseActivity {
     private void drawCurve(PanCurveDetail panCurveDetail) {
         Map<String, String> params = null;
         try {
+            String[] data = new String[3];
             params = new Gson().fromJson(panCurveDetail.temperatureCurveParams, new TypeToken<LinkedHashMap<String, String>>(){}.getType());
             ArrayList<Entry> entryList = new ArrayList<>();
             ArrayList<Entry> appointList = new ArrayList<>();
             for (Map.Entry<String, String> entry : params.entrySet()) {
-                String[] data = entry.getValue().split("-");
+                data = entry.getValue().split("-");
                 entryList.add(new Entry(Float.parseFloat(entry.getKey()), Float.parseFloat(data[0]))); //时间和温度
             }
             List<CurveStep> stepList = panCurveDetail.stepList;
@@ -231,6 +242,10 @@ public class RecipeSelectedActivity extends PanBaseActivity {
             dm.setGridLine(false, false);
             dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.pan_chart), entryList, true, false);
             cookChart.notifyDataSetChanged();
+            //最后一点
+            tvFire.setText("火力：" + data[1] + "档");
+            tvTemp.setText("温度：" + data[0] + "℃");
+            tvTime.setText("时间：" + TimeUtils.secToMinSecond(panCurveDetail.needTime));
         } catch (Exception e) {
             LogUtils.e(e.getMessage());
             params = null;
