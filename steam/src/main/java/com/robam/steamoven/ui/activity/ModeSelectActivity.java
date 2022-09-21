@@ -2,6 +2,7 @@ package com.robam.steamoven.ui.activity;
 
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,8 +21,11 @@ import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.bean.ModeBean;
 import com.robam.steamoven.constant.ModeConstant;
 import com.robam.steamoven.constant.SteamConstant;
+import com.robam.steamoven.constant.SteamOvenSteamEnum;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.ui.pages.ModeSelectPage;
+import com.robam.steamoven.ui.pages.SteamSelectPage;
+import com.robam.steamoven.ui.pages.TempSelectPage;
 import com.robam.steamoven.ui.pages.TimeSelectPage;
 
 import java.lang.ref.WeakReference;
@@ -35,15 +39,20 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
     private List<WeakReference<Fragment>> fragments = new ArrayList<>();
 
     //模式选择， 温度和时间
-    private TabLayout.Tab modeTab, tempTab, timeTab;
+    private TabLayout.Tab modeTab, timeTab;
+    //上温度 下温度
+    private TabLayout.Tab upTempTab, downTempTab;
     //加湿烤
     private TabLayout.Tab steamTab;
 
     private List<ModeBean> modes;
 
-    private TimeSelectPage tempSelectPage, timeSelectPage;
+    private TimeSelectPage timeSelectPage;
 
-    private ModeSelectPage steamFragment;
+    //上温度 下温度
+    private TempSelectPage upTempSelectPage, downTempSelectPage;
+
+    private SteamSelectPage steamSelectPage;
 
     private SelectPagerAdapter selectPagerAdapter;
 
@@ -100,13 +109,13 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
 
         //
         if (null != modes && modes.size() > 0) {
-            int index = 0;
             //默认模式
             ModeBean defaultBean = modes.get(0);
             //当前模式
             HomeSteamOven.getInstance().workMode = (short) defaultBean.code;
+            //模式
             modeTab = tabLayout.newTab();
-            modeTab.setId(index++);
+            modeTab.setId(0);
             View modeView = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab_mode, null);
             TextView tvMode = modeView.findViewById(R.id.tv_mode);
             tvMode.setText(defaultBean.name);
@@ -115,37 +124,49 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             Fragment modeFragment = new ModeSelectPage(modeTab, modes, this);
             fragments.add(new WeakReference<>(modeFragment));
 
-            if (HomeSteamOven.getInstance().workMode == ModeConstant.MODE_JIASHI_BAKE) {
-                //加湿烤
-                steamTab = tabLayout.newTab();
-                steamTab.setId(index++);
-                View steamView = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab_mode, null);
 
-                steamTab.setCustomView(steamView);
-                tabLayout.addTab(steamTab);
-                steamFragment = new ModeSelectPage(steamTab, modes,this);
+            //蒸汽
+            steamTab = tabLayout.newTab();
+            steamTab.setId(1);
+            View steamView = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab_steam, null);
+            TextView tvSteam = steamView.findViewById(R.id.tv_mode);
+            tvSteam.setText(SteamOvenSteamEnum.match(defaultBean.defSteam));
+            steamTab.setCustomView(steamView);
+            tabLayout.addTab(steamTab);
+            steamSelectPage = new SteamSelectPage(steamTab, defaultBean);
 
-                fragments.add(new WeakReference<>(steamFragment));
-            }
+            fragments.add(new WeakReference<>(steamSelectPage));
 
-            tempTab = tabLayout.newTab();
-            tempTab.setId(index++);
-            View tempView = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab_temp, null);
-            TextView tvTemp = tempView.findViewById(R.id.tv_mode);
-            tvTemp.setText(defaultBean.defTemp + "");
-            tempTab.setCustomView(tempView);
-            tabLayout.addTab(tempTab);
-            tempSelectPage = new TimeSelectPage(tempTab, 0, this);
-            fragments.add(new WeakReference<>(tempSelectPage));
+            //上温度
+            upTempTab = tabLayout.newTab();
+            upTempTab.setId(2);
+            View upView = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab_temp, null);
+            TextView upTemp = upView.findViewById(R.id.tv_mode);
+            upTemp.setText(defaultBean.defTemp + "");
+            upTempTab.setCustomView(upView);
+            tabLayout.addTab(upTempTab);
+            upTempSelectPage = new TempSelectPage(upTempTab, defaultBean);
+            fragments.add(new WeakReference<>(upTempSelectPage));
 
+            //下温度
+            downTempTab = tabLayout.newTab();
+            downTempTab.setId(3);
+            View downView = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab_temp, null);
+            TextView downTemp = downView.findViewById(R.id.tv_mode);
+            downTemp.setText(defaultBean.defTemp + "");
+            downTempTab.setCustomView(downView);
+            tabLayout.addTab(downTempTab);
+            downTempSelectPage = new TempSelectPage(downTempTab, defaultBean);
+            fragments.add(new WeakReference<>(downTempSelectPage));
+            //时间
             timeTab = tabLayout.newTab();
-            timeTab.setId(index++);
+            timeTab.setId(4);
             View timeView = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab_time, null);
             TextView tvTime = timeView.findViewById(R.id.tv_mode);
             tvTime.setText(defaultBean.defTime + "");
             timeTab.setCustomView(timeView);
             tabLayout.addTab(timeTab);
-            timeSelectPage = new TimeSelectPage(timeTab, 1, this);
+            timeSelectPage = new TimeSelectPage(timeTab, defaultBean);
             fragments.add(new WeakReference<>(timeSelectPage));
 //添加设置适配器
             selectPagerAdapter = new SelectPagerAdapter(getSupportFragmentManager());
@@ -181,18 +202,40 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
     private void initTimeParams(int mode) {
         if (null != modes) {
             for (ModeBean modeBean: modes) {
-                if (mode == modeBean.code) {
+                if (mode == modeBean.code) {  //当前模式
+                    if (mode == SteamConstant.XIANNENZHENG || mode == SteamConstant.YIYANGZHENG || mode == SteamConstant.GAOWENZHENG || mode == SteamConstant.ZHIKONGZHENG) { //蒸模式
 
-                    ArrayList<String> tempList = new ArrayList<>();
-                    for (int i = modeBean.minTemp; i <= modeBean.maxTemp; i++) {
-                        tempList.add(i + "");
+                        timeSelectPage.updateTimeTab(modeBean);
+                        upTempSelectPage.updateTempTab(modeBean);
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(4).setVisibility(View.VISIBLE); //时间
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(3).setVisibility(View.GONE); //下温度
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.VISIBLE); //上温度
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(1).setVisibility(View.GONE); //蒸汽
+                    } else if (mode == SteamConstant.FENGBEIKAO || mode == SteamConstant.FENGSHANKAO || mode == SteamConstant.QIANGSHAOKAO || mode == SteamConstant.EXP
+                                || mode == SteamConstant.KUAIRE || mode == SteamConstant.BEIKAO) {   //烤
+
+                        timeSelectPage.updateTimeTab(modeBean);
+                        upTempSelectPage.updateTempTab(modeBean);
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(4).setVisibility(View.VISIBLE); //时间
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(3).setVisibility(View.GONE); //下温度
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.VISIBLE);  //上温度
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(1).setVisibility(View.GONE); //蒸汽
+                    } else if (mode == SteamConstant.SHOUDONGJIASHIKAO || mode == SteamConstant.JIASHIBEIKAO || mode == SteamConstant.JIASHIFENGBEIKAO) {
+                        timeSelectPage.updateTimeTab(modeBean);
+                        upTempSelectPage.updateTempTab(modeBean);
+                        steamSelectPage.updateSteamTab(modeBean);
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(4).setVisibility(View.VISIBLE); //时间
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(3).setVisibility(View.GONE); //下温度
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.VISIBLE);  //上温度
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(1).setVisibility(View.VISIBLE); //蒸汽
+                    } else if (mode == SteamConstant.KONGQIZHA) {
+                        timeSelectPage.updateTimeTab(modeBean);
+                        upTempSelectPage.updateTempTab(modeBean);
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(4).setVisibility(View.VISIBLE); //时间
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(3).setVisibility(View.GONE); //下温度
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.VISIBLE); //上温度
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(1).setVisibility(View.GONE); //蒸汽
                     }
-                    tempSelectPage.setList(tempList, modeBean.defTemp - modeBean.minTemp);
-                    ArrayList<String> timeList = new ArrayList<>();
-                    for (int i = modeBean.minTime; i <= modeBean.maxTime; i++) {
-                        timeList.add(i + "");
-                    }
-                    timeSelectPage.setList(timeList, modeBean.defTime - modeBean.minTime);
 
                     break;
                 }

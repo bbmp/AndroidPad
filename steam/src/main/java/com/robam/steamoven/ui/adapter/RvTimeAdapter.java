@@ -12,7 +12,7 @@ import com.robam.steamoven.R;
 
 public class RvTimeAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
     private int pickPosition;
-    private int type; //0温度1时间
+    private int type; //0温度1时间2蒸汽
 
     public void setPickPosition(int pickPosition) {
         this.pickPosition = pickPosition % getData().size();
@@ -63,6 +63,11 @@ public class RvTimeAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
                 tvMin.setVisibility(View.INVISIBLE);
             }
             else if (type == 1) {
+                tvMin.setText("min");
+                tvMin.setVisibility(View.VISIBLE);
+                tvTemp.setVisibility(View.INVISIBLE);
+            } else if (type == 2) {
+                tvMin.setText("蒸汽");
                 tvMin.setVisibility(View.VISIBLE);
                 tvTemp.setVisibility(View.INVISIBLE);
             } else {

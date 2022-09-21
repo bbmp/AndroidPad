@@ -87,9 +87,10 @@ public class WifiConnectActivity extends VentilatorBaseActivity {
 
     //连接网络
     private void connecting() {
-        if (null == waitingDialog)
+        if (null == waitingDialog) {
             waitingDialog = VentilatorDialogFactory.createDialogByType(getContext(), DialogConstant.DIALOG_TYPE_WAITING);
-        waitingDialog.setCancelable(false);
+            waitingDialog.setCancelable(false);
+        }
         waitingDialog.show();
     }
 }

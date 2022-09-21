@@ -34,6 +34,8 @@ public class CurveCreateActivity extends PanBaseActivity {
     //从0开始
     private int curTime = 0;
     private TextView tvFire, tvTemp, tvTime;
+
+    private IDialog stopDialog;
     //
     private LineChart cookChart;
 
@@ -54,6 +56,7 @@ public class CurveCreateActivity extends PanBaseActivity {
         tvTemp = findViewById(R.id.tv_temp);
         tvTime = findViewById(R.id.tv_time);
         cookChart = findViewById(R.id.cook_chart);
+        cookChart.setNoDataText(getResources().getString(R.string.pan_no_curve_data)); //没有数据时显示的文字
         setOnClickListener(R.id.ll_left, R.id.iv_stop_create);
     }
 
@@ -172,26 +175,28 @@ public class CurveCreateActivity extends PanBaseActivity {
 
     //创作结束提示
     private void stopCook() {
-        IDialog iDialog = PanDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_PAN_COMMON);
-        iDialog.setCancelable(false);
-        iDialog.setContentText(R.string.pan_stop_creation_hint);
-        iDialog.setOKText(R.string.pan_stop_creation);
-        iDialog.setListeners(new IDialog.DialogOnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //结束创作
-                if (v.getId() == R.id.tv_ok) {
-                    //保存曲线
-                    Intent intent = new Intent();
-                    intent.putParcelableArrayListExtra(PanConstant.EXTRA_ENTRY_LIST, entryList);
-                    intent.putParcelableArrayListExtra(PanConstant.EXTRA_STEP_LIST, stepList);
-                    intent.setClass(CurveCreateActivity.this, CurveSaveActivity.class);
-                    startActivity(intent);
-                    finish();
+        if (null == stopDialog) {
+            stopDialog = PanDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_PAN_COMMON);
+            stopDialog.setCancelable(false);
+            stopDialog.setContentText(R.string.pan_stop_creation_hint);
+            stopDialog.setOKText(R.string.pan_stop_creation);
+            stopDialog.setListeners(new IDialog.DialogOnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //结束创作
+                    if (v.getId() == R.id.tv_ok) {
+                        //保存曲线
+                        Intent intent = new Intent();
+                        intent.putParcelableArrayListExtra(PanConstant.EXTRA_ENTRY_LIST, entryList);
+                        intent.putParcelableArrayListExtra(PanConstant.EXTRA_STEP_LIST, stepList);
+                        intent.setClass(CurveCreateActivity.this, CurveSaveActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
                 }
-            }
-        }, R.id.tv_cancel, R.id.tv_ok);
-        iDialog.show();
+            }, R.id.tv_cancel, R.id.tv_ok);
+        }
+        stopDialog.show();
     }
 
     @Override
@@ -201,5 +206,8 @@ public class CurveCreateActivity extends PanBaseActivity {
         mHandler.removeCallbacks(runnable);
 
         mHandler.removeCallbacksAndMessages(null);
+
+        if (null != stopDialog && stopDialog.isShow())
+            stopDialog.dismiss();
     }
 }

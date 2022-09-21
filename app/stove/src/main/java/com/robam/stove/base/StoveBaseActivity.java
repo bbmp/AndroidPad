@@ -127,6 +127,16 @@ public abstract class StoveBaseActivity extends BaseActivity {
 
         ilockDialog.show();
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (null != iDialogAffirm && iDialogAffirm.isShow())
+            iDialogAffirm.dismiss();
+        if (null != ilockDialog && ilockDialog.isShow())
+            ilockDialog.dismiss();
+    }
+
     //是否锁屏状态
     public boolean isLock() {
         if (null != ilockDialog && ilockDialog.isShow())

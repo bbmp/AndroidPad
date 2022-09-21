@@ -34,7 +34,8 @@
         android:theme="@style/Theme.AndroidPad">
         <activity
             android:name=".CrashActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".MainActivity"
             android:screenOrientation="landscape"

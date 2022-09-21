@@ -33,13 +33,13 @@ public enum SteamOvenSteamEnum {
         this.value = message;
     }
 
-    public static SteamOvenSteamEnum match(int key) {
+    public static String match(int key) {
 
-        SteamOvenSteamEnum result = null;
+        String result = "";
 
         for (SteamOvenSteamEnum s : values()) {
             if (s.getCode()==key) {
-                result = s;
+                result = s.getValue();
                 break;
             }
         }

@@ -51,6 +51,7 @@ public class RestoreCompleteActivity extends PanBaseActivity {
             panCurveDetail = (PanCurveDetail) getIntent().getSerializableExtra(PanConstant.EXTRA_CURVE_DETAIL);
         tvRecipeName = findViewById(R.id.tv_recipe_name);
         cookChart = findViewById(R.id.cook_chart);
+        cookChart.setNoDataText(getResources().getString(R.string.pan_no_curve_data)); //没有数据时显示的文字
         tvFire = findViewById(R.id.tv_fire);
         tvTemp = findViewById(R.id.tv_temp);
         tvTime = findViewById(R.id.tv_time);

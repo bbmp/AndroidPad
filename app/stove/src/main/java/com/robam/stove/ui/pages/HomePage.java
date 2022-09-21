@@ -266,4 +266,16 @@ public class HomePage extends StoveBasePage {
             affirmLock();
         }
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //关闭dialog
+        if (null != iDialogStop && iDialogStop.isShow())
+            iDialogStop.dismiss();
+        if (null != iDialogAffirm && iDialogAffirm.isShow())
+            iDialogAffirm.dismiss();
+        if (null != homeLockDialog && homeLockDialog.isShow())
+            homeLockDialog.dismiss();
+    }
 }

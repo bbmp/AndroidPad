@@ -23,6 +23,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.robam.common.skin.SkinStatusBarUtils;
+import com.robam.common.utils.NetworkUtils;
 import com.robam.common.utils.PermissionUtils;
 
 import java.io.PrintWriter;
@@ -67,7 +68,7 @@ public final class CrashActivity extends AppCompatActivity implements View.OnCli
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //字体
-        SkinStatusBarUtils.setStatusBarLightMode(this);
+//        SkinStatusBarUtils.setStatusBarLightMode(this);
         setContentView(R.layout.activity_crash);
 
         mTitleView = findViewById(R.id.tv_crash_title);
@@ -223,9 +224,12 @@ public final class CrashActivity extends AppCompatActivity implements View.OnCli
             }
 
             if (permissions.contains(Manifest.permission.INTERNET)) {
-                builder.append("\n当前网络访问：\t");
-
-
+                builder.append("\n当前网络 ：\t");
+                if (NetworkUtils.isConnect(this))
+                    builder.append("已连接");
+                else
+                    builder.append("未连接");
+                mInfoView.setText(builder);
             } else {
                 mInfoView.setText(builder);
             }

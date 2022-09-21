@@ -28,6 +28,7 @@ versions.litepal = "3.2.3"
 versions.mmkv = "1.2.10"
 versions.zxing_core="3.2.1"
 versions.room = "1.1.1"
+versions.multidex = "2.0.1"
 
 
 ext.versions = versions

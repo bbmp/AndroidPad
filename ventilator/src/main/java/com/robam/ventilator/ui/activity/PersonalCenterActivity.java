@@ -49,6 +49,7 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
     private ImageView ivHead;
     //昵称和手机
     private TextView tvName, tvPhone;
+    private IDialog exitDialog;
 
 
     @Override
@@ -166,18 +167,20 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
     //获取绑定的设备
     //退出登录提示
     private void exitLogin() {
-        IDialog iDialog = VentilatorDialogFactory.createDialogByType(getContext(), DialogConstant.DIALOG_TYPE_VENTILATOR_COMMON);
-        iDialog.setCancelable(false);
-        iDialog.setContentText(R.string.ventilator_login_exit_hint);
-        iDialog.setListeners(new IDialog.DialogOnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (v.getId() == R.id.tv_ok) {
-                    AccountInfo.getInstance().getUser().setValue(null);
+        if (null == exitDialog) {
+            exitDialog = VentilatorDialogFactory.createDialogByType(getContext(), DialogConstant.DIALOG_TYPE_VENTILATOR_COMMON);
+            exitDialog.setCancelable(false);
+            exitDialog.setContentText(R.string.ventilator_login_exit_hint);
+            exitDialog.setListeners(new IDialog.DialogOnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (v.getId() == R.id.tv_ok) {
+                        AccountInfo.getInstance().getUser().setValue(null);
+                    }
                 }
-            }
-        }, R.id.tv_cancel, R.id.tv_ok);
-        iDialog.show();
+            }, R.id.tv_cancel, R.id.tv_ok);
+        }
+        exitDialog.show();
     }
 
     class DeviceUserPagerAdapter extends FragmentStatePagerAdapter {
@@ -204,5 +207,12 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
         public CharSequence getPageTitle(int position) {
             return super.getPageTitle(position);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (null != exitDialog && exitDialog.isShow())
+            exitDialog.dismiss();
     }
 }

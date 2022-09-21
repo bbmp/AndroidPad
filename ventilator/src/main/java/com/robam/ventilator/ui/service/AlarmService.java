@@ -3,6 +3,7 @@ package com.robam.ventilator.ui.service;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.SystemClock;
@@ -14,6 +15,7 @@ import com.robam.cabinet.device.CabinetFactory;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.RTopic;
+import com.robam.common.manager.BlueToothManager;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MsgKeys;
@@ -60,10 +62,16 @@ public class AlarmService extends Service {
 
         if (null != alarmManager) {
             long triggerAtTime = SystemClock.elapsedRealtime() + INTERVAL;//从开机到现在的毫秒（手机睡眠(sleep)的时间也包括在内
-            try {
-                alarmManager.cancel(pIntent);
-            } catch (Exception e) {}
+//            try {
+//                alarmManager.cancel(pIntent);
+//            } catch (Exception e) {}
             alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAtTime, pIntent);
+        }
+        //蓝牙扫描
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (bluetoothAdapter.enable()) {
+            String[] names = new String[] {"ROBAM"};
+            BlueToothManager.setScanRule(names);
         }
         if (!MqttManager.getInstance().isConnected()) {
             //全部离线

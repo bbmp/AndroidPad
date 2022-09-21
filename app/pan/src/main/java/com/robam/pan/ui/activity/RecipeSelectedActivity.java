@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.robam.common.http.RetrofitCallback;
@@ -17,6 +18,7 @@ import com.robam.common.manager.DynamicLineChartManager;
 import com.robam.common.module.IPublicStoveApi;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.VerticalSpaceItemDecoration;
+import com.robam.common.ui.view.MarkViewStep;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.TimeUtils;
 import com.robam.pan.R;
@@ -48,6 +50,10 @@ public class RecipeSelectedActivity extends PanBaseActivity {
     private RecyclerView rvStep;
     private RvStep3Adapter rvStep3Adapter;
     private TextView tvRecipeName;
+
+    private SelectStoveDialog selectStoveDialog;
+
+    private IDialog openDialog;
     //曲线详情
     private PanCurveDetail panCurveDetail;
     //开始烹饪
@@ -82,6 +88,7 @@ public class RecipeSelectedActivity extends PanBaseActivity {
         tvRight = findViewById(R.id.tv_right);
         tvRight.setText(R.string.pan_recipe_detail);
         cookChart = findViewById(R.id.cook_chart);
+        cookChart.setNoDataText(getResources().getString(R.string.pan_no_curve_data)); //没有数据时显示的文字
         tvFire = findViewById(R.id.tv_fire);
         tvTemp = findViewById(R.id.tv_temp);
         tvTime = findViewById(R.id.tv_time);
@@ -130,39 +137,42 @@ public class RecipeSelectedActivity extends PanBaseActivity {
     //炉头选择
     private void selectStove() {
         //炉头选择提示
-        //炉头选择提示
-        SelectStoveDialog iDialog = new SelectStoveDialog(this);
-        iDialog.setCancelable(false);
-        iDialog.setListeners(new IDialog.DialogOnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int id = v.getId();
-                if (id == R.id.view_left)
-                    openFire(IPublicStoveApi.STOVE_LEFT);  //左灶
-                else if (id == R.id.view_right)
-                    openFire(IPublicStoveApi.STOVE_RIGHT);   //右灶
-            }
-        }, R.id.select_stove_dialog, R.id.view_left, R.id.view_right);
+        if (null == selectStoveDialog) {
+            selectStoveDialog= new SelectStoveDialog(this);
+            selectStoveDialog.setCancelable(false);
+            selectStoveDialog.setListeners(new IDialog.DialogOnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int id = v.getId();
+                    if (id == R.id.view_left)
+                        openFire(IPublicStoveApi.STOVE_LEFT);  //左灶
+                    else if (id == R.id.view_right)
+                        openFire(IPublicStoveApi.STOVE_RIGHT);   //右灶
+                }
+            }, R.id.select_stove_dialog, R.id.view_left, R.id.view_right);
+        }
         //检查炉头状态
-        iDialog.checkStoveStatus();
-        iDialog.show();
+        selectStoveDialog.checkStoveStatus();
+        selectStoveDialog.show();
     }
 
     //点火提示
     private void openFire(int stove) {
-        IDialog iDialog = PanDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_OPEN_FIRE);
-        iDialog.setCancelable(false);
+        if (null == openDialog) {
+            openDialog = PanDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_OPEN_FIRE);
+            openDialog.setCancelable(false);
+        }
         if (stove == IPublicStoveApi.STOVE_LEFT) {
-            iDialog.setContentText(R.string.pan_open_left_hint);
+            openDialog.setContentText(R.string.pan_open_left_hint);
             //进入工作状态
             //选择左灶
 
         } else {
-            iDialog.setContentText(R.string.pan_open_right_hint);
+            openDialog.setContentText(R.string.pan_open_right_hint);
             //选择右灶
 
         }
-        iDialog.show();
+        openDialog.show();
         Intent intent = new Intent();
         intent.setClass(this, CurveRestoreActivity.class);
         if (null != panCurveDetail) {
@@ -225,23 +235,31 @@ public class RecipeSelectedActivity extends PanBaseActivity {
             String[] data = new String[3];
             params = new Gson().fromJson(panCurveDetail.temperatureCurveParams, new TypeToken<LinkedHashMap<String, String>>(){}.getType());
             ArrayList<Entry> entryList = new ArrayList<>();
-            ArrayList<Entry> appointList = new ArrayList<>();
             for (Map.Entry<String, String> entry : params.entrySet()) {
                 data = entry.getValue().split("-");
                 entryList.add(new Entry(Float.parseFloat(entry.getKey()), Float.parseFloat(data[0]))); //时间和温度
             }
-            List<CurveStep> stepList = panCurveDetail.stepList;
-            if (null != stepList) {
-                for (CurveStep curveStep: stepList) {
-                    appointList.add(new Entry(Float.parseFloat(curveStep.markTime), curveStep.markTemp));
-                }
-            }
+
             dm = new DynamicLineChartManager(cookChart, this);
             dm.setLabelCount(5, 5);
             dm.setAxisLine(true, false);
             dm.setGridLine(false, false);
             dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.pan_chart), entryList, true, false);
             cookChart.notifyDataSetChanged();
+            //绘制步骤标记
+            List<CurveStep> stepList = panCurveDetail.stepList;
+            if (null != stepList) {
+                MarkViewStep mv = new MarkViewStep(this, cookChart.getXAxis().getValueFormatter());
+                mv.setChartView(cookChart);
+                cookChart.setMarker(mv);
+                List<Highlight> highlights = new ArrayList<>();
+                int dataIndex = 1;
+                for (CurveStep step : stepList) {
+                    highlights.add(new Highlight(Float.parseFloat(step.markTime), step.markTemp, 0, dataIndex));
+                    dataIndex++;
+                }
+                cookChart.highlightValues(highlights.toArray(new Highlight[highlights.size()]));
+            }
             //最后一点
             tvFire.setText("火力：" + data[1] + "档");
             tvTemp.setText("温度：" + data[0] + "℃");
@@ -252,4 +270,12 @@ public class RecipeSelectedActivity extends PanBaseActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (null != selectStoveDialog && selectStoveDialog.isShow())
+            selectStoveDialog.dismiss();
+        if (null != openDialog && openDialog.isShow())
+            openDialog.dismiss();
+    }
 }

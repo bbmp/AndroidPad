@@ -55,4 +55,5 @@
     <string name="pan_stove_using">占用</string>
     <string name="pan_open_left_hint">请在左灶点火\n为确保安全,不能远程开火</string>
     <string name="pan_open_right_hint">请在右灶点火\n为确保安全,不能远程开火</string>
+    <string name="pan_no_curve_data">没有曲线数据</string>
 </resources>

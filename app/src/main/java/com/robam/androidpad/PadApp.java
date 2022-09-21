@@ -7,6 +7,8 @@ package com.robam.androidpad;
 
 import android.app.Application;
 
+import androidx.multidex.MultiDex;
+
 import com.bumptech.glide.Glide;
 import com.robam.ventilator.AppVentilator;
 import com.tencent.mmkv.MMKV;
@@ -19,6 +21,8 @@ public class PadApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        MultiDex.install(this);
+        //崩溃注册
 //        CrashHandler.register(this);
         //LitePal注册 数据库
         LitePal.initialize(this);

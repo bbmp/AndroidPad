@@ -73,6 +73,7 @@ public class CurveSelectedActivity extends StoveBaseActivity {
         tvCurveName = findViewById(R.id.tv_recipe_name);
         tvStartCook = findViewById(R.id.tv_start_cook);
         cookChart = findViewById(R.id.cook_chart);
+        cookChart.setNoDataText(getResources().getString(R.string.stove_no_curve_data)); //没有数据时显示的文字
         tvFire = findViewById(R.id.tv_fire);
         tvTemp = findViewById(R.id.tv_temp);
         tvTime = findViewById(R.id.tv_time);
@@ -153,6 +154,7 @@ public class CurveSelectedActivity extends StoveBaseActivity {
             dm.setGridLine(false, false);
             dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.stove_chart), entryList, true, false);
             cookChart.notifyDataSetChanged();
+            //绘制步骤标记
             List<CurveStep> stepList = stoveCurveDetail.stepList;
             if (null != stepList) {
                 MarkViewStep mv = new MarkViewStep(this, cookChart.getXAxis().getValueFormatter());

@@ -176,7 +176,21 @@
     "funtionCode": 3,
     "funtionName": "炸",
     "into": "com.robam.steamoven.ui.activity.ModeSelectActivity",
-    "mode": []
+    "mode": [
+      {
+        "funCode":3,
+        "code": 18,
+        "name": "空气炸",
+        "defTemp": 160,
+        "defTime": 30,
+        "minTemp": 35,
+        "maxTemp": 250,
+        "minTime": 1,
+        "maxTime": 180,
+        "openDoorWork": 0,
+        "needWater": 0
+      }
+    ]
   },
   {
     "backgroundImg": "steam_ic_bg_multi",

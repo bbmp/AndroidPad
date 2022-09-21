@@ -49,6 +49,8 @@ public class CurveRestoreActivity extends PanBaseActivity {
     //曲线详情
     PanCurveDetail panCurveDetail;
 
+    private IDialog stopDialog;
+
     private Handler mHandler = new Handler();
     private Runnable runnable;
     private LinearLayoutManager linearLayoutManager;
@@ -76,6 +78,7 @@ public class CurveRestoreActivity extends PanBaseActivity {
         tvStop = findViewById(R.id.tv_stop_cook);
         tvStep = findViewById(R.id.tv_cur_step);
         cookChart = findViewById(R.id.cook_chart);
+        cookChart.setNoDataText(getResources().getString(R.string.pan_no_curve_data)); //没有数据时显示的文字
         tvFire = findViewById(R.id.tv_fire);
         tvTemp = findViewById(R.id.tv_temp);
         linearLayoutManager = new LinearLayoutManager(this);
@@ -214,25 +217,27 @@ public class CurveRestoreActivity extends PanBaseActivity {
 
     //停止烹饪提示
     private void stopCook() {
-        IDialog iDialog = PanDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_PAN_COMMON);
-        iDialog.setCancelable(false);
-        iDialog.setContentText(R.string.pan_stop_cook_hint);
-        iDialog.setOKText(R.string.pan_stop_cook);
-        iDialog.setListeners(new IDialog.DialogOnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //停止烹饪
-                if (v.getId() == R.id.tv_ok) {
-                    //关闭炉头
-                    if (null != panCurveDetail) {
-                        closeFire();
+        if (null == stopDialog) {
+            stopDialog = PanDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_PAN_COMMON);
+            stopDialog.setCancelable(false);
+            stopDialog.setContentText(R.string.pan_stop_cook_hint);
+            stopDialog.setOKText(R.string.pan_stop_cook);
+            stopDialog.setListeners(new IDialog.DialogOnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //停止烹饪
+                    if (v.getId() == R.id.tv_ok) {
+                        //关闭炉头
+                        if (null != panCurveDetail) {
+                            closeFire();
+                        }
+                        //回首页
+                        startActivity(MainActivity.class);
                     }
-                    //回首页
-                    startActivity(MainActivity.class);
                 }
-            }
-        }, R.id.tv_cancel, R.id.tv_ok);
-        iDialog.show();
+            }, R.id.tv_cancel, R.id.tv_ok);
+        }
+        stopDialog.show();
     }
 
     //切換步驟
@@ -249,6 +254,8 @@ public class CurveRestoreActivity extends PanBaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         closeCountDown();
+        if (null != stopDialog && stopDialog.isShow())
+            stopDialog.dismiss();
     }
 
     private void closeCountDown() {

@@ -97,4 +97,5 @@ dependencies {
     implementation "com.tencent:mmkv-static:$versions.mmkv"
     //二维码
     implementation "com.google.zxing:core:$versions.zxing_core"
+    implementation "androidx.multidex:multidex:$versions.multidex"
 }

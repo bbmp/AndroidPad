@@ -71,7 +71,7 @@ public class WifiSettingActivity extends VentilatorBaseActivity {
                     VenWifiManager.closeWifi(mWifiManager);
                 else
                     VenWifiManager.openWifi(mWifiManager);
-                setWifiData();
+//                setWifiData();
             }
         });
     }
@@ -106,6 +106,7 @@ public class WifiSettingActivity extends VentilatorBaseActivity {
 
     //已授权
     private void onPermissionGranted() {
+        mWifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
         //监听联网状态
         AccountInfo.getInstance().getConnect().observe(this, new Observer<Boolean>() {
             @Override
@@ -118,12 +119,13 @@ public class WifiSettingActivity extends VentilatorBaseActivity {
                     WifiInfo info = mWifiManager.getConnectionInfo();
                     rvWifiAdapter.setInfo(info);
                 }
+                //获取wifi
+                setWifiData();
             }
         });
         //注册广播
-        registerWifiReceiver();
-        //获取wifi
-        setWifiData();
+//        registerWifiReceiver();
+
     }
 
     private void registerWifiReceiver() {
@@ -133,7 +135,7 @@ public class WifiSettingActivity extends VentilatorBaseActivity {
 //        filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);//监听wifi连接状态
 //        filter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);//监听wifi列表变化（开启一个热点或者关闭一个热点）
 //        registerReceiver(ventilatorReceiver, filter);
-        mWifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+//        mWifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
     }
 
     private void setWifiData(){

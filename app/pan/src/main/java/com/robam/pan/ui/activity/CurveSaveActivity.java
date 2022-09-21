@@ -35,6 +35,8 @@ public class CurveSaveActivity extends PanBaseActivity {
     private TextView tvBack, tvSave;
     //曲线名字
     private TextView tvCurveName;
+
+    private IDialog editDialog;
     //
     private LineChart cookChart;
 
@@ -51,6 +53,7 @@ public class CurveSaveActivity extends PanBaseActivity {
 
         tvCurveName = findViewById(R.id.tv_curve_name);
         cookChart = findViewById(R.id.cook_chart);
+        cookChart.setNoDataText(getResources().getString(R.string.pan_no_curve_data)); //没有数据时显示的文字
         setOnClickListener(R.id.tv_back, R.id.tv_save, R.id.iv_edit_name);
     }
 
@@ -75,28 +78,38 @@ public class CurveSaveActivity extends PanBaseActivity {
     }
     //曲线命名
     private void curveEidt() {
-        IDialog iDialog = PanDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_CURVE_EDIT);
-        iDialog.setCancelable(false);
-        iDialog.setListeners(new IDialog.DialogOnClickListener() {
-            @Override
-            public void onClick(View v) {
-            }
-        }, R.id.tv_cancel);
-        iDialog.show();
-        ClearEditText editText = iDialog.getRootView().findViewById(R.id.et_curve_name);
-        //单独处理确认事件
-        iDialog.getRootView().findViewById(R.id.tv_ok).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //校验输入是否为空
-                if (TextUtils.isEmpty(editText.getText())) {
-                    ToastUtils.showShort(CurveSaveActivity.this, R.string.pan_input_empty);
-                    return;
+        if (null == editDialog) {
+            editDialog = PanDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_CURVE_EDIT);
+            editDialog.setCancelable(false);
+            editDialog.setListeners(new IDialog.DialogOnClickListener() {
+                @Override
+                public void onClick(View v) {
                 }
-                tvCurveName.setText(editText.getText());
-                iDialog.dismiss();
-            }
-        });
+            }, R.id.tv_cancel);
+
+            ClearEditText editText = editDialog.getRootView().findViewById(R.id.et_curve_name);
+            //单独处理确认事件
+            editDialog.getRootView().findViewById(R.id.tv_ok).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //校验输入是否为空
+                    if (TextUtils.isEmpty(editText.getText())) {
+                        ToastUtils.showShort(CurveSaveActivity.this, R.string.pan_input_empty);
+                        return;
+                    }
+                    tvCurveName.setText(editText.getText());
+                    editDialog.dismiss();
+                }
+            });
+        }
+        editDialog.show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (null != editDialog && editDialog.isShow())
+            editDialog.dismiss();
     }
 
     //曲线绘制

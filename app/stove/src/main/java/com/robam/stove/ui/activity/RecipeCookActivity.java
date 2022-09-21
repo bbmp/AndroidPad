@@ -33,6 +33,8 @@ public class RecipeCookActivity extends StoveBaseActivity {
     private StoveRecipeDetail stoveRecipeDetail;
     //菜谱图片
     private ImageView ivRecipe;
+
+    private IDialog stopDialog, completeDialog;
     //
     private TextView tvFire, tvAir;
     private Handler mHandler = new Handler();
@@ -135,19 +137,21 @@ public class RecipeCookActivity extends StoveBaseActivity {
     }
     //结束烹饪提示
     private void stopCook() {
-        IDialog iDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_STOVE_COMMON);
-        iDialog.setCancelable(false);
-        iDialog.setOKText(R.string.stove_ok_stop);
-        iDialog.setListeners(new IDialog.DialogOnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (v.getId() == R.id.tv_ok) {
+        if (null == stopDialog) {
+            stopDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_STOVE_COMMON);
+            stopDialog.setCancelable(false);
+            stopDialog.setOKText(R.string.stove_ok_stop);
+            stopDialog.setListeners(new IDialog.DialogOnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (v.getId() == R.id.tv_ok) {
 
-                    finish();
+                        finish();
+                    }
                 }
-            }
-        }, R.id.tv_cancel, R.id.tv_ok);
-        iDialog.show();
+            }, R.id.tv_cancel, R.id.tv_ok);
+        }
+        stopDialog.show();
     }
 
     private void Countdown() {
@@ -184,16 +188,18 @@ public class RecipeCookActivity extends StoveBaseActivity {
     }
     //烹饪正常结束提示
     private void workComplete() {
-        IDialog iDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_COMPLETE);
-        iDialog.setCancelable(false);
-        iDialog.setListeners(new IDialog.DialogOnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //回首页
-                startActivity(MainActivity.class);
-            }
-        }, R.id.tv_ok);
-        iDialog.show();
+        if (null == completeDialog) {
+            completeDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_COMPLETE);
+            completeDialog.setCancelable(false);
+            completeDialog.setListeners(new IDialog.DialogOnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //回首页
+                    startActivity(MainActivity.class);
+                }
+            }, R.id.tv_ok);
+        }
+        completeDialog.show();
     }
 
     //切換步驟
@@ -210,6 +216,11 @@ public class RecipeCookActivity extends StoveBaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         closeCountDown();
+
+        if (null != stopDialog && stopDialog.isShow())
+            stopDialog.dismiss();
+        if (null != completeDialog && completeDialog.isShow())
+            completeDialog.dismiss();
     }
 
     private void closeCountDown() {

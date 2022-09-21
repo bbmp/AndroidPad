@@ -18,6 +18,8 @@ public class SmartSettingActivity extends VentilatorBaseActivity {
 
     private SwitchButton sbAir, sbOil;
 
+    private IDialog resetDialog;
+
     @Override
     protected int getLayoutId() {
         return R.layout.ventilator_activity_layout_smart_setting;
@@ -64,17 +66,26 @@ public class SmartSettingActivity extends VentilatorBaseActivity {
     }
     //恢复初始
     private void resetDialog() {
-        IDialog iDialog = VentilatorDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_VENTILATOR_COMMON);
-        iDialog.setCancelable(false);
-        iDialog.setContentText(R.string.ventilator_smart_reset_hint);
-        iDialog.setOKText(R.string.ventilator_reset_start);
-        iDialog.setListeners(new IDialog.DialogOnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (v.getId() == R.id.tv_ok)
-                    ;
-            }
-        }, R.id.tv_cancel, R.id.tv_ok);
-        iDialog.show();
+        if (null == resetDialog) {
+            resetDialog = VentilatorDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_VENTILATOR_COMMON);
+            resetDialog.setCancelable(false);
+            resetDialog.setContentText(R.string.ventilator_smart_reset_hint);
+            resetDialog.setOKText(R.string.ventilator_reset_start);
+            resetDialog.setListeners(new IDialog.DialogOnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (v.getId() == R.id.tv_ok)
+                        ;
+                }
+            }, R.id.tv_cancel, R.id.tv_ok);
+        }
+        resetDialog.show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (null != resetDialog && resetDialog.isShow())
+            resetDialog.dismiss();
     }
 }

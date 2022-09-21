@@ -43,6 +43,8 @@ public class CurveActivity extends StoveBaseActivity {
     private TextView tvDelete; //确认删除
     private LinearLayoutManager linearLayoutManager;
 
+    private IDialog selectDialog, openDialog;
+
 
     @Override
     protected int getLayoutId() {
@@ -160,17 +162,19 @@ public class CurveActivity extends StoveBaseActivity {
     //炉头选择
     private void selectStove() {
         //炉头选择提示
-        IDialog iDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_SELECT_STOVE);
-        iDialog.setCancelable(false);
-        iDialog.setListeners(new IDialog.DialogOnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int id = v.getId();
-                if (id == R.id.view_left || id == R.id.view_right)
-                    openFire();
-            }
-        }, R.id.select_stove_dialog, R.id.view_left, R.id.view_right);
-        iDialog.show();
+        if (null == selectDialog) {
+            selectDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_SELECT_STOVE);
+            selectDialog.setCancelable(false);
+            selectDialog.setListeners(new IDialog.DialogOnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int id = v.getId();
+                    if (id == R.id.view_left || id == R.id.view_right)
+                        openFire();
+                }
+            }, R.id.select_stove_dialog, R.id.view_left, R.id.view_right);
+        }
+        selectDialog.show();
     }
 
     //点火提示
@@ -283,5 +287,14 @@ public class CurveActivity extends StoveBaseActivity {
                         });
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (null != selectDialog && selectDialog.isShow())
+            selectDialog.dismiss();
+        if (null != openDialog && openDialog.isShow())
+            openDialog.dismiss();
     }
 }

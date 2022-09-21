@@ -42,6 +42,8 @@ public class CurveActivity extends PanBaseActivity {
     private List<PanCurveDetail> panCurveDetails = new ArrayList<>();
     private TextView tvDelete; //确认删除
 
+    private IDialog selectDialog, openDialog;
+
     @Override
     protected int getLayoutId() {
         return R.layout.pan_activity_layout_curve;
@@ -154,17 +156,19 @@ public class CurveActivity extends PanBaseActivity {
     //炉头选择
     private void selectStove() {
         //炉头选择提示
-        IDialog iDialog = PanDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_SELECT_STOVE);
-        iDialog.setCancelable(false);
-        iDialog.setListeners(new IDialog.DialogOnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int id = v.getId();
-                if (id == R.id.view_left || id == R.id.view_right)
-                    openFire();
-            }
-        }, R.id.select_stove_dialog, R.id.view_left, R.id.view_right);
-        iDialog.show();
+        if (null == selectDialog) {
+            selectDialog = PanDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_SELECT_STOVE);
+            selectDialog.setCancelable(false);
+            selectDialog.setListeners(new IDialog.DialogOnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int id = v.getId();
+                    if (id == R.id.view_left || id == R.id.view_right)
+                        openFire();
+                }
+            }, R.id.select_stove_dialog, R.id.view_left, R.id.view_right);
+        }
+        selectDialog.show();
     }
     //点火提示
     private void openFire() {
@@ -272,5 +276,14 @@ public class CurveActivity extends PanBaseActivity {
                         });
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (null != selectDialog && selectDialog.isShow())
+            selectDialog.dismiss();
+        if (null != openDialog && openDialog.isShow())
+            openDialog.dismiss();
     }
 }

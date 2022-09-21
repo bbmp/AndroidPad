@@ -20,52 +20,42 @@ import java.util.List;
 
 public class ModeSelectPage extends SteamBasePage {
     /**
-     * 模式 温度 时间选择
+     * 模式 选择
      */
-    private RecyclerView rvSelect2;
-    /**
-     * 指示器
-     */
-    private RecyclerView rvDot;
-    /**
-     * 指示器adapter
-     */
-    private RvDotAdapter rvDotAdapter;
+    private RecyclerView rvSelect;
     /**
      * 重写选择器
      */
     private PickerLayoutManager pickerLayoutManager;
-
-    private RvModeAdapter rvModeAdapter;
     /**
-     * 选中的模式
+     * 模式选择
      */
-    private ModeBean modeBean;
-
+    private RvModeAdapter rvModeAdapter;
+    //绑定的tab
     private TabLayout.Tab tab;
+
     //回调接口
     private IModeSelect iModeSelect;
 
+    //初始模式
     private List<ModeBean> selectList;
 
-    public ModeSelectPage(TabLayout.Tab tab, List<ModeBean> selectlist, IModeSelect iModeSelect) {
+    public ModeSelectPage(TabLayout.Tab tab, List<ModeBean> selectList, IModeSelect iModeSelect) {
         this.tab = tab;
-        this.selectList = selectlist;
+        this.selectList = selectList;
         this.iModeSelect = iModeSelect;
     }
 
     public void setList(List<ModeBean> selectList) {
         rvModeAdapter.setList(selectList);
 
-        List<String> dotList = new ArrayList<>();
-        for (ModeBean bean: selectList)
-            dotList.add(bean.name);
-        rvDotAdapter.setList(dotList);
-        rvDotAdapter.setPickPosition(Integer.MAX_VALUE / 2 - (Integer.MAX_VALUE/2) % selectList.size());
+        //初始位置
+        int initPos = Integer.MAX_VALUE / 2 - (Integer.MAX_VALUE/2) % selectList.size();
+        pickerLayoutManager.scrollToPosition(initPos);
+        rvModeAdapter.setPickPosition(initPos);
 
-        pickerLayoutManager.scrollToPosition(Integer.MAX_VALUE / 2 - (Integer.MAX_VALUE/2) % selectList.size());
-        rvModeAdapter.setPickPosition(Integer.MAX_VALUE / 2 - (Integer.MAX_VALUE/2) % selectList.size());
-
+        if (null != iModeSelect)
+            iModeSelect.updateTab(rvModeAdapter.getItem(initPos).code);
     }
     @Override
     protected int getLayoutId() {
@@ -74,29 +64,22 @@ public class ModeSelectPage extends SteamBasePage {
 
     @Override
     protected void initView() {
-        rvSelect2 = findViewById(R.id.rv_select_2);
-        rvDot = findViewById(R.id.rv_dot);
-        rvDot.setVisibility(View.VISIBLE);
+        rvSelect = findViewById(R.id.rv_select);
 
         //设置选择recycleView的layoutManage
         setLayoutManage(5, 0.44f);
-        rvDot.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
 
-        rvDotAdapter = new RvDotAdapter();
-        rvDot.setAdapter(rvDotAdapter);
     }
 
     @Override
     protected void initData() {
-//获取当前功能下的模式
         rvModeAdapter = new RvModeAdapter();
-        rvSelect2.setAdapter(rvModeAdapter);
+        rvSelect.setAdapter(rvModeAdapter);
 
+        //默认模式
         if (null != selectList)
             setList(selectList);
-
     }
-
     /**
      * 设置layout
      *
@@ -111,22 +94,21 @@ public class ModeSelectPage extends SteamBasePage {
                 .setOnPickerListener(new PickerLayoutManager.OnPickerListener() {
                     @Override
                     public void onPicked(RecyclerView recyclerView, int position) {
-                        //指示器更新
-                        rvDotAdapter.setPickPosition(position);
+
                         rvModeAdapter.setPickPosition(position);
+
                         if (null != tab) {
                             //切换模式
                             TextView textView = tab.getCustomView().findViewById(R.id.tv_mode);
                             textView.setText(rvModeAdapter.getItem(position).name);
                         }
                         if (null != iModeSelect) {
-                            iModeSelect.updateTab(rvModeAdapter.getItem(position).code);
+                            iModeSelect.updateTab( rvModeAdapter.getItem(position).code);
                         }
                     }
                 })
                 .build();
-        rvSelect2.setLayoutManager(pickerLayoutManager);
+        rvSelect.setLayoutManager(pickerLayoutManager);
     }
-
 
 }

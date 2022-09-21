@@ -70,7 +70,6 @@ public class DynamicLineChartManager {
         lineChart.setDragDecelerationEnabled(true);//拖拽滚动时，手放开是否会持续滚动，默认是true（false是拖到哪是哪，true拖拽之后还会有缓冲）
         lineChart.setDragDecelerationFrictionCoef(0.99f);//与上面那个属性配合，持续滚动时的速度快慢，[0,1) 0代表立即停止。
         lineChart.setScaleEnabled(false);
-        lineChart.setNoDataText("没有曲线数据"); //没有数据时显示的文字
         lineChart.setHighlightPerTapEnabled(false); //禁止点击
         lineChart.setHighlightPerDragEnabled(false); //禁止拖动
 //        lineDataSet.setHighlightEnabled(false);

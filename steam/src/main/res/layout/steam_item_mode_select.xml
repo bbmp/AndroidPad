@@ -6,10 +6,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <TextView
         android:id="@+id/tv_select"
-        android:layout_width="@dimen/dp_300"
+        android:layout_width="@dimen/dp_250"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textSize="@dimen/sp_100"
+        android:textSize="@dimen/sp_80"
         android:textColor="@color/steam_white"
         tools:text="蒸烤炸煎"
         app:layout_constraintLeft_toLeftOf="parent"

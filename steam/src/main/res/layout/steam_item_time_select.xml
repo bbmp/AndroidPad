@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/sp_100"
         android:textColor="@color/steam_white"
-        tools:text="蒸烤炸煎"
+        tools:text="蒸"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/tv_min"
         app:layout_constraintTop_toTopOf="parent"

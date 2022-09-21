@@ -28,7 +28,16 @@ public class BlueToothManager {
 
     //开始扫描
     public static void startScan(BleScanCallback callback) {
-        BleManager.getInstance().scan(callback);
+        try {
+            if (BleManager.getInstance().getScanSate() == BleScanState.STATE_SCANNING) { //扫描中
+                if (null != callback)
+                    callback.onScanFinished(null);
+                return;
+            }
+            BleManager.getInstance().scan(callback);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //取消扫描
@@ -43,36 +52,56 @@ public class BlueToothManager {
 
     //连接设备
     public static void connect(final BleDevice bleDevice, BleGattCallback callback) {
-        BleManager.getInstance().connect(bleDevice, callback);
+        try {
+            BleManager.getInstance().connect(bleDevice, callback);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //订阅通知
     public static void notify(BleDevice bleDevice, BluetoothGattCharacteristic characteristic, BleNotifyCallback callback) {
-        BleManager.getInstance().notify(
-                bleDevice,
-                characteristic.getService().getUuid().toString(),
-                characteristic.getUuid().toString(), callback);
+        try {
+            BleManager.getInstance().notify(
+                    bleDevice,
+                    characteristic.getService().getUuid().toString(),
+                    characteristic.getUuid().toString(), callback);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     //取消通知
     public static void stopNotify(BleDevice bleDevice, BluetoothGattCharacteristic characteristic) {
-        BleManager.getInstance().stopNotify(
-                bleDevice,
-                characteristic.getService().getUuid().toString(),
-                characteristic.getUuid().toString());
+        try {
+            BleManager.getInstance().stopNotify(
+                    bleDevice,
+                    characteristic.getService().getUuid().toString(),
+                    characteristic.getUuid().toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //订阅可靠通知
     public static void indicate(BleDevice bleDevice, BluetoothGattCharacteristic characteristic, BleIndicateCallback callback) {
-        BleManager.getInstance().indicate(
-                bleDevice,
-                characteristic.getService().getUuid().toString(),
-                characteristic.getUuid().toString(), callback);
+        try {
+            BleManager.getInstance().indicate(
+                    bleDevice,
+                    characteristic.getService().getUuid().toString(),
+                    characteristic.getUuid().toString(), callback);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     //取消订阅
     public static void stopIndicate(BleDevice bleDevice, BluetoothGattCharacteristic characteristic) {
-        BleManager.getInstance().stopIndicate(
-                bleDevice,
-                characteristic.getService().getUuid().toString(),
-                characteristic.getUuid().toString());
+        try {
+            BleManager.getInstance().stopIndicate(
+                    bleDevice,
+                    characteristic.getService().getUuid().toString(),
+                    characteristic.getUuid().toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

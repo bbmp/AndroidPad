@@ -1,11 +1,6 @@
 package com.robam.stove.ui.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Intent;
-import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -19,24 +14,21 @@ import com.robam.common.utils.DateUtil;
 import com.robam.common.utils.LogUtils;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBaseActivity;
-import com.robam.stove.bean.RecipeStep;
 import com.robam.stove.bean.StoveCurveDetail;
 import com.robam.stove.constant.DialogConstant;
 import com.robam.stove.constant.StoveConstant;
 import com.robam.stove.factory.StoveDialogFactory;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class CurveRestoreActivity extends StoveBaseActivity {
     //曲线详情
     private StoveCurveDetail stoveCurveDetail;
     //
-    private IDialog closeCookDialog;
+    private IDialog stopDialog, completeDialog;
     private Handler mHandler = new Handler();
     private Runnable runnable;
     //从0开始
@@ -64,6 +56,7 @@ public class CurveRestoreActivity extends StoveBaseActivity {
         tvTemp = findViewById(R.id.tv_temp);
         tvTime = findViewById(R.id.tv_time);
         cookChart = findViewById(R.id.cook_chart);
+        cookChart.setNoDataText(getResources().getString(R.string.stove_no_curve_data)); //没有数据时显示的文字
         setOnClickListener(R.id.ll_left);
     }
 
@@ -147,16 +140,18 @@ public class CurveRestoreActivity extends StoveBaseActivity {
     }
     //还原结束提示
     private void workComplete() {
-        IDialog iDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_COMPLETE);
-        iDialog.setCancelable(false);
-        iDialog.setListeners(new IDialog.DialogOnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //回首页
-                startActivity(MainActivity.class);
-            }
-        }, R.id.tv_ok);
-        iDialog.show();
+        if (null == completeDialog) {
+            completeDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_COMPLETE);
+            completeDialog.setCancelable(false);
+            completeDialog.setListeners(new IDialog.DialogOnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //回首页
+                    startActivity(MainActivity.class);
+                }
+            }, R.id.tv_ok);
+        }
+        completeDialog.show();
     }
 
     @Override
@@ -169,10 +164,10 @@ public class CurveRestoreActivity extends StoveBaseActivity {
     }
     //结束烹饪提示
     private void stopCook() {
-        if (null == closeCookDialog) {
-            closeCookDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_STOVE_COMMON);
-            closeCookDialog.setCancelable(false);
-            closeCookDialog.setListeners(new IDialog.DialogOnClickListener() {
+        if (null == stopDialog) {
+            stopDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_STOVE_COMMON);
+            stopDialog.setCancelable(false);
+            stopDialog.setListeners(new IDialog.DialogOnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (v.getId() == R.id.tv_ok)
@@ -180,7 +175,7 @@ public class CurveRestoreActivity extends StoveBaseActivity {
                 }
             }, R.id.tv_cancel, R.id.tv_ok);
         }
-        closeCookDialog.show();
+        stopDialog.show();
     }
 
     @Override
@@ -190,5 +185,10 @@ public class CurveRestoreActivity extends StoveBaseActivity {
         mHandler.removeCallbacks(runnable);
 
         mHandler.removeCallbacksAndMessages(null);
+
+        if (null != stopDialog && stopDialog.isShow())
+            stopDialog.dismiss();
+        if (null != completeDialog && completeDialog.isShow())
+            completeDialog.dismiss();
     }
 }
