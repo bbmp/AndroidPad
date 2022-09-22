@@ -8,4 +8,5 @@
     <color name="cabinet_mode70">#B3f6f6f6</color>
     <color name="cabinet_mode">#fff6f6f6</color>
     <color name="cabinet_lock">#ff72afff</color>
+    <color name="cabinet_white80">#CCffffff</color>
 </resources>

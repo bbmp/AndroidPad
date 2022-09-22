@@ -201,7 +201,7 @@ public class CurveActivity extends StoveBaseActivity {
                 rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_ALL);
             } else if (rvCurveAdapter.getStatus() == RvCurveAdapter.STATUS_ALL){
                 //全选-》取消全选
-                allUnelect();
+                allUnselect();
                 ivRight.setImageResource(R.drawable.stove_unselected);
                 rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_DELETE);
 
@@ -221,7 +221,7 @@ public class CurveActivity extends StoveBaseActivity {
                 ivRight.setImageResource(R.drawable.stove_delete);
                 stoveCurveDetails.add(0, new StoveCurveDetail("创作烹饪曲线"));
                 rvCurveAdapter.setList(stoveCurveDetails);
-                allUnelect();
+                allUnselect();
                 rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_BACK);
                 tvDelete.setVisibility(View.INVISIBLE);
             } else
@@ -236,7 +236,7 @@ public class CurveActivity extends StoveBaseActivity {
             ivRight.setImageResource(R.drawable.stove_delete);
             stoveCurveDetails.add(0, new StoveCurveDetail("创作烹饪曲线"));
             rvCurveAdapter.setList(stoveCurveDetails);
-            allUnelect();
+            allUnselect();
             rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_BACK);
             tvDelete.setVisibility(View.INVISIBLE);
         }
@@ -249,7 +249,7 @@ public class CurveActivity extends StoveBaseActivity {
         }
     }
     //取消全选
-    private void allUnelect() {
+    private void allUnselect() {
         for (int i = 0; i< stoveCurveDetails.size(); i++) {
             stoveCurveDetails.get(i).setSelected(false);
         }

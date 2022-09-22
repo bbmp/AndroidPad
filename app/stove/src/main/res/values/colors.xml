@@ -14,4 +14,5 @@
     <color name="stove_step">#ff72afff</color>
     <color name="stove_chart">#FF3D00</color>
     <color name="stove_white_40">#66ffffff</color>
+    <color name="stove_white_80">#CCffffff</color>
 </resources>

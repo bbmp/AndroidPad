@@ -283,6 +283,9 @@
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_shape_bg_order.xml" value="0.2" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_shape_bg_setting.xml" value="0.2" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_shape_button_bg_cancel.xml" value="0.1775" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_shape_button_bg_ok.xml" value="0.189" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_shape_button_selected.xml" value="0.189" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_shape_delete_selector.xml" value="0.189" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_share_link_ic.xml" value="0.2" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_share_moment_ic.xml" value="0.2" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_share_qq_ic.xml" value="0.2" />
@@ -293,6 +296,7 @@
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_status_nerwork_ic.xml" value="0.2" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_status_order_ic.xml" value="0.2" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_tab_text_color_selector.xml" value="0.1775" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_text_color_selector.xml" value="0.189" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_transparent_selector.xml" value="0.2" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_video_brightness_high_ic.xml" value="0.2" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_video_lock_close_ic.xml" value="0.2" />
@@ -304,10 +308,13 @@
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_video_volume_medium_ic.xml" value="0.2" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_white_selector.xml" value="0.2" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_activity_layout_ble.xml" value="0.16246259085079093" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_activity_layout_curve.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_activity_layout_main.xml" value="0.16246259085079093" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_activity_layout_mode_select.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_activity_layout_recipe.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_activity_mode_select.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_base_title.xml" value="0.15" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_item_curve_recipe.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_item_dot.xml" value="0.17" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_item_main_function.xml" value="0.12" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_item_mode_foot.xml" value="0.1" />
@@ -322,6 +329,7 @@
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_page_layout_take_photo.xml" value="0.16246259085079093" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_recipe_item.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_view_layout_tab.xml" value="0.11788194444444444" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_view_layout_tab_classify.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_view_layout_tab_mode.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_view_layout_tab_steam.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_view_layout_tab_temp.xml" value="0.1" />

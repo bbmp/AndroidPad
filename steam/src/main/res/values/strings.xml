@@ -595,7 +595,7 @@
     <string name="steam_minute">分钟</string>
     <string name="steam_isMakingAnAppointment">预约中</string>
     <string name="steam_disinfection">计时完成后消毒 </string>
-    <string name="steam_makeAnAppointment">预 约</string>
+    <string name="steam_makeAnAppointment">预约</string>
     <string name="steam_feelSterilize">感应\n杀菌</string>
     <string name="steam_quickSterilize">快洁</string>
     <string name="steam_disinfect">消毒</string>
@@ -1150,4 +1150,6 @@
 	}
 ]</string>
     <string name="steam_back">返回</string>
+    <string name="steam_delete_ok">确认删除</string>
+    <string name="steam_select_all">全选</string>
 </resources>

@@ -53,4 +53,6 @@
     <color name="steam_white25">#40FFFFFF</color>
     <color name="steam_white_50">#80ffffff</color>
     <color name="steam_color_foot">#881E2229</color>
+    <color name="steam_white_80">#CCffffff</color>
+    <color name="steam_white_40">#66ffffff</color>
 </resources>

@@ -38,7 +38,7 @@
         android:layout_width="@dimen/dp_170"
         android:layout_height="wrap_content"
         android:textSize="@dimen/sp_48"
-        android:textColor="@color/cabinet_white70"
+        android:textColor="@color/cabinet_white80"
         android:layout_marginLeft="@dimen/dp_120"
         android:text="mode"
         app:layout_constraintTop_toTopOf="@id/ll_foot"

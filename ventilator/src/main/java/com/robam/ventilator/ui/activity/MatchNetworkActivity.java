@@ -38,6 +38,7 @@ import com.robam.ventilator.constant.VentilatorConstant;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class MatchNetworkActivity extends VentilatorBaseActivity {
     private TextView tvHint;
@@ -154,7 +155,7 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
 
     //已授权
     private void onPermissionGranted() {
-        String[] names = new String[] {"ROBAM"};
+        String[] names = new String[] {"ROKI"};
         BlueToothManager.setScanRule(names);
         startScan();
     }
@@ -215,7 +216,8 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
                 LogUtils.e("onScanFinished ");
                 if (!isDestroyed()) {  //界面销毁不连接
                     if (null != scanResultList && scanResultList.size() > 0) {
-                        connect(scanResultList.get(0));
+                        if (scanResultList.get(0).getName().contains("ROKI"))
+                            connect(scanResultList.get(0));
                     } else {
                         //未扫描到
                         tvNext.setText(R.string.ventilator_rematch);
@@ -236,14 +238,14 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
             @Override
             public void onConnectFail(BleDevice bleDevice, BleException exception) {
 
-                LogUtils.e("onConnectFail" + exception.getDescription());
+                LogUtils.e("onConnectFail " + exception.getDescription());
                 tvNext.setText(R.string.ventilator_rematch);
                 tvNext.setClickable(true);
             }
 
             @Override
             public void onConnectSuccess(BleDevice bleDevice, BluetoothGatt gatt, int status) {
-                LogUtils.e("onConnectSuccess" + bleDevice.getName());
+                LogUtils.e("onConnectSuccess " + bleDevice.getName());
                 getBuletoothGatt(bleDevice);
                 //跳设备首页
                 finish();
@@ -269,13 +271,21 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
         }
         //
         for (BluetoothGattService service: serviceList) {
-            for (BluetoothGattCharacteristic characteristic: service.getCharacteristics()) {
-                int charaProp = characteristic.getProperties();
-                LogUtils.e("charaProp " + charaProp);
-                if (charaProp == BluetoothGattCharacteristic.PROPERTY_INDICATE) {
-                    indicate(bleDevice, characteristic);
-                    return;
+            UUID uuid = service.getUuid();
+            if (uuid.toString().contains("fff0")) { //service uuid
+                for (BluetoothGattCharacteristic characteristic : service.getCharacteristics()) {
+                    uuid = characteristic.getUuid();
+                    if (uuid.toString().contains("fff1")) {   //读写
+                        LogUtils.e("uuid " + uuid);
+                    } else if (uuid.toString().contains("fff4")) {  //notify
+                        int charaProp = characteristic.getProperties();
+                        LogUtils.e("uuid " + uuid);
+                        if (charaProp == BluetoothGattCharacteristic.PROPERTY_NOTIFY) {
+                            notify(bleDevice, characteristic);
+                        }
+                    }
                 }
+                break;
             }
         }
     }
@@ -291,17 +301,19 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
                     public void onNotifySuccess() {
 
                         // 打开通知操作成功（UI线程）
-
+                        LogUtils.e("onNotifySuccess");
                     }
 
                     @Override
                     public void onNotifyFailure(final BleException exception) {
                         // 打开通知操作失败（UI线程）
+                        LogUtils.e("onNotifyFailure " + exception.toString());
                     }
 
                     @Override
                     public void onCharacteristicChanged(byte[] data) {
                         // 打开通知后，设备发过来的数据将在这里出现（UI线程）
+                        LogUtils.e("onCharacteristicChanged " + HexUtil.formatHexString(characteristic.getValue(), true));
                     }
                 });
     }

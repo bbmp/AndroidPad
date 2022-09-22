@@ -4,6 +4,15 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <!--    占位用-->
+    <View
+        android:id="@+id/view"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_43"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/iv_recipe"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"/>
     <com.robam.common.ui.view.RoundImageView
         android:id="@+id/iv_recipe"
         android:layout_width="@dimen/dp_286"
@@ -12,18 +21,18 @@
         android:src="@drawable/steam_recipe_img_bg"
         app:common_riv_corner_radius="@dimen/dp_10"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <ImageView
+    <com.robam.common.ui.view.CircleImageView
         android:id="@+id/iv_recipe_img"
         android:layout_width="@dimen/dp_182"
         android:layout_height="@dimen/dp_182"
-        android:layout_marginBottom="@dimen/dp_87"
-        android:src="@drawable/steam_main_item_bg"
+        android:scaleType="centerCrop"
         app:layout_constraintLeft_toLeftOf="@id/iv_recipe"
         app:layout_constraintRight_toRightOf="@id/iv_recipe"
-        app:layout_constraintBottom_toBottomOf="@id/iv_recipe"/>
+        app:layout_constraintTop_toTopOf="@id/view"
+        />
 
     <TextView
         android:id="@+id/tv_recipe"

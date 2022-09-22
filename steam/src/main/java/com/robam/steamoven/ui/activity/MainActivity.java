@@ -7,13 +7,14 @@ import com.robam.common.constant.ComnConstant;
 import com.robam.common.ui.activity.BaseActivity;
 import com.robam.common.utils.LogUtils;
 import com.robam.steamoven.R;
+import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.device.SteamAbstractControl;
 import com.robam.steamoven.device.SteamFactory;
 import com.robam.steamoven.device.SteamMqttControl;
 
 //非主入口调用入口
-public class MainActivity extends BaseActivity {
+public class MainActivity extends SteamBaseActivity {
 
     @Override
     protected int getLayoutId() {

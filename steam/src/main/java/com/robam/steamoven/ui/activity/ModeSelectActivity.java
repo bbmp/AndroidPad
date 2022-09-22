@@ -17,9 +17,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.robam.common.ui.IModeSelect;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
-import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.bean.ModeBean;
-import com.robam.steamoven.constant.ModeConstant;
 import com.robam.steamoven.constant.SteamConstant;
 import com.robam.steamoven.constant.SteamOvenSteamEnum;
 import com.robam.steamoven.device.HomeSteamOven;
@@ -36,7 +34,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
     private TabLayout tabLayout;
     private ViewPager noScrollViewPager;
     //弱引用，防止内存泄漏
-    private List<WeakReference<Fragment>> fragments = new ArrayList<>();
+    List<WeakReference<Fragment>> fragments = new ArrayList<>();
 
     //模式选择， 温度和时间
     private TabLayout.Tab modeTab, timeTab;
@@ -46,6 +44,8 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
     private TabLayout.Tab steamTab;
 
     private List<ModeBean> modes;
+
+    private ModeSelectPage modeSelectPage;
 
     private TimeSelectPage timeSelectPage;
 
@@ -58,14 +58,14 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
 
     @Override
     protected int getLayoutId() {
-        return R.layout.steam_activity_mode_select;
+        return R.layout.steam_activity_layout_mode_select;
     }
 
     @Override
     protected void initView() {
         showLeft();
         showCenter();
-        showRight();
+        setRight(R.string.steam_makeAnAppointment);
 
         tabLayout = findViewById(R.id.tabLayout);
         noScrollViewPager = findViewById(R.id.pager);
@@ -121,8 +121,8 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             tvMode.setText(defaultBean.name);
             modeTab.setCustomView(modeView);
             tabLayout.addTab(modeTab);
-            Fragment modeFragment = new ModeSelectPage(modeTab, modes, this);
-            fragments.add(new WeakReference<>(modeFragment));
+            modeSelectPage = new ModeSelectPage(modeTab, modes, this);
+            fragments.add(new WeakReference<>(modeSelectPage));
 
 
             //蒸汽
@@ -189,10 +189,6 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
     public void onClick(View view) {
         if (R.id.ll_left == view.getId()) {
             finish();
-        } else if (R.id.ll_title_item5 == view.getId()) {
-
-        } else if (R.id.btn_start == view.getId()) {
-
         }
     }
 
@@ -235,6 +231,28 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
                         ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(3).setVisibility(View.GONE); //下温度
                         ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.VISIBLE); //上温度
                         ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(1).setVisibility(View.GONE); //蒸汽
+                    } else if (mode == SteamConstant.FAJIAO || mode == SteamConstant.GANZAO
+                            || mode == SteamConstant.BAOWEN || mode == SteamConstant.JIEDONG || mode == SteamConstant.QINGJIE) {
+                        timeSelectPage.updateTimeTab(modeBean);
+                        upTempSelectPage.updateTempTab(modeBean);
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(4).setVisibility(View.VISIBLE); //时间
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(3).setVisibility(View.GONE); //下温度
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.VISIBLE); //上温度
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(1).setVisibility(View.GONE); //蒸汽
+                    } else if (mode == SteamConstant.CHUGOU ) {
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(4).setVisibility(View.INVISIBLE); //时间
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(3).setVisibility(View.GONE); //下温度
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.INVISIBLE); //上温度
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(1).setVisibility(View.GONE); //蒸汽
+                    } else if (mode == SteamConstant.SHAJUN) { //杀菌模式不能调节
+                        timeSelectPage.updateTimeTab(modeBean);
+                        upTempSelectPage.updateTempTab(modeBean);
+//                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(4).setEnabled(false);
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(4).setVisibility(View.VISIBLE); //时间
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(3).setVisibility(View.GONE); //下温度
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.VISIBLE); //上温度
+//                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setEnabled(false);
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(1).setVisibility(View.GONE); //蒸汽
                     }
 
                     break;
@@ -262,7 +280,8 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
         @NonNull
         @Override
         public Fragment getItem(int position) {
-            return fragments.get(position).get();
+            Fragment fragment = fragments.get(position).get();
+            return fragment;
         }
 
         @Override

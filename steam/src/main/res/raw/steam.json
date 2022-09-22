@@ -269,7 +269,7 @@
     "backgroundImg": "steam_ic_bg_aux",
     "funtionCode": 7,
     "funtionName": "辅助",
-    "into": "steamoven.modeselect",
+    "into": "com.robam.steamoven.ui.activity.ModeSelectActivity",
     "mode": [
       {
         "funCode": 7,
@@ -368,7 +368,7 @@
     "backgroundImg": "steam_ic_bg_carve",
     "funtionCode": 8,
     "funtionName": "烹饪\n曲线",
-    "into": "steamoven.carve",
+    "into": "com.robam.steamoven.ui.activity.CurveActivity",
     "mode": []
   }
 ]

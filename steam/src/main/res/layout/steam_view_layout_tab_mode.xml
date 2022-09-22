@@ -8,7 +8,6 @@
         android:id="@+id/tv_mode"
         android:layout_width="@dimen/dp_170"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_55"
         android:ellipsize="end"
         android:text="mode"
         android:gravity="center"

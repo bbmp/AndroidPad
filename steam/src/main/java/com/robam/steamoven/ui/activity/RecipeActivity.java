@@ -77,7 +77,7 @@ public class RecipeActivity extends SteamBaseActivity {
         for (int i = 0; i< classifyList.size(); i++) {
             TabLayout.Tab tab = tabLayout.newTab();
             tab.setId(i);
-            View view = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab, null);
+            View view = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab_classify, null);
             TextView classify = view.findViewById(R.id.tv_classify);
             classify.setText(classifyList.get(i));
             tab.setCustomView(view);
@@ -94,6 +94,16 @@ public class RecipeActivity extends SteamBaseActivity {
 
         noScrollViewPager.setOffscreenPageLimit(classifyList.size());
     }
+
+    @Override
+    public void onClick(View view) {
+        super.onClick(view);
+        int id = view.getId();
+        if (id == R.id.ll_left) {
+            finish();
+        }
+    }
+
     class RecipeClassifyPagerAdapter extends FragmentStatePagerAdapter {
 
 

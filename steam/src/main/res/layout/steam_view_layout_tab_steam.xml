@@ -9,7 +9,6 @@
         android:id="@+id/view"
         android:layout_width="@dimen/dp_170"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/dp_55"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
     <TextView
@@ -30,6 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_7"
+        android:layout_marginLeft="@dimen/dp_2"
         android:ellipsize="end"
         android:text="蒸汽"
         android:gravity="center"
