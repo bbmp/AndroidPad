@@ -5,6 +5,9 @@
 
     <application>
         <activity
+            android:name=".ui.activity.RecipeDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activity.CurveSelectedActivity"
             android:exported="false" />
         <activity

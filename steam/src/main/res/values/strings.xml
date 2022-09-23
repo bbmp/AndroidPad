@@ -1152,4 +1152,6 @@
     <string name="steam_back">返回</string>
     <string name="steam_delete_ok">确认删除</string>
     <string name="steam_select_all">全选</string>
+    <string name="steam_qrcode">二维码</string>
+    <string name="steam_material">食材</string>
 </resources>

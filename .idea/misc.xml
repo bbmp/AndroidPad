@@ -67,6 +67,7 @@
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/stove_shape_button_bg_ok.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/stove_shape_button_selected.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/stove_shape_button_selector.xml" value="0.1695" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/stove_shape_button_unselected.xml" value="0.189" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/stove_shape_delete_selector.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/stove_shape_progress_bg.xml" value="0.176" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/drawable/stove_shape_scrollbar_bg.xml" value="0.1775" />
@@ -282,9 +283,12 @@
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_shape_bg_main.xml" value="0.2" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_shape_bg_order.xml" value="0.2" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_shape_bg_setting.xml" value="0.2" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_shape_border_bg.xml" value="0.189" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_shape_button_bg_cancel.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_shape_button_bg_ok.xml" value="0.189" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_shape_button_selected.xml" value="0.189" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_shape_button_selector.xml" value="0.189" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_shape_button_unselected.xml" value="0.189" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_shape_delete_selector.xml" value="0.189" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_share_link_ic.xml" value="0.2" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/drawable/steam_share_moment_ic.xml" value="0.2" />
@@ -312,13 +316,17 @@
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_activity_layout_main.xml" value="0.16246259085079093" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_activity_layout_mode_select.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_activity_layout_recipe.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_activity_layout_recipe_detail.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_activity_mode_select.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_base_title.xml" value="0.15" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_dialog_layout_common.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_item_curve_recipe.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_item_dot.xml" value="0.17" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_item_main_function.xml" value="0.12" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_item_material.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_item_mode_foot.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_item_mode_select.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_item_recipe_step.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_item_steam.xml" value="0.10755208333333334" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_item_temp_time_select.xml" value="0.21" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_item_time_select.xml" value="0.1" />

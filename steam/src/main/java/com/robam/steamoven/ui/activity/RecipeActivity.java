@@ -13,8 +13,15 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.robam.common.IDeviceType;
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.UserInfo;
+import com.robam.common.http.RetrofitCallback;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
+import com.robam.steamoven.device.HomeSteamOven;
+import com.robam.steamoven.http.CloudHelper;
+import com.robam.steamoven.response.GetDeviceParamsRes;
 import com.robam.steamoven.ui.pages.RecipeClassifyPage;
 
 import java.lang.ref.WeakReference;
@@ -93,6 +100,8 @@ public class RecipeActivity extends SteamBaseActivity {
         noScrollViewPager.setAdapter(new RecipeClassifyPagerAdapter(getSupportFragmentManager()));
 
         noScrollViewPager.setOffscreenPageLimit(classifyList.size());
+
+        getLocalRecipe();
     }
 
     @Override
@@ -102,6 +111,24 @@ public class RecipeActivity extends SteamBaseActivity {
         if (id == R.id.ll_left) {
             finish();
         }
+    }
+    //本地菜谱
+    private void getLocalRecipe() {
+        UserInfo info = AccountInfo.getInstance().getUser().getValue();
+        CloudHelper.getDeviceParams(this, (info != null) ? info.id:0, "CQ926", IDeviceType.RZKY, GetDeviceParamsRes.class,
+                new RetrofitCallback<GetDeviceParamsRes>() {
+                    @Override
+                    public void onSuccess(GetDeviceParamsRes getDeviceParamsRes) {
+                        if (null != getDeviceParamsRes)
+                            ;
+                    }
+
+                    @Override
+                    public void onFaild(String err) {
+
+                    }
+                });
+
     }
 
     class RecipeClassifyPagerAdapter extends FragmentStatePagerAdapter {

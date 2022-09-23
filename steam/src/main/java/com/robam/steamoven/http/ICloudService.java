@@ -23,4 +23,8 @@ public interface ICloudService {
 
     @GET(delCurveUrl)
     Call<ResponseBody> delCurve(@Query("userId") long userId, @Query("curveCookbookId") long curveid);
+
+    @POST(getDeviceByParams)
+    @Headers("Content-Type: application/json")
+    Call<ResponseBody> getDeviceParams(@Body RequestBody body);
 }

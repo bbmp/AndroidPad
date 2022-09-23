@@ -18,4 +18,10 @@ public class HomeSteamOven {
      * 工作模式
      */
     public short workMode;
+
+    //设备类型
+    public String dt;
+
+    //设备分类
+    public String dc;
 }

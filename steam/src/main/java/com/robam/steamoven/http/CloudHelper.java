@@ -7,6 +7,7 @@ import com.robam.common.http.RetrofitCallback;
 import com.robam.common.http.RetrofitClient;
 import com.robam.common.utils.LogUtils;
 import com.robam.steamoven.constant.HostServer;
+import com.robam.steamoven.request.GetDeviceParamsReq;
 import com.robam.steamoven.request.GetUserReq;
 
 import okhttp3.MediaType;
@@ -30,6 +31,15 @@ public class CloudHelper {
     //删除曲线
     public static <T extends BaseResponse> void delCurve(ILife iLife, long userid, long curveid, Class<T> entity, final RetrofitCallback<T> callback) {
         Call<ResponseBody> call = svr.delCurve(userid, curveid);
+        enqueue(iLife, entity, call, callback);
+    }
+    //获取设备参数
+    public static <T extends BaseResponse> void getDeviceParams(ILife iLife, long userid, String deviceType, String category,
+                                                                Class<T> entity, final RetrofitCallback<T> callback) {
+        String json = new GetDeviceParamsReq(userid, deviceType, category).toString();
+        RequestBody requestBody =
+                RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
+        Call<ResponseBody> call = svr.getDeviceParams(requestBody);
         enqueue(iLife, entity, call, callback);
     }
 
