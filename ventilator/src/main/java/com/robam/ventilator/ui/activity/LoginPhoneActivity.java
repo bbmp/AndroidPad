@@ -6,6 +6,7 @@ import android.widget.EditText;
 
 import com.google.gson.Gson;
 import com.robam.common.bean.BaseResponse;
+import com.robam.common.device.Plat;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.MCountdownView;
@@ -189,8 +190,8 @@ public class LoginPhoneActivity extends VentilatorBaseActivity {
      * @param userId
      */
     private void bindDevice(long userId){
-        CloudHelper.bindDevice(this, userId, VentilatorFactory.getPlatform().getDeviceOnlySign(),
-                VentilatorFactory.getPlatform().getDt(), true, BaseResponse.class, new RetrofitCallback<BaseResponse>() {
+        CloudHelper.bindDevice(this, userId, Plat.getPlatform().getDeviceOnlySign(),
+                Plat.getPlatform().getDt(), true, BaseResponse.class, new RetrofitCallback<BaseResponse>() {
                     @Override
                     public void onSuccess(BaseResponse baseResponse) {
                         if (null != baseResponse) {

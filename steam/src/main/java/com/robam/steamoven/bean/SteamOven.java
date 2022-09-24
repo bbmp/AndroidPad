@@ -455,7 +455,8 @@ public class SteamOven extends Device {
         if (null != msg && null != msg.opt(SteamConstant.SteameOvenStatus)) {
             queryNum = 0; //查询超过一次无响应离线
             status = Device.ONLINE;
-            workMode = (short) msg.opt(SteamConstant.SteameOvenMode);
+            workStatus = (int) msg.opt(SteamConstant.SteameOvenStatus);
+            totalRemainSeconds = (int) msg.opt(SteamConstant.SteameOvenLeftTime);
             return true;
         }
         return super.onMsgReceived(msg);

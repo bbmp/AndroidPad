@@ -49,6 +49,10 @@ public class SteamConstant {
      * 一体机状态
      */
     public final static String SteameOvenStatus = "SteameOvenStatus";
+    /**
+    *   故障码
+     */
+    public final static String SteamFaultCode = "SteamFaultCode";
 
     /**
      * 一体机工作状态

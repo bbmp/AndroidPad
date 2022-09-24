@@ -23,11 +23,13 @@ import com.robam.cabinet.bean.Cabinet;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.BaseResponse;
 import com.robam.common.constant.ComnConstant;
+import com.robam.common.device.Plat;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.pan.bean.Pan;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.common.module.IPublicSteamApi;
+import com.robam.steamoven.device.SteamAbstractControl;
 import com.robam.stove.bean.Stove;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.module.IPublicCabinetApi;
@@ -309,11 +311,21 @@ public class HomePage extends VentilatorBasePage {
                     intent.putExtra(VentilatorConstant.EXTRA_MODEL, device.dc);
                     intent.setClass(getContext(), MatchNetworkActivity.class);
                     startActivity(intent);
+                } else if (view.getId() == R.id.btn_work) {
+                    //工作控制
+                    Device device = (Device) adapter.getItem(position);
+                    if (device instanceof SteamOven) {
+                        SteamOven steamOven = (SteamOven) device;
+                        if (steamOven.workStatus == 4 || steamOven.workStatus == 2)   //工作中和预热中
+                            SteamAbstractControl.getInstance().pauseWork(device.guid);
+                        else if (steamOven.workStatus == 5 || steamOven.workStatus == 3)  //暂停中
+                            SteamAbstractControl.getInstance().continueWork(device.guid);
+                    }
                 }
                 //close products menu
-                if (drawerLayout.isDrawerOpen(Gravity.RIGHT)) {
-                    drawerLayout.closeDrawer(Gravity.RIGHT);
-                }
+//                if (drawerLayout.isDrawerOpen(Gravity.RIGHT)) {
+//                    drawerLayout.closeDrawer(Gravity.RIGHT);
+//                }
             }
         });
         //监听用户登录状态
@@ -346,9 +358,11 @@ public class HomePage extends VentilatorBasePage {
             CloudHelper.getDevices(this, userInfo.id, GetDeviceRes.class, new RetrofitCallback<GetDeviceRes>() {
                 @Override
                 public void onSuccess(GetDeviceRes getDeviceRes) {
+
+                    AccountInfo.getInstance().deviceList.clear();
+
                     if (null != getDeviceRes && null != getDeviceRes.devices) {
                         List<Device> deviceList = getDeviceRes.devices;
-                        AccountInfo.getInstance().deviceList.clear();
                         for (Device device: deviceList) {
                             if (IDeviceType.RZKY.equals(device.dc)) //一体机
                                 AccountInfo.getInstance().deviceList.add(new SteamOven(device));
@@ -356,7 +370,7 @@ public class HomePage extends VentilatorBasePage {
                                 AccountInfo.getInstance().deviceList.add(new DishWasher(device));
                             else if (IDeviceType.RXDG.equals(device.dc))  //消毒柜
                                 AccountInfo.getInstance().deviceList.add(new Cabinet(device));
-                            else if (IDeviceType.RYYJ.equals(device.dc) && device.guid.equals(VentilatorFactory.getPlatform().getDeviceOnlySign())) {
+                            else if (IDeviceType.RYYJ.equals(device.dc) && device.guid.equals(Plat.getPlatform().getDeviceOnlySign())) {
                                 //当前烟机子设备
                                 List<Device> subDevices = device.subDevices;
                                 if (null != subDevices) {
@@ -373,9 +387,10 @@ public class HomePage extends VentilatorBasePage {
                         bindDevice(deviceList);
                         //订阅设备主题
                         subscribeDevice();
-                        if (null != rvProductsAdapter)
-                            rvProductsAdapter.setList(AccountInfo.getInstance().deviceList);
                     }
+
+                    if (null != rvProductsAdapter)
+                        rvProductsAdapter.setList(AccountInfo.getInstance().deviceList);
                 }
 
                 @Override
@@ -394,16 +409,16 @@ public class HomePage extends VentilatorBasePage {
     //绑定设备 返回列表中无主设备
     private void bindDevice(List<Device> deviceList) {
         for (Device device: deviceList) {
-            if (device.guid.equals(VentilatorFactory.getPlatform().getDeviceOnlySign())) //已绑定
+            if (device.guid.equals(Plat.getPlatform().getDeviceOnlySign())) //已绑定
                 return;
         }
         //绑定主设备
         CloudHelper.bindDevice(this, AccountInfo.getInstance().getUser().getValue().id,
-                VentilatorFactory.getPlatform().getDeviceOnlySign(), IDeviceType.RYYJ_ZN, true, BaseResponse.class, new RetrofitCallback<BaseResponse>() {
+                Plat.getPlatform().getDeviceOnlySign(), IDeviceType.RYYJ_ZN, true, BaseResponse.class, new RetrofitCallback<BaseResponse>() {
                     @Override
                     public void onSuccess(BaseResponse baseResponse) {
                         if (null != baseResponse)
-                            LogUtils.e("绑定成功" + VentilatorFactory.getPlatform().getDeviceOnlySign());
+                            LogUtils.e("绑定成功" + Plat.getPlatform().getDeviceOnlySign());
                     }
 
                     @Override

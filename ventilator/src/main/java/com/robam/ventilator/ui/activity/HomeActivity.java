@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.UserInfo;
+import com.robam.common.device.Plat;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.ui.activity.BaseActivity;
@@ -155,7 +156,7 @@ public class HomeActivity extends BaseActivity {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean) {
-                    MqttManager.getInstance().start(HomeActivity.this, VentilatorFactory.getPlatform(), VentilatorFactory.getTransmitApi());
+                    MqttManager.getInstance().start(HomeActivity.this, Plat.getPlatform(), VentilatorFactory.getTransmitApi());
                     //未登录
                     if (null == AccountInfo.getInstance().getUser().getValue()) {
                         String json = MMKVUtils.getUser();

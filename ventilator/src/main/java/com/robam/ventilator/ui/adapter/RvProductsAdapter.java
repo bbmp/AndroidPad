@@ -13,7 +13,10 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.Device;
+import com.robam.common.utils.DateUtil;
 import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.TimeUtils;
+import com.robam.steamoven.bean.SteamOven;
 import com.robam.stove.device.HomeStove;
 import com.robam.common.utils.ImageUtils;
 import com.robam.ventilator.R;
@@ -28,7 +31,7 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
         super(R.layout.ventilator_item_layout_device);
         this.mOwner = owner;
         //左灶关火
-        addChildClickViewIds(R.id.btn_left_close, R.id.btn_detail);
+        addChildClickViewIds(R.id.btn_left_close, R.id.btn_detail, R.id.btn_work);
     }
     @Override
     protected void convert(@NonNull BaseViewHolder baseViewHolder, Device device) {
@@ -113,10 +116,20 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
                         baseViewHolder.setGone(R.id.btn_detail, true);
                         baseViewHolder.setText(R.id.tv_hint, "轻松烹饪\n智享厨房");
                     } else if (device.getWorkStatus() != 0) {
+                        SteamOven steamOven = (SteamOven) device;
                         baseViewHolder.setGone(R.id.layout_offline, true);
                         baseViewHolder.setVisible(R.id.layout_work, true);
                         baseViewHolder.setGone(R.id.ventilator_group7, true);
                         baseViewHolder.setVisible(R.id.ventilator_group6, true);
+                        baseViewHolder.setText(R.id.tv_mode, device.getWorkStatus() + "");
+                        baseViewHolder.setText(R.id.tv_time, DateUtil.secForMatTime3(steamOven.totalRemainSeconds) + "min");
+
+                        if (steamOven.getWorkStatus() == 2 || steamOven.getWorkStatus() == 4) //预热中和工作中
+                            baseViewHolder.setText(R.id.btn_work, R.string.ventilator_pause);
+                        else if (steamOven.getWorkStatus() == 3 || steamOven.getWorkStatus() == 5) //暂停中
+                            baseViewHolder.setText(R.id.btn_work, R.string.ventilator_continue);
+                        else
+                            baseViewHolder.setGone(R.id.btn_work, true);
                     } else {
                         //故障
                     }

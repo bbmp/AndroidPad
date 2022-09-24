@@ -85,4 +85,6 @@
     <string name="ventilator_left_stove">左灶</string>
     <string name="ventilator_close_fire">关火</string>
     <string name="ventilator_net_err">网络错误</string>
+    <string name="ventilator_pause">暂停</string>
+    <string name="ventilator_continue">继续</string>
 </resources>

@@ -1,9 +1,9 @@
 package com.robam.steamoven.device;
 
 public interface SteamFunction {
-    void shutDown(String... args);
+    void shutDown(String targetGuid);
 
-    void powerOn(String... args);
+    void powerOn(String targetGuid);
 
     void orderWork();
 
@@ -11,7 +11,10 @@ public interface SteamFunction {
 
     void startWork();
 
-    void pauseWork();
+    void pauseWork(String targetGuid);
 
-    void continueWork();
+    void continueWork(String targetGuid);
+
+    //查询一体机状态
+    void queryAttribute(String targetGuid);
 }

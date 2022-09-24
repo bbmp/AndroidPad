@@ -93,7 +93,8 @@ public class TransmitApi implements IProtocol {
             offset += GUID_SIZE;
 
             short msgId = ByteUtils.toShort(payload[offset++]);
-            LogUtils.e( "收到消息： " + "topic = " + topic + " ,msgId = " + msgId + " srcguid = " + srcGuid);
+            LogUtils.e("收到消息： " + "topic = " + topic + " ,msgId = " + msgId + " srcguid = " + srcGuid);
+            LogUtils.e("收到消息： " + StringUtils.bytes2Hex(payload));
             MqttMsg msg = null;
             //分发到各设备
             for (Device device: AccountInfo.getInstance().deviceList) {

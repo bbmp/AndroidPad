@@ -93,6 +93,7 @@
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_activity_layout_time_select.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_dialog_layout_common.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_dialog_layout_complete.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_dialog_layout_home_lock.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_dialog_layout_lock.xml" value="0.15" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_dialog_layout_open_fire.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_dialog_layout_select_stove.xml" value="0.25" />
@@ -320,6 +321,8 @@
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_activity_mode_select.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_base_title.xml" value="0.15" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_dialog_layout_common.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_dialog_layout_complete.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_dialog_layout_error.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_item_curve_recipe.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_item_dot.xml" value="0.17" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_item_main_function.xml" value="0.12" />

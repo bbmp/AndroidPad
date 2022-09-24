@@ -8,14 +8,16 @@ import java.nio.ByteOrder;
 public class MsgUtils {
     public final static ByteOrder BYTE_ORDER = MqttPublic.BYTE_ORDER;
 
-
+    public static int getByte(byte b) {
+        return ByteUtils.toInt(b);
+    }
 
     /**
      *  读取小端byte数组为short
      * @param bytes
      * @return
      */
-    public static short byteToShortLittle(byte[] bytes, int startIndex) {
+    public static short bytes2ShortLittle(byte[] bytes, int startIndex) {
         return (short) (((bytes[startIndex + 1] << 8) | bytes[startIndex] & 0xff));
     }
     /**
