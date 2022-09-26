@@ -20,7 +20,7 @@ public class AppVentilator {
 //        FoodMaterialHelper.init(this);
         //串口初始化
         SerialPortConfig serialPortConfig = new SerialPortConfig.Builder()
-                .setMaxSize(23)
+                .setMaxSize(32)
                 .setPath("/dev/ttyS3").build();
         SerialPortHelper.getInstance().init(serialPortConfig);
         //ble init

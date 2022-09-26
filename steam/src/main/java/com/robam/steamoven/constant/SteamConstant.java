@@ -65,4 +65,5 @@ public class SteamConstant {
     public final static String SteameOvenLeftTime = "SteameOvenLeftTime";
     public final static String EXTRA_CURVE_ID = "curve_id";
     public static final String EXTRA_RECIPE_ID = "recipe_id";
+    public static final String EXTRA_CURVE_DETAIL = "curve_detail";
 }

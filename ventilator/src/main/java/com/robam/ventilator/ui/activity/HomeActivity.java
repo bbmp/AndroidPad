@@ -99,46 +99,46 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void initData() {
         //打开串口
-//        SerialPortHelper.getInstance().openDevice(new SphResultCallback() {
-//            @Override
-//            public void onSendData(byte[] sendCom) {
-//
-//            }
-//
-//            @Override
-//            public void onReceiveData(byte[] data) {
-//                LogUtils.e(StringUtils.bytes2Hex(data));
-//                SerialVentilator.parseSerial(data);
-//            }
-//
-//            @Override
-//            public void onOpenSuccess() {
-//                //开机
-//                if (HomeVentilator.getInstance().startup == 0x00)
-//                    SerialPortHelper.getInstance().addCommands(SerialVentilator.powerOn());
-//                //循环查询
-////                new Thread() {
-////                    @Override
-////                    public void run() {
-////                        byte data[] = SerialVentilator.packQueryCmd();
-////                        while (true) {
-////                            SerialPortHelper.getInstance().addCommands(data);
-////                            try {
-////                                Thread.sleep(3000);
-////                            } catch (InterruptedException e) {
-////                                e.printStackTrace();
-////                            }
-////                        }
-////                    }
-////                }.start();
-//
-//            }
-//
-//            @Override
-//            public void onOpenFailed() {
-//                LogUtils.i("serial open failed" + Thread.currentThread().getName());
-//            }
-//        });
+        SerialPortHelper.getInstance().openDevice(new SphResultCallback() {
+            @Override
+            public void onSendData(byte[] sendCom) {
+
+            }
+
+            @Override
+            public void onReceiveData(byte[] data) {
+                LogUtils.e(StringUtils.bytes2Hex(data));
+                SerialVentilator.parseSerial(data);
+            }
+
+            @Override
+            public void onOpenSuccess() {
+                //开机
+                if (HomeVentilator.getInstance().startup == 0x00)
+                    SerialPortHelper.getInstance().addCommands(SerialVentilator.powerOn());
+                //循环查询
+                new Thread() {
+                    @Override
+                    public void run() {
+                        byte data[] = SerialVentilator.packQueryCmd();
+                        while (true) {
+                            SerialPortHelper.getInstance().addCommands(data);
+                            try {
+                                Thread.sleep(3000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }.start();
+
+            }
+
+            @Override
+            public void onOpenFailed() {
+                LogUtils.i("serial open failed" + Thread.currentThread().getName());
+            }
+        });
         //打开蓝牙
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (!bluetoothAdapter.isEnabled())

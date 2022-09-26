@@ -122,6 +122,7 @@ public class SerialVentilator {
         short crc = Crc16Utils.calcCrc16(result, 1, result.length - 3);
         result[result.length - 1] = (byte)(crc & 0xff);
         result[result.length - 2] = (byte)((crc >> 8) & 0xff);
+        LogUtils.e(StringUtils.bytes2Hex(result));
         return result;
     }
     //开机

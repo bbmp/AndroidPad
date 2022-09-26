@@ -7,6 +7,7 @@ import android.serialport.SerialPort;
 import android.util.Log;
 
 import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.StringUtils;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -107,17 +108,17 @@ public class SphThreads {
                 //正常指令
                 synchronized (semaphore) {
                     writeData();
-                }
-                //间隔100ms发送
-                try {
-                    semaphore.wait(100);
-                    if (mReceived) {
-                        LogUtils.e("received");
-                    } else {
-                        LogUtils.e("received time out");
+                    //间隔100ms发送
+                    try {
+                        semaphore.wait(100);
+                        if (mReceived) {
+                            LogUtils.e("received");
+                        } else {
+                            LogUtils.e("received time out");
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                } catch (Exception e) {
-
                 }
             }
         }
@@ -145,9 +146,8 @@ public class SphThreads {
         try {
             int size = 0;
             byte[] bytes = new byte[maxSize];
-            LogUtils.e("start read");
             size = serialPort.getInputStream().read(bytes);
-
+            LogUtils.e("readdata:" + StringUtils.bytes2Hex(bytes));
             if (size > 0) {
                 processingRecData(bytes, size);
             }
@@ -166,7 +166,6 @@ public class SphThreads {
 
             if (null != onResultCallback)
                 sendMessage(commands, SENDCMD_WHAT);
-            LogUtils.e("writeData");
             serialPort.getOutputStream().write(commands);
         } catch (Exception e) {
             e.printStackTrace();
