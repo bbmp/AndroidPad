@@ -282,10 +282,10 @@ public class SphDataProcess {
     private void receiveData(Message msg){
         switch (msg.what) {
             case SENDCMD_WHAT:
-                onResultCallback.onSendData((byte[]) msg.obj);
+                onResultCallback.onSendData((byte[]) msg.obj, msg.arg1);
                 break;
             case RECEIVECMD_WHAT:
-                onResultCallback.onReceiveData((byte[]) msg.obj);
+                onResultCallback.onReceiveData((byte[]) msg.obj, msg.arg1);
                 break;
             default:
                 break;

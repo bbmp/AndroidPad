@@ -19,6 +19,10 @@ public class RvMainFunctonAdapter extends BaseQuickAdapter<VenFunBean, BaseViewH
         notifyDataSetChanged();
     }
 
+    public int getPickPosition() {
+        return pickPosition;
+    }
+
     public RvMainFunctonAdapter() {
         super(R.layout.ventilator_item_layout_function);
     }

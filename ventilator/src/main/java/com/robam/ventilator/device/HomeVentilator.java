@@ -15,7 +15,6 @@ public class HomeVentilator {
      * byte6 开机/关机
      */
     public byte startup = 0x00 ;
-    public int startupIndex = 0 ;
 
     /**
      * byte7 开灯/关灯
@@ -25,7 +24,7 @@ public class HomeVentilator {
     /**
      * byte8 风机挡位
      */
-    public byte gears = (byte) 0xA0;
+    public byte gear = (byte) 0xA0;
     /**
      * byte9 蜂鸣器
      */

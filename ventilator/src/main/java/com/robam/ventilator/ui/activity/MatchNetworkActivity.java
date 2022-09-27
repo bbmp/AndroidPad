@@ -28,6 +28,7 @@ import com.clj.fastble.exception.BleException;
 import com.clj.fastble.scan.BleScanRuleConfig;
 import com.clj.fastble.utils.HexUtil;
 import com.robam.common.IDeviceType;
+import com.robam.common.ble.BleDeviceInfo;
 import com.robam.common.manager.BlueToothManager;
 import com.robam.common.ui.view.ExtImageSpan;
 import com.robam.common.utils.LogUtils;
@@ -246,6 +247,8 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
             @Override
             public void onConnectSuccess(BleDevice bleDevice, BluetoothGatt gatt, int status) {
                 LogUtils.e("onConnectSuccess " + bleDevice.getName());
+                //连接成功
+                BlueToothManager.addDeviceToMap(bleDevice);
                 getBuletoothGatt(bleDevice);
                 //跳设备首页
                 finish();
@@ -255,6 +258,7 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
             @Override
             public void onDisConnected(boolean isActiveDisConnected, BleDevice bleDevice, BluetoothGatt gatt, int status) {
                 LogUtils.e("onDisConnected");
+                //掉线
                 if (null != gatt)
                     gatt.close();
             }
@@ -314,6 +318,7 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
                     public void onCharacteristicChanged(byte[] data) {
                         // 打开通知后，设备发过来的数据将在这里出现（UI线程）
                         LogUtils.e("onCharacteristicChanged " + HexUtil.formatHexString(characteristic.getValue(), true));
+                        BlueToothManager.bleParser(bleDevice, characteristic.getValue());
                     }
                 });
     }

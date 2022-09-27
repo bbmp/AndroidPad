@@ -89,7 +89,7 @@ public class MqttVentilator extends MqttPublic {
                 buf.put(HomeVentilator.getInstance().status);//状态
                 buf.put((byte) QualityKeys.workCtrl);
                 buf.put((byte) 0x01);
-                buf.put(HomeVentilator.getInstance().gears); //挡位
+                buf.put(HomeVentilator.getInstance().gear); //挡位
                 buf.put((byte) QualityKeys.lightCtrl);
                 buf.put((byte) 0x01);
                 buf.put(HomeVentilator.getInstance().lightOn); //灯开关

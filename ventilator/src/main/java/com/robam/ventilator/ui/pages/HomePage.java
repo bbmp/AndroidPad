@@ -50,7 +50,9 @@ import com.robam.common.bean.UserInfo;
 import com.robam.ventilator.bean.VenFunBean;
 import com.robam.ventilator.constant.DialogConstant;
 import com.robam.ventilator.constant.VentilatorConstant;
+import com.robam.ventilator.device.VentilatorAbstractControl;
 import com.robam.ventilator.device.VentilatorFactory;
+import com.robam.ventilator.device.VentilatorLocalControl;
 import com.robam.ventilator.factory.VentilatorDialogFactory;
 import com.robam.ventilator.http.CloudHelper;
 import com.robam.ventilator.response.GetDeviceRes;
@@ -195,10 +197,19 @@ public class HomePage extends VentilatorBasePage {
         rvFunctionAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                if (position == 0)
+                if (position == 0) { //锁屏
                     screenLock();
-                else {
-                   //挡位
+                } else { //挡位选择
+                    if (position == rvFunctionAdapter.getPickPosition()) {//已经选中了
+                        position = -1;
+                        VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_CLOSE);
+                    } else if (position == 1) {
+                        VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_WEAK);
+                    } else if (position == 2) {
+                        VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_MID);
+                    } else if (position == 3) {
+                        VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_FRY);
+                    }
                 }
                 rvFunctionAdapter.setPickPosition(position);
             }
@@ -444,12 +455,14 @@ public class HomePage extends VentilatorBasePage {
                 tvPerformance.setSelected(true);
                 tvComfort.setSelected(false);
                 group.setVisibility(View.GONE);
+                VentilatorAbstractControl.getInstance().setSmart(VentilatorConstant.FAN_SMART_CLOSE); //智感恒吸关闭
             }
         } else if (id == R.id.tv_comfort) {
             if (!tvComfort.isSelected()) {
                 tvPerformance.setSelected(false);
                 tvComfort.setSelected(true);
                 group.setVisibility(View.VISIBLE);
+                VentilatorAbstractControl.getInstance().setSmart(VentilatorConstant.FAN_SMART_OPEN);  //打开智感恒吸
             }
         } else if (id == R.id.ll_drawer_left) {
             open(Gravity.LEFT);

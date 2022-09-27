@@ -147,7 +147,6 @@ public class SphThreads {
             int size = 0;
             byte[] bytes = new byte[maxSize];
             size = serialPort.getInputStream().read(bytes);
-            LogUtils.e("readdata:" + StringUtils.bytes2Hex(bytes));
             if (size > 0) {
                 processingRecData(bytes, size);
             }
@@ -165,7 +164,7 @@ public class SphThreads {
             byte[] commands = (byte[]) blockingQueue.take();
 
             if (null != onResultCallback)
-                sendMessage(commands, SENDCMD_WHAT);
+                sendMessage(commands, commands.length, SENDCMD_WHAT);
             serialPort.getOutputStream().write(commands);
         } catch (Exception e) {
             e.printStackTrace();
@@ -183,7 +182,7 @@ public class SphThreads {
             reCreateData(bytes, revLen);
             return;
         }
-        resultCallback(bytes);
+        resultCallback(bytes, revLen);
     }
 
     /**
@@ -231,14 +230,14 @@ public class SphThreads {
      */
     private void checkReCreate(byte[] resultBytes) {
         if (mSerialBufferSize == maxSize) {
-            resultCallback(resultBytes);
+            resultCallback(resultBytes, maxSize);
         }
     }
 
     /**
      * 判断数据是否读取完成，通过回调输出读取数据
      */
-    private void resultCallback(byte[] resultBytes) {
+    private void resultCallback(byte[] resultBytes, int recvLen) {
         synchronized (semaphore) {
             if (mReceived == false) {
                 mReceived = true;
@@ -247,7 +246,7 @@ public class SphThreads {
                     reInit();
                     return;
                 }
-                sendMessage(resultBytes, RECEIVECMD_WHAT);
+                sendMessage(resultBytes, recvLen, RECEIVECMD_WHAT);
                 reInit();
             }
         }
@@ -315,10 +314,11 @@ public class SphThreads {
      * @param commands  串口数据
      * @param what          数据标识
      */
-    private void sendMessage(byte[] commands, int what){
+    private void sendMessage(byte[] commands, int len, int what){
         Message message = sphHandler.obtainMessage();
         message.what = what;
         message.obj = commands;
+        message.arg1 = len;
         sphHandler.sendMessage(message);
     }
 
@@ -346,10 +346,10 @@ public class SphThreads {
     private void receiveData(Message msg){
         switch (msg.what) {
             case SENDCMD_WHAT:
-                onResultCallback.onSendData((byte[]) msg.obj);
+                onResultCallback.onSendData((byte[]) msg.obj, msg.arg1);
                 break;
             case RECEIVECMD_WHAT:
-                onResultCallback.onReceiveData((byte[]) msg.obj);
+                onResultCallback.onReceiveData((byte[]) msg.obj, msg.arg1);
                 break;
             default:
                 break;

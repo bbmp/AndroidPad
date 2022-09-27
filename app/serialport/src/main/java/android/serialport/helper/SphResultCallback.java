@@ -6,13 +6,13 @@ public interface SphResultCallback {
      * 发送命令
      * @param sendCom 串口发送的命令
      */
-    void onSendData(byte[] sendCom);
+    void onSendData(byte[] sendCom, int len);
 
     /**
      * 收到的数据
      * @param data 串口收到的数据
      */
-    void onReceiveData(byte[] data);
+    void onReceiveData(byte[] data, int len);
 
     /**
      * 串口打开失败
