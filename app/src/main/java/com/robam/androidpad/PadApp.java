@@ -53,4 +53,5 @@ public class PadApp extends Application {
         // 根据手机内存剩余情况清理图片内存缓存
         Glide.get(this).onTrimMemory(level);
     }
+
 }
