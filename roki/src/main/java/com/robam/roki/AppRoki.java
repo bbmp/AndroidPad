@@ -10,4 +10,5 @@ public class AppRoki {
         //http
 //        RetrofitClient.getInstance().init("http://api.myroki.com:80", null);
     }
+
 }
