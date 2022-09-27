@@ -27,7 +27,5 @@ public class AppSteam {
                 .setConnectOverTime(20000)
                 .setOperateTimeout(5000);
 
-        //使用哪个平台
-        SteamFactory.initPlat(application, SteamFactory.TUOBANG);
     }
 }

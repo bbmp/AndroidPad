@@ -10,6 +10,11 @@ public class HomeSteamOven {
     }
     //当前guid
     public String guid;
+
+    /**
+     * 工作状态
+     */
+    public int workState;
     /**
      * 工作类型 普通模式 多段 菜谱 蒸模式 烤模式
      */
@@ -24,4 +29,10 @@ public class HomeSteamOven {
 
     //设备分类
     public String dc;
+    /**
+     * 剩余总时间
+     */
+    public int totalRemainSeconds;
+    //工作温度
+    public int workTemp;
 }

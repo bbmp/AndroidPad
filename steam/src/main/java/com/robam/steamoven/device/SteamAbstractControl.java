@@ -15,13 +15,13 @@ public class SteamAbstractControl implements SteamFunction {
         function = steamFunction;
     }
     @Override
-    public void shutDown(String... args) {
-        function.shutDown(args);
+    public void shutDown(String targetGuid) {
+        function.shutDown(targetGuid);
     }
 
     @Override
-    public void powerOn(String... args) {
-        function.powerOn(args);
+    public void powerOn(String targetGuid) {
+        function.powerOn(targetGuid);
     }
 
     @Override
@@ -40,12 +40,17 @@ public class SteamAbstractControl implements SteamFunction {
     }
 
     @Override
-    public void pauseWork() {
-        function.pauseWork();
+    public void pauseWork(String targetGuid) {
+        function.pauseWork(targetGuid);
     }
 
     @Override
-    public void continueWork() {
-        function.continueWork();
+    public void continueWork(String targetGuid) {
+        function.continueWork(targetGuid);
+    }
+
+    @Override
+    public void queryAttribute(String targetGuid) {
+        function.queryAttribute(targetGuid);
     }
 }

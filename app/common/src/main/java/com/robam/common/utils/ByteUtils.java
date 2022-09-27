@@ -26,6 +26,10 @@ public class ByteUtils {
         return b & 0xFF;
     }
 
+    public static int toInt(short x) {
+        return ((int) x) & 0xffff;
+    }
+
     /**
      * 转化无符号二进制
      */

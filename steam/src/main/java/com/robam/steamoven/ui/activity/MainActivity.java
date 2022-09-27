@@ -33,8 +33,6 @@ public class MainActivity extends SteamBaseActivity {
         if (null != getIntent())
             HomeSteamOven.getInstance().guid = getIntent().getStringExtra(ComnConstant.EXTRA_GUID);
         LogUtils.e("HomeSteamOven guid " + HomeSteamOven.getInstance().guid);
-        //开启远程控制
-        SteamAbstractControl.getInstance().init(new SteamMqttControl());
 
     }
 }

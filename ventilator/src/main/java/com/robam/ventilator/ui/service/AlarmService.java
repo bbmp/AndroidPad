@@ -15,6 +15,7 @@ import com.robam.cabinet.device.CabinetFactory;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.RTopic;
+import com.robam.common.device.Plat;
 import com.robam.common.manager.BlueToothManager;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.mqtt.MqttMsg;
@@ -27,6 +28,7 @@ import com.robam.pan.bean.Pan;
 import com.robam.pan.device.PanFactory;
 import com.robam.pan.protocol.mqtt.MqttPan;
 import com.robam.steamoven.bean.SteamOven;
+import com.robam.steamoven.device.SteamAbstractControl;
 import com.robam.steamoven.device.SteamFactory;
 import com.robam.stove.bean.Stove;
 import com.robam.stove.device.StoveFactory;
@@ -103,7 +105,7 @@ public class AlarmService extends Service {
             if (device instanceof Pan) { //查询锅
                 MqttMsg msg = new MqttMsg.Builder()
                         .setMsgId(MsgKeys.GetPotTemp_Req)
-                        .setGuid(VentilatorFactory.getPlatform().getDeviceOnlySign())
+                        .setGuid(Plat.getPlatform().getDeviceOnlySign())
                         .setDt(device.dt)
                         .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                         .build();
@@ -111,7 +113,7 @@ public class AlarmService extends Service {
             } else if (device instanceof Stove) {
                 MqttMsg msg = new MqttMsg.Builder()
                         .setMsgId(MsgKeys.SetStoveStatus_Req)
-                        .setGuid(VentilatorFactory.getPlatform().getDeviceOnlySign()) //源guid
+                        .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
                         .setDt(device.dt)
                         .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                         .build();
@@ -119,7 +121,7 @@ public class AlarmService extends Service {
             } else if (device instanceof Ventilator) {
                 MqttMsg msg = new MqttMsg.Builder()
                         .setMsgId(MsgKeys.GetFanStatus_Req)
-                        .setGuid(VentilatorFactory.getPlatform().getDeviceOnlySign()) //源guid
+                        .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
                         .setDt(device.dt)
                         .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                         .build();
@@ -129,19 +131,14 @@ public class AlarmService extends Service {
             } else if (device instanceof DishWasher) {
                 MqttMsg msg = new MqttMsg.Builder()
                         .setMsgId(MsgKeys.setDishWasherStatus)
-                        .setGuid(VentilatorFactory.getPlatform().getDeviceOnlySign()) //源guid
+                        .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
                         .setDt(device.dt)
                         .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                         .build();
                 MqttManager.getInstance().publish(msg, VentilatorFactory.getTransmitApi());
             } else if (device instanceof SteamOven) {
-                MqttMsg msg = new MqttMsg.Builder()
-                        .setMsgId(MsgKeys.getSteameOvenStatus_Req) //查询一体机
-                        .setGuid(VentilatorFactory.getPlatform().getDeviceOnlySign())
-                        .setDt(device.dt)
-                        .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
-                        .build();
-                MqttManager.getInstance().publish(msg, VentilatorFactory.getTransmitApi());
+                //查询一体机
+                SteamAbstractControl.getInstance().queryAttribute(device.guid);
             }
         }
 

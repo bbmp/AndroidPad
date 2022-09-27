@@ -19,6 +19,10 @@ import com.robam.common.bean.UserInfo;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
+import com.robam.steamoven.bean.DeviceConfigurationFunctions;
+import com.robam.steamoven.bean.OtherFunc;
+import com.robam.steamoven.bean.SubViewModelMap;
+import com.robam.steamoven.bean.SubViewModelMapSubView;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.http.CloudHelper;
 import com.robam.steamoven.response.GetDeviceParamsRes;
@@ -36,6 +40,8 @@ public class RecipeActivity extends SteamBaseActivity {
     private List<String> classifyList = new ArrayList<>();
     //弱引用，防止内存泄漏
     private List<WeakReference<Fragment>> fragments = new ArrayList<>();
+    //菜谱分类
+    private List<DeviceConfigurationFunctions> deviceConfigurationFunctionsList = new ArrayList<>();
 
     @Override
     protected int getLayoutId() {
@@ -71,35 +77,17 @@ public class RecipeActivity extends SteamBaseActivity {
     @Override
     protected void initData() {
 //for test
-        classifyList.add("肉禽");
-        classifyList.add("水产品");
-        classifyList.add("主食");
-        classifyList.add("甜品");
-        classifyList.add("果蔬");
-        classifyList.add("牛奶");
-        classifyList.add("肉禽");
-        classifyList.add("肉禽");
-        classifyList.add("肉禽");
-        classifyList.add("肉禽");
-        for (int i = 0; i< classifyList.size(); i++) {
-            TabLayout.Tab tab = tabLayout.newTab();
-            tab.setId(i);
-            View view = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab_classify, null);
-            TextView classify = view.findViewById(R.id.tv_classify);
-            classify.setText(classifyList.get(i));
-            tab.setCustomView(view);
-            tabLayout.addTab(tab);
+//        classifyList.add("肉禽");
+//        classifyList.add("水产品");
+//        classifyList.add("主食");
+//        classifyList.add("甜品");
+//        classifyList.add("果蔬");
+//        classifyList.add("牛奶");
+//        classifyList.add("肉禽");
+//        classifyList.add("肉禽");
+//        classifyList.add("肉禽");
+//        classifyList.add("肉禽");
 
-            Fragment recipeClassifyPage = new RecipeClassifyPage();
-            Bundle bundle = new Bundle();
-            bundle.putInt("classify", i);
-            recipeClassifyPage.setArguments(bundle);
-            fragments.add(new WeakReference<>(recipeClassifyPage));
-        }
-        //添加设置适配器
-        noScrollViewPager.setAdapter(new RecipeClassifyPagerAdapter(getSupportFragmentManager()));
-
-        noScrollViewPager.setOffscreenPageLimit(classifyList.size());
 
         getLocalRecipe();
     }
@@ -119,8 +107,8 @@ public class RecipeActivity extends SteamBaseActivity {
                 new RetrofitCallback<GetDeviceParamsRes>() {
                     @Override
                     public void onSuccess(GetDeviceParamsRes getDeviceParamsRes) {
-                        if (null != getDeviceParamsRes)
-                            ;
+                        if (null != getDeviceParamsRes && null != getDeviceParamsRes.modelMap)
+                            setRecipeData(getDeviceParamsRes);
                     }
 
                     @Override
@@ -129,6 +117,57 @@ public class RecipeActivity extends SteamBaseActivity {
                     }
                 });
 
+    }
+    //菜谱数据
+    private void setRecipeData(GetDeviceParamsRes getDeviceParamsRes) {
+        OtherFunc otherFunc = getDeviceParamsRes.modelMap.otherFunc;
+        if (null != otherFunc && null != otherFunc.deviceConfigurationFunctions) {
+            for (DeviceConfigurationFunctions deviceConfigurationFunctions: otherFunc.deviceConfigurationFunctions) {
+                if ("localCookbook".equals(deviceConfigurationFunctions.functionCode)) {
+                    if (null != deviceConfigurationFunctions.subView && null != deviceConfigurationFunctions.subView.modelMap) {
+                        SubViewModelMapSubView subViewModelMapSubView = deviceConfigurationFunctions.subView.modelMap.subView;
+                        if (null != subViewModelMapSubView && null != subViewModelMapSubView.deviceConfigurationFunctions) {
+                            for (DeviceConfigurationFunctions deviceConfigurationFunctions1: subViewModelMapSubView.deviceConfigurationFunctions) {
+                                if (!"ckno".equals(deviceConfigurationFunctions1.functionCode))
+                                    deviceConfigurationFunctionsList.add(deviceConfigurationFunctions1);
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        //添加分类
+        for (int i =0; i<deviceConfigurationFunctionsList.size(); i++) {
+            DeviceConfigurationFunctions deviceConfigurationFunctions = deviceConfigurationFunctionsList.get(i);
+            classifyList.add(deviceConfigurationFunctions.functionName);
+            //菜谱信息
+            TabLayout.Tab tab = tabLayout.newTab();
+            tab.setId(i);
+            View view = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab_classify, null);
+            TextView classify = view.findViewById(R.id.tv_classify);
+            classify.setText(classifyList.get(i));
+            tab.setCustomView(view);
+            tabLayout.addTab(tab);
+
+            Fragment recipeClassifyPage = new RecipeClassifyPage();
+            Bundle bundle = new Bundle();
+            if (null != deviceConfigurationFunctions.subView && null != deviceConfigurationFunctions.subView.modelMap) {
+                SubViewModelMapSubView subViewModelMapSubView = deviceConfigurationFunctions.subView.modelMap.subView;
+                if (null != subViewModelMapSubView && null != subViewModelMapSubView.deviceConfigurationFunctions) {
+                    bundle.putInt("classify", i);
+
+                    recipeClassifyPage.setArguments(bundle);
+                }
+            }
+
+            fragments.add(new WeakReference<>(recipeClassifyPage));
+        }
+
+        //添加设置适配器
+        noScrollViewPager.setAdapter(new RecipeClassifyPagerAdapter(getSupportFragmentManager()));
+
+        noScrollViewPager.setOffscreenPageLimit(classifyList.size());
     }
 
     class RecipeClassifyPagerAdapter extends FragmentStatePagerAdapter {

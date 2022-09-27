@@ -10,6 +10,7 @@ import android.app.Application;
 import androidx.multidex.MultiDex;
 
 import com.bumptech.glide.Glide;
+import com.robam.common.device.Plat;
 import com.robam.ventilator.AppVentilator;
 import com.tencent.mmkv.MMKV;
 
@@ -26,7 +27,8 @@ public class PadApp extends Application {
 //        CrashHandler.register(this);
         //LitePal注册 数据库
         LitePal.initialize(this);
-
+        //平台初始化
+        Plat.initPlat(this, Plat.TUOBANG);
         // MMKV 初始化
         MMKV.initialize(this);
 //        AppRoki.init(this);

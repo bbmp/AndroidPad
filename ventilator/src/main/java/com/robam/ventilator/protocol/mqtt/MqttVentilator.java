@@ -4,6 +4,7 @@ import com.robam.common.ITerminalType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.RTopic;
+import com.robam.common.device.Plat;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MqttPublic;
@@ -11,6 +12,8 @@ import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.ByteUtils;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.MsgUtils;
+import com.robam.ventilator.constant.QualityKeys;
 import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.device.HomeVentilator;
 import com.robam.ventilator.device.VentilatorAbstractControl;
@@ -65,17 +68,13 @@ public class MqttVentilator extends MqttPublic {
             case MsgKeys.DeviceConnected_Noti:
                 buf.put((byte) 1);
                 buf.put("0000000000".getBytes());
-                buf.put(VentilatorFactory.getPlatform().getMac().getBytes()); //mac
+                buf.put(Plat.getPlatform().getMac().getBytes()); //mac
                 buf.put(msg.getGuid().getBytes());
-                buf.put((byte) VentilatorFactory.getPlatform().getMac().length());
-                buf.put(VentilatorFactory.getPlatform().getMac().getBytes());
+                buf.put((byte) Plat.getPlatform().getMac().length());
+                buf.put(Plat.getPlatform().getMac().getBytes());
                 buf.put((byte) 1);
                 buf.put((byte) 4);
                 buf.put((byte) 1);
-                break;
-            case MsgKeys.setDeviceAttribute_Rep:
-                buf.put((byte) 1);
-                buf.put((byte) 0);
                 break;
             case MsgKeys.getDeviceAttribute_Req:  //属性查询
                 buf.put((byte) 0x00);
@@ -83,14 +82,27 @@ public class MqttVentilator extends MqttPublic {
             case MsgKeys.GetFanStatus_Req: //烟机状态查询
                 buf.put((byte) ITerminalType.PAD);
                 break;
-            case MsgKeys.GetFanStatus_Rep: //读取状态响应
+            case MsgKeys.getDeviceAttribute_Rep: //属性查询响应
+                buf.put((byte) 5); //参数个数
+                buf.put((byte) QualityKeys.workState);
+                buf.put((byte) 0x01);
                 buf.put(HomeVentilator.getInstance().status);//状态
-                buf.put(HomeVentilator.getInstance().gears); //挡位
+                buf.put((byte) QualityKeys.workCtrl);
+                buf.put((byte) 0x01);
+                buf.put(HomeVentilator.getInstance().gear); //挡位
+                buf.put((byte) QualityKeys.lightCtrl);
+                buf.put((byte) 0x01);
                 buf.put(HomeVentilator.getInstance().lightOn); //灯开关
+                buf.put((byte) QualityKeys.cleanStatus);
+                buf.put((byte) 0x01);
                 buf.put((byte) 0); //是否需要清洗
-                buf.put((byte) 0); //定时时间
+                buf.put((byte) QualityKeys.netStatus);
+                buf.put((byte) 0x01);
                 buf.put((byte) (AccountInfo.getInstance().getConnect().getValue()?1:0));//联网状态
-                buf.put((byte) 0); //参数个数
+
+                break;
+            case MsgKeys.setDeviceAttribute_Rep: //属性设置响应
+                buf.put((byte) 0x00);
                 break;
             case MsgKeys.SetFanStatus_Rep: //设置烟机应答
                 buf.put((byte) 0); //rc
@@ -115,30 +127,65 @@ public class MqttVentilator extends MqttPublic {
         String targetGuid = msg.getrTopic().getDeviceType() + msg.getrTopic().getSignNum();
         LogUtils.e("ventilator targuid = " + targetGuid);
         //控制烟机需校验是否是本机
-        if (targetGuid.equals(VentilatorFactory.getPlatform().getDeviceOnlySign())) {
+        if (targetGuid.equals(Plat.getPlatform().getDeviceOnlySign())) {
             switch (msg.getID()) {
-                case MsgKeys.GetFanStatus_Req: { //查询烟机
-                    //控制端类型
-                    short terminalType = ByteUtils.toShort(payload[offset]);
+                case MsgKeys.getDeviceAttribute_Req: { //查询烟机
+                    //属性个数
+                    short attributeNum = ByteUtils.toShort(payload[offset]);
                     MqttMsg newMsg = new MqttMsg.Builder()
-                            .setMsgId(MsgKeys.GetFanStatus_Rep)
-                            .setGuid(VentilatorFactory.getPlatform().getDeviceOnlySign())
-                            .setDt(VentilatorFactory.getPlatform().getDt())
+                            .setMsgId(MsgKeys.getDeviceAttribute_Rep)
+                            .setGuid(Plat.getPlatform().getDeviceOnlySign())
+                            .setDt(Plat.getPlatform().getDt())
                             .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(msg.getGuid()), DeviceUtils.getDeviceNumber(msg.getGuid())))
                             .build();
                     MqttManager.getInstance().publish(newMsg, VentilatorFactory.getProtocol());
                 }
                 break;
-                case MsgKeys.SetFanStatus_Req: { //设置烟机
-                    //控制端类型
-                    short terminalType = ByteUtils.toShort(payload[offset++]);
-                    //userid
-                    ByteUtils.toString(payload, offset, 10);
-                    offset += 10;
-                    //工作状态
-                    short status = ByteUtils.toShort(payload[offset++]);
-
-                    VentilatorAbstractControl.getInstance().setFanStatus(status);
+                case MsgKeys.setDeviceAttribute_Req: { //设置烟机
+                    //属性个数
+                    int attributeNum = MsgUtils.getByte(payload[offset]);
+                    offset ++;
+                    while (attributeNum > 0) {
+                        attributeNum--;
+                        int key = MsgUtils.getByte(payload[offset]);
+                        offset++;
+                        int length = MsgUtils.getByte(payload[offset]);
+                        offset++;
+                        int value = 0; //支持1 2 4字节值
+                        if (length == 1) {
+                            value = MsgUtils.getByte(payload[offset]);
+                            offset++;
+                        } else if (length == 2) {
+                            value = MsgUtils.bytes2ShortLittle(payload, offset);
+                            offset += 2;
+                        } else if (length == 4) {
+                            value = MsgUtils.bytes2IntLittle(payload, offset);
+                            offset += 4;
+                        } else {
+                            offset += length;
+                            continue;  //错误的属性
+                        }
+                        switch (key) {
+                            case QualityKeys.powerCtrl:
+                                if (value == 0) //关机
+                                    VentilatorAbstractControl.getInstance().shutDown();
+                                break;
+                            case QualityKeys.workCtrl:
+                                VentilatorAbstractControl.getInstance().setFanGear(value);
+                                break;
+                            case QualityKeys.lightCtrl: //灯控制
+                                VentilatorAbstractControl.getInstance().setFanLight(value);
+                                break;
+                        }
+                    }
+                    //设置响应
+                    MqttMsg newMsg = new MqttMsg.Builder()
+                            .setMsgId(MsgKeys.setDeviceAttribute_Rep)
+                            .setGuid(Plat.getPlatform().getDeviceOnlySign())
+                            .setDt(Plat.getPlatform().getDt())
+                            .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(msg.getGuid()), DeviceUtils.getDeviceNumber(msg.getGuid())))
+                            .build();
+                    MqttManager.getInstance().publish(newMsg, VentilatorFactory.getProtocol());
                 }
                 break;
                 case MsgKeys.SetFanLevel_Req: {//设置烟机挡位

@@ -45,7 +45,7 @@ public class SerialPortHelper {
     public void init(SerialPortConfig config) {
         // 设置默认串口参数
         serialPortConfig = config;
-        isReceiveMaxSize = true;
+        isReceiveMaxSize = false;
     }
     /**
      * 打开串口设备

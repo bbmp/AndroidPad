@@ -38,15 +38,11 @@ public class MqttSteamOven extends MqttPublic {
         int msgId = msg.getID();
         switch (msgId) {
             case MsgKeys.DeviceConnected_Noti:
-                buf.put((byte) 1);
-                buf.put("0000000000".getBytes());
-                buf.put(SteamFactory.getPlatform().getMac().getBytes());
-                buf.put(msg.getGuid().getBytes());
-                buf.put((byte) SteamFactory.getPlatform().getMac().length());
-                buf.put(SteamFactory.getPlatform().getMac().getBytes());
-                buf.put((byte) 1);
-                buf.put((byte) 4);
-                buf.put((byte) 1);
+
+                break;
+            case MsgKeys.setDeviceAttribute_Req: //属性设置
+                if (null != msg.getBytes())
+                    buf.put(msg.getBytes());
                 break;
             case MsgKeys.setDeviceAttribute_Rep:
                 buf.put((byte) 1);
@@ -67,96 +63,55 @@ public class MqttSteamOven extends MqttPublic {
         switch (msg.getID()) {
             case MsgKeys.getDeviceAttribute_Req:
                 break;
-            case MsgKeys.getDeviceAttribute_Rep: {
-            }
-            break;
-            case MsgKeys.getSteameOvenStatus_Rep:
-                //状态
-                short status = ByteUtils.toShort(payload[offset++]);
-                msg.putOpt(SteamConstant.SteameOvenStatus, status);
-                short powerOnStatus = ByteUtils.toShort(payload[offset++]);
-                short workOnStatus = ByteUtils.toShort(payload[offset++]);
-                msg.putOpt(SteamConstant.SteameOvenWorknStatus, workOnStatus);
-                short alarm = ByteUtils.toShort(payload[offset++]);
-                short mode = ByteUtils.toShort(payload[offset++]);
-                msg.putOpt(SteamConstant.SteameOvenMode, mode);
-                short temp = ByteUtils.toShort(payload[offset++]);
-                short leftTime = ByteUtils.toShort(payload[offset++]);
-                msg.putOpt(SteamConstant.SteameOvenLeftTime, leftTime); //工作剩余时间
-                offset++;
-                short light = ByteUtils.toShort(payload[offset++]);
-                short waterStatus = ByteUtils.toShort(payload[offset++]);
-                short setTemp = ByteUtils.toShort(payload[offset++]);
-                short setTime = ByteUtils.toShort(payload[offset++]);
-                short min = ByteUtils.toShort(payload[offset++]);
-                short hour = ByteUtils.toShort(payload[offset++]);
-                short recipeId = ByteUtils.toShort(payload[offset++]);
-                offset++;
-                short recipeSteps = ByteUtils.toShort(payload[offset++]);
-                short setDownTemp = ByteUtils.toShort(payload[offset++]);
-                short downTemp = ByteUtils.toShort(payload[offset++]);
-                short steam = ByteUtils.toShort(payload[offset++]);
-                short segments_Key = ByteUtils.toShort(payload[offset++]);
-                short step_Key = ByteUtils.toShort(payload[offset++]);
-                short preFalg = ByteUtils.toShort(payload[offset++]);
-                short modelType = ByteUtils.toShort(payload[offset++]);
-
-                short argument = ByteUtils.toShort(payload[offset++]);
-
-                while (argument > 0) {
-                    short argumentKey = ByteUtils.toShort(payload[offset++]);
-                    switch (argumentKey) {
-                        case 3:
-
-                            short cpStepLength = ByteUtils.toShort(payload[offset++]);
-                            short cpStepValue = ByteUtils.toShort(payload[offset++]);
+            case MsgKeys.getDeviceAttribute_Rep: { //属性查询响应
+                //属性个数
+                int attributeNum = MsgUtils.getByte(payload[offset]);
+                offset ++;
+                while (attributeNum > 0) {
+                    attributeNum--;
+                    int key = MsgUtils.getByte(payload[offset]);
+                    offset++;
+                    int length = MsgUtils.getByte(payload[offset]);
+                    offset++;
+                    int value = 0; //支持1 2 4字节值
+                    if (length == 1) {
+                        value = MsgUtils.getByte(payload[offset]);
+                        offset++;
+                    } else if (length == 2) {
+                        value = MsgUtils.bytes2ShortLittle(payload, offset);
+                        offset += 2;
+                    } else if (length == 4) {
+                        value = MsgUtils.bytes2IntLittle(payload, offset);
+                        offset += 4;
+                    } else {
+                        offset += length;
+                        continue;  //错误的属性
+                    }
+                    switch (key) {
+                        case QualityKeys.workState: //工作状态
+                            msg.putOpt(SteamConstant.SteameOvenStatus, value);
                             break;
-                        case 4:
-                            short steamLength = ByteUtils.toShort(payload[offset++]);
-                            short steamValue = ByteUtils.toShort(payload[offset++]);
+                        case QualityKeys.faultCode: //故障码
+                            msg.putOpt(SteamConstant.SteamFaultCode, value);
                             break;
-                        case 5:
-                            short MultiStepCookingStepsLength = ByteUtils.toShort(payload[offset++]);
-                            short MultiStepCookingStepsValue = ByteUtils.toShort(payload[offset++]);
-                            break;
-                        case 6:
-                            short SteamOvenAutoRecipeModeLength = ByteUtils.toShort(payload[offset++]);
-                            short AutoRecipeModeValue = ByteUtils.toShort(payload[offset++]);
-                            break;
-                        case 7:
-                            short MultiStepCurrentStepsLength = ByteUtils.toShort(payload[offset++]);
-                            short MultiStepCurrentStepsValue = ByteUtils.toShort(payload[offset++]);
-                            break;
-                        case 8:
-                            short SteameOvenPreFlagLength = ByteUtils.toShort(payload[offset++]);
-                            short SteameOvenPreFlagValue = ByteUtils.toShort(payload[offset++]);
-                            break;
-                        case 9:
-                            short weatherDescalingLength = ByteUtils.toShort(payload[offset++]);
-                            short weatherDescalingValue = ByteUtils.toShort(payload[offset++]);
-                            break;
-                        case 10:
-                            short doorStatusLength = ByteUtils.toShort(payload[offset++]);
-                            short doorStatusValue = ByteUtils.toShort(payload[offset++]);
-                            break;
-                        case 11:
-                            short time_H_length = ByteUtils.toShort(payload[offset++]);
-                            short time_H_Value = ByteUtils.toShort(payload[offset++]);
-                            break;
-                        case 12:
-                            offset++ ;
-                            short SteameOvenLeftMin = ByteUtils.toShort(payload[offset++]);
-                            short SteameOvenLeftHours = ByteUtils.toShort(payload[offset++]);
+                        case QualityKeys.totalRemainSeconds: //总剩余时间
+                            msg.putOpt(SteamConstant.SteameOvenLeftTime, value);
                             break;
                     }
-                    argument--;
                 }
+            }
                 break;
-            case MsgKeys.getDeviceEventReport: //事件上报
-                //设备型号
-                short categoryCodeEvent = ByteUtils.toShort(payload[offset++]);
-                short event = ByteUtils.toShort(payload[offset++]);
-                LogUtils.e("categoryCodeEvent " + categoryCodeEvent + " event=" + event);
+            case MsgKeys.setDeviceAttribute_Rep: { //属性设置响应
+                //设置完成立即查询
+                SteamAbstractControl.getInstance().queryAttribute(msg.getGuid());
+            }
+                break;
+            case MsgKeys.getDeviceEventReport: { //事件上报
+                //属性个数
+                int attributeNum = MsgUtils.getByte(payload[offset]);
+                    offset++;
+
+            }
                 break;
         }
     }

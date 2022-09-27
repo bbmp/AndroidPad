@@ -7,6 +7,8 @@ import android.serialport.helper.SerialPortHelper;
 import com.clj.fastble.BleManager;
 import com.robam.common.http.RetrofitClient;
 import com.robam.common.mqtt.MqttManager;
+import com.robam.steamoven.device.SteamAbstractControl;
+import com.robam.steamoven.device.SteamMqttControl;
 import com.robam.ventilator.device.VentilatorAbstractControl;
 import com.robam.ventilator.device.VentilatorFactory;
 import com.robam.ventilator.device.VentilatorLocalControl;
@@ -18,7 +20,7 @@ public class AppVentilator {
 //        FoodMaterialHelper.init(this);
         //串口初始化
         SerialPortConfig serialPortConfig = new SerialPortConfig.Builder()
-                .setMaxSize(23)
+                .setMaxSize(32)
                 .setPath("/dev/ttyS3").build();
         SerialPortHelper.getInstance().init(serialPortConfig);
         //ble init
@@ -29,10 +31,10 @@ public class AppVentilator {
                 .setConnectOverTime(20000)
                 .setOperateTimeout(5000);
 
-        //使用哪个平台
-        VentilatorFactory.initPlat(application, VentilatorFactory.TUOBANG);
         //开启本地控制
         VentilatorAbstractControl.getInstance().init(new VentilatorLocalControl());
+        //远程控制一体机
+        SteamAbstractControl.getInstance().init(new SteamMqttControl());
 
     }
 

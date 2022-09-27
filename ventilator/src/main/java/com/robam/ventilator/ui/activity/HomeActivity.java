@@ -18,9 +18,11 @@ import com.google.gson.Gson;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.UserInfo;
+import com.robam.common.device.Plat;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.ui.activity.BaseActivity;
+import com.robam.common.utils.ByteUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MMKVUtils;
 import com.robam.common.utils.NetworkUtils;
@@ -36,6 +38,9 @@ import com.robam.ventilator.protocol.serial.SerialVentilator;
 import com.robam.ventilator.response.GetTokenRes;
 import com.robam.ventilator.response.GetUserInfoRes;
 import com.robam.ventilator.ui.service.AlarmService;
+
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 //主页
 public class HomeActivity extends BaseActivity {
@@ -59,7 +64,6 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-
         if (Build.VERSION.SDK_INT >= 23) {
             if (Settings.canDrawOverlays(this)) {
 
@@ -98,46 +102,44 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void initData() {
         //打开串口
-//        SerialPortHelper.getInstance().openDevice(new SphResultCallback() {
-//            @Override
-//            public void onSendData(byte[] sendCom) {
-//
-//            }
-//
-//            @Override
-//            public void onReceiveData(byte[] data) {
-//                LogUtils.e(StringUtils.bytes2Hex(data));
-//                SerialVentilator.parseSerial(data);
-//            }
-//
-//            @Override
-//            public void onOpenSuccess() {
-//                //开机
-//                if (HomeVentilator.getInstance().startup == 0x00)
-//                    SerialPortHelper.getInstance().addCommands(SerialVentilator.powerOn());
-//                //循环查询
-////                new Thread() {
-////                    @Override
-////                    public void run() {
-////                        byte data[] = SerialVentilator.packQueryCmd();
-////                        while (true) {
-////                            SerialPortHelper.getInstance().addCommands(data);
-////                            try {
-////                                Thread.sleep(3000);
-////                            } catch (InterruptedException e) {
-////                                e.printStackTrace();
-////                            }
-////                        }
-////                    }
-////                }.start();
-//
-//            }
-//
-//            @Override
-//            public void onOpenFailed() {
-//                LogUtils.i("serial open failed" + Thread.currentThread().getName());
-//            }
-//        });
+        SerialPortHelper.getInstance().openDevice(new SphResultCallback() {
+            @Override
+            public void onSendData(byte[] sendCom, int len) {
+            }
+
+            @Override
+            public void onReceiveData(byte[] data, int len) {
+                SerialVentilator.parseSerial(data, len);
+            }
+
+            @Override
+            public void onOpenSuccess() {
+                //开机
+                if (HomeVentilator.getInstance().startup == 0x00)
+                    SerialPortHelper.getInstance().addCommands(SerialVentilator.powerOn());
+                //循环查询
+//                new Thread() {
+//                    @Override
+//                    public void run() {
+//                        byte data[] = SerialVentilator.packQueryCmd();
+//                        while (true) {
+//                            SerialPortHelper.getInstance().addCommands(data);
+//                            try {
+//                                Thread.sleep(3000);
+//                            } catch (InterruptedException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    }
+//                }.start();
+
+            }
+
+            @Override
+            public void onOpenFailed() {
+                LogUtils.i("serial open failed" + Thread.currentThread().getName());
+            }
+        });
         //打开蓝牙
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (!bluetoothAdapter.isEnabled())
@@ -155,7 +157,7 @@ public class HomeActivity extends BaseActivity {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean) {
-                    MqttManager.getInstance().start(HomeActivity.this, VentilatorFactory.getPlatform(), VentilatorFactory.getTransmitApi());
+                    MqttManager.getInstance().start(HomeActivity.this, Plat.getPlatform(), VentilatorFactory.getTransmitApi());
                     //未登录
                     if (null == AccountInfo.getInstance().getUser().getValue()) {
                         String json = MMKVUtils.getUser();

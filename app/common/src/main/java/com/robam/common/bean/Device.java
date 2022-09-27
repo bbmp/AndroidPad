@@ -74,6 +74,10 @@ public class Device {
     public Device() {
     }
 
+    public Device(String mac) {
+        this.mac = mac;
+    }
+
     public Device(String name, String dc, String displayType) {
         this.categoryName = name;
         this.dc = dc;
