@@ -1,8 +1,11 @@
 package com.robam.stove.bean;
 
+import android.bluetooth.BluetoothGattCharacteristic;
+
 import androidx.lifecycle.MutableLiveData;
 
 import com.robam.common.bean.Device;
+import com.robam.common.ble.BleDecoder;
 import com.robam.common.mqtt.MqttMsg;
 
 

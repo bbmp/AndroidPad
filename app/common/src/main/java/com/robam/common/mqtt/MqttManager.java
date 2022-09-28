@@ -283,12 +283,11 @@ public class MqttManager {
     }
 
     /**
-     * @param msg
+     * @param topic
      * @param data
      */
-    public void publish(MqttMsg msg, byte[] data) {
+    public void publish(String topic, byte[] data) {
         //获取发布主题
-        String topic = msg.getrTopic().getTopic();
         Integer qos = 0;
         Boolean retained = false;
         try {

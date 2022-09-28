@@ -3,8 +3,12 @@ package com.robam.pan.bean;
 import androidx.lifecycle.MutableLiveData;
 
 import com.robam.common.bean.Device;
+import com.robam.common.ble.BleDecoder;
+import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.ByteUtils;
+
+import java.util.Arrays;
 
 public class Pan extends Device {
     //锅温度
@@ -28,4 +32,17 @@ public class Pan extends Device {
     }
 
 
+    @Override
+    public boolean onMsgReceived(MqttMsg msg) {
+        byte[] mqtt_data = msg.getBytes();
+        byte[] send_guid_bytes = Arrays.copyOfRange(mqtt_data, 0, BleDecoder.GUID_LEN);
+        int cmd_id = ByteUtils.toInt(mqtt_data[BleDecoder.GUID_LEN]);
+        Byte[] mqtt_payload = BleDecoder.byteArraysToByteArrays(Arrays.copyOfRange(mqtt_data, BleDecoder.GUID_LEN + 1, mqtt_data.length - 1));
+        //转化成蓝牙包
+        BleDecoder.ExternBleData data = BleDecoder.make_external_send_packet(cmd_id, mqtt_payload);
+//        send_map.put(data.cmd_key, new String(send_guid_bytes));
+//        ble_write_no_resp(dev.getChan(), BleDecoder.ByteArraysTobyteArrays(data.payload));
+        //发送蓝牙数据
+        return super.onMsgReceived(msg);
+    }
 }

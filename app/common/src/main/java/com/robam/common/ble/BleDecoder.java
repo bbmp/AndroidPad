@@ -1,6 +1,8 @@
 package com.robam.common.ble;
 
 import com.robam.common.utils.ByteUtils;
+import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -84,6 +86,7 @@ public class BleDecoder {
     private int option = 0;//option字段
     private int cnt = 0;//应该payload接收长度(LEN字段值)
     private int peek_idx = 0;//peek索引
+    private long last_tick = 0;//上次解析时间戳
 
     public BleDecoder(int rand_value) {
         init_decoder(rand_value);
@@ -97,6 +100,7 @@ public class BleDecoder {
         option = 0;
         cnt = 0;
         peek_idx = 0;
+        last_tick = 0;
 
         lock.lock();
         g_rand_value = (byte)rand_value;
@@ -109,16 +113,25 @@ public class BleDecoder {
     }
 
     //解码解码器中的数据(多线程需自行加锁)
-    public Byte [] decode_data() {
+    public Byte [] decode_data(long timeout_ms) {
         Byte[] ret;
         byte val;
+
+        long cur_tick = System.currentTimeMillis();
+        if(decode_status > MCU_UART_STATUS_PARSE_SYNC1 && cur_tick - last_tick >= timeout_ms) {
+            pop_and_repeek_buf();
+            decode_status = MCU_UART_STATUS_START;
+        }
+
         while(input_buf.size() > 0 && peek_idx < input_buf.size()) {
             val = input_buf.get(peek_idx);
+//            LogUtils.e(ByteUtils.toHex(val));
             peek_idx++;
             switch (decode_status) {
                 case MCU_UART_STATUS_START:
                     cnt = 0;
                     decode_status = MCU_UART_STATUS_PARSE_SYNC1;
+                    last_tick = cur_tick;
                     //break; //force to skip break;
                 case MCU_UART_STATUS_PARSE_SYNC1:
                     pop_and_repeek_buf();
@@ -355,7 +368,9 @@ public class BleDecoder {
         }
         if((option & OPTION_CRC_BIT) != 0) {
             calc_check = ByteUtils.toInt(crc16(Arrays.copyOf(dst, dst.length - 2)));
+            LogUtils.e("calc_check= " + calc_check);
             get_check = ByteUtils.toInt(dst[dst.length - 2]) | (ByteUtils.toInt(dst[dst.length - 1]) << 8);
+            LogUtils.e("get_check= " + get_check);
         } else if((option & OPTION_CHECKSUM_BIT) != 0) {
             calc_check = ByteUtils.toInt(cs8(Arrays.copyOf(dst, dst.length - 1)));
             get_check = ByteUtils.toInt(dst[dst_len]);
@@ -364,6 +379,29 @@ public class BleDecoder {
             return null;
         }
         return Arrays.copyOf(dst, dst.length - 2);
+    }
+
+    //Byte数组转byte数组
+    public static byte [] ByteArraysTobyteArrays(Byte [] input) {
+        if(input == null) {
+            return null;
+        }
+        byte [] output = new byte[input.length];
+        for(int i = 0; i < input.length; i++) {
+            output[i] = input[i];
+        }
+        return output;
+    }
+    //byte转Byte数组
+    public static Byte [] byteArraysToByteArrays(byte [] input) {
+        if(input == null) {
+            return null;
+        }
+        Byte [] output = new Byte[input.length];
+        for(int i = 0; i < input.length; i++) {
+            output[i] = input[i];
+        }
+        return output;
     }
 
     private static byte InvertUint8(byte src) {

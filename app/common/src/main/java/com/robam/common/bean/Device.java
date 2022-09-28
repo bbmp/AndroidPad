@@ -1,5 +1,8 @@
 package com.robam.common.bean;
 
+import android.bluetooth.BluetoothGattCharacteristic;
+
+import com.robam.common.ble.BleDecoder;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.utils.LogUtils;
 
@@ -37,6 +40,7 @@ public class Device {
      * 业务编码（供应商定制ID）
      */
     public String bid;
+
     /**
      * 设备名称
      */
@@ -69,13 +73,29 @@ public class Device {
     //子设备
     public List<Device> subDevices;
 
-
+    /**
+     * 蓝牙产品品类
+     */
+    public int bleType;
+    //内部设备类型(1B)+内部设备编码(3B)
+    public byte[] int_guid;
+    //蓝牙特征符
+    public BluetoothGattCharacteristic characteristic;
+    //蓝牙解析
+    public BleDecoder bleDecoder;
 
     public Device() {
     }
-
+    //带蓝牙的设备
     public Device(String mac) {
         this.mac = mac;
+    }
+
+    public Device(String guid, byte[] int_guid, String bid, int bleType) {
+        this.guid = guid;
+        this.int_guid =  int_guid;
+        this.bid = bid;
+        this.bleType = bleType;
     }
 
     public Device(String name, String dc, String displayType) {
@@ -83,7 +103,6 @@ public class Device {
         this.dc = dc;
         this.displayType = displayType;
     }
-
 
     public String getDisplayType() {
         return displayType;

@@ -2,6 +2,9 @@ package com.robam.common.bean;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.clj.fastble.data.BleDevice;
+import com.robam.common.ble.BleDecoder;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,4 +49,13 @@ public class AccountInfo {
 //    public RxLiveData<UserInfo> getUserData() {
 //        return userData;
 //    }
+
+    public BleDecoder getBleDecoder(String mac) {
+        for (Device device: deviceList) {
+            if (null != mac && mac.equals(device.mac)) {
+                return device.bleDecoder;
+            }
+        }
+        return null;
+    }
 }

@@ -22,20 +22,28 @@ import com.clj.fastble.callback.BleGattCallback;
 import com.clj.fastble.callback.BleIndicateCallback;
 import com.clj.fastble.callback.BleNotifyCallback;
 import com.clj.fastble.callback.BleScanCallback;
+import com.clj.fastble.callback.BleWriteCallback;
 import com.clj.fastble.data.BleDevice;
 import com.clj.fastble.data.BleScanState;
 import com.clj.fastble.exception.BleException;
 import com.clj.fastble.scan.BleScanRuleConfig;
 import com.clj.fastble.utils.HexUtil;
 import com.robam.common.IDeviceType;
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
+import com.robam.common.ble.BleDecoder;
 import com.robam.common.ble.BleDeviceInfo;
 import com.robam.common.manager.BlueToothManager;
 import com.robam.common.ui.view.ExtImageSpan;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.PermissionUtils;
+import com.robam.common.utils.StringUtils;
+import com.robam.pan.bean.Pan;
+import com.robam.stove.bean.Stove;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
 import com.robam.ventilator.constant.VentilatorConstant;
+import com.robam.ventilator.protocol.ble.BleVentilator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -248,7 +256,8 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
             public void onConnectSuccess(BleDevice bleDevice, BluetoothGatt gatt, int status) {
                 LogUtils.e("onConnectSuccess " + bleDevice.getName());
                 //连接成功
-                BlueToothManager.addDeviceToMap(bleDevice);
+                addSubDevice(bleDevice);
+
                 getBuletoothGatt(bleDevice);
                 //跳设备首页
                 finish();
@@ -263,6 +272,39 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
                     gatt.close();
             }
         });
+    }
+    //添加子设备到设备列表
+    private void addSubDevice(BleDevice bleDevice) {
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (bleDevice.getMac().equals(device.mac)) {//已经存在
+                BleDecoder bleDecoder = device.bleDecoder;
+
+                if (null != bleDecoder)
+                    bleDecoder.init_decoder(0); //重新初始化
+                return;
+            }
+        }
+        if (IDeviceType.RRQZ.equals(model)) {
+            Stove stove = new Stove("燃气灶", IDeviceType.RRQZ, "9B328");
+            stove.mac = bleDevice.getMac();
+            stove.bleDecoder = new BleDecoder(0);
+            AccountInfo.getInstance().deviceList.add(stove);
+        } else if (IDeviceType.RZNG.equals(model)) {
+            Pan pan = new Pan("明火自动翻炒锅", IDeviceType.RZNG, "KP100");
+            pan.mac = bleDevice.getMac();
+            pan.bleDecoder = new BleDecoder(0);
+            AccountInfo.getInstance().deviceList.add(pan);
+        }
+    }
+
+    //设置蓝牙设备的读写特征符
+    private void setGattCharacteristic(BleDevice bleDevice, BluetoothGattCharacteristic characteristic) {
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (bleDevice.getMac().equals(device.mac)) {
+                device.characteristic = characteristic;
+                break;
+            }
+        }
     }
 
     //获取gatt提供的服务
@@ -281,6 +323,8 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
                     uuid = characteristic.getUuid();
                     if (uuid.toString().contains("fff1")) {   //读写
                         LogUtils.e("uuid " + uuid);
+                        //设置读写特征符
+                        setGattCharacteristic(bleDevice, characteristic);
                     } else if (uuid.toString().contains("fff4")) {  //notify
                         int charaProp = characteristic.getProperties();
                         LogUtils.e("uuid " + uuid);
@@ -292,6 +336,26 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
                 break;
             }
         }
+    }
+    //写数据
+    private void write_no_response(BleDevice bleDevice, BluetoothGattCharacteristic characteristic) {
+        BleManager.getInstance().write(
+                bleDevice,
+                characteristic.getService().getUuid().toString(),
+                characteristic.getUuid().toString(),
+                new byte[1],
+                new BleWriteCallback() {
+
+                    @Override
+                    public void onWriteSuccess(final int current, final int total, final byte[] justWrite) {
+
+                    }
+
+                    @Override
+                    public void onWriteFailure(final BleException exception) {
+
+                    }
+                });
     }
     //订阅通知
     private void notify(BleDevice bleDevice, BluetoothGattCharacteristic characteristic) {
@@ -317,8 +381,7 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
                     @Override
                     public void onCharacteristicChanged(byte[] data) {
                         // 打开通知后，设备发过来的数据将在这里出现（UI线程）
-                        LogUtils.e("onCharacteristicChanged " + HexUtil.formatHexString(characteristic.getValue(), true));
-                        BlueToothManager.bleParser(bleDevice, characteristic.getValue());
+                        BleVentilator.bleParser(bleDevice, data);
                     }
                 });
     }
