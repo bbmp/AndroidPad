@@ -174,11 +174,18 @@ public class BleVentilator {
                             }
                             break;
                         case BleDecoder.ROKI_UART_CMD_KEY_DYNAMIC://收到外部指令(一般用于响应外部设备),通过MQTT转发出去
-//                            for(Device device : AccountInfo.getInstance().deviceList) {
-//                                String target_guid = send_map.get((int) ret2[BleDecoder.DECODE_CMD_KEY_OFFSET]);
-//                                String topic = "/u/" + target_guid.substring(0, 5) + "/" + target_guid.substring(5);
-//                                ble_mqtt_publish(topic, dev.getGuid(), ret2);
-//                            }
+                            for(Device device : AccountInfo.getInstance().deviceList) {
+                                if (bleDevice.getMac().equals(device.mac)) {
+                                    String target_guid = BlueToothManager.send_map.get((int) ret2[BleDecoder.DECODE_CMD_KEY_OFFSET]);
+                                    if (null != target_guid) {
+                                        String topic = "/u/" + target_guid.substring(0, 5) + "/" + target_guid.substring(5);
+                                        ble_mqtt_publish(topic, device.guid, ret2);
+                                        //移除消息
+                                        BlueToothManager.send_map.remove((int) ret2[BleDecoder.DECODE_CMD_KEY_OFFSET]);
+                                    }
+                                    break;
+                                }
+                            }
                             break;
                     }
                 }
