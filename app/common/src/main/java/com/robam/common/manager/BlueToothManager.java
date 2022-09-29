@@ -8,8 +8,10 @@ import com.clj.fastble.callback.BleGattCallback;
 import com.clj.fastble.callback.BleIndicateCallback;
 import com.clj.fastble.callback.BleNotifyCallback;
 import com.clj.fastble.callback.BleScanCallback;
+import com.clj.fastble.callback.BleWriteCallback;
 import com.clj.fastble.data.BleDevice;
 import com.clj.fastble.data.BleScanState;
+import com.clj.fastble.exception.BleException;
 import com.clj.fastble.scan.BleScanRuleConfig;
 import com.clj.fastble.scan.BleScanner;
 import com.robam.common.bean.Device;
@@ -26,7 +28,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class BlueToothManager {
-
+    public static final Map<Integer, String> send_map = new HashMap<>();//外部命令发送关系表
     private static final Lock lock = new ReentrantLock();
 
     //扫描规则
@@ -129,6 +131,20 @@ public class BlueToothManager {
         }
     }
 
-
+    //写数据
+    public static void write_no_response(BleDevice bleDevice, BluetoothGattCharacteristic characteristic, byte[] payload, BleWriteCallback bleWriteCallback) {
+        try {
+            LogUtils.e(StringUtils.bytes2Hex(payload));
+            LogUtils.e(characteristic.getUuid().toString());
+            BleManager.getInstance().write(
+                    bleDevice,
+                    characteristic.getService().getUuid().toString(),
+                    characteristic.getUuid().toString(),
+                    payload,
+                    bleWriteCallback);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

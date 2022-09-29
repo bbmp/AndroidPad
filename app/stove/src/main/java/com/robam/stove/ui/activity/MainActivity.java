@@ -30,8 +30,7 @@ public class MainActivity extends StoveBaseActivity {
     @Override
     protected void initData() {
 
-        //开启远程控制, 蓝牙控制
-        StoveAbstractControl.getInstance().init(new StoveBluetoothControl());
+
 
     }
 }

@@ -2,6 +2,7 @@ package com.robam.common.bean;
 
 import android.bluetooth.BluetoothGattCharacteristic;
 
+import com.clj.fastble.data.BleDevice;
 import com.robam.common.ble.BleDecoder;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.utils.LogUtils;
@@ -79,6 +80,8 @@ public class Device {
     public int bleType;
     //内部设备类型(1B)+内部设备编码(3B)
     public byte[] int_guid;
+    //蓝牙设备
+    public BleDevice bleDevice;
     //蓝牙特征符
     public BluetoothGattCharacteristic characteristic;
     //蓝牙解析

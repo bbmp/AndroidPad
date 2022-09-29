@@ -298,9 +298,10 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
     }
 
     //设置蓝牙设备的读写特征符
-    private void setGattCharacteristic(BleDevice bleDevice, BluetoothGattCharacteristic characteristic) {
+    private void setBleDevice(BleDevice bleDevice, BluetoothGattCharacteristic characteristic) {
         for (Device device: AccountInfo.getInstance().deviceList) {
             if (bleDevice.getMac().equals(device.mac)) {
+                device.bleDevice = bleDevice;
                 device.characteristic = characteristic;
                 break;
             }
@@ -324,7 +325,7 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
                     if (uuid.toString().contains("fff1")) {   //读写
                         LogUtils.e("uuid " + uuid);
                         //设置读写特征符
-                        setGattCharacteristic(bleDevice, characteristic);
+                        setBleDevice(bleDevice, characteristic);
                     } else if (uuid.toString().contains("fff4")) {  //notify
                         int charaProp = characteristic.getProperties();
                         LogUtils.e("uuid " + uuid);
@@ -337,32 +338,10 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
             }
         }
     }
-    //写数据
-    private void write_no_response(BleDevice bleDevice, BluetoothGattCharacteristic characteristic) {
-        BleManager.getInstance().write(
-                bleDevice,
-                characteristic.getService().getUuid().toString(),
-                characteristic.getUuid().toString(),
-                new byte[1],
-                new BleWriteCallback() {
 
-                    @Override
-                    public void onWriteSuccess(final int current, final int total, final byte[] justWrite) {
-
-                    }
-
-                    @Override
-                    public void onWriteFailure(final BleException exception) {
-
-                    }
-                });
-    }
     //订阅通知
     private void notify(BleDevice bleDevice, BluetoothGattCharacteristic characteristic) {
-        BleManager.getInstance().notify(
-                bleDevice,
-                characteristic.getService().getUuid().toString(),
-                characteristic.getUuid().toString(),
+        BlueToothManager.notify(bleDevice, characteristic,
                 new BleNotifyCallback() {
 
                     @Override

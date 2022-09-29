@@ -2,8 +2,11 @@ package com.robam.pan.bean;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.clj.fastble.callback.BleWriteCallback;
+import com.clj.fastble.exception.BleException;
 import com.robam.common.bean.Device;
 import com.robam.common.ble.BleDecoder;
+import com.robam.common.manager.BlueToothManager;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.ByteUtils;
@@ -43,6 +46,18 @@ public class Pan extends Device {
 //        send_map.put(data.cmd_key, new String(send_guid_bytes));
 //        ble_write_no_resp(dev.getChan(), BleDecoder.ByteArraysTobyteArrays(data.payload));
         //发送蓝牙数据
+        BlueToothManager.write_no_response(bleDevice, characteristic, BleDecoder.ByteArraysTobyteArrays(data.payload), new BleWriteCallback() {
+
+            @Override
+            public void onWriteSuccess(final int current, final int total, final byte[] justWrite) {
+
+            }
+
+            @Override
+            public void onWriteFailure(final BleException exception) {
+
+            }
+        });
         return super.onMsgReceived(msg);
     }
 }

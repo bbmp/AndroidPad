@@ -1,14 +1,22 @@
 package com.robam.ventilator.protocol.ble;
 
+import com.clj.fastble.callback.BleWriteCallback;
 import com.clj.fastble.data.BleDevice;
+import com.clj.fastble.exception.BleException;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
+import com.robam.common.bean.RTopic;
 import com.robam.common.ble.BleDecoder;
 import com.robam.common.ble.BleDeviceInfo;
+import com.robam.common.device.Plat;
 import com.robam.common.manager.BlueToothManager;
 import com.robam.common.mqtt.MqttManager;
+import com.robam.common.mqtt.MqttMsg;
+import com.robam.common.mqtt.MsgKeys;
+import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.StringUtils;
+import com.robam.ventilator.device.VentilatorFactory;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -50,6 +58,7 @@ public class BleVentilator {
                                             System.arraycopy(ret2, BleDecoder.DECODE_PAYLOAD_OFFSET + 5 + 1 + 3 + 1, biz_id, 0, ret2[11]);
                                             System.arraycopy(ret2, BleDecoder.DECODE_PAYLOAD_OFFSET + 5 + 1 + 3 + 1 + ret2[11], guid, 5, 12);
                                             ble_type = ret2[BleDecoder.DECODE_PAYLOAD_OFFSET + 5 + 1 + 3 + 1 + ret2[11] + 12];
+                                            LogUtils.e("guid CMD_PAIRING_REQUEST_INT =" + new String(guid));
                                             int i;
                                             for(i = 0; i<AccountInfo.getInstance().deviceList.size(); i++) {
                                                 Device device = AccountInfo.getInstance().deviceList.get(i);
@@ -57,8 +66,11 @@ public class BleVentilator {
                                                     response = false;
                                                     break;
                                                 }
-                                                if ((new String(guid)).equals(device.guid)) { //update info
+                                                //配对成功
+                                                if (bleDevice.getMac().equals(device.mac)) { //update info
 
+                                                    if (!(new String(guid)).equals(device.guid))
+                                                        device.guid = new String(guid);
                                                     if (!Arrays.equals(device.int_guid, int_guid)) {
                                                         device.int_guid = int_guid;
                                                     }
@@ -72,9 +84,6 @@ public class BleVentilator {
                                                     break;
                                                 }
 
-                                            }
-                                            if(i == AccountInfo.getInstance().deviceList.size()) { //insert
-                                                AccountInfo.getInstance().deviceList.add(new Device(new String(guid), int_guid, new String(biz_id), ble_type));
                                             }
                                         }
                                     } else {
@@ -103,6 +112,7 @@ public class BleVentilator {
                                             System.arraycopy(ret2, BleDecoder.DECODE_PAYLOAD_OFFSET + 1 + 1 + 5, int_guid, 0, 3 + 1);
                                             System.arraycopy(ret2, BleDecoder.DECODE_PAYLOAD_OFFSET + 1 + 1 + 5 + 1 + 3 + 1, biz_id, 0, ret2[13]);
                                             System.arraycopy(ret2, BleDecoder.DECODE_PAYLOAD_OFFSET + 1 + 1 + 5 + 1 + 3 + 1 + ret2[13], guid, 5, 12);
+                                            LogUtils.e("guid CMD_DEVICE_ONLINE_INT =" + new String(guid));
                                             int i;
                                             for(i = 0; i < AccountInfo.getInstance().deviceList.size(); i++) {
                                                 Device device = AccountInfo.getInstance().deviceList.get(i);
@@ -118,6 +128,10 @@ public class BleVentilator {
                                             }
                                             if(i == AccountInfo.getInstance().deviceList.size()) {
                                                 response = false;
+                                            }
+                                            if (response) {
+                                                //通知上线
+                                                notifyOnline(new String(guid));
                                             }
                                         }
                                     } else {
@@ -143,6 +157,7 @@ public class BleVentilator {
 //                                    listRemove(channel);
 //                                    BleDeviceInfo.getInstance().removeDeviceFromMap(bleDevice);
                                     delay_disconnect_ble(bleDevice);
+                                    //通知下线
                                     break;
                                 default:
                                     break;
@@ -170,6 +185,18 @@ public class BleVentilator {
             } while(ret != null);
         }
     }
+    //通知上线
+    private static void notifyOnline(String guid) {
+        //订阅设备
+        MqttManager.getInstance().subscribe(DeviceUtils.getDeviceTypeId(guid), DeviceUtils.getDeviceNumber(guid));
+        //通知
+        MqttMsg msg = new MqttMsg.Builder()
+                .setMsgId(MsgKeys.DeviceConnected_Noti)
+                .setGuid(guid) //源guid
+                .setTopic(new RTopic(RTopic.TOPIC_BROADCAST, DeviceUtils.getDeviceTypeId(guid), DeviceUtils.getDeviceNumber(guid)))
+                .build();
+        MqttManager.getInstance().publish(msg, VentilatorFactory.getTransmitApi());
+    }
 
 //    public static BleDecoder getBleDecoder(BleDevice bleDevice) {
 //        if (connection_map.containsKey(bleDevice.getMac()))
@@ -196,7 +223,20 @@ public class BleVentilator {
     public static void ble_write_no_resp(BleDevice bleDevice, byte[] data) {
         //TODO 这里实现BLE Write no response
         for (Device device: AccountInfo.getInstance().deviceList) {
+            if (bleDevice.getMac().equals(device.mac)) {
+                BlueToothManager.write_no_response(bleDevice, device.characteristic, data, new BleWriteCallback() {
+                    @Override
+                    public void onWriteSuccess(int current, int total, byte[] justWrite) {
+                        LogUtils.e("onWriteSuccess");
+                    }
 
+                    @Override
+                    public void onWriteFailure(BleException exception) {
+                        LogUtils.e("onWriteFailure");
+                    }
+                });
+                break;
+            }
         }
     }
 

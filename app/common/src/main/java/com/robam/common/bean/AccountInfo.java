@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData;
 import com.clj.fastble.data.BleDevice;
 import com.robam.common.ble.BleDecoder;
 
+import org.eclipse.paho.client.mqttv3.util.Strings;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,5 +59,14 @@ public class AccountInfo {
             }
         }
         return null;
+    }
+
+    public String getUserString() {
+        UserInfo userInfo = user.getValue();
+        long id = (userInfo != null) ? userInfo.id : 0;
+        String userId = String.valueOf(id);
+        while (userId.length() < 10)
+            userId = userId + "0";
+        return userId;
     }
 }
