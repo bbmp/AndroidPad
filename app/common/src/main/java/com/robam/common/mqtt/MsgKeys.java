@@ -172,6 +172,10 @@ public interface MsgKeys {
      */
     short SetStoveLock_Rep = 137;
     /**
+     * 灶菜谱设置
+     */
+    short setStoveRecipe_Req = 158;
+    /**
      * 一体机状态查询
      */
     short getSteameOvenStatus_Req = 150;

@@ -43,57 +43,8 @@ public class MqttPan extends MqttPublic {
 
         switch (msg.getID()) {
             case MsgKeys.SetPotTemp_Rep: //查询返回
-                float temp = ByteUtils.toFloat(payload, offset++, ByteUtils.BYTE_ORDER);
-                offset++;
-                offset++;
-                offset++;
-                //锅状态
-                short status = ByteUtils.toShort(payload[offset++]);
-                msg.put(PanConstant.Pot_status, status);
-                //参数个数
-                short count = ByteUtils.toShort(payload[offset++]);
-                while (count >= 0) {
-                    short valueKey = ByteUtils.toShort(payload[offset++]);
-                    short valueLength = ByteUtils.toShort(payload[offset++]);
-                    switch (valueKey) {
-                        case 1: //无人锅电机模式
-                            short Pot_ESPMode = ByteUtils.toShort(payload[offset++]);
-                            break;
-                        case 2: //无人锅锅盖状态
-                            short Pot_LisState = ByteUtils.toShort(payload[offset++]);
-                            break;
-                        case 3: //P档菜谱值
-                            short Pot_PMenuValue = ByteUtils.toShort(payload[offset++]);
-                            break;
-                        case 4: //无人锅平台菜谱/曲线还原模式值  len 4
-                            short Pot_PlatformMenuValue = ByteUtils.toShort(payload[offset++]);
-                            offset++;
-                            offset++;
-                            offset++;
-                            break;
-                        case 5: //无人锅电量
-                            short Pot_ElectricValue = ByteUtils.toShort(payload[offset++]);
-                            break;
-                        case 6: //无人锅模式状态
-                            short Pot_ModelState = ByteUtils.toShort(payload[offset++]);
-                            break;
-                        case 7: //无人锅本地记录状态
-                            short Pot_LocalRecordState = ByteUtils.toShort(payload[offset++]);
-                            break;
-                        case 8: //菜谱/曲线还原运行秒数
-                            short Pot_MenuRestoreSecond = ByteUtils.toShort(payload[offset++]);
-                            offset++;
-                            break;
-                        case 9: //无人锅绑定炉头
-                            short Pot_BindHead = ByteUtils.toShort(payload[offset++]);
-//                            offset++;
-                            break;
-                        default:
-                            offset += valueLength;
-                            break;
-                    }
-                    count--;
-                }
+                //属性个数
+                short attributeNum = ByteUtils.toShort(payload[offset]);
                 break;
         }
     }

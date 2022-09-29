@@ -31,6 +31,7 @@ import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.device.SteamAbstractControl;
 import com.robam.steamoven.device.SteamFactory;
 import com.robam.stove.bean.Stove;
+import com.robam.stove.device.StoveAbstractControl;
 import com.robam.stove.device.StoveFactory;
 import com.robam.ventilator.bean.Ventilator;
 import com.robam.ventilator.device.VentilatorFactory;
@@ -111,13 +112,9 @@ public class AlarmService extends Service {
                         .build();
                 MqttManager.getInstance().publish(msg, VentilatorFactory.getTransmitApi());
             } else if (device instanceof Stove) {
-                MqttMsg msg = new MqttMsg.Builder()
-                        .setMsgId(MsgKeys.SetStoveStatus_Req)
-                        .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
-                        .setDt(device.dt)
-                        .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
-                        .build();
-                MqttManager.getInstance().publish(msg, VentilatorFactory.getTransmitApi());
+
+                //本机端查询灶具
+                StoveAbstractControl.getInstance().queryAttribute((Stove) device);
             } else if (device instanceof Ventilator) {
                 MqttMsg msg = new MqttMsg.Builder()
                         .setMsgId(MsgKeys.GetFanStatus_Req)

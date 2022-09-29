@@ -2,6 +2,11 @@ package com.robam.common.bean;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.clj.fastble.data.BleDevice;
+import com.robam.common.ble.BleDecoder;
+
+import org.eclipse.paho.client.mqttv3.util.Strings;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,4 +51,22 @@ public class AccountInfo {
 //    public RxLiveData<UserInfo> getUserData() {
 //        return userData;
 //    }
+
+    public BleDecoder getBleDecoder(String mac) {
+        for (Device device: deviceList) {
+            if (null != mac && mac.equals(device.mac)) {
+                return device.bleDecoder;
+            }
+        }
+        return null;
+    }
+
+    public String getUserString() {
+        UserInfo userInfo = user.getValue();
+        long id = (userInfo != null) ? userInfo.id : 0;
+        String userId = String.valueOf(id);
+        while (userId.length() < 10)
+            userId = userId + "0";
+        return userId;
+    }
 }

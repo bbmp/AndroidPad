@@ -23,4 +23,10 @@ public class StoveConstant {
     public final static String EXTRA_ENTRY_LIST = "entry_list";
     public final static String EXTRA_STEP_LIST = "step_list";
 
+    //炉头id
+    public final static String isCook = "is_cook";
+    public final static String stoveId = "stove_id";
+    public final static String level = "level";
+    public final static String workStatus = "work_status";
+    public final static String timingtime = "timing_time"; //定时时间
 }

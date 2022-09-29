@@ -83,6 +83,7 @@ public abstract class MqttPublic implements IProtocol{
                     .setMsgId(msgId)
                     .setGuid(srcGuid)
                     .setDt(dt)
+                    .setPayload(payload)
                     .setTopic(rTopic)
                     .build();
 

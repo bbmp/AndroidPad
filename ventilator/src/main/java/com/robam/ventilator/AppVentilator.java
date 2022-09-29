@@ -9,6 +9,8 @@ import com.robam.common.http.RetrofitClient;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.steamoven.device.SteamAbstractControl;
 import com.robam.steamoven.device.SteamMqttControl;
+import com.robam.stove.device.StoveAbstractControl;
+import com.robam.stove.device.StoveBluetoothControl;
 import com.robam.ventilator.device.VentilatorAbstractControl;
 import com.robam.ventilator.device.VentilatorFactory;
 import com.robam.ventilator.device.VentilatorLocalControl;
@@ -35,6 +37,8 @@ public class AppVentilator {
         VentilatorAbstractControl.getInstance().init(new VentilatorLocalControl());
         //远程控制一体机
         SteamAbstractControl.getInstance().init(new SteamMqttControl());
+        //蓝牙控制灶具
+        StoveAbstractControl.getInstance().init(new StoveBluetoothControl());
 
     }
 

@@ -64,7 +64,7 @@ public class Main {
             decoder.push_raw_data(data);
             Byte [] ret;
             do {
-                ret = decoder.decode_data();
+                ret = decoder.decode_data(1000);
                 if(ret != null) {
                     Byte [] resp_payload;
                     Byte [] resp;
