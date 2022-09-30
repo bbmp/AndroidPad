@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.robam.common.IDeviceType;
+import com.robam.common.device.Plat;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.ui.dialog.IDialog;
@@ -22,6 +23,8 @@ import com.robam.common.ui.view.PageIndicator;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.ImageUtils;
 import com.robam.common.utils.LogUtils;
+import com.robam.pan.bean.Pan;
+import com.robam.stove.bean.Stove;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
 import com.robam.common.bean.AccountInfo;
@@ -118,12 +121,23 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
                         for (Device device: getDeviceRes.devices) {
                             if (device.dc.equals(IDeviceType.RXWJ) ||
                                     device.dc.equals(IDeviceType.RYYJ) ||
-                                    device.dc.equals(IDeviceType.RZNG) ||
                                     device.dc.equals(IDeviceType.RXDG) ||
-                                    device.dc.equals(IDeviceType.RRQZ) ||
                                     device.dc.equals(IDeviceType.RZKY)) { //过滤套系外设备
                                 DeviceUserPage deviceUserPage = new DeviceUserPage(device, userInfo);
                                 fragments.add(deviceUserPage);
+                                List<Device> subDevices = device.subDevices;
+                                if ((Plat.getPlatform().getDeviceOnlySign()).equals(device.guid) && null != subDevices) { //当前烟机子设备
+                                    for (Device subDevice : subDevices) {
+                                        if (IDeviceType.RZNG.equals(subDevice.dc)) {//锅
+                                            DeviceUserPage panUserPage = new DeviceUserPage(subDevice, userInfo);
+                                            fragments.add(panUserPage);
+                                        }
+                                        else if (IDeviceType.RRQZ.equals(subDevice.dc)) {//灶具
+                                            DeviceUserPage stoveUserPage = new DeviceUserPage(subDevice, userInfo);
+                                            fragments.add(stoveUserPage);
+                                        }
+                                    }
+                                }
                             }
                         }
 

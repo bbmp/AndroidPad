@@ -35,6 +35,7 @@ import com.robam.common.ble.BleDecoder;
 import com.robam.common.ble.BleDeviceInfo;
 import com.robam.common.manager.BlueToothManager;
 import com.robam.common.ui.view.ExtImageSpan;
+import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.PermissionUtils;
 import com.robam.common.utils.StringUtils;
@@ -276,14 +277,27 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
     //添加子设备到设备列表
     private void addSubDevice(BleDevice bleDevice) {
         for (Device device: AccountInfo.getInstance().deviceList) {
-            if (bleDevice.getMac().equals(device.mac)) {//已经存在
-                BleDecoder bleDecoder = device.bleDecoder;
+            //已经存在锅或灶
 
+            if (device instanceof Pan) {
+                device.mac = bleDevice.getMac();
+                BleDecoder bleDecoder = ((Pan) device).bleDecoder;
                 if (null != bleDecoder)
-                    bleDecoder.init_decoder(0); //重新初始化
+                    bleDecoder.init_decoder(0);
+                else
+                    ((Pan) device).bleDecoder = new BleDecoder(0);
+                return;
+            } else if (device instanceof Stove) {
+                device.mac = bleDevice.getMac();
+                BleDecoder bleDecoder = ((Stove) device).bleDecoder;
+                if (null != bleDecoder)
+                    bleDecoder.init_decoder(0);
+                else
+                    ((Stove) device).bleDecoder = new BleDecoder(0);
                 return;
             }
         }
+
         if (IDeviceType.RRQZ.equals(model)) {
             Stove stove = new Stove("燃气灶", IDeviceType.RRQZ, "9B328");
             stove.mac = bleDevice.getMac();
@@ -301,8 +315,13 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
     private void setBleDevice(BleDevice bleDevice, BluetoothGattCharacteristic characteristic) {
         for (Device device: AccountInfo.getInstance().deviceList) {
             if (bleDevice.getMac().equals(device.mac)) {
-                device.bleDevice = bleDevice;
-                device.characteristic = characteristic;
+                if (device instanceof Pan) {
+                    ((Pan) device).bleDevice = bleDevice;
+                    ((Pan) device).characteristic = characteristic;
+                } else if (device instanceof Stove) {
+                    ((Stove) device).bleDevice = bleDevice;
+                    ((Stove) device).characteristic = characteristic;
+                }
                 break;
             }
         }
@@ -360,7 +379,15 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
                     @Override
                     public void onCharacteristicChanged(byte[] data) {
                         // 打开通知后，设备发过来的数据将在这里出现（UI线程）
-                        BleVentilator.bleParser(bleDevice, data);
+                        for (Device device: AccountInfo.getInstance().deviceList) {
+                            if (bleDevice.getMac().equals(device.mac)) {
+                                if (device instanceof Pan)
+                                    BleVentilator.bleParser(bleDevice, ((Pan) device).bleDecoder, data);
+                                else if (device instanceof Stove)
+                                    BleVentilator.bleParser(bleDevice, ((Stove) device).bleDecoder, data);
+                                break;
+                            }
+                        }
                     }
                 });
     }

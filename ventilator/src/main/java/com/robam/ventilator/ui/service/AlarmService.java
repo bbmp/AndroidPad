@@ -111,10 +111,10 @@ public class AlarmService extends Service {
                         .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                         .build();
                 MqttManager.getInstance().publish(msg, VentilatorFactory.getTransmitApi());
-            } else if (device instanceof Stove) {
+            } else if (device instanceof Stove) { //查询灶具
 
                 //本机端查询灶具
-                StoveAbstractControl.getInstance().queryAttribute((Stove) device);
+                StoveAbstractControl.getInstance().queryAttribute(device.guid);
             } else if (device instanceof Ventilator) {
                 MqttMsg msg = new MqttMsg.Builder()
                         .setMsgId(MsgKeys.GetFanStatus_Req)

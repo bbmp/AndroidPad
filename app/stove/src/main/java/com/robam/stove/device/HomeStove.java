@@ -12,6 +12,8 @@ public class HomeStove {
     private static class StoveHolder {
         private static final HomeStove instance = new HomeStove();
     }
+    //当前guid
+    public String guid;
     /**
      * 当前功能
      */

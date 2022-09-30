@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.robam.common.bean.RTopic;
+import com.robam.common.constant.ComnConstant;
 import com.robam.common.device.IPlat;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.StringUtils;
@@ -16,6 +17,7 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.json.JSONException;
 
 import java.util.Arrays;
 
@@ -201,8 +203,8 @@ public class MqttManager {
         public void onSuccess(IMqttToken asyncActionToken) {
             LogUtils.e( "订阅成功 ");
             //发送设备上线成功 主设备
-            if (null != asyncActionToken && iPlat.getDeviceOnlySign().equals(asyncActionToken.getUserContext()))
-                deviceConnectedNoti();
+//            if (null != asyncActionToken && iPlat.getDeviceOnlySign().equals(asyncActionToken.getUserContext()))
+//                deviceConnectedNoti();
         }
 
         @Override
@@ -348,7 +350,11 @@ public class MqttManager {
                 .setUserId(iPlat.getMac())
                 .setTopic(new RTopic(RTopic.TOPIC_BROADCAST, iPlat.getDt(), iPlat.getMac()))
                 .build();
-
+        try {
+            msg.putOpt(ComnConstant.DEVICE_NUM, 1);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         publish(msg, iProtocol);
     }
 }

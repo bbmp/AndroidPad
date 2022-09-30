@@ -28,9 +28,6 @@ public class MqttStove extends MqttPublic {
     @Override
     protected void onDecodeMsg(MqttMsg msg, byte[] payload, int offset) throws Exception {
         switch (msg.getID()) {
-            case MsgKeys.DeviceConnected_Noti: //设备上线通知
-                AccountInfo.getInstance().getGuid().setValue(msg.getGuid());
-                break;
             case MsgKeys.GetStoveStatus_Req: //查询灶状态
                 //答复
 //                String curGuid = msg.getrTopic().getDeviceType() + msg.getrTopic().getSignNum(); //当前设备guid
@@ -61,18 +58,7 @@ public class MqttStove extends MqttPublic {
     @Override
     protected void onEncodeMsg(ByteBuffer buf, MqttMsg msg) {
         switch (msg.getID()) {
-            case MsgKeys.DeviceConnected_Noti://上线通知
-                buf.put((byte) 1);
-                buf.put("0000000000".getBytes());
-                buf.put(DeviceUtils.getDeviceNumber(msg.getGuid()).getBytes()); //mac
-                buf.put(msg.getGuid().getBytes());
-                buf.put((byte) DeviceUtils.getDeviceNumber(msg.getGuid()).length());
-                buf.put(DeviceUtils.getDeviceNumber(msg.getGuid()).getBytes());
-                buf.put((byte) 1);
-                buf.put((byte) 4);
-                buf.put((byte) 1);
-                break;
-            case MsgKeys.GetStoveStatus_Req: //查询状态
+            case MsgKeys.GetStoveStatus_Req: //本机查询灶状态
                 //控制端类型
                 buf.put((byte) ITerminalType.PAD);
                 break;
@@ -93,7 +79,7 @@ public class MqttStove extends MqttPublic {
                 buf.put(AccountInfo.getInstance().getUserString().getBytes());
                 buf.put((byte) msg.opt(StoveConstant.isCook));
                 buf.put((byte) msg.opt(StoveConstant.stoveId));
-                buf.put((Byte) msg.opt(StoveConstant.workStatus));
+                buf.put((byte) msg.opt(StoveConstant.workStatus));
                 break;
             case MsgKeys.SetStoveLevel_Req: //设置挡位
                 buf.put((byte) ITerminalType.PAD);

@@ -4,6 +4,7 @@ import com.robam.common.ITerminalType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.RTopic;
+import com.robam.common.constant.ComnConstant;
 import com.robam.common.device.Plat;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.mqtt.MqttMsg;
@@ -36,6 +37,8 @@ public class MqttVentilator extends MqttPublic {
 //从payload中取值角标
         //远程被控制
         switch (msg.getID()) {
+            case MsgKeys.GetStoveStatus_Req: //查询灶具
+                break;
             case MsgKeys.getDeviceAttribute_Req:
 
                 break;
@@ -66,15 +69,29 @@ public class MqttVentilator extends MqttPublic {
         int msgId = msg.getID();
         switch (msgId) {
             case MsgKeys.DeviceConnected_Noti:
-                buf.put((byte) 1);
-                buf.put("0000000000".getBytes());
+                buf.put((byte) msg.optInt(ComnConstant.DEVICE_NUM));
+                buf.put(AccountInfo.getInstance().getUserString().getBytes());
                 buf.put(Plat.getPlatform().getMac().getBytes()); //mac
+
                 buf.put(msg.getGuid().getBytes());
                 buf.put((byte) Plat.getPlatform().getMac().length());
                 buf.put(Plat.getPlatform().getMac().getBytes());
                 buf.put((byte) 1);
-                buf.put((byte) 4);
+                buf.put((byte) 9);
                 buf.put((byte) 1);
+
+                if (null != msg.optString(VentilatorConstant.STOVE_GUID)) {
+                    String guid = msg.optString(VentilatorConstant.STOVE_GUID);
+                    buf.put(guid.getBytes());
+                    String biz = msg.optString(VentilatorConstant.STOVE_BIZ);
+                    buf.put((byte) biz.length());
+                    buf.put(biz.getBytes());
+                    buf.put((byte) 0);
+                    buf.put((byte) 0);
+                    buf.put((byte) msg.optInt(VentilatorConstant.STOVE_STATUS));
+                }
+                buf.put((byte) 0); //蓝牙版本
+                buf.put((byte) 0); //参数个数
                 break;
             case MsgKeys.getDeviceAttribute_Req:  //属性查询
                 buf.put((byte) 0x00);
@@ -129,6 +146,8 @@ public class MqttVentilator extends MqttPublic {
         //控制烟机需校验是否是本机
         if (targetGuid.equals(Plat.getPlatform().getDeviceOnlySign())) {
             switch (msg.getID()) {
+                case MsgKeys.GetStoveStatus_Rep: //查询灶应答
+                    break;
                 case MsgKeys.getDeviceAttribute_Req: { //查询烟机
                     //属性个数
                     short attributeNum = ByteUtils.toShort(payload[offset]);

@@ -10,13 +10,13 @@ public interface StoveFunction {
 
     void powerOn();
     //查询灶具状态
-    void queryAttribute(Stove stove);
+    void queryAttribute(String targetGuid);
     //设置灶具状态
-    void setAttribute(Stove stove);
+    void setAttribute(String targetGuid, byte stoveId, byte isCook, byte workStatus);
     //设置灶具功率
-    void setLevel(Stove stove);
+    void setLevel(String targetGuid, byte stoveId, byte isCook, byte level);
     //设置定时关火
-    void setTiming(Stove stove);
+    void setTiming(String targetGuid, byte stoveId, short timingTime);
     //灶具菜谱设置
-    void setRecipe(Stove stove);
+    void setRecipe(String targetGuid, byte stoveId);
 }

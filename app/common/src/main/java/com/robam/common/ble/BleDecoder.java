@@ -28,8 +28,6 @@ public class BleDecoder {
     public static final int ROKI_UART_CMD_KEY_DYNAMIC = 32;
     public static final int CMD_DISCONNECT_BLE_PRIOR_NOTICE = 94;
     public static final int RESP_DISCONNECT_BLE_PRIOR_NOTICE = 95;
-    public static final int CMD_STOVE_GEAR_NOTICE = 96; //灶具挡位变化
-    public static final int RESP_STOVE_GEAR_NOTICE = 97;//灶具挡位回复
 
     public static final int RC_SUCCESS = 0;
     public static final int RC_FAIL = 1;

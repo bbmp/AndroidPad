@@ -242,12 +242,8 @@ public class HomePage extends StoveBasePage {
     //关火
     private void closeFire(int stoveId) {
         for (Device device: AccountInfo.getInstance().deviceList) {
-            if (device instanceof Stove) {
-                Stove stove = (Stove) device;
-                stove.stoveId = (byte) stoveId;
-                stove.workStatus = 0x00;
-                stove.isCook = 0x00;
-                StoveAbstractControl.getInstance().setAttribute(stove);
+            if (device.guid.equals(HomeStove.getInstance().guid)) {
+                StoveAbstractControl.getInstance().setAttribute(HomeStove.getInstance().guid, (byte) stoveId, (byte) 0x00, (byte) 0x00);
                 break;
             }
         }

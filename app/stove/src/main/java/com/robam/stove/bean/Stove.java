@@ -5,12 +5,14 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import androidx.lifecycle.MutableLiveData;
 
 import com.clj.fastble.callback.BleWriteCallback;
+import com.clj.fastble.data.BleDevice;
 import com.clj.fastble.exception.BleException;
 import com.robam.common.bean.Device;
 import com.robam.common.ble.BleDecoder;
 import com.robam.common.manager.BlueToothManager;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.utils.ByteUtils;
+import com.robam.common.utils.LogUtils;
 
 import java.util.Arrays;
 
@@ -19,6 +21,13 @@ import java.util.Arrays;
  * 灶具
  */
 public class Stove extends Device {
+
+    //蓝牙设备
+    public BleDevice bleDevice;
+    //蓝牙特征符
+    public BluetoothGattCharacteristic characteristic;
+    //蓝牙解析
+    public BleDecoder bleDecoder;
 
     public Stove(Device device) {
         this.ownerId = device.ownerId;
@@ -100,12 +109,12 @@ public class Stove extends Device {
 
             @Override
             public void onWriteSuccess(final int current, final int total, final byte[] justWrite) {
-
+                LogUtils.e("onWriteSuccess");
             }
 
             @Override
             public void onWriteFailure(final BleException exception) {
-
+                LogUtils.e("onWriteFailure");
             }
         });
         return super.onMsgReceived(msg);

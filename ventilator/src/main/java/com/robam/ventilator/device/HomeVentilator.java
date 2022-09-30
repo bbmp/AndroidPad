@@ -1,5 +1,7 @@
 package com.robam.ventilator.device;
 
+import com.robam.common.mqtt.MqttMsg;
+
 public class HomeVentilator {
     //当前进入的烟机
     public static HomeVentilator getInstance() {
@@ -73,4 +75,5 @@ public class HomeVentilator {
      * byte20  参数9 预留
      */
     public byte param9 = (byte) 0x00;
+
 }

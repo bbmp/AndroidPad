@@ -1,8 +1,11 @@
 package com.robam.pan.bean;
 
+import android.bluetooth.BluetoothGattCharacteristic;
+
 import androidx.lifecycle.MutableLiveData;
 
 import com.clj.fastble.callback.BleWriteCallback;
+import com.clj.fastble.data.BleDevice;
 import com.clj.fastble.exception.BleException;
 import com.robam.common.bean.Device;
 import com.robam.common.ble.BleDecoder;
@@ -16,6 +19,12 @@ import java.util.Arrays;
 public class Pan extends Device {
     //锅温度
     public int panTemp;
+    //蓝牙设备
+    public BleDevice bleDevice;
+    //蓝牙特征符
+    public BluetoothGattCharacteristic characteristic;
+    //蓝牙解析
+    public BleDecoder bleDecoder;
 
     public Pan(Device device) {
         this.ownerId = device.ownerId;

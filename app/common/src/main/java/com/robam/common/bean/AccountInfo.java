@@ -52,15 +52,6 @@ public class AccountInfo {
 //        return userData;
 //    }
 
-    public BleDecoder getBleDecoder(String mac) {
-        for (Device device: deviceList) {
-            if (null != mac && mac.equals(device.mac)) {
-                return device.bleDecoder;
-            }
-        }
-        return null;
-    }
-
     public String getUserString() {
         UserInfo userInfo = user.getValue();
         long id = (userInfo != null) ? userInfo.id : 0;

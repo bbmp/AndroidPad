@@ -27,27 +27,28 @@ public class StoveAbstractControl implements StoveFunction{
     }
 
     @Override
-    public void queryAttribute(Stove stove) {
-        function.queryAttribute(stove);
+    public void queryAttribute(String targetGuid) {
+        function.queryAttribute(targetGuid);
     }
 
     @Override
-    public void setAttribute(Stove stove) {
-        function.setAttribute(stove);
+    public void setAttribute(String targetGuid, byte stoveId, byte isCook, byte workStatus) {
+        function.setAttribute(targetGuid, stoveId, isCook, workStatus);
     }
 
     @Override
-    public void setLevel(Stove stove) {
-        function.setLevel(stove);
+    public void setLevel(String targetGuid, byte stoveId, byte isCook, byte level) {
+        function.setLevel(targetGuid, stoveId, isCook, level);
     }
 
     @Override
-    public void setTiming(Stove stove) {
-        function.setTiming(stove);
+    public void setTiming(String targetGuid, byte stoveId, short timingTime) {
+        function.setTiming(targetGuid, stoveId, timingTime);
     }
 
     @Override
-    public void setRecipe(Stove stove) {
-        function.setRecipe(stove);
+    public void setRecipe(String targetGuid, byte stoveId) {
+        function.setRecipe(targetGuid, stoveId);
     }
+
 }

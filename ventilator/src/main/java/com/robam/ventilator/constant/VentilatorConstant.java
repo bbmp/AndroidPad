@@ -38,4 +38,9 @@ public class VentilatorConstant {
     //智感恒吸
     public final static int FAN_SMART_CLOSE = 0;
     public final static int FAN_SMART_OPEN = 1;
+
+    //mqtt消息字段
+    public final static String STOVE_GUID = "stove_guid";
+    public final static String STOVE_BIZ = "stove_biz"; //业务编吗
+    public final static String STOVE_STATUS = "stove_status";
 }

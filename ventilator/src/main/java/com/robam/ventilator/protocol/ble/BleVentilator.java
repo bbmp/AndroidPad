@@ -1,5 +1,7 @@
 package com.robam.ventilator.protocol.ble;
 
+import android.bluetooth.BluetoothGattCharacteristic;
+
 import com.clj.fastble.callback.BleWriteCallback;
 import com.clj.fastble.data.BleDevice;
 import com.clj.fastble.exception.BleException;
@@ -8,14 +10,20 @@ import com.robam.common.bean.Device;
 import com.robam.common.bean.RTopic;
 import com.robam.common.ble.BleDecoder;
 import com.robam.common.ble.BleDeviceInfo;
+import com.robam.common.constant.ComnConstant;
 import com.robam.common.device.Plat;
 import com.robam.common.manager.BlueToothManager;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MsgKeys;
+import com.robam.common.utils.ByteUtils;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.StringUtils;
+import com.robam.pan.bean.Pan;
+import com.robam.stove.bean.Stove;
+import com.robam.ventilator.constant.VentilatorConstant;
+import com.robam.ventilator.device.HomeVentilator;
 import com.robam.ventilator.device.VentilatorFactory;
 
 import java.util.Arrays;
@@ -25,11 +33,11 @@ import java.util.Map;
 //蓝牙解析
 public class BleVentilator {
 
-    public static void bleParser(BleDevice bleDevice, byte[] data) {
+    public static void bleParser(BleDevice bleDevice, BleDecoder decoder, byte[] data) {
         if (null == data)
             return;
         LogUtils.e("bleParser " + StringUtils.bytes2Hex(data));
-        BleDecoder decoder = AccountInfo.getInstance().getBleDecoder(bleDevice.getMac());
+//        BleDecoder decoder = AccountInfo.getInstance().getBleDecoder(bleDevice.getMac());
         if(decoder != null) { //decoder一定是不为null的
             decoder.push_raw_data(BleDecoder.byteArraysToByteArrays(data));
             Byte [] ret;
@@ -41,23 +49,24 @@ public class BleVentilator {
                     boolean response = true;
                     byte [] ret2 = BleDecoder.ByteArraysTobyteArrays(ret);
                     LogUtils.e("ret2 =" + StringUtils.bytes2Hex(ret2));
-                    switch(ret2[BleDecoder.DECODE_CMD_KEY_OFFSET]) {
+                    switch(ByteUtils.toInt(ret2[BleDecoder.DECODE_CMD_KEY_OFFSET])) {
                         case BleDecoder.ROKI_UART_CMD_KEY_INTERNAL://收到内部指令
-                            switch(ret2[BleDecoder.DECODE_CMD_ID_OFFSET]) {
+                            switch(ByteUtils.toInt(ret2[BleDecoder.DECODE_CMD_ID_OFFSET])) {
                                 case BleDecoder.CMD_PAIRING_REQUEST_INT://设备应用层请求配对
+                                    int biz_len = ByteUtils.toInt(ret2[11]);
                                     if(ret2.length >= BleDecoder.DECODE_PAYLOAD_OFFSET + 5 + 1 + 3 + 1 + 12) {
-                                        if(ret2.length < BleDecoder.DECODE_PAYLOAD_OFFSET + 5 + 1 + 3 + 1  + ret2[11] + 12) {
+                                        if(ret2.length < BleDecoder.DECODE_PAYLOAD_OFFSET + 5 + 1 + 3 + 1  + biz_len + 12) {
                                             response = false;
                                         } else {
                                             byte[] guid = new byte[17];//设备业务类型(5B)+设备GID(12B)组成GUID
                                             byte[] int_guid = new byte[4];//内部设备类型(1B)+内部设备编码(3B)
-                                            byte[] biz_id = new byte[ret2[11]];//业务编码长度
+                                            byte[] biz_id = new byte[biz_len];//业务编码长度
                                             int ble_type;//蓝牙产品品类
                                             System.arraycopy(ret2, BleDecoder.DECODE_PAYLOAD_OFFSET, guid,0,  5);//得到设备业务类型
                                             System.arraycopy(ret2, BleDecoder.DECODE_PAYLOAD_OFFSET + 5, int_guid, 0, 1 + 3);
-                                            System.arraycopy(ret2, BleDecoder.DECODE_PAYLOAD_OFFSET + 5 + 1 + 3 + 1, biz_id, 0, ret2[11]);
-                                            System.arraycopy(ret2, BleDecoder.DECODE_PAYLOAD_OFFSET + 5 + 1 + 3 + 1 + ret2[11], guid, 5, 12);
-                                            ble_type = ret2[BleDecoder.DECODE_PAYLOAD_OFFSET + 5 + 1 + 3 + 1 + ret2[11] + 12];
+                                            System.arraycopy(ret2, BleDecoder.DECODE_PAYLOAD_OFFSET + 5 + 1 + 3 + 1, biz_id, 0, biz_len);
+                                            System.arraycopy(ret2, BleDecoder.DECODE_PAYLOAD_OFFSET + 5 + 1 + 3 + 1 + biz_len, guid, 5, 12);
+                                            ble_type = ByteUtils.toInt(ret2[BleDecoder.DECODE_PAYLOAD_OFFSET + 5 + 1 + 3 + 1 + biz_len + 12]);
                                             LogUtils.e("guid CMD_PAIRING_REQUEST_INT =" + new String(guid));
                                             int i;
                                             for(i = 0; i<AccountInfo.getInstance().deviceList.size(); i++) {
@@ -69,17 +78,13 @@ public class BleVentilator {
                                                 //配对成功
                                                 if (bleDevice.getMac().equals(device.mac)) { //update info
 
-                                                    if (!(new String(guid)).equals(device.guid))
-                                                        device.guid = new String(guid);
-                                                    if (!Arrays.equals(device.int_guid, int_guid)) {
-                                                        device.int_guid = int_guid;
-                                                    }
-                                                    if (!(new String(biz_id)).equals(device.bid)) {
-                                                        device.bid = new String(biz_id);
-                                                    }
-                                                    if (device.bleType != ble_type) {
-                                                        device.bleType = ble_type;
-                                                    }
+                                                    device.guid = new String(guid);
+
+                                                    device.int_guid = new String(int_guid);
+
+                                                    device.bid = new String(biz_id);
+
+                                                    device.bleType = ble_type;
 
                                                     break;
                                                 }
@@ -100,8 +105,10 @@ public class BleVentilator {
                                     }
                                     break;
                                 case BleDecoder.CMD_DEVICE_ONLINE_INT://设备上线通知
+                                    int biz_len2 = ByteUtils.toInt(ret2[13]);
+                                    int sub_dev_type = ByteUtils.toInt(ret2[3]);
                                     if(ret2.length >= BleDecoder.DECODE_PAYLOAD_OFFSET + 1 + 1 + 5 + 1 + 3 + 1 + 12) {
-                                        if (ret2.length < BleDecoder.DECODE_PAYLOAD_OFFSET + 1 + 1 + 5 + 1 + 3 + 1 + ret2[13] + 12 || ret2[3] != 2) {
+                                        if (ret2.length < BleDecoder.DECODE_PAYLOAD_OFFSET + 1 + 1 + 5 + 1 + 3 + 1 + biz_len2 + 12 || sub_dev_type != 2) {
                                             response = false;
                                         } else {
                                             int version = ret2[BleDecoder.DECODE_PAYLOAD_OFFSET];
@@ -110,15 +117,15 @@ public class BleVentilator {
                                             byte[] biz_id = new byte[ret2[13]];//业务编码长度
                                             System.arraycopy(ret2, BleDecoder.DECODE_PAYLOAD_OFFSET + 1 + 1, guid, 0, 5);//得到设备业务类型
                                             System.arraycopy(ret2, BleDecoder.DECODE_PAYLOAD_OFFSET + 1 + 1 + 5, int_guid, 0, 3 + 1);
-                                            System.arraycopy(ret2, BleDecoder.DECODE_PAYLOAD_OFFSET + 1 + 1 + 5 + 1 + 3 + 1, biz_id, 0, ret2[13]);
-                                            System.arraycopy(ret2, BleDecoder.DECODE_PAYLOAD_OFFSET + 1 + 1 + 5 + 1 + 3 + 1 + ret2[13], guid, 5, 12);
+                                            System.arraycopy(ret2, BleDecoder.DECODE_PAYLOAD_OFFSET + 1 + 1 + 5 + 1 + 3 + 1, biz_id, 0, biz_len2);
+                                            System.arraycopy(ret2, BleDecoder.DECODE_PAYLOAD_OFFSET + 1 + 1 + 5 + 1 + 3 + 1 + biz_len2, guid, 5, 12);
                                             LogUtils.e("guid CMD_DEVICE_ONLINE_INT =" + new String(guid));
                                             int i;
                                             for(i = 0; i < AccountInfo.getInstance().deviceList.size(); i++) {
                                                 Device device = AccountInfo.getInstance().deviceList.get(i);
                                                 if ((new String(guid)).equals(device.guid) && (new String(biz_id)).equals(device.bid)) {
 
-                                                    if (!Arrays.equals(device.int_guid, int_guid)) {
+                                                    if (!new String(int_guid).equals(device.int_guid)) {
                                                         response = false;
                                                         break;
                                                     }
@@ -131,7 +138,7 @@ public class BleVentilator {
                                             }
                                             if (response) {
                                                 //通知上线
-                                                notifyOnline(new String(guid));
+                                                notifyOnline(new String(guid), new String(biz_id), 1);
                                             }
                                         }
                                     } else {
@@ -173,17 +180,19 @@ public class BleVentilator {
                                 }
                             }
                             break;
-                        case BleDecoder.ROKI_UART_CMD_KEY_DYNAMIC://收到外部指令(一般用于响应外部设备),通过MQTT转发出去
-                            for(Device device : AccountInfo.getInstance().deviceList) {
-                                if (bleDevice.getMac().equals(device.mac)) {
-                                    String target_guid = BlueToothManager.send_map.get((int) ret2[BleDecoder.DECODE_CMD_KEY_OFFSET]);
-                                    if (null != target_guid) {
-                                        String topic = "/u/" + target_guid.substring(0, 5) + "/" + target_guid.substring(5);
-                                        ble_mqtt_publish(topic, device.guid, ret2);
-                                        //移除消息
-                                        BlueToothManager.send_map.remove((int) ret2[BleDecoder.DECODE_CMD_KEY_OFFSET]);
+                        default:
+                            if(ByteUtils.toInt(ret2[BleDecoder.DECODE_CMD_KEY_OFFSET]) >= BleDecoder.ROKI_UART_CMD_KEY_DYNAMIC) { //收到外部指令(一般用于响应外部设备),通过MQTT转发出去
+                                for (Device device : AccountInfo.getInstance().deviceList) {
+                                    if (bleDevice.getMac().equals(device.mac)) {
+                                        String target_guid = BlueToothManager.send_map.get(ByteUtils.toInt(ret2[BleDecoder.DECODE_CMD_KEY_OFFSET]));
+                                        if (null != target_guid) {
+                                            String topic = "/u/" + target_guid.substring(0, 5) + "/" + target_guid.substring(5);
+                                            ble_mqtt_publish(topic, device.guid, ret2);
+                                            //移除消息
+                                            BlueToothManager.send_map.remove(ByteUtils.toInt(ret2[BleDecoder.DECODE_CMD_KEY_OFFSET]));
+                                        }
+                                        break;
                                     }
-                                    break;
                                 }
                             }
                             break;
@@ -193,16 +202,24 @@ public class BleVentilator {
         }
     }
     //通知上线
-    private static void notifyOnline(String guid) {
-        //订阅设备
-        MqttManager.getInstance().subscribe(DeviceUtils.getDeviceTypeId(guid), DeviceUtils.getDeviceNumber(guid));
+    private static void notifyOnline(String guid, String biz, int status) { //子设备guid
+
         //通知
-        MqttMsg msg = new MqttMsg.Builder()
-                .setMsgId(MsgKeys.DeviceConnected_Noti)
-                .setGuid(guid) //源guid
-                .setTopic(new RTopic(RTopic.TOPIC_BROADCAST, DeviceUtils.getDeviceTypeId(guid), DeviceUtils.getDeviceNumber(guid)))
-                .build();
-        MqttManager.getInstance().publish(msg, VentilatorFactory.getTransmitApi());
+        try {
+            String srcGuid = Plat.getPlatform().getDeviceOnlySign(); //烟机guid
+            MqttMsg msg = new MqttMsg.Builder()
+                    .setMsgId(MsgKeys.DeviceConnected_Noti)
+                    .setGuid(srcGuid) //源guid
+                    .setTopic(new RTopic(RTopic.TOPIC_BROADCAST, DeviceUtils.getDeviceTypeId(srcGuid), DeviceUtils.getDeviceNumber(srcGuid)))
+                    .build();
+            msg.putOpt(ComnConstant.DEVICE_NUM, 2);
+            msg.putOpt(VentilatorConstant.STOVE_GUID, guid);
+            msg.putOpt(VentilatorConstant.STOVE_BIZ, biz);
+            msg.putOpt(VentilatorConstant.STOVE_STATUS, status);
+            MqttManager.getInstance().publish(msg, VentilatorFactory.getTransmitApi());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 //    public static BleDecoder getBleDecoder(BleDevice bleDevice) {
@@ -231,7 +248,12 @@ public class BleVentilator {
         //TODO 这里实现BLE Write no response
         for (Device device: AccountInfo.getInstance().deviceList) {
             if (bleDevice.getMac().equals(device.mac)) {
-                BlueToothManager.write_no_response(bleDevice, device.characteristic, data, new BleWriteCallback() {
+                BluetoothGattCharacteristic characteristic = null;
+                if (device instanceof Pan) {
+                    characteristic = ((Pan) device).characteristic;
+                } else if (device instanceof Stove)
+                    characteristic = ((Stove) device).characteristic;
+                BlueToothManager.write_no_response(bleDevice, characteristic, data, new BleWriteCallback() {
                     @Override
                     public void onWriteSuccess(int current, int total, byte[] justWrite) {
                         LogUtils.e("onWriteSuccess");

@@ -2,6 +2,7 @@ package com.robam.stove.device;
 
 import com.clj.fastble.callback.BleWriteCallback;
 import com.clj.fastble.exception.BleException;
+import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.RTopic;
 import com.robam.common.ble.BleDecoder;
@@ -30,110 +31,133 @@ public class StoveBluetoothControl implements StoveFunction{
     public void powerOn() {
 
     }
-
+    //需用内部指令
     @Override
-    public void queryAttribute(Stove stove) {
+    public void queryAttribute(String targetGuid) {
         //模拟收发
-        MqttMsg msg = new MqttMsg.Builder()
-                .setMsgId(MsgKeys.GetStoveStatus_Req)
-                .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
-                .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(stove.guid), DeviceUtils.getDeviceNumber(stove.guid)))
-                .build();
-        //打包payload
-        byte[] mqtt_data = StoveFactory.getProtocol().encode(msg);
-        //解析
-        MqttMsg newMsg = StoveFactory.getProtocol().decode(msg.getrTopic().getTopic(), mqtt_data);
-        stove.onMsgReceived(newMsg);
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device instanceof Stove && null != device.guid && device.guid.equals(targetGuid)) {
+                MqttMsg msg = new MqttMsg.Builder()
+                        .setMsgId(MsgKeys.GetStoveStatus_Req)
+                        .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
+                        .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
+                        .build();
+                //打包payload
+                byte[] mqtt_data = StoveFactory.getProtocol().encode(msg);
+                //解析
+                MqttMsg newMsg = StoveFactory.getProtocol().decode(msg.getrTopic().getTopic(), mqtt_data);
+                device.onMsgReceived(newMsg);
+                break;
+            }
+        }
     }
 
     @Override
-    public void setAttribute(Stove stove) {
-        if (null == stove.guid)
-            return;
-        //模拟收发
-        MqttMsg msg = new MqttMsg.Builder()
-                .setMsgId(MsgKeys.SetStoveStatus_Req)
-                .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
-                .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(stove.guid), DeviceUtils.getDeviceNumber(stove.guid)))
-                .build();
-        //设置灶具id
-        try {
-            msg.putOpt(StoveConstant.stoveId, stove.stoveId);
-            msg.putOpt(StoveConstant.isCook, stove.isCook);
-            msg.putOpt(StoveConstant.workStatus, stove.workStatus);
-        } catch (JSONException e) {
-            e.printStackTrace();
+    public void setAttribute(String targetGuid, byte stoveId, byte isCook, byte workStatus) {
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device instanceof Stove && null != device.guid && device.guid.equals(targetGuid)) {
+                //模拟收发
+                MqttMsg msg = new MqttMsg.Builder()
+                        .setMsgId(MsgKeys.SetStoveStatus_Req)
+                        .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
+                        .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
+                        .build();
+                //设置灶具id
+                try {
+                    msg.putOpt(StoveConstant.stoveId, stoveId);
+                    msg.putOpt(StoveConstant.isCook, isCook);
+                    msg.putOpt(StoveConstant.workStatus, workStatus);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                //打包payload
+                byte[] mqtt_data = StoveFactory.getProtocol().encode(msg);
+                //解析
+                MqttMsg newMsg = StoveFactory.getProtocol().decode(msg.getrTopic().getTopic(), mqtt_data);
+                device.onMsgReceived(newMsg);
+                break;
+            }
         }
-        //打包payload
-        byte[] mqtt_data = StoveFactory.getProtocol().encode(msg);
-        //解析
-        MqttMsg newMsg = StoveFactory.getProtocol().decode(msg.getrTopic().getTopic(), mqtt_data);
-        stove.onMsgReceived(newMsg);
     }
 
     @Override
-    public void setLevel(Stove stove) {
-        //模拟收发
-        MqttMsg msg = new MqttMsg.Builder()
-                .setMsgId(MsgKeys.SetStoveLevel_Req)
-                .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
-                .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(stove.guid), DeviceUtils.getDeviceNumber(stove.guid)))
-                .build();
-        //设置灶具id
-        try {
-            msg.putOpt(StoveConstant.stoveId, stove.stoveId);
-            msg.putOpt(StoveConstant.isCook, stove.isCook);
-            msg.putOpt(StoveConstant.level, stove.level);
-        } catch (JSONException e) {
-            e.printStackTrace();
+    public void setLevel(String targetGuid, byte stoveId, byte isCook, byte level) {
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device instanceof Stove && null != device.guid && device.guid.equals(targetGuid)) {
+                //模拟收发
+                MqttMsg msg = new MqttMsg.Builder()
+                        .setMsgId(MsgKeys.SetStoveLevel_Req)
+                        .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
+                        .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
+                        .build();
+                //设置灶具id
+                try {
+                    msg.putOpt(StoveConstant.stoveId, stoveId);
+                    msg.putOpt(StoveConstant.isCook, isCook);
+                    msg.putOpt(StoveConstant.level, level);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                //打包payload
+                byte[] mqtt_data = StoveFactory.getProtocol().encode(msg);
+                //解析
+                MqttMsg newMsg = StoveFactory.getProtocol().decode(msg.getrTopic().getTopic(), mqtt_data);
+                device.onMsgReceived(newMsg);
+                break;
+            }
         }
-        //打包payload
-        byte[] mqtt_data = StoveFactory.getProtocol().encode(msg);
-        //解析
-        MqttMsg newMsg = StoveFactory.getProtocol().decode(msg.getrTopic().getTopic(), mqtt_data);
-        stove.onMsgReceived(newMsg);
     }
 
     @Override
-    public void setTiming(Stove stove) {
-        //模拟收发
-        MqttMsg msg = new MqttMsg.Builder()
-                .setMsgId(MsgKeys.SetStoveShutdown_Req)
-                .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
-                .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(stove.guid), DeviceUtils.getDeviceNumber(stove.guid)))
-                .build();
-        //设置灶具id
-        try {
-            msg.putOpt(StoveConstant.stoveId, stove.stoveId);
-            msg.putOpt(StoveConstant.timingtime, stove.timingTime);
-        } catch (JSONException e) {
-            e.printStackTrace();
+    public void setTiming(String targetGuid, byte stoveId, short timingTime) {
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device instanceof Stove && null != device.guid && device.guid.equals(targetGuid)) {
+                //模拟收发
+                MqttMsg msg = new MqttMsg.Builder()
+                        .setMsgId(MsgKeys.SetStoveShutdown_Req)
+                        .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
+                        .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
+                        .build();
+                //设置灶具id
+                try {
+                    msg.putOpt(StoveConstant.stoveId, stoveId);
+                    msg.putOpt(StoveConstant.timingtime, timingTime);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                //打包payload
+                byte[] mqtt_data = StoveFactory.getProtocol().encode(msg);
+                //解析
+                MqttMsg newMsg = StoveFactory.getProtocol().decode(msg.getrTopic().getTopic(), mqtt_data);
+                device.onMsgReceived(newMsg);
+                break;
+            }
         }
-        //打包payload
-        byte[] mqtt_data = StoveFactory.getProtocol().encode(msg);
-        //解析
-        MqttMsg newMsg = StoveFactory.getProtocol().decode(msg.getrTopic().getTopic(), mqtt_data);
-        stove.onMsgReceived(newMsg);
     }
 
     @Override
-    public void setRecipe(Stove stove) {
-        //模拟收发
-        MqttMsg msg = new MqttMsg.Builder()
-                .setMsgId(MsgKeys.setStoveRecipe_Req)
-                .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
-                .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(stove.guid), DeviceUtils.getDeviceNumber(stove.guid)))
-                .build();
-        //设置灶具id
-        try {
-            msg.putOpt(StoveConstant.stoveId, stove.stoveId);
-        } catch (JSONException e) {
-            e.printStackTrace();
+    public void setRecipe(String targetGuid, byte stoveId) {
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device instanceof Stove && null != device.guid && device.guid.equals(targetGuid)) {
+                //模拟收发
+                MqttMsg msg = new MqttMsg.Builder()
+                        .setMsgId(MsgKeys.setStoveRecipe_Req)
+                        .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
+                        .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
+                        .build();
+                //设置灶具id
+                try {
+                    msg.putOpt(StoveConstant.stoveId, stoveId);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                //打包payload
+                byte[] mqtt_data = StoveFactory.getProtocol().encode(msg);
+                //解析
+                MqttMsg newMsg = StoveFactory.getProtocol().decode(msg.getrTopic().getTopic(), mqtt_data);
+                device.onMsgReceived(newMsg);
+                break;
+            }
         }
-        //打包payload
-        byte[] mqtt_data = StoveFactory.getProtocol().encode(msg);
-        //解析
-        MqttMsg newMsg = StoveFactory.getProtocol().decode(msg.getrTopic().getTopic(), mqtt_data);
-        stove.onMsgReceived(newMsg);
     }
 }

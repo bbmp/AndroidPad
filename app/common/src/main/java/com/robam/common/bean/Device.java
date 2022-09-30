@@ -79,13 +79,7 @@ public class Device {
      */
     public int bleType;
     //内部设备类型(1B)+内部设备编码(3B)
-    public byte[] int_guid;
-    //蓝牙设备
-    public BleDevice bleDevice;
-    //蓝牙特征符
-    public BluetoothGattCharacteristic characteristic;
-    //蓝牙解析
-    public BleDecoder bleDecoder;
+    public String int_guid;
 
     public Device() {
     }
@@ -94,7 +88,7 @@ public class Device {
         this.mac = mac;
     }
 
-    public Device(String guid, byte[] int_guid, String bid, int bleType) {
+    public Device(String guid, String int_guid, String bid, int bleType) {
         this.guid = guid;
         this.int_guid =  int_guid;
         this.bid = bid;
