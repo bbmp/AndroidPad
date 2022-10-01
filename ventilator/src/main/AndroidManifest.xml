@@ -5,20 +5,21 @@
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.SET_TIME"
+    <uses-permission
+        android:name="android.permission.SET_TIME"
         tools:ignore="ProtectedPermissions" />
 
     <application>
         <activity
-            android:name=".ui.activity.AddDeviceMainActivity"
+            android:name=".ui.activity.AddDeviceActivity"
             android:exported="false"
             android:screenOrientation="landscape" />
         <activity
             android:name=".ui.activity.LoginPasswordActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize"
             android:launchMode="singleTop"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.activity.ShortcutActivity"
             android:exported="false"
@@ -90,15 +91,29 @@
             android:exported="false"
             android:launchMode="singleTask"
             android:screenOrientation="landscape" />
+
         <service android:name="org.eclipse.paho.android.service.MqttService" /> <!-- mqtt服务-->
-        <service android:name=".ui.service.AlarmService" android:exported="true" android:enabled="true"/>
-        <receiver android:name=".ui.receiver.AlarmReceiver" android:exported="false"/>
-        <receiver android:name=".ui.receiver.VentilatorReceiver"
+        <service
+            android:name=".ui.service.AlarmMqttService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".ui.service.AlarmBleService"
+            android:enabled="true"
+            android:exported="true" />
+        <receiver
+            android:name=".ui.receiver.AlarmMqttReceiver"
+            android:exported="false" />
+        <receiver
+            android:name=".ui.receiver.AlarmBleReceiver"
+            android:exported="false" />
+        <receiver
+            android:name=".ui.receiver.VentilatorReceiver"
             android:exported="false">
             <intent-filter>
-                <action android:name="android.net.wifi.SCAN_RESULTS"/>
-                <action android:name="android.net.wifi.WIFI_STATE_CHANGED"/>
-                <action android:name="android.net.wifi.STATE_CHANGE"/>
+                <action android:name="android.net.wifi.SCAN_RESULTS" />
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+                <action android:name="android.net.wifi.STATE_CHANGE" />
             </intent-filter>
         </receiver>
     </application>

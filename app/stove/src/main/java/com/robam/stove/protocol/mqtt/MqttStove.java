@@ -58,7 +58,7 @@ public class MqttStove extends MqttPublic {
     @Override
     protected void onEncodeMsg(ByteBuffer buf, MqttMsg msg) {
         switch (msg.getID()) {
-            case MsgKeys.GetStoveStatus_Req: //本机查询灶状态
+            case MsgKeys.FanGetStoveStatus_req: //本机查询灶状态
                 //控制端类型
                 buf.put((byte) ITerminalType.PAD);
                 break;

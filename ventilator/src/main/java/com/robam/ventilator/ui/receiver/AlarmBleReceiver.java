@@ -4,12 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.robam.ventilator.ui.service.AlarmService;
+import com.robam.ventilator.ui.service.AlarmBleService;
 
-//定时任务
-public class AlarmReceiver extends BroadcastReceiver {
+public class AlarmBleReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        context.startService(new Intent(context, AlarmService.class));
+        context.startService(new Intent(context, AlarmBleService.class));
     }
 }

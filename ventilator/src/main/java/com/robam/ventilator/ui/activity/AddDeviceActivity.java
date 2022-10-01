@@ -1,6 +1,7 @@
 package com.robam.ventilator.ui.activity;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,9 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 //添加设备入口
-public class AddDeviceMainActivity extends VentilatorBaseActivity {
+public class AddDeviceActivity extends VentilatorBaseActivity {
     private RecyclerView rvDevice;
     private RvAddDeviceAdapter rvAddDeviceAdapter;
+    private List<Device> deviceList = new ArrayList<>();
 
     @Override
     protected int getLayoutId() {
@@ -61,9 +63,38 @@ public class AddDeviceMainActivity extends VentilatorBaseActivity {
                     }
                     Intent intent = new Intent();
                     intent.putExtra(VentilatorConstant.EXTRA_MODEL, device.dc);
-                    intent.setClass(AddDeviceMainActivity.this, MatchNetworkActivity.class);
+                    intent.setClass(AddDeviceActivity.this, MatchNetworkActivity.class);
                     //开始配网流程
                     startActivity(intent);
+                }
+            }
+        });
+        //监听锅和灶
+        AccountInfo.getInstance().getGuid().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                for (Device device: AccountInfo.getInstance().deviceList) {
+                    if (device.guid.equals(s)) {
+                        if (device instanceof Pan && device.status == Device.ONLINE) {
+                            List<Device> deviceList2 = new ArrayList<>();
+                            for (Device device1: deviceList) {
+                                if (device1.dc.equals(IDeviceType.RZNG)) //删除锅
+                                    continue;
+                                deviceList2.add(device1);
+                            }
+                            rvAddDeviceAdapter.setList(deviceList2);
+
+                        } else if (device instanceof Stove && device.status == Device.ONLINE) {
+                            List<Device> deviceList2 = new ArrayList<>();
+                            for (Device device1: deviceList) {
+                                if (device1.dc.equals(IDeviceType.RRQZ)) //删除灶
+                                    continue;
+                                deviceList2.add(device1);
+                            }
+                            rvAddDeviceAdapter.setList(deviceList2);
+                        }
+                        break;
+                    }
                 }
             }
         });
@@ -71,12 +102,21 @@ public class AddDeviceMainActivity extends VentilatorBaseActivity {
 
     @Override
     protected void initData() {
-        List<Device> deviceList2 = new ArrayList<>();
-        deviceList2.add(new Pan("明火自动翻炒锅", IDeviceType.RZNG, "KP100"));
-        deviceList2.add(new Stove("燃气灶", IDeviceType.RRQZ, "9B328"));
-        deviceList2.add(new DishWasher("洗碗机", IDeviceType.RXWJ, "WB758"));
-        deviceList2.add(new Cabinet("消毒柜", IDeviceType.RXDG, "XG858"));
-        deviceList2.add(new SteamOven("蒸烤一体机", IDeviceType.RZKY, "CQ928"));
-        rvAddDeviceAdapter.setList(deviceList2);
+        boolean hasPan = false;
+        boolean hasStove = false;
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device instanceof Pan)
+                hasPan = true;
+            else if (device instanceof Stove)
+                hasStove = true;
+        }
+        if (!hasPan)
+            deviceList.add(new Pan("明火自动翻炒锅", IDeviceType.RZNG, "KP100"));
+        if (!hasStove)
+            deviceList.add(new Stove("燃气灶", IDeviceType.RRQZ, "9B328"));
+        deviceList.add(new DishWasher("洗碗机", IDeviceType.RXWJ, "WB758"));
+        deviceList.add(new Cabinet("消毒柜", IDeviceType.RXDG, "XG858"));
+        deviceList.add(new SteamOven("蒸烤一体机", IDeviceType.RZKY, "CQ928"));
+        rvAddDeviceAdapter.setList(deviceList);
     }
 }

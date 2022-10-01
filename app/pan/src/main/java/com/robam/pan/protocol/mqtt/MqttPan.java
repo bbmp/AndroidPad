@@ -29,7 +29,7 @@ public class MqttPan extends MqttPublic {
 
     private void encodeMsg(ByteBuffer buf, MqttMsg msg) {
         switch (msg.getID()) {
-            case MsgKeys.GetPotTemp_Req: //属性查询
+            case MsgKeys.FanGetPanStatus_Req: //属性查询
                 buf.put((byte) ITerminalType.PAD);
                 break;
         }

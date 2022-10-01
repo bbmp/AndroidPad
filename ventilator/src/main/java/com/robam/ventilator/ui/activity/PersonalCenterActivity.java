@@ -120,7 +120,7 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
                         List<Fragment> fragments = new ArrayList<>();
                         for (Device device: getDeviceRes.devices) {
                             if (device.dc.equals(IDeviceType.RXWJ) ||
-                                    device.dc.equals(IDeviceType.RYYJ) ||
+                                    (device.dc.equals(IDeviceType.RYYJ) && (Plat.getPlatform().getDeviceOnlySign()).equals(device.guid)) ||   //当前烟机
                                     device.dc.equals(IDeviceType.RXDG) ||
                                     device.dc.equals(IDeviceType.RZKY)) { //过滤套系外设备
                                 DeviceUserPage deviceUserPage = new DeviceUserPage(device, userInfo);

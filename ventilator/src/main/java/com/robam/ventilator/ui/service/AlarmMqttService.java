@@ -10,8 +10,7 @@ import android.os.SystemClock;
 
 import androidx.annotation.Nullable;
 
-import com.robam.cabinet.bean.Cabinet;
-import com.robam.cabinet.device.CabinetFactory;
+import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.RTopic;
@@ -23,22 +22,17 @@ import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.dishwasher.bean.DishWasher;
-import com.robam.dishwasher.device.DishWasherFactory;
 import com.robam.pan.bean.Pan;
-import com.robam.pan.device.PanFactory;
-import com.robam.pan.protocol.mqtt.MqttPan;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.device.SteamAbstractControl;
-import com.robam.steamoven.device.SteamFactory;
 import com.robam.stove.bean.Stove;
 import com.robam.stove.device.StoveAbstractControl;
-import com.robam.stove.device.StoveFactory;
 import com.robam.ventilator.bean.Ventilator;
 import com.robam.ventilator.device.VentilatorFactory;
-import com.robam.ventilator.ui.receiver.AlarmReceiver;
+import com.robam.ventilator.ui.receiver.AlarmMqttReceiver;
 
-//定时任务
-public class AlarmService extends Service {
+//定时任务,mqtt查询设备
+public class AlarmMqttService extends Service {
 
     private static final int PENDING_REQUEST = 0;
     private static final int INTERVAL = 15000;
@@ -55,7 +49,7 @@ public class AlarmService extends Service {
     public void onCreate() {
         super.onCreate();
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        Intent i = new Intent(this, AlarmReceiver.class);
+        Intent i = new Intent(this, AlarmMqttReceiver.class);
         pIntent = PendingIntent.getBroadcast(this, PENDING_REQUEST, i, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
@@ -70,16 +64,11 @@ public class AlarmService extends Service {
 //            } catch (Exception e) {}
             alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAtTime, pIntent);
         }
-        //蓝牙扫描
-        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (bluetoothAdapter.enable()) {
-            String[] names = new String[] {"ROBAM"};
-            BlueToothManager.setScanRule(names);
-        }
+
         if (!MqttManager.getInstance().isConnected()) {
-            //全部离线
+            //全部离线 除锅和灶
             for (Device device: AccountInfo.getInstance().deviceList) {
-                if (device.status == Device.ONLINE) {
+                if (device.status == Device.ONLINE && (!device.dc.equals(IDeviceType.RRQZ) || !device.dc.equals(IDeviceType.RZNG))) {
                     device.status = Device.OFFLINE;
                     AccountInfo.getInstance().getGuid().setValue(device.guid); //更新设备状态
                 }
@@ -103,19 +92,7 @@ public class AlarmService extends Service {
                 AccountInfo.getInstance().getGuid().setValue(device.guid); //更新设备状态
             }
             device.queryNum++;
-            if (device instanceof Pan) { //查询锅
-                MqttMsg msg = new MqttMsg.Builder()
-                        .setMsgId(MsgKeys.GetPotTemp_Req)
-                        .setGuid(Plat.getPlatform().getDeviceOnlySign())
-                        .setDt(device.dt)
-                        .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
-                        .build();
-                MqttManager.getInstance().publish(msg, VentilatorFactory.getTransmitApi());
-            } else if (device instanceof Stove) { //查询灶具
-
-                //本机端查询灶具
-                StoveAbstractControl.getInstance().queryAttribute(device.guid);
-            } else if (device instanceof Ventilator) {
+           if (device instanceof Ventilator) {
                 MqttMsg msg = new MqttMsg.Builder()
                         .setMsgId(MsgKeys.GetFanStatus_Req)
                         .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid

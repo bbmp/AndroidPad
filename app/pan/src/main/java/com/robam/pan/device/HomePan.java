@@ -13,6 +13,8 @@ public class HomePan {
         private static final HomePan instance = new HomePan();
     }
 
+    //当前guid
+    public String guid;
     //锅温度
     public MutableLiveData<Integer> panTemp = new MutableLiveData<Integer>(0);
 }

@@ -1,10 +1,18 @@
 package com.robam.ventilator.protocol.ble;
 
+import android.annotation.SuppressLint;
+import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattService;
 
+import com.clj.fastble.BleManager;
+import com.clj.fastble.callback.BleGattCallback;
+import com.clj.fastble.callback.BleNotifyCallback;
+import com.clj.fastble.callback.BleScanCallback;
 import com.clj.fastble.callback.BleWriteCallback;
 import com.clj.fastble.data.BleDevice;
 import com.clj.fastble.exception.BleException;
+import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.RTopic;
@@ -22,16 +30,227 @@ import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.StringUtils;
 import com.robam.pan.bean.Pan;
 import com.robam.stove.bean.Stove;
+import com.robam.ventilator.R;
 import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.device.HomeVentilator;
 import com.robam.ventilator.device.VentilatorFactory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 //蓝牙解析
 public class BleVentilator {
+    private static ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(2, 2, 0, TimeUnit.MILLISECONDS,
+            new SynchronousQueue<>());
+    //开始扫描
+    public static void startScan() {
+        BlueToothManager.startScan(new BleScanCallback() {
+            @Override
+            public void onScanStarted(boolean success) {
+                LogUtils.e("onScanStarted");
+            }
+
+            @Override
+            public void onLeScan(BleDevice bleDevice) {
+                super.onLeScan(bleDevice);
+                LogUtils.e("onLeScan " + bleDevice.getName());
+            }
+
+            @Override
+            public void onScanning(BleDevice bleDevice) {
+
+            }
+
+            @Override
+            public void onScanFinished(List<BleDevice> scanResultList) {
+                LogUtils.e("onScanFinished ");
+
+                if (null != scanResultList && scanResultList.size() > 0) {
+                    if (scanResultList.get(0).getName().contains("ROKI"))
+                        connect(scanResultList.get(0));
+                }
+            }
+        });
+    }
+
+    //连接设备
+    public static void connect(final BleDevice bleDevice) {
+        BlueToothManager.connect(bleDevice, new BleGattCallback() {
+            @Override
+            public void onStartConnect() {
+                LogUtils.e("onStartConnect");
+            }
+
+            @Override
+            public void onConnectFail(BleDevice bleDevice, BleException exception) {
+
+                LogUtils.e("onConnectFail " + exception.getDescription());
+            }
+
+            @Override
+            public void onConnectSuccess(BleDevice bleDevice, BluetoothGatt gatt, int status) {
+                LogUtils.e("onConnectSuccess " + bleDevice.getName());
+                //连接成功
+                addSubDevice(bleDevice);
+
+                getBuletoothGatt(bleDevice);
+            }
+
+            @SuppressLint("MissingPermission")
+            @Override
+            public void onDisConnected(boolean isActiveDisConnected, BleDevice bleDevice, BluetoothGatt gatt, int status) {
+                LogUtils.e("onDisConnected");
+                //掉线
+                if (null != gatt)
+                    gatt.close();
+                //清除设备蓝牙信息
+                setBleDevice(bleDevice.getMac(), null, null);
+                //重新连接
+                threadPoolExecutor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(2000);
+                        } catch (Exception e) {}
+                        connect(bleDevice);
+                    }
+                });
+            }
+        });
+    }
+    //添加子设备到设备列表
+    public static void addSubDevice(BleDevice bleDevice) {
+        String deviceNum = changeMac(bleDevice.getMac());
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            //已经存在锅或灶，mac地址判断
+            if (deviceNum.equals(DeviceUtils.getDeviceNumber(device.guid))) {
+                if (device instanceof Pan) {
+                    BleDecoder bleDecoder = ((Pan) device).bleDecoder;
+                    if (null != bleDecoder)
+                        bleDecoder.init_decoder(0);
+                    else
+                        ((Pan) device).bleDecoder = new BleDecoder(0);
+                    device.mac = bleDevice.getMac();
+                } else if (device instanceof Stove) {
+                    BleDecoder bleDecoder = ((Stove) device).bleDecoder;
+                    if (null != bleDecoder)
+                        bleDecoder.init_decoder(0);
+                    else
+                        ((Stove) device).bleDecoder = new BleDecoder(0);
+                    device.mac = bleDevice.getMac();
+                }
+                break;
+            }
+        }
+
+    }
+    //转变bledevice mac地址
+    private static String changeMac(String mac) {
+        String deviceNum = "";
+        if (null != mac) {
+            String[] data = mac.split(":");
+            int length = data.length;
+            while (length > 0) {
+                length--;
+                deviceNum += data[length];
+            }
+        }
+        return deviceNum;
+    }
+
+    //设置蓝牙设备的读写特征符
+    public static void setBleDevice(String mac, BleDevice bleDevice, BluetoothGattCharacteristic characteristic) {
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (mac.equals(device.mac)) {
+                if (device instanceof Pan) {
+                    ((Pan) device).bleDevice = bleDevice;
+                    ((Pan) device).characteristic = characteristic;
+                    if (null == bleDevice)
+                        device.bleType = 0;
+                } else if (device instanceof Stove) {
+                    ((Stove) device).bleDevice = bleDevice;
+                    ((Stove) device).characteristic = characteristic;
+                    if (null == bleDevice)
+                        device.bleType = 0;
+                }
+                break;
+            }
+        }
+    }
+    //获取gatt提供的服务
+    public static void getBuletoothGatt(BleDevice bleDevice) {
+        //获取设备服务
+        BluetoothGatt gatt = BleManager.getInstance().getBluetoothGatt(bleDevice);
+        List<BluetoothGattService> serviceList = new ArrayList<>();
+        for (BluetoothGattService service : gatt.getServices()) {
+            serviceList.add(service);
+        }
+        //
+        for (BluetoothGattService service: serviceList) {
+            UUID uuid = service.getUuid();
+            if (uuid.toString().contains("fff0")) { //service uuid
+                for (BluetoothGattCharacteristic characteristic : service.getCharacteristics()) {
+                    uuid = characteristic.getUuid();
+                    if (uuid.toString().contains("fff1")) {   //读写
+                        LogUtils.e("uuid " + uuid);
+                        //设置读写特征符
+                        setBleDevice(bleDevice.getMac(), bleDevice, characteristic);
+                    } else if (uuid.toString().contains("fff4")) {  //notify
+                        int charaProp = characteristic.getProperties();
+                        LogUtils.e("uuid " + uuid);
+                        if (charaProp == BluetoothGattCharacteristic.PROPERTY_NOTIFY) {
+                            notify(bleDevice, characteristic);
+                        }
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+    //订阅通知
+    private static void notify(BleDevice bleDevice, BluetoothGattCharacteristic characteristic) {
+        BlueToothManager.notify(bleDevice, characteristic,
+                new BleNotifyCallback() {
+
+                    @Override
+                    public void onNotifySuccess() {
+
+                        // 打开通知操作成功（UI线程）
+                        LogUtils.e("onNotifySuccess");
+                    }
+
+                    @Override
+                    public void onNotifyFailure(final BleException exception) {
+                        // 打开通知操作失败（UI线程）
+                        LogUtils.e("onNotifyFailure " + exception.toString());
+                    }
+
+                    @Override
+                    public void onCharacteristicChanged(byte[] data) {
+                        // 打开通知后，设备发过来的数据将在这里出现（UI线程）
+                        for (Device device: AccountInfo.getInstance().deviceList) {
+                            if (bleDevice.getMac().equals(device.mac)) {
+                                if (device instanceof Pan)
+                                    BleVentilator.bleParser(bleDevice, ((Pan) device).bleDecoder, data);
+                                else if (device instanceof Stove)
+                                    BleVentilator.bleParser(bleDevice, ((Stove) device).bleDecoder, data);
+                                break;
+                            }
+                        }
+                    }
+                });
+    }
 
     public static void bleParser(BleDevice bleDevice, BleDecoder decoder, byte[] data) {
         if (null == data)
@@ -129,6 +348,9 @@ public class BleVentilator {
                                                         response = false;
                                                         break;
                                                     }
+                                                    //上线
+                                                    device.status = Device.ONLINE;
+                                                    AccountInfo.getInstance().getGuid().setValue(device.guid);
                                                     break;
                                                 }
 
@@ -138,7 +360,7 @@ public class BleVentilator {
                                             }
                                             if (response) {
                                                 //通知上线
-                                                notifyOnline(new String(guid), new String(biz_id), 1);
+                                                HomeVentilator.getInstance().notifyOnline(new String(guid), new String(biz_id), 1);
                                             }
                                         }
                                     } else {
@@ -166,13 +388,24 @@ public class BleVentilator {
                                     delay_disconnect_ble(bleDevice);
                                     //通知下线
                                     break;
+                                case BleDecoder.RESP_GET_POT_STATUS_INT:  //烟机查询锅状态回复
+                                case BleDecoder.RESP_GET_IH_STATUS_INT: //烟机查询灶状态返回
+                                    for (Device device: AccountInfo.getInstance().deviceList) {
+                                        if (bleDevice.getMac().equals(device.mac)) {
+                                            device.queryNum = 0;
+                                            device.status = Device.ONLINE;
+                                            AccountInfo.getInstance().getGuid().setValue(device.guid);
+                                            break;
+                                        }
+                                    }
+                                    break;
                                 default:
                                     break;
                             }
                             break;
-                        case BleDecoder.ROKI_UART_CMD_KEY_BROADCAST://收到广播上报指令
-                            for(Device device: AccountInfo.getInstance().deviceList) {
-                                if(bleDevice.getMac().equals(device.mac)) {
+                        case BleDecoder.ROKI_UART_CMD_KEY_BROADCAST: //收到广播上报指令
+                            for (Device device : AccountInfo.getInstance().deviceList) {
+                                if (bleDevice.getMac().equals(device.mac)) {
                                     String target_guid = device.guid;
                                     String topic = "/b/" + target_guid.substring(0, 5) + "/" + target_guid.substring(5);
                                     ble_mqtt_publish(topic, device.guid, ret2);
@@ -181,7 +414,7 @@ public class BleVentilator {
                             }
                             break;
                         default:
-                            if(ByteUtils.toInt(ret2[BleDecoder.DECODE_CMD_KEY_OFFSET]) >= BleDecoder.ROKI_UART_CMD_KEY_DYNAMIC) { //收到外部指令(一般用于响应外部设备),通过MQTT转发出去
+                            if (ByteUtils.toInt(ret2[BleDecoder.DECODE_CMD_KEY_OFFSET]) >= BleDecoder.ROKI_UART_CMD_KEY_DYNAMIC) { //收到外部指令(一般用于响应外部设备),通过MQTT转发出去
                                 for (Device device : AccountInfo.getInstance().deviceList) {
                                     if (bleDevice.getMac().equals(device.mac)) {
                                         String target_guid = BlueToothManager.send_map.get(ByteUtils.toInt(ret2[BleDecoder.DECODE_CMD_KEY_OFFSET]));
@@ -195,53 +428,13 @@ public class BleVentilator {
                                     }
                                 }
                             }
+
                             break;
                     }
                 }
             } while(ret != null);
         }
     }
-    //通知上线
-    private static void notifyOnline(String guid, String biz, int status) { //子设备guid
-
-        //通知
-        try {
-            String srcGuid = Plat.getPlatform().getDeviceOnlySign(); //烟机guid
-            MqttMsg msg = new MqttMsg.Builder()
-                    .setMsgId(MsgKeys.DeviceConnected_Noti)
-                    .setGuid(srcGuid) //源guid
-                    .setTopic(new RTopic(RTopic.TOPIC_BROADCAST, DeviceUtils.getDeviceTypeId(srcGuid), DeviceUtils.getDeviceNumber(srcGuid)))
-                    .build();
-            msg.putOpt(ComnConstant.DEVICE_NUM, 2);
-            msg.putOpt(VentilatorConstant.STOVE_GUID, guid);
-            msg.putOpt(VentilatorConstant.STOVE_BIZ, biz);
-            msg.putOpt(VentilatorConstant.STOVE_STATUS, status);
-            MqttManager.getInstance().publish(msg, VentilatorFactory.getTransmitApi());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-//    public static BleDecoder getBleDecoder(BleDevice bleDevice) {
-//        if (connection_map.containsKey(bleDevice.getMac()))
-//            return connection_map.get(bleDevice.getMac());
-//
-//        return null;
-//    }
-//
-//    public static void addDeviceToMap(BleDevice bleDevice) {
-//        if (null != bleDevice) {
-//            if (connection_map.containsKey(bleDevice.getMac())) { //重新连接上
-//                BleDecoder bleDecoder = getBleDecoder(bleDevice);
-//                if (null != bleDecoder)
-//                    bleDecoder.init_decoder(0);
-//                return;
-//            }
-//
-//            BleDecoder decoder = new BleDecoder(0);
-//            connection_map.put(bleDevice.getMac(), decoder);
-//        }
-//    }
 
     //将数据通过BLE指定通道发送出去
     public static void ble_write_no_resp(BleDevice bleDevice, byte[] data) {
@@ -274,14 +467,6 @@ public class BleVentilator {
         //TODO 延迟一段时间后主动断开指定通道的BLE连接,主动断开时的操作和on_ble_disconnect_event_cb()方法内的操作一致
         BlueToothManager.disConnect(bleDevice);
     }
-
-//    public static void removeDeviceFromMap(BleDevice bleDevice) {
-//        if (null != bleDevice) {
-//            if (connection_map.containsKey(bleDevice.getMac()))
-//                connection_map.remove(bleDevice.getMac());
-//        }
-//    }
-
 
 
     //从BLE收到的数据通过MQTT发出去

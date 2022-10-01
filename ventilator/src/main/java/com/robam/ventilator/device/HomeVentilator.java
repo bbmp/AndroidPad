@@ -1,6 +1,13 @@
 package com.robam.ventilator.device;
 
+import com.robam.common.bean.RTopic;
+import com.robam.common.constant.ComnConstant;
+import com.robam.common.device.Plat;
+import com.robam.common.mqtt.MqttManager;
 import com.robam.common.mqtt.MqttMsg;
+import com.robam.common.mqtt.MsgKeys;
+import com.robam.common.utils.DeviceUtils;
+import com.robam.ventilator.constant.VentilatorConstant;
 
 public class HomeVentilator {
     //当前进入的烟机
@@ -76,4 +83,24 @@ public class HomeVentilator {
      */
     public byte param9 = (byte) 0x00;
 
+    //通知上线
+    public void notifyOnline(String guid, String biz, int status) { //子设备guid
+
+        //通知
+        try {
+            String srcGuid = Plat.getPlatform().getDeviceOnlySign(); //烟机guid
+            MqttMsg msg = new MqttMsg.Builder()
+                    .setMsgId(MsgKeys.DeviceConnected_Noti)
+                    .setGuid(srcGuid) //源guid
+                    .setTopic(new RTopic(RTopic.TOPIC_BROADCAST, DeviceUtils.getDeviceTypeId(srcGuid), DeviceUtils.getDeviceNumber(srcGuid)))
+                    .build();
+            msg.putOpt(ComnConstant.DEVICE_NUM, 2);
+            msg.putOpt(VentilatorConstant.STOVE_GUID, guid);
+            msg.putOpt(VentilatorConstant.STOVE_BIZ, biz);
+            msg.putOpt(VentilatorConstant.STOVE_STATUS, status);
+            MqttManager.getInstance().publish(msg, VentilatorFactory.getTransmitApi());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -43,6 +43,17 @@ public class BlueToothManager {
         BleManager.getInstance().initScanRule(scanRuleConfig);
 
     }
+    //扫描规则
+    public static void setScanRule(String mac) {
+        BleScanRuleConfig scanRuleConfig = new BleScanRuleConfig.Builder()
+//                .setServiceUuids(serviceUuids)      // 只扫描指定的服务的设备，可选
+                .setDeviceMac(mac)                  // 只扫描指定mac的设备，可选
+                .setAutoConnect(true)      // 连接时的autoConnect参数，可选，默认false
+                .setScanTimeOut(10000)              // 扫描超时时间，可选，默认10秒
+                .build();
+        BleManager.getInstance().initScanRule(scanRuleConfig);
+
+    }
 
     //开始扫描
     public static void startScan(BleScanCallback callback) {

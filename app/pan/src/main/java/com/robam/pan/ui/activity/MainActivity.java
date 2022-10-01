@@ -7,9 +7,12 @@ import androidx.navigation.Navigation;
 
 import android.os.Bundle;
 
+import com.robam.common.constant.ComnConstant;
 import com.robam.common.ui.activity.BaseActivity;
+import com.robam.common.utils.LogUtils;
 import com.robam.pan.R;
 import com.robam.pan.base.PanBaseActivity;
+import com.robam.pan.device.HomePan;
 import com.robam.pan.device.PanAbstractControl;
 import com.robam.pan.device.PanBluetoothControl;
 import com.robam.pan.device.PanFactory;
@@ -29,8 +32,9 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        //开启远程控制, 蓝牙控制
-        PanAbstractControl.getInstance().init(new PanBluetoothControl());
 
+        if (null != getIntent())
+            HomePan.getInstance().guid = getIntent().getStringExtra(ComnConstant.EXTRA_GUID);
+        LogUtils.e("Home pan " + HomePan.getInstance().guid);
     }
 }

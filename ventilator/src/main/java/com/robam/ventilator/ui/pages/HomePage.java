@@ -24,6 +24,7 @@ import com.robam.common.IDeviceType;
 import com.robam.common.bean.BaseResponse;
 import com.robam.common.constant.ComnConstant;
 import com.robam.common.device.Plat;
+import com.robam.common.manager.BlueToothManager;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.pan.bean.Pan;
@@ -51,17 +52,18 @@ import com.robam.ventilator.bean.VenFunBean;
 import com.robam.ventilator.constant.DialogConstant;
 import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.device.VentilatorAbstractControl;
-import com.robam.ventilator.device.VentilatorFactory;
-import com.robam.ventilator.device.VentilatorLocalControl;
 import com.robam.ventilator.factory.VentilatorDialogFactory;
 import com.robam.ventilator.http.CloudHelper;
+import com.robam.ventilator.protocol.ble.BleVentilator;
 import com.robam.ventilator.response.GetDeviceRes;
-import com.robam.ventilator.ui.activity.AddDeviceMainActivity;
+import com.robam.ventilator.ui.activity.AddDeviceActivity;
 import com.robam.ventilator.ui.activity.MatchNetworkActivity;
 import com.robam.ventilator.ui.activity.SimpleModeActivity;
 import com.robam.ventilator.ui.adapter.RvMainFunctonAdapter;
 import com.robam.ventilator.ui.adapter.RvProductsAdapter;
 import com.robam.ventilator.ui.adapter.RvSettingAdapter;
+import com.robam.ventilator.ui.service.AlarmBleService;
+import com.robam.ventilator.ui.service.AlarmMqttService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,6 +96,8 @@ public class HomePage extends VentilatorBasePage {
     private Group group;
     private DrawerLayout drawerLayout;
     private LinearLayout llSetting, llProducts;
+
+    private Intent bleIntent;
 
     public static HomePage newInstance() {
         return new HomePage();
@@ -262,7 +266,7 @@ public class HomePage extends VentilatorBasePage {
                 if (drawerLayout.isDrawerOpen(Gravity.RIGHT)) {
                     drawerLayout.closeDrawer(Gravity.RIGHT);
                 }
-                startActivity(new Intent(getContext(), AddDeviceMainActivity.class));
+                startActivity(new Intent(getContext(), AddDeviceActivity.class));
             }
         });
         rvProductsAdapter.addFooterView(foot);
@@ -386,11 +390,24 @@ public class HomePage extends VentilatorBasePage {
                                 List<Device> subDevices = device.subDevices;
                                 if (null != subDevices) {
                                     for (Device subDevice : subDevices) {
-                                        if (IDeviceType.RZNG.equals(subDevice.dc)) //锅
+                                        if (IDeviceType.RZNG.equals(subDevice.dc)) {//锅
                                             AccountInfo.getInstance().deviceList.add(new Pan(subDevice));
-                                        else if (IDeviceType.RRQZ.equals(subDevice.dc)) //灶具
+
+                                            String[] names = new String[] {"ROKI_KP100"};
+                                            BlueToothManager.setScanRule(names);
+                                            BleVentilator.startScan();
+                                        } else if (IDeviceType.RRQZ.equals(subDevice.dc)) { //灶具
                                             AccountInfo.getInstance().deviceList.add(new Stove(subDevice));
+
+                                            String[] names = new String[] {"ROKI"};
+                                            BlueToothManager.setScanRule(names);
+                                            BleVentilator.startScan();
+                                        }
                                     }
+                                    //包含子设备 启动蓝牙查询
+                                    bleIntent = new Intent(getContext().getApplicationContext(), AlarmBleService.class);
+                                    bleIntent.setPackage(getContext().getPackageName());
+                                    getContext().startService(bleIntent);
                                 }
                             }
                         }
@@ -488,6 +505,7 @@ public class HomePage extends VentilatorBasePage {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        getContext().stopService(bleIntent);
     }
 
     //锁屏

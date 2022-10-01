@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/ventilator_ic_bg"
-    tools:context=".ui.activity.AddDeviceMainActivity">
+    tools:context=".ui.activity.AddDeviceActivity">
 
     <include
         android:id="@+id/ll_title"

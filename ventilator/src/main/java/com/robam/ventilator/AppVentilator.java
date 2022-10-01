@@ -7,6 +7,8 @@ import android.serialport.helper.SerialPortHelper;
 import com.clj.fastble.BleManager;
 import com.robam.common.http.RetrofitClient;
 import com.robam.common.mqtt.MqttManager;
+import com.robam.pan.device.PanAbstractControl;
+import com.robam.pan.device.PanBluetoothControl;
 import com.robam.steamoven.device.SteamAbstractControl;
 import com.robam.steamoven.device.SteamMqttControl;
 import com.robam.stove.device.StoveAbstractControl;
@@ -39,6 +41,8 @@ public class AppVentilator {
         SteamAbstractControl.getInstance().init(new SteamMqttControl());
         //蓝牙控制灶具
         StoveAbstractControl.getInstance().init(new StoveBluetoothControl());
+        //蓝牙控制锅
+        PanAbstractControl.getInstance().init(new PanBluetoothControl());
 
     }
 
