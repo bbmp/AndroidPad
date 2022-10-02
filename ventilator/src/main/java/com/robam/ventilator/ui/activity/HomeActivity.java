@@ -15,6 +15,7 @@ import android.view.View;
 import androidx.lifecycle.Observer;
 
 import com.google.gson.Gson;
+import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.UserInfo;
@@ -168,8 +169,11 @@ public class HomeActivity extends BaseActivity {
                 else {
                     //断网
                     MqttManager.getInstance().stop();
-                    for (Device device: AccountInfo.getInstance().deviceList)
+                    for (Device device: AccountInfo.getInstance().deviceList) {
+                        if (IDeviceType.RRQZ.equals(device.dc) || IDeviceType.RZNG.equals(device.dc))
+                            continue;
                         device.status = Device.OFFLINE;
+                    }
                 }
             }
         });

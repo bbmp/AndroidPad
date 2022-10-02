@@ -40,7 +40,8 @@ public class VentilatorConstant {
     public final static int FAN_SMART_OPEN = 1;
 
     //mqtt消息字段
-    public final static String STOVE_GUID = "stove_guid";
-    public final static String STOVE_BIZ = "stove_biz"; //业务编吗
-    public final static String STOVE_STATUS = "stove_status";
+    public final static String SUB_DEVICES = "sub_devices";
+    public final static String DEVICE_GUID = "device_guid";
+    public final static String DEVICE_BIZ = "device_biz"; //业务编吗
+    public final static String DEVICE_STATUS = "device_status";
 }

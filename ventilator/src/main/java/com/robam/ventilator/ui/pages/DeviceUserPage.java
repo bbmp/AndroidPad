@@ -10,19 +10,25 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
+import com.clj.fastble.BleManager;
+import com.clj.fastble.data.BleDevice;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.BaseResponse;
 import com.robam.common.http.RetrofitCallback;
+import com.robam.common.manager.BlueToothManager;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.GridSpaceItemDecoration;
 import com.robam.common.utils.ImageUtils;
 import com.robam.common.utils.ToastUtils;
+import com.robam.pan.bean.Pan;
+import com.robam.stove.bean.Stove;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBasePage;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.UserInfo;
 import com.robam.ventilator.constant.DialogConstant;
+import com.robam.ventilator.device.HomeVentilator;
 import com.robam.ventilator.factory.VentilatorDialogFactory;
 import com.robam.ventilator.http.CloudHelper;
 import com.robam.ventilator.response.GetDeviceUserRes;
@@ -136,6 +142,13 @@ public class DeviceUserPage extends VentilatorBasePage {
     }
     //解绑用户
     private void unbindDeviceUser(long userid) {
+        if (IDeviceType.RRQZ.equals(device.dc) || IDeviceType.RZNG.equals(device.dc)) {  //解绑子设备
+            HomeVentilator.getInstance().notifyOnline(device.guid, device.bid, -1);
+
+            //重新获取设备列表
+            AccountInfo.getInstance().getUser().setValue(curUser);
+            return;
+        }
         CloudHelper.unbindDevice(this, userid, device.guid, BaseResponse.class, new RetrofitCallback<BaseResponse>() {
             @Override
             public void onSuccess(BaseResponse baseResponse) {

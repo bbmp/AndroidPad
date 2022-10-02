@@ -2,7 +2,6 @@ package com.robam.ventilator.protocol.mqtt;
 
 import com.robam.common.ITerminalType;
 import com.robam.common.bean.AccountInfo;
-import com.robam.common.bean.Device;
 import com.robam.common.bean.RTopic;
 import com.robam.common.constant.ComnConstant;
 import com.robam.common.device.Plat;
@@ -20,10 +19,11 @@ import com.robam.ventilator.device.HomeVentilator;
 import com.robam.ventilator.device.VentilatorAbstractControl;
 import com.robam.ventilator.device.VentilatorFactory;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.HashMap;
-import java.util.Map;
 
 //烟机mqtt私有协议
 public class MqttVentilator extends MqttPublic {
@@ -80,16 +80,21 @@ public class MqttVentilator extends MqttPublic {
                 buf.put((byte) 9);
                 buf.put((byte) 1);
 
-                if (null != msg.optString(VentilatorConstant.STOVE_GUID)) {
-                    String guid = msg.optString(VentilatorConstant.STOVE_GUID);
-                    buf.put(guid.getBytes());
-                    String biz = msg.optString(VentilatorConstant.STOVE_BIZ);
-                    buf.put((byte) biz.length());
-                    buf.put(biz.getBytes());
-                    buf.put((byte) 0);
-                    buf.put((byte) 0);
-                    buf.put((byte) msg.optInt(VentilatorConstant.STOVE_STATUS));
+                if (null != msg.optJSONArray(VentilatorConstant.SUB_DEVICES)) {
+                    JSONArray jsonArray = msg.optJSONArray(VentilatorConstant.SUB_DEVICES);
+                    for (int i = 0; i<jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.optJSONObject(i);
+                        String guid = jsonObject.optString(VentilatorConstant.DEVICE_GUID);
+                        buf.put(guid.getBytes());
+                        String biz = jsonObject.optString(VentilatorConstant.DEVICE_BIZ);
+                        buf.put((byte) biz.length());
+                        buf.put(biz.getBytes());
+                        buf.put((byte) 0);
+                        buf.put((byte) 0);
+                        buf.put((byte) jsonObject.optInt(VentilatorConstant.DEVICE_STATUS));
+                    }
                 }
+
                 buf.put((byte) 0); //蓝牙版本
                 buf.put((byte) 0); //参数个数
                 break;

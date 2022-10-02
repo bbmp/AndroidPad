@@ -12,6 +12,8 @@ import com.clj.fastble.callback.BleScanCallback;
 import com.clj.fastble.callback.BleWriteCallback;
 import com.clj.fastble.data.BleDevice;
 import com.clj.fastble.exception.BleException;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
@@ -27,6 +29,7 @@ import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.ByteUtils;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.MMKVUtils;
 import com.robam.common.utils.StringUtils;
 import com.robam.pan.bean.Pan;
 import com.robam.stove.bean.Stove;
@@ -38,9 +41,11 @@ import com.robam.ventilator.device.VentilatorFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -76,8 +81,10 @@ public class BleVentilator {
                 LogUtils.e("onScanFinished ");
 
                 if (null != scanResultList && scanResultList.size() > 0) {
-                    if (scanResultList.get(0).getName().contains("ROKI"))
-                        connect(scanResultList.get(0));
+                    for (BleDevice bleDevice: scanResultList) {
+                        if (bleDevice.getName().contains("ROKI"))
+                            connect(bleDevice);
+                    }
                 }
             }
         });
@@ -85,6 +92,7 @@ public class BleVentilator {
 
     //连接设备
     public static void connect(final BleDevice bleDevice) {
+        LogUtils.e("connect " + bleDevice.getMac());
         BlueToothManager.connect(bleDevice, new BleGattCallback() {
             @Override
             public void onStartConnect() {
@@ -141,6 +149,7 @@ public class BleVentilator {
                     else
                         ((Pan) device).bleDecoder = new BleDecoder(0);
                     device.mac = bleDevice.getMac();
+                    ((Pan) device).bleDevice = bleDevice;
                 } else if (device instanceof Stove) {
                     BleDecoder bleDecoder = ((Stove) device).bleDecoder;
                     if (null != bleDecoder)
@@ -148,6 +157,7 @@ public class BleVentilator {
                     else
                         ((Stove) device).bleDecoder = new BleDecoder(0);
                     device.mac = bleDevice.getMac();
+                    ((Stove) device).bleDevice = bleDevice;
                 }
                 break;
             }
@@ -287,9 +297,9 @@ public class BleVentilator {
                                             System.arraycopy(ret2, BleDecoder.DECODE_PAYLOAD_OFFSET + 5 + 1 + 3 + 1 + biz_len, guid, 5, 12);
                                             ble_type = ByteUtils.toInt(ret2[BleDecoder.DECODE_PAYLOAD_OFFSET + 5 + 1 + 3 + 1 + biz_len + 12]);
                                             LogUtils.e("guid CMD_PAIRING_REQUEST_INT =" + new String(guid));
-                                            int i;
-                                            for(i = 0; i<AccountInfo.getInstance().deviceList.size(); i++) {
-                                                Device device = AccountInfo.getInstance().deviceList.get(i);
+
+                                            for(Device device: AccountInfo.getInstance().deviceList) {
+
                                                 if (device.bleType == ble_type) {
                                                     response = false;
                                                     break;
@@ -339,9 +349,9 @@ public class BleVentilator {
                                             System.arraycopy(ret2, BleDecoder.DECODE_PAYLOAD_OFFSET + 1 + 1 + 5 + 1 + 3 + 1, biz_id, 0, biz_len2);
                                             System.arraycopy(ret2, BleDecoder.DECODE_PAYLOAD_OFFSET + 1 + 1 + 5 + 1 + 3 + 1 + biz_len2, guid, 5, 12);
                                             LogUtils.e("guid CMD_DEVICE_ONLINE_INT =" + new String(guid));
-                                            int i;
-                                            for(i = 0; i < AccountInfo.getInstance().deviceList.size(); i++) {
-                                                Device device = AccountInfo.getInstance().deviceList.get(i);
+                                            int i = 0;
+                                            for(Device device: AccountInfo.getInstance().deviceList) {
+
                                                 if ((new String(guid)).equals(device.guid) && (new String(biz_id)).equals(device.bid)) {
 
                                                     if (!new String(int_guid).equals(device.int_guid)) {
@@ -349,11 +359,15 @@ public class BleVentilator {
                                                         break;
                                                     }
                                                     //上线
-                                                    device.status = Device.ONLINE;
-                                                    AccountInfo.getInstance().getGuid().setValue(device.guid);
+                                                    if (device.status != Device.ONLINE) {
+                                                        device.status = Device.ONLINE;
+                                                        AccountInfo.getInstance().getGuid().setValue(device.guid);
+
+                                                        updateSubdevice(device);
+                                                    }
                                                     break;
                                                 }
-
+                                                i++;
                                             }
                                             if(i == AccountInfo.getInstance().deviceList.size()) {
                                                 response = false;
@@ -433,6 +447,25 @@ public class BleVentilator {
                     }
                 }
             } while(ret != null);
+        }
+    }
+    //更新本地子设备信息
+    public static void updateSubdevice(Device device) {
+        Set<String> subDevices = MMKVUtils.getSubDevice();
+        if (null != subDevices) {
+            Iterator<String> iterator = subDevices.iterator();
+            while (iterator.hasNext()) {
+                String json = iterator.next();
+                Device subDevice = new Gson().fromJson(json, Device.class);
+                if (device.guid.equals(subDevice.guid))  //已经有记录
+                    return;
+            }
+            subDevices.add(new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().toJson(device));
+            MMKVUtils.setSubDevice(subDevices);
+        } else {
+            Set<String> newSubDevices = new HashSet<>();
+            newSubDevices.add(new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().toJson(device));
+            MMKVUtils.setSubDevice(newSubDevices);
         }
     }
 

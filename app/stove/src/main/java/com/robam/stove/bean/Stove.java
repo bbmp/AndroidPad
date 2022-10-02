@@ -37,7 +37,6 @@ public class Stove extends Device {
         this.dt = device.dt;
         this.displayType = device.displayType;
         this.categoryName = device.categoryName;
-        this.deviceTypeIconUrl = device.deviceTypeIconUrl;
         this.subDevices = device.subDevices;
     }
 
@@ -60,10 +59,6 @@ public class Stove extends Device {
      * 功率等级
      */
     public byte level;
-    /**
-     * 工作状态
-     */
-    public byte workStatus;
     /**
      * 定时时间 s
      */

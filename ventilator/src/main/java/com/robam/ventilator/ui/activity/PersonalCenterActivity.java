@@ -162,7 +162,7 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
             //停止取消所有订阅
             MqttManager.getInstance().stop();
             //logout
-            AccountInfo.getInstance().deviceList.clear();
+//            AccountInfo.getInstance().deviceList.clear();
         }
     }
 
