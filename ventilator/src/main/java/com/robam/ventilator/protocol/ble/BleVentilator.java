@@ -364,6 +364,10 @@ public class BleVentilator {
                                                         AccountInfo.getInstance().getGuid().setValue(device.guid);
 
                                                         updateSubdevice(device);
+                                                        //通知上线
+                                                        HomeVentilator.getInstance().notifyOnline(new String(guid), new String(biz_id), 1);
+                                                        //订阅主题
+//                                                        MqttManager.getInstance().subscribe(DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid));
                                                     }
                                                     break;
                                                 }
@@ -371,10 +375,6 @@ public class BleVentilator {
                                             }
                                             if(i == AccountInfo.getInstance().deviceList.size()) {
                                                 response = false;
-                                            }
-                                            if (response) {
-                                                //通知上线
-                                                HomeVentilator.getInstance().notifyOnline(new String(guid), new String(biz_id), 1);
                                             }
                                         }
                                     } else {

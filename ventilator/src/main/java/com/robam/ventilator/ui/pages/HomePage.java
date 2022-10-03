@@ -102,8 +102,6 @@ public class HomePage extends VentilatorBasePage {
     private DrawerLayout drawerLayout;
     private LinearLayout llSetting, llProducts;
 
-    private Intent bleIntent;
-
     public static HomePage newInstance() {
         return new HomePage();
     }
@@ -361,10 +359,13 @@ public class HomePage extends VentilatorBasePage {
             public void onChanged(String s) {
                 for (Device device: AccountInfo.getInstance().deviceList) {
                     if (device.guid.equals(s)) {
-                        rvProductsAdapter.notifyDataSetChanged();
-                        break;
+                        LogUtils.e("onChanged " + device.guid + " dc " + device.dc);
+                        rvProductsAdapter.setList(AccountInfo.getInstance().deviceList);
+                        return;
                     }
                 }
+                //找不到设备
+                rvProductsAdapter.setList(AccountInfo.getInstance().deviceList);
             }
         });
     }
@@ -456,12 +457,6 @@ public class HomePage extends VentilatorBasePage {
 
                     }
                 }
-            }
-            //包含子设备 启动蓝牙查询
-            if (subDevices.size() > 0) {
-                bleIntent = new Intent(getContext().getApplicationContext(), AlarmBleService.class);
-                bleIntent.setPackage(getContext().getPackageName());
-                getContext().startService(bleIntent);
             }
         }
         //删除减少的设备
@@ -570,7 +565,6 @@ public class HomePage extends VentilatorBasePage {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        getContext().stopService(bleIntent);
     }
 
     //锁屏

@@ -36,6 +36,7 @@ import com.robam.ventilator.http.CloudHelper;
 import com.robam.ventilator.protocol.serial.SerialVentilator;
 import com.robam.ventilator.response.GetTokenRes;
 import com.robam.ventilator.response.GetUserInfoRes;
+import com.robam.ventilator.ui.service.AlarmBleService;
 import com.robam.ventilator.ui.service.AlarmMqttService;
 
 //主页
@@ -50,6 +51,8 @@ public class HomeActivity extends BaseActivity {
 
     private BluetoothAdapter bluetoothAdapter;
     private Intent intent;
+    private Intent bleIntent;
+
     private static final String PASSWORD_LOGIN = "mobilePassword";
 
 
@@ -144,6 +147,9 @@ public class HomeActivity extends BaseActivity {
         intent = new Intent(this.getApplicationContext(), AlarmMqttService.class);
         intent.setPackage(getPackageName());
         startService(intent);
+        bleIntent = new Intent(getContext().getApplicationContext(), AlarmBleService.class);
+        bleIntent.setPackage(getContext().getPackageName());
+        getContext().startService(bleIntent);
 //初始化主设备mqtt收发 烟机端只要网络连接上就需要启动mqtt服务，锅和灶不用登录
         //初始网络状态
         if (NetworkUtils.isConnect(this) && !AccountInfo.getInstance().getConnect().getValue())
@@ -218,6 +224,8 @@ public class HomeActivity extends BaseActivity {
         SerialPortHelper.getInstance().closeDevice();
         //关闭定时任务
         stopService(intent);
+        stopService(bleIntent);
+
     }
 
     //获取token

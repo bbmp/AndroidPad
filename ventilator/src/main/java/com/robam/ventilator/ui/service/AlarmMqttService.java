@@ -59,16 +59,16 @@ public class AlarmMqttService extends Service {
 
         if (null != alarmManager) {
             long triggerAtTime = SystemClock.elapsedRealtime() + INTERVAL;//从开机到现在的毫秒（手机睡眠(sleep)的时间也包括在内
-//            try {
-//                alarmManager.cancel(pIntent);
-//            } catch (Exception e) {}
+            try {
+                alarmManager.cancel(pIntent);
+            } catch (Exception e) {}
             alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAtTime, pIntent);
         }
 
         if (!MqttManager.getInstance().isConnected()) {
             //全部离线 除锅和灶
             for (Device device: AccountInfo.getInstance().deviceList) {
-                if (device.status == Device.ONLINE && (!device.dc.equals(IDeviceType.RRQZ) || !device.dc.equals(IDeviceType.RZNG))) {
+                if (device.status == Device.ONLINE && (!device.dc.equals(IDeviceType.RRQZ) && !device.dc.equals(IDeviceType.RZNG))) {
                     device.status = Device.OFFLINE;
                     AccountInfo.getInstance().getGuid().setValue(device.guid); //更新设备状态
                 }
@@ -87,6 +87,8 @@ public class AlarmMqttService extends Service {
         LogUtils.e("AlarmService onStartCommand " + AccountInfo.getInstance().deviceList.size());
         //循环查询
         for (Device device: AccountInfo.getInstance().deviceList) {
+            if (IDeviceType.RRQZ.equals(device.dc) || IDeviceType.RZNG.equals(device.dc))
+                continue;
             if (device.queryNum == 1) { //已经查过一次
                 device.status = Device.OFFLINE;
                 AccountInfo.getInstance().getGuid().setValue(device.guid); //更新设备状态

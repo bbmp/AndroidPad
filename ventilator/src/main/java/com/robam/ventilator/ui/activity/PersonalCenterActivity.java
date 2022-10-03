@@ -38,6 +38,7 @@ import com.robam.ventilator.ui.pages.DeviceUserPage;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class PersonalCenterActivity extends VentilatorBaseActivity {
@@ -82,6 +83,18 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
             @Override
             public void onChanged(UserInfo userInfo) {
                 setUserInfo(userInfo);
+            }
+        });
+        //删除设备监听
+        AccountInfo.getInstance().getGuid().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                for (Device device: AccountInfo.getInstance().deviceList) {
+                    if (device.guid.equals(s))
+                        return;
+                }
+                //找不到设备
+                getDeviceInfo(AccountInfo.getInstance().getUser().getValue());
             }
         });
     }
@@ -159,11 +172,26 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
                 }
             });
         } else {
-            //停止取消所有订阅
-            MqttManager.getInstance().stop();
+            //取消所有订阅 除子设备
+            unSubscribeDevices();
             //logout
 //            AccountInfo.getInstance().deviceList.clear();
         }
+    }
+
+    private void unSubscribeDevices() {
+        String deleteGuid = null;
+        Iterator<Device> iterator = AccountInfo.getInstance().deviceList.iterator();
+        while (iterator.hasNext()) {
+            Device device = iterator.next();
+            if (device instanceof Pan || device instanceof Stove)
+                continue;
+            iterator.remove();
+            deleteGuid = device.guid;  //删除的设备
+            MqttManager.getInstance().unSubscribe(DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)); //取消订阅
+        }
+        if (null != deleteGuid)
+            AccountInfo.getInstance().getGuid().setValue(deleteGuid);
     }
 
 

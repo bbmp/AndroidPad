@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.os.SystemClock;
 
+import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.RTopic;
@@ -54,12 +55,16 @@ public class AlarmBleService extends Service {
 
         if (null != alarmManager) {
             long triggerAtTime = SystemClock.elapsedRealtime() + INTERVAL;//从开机到现在的毫秒（手机睡眠(sleep)的时间也包括在内
-
+            try {
+                alarmManager.cancel(pIntent);
+            } catch (Exception e) {}
             alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAtTime, pIntent);
         }
 
         //循环查询
         for (Device device: AccountInfo.getInstance().deviceList) {
+            if (!IDeviceType.RRQZ.equals(device.dc) && !IDeviceType.RZNG.equals(device.dc))
+                continue;
             if (device.queryNum == 1) { //已经查过一次
                 device.status = Device.OFFLINE;
                 AccountInfo.getInstance().getGuid().setValue(device.guid); //更新设备状态
