@@ -56,7 +56,9 @@ public class BleDecoder {
     public static final int CMD_COOKER_RECIPE_SET_INT = 121;//内部远程灶具菜谱步骤设置
     public static final int RSP_COOKER_RECIPE_SET_INT = 122;
     //CMD ID--灶具外部指令
-    //public static final int CMD_COOKER_SET = 130;//设置灶具状态
+    public static final int CMD_COOKER_STATUS_RES = 129;//查询灶返回
+    public static final int CMD_COOKER_SET = 130;//设置灶具状态
+    public static final int CMD_COOKER_SET_RES = 131;//设置灶具返回
     //CMD ID--无人锅外部指令
     //public static final int
 
@@ -399,6 +401,17 @@ public class BleDecoder {
         }
         Byte [] output = new Byte[input.length];
         for(int i = 0; i < input.length; i++) {
+            output[i] = input[i];
+        }
+        return output;
+    }
+
+    public static Byte [] byteArraysToByteArrays(byte [] input, int recLen) {
+        if(input == null) {
+            return null;
+        }
+        Byte [] output = new Byte[recLen];
+        for(int i = 0; i < recLen; i++) {
             output[i] = input[i];
         }
         return output;

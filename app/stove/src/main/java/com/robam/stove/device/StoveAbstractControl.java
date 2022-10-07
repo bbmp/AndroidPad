@@ -27,13 +27,18 @@ public class StoveAbstractControl implements StoveFunction{
     }
 
     @Override
+    public void setLock(byte status) {
+        function.setLock(status);
+    }
+
+    @Override
     public void queryAttribute(String targetGuid) {
         function.queryAttribute(targetGuid);
     }
 
     @Override
-    public void setAttribute(String targetGuid, byte stoveId, byte isCook, byte workStatus) {
-        function.setAttribute(targetGuid, stoveId, isCook, workStatus);
+    public void setAttribute(byte stoveId, byte isCook, byte workStatus) {
+        function.setAttribute(stoveId, isCook, workStatus);
     }
 
     @Override
@@ -42,8 +47,8 @@ public class StoveAbstractControl implements StoveFunction{
     }
 
     @Override
-    public void setTiming(String targetGuid, byte stoveId, short timingTime) {
-        function.setTiming(targetGuid, stoveId, timingTime);
+    public void setTiming(byte stoveId, short timingTime) {
+        function.setTiming(stoveId, timingTime);
     }
 
     @Override

@@ -12,12 +12,4 @@ public interface IPublicStoveApi extends IPublicApi {
     int STOVE_LEFT = 0;
     int STOVE_RIGHT = 1;
 
-    //左灶
-    MutableLiveData<Boolean> getLeftStove();
-    //右灶
-    MutableLiveData<Boolean> getRightStove();
-    //左灶工作模式
-    int getLeftWorkMode();
-    //右灶工作模式
-    int getRightWorkMode();
 }

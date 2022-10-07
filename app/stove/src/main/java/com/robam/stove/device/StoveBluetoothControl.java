@@ -57,6 +57,33 @@ public class StoveBluetoothControl implements StoveFunction{
     public void powerOn() {
 
     }
+
+    @Override
+    public void setLock(byte status) {
+        try {
+            for (Device device : AccountInfo.getInstance().deviceList) {
+                if (device instanceof Stove && null != device.guid) {
+                    MqttMsg msg = new MqttMsg.Builder()
+                            .setMsgId(MsgKeys.SetStoveLock_Req)
+                            .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
+                            .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
+                            .build();
+                    //设置灶具id
+                    try {
+                        msg.putOpt(StoveConstant.lockStatus, status);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    //打包payload
+                    byte[] mqtt_data = StoveFactory.getProtocol().encode(msg);
+
+                    write_no_response(((Stove) device).bleDevice, ((Stove) device).characteristic, mqtt_data);
+                    break;
+                }
+            }
+        } catch (Exception e) {}
+    }
+
     //需用内部指令
     @Override
     public void queryAttribute(String targetGuid) {
@@ -65,7 +92,7 @@ public class StoveBluetoothControl implements StoveFunction{
             for (Device device : AccountInfo.getInstance().deviceList) {
                 if (device instanceof Stove && null != device.guid && device.guid.equals(targetGuid)) {
                     MqttMsg msg = new MqttMsg.Builder()
-                            .setMsgId(MsgKeys.FanGetStoveStatus_req)
+                            .setMsgId(MsgKeys.GetStoveStatus_Req)
                             .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
                             .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                             .build();
@@ -80,10 +107,10 @@ public class StoveBluetoothControl implements StoveFunction{
     }
 
     @Override
-    public void setAttribute(String targetGuid, byte stoveId, byte isCook, byte workStatus) {
+    public void setAttribute(byte stoveId, byte isCook, byte workStatus) {
         try {
             for (Device device : AccountInfo.getInstance().deviceList) {
-                if (device instanceof Stove && null != device.guid && device.guid.equals(targetGuid)) {
+                if (device instanceof Stove && null != device.guid) {
                     //模拟收发
                     MqttMsg msg = new MqttMsg.Builder()
                             .setMsgId(MsgKeys.SetStoveStatus_Req)
@@ -138,10 +165,10 @@ public class StoveBluetoothControl implements StoveFunction{
     }
 
     @Override
-    public void setTiming(String targetGuid, byte stoveId, short timingTime) {
+    public void setTiming(byte stoveId, short timingTime) {
         try {
             for (Device device : AccountInfo.getInstance().deviceList) {
-                if (device instanceof Stove && null != device.guid && device.guid.equals(targetGuid)) {
+                if (device instanceof Stove && null != device.guid) {
                     //模拟收发
                     MqttMsg msg = new MqttMsg.Builder()
                             .setMsgId(MsgKeys.SetStoveShutdown_Req)

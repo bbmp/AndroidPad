@@ -17,6 +17,8 @@ import com.robam.common.utils.ClickUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.stove.R;
 import com.robam.stove.constant.DialogConstant;
+import com.robam.stove.constant.StoveConstant;
+import com.robam.stove.device.StoveAbstractControl;
 import com.robam.stove.factory.StoveDialogFactory;
 import com.robam.stove.ui.dialog.LockDialog;
 
@@ -89,8 +91,10 @@ public abstract class StoveBaseActivity extends BaseActivity {
             iDialogAffirm.setListeners(new IDialog.DialogOnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (v.getId() == R.id.tv_ok)
+                    if (v.getId() == R.id.tv_ok) {
                         screenLock();
+                        StoveAbstractControl.getInstance().setLock(StoveConstant.LOCK);
+                    }
                     iDialogAffirm = null;
                 }
             }, R.id.tv_cancel, R.id.tv_ok);
@@ -120,6 +124,7 @@ public abstract class StoveBaseActivity extends BaseActivity {
                     //解锁
                     tvRightCenter.setTextColor(getResources().getColor(R.color.stove_white));
                     ivRightCenter.setImageResource(R.drawable.stove_screen_unlock);
+                    StoveAbstractControl.getInstance().setLock(StoveConstant.UNLOCK);
                     return true;
                 }
             });

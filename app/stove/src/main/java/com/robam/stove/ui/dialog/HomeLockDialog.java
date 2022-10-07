@@ -6,6 +6,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
+import com.robam.stove.bean.Stove;
 import com.robam.stove.device.HomeStove;
 import com.robam.common.ui.dialog.BaseDialog;
 import com.robam.common.ui.dialog.FullDialog;
@@ -35,21 +38,27 @@ public class HomeLockDialog extends BaseDialog {
 
     //检查炉头状态
     public void checkStoveStatus() {
-        //左灶工作中
-        if (HomeStove.getInstance().leftWorkMode != 0) {
-            llLeftStove.setVisibility(View.VISIBLE);
-            if (HomeStove.getInstance().leftWorkMode == StoveConstant.MODE_FRY)
-                tvLeftStove.setText("左灶 " + HomeStove.getInstance().leftWorkTemp + "℃");
-            else
-                tvLeftStove.setText("左灶 " + HomeStove.getInstance().leftWorkHours + "min");
-        }
-        //右灶工作中
-        if (HomeStove.getInstance().rightWorkMode != 0) {
-            llRightStove.setVisibility(View.VISIBLE);
-            if (HomeStove.getInstance().rightWorkMode == StoveConstant.MODE_FRY)
-                tvRightStove.setText("右灶 " + HomeStove.getInstance().rightWorkTemp + "℃");
-            else
-                tvRightStove.setText("右灶 " + HomeStove.getInstance().rightWorkHours + "min");
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device instanceof Stove) {
+                Stove stove = (Stove) device;
+                //左灶工作中
+                if (stove.leftWorkMode != StoveConstant.STOVE_CLOSE) {
+                    llLeftStove.setVisibility(View.VISIBLE);
+                    if (stove.leftWorkMode == StoveConstant.MODE_FRY)
+                        tvLeftStove.setText("左灶 " + stove.leftWorkTemp + "℃");
+                    else
+                        tvLeftStove.setText("左灶 " + stove.leftWorkHours + "min");
+                }
+                //右灶工作中
+                if (stove.rightWorkMode != 0) {
+                    llRightStove.setVisibility(View.VISIBLE);
+                    if (stove.rightWorkMode == StoveConstant.MODE_FRY)
+                        tvRightStove.setText("右灶 " + stove.rightWorkTemp + "℃");
+                    else
+                        tvRightStove.setText("右灶 " + stove.rightWorkHours + "min");
+                }
+                break;
+            }
         }
     }
 

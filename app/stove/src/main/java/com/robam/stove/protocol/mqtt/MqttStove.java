@@ -40,6 +40,8 @@ public class MqttStove extends MqttPublic {
 
 
                 break;
+            case MsgKeys.GetStoveStatus_Rep: //查询灶状态返回
+                break;
             case MsgKeys.SetStoveStatus_Req: //设置灶状态
                 short terminalType = ByteUtils.toShort(payload[offset++]); //控制端类型
                 String user = MsgUtils.getString(payload, offset, 10); //user
@@ -58,7 +60,7 @@ public class MqttStove extends MqttPublic {
     @Override
     protected void onEncodeMsg(ByteBuffer buf, MqttMsg msg) {
         switch (msg.getID()) {
-            case MsgKeys.FanGetStoveStatus_req: //本机查询灶状态
+            case MsgKeys.GetStoveStatus_Req: //本机查询灶状态
                 //控制端类型
                 buf.put((byte) ITerminalType.PAD);
                 break;
@@ -91,7 +93,13 @@ public class MqttStove extends MqttPublic {
             case MsgKeys.SetStoveShutdown_Req: //设置灶定时关火
                 buf.put((byte) ITerminalType.PAD);
                 buf.put((byte) msg.opt(StoveConstant.stoveId));
-                buf.put((byte) msg.opt(StoveConstant.timingtime));
+                buf.putShort((short) msg.opt(StoveConstant.timingtime));
+                buf.put((byte) 0x00);// 参数个数
+                break;
+            case MsgKeys.SetStoveLock_Req: //设置童锁
+                buf.put((byte) ITerminalType.PAD);
+                buf.put((byte) msg.opt(StoveConstant.lockStatus));
+                buf.put((byte) 0x00);// 参数个数
                 break;
         }
     }

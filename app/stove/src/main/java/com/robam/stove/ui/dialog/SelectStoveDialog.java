@@ -5,6 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
+import com.robam.stove.bean.Stove;
+import com.robam.stove.constant.StoveConstant;
 import com.robam.stove.device.HomeStove;
 import com.robam.common.ui.dialog.BaseDialog;
 import com.robam.common.ui.dialog.FullDialog;
@@ -44,20 +48,26 @@ public class SelectStoveDialog extends BaseDialog {
 
     //检查炉头状态
     public void checkStoveStatus() {
-        if (HomeStove.getInstance().leftWorkMode != 0) {  //工作中
-            viewLeft.setEnabled(false);
-            tvLeftStove.setEnabled(false);
-            tvLeftStatus.setEnabled(false);
-            tvLeftStatus.setText(R.string.stove_stove_using);
-            tvLeftClose.setVisibility(View.VISIBLE);
-        }
-        if (HomeStove.getInstance().rightWorkMode != 0) {
-            //工作中
-            viewRight.setEnabled(false);
-            tvRightStove.setEnabled(false);
-            tvRightStatus.setEnabled(false);
-            tvRightStatus.setText(R.string.stove_stove_using);
-            tvRightClose.setVisibility(View.VISIBLE);
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device instanceof Stove) {
+                Stove stove = (Stove) device;
+                if (stove.leftWorkMode != StoveConstant.STOVE_CLOSE) {  //工作中
+                    viewLeft.setEnabled(false);
+                    tvLeftStove.setEnabled(false);
+                    tvLeftStatus.setEnabled(false);
+                    tvLeftStatus.setText(R.string.stove_stove_using);
+                    tvLeftClose.setVisibility(View.VISIBLE);
+                }
+                if (stove.rightWorkMode != StoveConstant.STOVE_CLOSE) {
+                    //工作中
+                    viewRight.setEnabled(false);
+                    tvRightStove.setEnabled(false);
+                    tvRightStatus.setEnabled(false);
+                    tvRightStatus.setText(R.string.stove_stove_using);
+                    tvRightClose.setVisibility(View.VISIBLE);
+                }
+                break;
+            }
         }
     }
 }

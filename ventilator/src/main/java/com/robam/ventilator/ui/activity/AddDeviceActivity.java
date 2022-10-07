@@ -75,7 +75,7 @@ public class AddDeviceActivity extends VentilatorBaseActivity {
             public void onChanged(String s) {
                 for (Device device: AccountInfo.getInstance().deviceList) {
                     if (device.guid.equals(s)) {
-                        if (device instanceof Pan && device.status == Device.ONLINE) {
+                        if (device instanceof Pan) {
                             List<Device> deviceList2 = new ArrayList<>();
                             for (Device device1: deviceList) {
                                 if (device1.dc.equals(IDeviceType.RZNG)) //删除锅
@@ -84,7 +84,7 @@ public class AddDeviceActivity extends VentilatorBaseActivity {
                             }
                             rvAddDeviceAdapter.setList(deviceList2);
 
-                        } else if (device instanceof Stove && device.status == Device.ONLINE) {
+                        } else if (device instanceof Stove) {
                             List<Device> deviceList2 = new ArrayList<>();
                             for (Device device1: deviceList) {
                                 if (device1.dc.equals(IDeviceType.RRQZ)) //删除灶

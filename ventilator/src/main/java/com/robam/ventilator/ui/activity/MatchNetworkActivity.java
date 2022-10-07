@@ -50,7 +50,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class MatchNetworkActivity extends VentilatorBaseActivity {
+public class MatchNetworkActivity extends VentilatorBaseActivity implements BleVentilator.BleCallBack{
     private TextView tvHint;
     private String model = ""; //设备类型
     private TextView tvNext, tvOk;
@@ -201,247 +201,31 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
     private void startScan() {
         BlueToothManager.cancelScan();
 
-        BlueToothManager.startScan(new BleScanCallback() {
-            @Override
-            public void onScanStarted(boolean success) {
-                LogUtils.e("onScanStarted");
-            }
-
-            @Override
-            public void onLeScan(BleDevice bleDevice) {
-                super.onLeScan(bleDevice);
-                LogUtils.e("onLeScan " + bleDevice.getName());
-            }
-
-            @Override
-            public void onScanning(BleDevice bleDevice) {
-
-            }
-
-            @Override
-            public void onScanFinished(List<BleDevice> scanResultList) {
-                LogUtils.e("onScanFinished ");
-
-                if (null != scanResultList && scanResultList.size() > 0) {
-                    if (scanResultList.get(0).getName().contains("ROKI"))
-                        connect(scanResultList.get(0));
-                } else {
-                    //未扫描到
-                    if (!isDestroyed()) {
-                        tvNext.setText(R.string.ventilator_rematch);
-                        tvNext.setClickable(true);
-                    }
-                }
-
-            }
-        });
-    }
-    //连接设备
-    private void connect(final BleDevice bleDevice) {
-        BlueToothManager.connect(bleDevice, new BleGattCallback() {
-            @Override
-            public void onStartConnect() {
-                LogUtils.e("onStartConnect");
-            }
-
-            @Override
-            public void onConnectFail(BleDevice bleDevice, BleException exception) {
-
-                LogUtils.e("onConnectFail " + exception.getDescription());
-                if (!isDestroyed()) {
-                    tvNext.setText(R.string.ventilator_rematch);
-                    tvNext.setClickable(true);
-                }
-            }
-
-            @Override
-            public void onConnectSuccess(BleDevice bleDevice, BluetoothGatt gatt, int status) {
-                LogUtils.e("onConnectSuccess " + bleDevice.getName());
-                //连接成功
-                addSubDevice(bleDevice);
-
-                getBuletoothGatt(bleDevice);
-                //跳设备首页
-                if (!isDestroyed())
-                    finish();
-            }
-
-            @SuppressLint("MissingPermission")
-            @Override
-            public void onDisConnected(boolean isActiveDisConnected, BleDevice bleDevice, BluetoothGatt gatt, int status) {
-                LogUtils.e("onDisConnected");
-                //掉线
-                if (null != gatt)
-                    gatt.close();
-                //清除设备蓝牙信息
-                setBleDevice(bleDevice.getMac(), null, null);
-            }
-        });
-    }
-    //转变bledevice mac地址
-    private String changeMac(String mac) {
-        String deviceNum = "";
-        if (null != mac) {
-            String[] data = mac.split(":");
-            int length = data.length;
-            while (length > 0) {
-                length--;
-                deviceNum += data[length];
-            }
-        }
-        return deviceNum;
+        BleVentilator.startScan(model, this);
     }
 
-    //添加子设备到设备列表
-    private void addSubDevice(BleDevice bleDevice) {
-        LogUtils.e("bleDevice mac " + bleDevice.getMac());
-        String deviceNum = changeMac(bleDevice.getMac());
-        for (Device device: AccountInfo.getInstance().deviceList) {
-            //已经存在锅或灶，mac地址判断
-            if (deviceNum.equals(DeviceUtils.getDeviceNumber(device.guid))) {
-                if (device instanceof Pan) {
-                    BleDecoder bleDecoder = ((Pan) device).bleDecoder;
-                    if (null != bleDecoder)
-                        bleDecoder.init_decoder(0);
-                    else
-                        ((Pan) device).bleDecoder = new BleDecoder(0);
-                    device.mac = bleDevice.getMac();
-                } else if (device instanceof Stove) {
 
-                    BleDecoder bleDecoder = ((Stove) device).bleDecoder;
-                    if (null != bleDecoder)
-                        bleDecoder.init_decoder(0);
-                    else
-                        ((Stove) device).bleDecoder = new BleDecoder(0);
-                    device.mac = bleDevice.getMac();
-                }
-                return;
-            }
-        }
-
-        if (IDeviceType.RRQZ.equals(model)) {
-            Stove stove = new Stove("燃气灶", IDeviceType.RRQZ, "9B328");
-            stove.mac = bleDevice.getMac();
-            stove.bleDecoder = new BleDecoder(0);
-            AccountInfo.getInstance().deviceList.add(stove);
-        } else if (IDeviceType.RZNG.equals(model)) {
-            Pan pan = new Pan("明火自动翻炒锅", IDeviceType.RZNG, "KP100");
-            pan.mac = bleDevice.getMac();
-            pan.bleDecoder = new BleDecoder(0);
-            AccountInfo.getInstance().deviceList.add(pan);
+    @Override
+    public void onScanFinished() {
+        //未扫描到
+        if (!isDestroyed()) {
+            tvNext.setText(R.string.ventilator_rematch);
+            tvNext.setClickable(true);
         }
     }
 
-    //设置蓝牙设备的读写特征符
-    private void setBleDevice(String mac, BleDevice bleDevice, BluetoothGattCharacteristic characteristic) {
-        for (Device device: AccountInfo.getInstance().deviceList) {
-            if (mac.equals(device.mac)) {
-                if (device instanceof Pan) {
-                    ((Pan) device).bleDevice = bleDevice;
-                    ((Pan) device).characteristic = characteristic;
-                    if (null == bleDevice)
-                        device.bleType = 0;
-                } else if (device instanceof Stove) {
-                    ((Stove) device).bleDevice = bleDevice;
-                    ((Stove) device).characteristic = characteristic;
-                    if (null == bleDevice)
-                        device.bleType = 0;
-                }
-                break;
-            }
+    @Override
+    public void onConnectFail() {
+        if (!isDestroyed()) {
+            tvNext.setText(R.string.ventilator_rematch);
+            tvNext.setClickable(true);
         }
     }
 
-    //获取gatt提供的服务
-    private void getBuletoothGatt(BleDevice bleDevice) {
-        //获取设备服务
-        BluetoothGatt gatt = BleManager.getInstance().getBluetoothGatt(bleDevice);
-        List<BluetoothGattService> serviceList = new ArrayList<>();
-        for (BluetoothGattService service : gatt.getServices()) {
-            serviceList.add(service);
-        }
-        //
-        for (BluetoothGattService service: serviceList) {
-            UUID uuid = service.getUuid();
-            if (uuid.toString().contains("fff0")) { //service uuid
-                for (BluetoothGattCharacteristic characteristic : service.getCharacteristics()) {
-                    uuid = characteristic.getUuid();
-                    if (uuid.toString().contains("fff1")) {   //读写
-                        LogUtils.e("uuid " + uuid);
-                        //设置读写特征符
-                        setBleDevice(bleDevice.getMac(), bleDevice, characteristic);
-                    } else if (uuid.toString().contains("fff4")) {  //notify
-                        int charaProp = characteristic.getProperties();
-                        LogUtils.e("uuid " + uuid);
-                        if (charaProp == BluetoothGattCharacteristic.PROPERTY_NOTIFY) {
-                            notify(bleDevice, characteristic);
-                        }
-                    }
-                }
-                break;
-            }
-        }
+    @Override
+    public void onConnectSuccess() {
+        //跳设备首页
+        if (!isDestroyed())
+            finish();
     }
-
-    //订阅通知
-    private void notify(BleDevice bleDevice, BluetoothGattCharacteristic characteristic) {
-        BlueToothManager.notify(bleDevice, characteristic,
-                new BleNotifyCallback() {
-
-                    @Override
-                    public void onNotifySuccess() {
-
-                        // 打开通知操作成功（UI线程）
-                        LogUtils.e("onNotifySuccess");
-                    }
-
-                    @Override
-                    public void onNotifyFailure(final BleException exception) {
-                        // 打开通知操作失败（UI线程）
-                        LogUtils.e("onNotifyFailure " + exception.toString());
-                    }
-
-                    @Override
-                    public void onCharacteristicChanged(byte[] data) {
-                        // 打开通知后，设备发过来的数据将在这里出现（UI线程）
-                        for (Device device: AccountInfo.getInstance().deviceList) {
-                            if (bleDevice.getMac().equals(device.mac)) {
-                                if (device instanceof Pan)
-                                    BleVentilator.bleParser(bleDevice, ((Pan) device).bleDecoder, data);
-                                else if (device instanceof Stove)
-                                    BleVentilator.bleParser(bleDevice, ((Stove) device).bleDecoder, data);
-                                break;
-                            }
-                        }
-                    }
-                });
-    }
-
-    //订阅可靠通知
-    private void indicate(BleDevice bleDevice, BluetoothGattCharacteristic characteristic) {
-        BlueToothManager.indicate(
-                bleDevice,
-                characteristic,
-                new BleIndicateCallback() {
-
-                    @Override
-                    public void onIndicateSuccess() {
-                        // 打开通知操作成功（UI线程）
-                        LogUtils.e("onIndicateSuccess");
-                    }
-
-                    @Override
-                    public void onIndicateFailure(final BleException exception) {
-                        // 打开通知操作失败（UI线程）
-                        LogUtils.e("onIndicateFailure " + exception.toString());
-                    }
-
-                    @Override
-                    public void onCharacteristicChanged(byte[] data) {
-                        // 打开通知后，设备发过来的数据将在这里出现（UI线程）
-                        LogUtils.e("onCharacteristicChanged" + HexUtil.formatHexString(characteristic.getValue(), true));
-                    }
-                });
-    }
-
 }

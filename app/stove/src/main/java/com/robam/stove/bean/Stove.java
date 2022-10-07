@@ -74,7 +74,7 @@ public class Stove extends Device {
     //左灶工作温度
     public String leftWorkTemp;
     //左灶
-    public MutableLiveData<Boolean> leftStove = new MutableLiveData<>(false);
+    public int leftStove;
     /**
      * 右灶工作模式
      */
@@ -86,7 +86,7 @@ public class Stove extends Device {
     //右灶工作温度
     public String rightWorkTemp;
     //右灶
-    public MutableLiveData<Boolean> rightStove = new MutableLiveData<>(false);
+    public int rightStove;
 
     @Override
     public boolean onMsgReceived(MqttMsg msg) {
