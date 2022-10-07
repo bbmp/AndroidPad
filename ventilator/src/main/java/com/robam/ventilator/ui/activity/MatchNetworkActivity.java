@@ -22,19 +22,29 @@ import com.clj.fastble.callback.BleGattCallback;
 import com.clj.fastble.callback.BleIndicateCallback;
 import com.clj.fastble.callback.BleNotifyCallback;
 import com.clj.fastble.callback.BleScanCallback;
+import com.clj.fastble.callback.BleWriteCallback;
 import com.clj.fastble.data.BleDevice;
 import com.clj.fastble.data.BleScanState;
 import com.clj.fastble.exception.BleException;
 import com.clj.fastble.scan.BleScanRuleConfig;
 import com.clj.fastble.utils.HexUtil;
 import com.robam.common.IDeviceType;
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
+import com.robam.common.ble.BleDecoder;
+import com.robam.common.ble.BleDeviceInfo;
 import com.robam.common.manager.BlueToothManager;
 import com.robam.common.ui.view.ExtImageSpan;
+import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.PermissionUtils;
+import com.robam.common.utils.StringUtils;
+import com.robam.pan.bean.Pan;
+import com.robam.stove.bean.Stove;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
 import com.robam.ventilator.constant.VentilatorConstant;
+import com.robam.ventilator.protocol.ble.BleVentilator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -155,8 +165,13 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
 
     //已授权
     private void onPermissionGranted() {
-        String[] names = new String[] {"ROKI"};
-        BlueToothManager.setScanRule(names);
+        if (model.equals(IDeviceType.RRQZ)) {
+            String[] names = new String[]{"ROKI"};
+            BlueToothManager.setScanRule(names);
+        } else if (model.equals(IDeviceType.RZNG)) {
+            String[] names = new String[]{"ROKI_KP100"};
+            BlueToothManager.setScanRule(names);
+        }
         startScan();
     }
 
@@ -179,21 +194,13 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        cancelScan();
-    }
 
-    //取消扫描
-    private void cancelScan() {
-        try {
-            if (BleManager.getInstance().getScanSate() == BleScanState.STATE_SCANNING)
-                BleManager.getInstance().cancelScan();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     //开始扫描
     private void startScan() {
+        BlueToothManager.cancelScan();
+
         BlueToothManager.startScan(new BleScanCallback() {
             @Override
             public void onScanStarted(boolean success) {
@@ -214,16 +221,18 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
             @Override
             public void onScanFinished(List<BleDevice> scanResultList) {
                 LogUtils.e("onScanFinished ");
-                if (!isDestroyed()) {  //界面销毁不连接
-                    if (null != scanResultList && scanResultList.size() > 0) {
-                        if (scanResultList.get(0).getName().contains("ROKI"))
-                            connect(scanResultList.get(0));
-                    } else {
-                        //未扫描到
+
+                if (null != scanResultList && scanResultList.size() > 0) {
+                    if (scanResultList.get(0).getName().contains("ROKI"))
+                        connect(scanResultList.get(0));
+                } else {
+                    //未扫描到
+                    if (!isDestroyed()) {
                         tvNext.setText(R.string.ventilator_rematch);
                         tvNext.setClickable(true);
                     }
                 }
+
             }
         });
     }
@@ -239,26 +248,108 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
             public void onConnectFail(BleDevice bleDevice, BleException exception) {
 
                 LogUtils.e("onConnectFail " + exception.getDescription());
-                tvNext.setText(R.string.ventilator_rematch);
-                tvNext.setClickable(true);
+                if (!isDestroyed()) {
+                    tvNext.setText(R.string.ventilator_rematch);
+                    tvNext.setClickable(true);
+                }
             }
 
             @Override
             public void onConnectSuccess(BleDevice bleDevice, BluetoothGatt gatt, int status) {
                 LogUtils.e("onConnectSuccess " + bleDevice.getName());
+                //连接成功
+                addSubDevice(bleDevice);
+
                 getBuletoothGatt(bleDevice);
                 //跳设备首页
-                finish();
+                if (!isDestroyed())
+                    finish();
             }
 
             @SuppressLint("MissingPermission")
             @Override
             public void onDisConnected(boolean isActiveDisConnected, BleDevice bleDevice, BluetoothGatt gatt, int status) {
                 LogUtils.e("onDisConnected");
+                //掉线
                 if (null != gatt)
                     gatt.close();
+                //清除设备蓝牙信息
+                setBleDevice(bleDevice.getMac(), null, null);
             }
         });
+    }
+    //转变bledevice mac地址
+    private String changeMac(String mac) {
+        String deviceNum = "";
+        if (null != mac) {
+            String[] data = mac.split(":");
+            int length = data.length;
+            while (length > 0) {
+                length--;
+                deviceNum += data[length];
+            }
+        }
+        return deviceNum;
+    }
+
+    //添加子设备到设备列表
+    private void addSubDevice(BleDevice bleDevice) {
+        LogUtils.e("bleDevice mac " + bleDevice.getMac());
+        String deviceNum = changeMac(bleDevice.getMac());
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            //已经存在锅或灶，mac地址判断
+            if (deviceNum.equals(DeviceUtils.getDeviceNumber(device.guid))) {
+                if (device instanceof Pan) {
+                    BleDecoder bleDecoder = ((Pan) device).bleDecoder;
+                    if (null != bleDecoder)
+                        bleDecoder.init_decoder(0);
+                    else
+                        ((Pan) device).bleDecoder = new BleDecoder(0);
+                    device.mac = bleDevice.getMac();
+                } else if (device instanceof Stove) {
+
+                    BleDecoder bleDecoder = ((Stove) device).bleDecoder;
+                    if (null != bleDecoder)
+                        bleDecoder.init_decoder(0);
+                    else
+                        ((Stove) device).bleDecoder = new BleDecoder(0);
+                    device.mac = bleDevice.getMac();
+                }
+                return;
+            }
+        }
+
+        if (IDeviceType.RRQZ.equals(model)) {
+            Stove stove = new Stove("燃气灶", IDeviceType.RRQZ, "9B328");
+            stove.mac = bleDevice.getMac();
+            stove.bleDecoder = new BleDecoder(0);
+            AccountInfo.getInstance().deviceList.add(stove);
+        } else if (IDeviceType.RZNG.equals(model)) {
+            Pan pan = new Pan("明火自动翻炒锅", IDeviceType.RZNG, "KP100");
+            pan.mac = bleDevice.getMac();
+            pan.bleDecoder = new BleDecoder(0);
+            AccountInfo.getInstance().deviceList.add(pan);
+        }
+    }
+
+    //设置蓝牙设备的读写特征符
+    private void setBleDevice(String mac, BleDevice bleDevice, BluetoothGattCharacteristic characteristic) {
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (mac.equals(device.mac)) {
+                if (device instanceof Pan) {
+                    ((Pan) device).bleDevice = bleDevice;
+                    ((Pan) device).characteristic = characteristic;
+                    if (null == bleDevice)
+                        device.bleType = 0;
+                } else if (device instanceof Stove) {
+                    ((Stove) device).bleDevice = bleDevice;
+                    ((Stove) device).characteristic = characteristic;
+                    if (null == bleDevice)
+                        device.bleType = 0;
+                }
+                break;
+            }
+        }
     }
 
     //获取gatt提供的服务
@@ -277,6 +368,8 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
                     uuid = characteristic.getUuid();
                     if (uuid.toString().contains("fff1")) {   //读写
                         LogUtils.e("uuid " + uuid);
+                        //设置读写特征符
+                        setBleDevice(bleDevice.getMac(), bleDevice, characteristic);
                     } else if (uuid.toString().contains("fff4")) {  //notify
                         int charaProp = characteristic.getProperties();
                         LogUtils.e("uuid " + uuid);
@@ -289,12 +382,10 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
             }
         }
     }
+
     //订阅通知
     private void notify(BleDevice bleDevice, BluetoothGattCharacteristic characteristic) {
-        BleManager.getInstance().notify(
-                bleDevice,
-                characteristic.getService().getUuid().toString(),
-                characteristic.getUuid().toString(),
+        BlueToothManager.notify(bleDevice, characteristic,
                 new BleNotifyCallback() {
 
                     @Override
@@ -313,7 +404,15 @@ public class MatchNetworkActivity extends VentilatorBaseActivity {
                     @Override
                     public void onCharacteristicChanged(byte[] data) {
                         // 打开通知后，设备发过来的数据将在这里出现（UI线程）
-                        LogUtils.e("onCharacteristicChanged " + HexUtil.formatHexString(characteristic.getValue(), true));
+                        for (Device device: AccountInfo.getInstance().deviceList) {
+                            if (bleDevice.getMac().equals(device.mac)) {
+                                if (device instanceof Pan)
+                                    BleVentilator.bleParser(bleDevice, ((Pan) device).bleDecoder, data);
+                                else if (device instanceof Stove)
+                                    BleVentilator.bleParser(bleDevice, ((Stove) device).bleDecoder, data);
+                                break;
+                            }
+                        }
                     }
                 });
     }

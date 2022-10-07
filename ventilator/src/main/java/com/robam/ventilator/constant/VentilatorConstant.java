@@ -22,4 +22,26 @@ public class VentilatorConstant {
      * 工作状态[1Byte]（0关机，1开机）
      */
     public final static String FanStatus = "FanStatus";
+
+    //开关机
+    public final static int FAN_POWERON = 0;
+    public final static int FAN_SHUTDOWN = 1;
+
+    //挡位
+    public final static int FAN_GEAR_CLOSE = 0; //关档
+    public final static int FAN_GEAR_WEAK = 1;
+    public final static int FAN_GEAR_MID = 2;
+    public final static int FAN_GEAR_FRY = 6; //爆炒
+    //灯开关
+    public final static int FAN_LIGHT_CLOSE = 0;
+    public final static int FAN_LIGHT_OPEN = 1;
+    //智感恒吸
+    public final static int FAN_SMART_CLOSE = 0;
+    public final static int FAN_SMART_OPEN = 1;
+
+    //mqtt消息字段
+    public final static String SUB_DEVICES = "sub_devices";
+    public final static String DEVICE_GUID = "device_guid";
+    public final static String DEVICE_BIZ = "device_biz"; //业务编吗
+    public final static String DEVICE_STATUS = "device_status";
 }

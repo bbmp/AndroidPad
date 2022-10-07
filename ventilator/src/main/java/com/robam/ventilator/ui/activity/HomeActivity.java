@@ -15,6 +15,7 @@ import android.view.View;
 import androidx.lifecycle.Observer;
 
 import com.google.gson.Gson;
+import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.UserInfo;
@@ -26,7 +27,6 @@ import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MMKVUtils;
 import com.robam.common.utils.NetworkUtils;
 import com.robam.common.utils.PermissionUtils;
-import com.robam.common.utils.StringUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.common.utils.WindowsUtils;
 import com.robam.ventilator.R;
@@ -36,7 +36,8 @@ import com.robam.ventilator.http.CloudHelper;
 import com.robam.ventilator.protocol.serial.SerialVentilator;
 import com.robam.ventilator.response.GetTokenRes;
 import com.robam.ventilator.response.GetUserInfoRes;
-import com.robam.ventilator.ui.service.AlarmService;
+import com.robam.ventilator.ui.service.AlarmBleService;
+import com.robam.ventilator.ui.service.AlarmMqttService;
 
 //主页
 public class HomeActivity extends BaseActivity {
@@ -50,6 +51,8 @@ public class HomeActivity extends BaseActivity {
 
     private BluetoothAdapter bluetoothAdapter;
     private Intent intent;
+    private Intent bleIntent;
+
     private static final String PASSWORD_LOGIN = "mobilePassword";
 
 
@@ -60,7 +63,6 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-
         if (Build.VERSION.SDK_INT >= 23) {
             if (Settings.canDrawOverlays(this)) {
 
@@ -101,14 +103,12 @@ public class HomeActivity extends BaseActivity {
         //打开串口
         SerialPortHelper.getInstance().openDevice(new SphResultCallback() {
             @Override
-            public void onSendData(byte[] sendCom) {
-
+            public void onSendData(byte[] sendCom, int len) {
             }
 
             @Override
-            public void onReceiveData(byte[] data) {
-                LogUtils.e(StringUtils.bytes2Hex(data));
-                SerialVentilator.parseSerial(data);
+            public void onReceiveData(byte[] data, int len) {
+                SerialVentilator.parseSerial(data, len);
             }
 
             @Override
@@ -117,20 +117,20 @@ public class HomeActivity extends BaseActivity {
                 if (HomeVentilator.getInstance().startup == 0x00)
                     SerialPortHelper.getInstance().addCommands(SerialVentilator.powerOn());
                 //循环查询
-                new Thread() {
-                    @Override
-                    public void run() {
-                        byte data[] = SerialVentilator.packQueryCmd();
-                        while (true) {
-                            SerialPortHelper.getInstance().addCommands(data);
-                            try {
-                                Thread.sleep(3000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }.start();
+//                new Thread() {
+//                    @Override
+//                    public void run() {
+//                        byte data[] = SerialVentilator.packQueryCmd();
+//                        while (true) {
+//                            SerialPortHelper.getInstance().addCommands(data);
+//                            try {
+//                                Thread.sleep(3000);
+//                            } catch (InterruptedException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    }
+//                }.start();
 
             }
 
@@ -144,9 +144,12 @@ public class HomeActivity extends BaseActivity {
         if (!bluetoothAdapter.isEnabled())
             checkPermissions();
         //启动定时服务
-        intent = new Intent(this.getApplicationContext(), AlarmService.class);
+        intent = new Intent(this.getApplicationContext(), AlarmMqttService.class);
         intent.setPackage(getPackageName());
         startService(intent);
+        bleIntent = new Intent(getContext().getApplicationContext(), AlarmBleService.class);
+        bleIntent.setPackage(getContext().getPackageName());
+        getContext().startService(bleIntent);
 //初始化主设备mqtt收发 烟机端只要网络连接上就需要启动mqtt服务，锅和灶不用登录
         //初始网络状态
         if (NetworkUtils.isConnect(this) && !AccountInfo.getInstance().getConnect().getValue())
@@ -172,8 +175,11 @@ public class HomeActivity extends BaseActivity {
                 else {
                     //断网
                     MqttManager.getInstance().stop();
-                    for (Device device: AccountInfo.getInstance().deviceList)
+                    for (Device device: AccountInfo.getInstance().deviceList) {
+                        if (IDeviceType.RRQZ.equals(device.dc) || IDeviceType.RZNG.equals(device.dc))
+                            continue;
                         device.status = Device.OFFLINE;
+                    }
                 }
             }
         });
@@ -218,6 +224,8 @@ public class HomeActivity extends BaseActivity {
         SerialPortHelper.getInstance().closeDevice();
         //关闭定时任务
         stopService(intent);
+        stopService(bleIntent);
+
     }
 
     //获取token

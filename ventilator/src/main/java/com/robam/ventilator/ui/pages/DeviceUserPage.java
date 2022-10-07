@@ -10,23 +10,38 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
+import com.clj.fastble.BleManager;
+import com.clj.fastble.data.BleDevice;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.BaseResponse;
 import com.robam.common.http.RetrofitCallback;
+import com.robam.common.manager.BlueToothManager;
+import com.robam.common.mqtt.MqttManager;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.GridSpaceItemDecoration;
+import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.ImageUtils;
+import com.robam.common.utils.MMKVUtils;
 import com.robam.common.utils.ToastUtils;
+import com.robam.pan.bean.Pan;
+import com.robam.stove.bean.Stove;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBasePage;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.UserInfo;
 import com.robam.ventilator.constant.DialogConstant;
+import com.robam.ventilator.device.HomeVentilator;
 import com.robam.ventilator.factory.VentilatorDialogFactory;
 import com.robam.ventilator.http.CloudHelper;
 import com.robam.ventilator.response.GetDeviceUserRes;
 import com.robam.ventilator.ui.adapter.RvDeviceUserAdapter;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 public class DeviceUserPage extends VentilatorBasePage {
     private Device device;
@@ -136,12 +151,23 @@ public class DeviceUserPage extends VentilatorBasePage {
     }
     //解绑用户
     private void unbindDeviceUser(long userid) {
+        if (IDeviceType.RRQZ.equals(device.dc) || IDeviceType.RZNG.equals(device.dc)) {  //解绑子设备
+            //先删
+            deleteSubdevice(device);
+            //上报
+            HomeVentilator.getInstance().notifyOnline(device.guid, device.bid, device.status);
+            //重新获取设备列表
+            AccountInfo.getInstance().getGuid().setValue(device.guid);
+            return;
+        }
         CloudHelper.unbindDevice(this, userid, device.guid, BaseResponse.class, new RetrofitCallback<BaseResponse>() {
             @Override
             public void onSuccess(BaseResponse baseResponse) {
                 if (null != baseResponse) {
                     //解绑成功
-                    AccountInfo.getInstance().getUser().setValue(curUser);
+                    deleteDevice(device);
+                    //重新获取设备列表
+                    AccountInfo.getInstance().getGuid().setValue(device.guid);
                 }
             }
 
@@ -163,5 +189,41 @@ public class DeviceUserPage extends VentilatorBasePage {
         IDialog iDialog = VentilatorDialogFactory.createDialogByType(getContext(), DialogConstant.DIALOG_TYPE_SHARE);
         iDialog.setCancelable(false);
         iDialog.show();
+    }
+    //删除子设备
+    private void deleteSubdevice(Device device) {
+        Set<String> subDevices = MMKVUtils.getSubDevice();
+        if (null != subDevices) {
+            Iterator<String> iterator = subDevices.iterator();
+            while (iterator.hasNext()) {
+                String json = iterator.next();
+                Device subDevice = new Gson().fromJson(json, Device.class);
+                if (device.guid.equals(subDevice.guid)) {
+                    iterator.remove();//已经有记录 删除
+
+                    deleteDevice(device);
+                    break;
+                }
+            }
+            //写回去
+            MMKVUtils.setSubDevice(subDevices);
+        }
+    }
+    //从列表中删除设备
+    private void deleteDevice(Device curDevice) {
+        Iterator<Device> iterator = AccountInfo.getInstance().deviceList.iterator();
+        while (iterator.hasNext()) {
+            Device device = iterator.next();
+            if (curDevice.guid.equals(device.guid)) {
+                iterator.remove();
+                if (device instanceof Pan) {
+                    BlueToothManager.disConnect(((Pan) device).bleDevice); //断开蓝牙
+                } else if (device instanceof Stove) {
+                    BlueToothManager.disConnect(((Stove) device).bleDevice);
+                }
+                MqttManager.getInstance().unSubscribe(DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)); //取消订阅
+                break;
+            }
+        }
     }
 }

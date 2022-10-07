@@ -13,7 +13,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
 import com.robam.common.module.IPublicStoveApi;
+import com.robam.stove.bean.Stove;
 import com.robam.stove.device.HomeStove;
 import com.robam.common.manager.FunctionManager;
 import com.robam.common.ui.dialog.IDialog;
@@ -25,6 +28,7 @@ import com.robam.stove.base.StoveBasePage;
 import com.robam.stove.bean.StoveFunBean;
 import com.robam.stove.constant.DialogConstant;
 import com.robam.stove.constant.StoveConstant;
+import com.robam.stove.device.StoveAbstractControl;
 import com.robam.stove.factory.StoveDialogFactory;
 import com.robam.stove.ui.adapter.RvMainFunctionAdapter;
 import com.robam.stove.ui.dialog.HomeLockDialog;
@@ -226,16 +230,23 @@ public class HomePage extends StoveBasePage {
                 @Override
                 public void onClick(View v) {
                     if (v.getId() == R.id.tv_ok) {
-                        if (stove == IPublicStoveApi.STOVE_LEFT)
-                            HomeStove.getInstance().leftStove.setValue(false);
-                        if (stove == IPublicStoveApi.STOVE_RIGHT)
-                            HomeStove.getInstance().rightStove.setValue(false);
+
+                        closeFire(stove);
                     }
                     iDialogStop = null;
                 }
             }, R.id.tv_cancel, R.id.tv_ok);
         }
         iDialogStop.show();
+    }
+    //关火
+    private void closeFire(int stoveId) {
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device.guid.equals(HomeStove.getInstance().guid)) {
+                StoveAbstractControl.getInstance().setAttribute(HomeStove.getInstance().guid, (byte) stoveId, (byte) 0x00, (byte) 0x00);
+                break;
+            }
+        }
     }
 
     /**

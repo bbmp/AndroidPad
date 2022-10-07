@@ -2,8 +2,8 @@ package com.robam.ventilator.protocol.mqtt;
 
 import com.robam.common.ITerminalType;
 import com.robam.common.bean.AccountInfo;
-import com.robam.common.bean.Device;
 import com.robam.common.bean.RTopic;
+import com.robam.common.constant.ComnConstant;
 import com.robam.common.device.Plat;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.mqtt.MqttMsg;
@@ -19,10 +19,11 @@ import com.robam.ventilator.device.HomeVentilator;
 import com.robam.ventilator.device.VentilatorAbstractControl;
 import com.robam.ventilator.device.VentilatorFactory;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.HashMap;
-import java.util.Map;
 
 //烟机mqtt私有协议
 public class MqttVentilator extends MqttPublic {
@@ -36,6 +37,8 @@ public class MqttVentilator extends MqttPublic {
 //从payload中取值角标
         //远程被控制
         switch (msg.getID()) {
+            case MsgKeys.GetStoveStatus_Req: //查询灶具
+                break;
             case MsgKeys.getDeviceAttribute_Req:
 
                 break;
@@ -66,15 +69,34 @@ public class MqttVentilator extends MqttPublic {
         int msgId = msg.getID();
         switch (msgId) {
             case MsgKeys.DeviceConnected_Noti:
-                buf.put((byte) 1);
-                buf.put("0000000000".getBytes());
+                buf.put((byte) msg.optInt(ComnConstant.DEVICE_NUM));
+                buf.put(AccountInfo.getInstance().getUserString().getBytes());
                 buf.put(Plat.getPlatform().getMac().getBytes()); //mac
+
                 buf.put(msg.getGuid().getBytes());
                 buf.put((byte) Plat.getPlatform().getMac().length());
                 buf.put(Plat.getPlatform().getMac().getBytes());
                 buf.put((byte) 1);
-                buf.put((byte) 4);
+                buf.put((byte) 9);
                 buf.put((byte) 1);
+
+                if (null != msg.optJSONArray(VentilatorConstant.SUB_DEVICES)) {
+                    JSONArray jsonArray = msg.optJSONArray(VentilatorConstant.SUB_DEVICES);
+                    for (int i = 0; i<jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.optJSONObject(i);
+                        String guid = jsonObject.optString(VentilatorConstant.DEVICE_GUID);
+                        buf.put(guid.getBytes());
+                        String biz = jsonObject.optString(VentilatorConstant.DEVICE_BIZ);
+                        buf.put((byte) biz.length());
+                        buf.put(biz.getBytes());
+                        buf.put((byte) 0);
+                        buf.put((byte) 0);
+                        buf.put((byte) jsonObject.optInt(VentilatorConstant.DEVICE_STATUS));
+                    }
+                }
+
+                buf.put((byte) 0); //蓝牙版本
+                buf.put((byte) 0); //参数个数
                 break;
             case MsgKeys.getDeviceAttribute_Req:  //属性查询
                 buf.put((byte) 0x00);
@@ -89,7 +111,7 @@ public class MqttVentilator extends MqttPublic {
                 buf.put(HomeVentilator.getInstance().status);//状态
                 buf.put((byte) QualityKeys.workCtrl);
                 buf.put((byte) 0x01);
-                buf.put(HomeVentilator.getInstance().gears); //挡位
+                buf.put(HomeVentilator.getInstance().gear); //挡位
                 buf.put((byte) QualityKeys.lightCtrl);
                 buf.put((byte) 0x01);
                 buf.put(HomeVentilator.getInstance().lightOn); //灯开关
@@ -129,6 +151,8 @@ public class MqttVentilator extends MqttPublic {
         //控制烟机需校验是否是本机
         if (targetGuid.equals(Plat.getPlatform().getDeviceOnlySign())) {
             switch (msg.getID()) {
+                case MsgKeys.GetStoveStatus_Rep: //查询灶应答
+                    break;
                 case MsgKeys.getDeviceAttribute_Req: { //查询烟机
                     //属性个数
                     short attributeNum = ByteUtils.toShort(payload[offset]);

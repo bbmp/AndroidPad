@@ -19,12 +19,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.google.gson.Gson;
 import com.robam.cabinet.bean.Cabinet;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.BaseResponse;
 import com.robam.common.constant.ComnConstant;
 import com.robam.common.device.Plat;
+import com.robam.common.manager.BlueToothManager;
 import com.robam.common.utils.DeviceUtils;
+import com.robam.common.utils.MMKVUtils;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.pan.bean.Pan;
 import com.robam.steamoven.bean.SteamOven;
@@ -50,19 +53,25 @@ import com.robam.common.bean.UserInfo;
 import com.robam.ventilator.bean.VenFunBean;
 import com.robam.ventilator.constant.DialogConstant;
 import com.robam.ventilator.constant.VentilatorConstant;
-import com.robam.ventilator.device.VentilatorFactory;
+import com.robam.ventilator.device.VentilatorAbstractControl;
 import com.robam.ventilator.factory.VentilatorDialogFactory;
 import com.robam.ventilator.http.CloudHelper;
+import com.robam.ventilator.protocol.ble.BleVentilator;
 import com.robam.ventilator.response.GetDeviceRes;
-import com.robam.ventilator.ui.activity.AddDeviceMainActivity;
+import com.robam.ventilator.ui.activity.AddDeviceActivity;
 import com.robam.ventilator.ui.activity.MatchNetworkActivity;
 import com.robam.ventilator.ui.activity.SimpleModeActivity;
 import com.robam.ventilator.ui.adapter.RvMainFunctonAdapter;
 import com.robam.ventilator.ui.adapter.RvProductsAdapter;
 import com.robam.ventilator.ui.adapter.RvSettingAdapter;
+import com.robam.ventilator.ui.service.AlarmBleService;
+import com.robam.ventilator.ui.service.AlarmMqttService;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public class HomePage extends VentilatorBasePage {
     /**
@@ -195,10 +204,19 @@ public class HomePage extends VentilatorBasePage {
         rvFunctionAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                if (position == 0)
+                if (position == 0) { //锁屏
                     screenLock();
-                else {
-                   //挡位
+                } else { //挡位选择
+                    if (position == rvFunctionAdapter.getPickPosition()) {//已经选中了
+                        position = -1;
+                        VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_CLOSE);
+                    } else if (position == 1) {
+                        VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_WEAK);
+                    } else if (position == 2) {
+                        VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_MID);
+                    } else if (position == 3) {
+                        VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_FRY);
+                    }
                 }
                 rvFunctionAdapter.setPickPosition(position);
             }
@@ -251,7 +269,7 @@ public class HomePage extends VentilatorBasePage {
                 if (drawerLayout.isDrawerOpen(Gravity.RIGHT)) {
                     drawerLayout.closeDrawer(Gravity.RIGHT);
                 }
-                startActivity(new Intent(getContext(), AddDeviceMainActivity.class));
+                startActivity(new Intent(getContext(), AddDeviceActivity.class));
             }
         });
         rvProductsAdapter.addFooterView(foot);
@@ -339,12 +357,15 @@ public class HomePage extends VentilatorBasePage {
         AccountInfo.getInstance().getGuid().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                for (int i=0; i<AccountInfo.getInstance().deviceList.size(); i++) {
-                    if (AccountInfo.getInstance().deviceList.get(i).guid.equals(s)) {
-                        rvProductsAdapter.notifyDataSetChanged();
-                        break;
+                for (Device device: AccountInfo.getInstance().deviceList) {
+                    if (device.guid.equals(s)) {
+                        LogUtils.e("onChanged " + device.guid + " dc " + device.dc);
+                        rvProductsAdapter.setList(AccountInfo.getInstance().deviceList);
+                        return;
                     }
                 }
+                //找不到设备
+                rvProductsAdapter.setList(AccountInfo.getInstance().deviceList);
             }
         });
     }
@@ -359,7 +380,7 @@ public class HomePage extends VentilatorBasePage {
                 @Override
                 public void onSuccess(GetDeviceRes getDeviceRes) {
 
-                    AccountInfo.getInstance().deviceList.clear();
+                    clearDevice();
 
                     if (null != getDeviceRes && null != getDeviceRes.devices) {
                         List<Device> deviceList = getDeviceRes.devices;
@@ -373,39 +394,106 @@ public class HomePage extends VentilatorBasePage {
                             else if (IDeviceType.RYYJ.equals(device.dc) && device.guid.equals(Plat.getPlatform().getDeviceOnlySign())) {
                                 //当前烟机子设备
                                 List<Device> subDevices = device.subDevices;
+                                Set<String> sets = new HashSet<>();
                                 if (null != subDevices) {
+
                                     for (Device subDevice : subDevices) {
-                                        if (IDeviceType.RZNG.equals(subDevice.dc)) //锅
-                                            AccountInfo.getInstance().deviceList.add(new Pan(subDevice));
-                                        else if (IDeviceType.RRQZ.equals(subDevice.dc)) //灶具
-                                            AccountInfo.getInstance().deviceList.add(new Stove(subDevice));
+                                        sets.add(new Gson().toJson(subDevice));
+
                                     }
                                 }
+                                MMKVUtils.setSubDevice(sets);  //设备更新，子设备覆盖
                             }
                         }
                         //绑定设备
                         bindDevice(deviceList);
-                        //订阅设备主题
-                        subscribeDevice();
-                    }
 
-                    if (null != rvProductsAdapter)
-                        rvProductsAdapter.setList(AccountInfo.getInstance().deviceList);
+                    }
+                    //获取子设备
+                    getSubDevices(readSubDevices());
                 }
 
                 @Override
                 public void onFaild(String err) {
                     LogUtils.e("getDevices" + err);
+                    //获取子设备
+                    getSubDevices(readSubDevices());
                 }
             });
         } else {
             //logout
-            AccountInfo.getInstance().deviceList.clear();
-
-            if (null != rvProductsAdapter)
-                rvProductsAdapter.setList(AccountInfo.getInstance().deviceList);
+            clearDevice();
+            //获取子设备
+            getSubDevices(readSubDevices());
         }
     }
+    //本地读取子设备
+    private List<Device> readSubDevices() {
+        Set<String> deviceSets = MMKVUtils.getSubDevice();
+        List<Device> subDevices = new ArrayList<>();
+        if (null != deviceSets) {
+            for (String json: deviceSets) {
+                Device subDevice = new Gson().fromJson(json, Device.class);
+                subDevices.add(subDevice);
+            }
+        }
+        return subDevices;
+    }
+    //获取子设备
+    private void getSubDevices(List<Device> subDevices) {
+
+        if (null != subDevices) {  //添加新增的设备
+            for (Device subDevice: subDevices) {
+
+                if (AccountInfo.getInstance().isExist(AccountInfo.getInstance().deviceList, subDevice))
+                    continue;
+                else {
+                    if (IDeviceType.RZNG.equals(subDevice.dc)) {//锅
+                        AccountInfo.getInstance().deviceList.add(new Pan(subDevice));
+
+
+                    } else if (IDeviceType.RRQZ.equals(subDevice.dc)) { //灶具
+                        AccountInfo.getInstance().deviceList.add(new Stove(subDevice));
+
+                    }
+                }
+            }
+        }
+        //删除减少的设备
+        Iterator<Device> iterator = AccountInfo.getInstance().deviceList.iterator();
+        while (iterator.hasNext()) {
+            Device device = iterator.next();
+            if (!AccountInfo.getInstance().isExist(subDevices, device)) { //不存在
+                if (device instanceof Pan) {
+                    //断开蓝牙
+                    BlueToothManager.disConnect(((Pan) device).bleDevice);
+                    iterator.remove();
+                } else if (device instanceof Stove) {
+                    //断开蓝牙
+                    BlueToothManager.disConnect(((Stove) device).bleDevice);
+                    iterator.remove();
+                }
+            }
+        }
+        List<String> names = new ArrayList();
+
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device instanceof Pan && null == ((Pan) device).bleDevice)
+                names.add("ROKI_KP100");
+            else if (device instanceof Stove && null == ((Stove) device).bleDevice)
+                names.add("ROKI");
+        }
+        if (names.size() > 0) {
+            BlueToothManager.setScanRule(names.toArray(new String[names.size()]));
+            BleVentilator.startScan();
+        }
+        //订阅设备主题
+        subscribeDevice();
+
+        if (null != rvProductsAdapter)
+            rvProductsAdapter.setList(AccountInfo.getInstance().deviceList);
+    }
+
     //绑定设备 返回列表中无主设备
     private void bindDevice(List<Device> deviceList) {
         for (Device device: deviceList) {
@@ -444,12 +532,14 @@ public class HomePage extends VentilatorBasePage {
                 tvPerformance.setSelected(true);
                 tvComfort.setSelected(false);
                 group.setVisibility(View.GONE);
+                VentilatorAbstractControl.getInstance().setSmart(VentilatorConstant.FAN_SMART_CLOSE); //智感恒吸关闭
             }
         } else if (id == R.id.tv_comfort) {
             if (!tvComfort.isSelected()) {
                 tvPerformance.setSelected(false);
                 tvComfort.setSelected(true);
                 group.setVisibility(View.VISIBLE);
+                VentilatorAbstractControl.getInstance().setSmart(VentilatorConstant.FAN_SMART_OPEN);  //打开智感恒吸
             }
         } else if (id == R.id.ll_drawer_left) {
             open(Gravity.LEFT);
@@ -509,5 +599,15 @@ public class HomePage extends VentilatorBasePage {
             }
         }, R.id.tv_cancel, R.id.tv_ok);
         iDialog.show();
+    }
+    //删除设备。保留子设备
+    private void clearDevice() {
+        Iterator<Device> iterator = AccountInfo.getInstance().deviceList.iterator();
+        while (iterator.hasNext()) {
+            Device device = iterator.next();
+            if (device instanceof Pan || device instanceof Stove)
+                continue;
+            iterator.remove();
+        }
     }
 }

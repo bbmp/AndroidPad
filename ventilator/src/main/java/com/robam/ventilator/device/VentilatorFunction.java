@@ -12,4 +12,6 @@ public interface VentilatorFunction {
     void setFanLight(int light); //设置灯开关
 
     void setFanAll(int gear, int light); //设置整体参数
+
+    void setSmart(int smart);// 设置智感恒吸
 }

@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.robam.common.IDeviceType;
+import com.robam.common.device.Plat;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.ui.dialog.IDialog;
@@ -22,6 +23,8 @@ import com.robam.common.ui.view.PageIndicator;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.ImageUtils;
 import com.robam.common.utils.LogUtils;
+import com.robam.pan.bean.Pan;
+import com.robam.stove.bean.Stove;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
 import com.robam.common.bean.AccountInfo;
@@ -35,6 +38,7 @@ import com.robam.ventilator.ui.pages.DeviceUserPage;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class PersonalCenterActivity extends VentilatorBaseActivity {
@@ -81,6 +85,18 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
                 setUserInfo(userInfo);
             }
         });
+        //删除设备监听
+        AccountInfo.getInstance().getGuid().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                for (Device device: AccountInfo.getInstance().deviceList) {
+                    if (device.guid.equals(s))
+                        return;
+                }
+                //找不到设备
+                getDeviceInfo(AccountInfo.getInstance().getUser().getValue());
+            }
+        });
     }
 
     private void setUserInfo(UserInfo userInfo) {
@@ -117,13 +133,24 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
                         List<Fragment> fragments = new ArrayList<>();
                         for (Device device: getDeviceRes.devices) {
                             if (device.dc.equals(IDeviceType.RXWJ) ||
-                                    device.dc.equals(IDeviceType.RYYJ) ||
-                                    device.dc.equals(IDeviceType.RZNG) ||
+                                    (device.dc.equals(IDeviceType.RYYJ) && (Plat.getPlatform().getDeviceOnlySign()).equals(device.guid)) ||   //当前烟机
                                     device.dc.equals(IDeviceType.RXDG) ||
-                                    device.dc.equals(IDeviceType.RRQZ) ||
                                     device.dc.equals(IDeviceType.RZKY)) { //过滤套系外设备
                                 DeviceUserPage deviceUserPage = new DeviceUserPage(device, userInfo);
                                 fragments.add(deviceUserPage);
+                                List<Device> subDevices = device.subDevices;
+                                if ((Plat.getPlatform().getDeviceOnlySign()).equals(device.guid) && null != subDevices) { //当前烟机子设备
+                                    for (Device subDevice : subDevices) {
+                                        if (IDeviceType.RZNG.equals(subDevice.dc)) {//锅
+                                            DeviceUserPage panUserPage = new DeviceUserPage(subDevice, userInfo);
+                                            fragments.add(panUserPage);
+                                        }
+                                        else if (IDeviceType.RRQZ.equals(subDevice.dc)) {//灶具
+                                            DeviceUserPage stoveUserPage = new DeviceUserPage(subDevice, userInfo);
+                                            fragments.add(stoveUserPage);
+                                        }
+                                    }
+                                }
                             }
                         }
 
@@ -145,11 +172,26 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
                 }
             });
         } else {
-            //停止取消所有订阅
-            MqttManager.getInstance().stop();
+            //取消所有订阅 除子设备
+            unSubscribeDevices();
             //logout
-            AccountInfo.getInstance().deviceList.clear();
+//            AccountInfo.getInstance().deviceList.clear();
         }
+    }
+
+    private void unSubscribeDevices() {
+        String deleteGuid = null;
+        Iterator<Device> iterator = AccountInfo.getInstance().deviceList.iterator();
+        while (iterator.hasNext()) {
+            Device device = iterator.next();
+            if (device instanceof Pan || device instanceof Stove)
+                continue;
+            iterator.remove();
+            deleteGuid = device.guid;  //删除的设备
+            MqttManager.getInstance().unSubscribe(DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)); //取消订阅
+        }
+        if (null != deleteGuid)
+            AccountInfo.getInstance().getGuid().setValue(deleteGuid);
     }
 
 

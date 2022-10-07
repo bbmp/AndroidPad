@@ -1,5 +1,21 @@
 package com.robam.ventilator.device;
 
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
+import com.robam.common.bean.RTopic;
+import com.robam.common.constant.ComnConstant;
+import com.robam.common.device.Plat;
+import com.robam.common.mqtt.MqttManager;
+import com.robam.common.mqtt.MqttMsg;
+import com.robam.common.mqtt.MsgKeys;
+import com.robam.common.utils.DeviceUtils;
+import com.robam.pan.bean.Pan;
+import com.robam.stove.bean.Stove;
+import com.robam.ventilator.constant.VentilatorConstant;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 public class HomeVentilator {
     //当前进入的烟机
     public static HomeVentilator getInstance() {
@@ -15,7 +31,6 @@ public class HomeVentilator {
      * byte6 开机/关机
      */
     public byte startup = 0x00 ;
-    public int startupIndex = 0 ;
 
     /**
      * byte7 开灯/关灯
@@ -25,7 +40,7 @@ public class HomeVentilator {
     /**
      * byte8 风机挡位
      */
-    public byte gears = (byte) 0xA0;
+    public byte gear = (byte) 0xA0;
     /**
      * byte9 蜂鸣器
      */
@@ -74,4 +89,42 @@ public class HomeVentilator {
      * byte20  参数9 预留
      */
     public byte param9 = (byte) 0x00;
+
+    //通知上线
+    public void notifyOnline(String guid, String biz, int status) { //子设备guid
+
+        //通知
+        try {
+            String srcGuid = Plat.getPlatform().getDeviceOnlySign(); //烟机guid
+            MqttMsg msg = new MqttMsg.Builder()
+                    .setMsgId(MsgKeys.DeviceConnected_Noti)
+                    .setGuid(srcGuid) //源guid
+                    .setTopic(new RTopic(RTopic.TOPIC_BROADCAST, DeviceUtils.getDeviceTypeId(srcGuid), DeviceUtils.getDeviceNumber(srcGuid)))
+                    .build();
+            JSONArray jsonArray = new JSONArray();
+            for (Device device: AccountInfo.getInstance().deviceList) {
+                if (guid.equals(device.guid) && ((device instanceof Pan) || (device instanceof Stove))) { //已经存在该子设备
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.putOpt(VentilatorConstant.DEVICE_GUID, guid);
+                    jsonObject.putOpt(VentilatorConstant.DEVICE_BIZ, biz);
+                    jsonObject.putOpt(VentilatorConstant.DEVICE_STATUS, status);
+                    jsonArray.put(jsonObject);
+                } else if ((device instanceof Pan) || (device instanceof Stove)) { //其他存在的子设备
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.putOpt(VentilatorConstant.DEVICE_GUID, device.guid);
+                    jsonObject.putOpt(VentilatorConstant.DEVICE_BIZ, device.bid);
+                    jsonObject.putOpt(VentilatorConstant.DEVICE_STATUS, device.status);
+                    jsonArray.put(jsonObject);
+                }
+            }
+
+            msg.putOpt(ComnConstant.DEVICE_NUM, jsonArray.length() + 1); //设备个数
+            msg.putOpt(VentilatorConstant.SUB_DEVICES, jsonArray);
+
+            MqttManager.getInstance().publish(msg, VentilatorFactory.getTransmitApi());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.UiAutomation;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 
 import com.robam.common.ui.dialog.IDialog;
@@ -11,6 +12,8 @@ import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
 import com.robam.ventilator.constant.DialogConstant;
 import com.robam.ventilator.factory.VentilatorDialogFactory;
+
+import java.io.File;
 
 public class ResetActivity extends VentilatorBaseActivity {
     private IDialog resetDialog;
@@ -50,8 +53,10 @@ public class ResetActivity extends VentilatorBaseActivity {
             resetDialog.setListeners(new IDialog.DialogOnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (v.getId() == R.id.tv_ok)
-                        ; //恢复中
+                    if (v.getId() == R.id.tv_ok) {
+                        clearPublic(); //恢复中
+                        clearPrivate();
+                    }
                 }
             }, R.id.tv_cancel, R.id.tv_ok);
         }
@@ -63,5 +68,100 @@ public class ResetActivity extends VentilatorBaseActivity {
         super.onDestroy();
         if (null != resetDialog && resetDialog.isShow())
             resetDialog.dismiss();
+    }
+
+    /**
+     * 清空公有目录
+     */
+    public void clearPublic() {
+
+        String publicFilePath = Environment.getExternalStorageDirectory().getPath() + "/" + getPackageName();
+        File dir = new File(publicFilePath);
+        File[] files = dir.listFiles();
+        if (null != files) {
+            for (File file : files) {
+                deleteFolder(file.getAbsolutePath());
+            }
+        }
+    }
+
+    /**
+     * 清空私有目录
+     */
+    public  void clearPrivate() {
+
+        //清空文件夹
+        File dir = new File(getApplication().getFilesDir().getParent());
+        File[] files = dir.listFiles();
+        if (null != files) {
+            for (File file : files) {
+                if (!file.getName().contains("lib")) {
+                    deleteFolder(file.getAbsolutePath());
+                }
+            }
+        }
+    }
+
+    /**
+     * 根据路径删除指定的目录或文件，无论存在与否
+     */
+    private boolean deleteFolder(String filePath) {
+        File file = new File(filePath);
+        if (!file.exists()) {
+            return false;
+        } else {
+            if (file.isFile()) {
+                return deleteSingleFile(filePath);
+            } else {
+                return deleteDirectory(filePath);
+            }
+        }
+    }
+
+    /**
+     * 删除指定文件
+     */
+    private  boolean deleteDirectory(String filePath) {
+        boolean flag = false;
+        if (!filePath.endsWith(File.separator)) {
+            filePath = filePath + File.separator;
+        }
+        File dirFile = new File(filePath);
+        if (!dirFile.exists() || !dirFile.isDirectory()) {
+            return false;
+        }
+        flag = true;
+        File[] files = dirFile.listFiles();
+        for (File file : files) {
+            if (file.isFile()) {
+                flag = deleteSingleFile(file.getAbsolutePath());
+                if (!flag) {
+                    break;
+                }
+            } else {
+                flag = deleteDirectory(file.getAbsolutePath());
+                if (!flag) {
+                    break;
+                }
+            }
+        }
+        if (!flag) {
+            return false;
+        }
+        return dirFile.delete();
+    }
+
+    /**
+     * 删除单个文件
+     *
+     * @param filePath 被删除文件的文件名
+     * @return 文件删除成功返回true，否则返回false
+     */
+    private boolean deleteSingleFile(String filePath) {
+        File file = new File(filePath);
+        if (file.isFile() && file.exists()) {
+            return file.delete();
+        }
+        return false;
     }
 }

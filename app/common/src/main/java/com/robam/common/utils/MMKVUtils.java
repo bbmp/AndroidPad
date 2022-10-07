@@ -2,11 +2,14 @@ package com.robam.common.utils;
 
 import com.tencent.mmkv.MMKV;
 
+import java.util.Set;
+
 public class MMKVUtils {
     public static String MMKV_NAME = "STEAM_OVEN" ;
     public static String LOGIN  = "login";
     public static String USER_INFO  = "user_info";
     public static String INIT_DATA  = "init_data";
+    public static String SUBDEVICE_INFO = "subdevice_info";
 
     /**
      * 获取是否登录账号
@@ -42,6 +45,16 @@ public class MMKVUtils {
     public static void setUser(String user){
         MMKV mmkv = MMKV.defaultMMKV();
         mmkv.encode(USER_INFO, user);
+    }
+    //保存子设备
+    public static void setSubDevice(Set<String> subDevice) {
+        MMKV mmkv = MMKV.defaultMMKV();
+        mmkv.encode(SUBDEVICE_INFO, subDevice);
+    }
+
+    public static Set<String> getSubDevice() {
+        MMKV mmkv = MMKV.defaultMMKV();
+        return mmkv.decodeStringSet(SUBDEVICE_INFO);
     }
 
     /**

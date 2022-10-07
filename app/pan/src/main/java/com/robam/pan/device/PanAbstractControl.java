@@ -22,4 +22,9 @@ public class PanAbstractControl implements PanFunction{
     public void powerOn() {
         function.powerOn();
     }
+
+    @Override
+    public void queryAttribute(String targetGuid) {
+        function.queryAttribute(targetGuid);
+    }
 }

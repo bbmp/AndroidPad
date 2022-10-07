@@ -109,13 +109,13 @@ public class TransmitApi implements IProtocol {
                     } else if (device instanceof Stove) {
                         msg = StoveFactory.getProtocol().decode(topic, payload);
                         //
-                        if (device.onMsgReceived(msg))
-                            AccountInfo.getInstance().getGuid().setValue(device.guid);  //更新设备状态
+                        device.onMsgReceived(msg);
                         return msg;
-                    }
-                    else if (device instanceof Pan)
-                        return PanFactory.getProtocol().decode(topic, payload);
-                    else if (device instanceof DishWasher) {
+                    } else if (device instanceof Pan) {
+                        msg = PanFactory.getProtocol().decode(topic, payload);
+                        device.onMsgReceived(msg);
+                        return msg;
+                    } else if (device instanceof DishWasher) {
                         msg = DishWasherFactory.getProtocol().decode(topic, payload);
                         if (device.onMsgReceived(msg))
                             AccountInfo.getInstance().getGuid().setValue(device.guid);  //更新设备状态

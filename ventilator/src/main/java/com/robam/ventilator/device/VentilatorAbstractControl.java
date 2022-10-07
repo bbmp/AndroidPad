@@ -43,4 +43,9 @@ public class VentilatorAbstractControl implements VentilatorFunction{
     public void setFanAll(int gear, int light) {
         function.setFanAll(gear, light);
     }
+
+    @Override
+    public void setSmart(int smart) {
+        function.setSmart(smart);
+    }
 }

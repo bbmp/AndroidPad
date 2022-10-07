@@ -14,7 +14,7 @@ public class Crc16Utils {
 
             uchCRCLo = (byte) (uchCRCHi ^ CRC_HI[uIndex]);
             uchCRCHi = CRC_LO[uIndex];
-            Log.e("calccrc16", "uchCRCLo"+uchCRCLo+"uchCRCHi"+uchCRCHi+"uIndex"+uIndex);
+            LogUtils.i("uchCRCLo "+uchCRCLo+" uchCRCHi "+uchCRCHi+" uIndex "+uIndex);
         }
         short crc = (short) ((uchCRCLo & 0xFF) | (uchCRCHi << 8));
         return crc;
