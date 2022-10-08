@@ -33,11 +33,13 @@ import com.robam.common.utils.MMKVUtils;
 import com.robam.common.utils.StringUtils;
 import com.robam.pan.bean.Pan;
 import com.robam.stove.bean.Stove;
+import com.robam.stove.device.StoveFactory;
 import com.robam.ventilator.R;
 import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.device.HomeVentilator;
 import com.robam.ventilator.device.VentilatorFactory;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -57,8 +59,20 @@ import java.util.concurrent.TimeUnit;
 public class BleVentilator {
     private static ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(2, 2, 0, TimeUnit.MILLISECONDS,
             new SynchronousQueue<>());
+    private static WeakReference<BleCallBack> bleCallBackWeakReference;
+
+    public interface BleCallBack {
+        void onScanFinished();
+
+        void onConnectFail();
+
+        void onConnectSuccess();
+    }
+
     //开始扫描
-    public static void startScan() {
+    public static void startScan(String model, BleCallBack bleCallBack) {
+        bleCallBackWeakReference = new WeakReference<>(bleCallBack);
+
         BlueToothManager.startScan(new BleScanCallback() {
             @Override
             public void onScanStarted(boolean success) {
@@ -82,16 +96,19 @@ public class BleVentilator {
 
                 if (null != scanResultList && scanResultList.size() > 0) {
                     for (BleDevice bleDevice: scanResultList) {
-                        if (bleDevice.getName().contains("ROKI"))
-                            connect(bleDevice);
+                        if (bleDevice.getName().contains("ROKI") || bleDevice.getName().contains("ROKI_KP100"))
+                            connect(model, bleDevice);
                     }
+                } else {
+                    if (null != bleCallBackWeakReference && null != bleCallBackWeakReference.get())
+                        bleCallBackWeakReference.get().onScanFinished();
                 }
             }
         });
     }
 
     //连接设备
-    public static void connect(final BleDevice bleDevice) {
+    public static void connect(String model, final BleDevice bleDevice) {
         LogUtils.e("connect " + bleDevice.getMac());
         BlueToothManager.connect(bleDevice, new BleGattCallback() {
             @Override
@@ -103,15 +120,20 @@ public class BleVentilator {
             public void onConnectFail(BleDevice bleDevice, BleException exception) {
 
                 LogUtils.e("onConnectFail " + exception.getDescription());
+                if (null != bleCallBackWeakReference && null != bleCallBackWeakReference.get())
+                    bleCallBackWeakReference.get().onConnectFail();
             }
 
             @Override
             public void onConnectSuccess(BleDevice bleDevice, BluetoothGatt gatt, int status) {
                 LogUtils.e("onConnectSuccess " + bleDevice.getName());
                 //连接成功
-                addSubDevice(bleDevice);
+                addSubDevice(model, bleDevice);
 
                 getBuletoothGatt(bleDevice);
+
+                if (null != bleCallBackWeakReference && null != bleCallBackWeakReference.get())
+                    bleCallBackWeakReference.get().onConnectSuccess();
             }
 
             @SuppressLint("MissingPermission")
@@ -130,14 +152,15 @@ public class BleVentilator {
                         try {
                             Thread.sleep(2000);
                         } catch (Exception e) {}
-                        connect(bleDevice);
+                        connect(model, bleDevice);
                     }
                 });
             }
         });
     }
     //添加子设备到设备列表
-    public static void addSubDevice(BleDevice bleDevice) {
+    public static void addSubDevice(String model, BleDevice bleDevice) {
+        LogUtils.e("bleDevice mac " + bleDevice.getMac());
         String deviceNum = changeMac(bleDevice.getMac());
         for (Device device: AccountInfo.getInstance().deviceList) {
             //已经存在锅或灶，mac地址判断
@@ -159,10 +182,20 @@ public class BleVentilator {
                     device.mac = bleDevice.getMac();
                     ((Stove) device).bleDevice = bleDevice;
                 }
-                break;
+                return;
             }
         }
-
+        if (IDeviceType.RRQZ.equals(model)) {
+            Stove stove = new Stove("燃气灶", IDeviceType.RRQZ, "9B328");
+            stove.mac = bleDevice.getMac();
+            stove.bleDecoder = new BleDecoder(0);
+            AccountInfo.getInstance().deviceList.add(stove);
+        } else if (IDeviceType.RZNG.equals(model)) {
+            Pan pan = new Pan("明火自动翻炒锅", IDeviceType.RZNG, "KP100");
+            pan.mac = bleDevice.getMac();
+            pan.bleDecoder = new BleDecoder(0);
+            AccountInfo.getInstance().deviceList.add(pan);
+        }
     }
     //转变bledevice mac地址
     private static String changeMac(String mac) {
@@ -403,7 +436,6 @@ public class BleVentilator {
                                     //通知下线
                                     break;
                                 case BleDecoder.RESP_GET_POT_STATUS_INT:  //烟机查询锅状态回复
-                                case BleDecoder.RESP_GET_IH_STATUS_INT: //烟机查询灶状态返回
                                     for (Device device: AccountInfo.getInstance().deviceList) {
                                         if (bleDevice.getMac().equals(device.mac)) {
                                             device.queryNum = 0;
@@ -412,6 +444,30 @@ public class BleVentilator {
                                             break;
                                         }
                                     }
+                                    break;
+                                case BleDecoder.CMD_COOKER_STATUS_RES: //烟机查询灶状态返回
+                                    int maxLevel = ByteUtils.toInt(ret2[2]); //最大档位
+                                    int attributeNum = ByteUtils.toInt(ret2[3]); //参数个数
+
+                                    for (Device device: AccountInfo.getInstance().deviceList) {
+                                        if (bleDevice.getMac().equals(device.mac)) {
+                                            if (device instanceof Stove) {
+                                                String target_guid = device.guid;
+                                                String topic = "/u/" + target_guid.substring(0, 5) + "/" + target_guid.substring(5);
+                                                byte paylaod[] = ble_make_external_mqtt(topic, topic, ret2);
+                                                StoveFactory.getProtocol().decode(topic, paylaod);
+                                                device.queryNum = 0;
+                                                device.status = Device.ONLINE;
+                                                AccountInfo.getInstance().getGuid().setValue(device.guid);
+                                            } else if (device instanceof Pan) {
+
+                                            }
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                case BleDecoder.CMD_COOKER_SET_RES: //设置灶状态返回
+                                    int rc = ByteUtils.toInt(ret2[2]);
                                     break;
                                 default:
                                     break;
@@ -500,7 +556,15 @@ public class BleVentilator {
         //TODO 延迟一段时间后主动断开指定通道的BLE连接,主动断开时的操作和on_ble_disconnect_event_cb()方法内的操作一致
         BlueToothManager.disConnect(bleDevice);
     }
-
+    //从ble收到的数据发到设备解析
+    private static byte[] ble_make_external_mqtt(String topic, String sender_guid, byte[] ble_payload) {
+        byte[] guid_bytes = sender_guid.getBytes();
+        byte [] mqtt_payload = new byte[guid_bytes.length + ble_payload.length - 1];
+        System.arraycopy(guid_bytes, 0, mqtt_payload, 0, guid_bytes.length);
+        System.arraycopy(ble_payload, BleDecoder.DECODE_CMD_ID_OFFSET, mqtt_payload, guid_bytes.length,
+                ble_payload.length - BleDecoder.DECODE_CMD_ID_OFFSET);
+        return  mqtt_payload;
+    }
 
     //从BLE收到的数据通过MQTT发出去
     public static void ble_mqtt_publish(String topic, String sender_guid, byte[] ble_payload) {

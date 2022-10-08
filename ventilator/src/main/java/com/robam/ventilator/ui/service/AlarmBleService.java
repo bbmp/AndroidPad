@@ -72,14 +72,14 @@ public class AlarmBleService extends Service {
             device.queryNum++;
             if (device instanceof Pan) { //查询锅
                 if (((Pan) device).bleDevice == null) {
-                    return super.onStartCommand(intent, flags, startId);
+                    continue;
                 }
                 //本机查询锅
                 PanAbstractControl.getInstance().queryAttribute(device.guid);
             } else if (device instanceof Stove) { //查询灶具
                 if (((Stove) device).bleDevice == null) { //未连接
 
-                    return super.onStartCommand(intent, flags, startId);
+                    continue;
                 }
                 //本机端查询灶具
                 StoveAbstractControl.getInstance().queryAttribute(device.guid);

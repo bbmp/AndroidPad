@@ -485,7 +485,7 @@ public class HomePage extends VentilatorBasePage {
         }
         if (names.size() > 0) {
             BlueToothManager.setScanRule(names.toArray(new String[names.size()]));
-            BleVentilator.startScan();
+            BleVentilator.startScan("", null);
         }
         //订阅设备主题
         subscribeDevice();

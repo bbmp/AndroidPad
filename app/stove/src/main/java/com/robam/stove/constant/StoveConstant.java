@@ -29,4 +29,11 @@ public class StoveConstant {
     public final static String level = "level";
     public final static String workStatus = "work_status";
     public final static String timingtime = "timing_time"; //定时时间
+    public final static String lockStatus = "lock_status";//锁状态
+
+    //炉头状态
+    public static final int STOVE_CLOSE = 0;
+    public static final int STOVE_OPEN = 1;
+    public static final byte LOCK = 0x01;
+    public static final byte UNLOCK = 0x00;
 }

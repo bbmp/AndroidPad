@@ -2,13 +2,16 @@ package com.robam.ventilator.protocol.serial;
 
 import android.serialport.helper.SerialPortHelper;
 
+import com.robam.common.ble.BleDecoder;
 import com.robam.common.utils.ByteUtils;
 import com.robam.common.utils.Crc16Utils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.StringUtils;
 import com.robam.ventilator.device.HomeVentilator;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 
 //烟机串口协议部分
 public class SerialVentilator {
@@ -22,6 +25,22 @@ public class SerialVentilator {
     private static final int u8FirmwareVersion = 0;//程序版本号
     private static final byte MSG_SUCCESS = (byte) 0x5A;
     private static final byte MSG_FAILED = (byte) 0xA5;
+
+    private static final int MCU_UART_MIN_PAYLOAD_LEN = 1;
+    private static final int MCU_UART_TX_MAX_PAYLOAD_LEN = 240;
+    private static final int MCU_UART_RX_MAX_PAYLOAD_LEN = 240;
+    private static final int MCU_UART_STATUS_START = 0;
+    private static final int MCU_UART_STATUS_PARSE_SYNC1 = 1;//解析BA
+    private static final int MCU_UART_STATUS_PARSE_LEN = 2;//解析LEN
+    private static final int MCU_UART_STATUS_PARSE_HIGH = 3;//解析0x50
+    private static final int MCU_UART_STATUS_PARSE_LOW = 4;//解析0x68
+    private static final int MCU_UART_STATUS_PARSE_DATA = 5;//解析DATA
+    private static final LinkedList<Byte> input_buf = new LinkedList<>();//待解析数据
+    private static final ArrayList<Byte> decode_buf = new ArrayList<>();//解析后数据
+    private static int decode_status = MCU_UART_STATUS_START;//解析状态机
+
+    private static int cnt = 0;//应该payload接收长度(LEN字段值)
+    private static int peek_idx = 0;//peek索引
 
     /**
      * byte6 开机/关机
@@ -332,59 +351,149 @@ public class SerialVentilator {
         return data ;
     }
 
+    public static void init_decoder() {
+        input_buf.clear();
+        decode_buf.clear();
+        decode_status = MCU_UART_STATUS_START;
+        cnt = 0;
+        peek_idx = 0;
 
-    //包解析,解析串口收到的数据
-    public static byte[] parseSerial(byte[] data, int recLen) {
-        LogUtils.e(StringUtils.bytes2Hex(data));
-        //数据为空
-        if (null == data)
+    }
+
+    public static void push_raw_data(Byte []data_array) {
+        input_buf.addAll(Arrays.asList(data_array));
+    }
+
+    public static Byte [] decode_data() {
+        Byte[] ret;
+        byte val;
+
+        while(input_buf.size() > 0 && peek_idx < input_buf.size()) {
+            val = input_buf.get(peek_idx);
+//            LogUtils.e(ByteUtils.toHex(val));
+            peek_idx++;
+            switch (decode_status) {
+                case MCU_UART_STATUS_START:
+                    cnt = 0;
+                    decode_status = MCU_UART_STATUS_PARSE_SYNC1;
+                    //break; //force to skip break;
+                case MCU_UART_STATUS_PARSE_SYNC1:
+                    pop_and_repeek_buf();
+                    if(val == FRAME_HEAD_RES) {
+                        decode_status = MCU_UART_STATUS_PARSE_LEN;
+                    } else {
+                        decode_status = MCU_UART_STATUS_START;
+                        //Log.d(TAG, "sync1 error " + val);
+                    }
+                    break;
+                case MCU_UART_STATUS_PARSE_LEN:
+                   if(ByteUtils.toInt(val) >= MCU_UART_MIN_PAYLOAD_LEN &&
+                            ByteUtils.toInt(val) <= MCU_UART_RX_MAX_PAYLOAD_LEN){
+                        cnt = val;
+                        decode_buf.clear();
+                        decode_buf.add(val);
+                        decode_status = MCU_UART_STATUS_PARSE_DATA;
+                    } else {
+                        pop_and_repeek_buf();
+                        decode_status = MCU_UART_STATUS_START;
+                        //Log.d(TAG, "len1 error " + val);
+                    }
+                    break;
+                case MCU_UART_STATUS_PARSE_DATA:
+                    decode_buf.add(val);
+                    if(decode_buf.size() >= cnt) {
+                        ret = mcu_uart_unpack(decode_buf);
+                        if(ret != null) {
+                            while(peek_idx > 0) {
+                                input_buf.pop();
+                                peek_idx--;
+                            }
+                        } else {
+                            //Log.d(TAG, "mcu_uart_unpack error " + cnt);
+                            pop_and_repeek_buf();
+                        }
+                        decode_status = MCU_UART_STATUS_START;
+                        return ret;
+                    }
+                    break;
+            }
+        }
+        return null;
+    }
+
+    private static void pop_and_repeek_buf() {
+        input_buf.pop();
+        peek_idx = 0;
+    }
+
+    private static Byte [] mcu_uart_unpack(ArrayList<Byte> src) {
+        Byte [] dst;
+        int dst_len = src.size();
+
+        dst = src.toArray(new Byte[0]);
+
+        if(dst == null) {
             return null;
-        //check head
-        if (data[0] != FRAME_HEAD_RES)
-            return null;
+        }
+        byte data[] = BleDecoder.ByteArraysTobyteArrays(dst);
         //device error
-        if (data[2] != u8ID_Number_HIGHBYTE || data[3] != u8ID_Number_LOWBYTE)
+        if (data[1] != u8ID_Number_HIGHBYTE || data[2] != u8ID_Number_LOWBYTE)
             return null;
-        int length = ByteUtils.toInt(data[1]);
+        int length = ByteUtils.toInt(data[0]);
         //length error
-        if (length > data.length -1)
+        if (length > data.length)
             return null;
-        short crc = Crc16Utils.calcCrc16(data, 1, length - 2);
+        short crc = Crc16Utils.calcCrc16(data, 0, dst_len - 2);
         byte low = (byte)(crc & 0xff);
         byte high = (byte)((crc >> 8) & 0xff);
         //crc error
-        if ((byte)(crc & 0xff) != data[length] || (byte)((crc >> 8) & 0xff) != data[length - 1])
+        if ((byte)(crc & 0xff) != data[dst_len - 1] || (byte)((crc >> 8) & 0xff) != data[dst_len - 2])
             return null;
 
-        int msgType = ByteUtils.toInt(data[5]);
+        int msgType = ByteUtils.toInt(data[4]);
         switch (msgType) {
             //查询返回
             case MSG_TYPE_QUERY:
-                HomeVentilator.getInstance().startup = data[startupIndex];
-                HomeVentilator.getInstance().lightOn = data[lightOnIndex];
-                HomeVentilator.getInstance().gear    = data[gearIndex   ];
-                HomeVentilator.getInstance().beep    = data[beepIndex   ];
-                HomeVentilator.getInstance().baffle  = data[baffleIndex ];
-                HomeVentilator.getInstance().param1  = data[param1Index ];
-                HomeVentilator.getInstance().param2  = data[param2Index ];
-                HomeVentilator.getInstance().param3  = data[param3Index ];
-                HomeVentilator.getInstance().param4  = data[param4Index ];
-                HomeVentilator.getInstance().param5  = data[param5Index ];
-                HomeVentilator.getInstance().baffle2 = data[baffle2Index];
-                HomeVentilator.getInstance().param6  = data[param6Index ];
-                HomeVentilator.getInstance().param7  = data[param7Index ];
-                HomeVentilator.getInstance().param8  = data[param8Index ];
-                HomeVentilator.getInstance().param9  = data[param9Index ];
+                HomeVentilator.getInstance().startup = data[startupIndex - 1];
+                HomeVentilator.getInstance().lightOn = data[lightOnIndex - 1];
+                HomeVentilator.getInstance().gear    = data[gearIndex    - 1];
+                HomeVentilator.getInstance().beep    = data[beepIndex    - 1];
+                HomeVentilator.getInstance().baffle  = data[baffleIndex  - 1];
+                HomeVentilator.getInstance().param1  = data[param1Index  - 1];
+                HomeVentilator.getInstance().param2  = data[param2Index  - 1];
+                HomeVentilator.getInstance().param3  = data[param3Index  - 1];
+                HomeVentilator.getInstance().param4  = data[param4Index  - 1];
+                HomeVentilator.getInstance().param5  = data[param5Index  - 1];
+                HomeVentilator.getInstance().baffle2 = data[baffle2Index - 1];
+                HomeVentilator.getInstance().param6  = data[param6Index  - 1];
+                HomeVentilator.getInstance().param7  = data[param7Index  - 1];
+                HomeVentilator.getInstance().param8  = data[param8Index  - 1];
+                HomeVentilator.getInstance().param9  = data[param9Index  - 1];
                 break;
             //控制返回
             case MSG_TYPE_CONTROL:
                 //0x5A：成功；         0xA5：失败；
-                if (data[6] == MSG_SUCCESS) {
+                if (data[5] == MSG_SUCCESS) {
                     SerialPortHelper.getInstance().addCommands(packQueryCmd()); //查询状态
                 } else
                     LogUtils.e("failed");
                 break;
         }
-        return null;
+
+        return Arrays.copyOf(dst, dst.length - 2);
+    }
+
+    //包解析,解析串口收到的数据
+    public static void parseSerial(byte[] data, int recLen) {
+        LogUtils.e(StringUtils.bytes2Hex(data));
+        //数据为空
+        if (null == data)
+            return ;
+
+        push_raw_data(BleDecoder.byteArraysToByteArrays(data, recLen));
+        Byte[] ret;
+        do {
+            ret = decode_data();
+        } while (ret != null);
     }
 }

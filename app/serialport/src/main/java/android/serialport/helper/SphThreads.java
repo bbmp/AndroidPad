@@ -65,7 +65,7 @@ public class SphThreads {
 
     private Object semaphore = new Object();
     //是否收到数据
-    private boolean mReceived = false;
+//    private boolean mReceived = false;
 
     public SphThreads(SerialPort serialPort, int maxSize) {
         this.serialPort = serialPort;
@@ -104,18 +104,18 @@ public class SphThreads {
         @Override
         public void run() {
             while (!writeThread.isInterrupted()) {
-                mReceived = false;
+//                mReceived = false;
                 //正常指令
                 synchronized (semaphore) {
                     writeData();
                     //间隔100ms发送
                     try {
                         semaphore.wait(100);
-                        if (mReceived) {
-                            LogUtils.e("received");
-                        } else {
+//                        if (mReceived) {
+//                            LogUtils.e("received");
+//                        } else {
                             LogUtils.e("received time out");
-                        }
+//                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -147,9 +147,9 @@ public class SphThreads {
             int size = 0;
             byte[] bytes = new byte[maxSize];
             size = serialPort.getInputStream().read(bytes);
-            if (size > 0) {
-                processingRecData(bytes, size);
-            }
+
+            processingRecData(bytes, size);
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -239,16 +239,19 @@ public class SphThreads {
      */
     private void resultCallback(byte[] resultBytes, int recvLen) {
         synchronized (semaphore) {
-            if (mReceived == false) {
-                mReceived = true;
-                semaphore.notify();
+//            if (mReceived == false) {
+//                LogUtils.e("recvLen=" + recvLen);
+//                if (recvLen < 0) {
+//                    mReceived = true;
+//                    semaphore.notify();
+//                }
                 if (onResultCallback == null) {
                     reInit();
                     return;
                 }
                 sendMessage(resultBytes, recvLen, RECEIVECMD_WHAT);
                 reInit();
-            }
+//            }
         }
     }
 

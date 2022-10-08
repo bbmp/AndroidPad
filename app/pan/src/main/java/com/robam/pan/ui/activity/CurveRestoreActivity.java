@@ -198,12 +198,12 @@ public class CurveRestoreActivity extends PanBaseActivity {
     private void closeFire() {
         IPublicStoveApi iPublicStoveApi = ModulePubliclHelper.getModulePublic(IPublicStoveApi.class,
                 IPublicStoveApi.STOVE_PUBLIC);
-        if (null != iPublicStoveApi) {
-            if (panCurveDetail.stove == IPublicStoveApi.STOVE_LEFT)
-                iPublicStoveApi.getLeftStove().setValue(false);
-            if (panCurveDetail.stove == IPublicStoveApi.STOVE_RIGHT)
-                iPublicStoveApi.getRightStove().setValue(false);
-        }
+//        if (null != iPublicStoveApi) {
+//            if (panCurveDetail.stove == IPublicStoveApi.STOVE_LEFT)
+//                iPublicStoveApi.getLeftStove().setValue(false);
+//            if (panCurveDetail.stove == IPublicStoveApi.STOVE_RIGHT)
+//                iPublicStoveApi.getRightStove().setValue(false);
+//        }
     }
 
     @Override

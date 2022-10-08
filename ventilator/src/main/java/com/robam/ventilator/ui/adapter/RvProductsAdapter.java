@@ -17,6 +17,7 @@ import com.robam.common.utils.DateUtil;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.TimeUtils;
 import com.robam.steamoven.bean.SteamOven;
+import com.robam.stove.bean.Stove;
 import com.robam.stove.device.HomeStove;
 import com.robam.common.utils.ImageUtils;
 import com.robam.ventilator.R;
@@ -88,7 +89,8 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
                             baseViewHolder.setVisible(R.id.ventilator_group7, true);//显示灶具
                             baseViewHolder.setGone(R.id.ventilator_group6, true);
                             TextView leftClose = baseViewHolder.getView(R.id.btn_left_close);
-                            if (HomeStove.getInstance().leftWorkMode != 0) {
+                            Stove stove = (Stove) device;
+                            if (stove.leftWorkMode != 0) {
                                 leftClose.setBackgroundResource(R.drawable.ventilator_shape_button_selected);
                                 leftClose.setTextColor(getContext().getResources().getColor(R.color.ventilator_white));
                             } else {

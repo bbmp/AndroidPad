@@ -90,6 +90,53 @@ public class HomePage extends StoveBasePage {
 
         rvMain.setAdapter(rvMainFunctionAdapter);
         setOnClickListener(R.id.iv_float, R.id.ll_left_stove, R.id.ll_right_stove, R.id.iv_lock);
+        AccountInfo.getInstance().getGuid().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+
+                for (Device device: AccountInfo.getInstance().deviceList) {
+                    if (device.guid.equals(s) && device instanceof Stove) {
+                        Stove stove = (Stove) device;
+                        if (stove.leftStove == StoveConstant.STOVE_OPEN) {
+                            //开火状态
+                            llLeftStove.setVisibility(View.VISIBLE);
+                            if (stove.leftWorkMode == StoveConstant.MODE_FRY)
+                                tvLeftStove.setText("左灶 " + stove.leftWorkTemp + "℃");
+                            else
+                                tvLeftStove.setText("左灶 " + stove.leftWorkHours + "min");
+                        } else {
+                            //关火状态
+                            llLeftStove.setVisibility(View.INVISIBLE);
+                            stove.leftWorkMode = 0;
+                            stove.leftWorkHours = "";
+                            stove.leftWorkTemp = "";
+                            if (null != homeLockDialog) { //关闭锁屏时的灶
+                                homeLockDialog.closeLeftStove();
+                            }
+                        }
+                        //右灶
+                        if (stove.rightStove == StoveConstant.STOVE_OPEN) {
+                            //开火状态
+                            llRightStove.setVisibility(View.VISIBLE);
+                            if (stove.rightWorkMode == StoveConstant.MODE_FRY)
+                                tvRightStove.setText("右灶 " + stove.rightWorkTemp + "℃");
+                            else
+                                tvRightStove.setText("右灶 " + stove.rightWorkHours + "min");
+                        } else {
+                            //关火状态
+                            llRightStove.setVisibility(View.INVISIBLE);
+                            stove.rightWorkMode = 0;
+                            stove.rightWorkHours = "";
+                            stove.rightWorkTemp = "";
+                            if (null != homeLockDialog) {
+                                homeLockDialog.closeRightStove();
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -119,51 +166,6 @@ public class HomePage extends StoveBasePage {
                 }
             });
         }
-        HomeStove.getInstance().leftStove.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if (aBoolean) {
-                    //开火状态
-                    llLeftStove.setVisibility(View.VISIBLE);
-                    if (HomeStove.getInstance().leftWorkMode == StoveConstant.MODE_FRY)
-                        tvLeftStove.setText("左灶 " + HomeStove.getInstance().leftWorkTemp + "℃");
-                    else
-                        tvLeftStove.setText("左灶 " + HomeStove.getInstance().leftWorkHours + "min");
-                } else {
-                    //关火状态
-                    llLeftStove.setVisibility(View.INVISIBLE);
-                    HomeStove.getInstance().leftWorkMode = 0;
-                    HomeStove.getInstance().leftWorkHours = "";
-                    HomeStove.getInstance().leftWorkTemp = "";
-                    if (null != homeLockDialog) { //关闭锁屏时的灶
-                        homeLockDialog.closeLeftStove();
-                    }
-                }
-            }
-        });
-        //初始左灶状态
-        HomeStove.getInstance().rightStove.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if (aBoolean) {
-                    //开火状态
-                    llRightStove.setVisibility(View.VISIBLE);
-                    if (HomeStove.getInstance().rightWorkMode == StoveConstant.MODE_FRY)
-                        tvRightStove.setText("右灶 " + HomeStove.getInstance().rightWorkTemp + "℃");
-                    else
-                        tvRightStove.setText("右灶 " + HomeStove.getInstance().rightWorkHours + "min");
-                } else {
-                    //关火状态
-                    llRightStove.setVisibility(View.INVISIBLE);
-                    HomeStove.getInstance().rightWorkMode = 0;
-                    HomeStove.getInstance().rightWorkHours = "";
-                    HomeStove.getInstance().rightWorkTemp = "";
-                    if (null != homeLockDialog) {
-                        homeLockDialog.closeRightStove();
-                    }
-                }
-            }
-        });
     }
 
     //锁屏
@@ -178,6 +180,7 @@ public class HomePage extends StoveBasePage {
                 public boolean onLongClick(View v) {
                     homeLockDialog.dismiss();
                     homeLockDialog = null;
+                    StoveAbstractControl.getInstance().setLock(StoveConstant.UNLOCK);
                     return true;
                 }
             });
@@ -211,8 +214,10 @@ public class HomePage extends StoveBasePage {
             iDialogAffirm.setListeners(new IDialog.DialogOnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (v.getId() == R.id.tv_ok)
+                    if (v.getId() == R.id.tv_ok) {
                         screenLock();
+                        StoveAbstractControl.getInstance().setLock(StoveConstant.LOCK);
+                    }
                     iDialogAffirm = null;
                 }
             }, R.id.tv_cancel, R.id.tv_ok);
@@ -242,8 +247,8 @@ public class HomePage extends StoveBasePage {
     //关火
     private void closeFire(int stoveId) {
         for (Device device: AccountInfo.getInstance().deviceList) {
-            if (device.guid.equals(HomeStove.getInstance().guid)) {
-                StoveAbstractControl.getInstance().setAttribute(HomeStove.getInstance().guid, (byte) stoveId, (byte) 0x00, (byte) 0x00);
+            if (device instanceof Stove && null != device.guid) {
+                StoveAbstractControl.getInstance().setAttribute((byte) stoveId, (byte) 0x00, (byte) 0x00);
                 break;
             }
         }

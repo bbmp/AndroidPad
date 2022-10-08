@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.robam.common.bean.AccountInfo;
 import com.robam.common.module.IPublicStoveApi;
 import com.robam.common.module.ModulePubliclHelper;
 import com.robam.pan.device.HomePan;
@@ -84,33 +85,13 @@ public class HomePage extends PanBasePage {
         rvMainFunctionAdapter.setList(functionList);
         IPublicStoveApi iPublicStoveApi = ModulePubliclHelper.getModulePublic(IPublicStoveApi.class,
                 IPublicStoveApi.STOVE_PUBLIC);
-        if (null != iPublicStoveApi) {
-            iPublicStoveApi.getLeftStove().observe(this, new Observer<Boolean>() {
-                @Override
-                public void onChanged(Boolean aBoolean) {
-                    if (aBoolean) {
-                        //开火状态
+        //监听设备变化
+        AccountInfo.getInstance().getGuid().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
 
-                    } else {
-                        //关火状态
-
-                    }
-                }
-            });
-            //初始左灶状态
-            iPublicStoveApi.getRightStove().observe(this, new Observer<Boolean>() {
-                @Override
-                public void onChanged(Boolean aBoolean) {
-                    if (aBoolean) {
-                        //开火状态
-                    } else {
-                        //关火状态
-
-
-                    }
-                }
-            });
-        }
+            }
+        });
         //检测锅温度
         HomePan.getInstance().panTemp.observe(this, new Observer<Integer>() {
             @Override

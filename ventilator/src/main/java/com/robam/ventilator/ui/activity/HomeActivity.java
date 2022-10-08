@@ -100,6 +100,8 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected void initData() {
+        //初始化
+        SerialVentilator.init_decoder();
         //打开串口
         SerialPortHelper.getInstance().openDevice(new SphResultCallback() {
             @Override
@@ -113,6 +115,7 @@ public class HomeActivity extends BaseActivity {
 
             @Override
             public void onOpenSuccess() {
+
                 //开机
                 if (HomeVentilator.getInstance().startup == 0x00)
                     SerialPortHelper.getInstance().addCommands(SerialVentilator.powerOn());
