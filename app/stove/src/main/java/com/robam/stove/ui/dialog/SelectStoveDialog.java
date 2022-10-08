@@ -49,7 +49,7 @@ public class SelectStoveDialog extends BaseDialog {
     //检查炉头状态
     public void checkStoveStatus() {
         for (Device device: AccountInfo.getInstance().deviceList) {
-            if (device instanceof Stove) {
+            if (device instanceof Stove && device.guid.equals(HomeStove.getInstance().guid)) {
                 Stove stove = (Stove) device;
                 if (stove.leftWorkMode != StoveConstant.STOVE_CLOSE) {  //工作中
                     viewLeft.setEnabled(false);

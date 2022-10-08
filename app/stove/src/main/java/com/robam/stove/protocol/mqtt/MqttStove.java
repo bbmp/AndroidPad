@@ -12,10 +12,14 @@ import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.ByteUtils;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.MsgUtils;
+import com.robam.stove.bean.Stove;
 import com.robam.stove.constant.StoveConstant;
 import com.robam.stove.device.HomeStove;
 import com.robam.stove.device.StoveAbstractControl;
 import com.robam.stove.device.StoveFactory;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -40,7 +44,59 @@ public class MqttStove extends MqttPublic {
 
 
                 break;
-            case MsgKeys.GetStoveStatus_Rep: //查询灶状态返回
+            case MsgKeys.GetStoveStatus_Rep: {//查询灶状态返回
+                int stoveNum = MsgUtils.getByte(payload[offset++]);
+                msg.putOpt(StoveConstant.stoveNum, stoveNum);
+                int lockStatus = MsgUtils.getByte(payload[offset++]);
+                msg.putOpt(StoveConstant.lockStatus, lockStatus);
+                int workStatus = MsgUtils.getByte(payload[offset++]);
+                msg.putOpt(StoveConstant.leftStatus, workStatus);
+                int level = MsgUtils.getByte(payload[offset++]);
+                msg.putOpt(StoveConstant.leftLevel, level);
+                int time = MsgUtils.bytes2ShortLittle(payload, offset);
+                msg.putOpt(StoveConstant.leftTime, time);
+                offset += 2;
+                int alarmStatus = MsgUtils.getByte(payload[offset++]);//报警状态
+                msg.putOpt(StoveConstant.leftAlarm, alarmStatus);
+                //右灶
+                workStatus = MsgUtils.getByte(payload[offset++]);
+                msg.putOpt(StoveConstant.rightStatus, workStatus);
+                level = MsgUtils.getByte(payload[offset++]);
+                msg.putOpt(StoveConstant.rightLevel, level);
+                time = MsgUtils.bytes2ShortLittle(payload, offset);
+                msg.putOpt(StoveConstant.rightTime, time);
+                offset += 2;
+                alarmStatus = MsgUtils.getByte(payload[offset++]);//报警状态
+                msg.putOpt(StoveConstant.rightAlarm, alarmStatus);
+
+                short attributeNum = ByteUtils.toShort(payload[offset++]);
+                while (attributeNum > 0) {
+                    attributeNum--;
+                    int key = MsgUtils.getByte(payload[offset++]);
+                    int length = MsgUtils.getByte(payload[offset++]);
+                    switch (key) {
+                        case 'A': //左灶菜谱
+                            MsgUtils.getString(payload, offset, 3);
+                            offset += 3;
+                            break;
+                        case 'B': //右灶菜谱
+                            MsgUtils.getString(payload, offset, 3);
+                            offset += 3;
+                            break;
+                        case 'E': {//左灶温度
+                            float leftTemp = MsgUtils.bytes2FloatLittle(payload, offset);
+                            msg.putOpt(StoveConstant.leftTemp, leftTemp);
+                            offset += 4;
+                        }
+                            break;
+                        case 'F': //右灶温度
+                            float rightTemp = MsgUtils.bytes2FloatLittle(payload, offset);
+                            msg.putOpt(StoveConstant.rightTemp, rightTemp);
+                            offset += 4;
+                            break;
+                    }
+                }
+            }
                 break;
             case MsgKeys.SetStoveStatus_Req: //设置灶状态
                 short terminalType = ByteUtils.toShort(payload[offset++]); //控制端类型
@@ -100,6 +156,24 @@ public class MqttStove extends MqttPublic {
                 buf.put((byte) ITerminalType.PAD);
                 buf.put((byte) msg.opt(StoveConstant.lockStatus));
                 buf.put((byte) 0x00);// 参数个数
+                break;
+            case MsgKeys.setStoveStep_Req: //灶自动温控步骤设置
+                //控制端类型
+                buf.put((byte) ITerminalType.PAD);
+                buf.put((byte) msg.opt(StoveConstant.stoveId)); //炉头id
+                if (msg.has(StoveConstant.attributeNum)) {
+                    buf.put((byte) msg.opt(StoveConstant.attributeNum)); //参数个数
+                }
+                if (msg.has(StoveConstant.steps)) {
+                    JSONArray jsonArray = msg.optJSONArray(StoveConstant.steps);
+                    for (int i = 0; i<jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.optJSONObject(i);
+                        buf.put((byte) jsonObject.optInt(StoveConstant.control));
+                        buf.put((byte) jsonObject.optInt(StoveConstant.level));
+                        buf.putShort((short) jsonObject.optInt(StoveConstant.stepTime));
+                        buf.putShort((short) jsonObject.optInt(StoveConstant.stepTemp));
+                    }
+                }
                 break;
         }
     }

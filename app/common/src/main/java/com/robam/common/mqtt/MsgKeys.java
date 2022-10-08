@@ -177,6 +177,8 @@ public interface MsgKeys {
      * 灶菜谱设置
      */
     short setStoveRecipe_Req = 158;
+
+    short setStoveStep_Req = 169; //灶自动控温步骤设置
     /**
      * 一体机状态查询
      */

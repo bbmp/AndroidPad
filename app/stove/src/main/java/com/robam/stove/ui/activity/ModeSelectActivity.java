@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.lifecycle.Observer;
 import androidx.viewpager.widget.ViewPager;
 
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ import com.robam.stove.base.StoveBaseActivity;
 import com.robam.stove.bean.ModeBean;
 import com.robam.stove.constant.DialogConstant;
 import com.robam.stove.constant.StoveConstant;
+import com.robam.stove.device.StoveAbstractControl;
 import com.robam.stove.factory.StoveDialogFactory;
 import com.robam.stove.ui.dialog.SelectStoveDialog;
 import com.robam.stove.ui.pages.ModeSelectPage;
@@ -58,6 +60,10 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
 
     //当前模式
     private int curMode;
+    //炉头id
+    private int stoveId;
+    //定时时间
+    private int timeTime;
 
     @Override
     protected int getLayoutId() {
@@ -103,6 +109,26 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
         });
 
         setOnClickListener(R.id.btn_start);
+        //监听开火状态
+        AccountInfo.getInstance().getGuid().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                for (Device device: AccountInfo.getInstance().deviceList) {
+                    if (device.guid.equals(s) && device.guid.equals(HomeStove.getInstance().guid) && device instanceof Stove) { //当前灶
+                        Stove stove = (Stove) device;
+                        //开火提示状态
+                        if (null != openDialog && openDialog.isShow()) {
+                            if (stoveId == IPublicStoveApi.STOVE_LEFT && stove.leftStatus == StoveConstant.WORK_WORKING) { //左灶已点火
+                                StoveAbstractControl.getInstance().setTiming(stove.guid, (byte) IPublicStoveApi.STOVE_LEFT, (short) timeTime); //定时时间
+                            } else if (stoveId == IPublicStoveApi.STOVE_RIGHT && stove.rightStatus == StoveConstant.WORK_WORKING) { //右灶已点火
+                                StoveAbstractControl.getInstance().setTiming(stove.guid, (byte) IPublicStoveApi.STOVE_RIGHT, (short) timeTime); //定时时间
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -194,7 +220,7 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
     private void openFire(int stove) {
 
         for (Device device: AccountInfo.getInstance().deviceList) {
-            if (device instanceof Stove) {
+            if (device instanceof Stove && device.guid.equals(HomeStove.getInstance().guid)) {
                 Stove stove1 = (Stove) device;
                 if (null == openDialog) {
                     openDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_OPEN_FIRE);
@@ -205,15 +231,19 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
                     openDialog.setContentText(R.string.stove_open_left_hint);
                     //进入工作状态
                     //选择左灶
-                    stove1.leftWorkMode = curMode;
-                    stove1.leftWorkHours = timeSelectPage.getCurTime();
-                    stove1.leftWorkTemp = tempSelectPage.getCurTemp();
+                    stoveId = IPublicStoveApi.STOVE_LEFT;
+                    timeTime = Integer.parseInt(timeSelectPage.getCurTime()) * 60;
+//                    stove1.leftWorkMode = curMode;
+//                    stove1.leftWorkHours = timeSelectPage.getCurTime();
+//                    stove1.leftWorkTemp = tempSelectPage.getCurTemp();
                 } else {
                     openDialog.setContentText(R.string.stove_open_right_hint);
                     //选择右灶
-                    stove1.rightWorkMode = curMode;
-                    stove1.rightWorkHours = timeSelectPage.getCurTime();
-                    stove1.rightWorkTemp = tempSelectPage.getCurTemp();
+                    stoveId = IPublicStoveApi.STOVE_RIGHT;
+                    timeTime = Integer.parseInt(timeSelectPage.getCurTime()) * 60;
+//                    stove1.rightWorkMode = curMode;
+//                    stove1.rightWorkHours = timeSelectPage.getCurTime();
+//                    stove1.rightWorkTemp = tempSelectPage.getCurTemp();
                 }
                 openDialog.show();
                 break;
