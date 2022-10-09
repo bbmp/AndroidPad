@@ -63,7 +63,7 @@ public class StoveBluetoothControl implements StoveFunction{
     }
 
     @Override
-    public void setLock(String targetGuid, byte status) {
+    public void setLock(String targetGuid, int status) {
         try {
             for (Device device : AccountInfo.getInstance().deviceList) {
                 if (device instanceof Stove && null != device.guid && device.guid.equals(targetGuid)) {
@@ -111,7 +111,7 @@ public class StoveBluetoothControl implements StoveFunction{
     }
 
     @Override
-    public void setAttribute(String targetGuid, byte stoveId, byte isCook, byte workStatus) {
+    public void setAttribute(String targetGuid, int stoveId, int isCook, int workStatus) {
         try {
             for (Device device : AccountInfo.getInstance().deviceList) {
                 if (device instanceof Stove && null != device.guid && device.guid.equals(targetGuid)) {
@@ -140,7 +140,7 @@ public class StoveBluetoothControl implements StoveFunction{
     }
 
     @Override
-    public void setLevel(String targetGuid, byte stoveId, byte isCook, byte level) {
+    public void setLevel(String targetGuid, int stoveId, int isCook, int level, int recipeId, int step) {
         try {
             for (Device device : AccountInfo.getInstance().deviceList) {
                 if (device instanceof Stove && null != device.guid && device.guid.equals(targetGuid)) {
@@ -155,6 +155,8 @@ public class StoveBluetoothControl implements StoveFunction{
                         msg.putOpt(StoveConstant.stoveId, stoveId);
                         msg.putOpt(StoveConstant.isCook, isCook);
                         msg.putOpt(StoveConstant.level, level);
+                        msg.putOpt(StoveConstant.recipeId, recipeId);
+                        msg.putOpt(StoveConstant.recipeStep, step);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -169,7 +171,7 @@ public class StoveBluetoothControl implements StoveFunction{
     }
 
     @Override
-    public void setTiming(String targetGuid, byte stoveId, short timingTime) {
+    public void setTiming(String targetGuid, int stoveId, int timingTime) {
         try {
             for (Device device : AccountInfo.getInstance().deviceList) {
                 if (device instanceof Stove && null != device.guid && device.guid.equals(targetGuid)) {
@@ -197,7 +199,7 @@ public class StoveBluetoothControl implements StoveFunction{
     }
 
     @Override
-    public void setRecipe(String targetGuid, byte stoveId) {
+    public void setRecipe(String targetGuid, int stoveId) {
         try {
             for (Device device : AccountInfo.getInstance().deviceList) {
                 if (device instanceof Stove && null != device.guid && device.guid.equals(targetGuid)) {

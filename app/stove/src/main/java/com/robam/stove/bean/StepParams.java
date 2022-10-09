@@ -11,6 +11,7 @@ public class StepParams implements Serializable {
     //挡位参数
     public class Params implements Serializable{
         public String code;
+        public int value;  //
         public String valueName;
     }
 }

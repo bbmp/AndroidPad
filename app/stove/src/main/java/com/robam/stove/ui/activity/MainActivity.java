@@ -6,6 +6,7 @@ import androidx.navigation.Navigation;
 
 import android.os.Bundle;
 
+import com.robam.common.bean.AccountInfo;
 import com.robam.common.constant.ComnConstant;
 import com.robam.common.ui.activity.BaseActivity;
 import com.robam.common.utils.LogUtils;
@@ -33,8 +34,10 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void initData() {
 
-        if (null != getIntent())
+        if (null != getIntent()) {
             HomeStove.getInstance().guid = getIntent().getStringExtra(ComnConstant.EXTRA_GUID);
+            AccountInfo.getInstance().getGuid().setValue(HomeStove.getInstance().guid);
+        }
         LogUtils.e("HomeStove guid " + HomeStove.getInstance().guid);
 
     }

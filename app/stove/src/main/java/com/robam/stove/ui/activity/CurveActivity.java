@@ -57,7 +57,7 @@ public class CurveActivity extends StoveBaseActivity {
     private TextView tvDelete; //确认删除
     private LinearLayoutManager linearLayoutManager;
 
-    private IDialog openDialog;
+    private IDialog openDialog, panDialog;
     private SelectStoveDialog selectStoveDialog;
     private int stoveId;
 
@@ -92,6 +92,10 @@ public class CurveActivity extends StoveBaseActivity {
                 //删除状态不响应
                 if (rvCurveAdapter.getStatus() != RvCurveAdapter.STATUS_BACK)
                     return;
+                //检查锅是否有连接
+                if (isPanOffline())
+                    return;
+
                 selectPosition = position;
                 StoveCurveDetail stoveCurveDetail = null;
                 if (position != 0) {
@@ -159,6 +163,28 @@ public class CurveActivity extends StoveBaseActivity {
             intent.setClass(CurveActivity.this, CurveSelectedActivity.class);
             startActivity(intent);
         }
+    }
+    //检查锅是否离线
+    private boolean isPanOffline() {
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device.dc.equals(IDeviceType.RZNG) && device.status == Device.ONLINE) {
+                if (null == panDialog) {
+                    panDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_STOVE_COMMON);
+                    panDialog.setCancelable(false);
+                    panDialog.setContentText(R.string.stove_need_match_pan);
+                    panDialog.setOKText(R.string.stove_go_match);
+                    panDialog.setListeners(new IDialog.DialogOnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                        }
+                    }, R.id.tv_cancel, R.id.tv_ok);
+                }
+                panDialog.show();
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override

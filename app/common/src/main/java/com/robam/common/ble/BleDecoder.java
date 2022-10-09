@@ -59,6 +59,7 @@ public class BleDecoder {
     public static final int CMD_COOKER_STATUS_RES = 129;//查询灶返回
     public static final int CMD_COOKER_SET = 130;//设置灶具状态
     public static final int CMD_COOKER_SET_RES = 131;//设置灶具返回
+    public static final int CMD_COOKER_TIME_RES = 135; //定时设置返回
     public static final int CMD_COOKER_LOCK_RES = 137;//设置童锁返回
     //CMD ID--无人锅外部指令
     //public static final int
@@ -81,7 +82,7 @@ public class BleDecoder {
 
     private static byte g_rand_value = 0;//随机数
     private static int cmd_key = ROKI_UART_CMD_KEY_DYNAMIC;
-    private static final Lock lock = new ReentrantLock();
+//    private static final Lock lock = new ReentrantLock();
 
     private final LinkedList<Byte> input_buf = new LinkedList<>();//待解析数据
     private final ArrayList<Byte>  decode_buf = new ArrayList<>();//解析后数据
@@ -105,9 +106,9 @@ public class BleDecoder {
         peek_idx = 0;
         last_tick = 0;
 
-        lock.lock();
+//        lock.lock();
         g_rand_value = (byte)rand_value;
-        lock.unlock();
+//        lock.unlock();
     }
 
     //将接收数据推入解码器(多线程需自行加锁)
@@ -253,14 +254,14 @@ public class BleDecoder {
         } else {
             final_payload = new Byte[payload.length + 2];
         }
-        lock.lock();
+//        lock.lock();
         ext_data.cmd_key = cmd_key;
         final_payload[0] = (byte)ext_data.cmd_key;//CMD KEY=1表示内部指令
         cmd_key++;
         if(cmd_key >= 250) {
             cmd_key = ROKI_UART_CMD_KEY_DYNAMIC;
         }
-        lock.unlock();
+//        lock.unlock();
         final_payload[1] = (byte)cmd_id;
         if(payload != null) {
             System.arraycopy(payload, 0, final_payload, 2, payload.length);
@@ -486,9 +487,9 @@ public class BleDecoder {
         }
 
         Byte [] output = new Byte[input.length];
-        lock.lock();
+//        lock.lock();
         rand_code = g_rand_value++;
-        lock.unlock();
+//        lock.unlock();
         output[0] = rand_code;
 
         for(int i = ENCRYPT_RAND_CODE_LEN; i < output.length; i++) {

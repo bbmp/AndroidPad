@@ -50,8 +50,6 @@ public class HomeActivity extends BaseActivity {
     }
 
     private BluetoothAdapter bluetoothAdapter;
-    private Intent intent;
-    private Intent bleIntent;
 
     private static final String PASSWORD_LOGIN = "mobilePassword";
 
@@ -147,12 +145,12 @@ public class HomeActivity extends BaseActivity {
         if (!bluetoothAdapter.isEnabled())
             checkPermissions();
         //启动定时服务
-        intent = new Intent(this.getApplicationContext(), AlarmMqttService.class);
+        Intent intent = new Intent(this.getApplicationContext(), AlarmMqttService.class);
         intent.setPackage(getPackageName());
         startService(intent);
-        bleIntent = new Intent(getContext().getApplicationContext(), AlarmBleService.class);
-        bleIntent.setPackage(getContext().getPackageName());
-        getContext().startService(bleIntent);
+        Intent bleIntent = new Intent(this.getApplicationContext(), AlarmBleService.class);
+        bleIntent.setPackage(getPackageName());
+        startService(bleIntent);
 //初始化主设备mqtt收发 烟机端只要网络连接上就需要启动mqtt服务，锅和灶不用登录
         //初始网络状态
         if (NetworkUtils.isConnect(this) && !AccountInfo.getInstance().getConnect().getValue())
@@ -226,8 +224,8 @@ public class HomeActivity extends BaseActivity {
         //关闭串口
         SerialPortHelper.getInstance().closeDevice();
         //关闭定时任务
-        stopService(intent);
-        stopService(bleIntent);
+        stopService(new Intent(this.getApplicationContext(), AlarmMqttService.class));
+        stopService(new Intent(this.getApplicationContext(), AlarmBleService.class));
 
     }
 

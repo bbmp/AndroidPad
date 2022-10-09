@@ -9,9 +9,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
+import com.robam.common.module.IPublicStoveApi;
+import com.robam.common.module.IPublicVentilatorApi;
+import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.VerticalSpaceItemDecoration;
 import com.robam.common.utils.ImageUtils;
+import com.robam.common.utils.WindowsUtils;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBaseActivity;
 import com.robam.stove.bean.RecipeStep;
@@ -19,6 +23,8 @@ import com.robam.stove.bean.StepParams;
 import com.robam.stove.bean.StoveRecipeDetail;
 import com.robam.stove.constant.DialogConstant;
 import com.robam.stove.constant.StoveConstant;
+import com.robam.stove.device.HomeStove;
+import com.robam.stove.device.StoveAbstractControl;
 import com.robam.stove.factory.StoveDialogFactory;
 import com.robam.stove.ui.adapter.RvStep2Adapter;
 
@@ -33,6 +39,8 @@ public class RecipeCookActivity extends StoveBaseActivity {
     private StoveRecipeDetail stoveRecipeDetail;
     //菜谱图片
     private ImageView ivRecipe;
+    //炉头id
+    private int stoveId;
 
     private IDialog stopDialog, completeDialog;
     //
@@ -56,8 +64,10 @@ public class RecipeCookActivity extends StoveBaseActivity {
         showCenter();
         showRightCenter();
 
-        if (null != getIntent())
+        if (null != getIntent()) {
+            stoveId = getIntent().getIntExtra(StoveConstant.stoveId, IPublicStoveApi.STOVE_LEFT);
             stoveRecipeDetail = (StoveRecipeDetail) getIntent().getSerializableExtra(StoveConstant.EXTRA_RECIPE_DETAIL);
+        }
         rvStep = findViewById(R.id.rv_step);
         ivRecipe = findViewById(R.id.iv_recipe);
         tvFire = findViewById(R.id.tv_fire);
@@ -103,10 +113,18 @@ public class RecipeCookActivity extends StoveBaseActivity {
             StepParams params = recipeStep.params.get(0);//取首個
             if (null != params.params) {
                 for (int i = 0; i<params.params.size(); i++) {
-                    if (params.params.get(i).code.equals("fanGear")) //烟机风量
+                    if (params.params.get(i).code.equals("fanGear")) {//烟机风量
                         tvAir.setText("风量：" + params.params.get(i).valueName);
-                    if (params.params.get(i).code.equals("stoveGear")) //炉头
+                        //设置烟机风量
+                        IPublicVentilatorApi iPublicVentilatorApi = ModulePubliclHelper.getModulePublic(IPublicVentilatorApi.class, IPublicVentilatorApi.VENTILATOR_PUBLIC);
+                        if (null != iPublicVentilatorApi)
+                            iPublicVentilatorApi.setFanGear(params.params.get(i).value);
+                    }
+                    if (params.params.get(i).code.equals("stoveGear")) {//炉头
                         tvFire.setText("火力：" + params.params.get(i).valueName);
+                        //设置灶具挡位
+                        StoveAbstractControl.getInstance().setLevel(HomeStove.getInstance().guid, stoveId, 0x01,  params.params.get(i).value, (int) stoveRecipeDetail.id, recipeStep.no);
+                    }
                 }
             }
         }
@@ -122,11 +140,31 @@ public class RecipeCookActivity extends StoveBaseActivity {
             closeCountDown();
             tvPause.setVisibility(View.GONE);
             tvContinue.setVisibility(View.VISIBLE);
+            //灶具挡位调最小
+            StoveAbstractControl.getInstance().setLevel(HomeStove.getInstance().guid, stoveId, 0x01, 0x01, 0, 0);
         } else if (id == R.id.tv_continue_cook) {
             //继续烹饪
             Countdown();
             tvPause.setVisibility(View.VISIBLE);
             tvContinue.setVisibility(View.GONE);
+            //设置灶具挡位
+            if (curStep >= stoveRecipeDetail.steps.size())
+                return;
+            RecipeStep recipeStep = stoveRecipeDetail.steps.get(curStep);
+
+            if (null != recipeStep.params && recipeStep.params.size() > 0) {
+                StepParams params = recipeStep.params.get(0);//取首個
+                if (null != params.params) {
+                    for (int i = 0; i<params.params.size(); i++) {
+                        if (params.params.get(i).code.equals("stoveGear")) {//炉头
+                            tvFire.setText("火力：" + params.params.get(i).valueName);
+                            //设置灶具挡位
+                            StoveAbstractControl.getInstance().setLevel(HomeStove.getInstance().guid, (byte) stoveId, (byte) 0x01, (byte) params.params.get(i).value, (int) stoveRecipeDetail.id, recipeStep.no);
+                        }
+                    }
+                }
+            }
+
         } else if (id == R.id.tv_switch_step) {
           //切换步骤
             nextStep();
@@ -145,7 +183,8 @@ public class RecipeCookActivity extends StoveBaseActivity {
                 @Override
                 public void onClick(View v) {
                     if (v.getId() == R.id.tv_ok) {
-
+                        //关火
+                        StoveAbstractControl.getInstance().setAttribute(HomeStove.getInstance().guid, (byte) stoveId, (byte) 0x01, (byte) StoveConstant.STOVE_CLOSE);
                         finish();
                     }
                 }
@@ -188,6 +227,9 @@ public class RecipeCookActivity extends StoveBaseActivity {
     }
     //烹饪正常结束提示
     private void workComplete() {
+        //关火
+        StoveAbstractControl.getInstance().setAttribute(HomeStove.getInstance().guid, (byte) stoveId, (byte) 0x01, (byte) StoveConstant.STOVE_CLOSE);
+
         if (null == completeDialog) {
             completeDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_COMPLETE);
             completeDialog.setCancelable(false);
@@ -210,6 +252,18 @@ public class RecipeCookActivity extends StoveBaseActivity {
         rvStep2Adapter.notifyDataSetChanged();
 
         setData();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        WindowsUtils.hidePopupWindow();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        WindowsUtils.showPopupWindow();
     }
 
     @Override

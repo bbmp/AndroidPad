@@ -31,6 +31,8 @@ public class StoveConstant {
     //炉头id
     public final static String isCook = "is_cook";
     public final static String stoveId = "stove_id";
+    public final static String recipeId = "recipe_id";//菜谱id
+    public final static String recipeStep = "recipe_step";//菜谱步骤
     public final static String level = "level";   //挡位
     public final static String stoveNum = "stove_num";
     public final static String leftStatus = "left_status";

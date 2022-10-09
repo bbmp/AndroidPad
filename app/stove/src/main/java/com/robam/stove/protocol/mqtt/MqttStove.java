@@ -135,34 +135,38 @@ public class MqttStove extends MqttPublic {
                 //控制端类型
                 buf.put((byte) ITerminalType.PAD);
                 buf.put(AccountInfo.getInstance().getUserString().getBytes());
-                buf.put((byte) msg.opt(StoveConstant.isCook));
-                buf.put((byte) msg.opt(StoveConstant.stoveId));
-                buf.put((byte) msg.opt(StoveConstant.workStatus));
+                buf.put((byte) msg.optInt(StoveConstant.isCook));
+                buf.put((byte) msg.optInt(StoveConstant.stoveId));
+                buf.put((byte) msg.optInt(StoveConstant.workStatus));
+                buf.put((byte) 0x00); //参数个数
                 break;
             case MsgKeys.SetStoveLevel_Req: //设置挡位
                 buf.put((byte) ITerminalType.PAD);
                 buf.put(AccountInfo.getInstance().getUserString().getBytes());
-                buf.put((byte) msg.opt(StoveConstant.isCook));
-                buf.put((byte) msg.opt(StoveConstant.stoveId));
-                buf.put((byte) msg.opt(StoveConstant.level));
+                buf.put((byte) msg.optInt(StoveConstant.isCook));
+                buf.put((byte) msg.optInt(StoveConstant.stoveId));
+                buf.put((byte) msg.optInt(StoveConstant.level));
+                buf.putShort((short) msg.optInt(StoveConstant.recipeId));
+                buf.put((byte) msg.optInt(StoveConstant.recipeStep));
+                buf.put((byte) 0x00); //参数个数
                 break;
             case MsgKeys.SetStoveShutdown_Req: //设置灶定时关火
                 buf.put((byte) ITerminalType.PAD);
-                buf.put((byte) msg.opt(StoveConstant.stoveId));
-                buf.putShort((short) msg.opt(StoveConstant.timingtime));
+                buf.put((byte) msg.optInt(StoveConstant.stoveId));
+                buf.putShort((short) msg.optInt(StoveConstant.timingtime));
                 buf.put((byte) 0x00);// 参数个数
                 break;
             case MsgKeys.SetStoveLock_Req: //设置童锁
                 buf.put((byte) ITerminalType.PAD);
-                buf.put((byte) msg.opt(StoveConstant.lockStatus));
+                buf.put((byte) msg.optInt(StoveConstant.lockStatus));
                 buf.put((byte) 0x00);// 参数个数
                 break;
             case MsgKeys.setStoveStep_Req: //灶自动温控步骤设置
                 //控制端类型
                 buf.put((byte) ITerminalType.PAD);
-                buf.put((byte) msg.opt(StoveConstant.stoveId)); //炉头id
+                buf.put((byte) msg.optInt(StoveConstant.stoveId)); //炉头id
                 if (msg.has(StoveConstant.attributeNum)) {
-                    buf.put((byte) msg.opt(StoveConstant.attributeNum)); //参数个数
+                    buf.put((byte) msg.optInt(StoveConstant.attributeNum)); //参数个数
                 }
                 if (msg.has(StoveConstant.steps)) {
                     JSONArray jsonArray = msg.optJSONArray(StoveConstant.steps);

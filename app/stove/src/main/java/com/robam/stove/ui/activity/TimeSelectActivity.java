@@ -81,9 +81,13 @@ public class TimeSelectActivity extends StoveBaseActivity {
                         //开火提示状态
                         if (null != openDialog && openDialog.isShow()) {
                             if (stoveId == IPublicStoveApi.STOVE_LEFT && stove.leftStatus == StoveConstant.WORK_WORKING) { //左灶已点火
+                                openDialog.dismiss();
                                 StoveAbstractControl.getInstance().setTiming(stove.guid, (byte) IPublicStoveApi.STOVE_LEFT, (short) timeTime); //定时时间
+                                startActivity(MainActivity.class); //跳转到首页
                             } else if (stoveId == IPublicStoveApi.STOVE_RIGHT && stove.rightStatus == StoveConstant.WORK_WORKING) { //右灶已点火
+                                openDialog.dismiss();
                                 StoveAbstractControl.getInstance().setTiming(stove.guid, (byte) IPublicStoveApi.STOVE_RIGHT, (short) timeTime); //定时时间
+                                startActivity(MainActivity.class);
                             }
                         }
                         break;
