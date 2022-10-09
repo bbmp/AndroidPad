@@ -1,5 +1,6 @@
 package com.robam.stove.ui.activity;
 
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.View;
@@ -37,6 +38,10 @@ public class TimeSelectActivity extends StoveBaseActivity {
 
     private IDialog openDialog;
 
+    private int stoveId;
+
+    private int timeTime; //定时时间
+
     @Override
     protected int getLayoutId() {
         return R.layout.stove_activity_layout_time_select;
@@ -66,6 +71,26 @@ public class TimeSelectActivity extends StoveBaseActivity {
                 }).build();
         rvTime.setLayoutManager(pickerLayoutManager);
         setOnClickListener(R.id.btn_start);
+        //监听开火状态
+        AccountInfo.getInstance().getGuid().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                for (Device device: AccountInfo.getInstance().deviceList) {
+                    if (device.guid.equals(s) && device.guid.equals(HomeStove.getInstance().guid) && device instanceof Stove) { //当前灶
+                        Stove stove = (Stove) device;
+                        //开火提示状态
+                        if (null != openDialog && openDialog.isShow()) {
+                            if (stoveId == IPublicStoveApi.STOVE_LEFT && stove.leftStatus == StoveConstant.WORK_WORKING) { //左灶已点火
+                                StoveAbstractControl.getInstance().setTiming(stove.guid, (byte) IPublicStoveApi.STOVE_LEFT, (short) timeTime); //定时时间
+                            } else if (stoveId == IPublicStoveApi.STOVE_RIGHT && stove.rightStatus == StoveConstant.WORK_WORKING) { //右灶已点火
+                                StoveAbstractControl.getInstance().setTiming(stove.guid, (byte) IPublicStoveApi.STOVE_RIGHT, (short) timeTime); //定时时间
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -129,7 +154,7 @@ public class TimeSelectActivity extends StoveBaseActivity {
     //点火提示
     private void openFire(int stove) {
         for (Device device: AccountInfo.getInstance().deviceList) {
-            if (device instanceof Stove) {
+            if (device instanceof Stove && device.guid.equals(HomeStove.getInstance().guid)) {
                 Stove stove1 = (Stove) device;
                 if (null == openDialog) {
                     openDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_OPEN_FIRE);
@@ -139,15 +164,13 @@ public class TimeSelectActivity extends StoveBaseActivity {
                     openDialog.setContentText(R.string.stove_open_left_hint);
                     //进入工作状态
                     //选择左灶
-                    stove1.leftWorkMode = StoveConstant.MODE_TIMING;
-                    stove1.leftWorkHours = workHours;
-                    StoveAbstractControl.getInstance().setTiming((byte) IPublicStoveApi.STOVE_LEFT, (short) (Integer.parseInt(workHours) * 60));
+                    timeTime = Integer.parseInt(workHours) * 60;
+                    stoveId = IPublicStoveApi.STOVE_LEFT;
                 } else {
                     openDialog.setContentText(R.string.stove_open_right_hint);
                     //选择右灶
-                    stove1.rightWorkMode = StoveConstant.MODE_TIMING;
-                    stove1.rightWorkHours = workHours;
-                    StoveAbstractControl.getInstance().setTiming((byte) IPublicStoveApi.STOVE_RIGHT, (short) (Integer.parseInt(workHours) * 60));
+                    timeTime = Integer.parseInt(workHours) * 60;
+                    stoveId = IPublicStoveApi.STOVE_RIGHT;
                 }
                 openDialog.show();
                 break;

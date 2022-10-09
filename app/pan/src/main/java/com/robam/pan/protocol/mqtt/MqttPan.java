@@ -14,6 +14,7 @@ import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MsgUtils;
 import com.robam.common.utils.StringUtils;
 import com.robam.pan.constant.PanConstant;
+import com.robam.pan.constant.QualityKeys;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -29,7 +30,7 @@ public class MqttPan extends MqttPublic {
 
     private void encodeMsg(ByteBuffer buf, MqttMsg msg) {
         switch (msg.getID()) {
-            case MsgKeys.FanGetPanStatus_Req: //属性查询
+            case MsgKeys.GetPotTemp_Req: //属性查询
                 buf.put((byte) ITerminalType.PAD);
                 break;
         }
@@ -44,7 +45,50 @@ public class MqttPan extends MqttPublic {
         switch (msg.getID()) {
             case MsgKeys.SetPotTemp_Rep: //查询返回
                 //属性个数
-                short attributeNum = ByteUtils.toShort(payload[offset]);
+                float temp = MsgUtils.bytes2FloatLittle(payload, offset);//锅温
+                offset += 4;
+                int status = MsgUtils.getByte(payload[offset++]);//状态
+                int attributeNum = MsgUtils.getByte(payload[offset++]);//属性个数
+                while (attributeNum > 0) {
+                    attributeNum--;
+                    int key = MsgUtils.getByte(payload[offset++]);
+                    int length = MsgUtils.getByte(payload[offset++]);
+                    switch (key) {
+                        case QualityKeys.key1:
+                            MsgUtils.getString(payload, offset, 5);
+                            offset += 5;
+                            break;
+                        case QualityKeys.key2:
+                            int lidStatus = MsgUtils.getByte(payload[offset++]);//锅盖状态
+                            break;
+                        case QualityKeys.key3:
+                            int pValue = MsgUtils.getByte(payload[offset++]);//p档菜谱值
+                            break;
+                        case QualityKeys.key4:
+                            int recipeud = MsgUtils.bytes2IntLittle(payload, offset);
+                            offset += 4;
+                            break;
+                        case QualityKeys.key5:
+                            int battery = MsgUtils.getByte(payload[offset++]);//电量
+                            break;
+                        case QualityKeys.key6:
+                            int mode = MsgUtils.getByte(payload[offset++]);//模式
+                            break;
+                        case QualityKeys.key7:
+                            int localStatus = MsgUtils.getByte(payload[offset++]);//本地记录状态
+                            break;
+                        case QualityKeys.key8:
+                            int runSeconds = MsgUtils.bytes2ShortLittle(payload, offset);//运行秒数
+                            offset += 2;
+                            break;
+                        case QualityKeys.key9:
+                            int recipeStoveid = MsgUtils.getByte(payload[offset++]);//菜谱炉头id
+                            break;
+                        case  QualityKeys.key10:
+                            int setSeconds = MsgUtils.getByte(payload[offset++]);//设置秒数
+                            break;
+                    }
+                }
                 break;
         }
     }

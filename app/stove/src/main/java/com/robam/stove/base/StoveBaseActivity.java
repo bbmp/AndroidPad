@@ -11,24 +11,52 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 
 import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
 import com.robam.common.ui.activity.BaseActivity;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.utils.ClickUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.stove.R;
+import com.robam.stove.bean.Stove;
 import com.robam.stove.constant.DialogConstant;
 import com.robam.stove.constant.StoveConstant;
+import com.robam.stove.device.HomeStove;
 import com.robam.stove.device.StoveAbstractControl;
 import com.robam.stove.factory.StoveDialogFactory;
 import com.robam.stove.ui.dialog.LockDialog;
 
 public abstract class StoveBaseActivity extends BaseActivity {
     private IDialog iDialogAffirm, ilockDialog;
+    private TextView tvRightCenter;
+    private ImageView ivRightCenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setOnClickListener(R.id.ll_left, R.id.ll_right_center);
+        tvRightCenter = findViewById(R.id.tv_right_center);
+        ivRightCenter = findViewById(R.id.iv_right_center);
+
+        AccountInfo.getInstance().getGuid().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                for (Device device: AccountInfo.getInstance().deviceList) {
+                    if (device.guid.equals(s) && device.guid.equals(HomeStove.getInstance().guid) && device instanceof Stove) {
+                        Stove stove = (Stove) device;
+                        if (stove.lockStatus == StoveConstant.LOCK) {
+                            screenLock();
+                        } else {
+                            if (null != ilockDialog)
+                                ilockDialog.dismiss();
+                            //解锁
+                            tvRightCenter.setTextColor(getResources().getColor(R.color.stove_white));
+                            ivRightCenter.setImageResource(R.drawable.stove_screen_unlock);
+                        }
+                        break;
+                    }
+                }
+            }
+        });
     }
 //    public void showFloat() {
 //        findViewById(R.id.iv_float).setVisibility(View.VISIBLE);
@@ -92,8 +120,8 @@ public abstract class StoveBaseActivity extends BaseActivity {
                 @Override
                 public void onClick(View v) {
                     if (v.getId() == R.id.tv_ok) {
-                        screenLock();
-                        StoveAbstractControl.getInstance().setLock(StoveConstant.LOCK);
+
+                        StoveAbstractControl.getInstance().setLock(HomeStove.getInstance().guid, StoveConstant.LOCK);
                     }
                     iDialogAffirm = null;
                 }
@@ -103,9 +131,7 @@ public abstract class StoveBaseActivity extends BaseActivity {
     }
     //锁屏
     private void screenLock() {
-        TextView tvRightCenter = findViewById(R.id.tv_right_center);
         tvRightCenter.setTextColor(getResources().getColor(R.color.stove_step));
-        ImageView ivRightCenter = findViewById(R.id.iv_right_center);
         ivRightCenter.setImageResource(R.drawable.stove_screen_lock);
         if (null == ilockDialog) {
             ilockDialog = new LockDialog(this);
@@ -120,11 +146,8 @@ public abstract class StoveBaseActivity extends BaseActivity {
             ClickUtils.setLongClick(new Handler(), linearLayout, 2000, new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    ilockDialog.dismiss();
-                    //解锁
-                    tvRightCenter.setTextColor(getResources().getColor(R.color.stove_white));
-                    ivRightCenter.setImageResource(R.drawable.stove_screen_unlock);
-                    StoveAbstractControl.getInstance().setLock(StoveConstant.UNLOCK);
+
+                    StoveAbstractControl.getInstance().setLock(HomeStove.getInstance().guid, StoveConstant.UNLOCK);
                     return true;
                 }
             });

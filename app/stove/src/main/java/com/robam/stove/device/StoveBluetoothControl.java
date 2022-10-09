@@ -17,12 +17,16 @@ import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.ByteUtils;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.LogUtils;
+import com.robam.stove.bean.CurveStep;
 import com.robam.stove.bean.Stove;
 import com.robam.stove.constant.StoveConstant;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Arrays;
+import java.util.List;
 
 //灶具现在只有蓝牙控制
 public class StoveBluetoothControl implements StoveFunction{
@@ -59,10 +63,10 @@ public class StoveBluetoothControl implements StoveFunction{
     }
 
     @Override
-    public void setLock(byte status) {
+    public void setLock(String targetGuid, byte status) {
         try {
             for (Device device : AccountInfo.getInstance().deviceList) {
-                if (device instanceof Stove && null != device.guid) {
+                if (device instanceof Stove && null != device.guid && device.guid.equals(targetGuid)) {
                     MqttMsg msg = new MqttMsg.Builder()
                             .setMsgId(MsgKeys.SetStoveLock_Req)
                             .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
@@ -107,10 +111,10 @@ public class StoveBluetoothControl implements StoveFunction{
     }
 
     @Override
-    public void setAttribute(byte stoveId, byte isCook, byte workStatus) {
+    public void setAttribute(String targetGuid, byte stoveId, byte isCook, byte workStatus) {
         try {
             for (Device device : AccountInfo.getInstance().deviceList) {
-                if (device instanceof Stove && null != device.guid) {
+                if (device instanceof Stove && null != device.guid && device.guid.equals(targetGuid)) {
                     //模拟收发
                     MqttMsg msg = new MqttMsg.Builder()
                             .setMsgId(MsgKeys.SetStoveStatus_Req)
@@ -165,10 +169,10 @@ public class StoveBluetoothControl implements StoveFunction{
     }
 
     @Override
-    public void setTiming(byte stoveId, short timingTime) {
+    public void setTiming(String targetGuid, byte stoveId, short timingTime) {
         try {
             for (Device device : AccountInfo.getInstance().deviceList) {
-                if (device instanceof Stove && null != device.guid) {
+                if (device instanceof Stove && null != device.guid && device.guid.equals(targetGuid)) {
                     //模拟收发
                     MqttMsg msg = new MqttMsg.Builder()
                             .setMsgId(MsgKeys.SetStoveShutdown_Req)
@@ -209,6 +213,42 @@ public class StoveBluetoothControl implements StoveFunction{
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                    //打包payload
+                    byte[] mqtt_data = StoveFactory.getProtocol().encode(msg);
+
+                    write_no_response(((Stove) device).bleDevice, ((Stove) device).characteristic, mqtt_data);
+                    break;
+                }
+            }
+        } catch (Exception e) {}
+    }
+
+    @Override
+    public void setCurveStepParams(String targetGuid, int stoveId, List<CurveStep> curveSteps) {
+        try {
+            for (Device device : AccountInfo.getInstance().deviceList) {
+                if (device instanceof Stove && null != device.guid && device.guid.equals(targetGuid)) {
+                    MqttMsg msg = new MqttMsg.Builder()
+                            .setMsgId(MsgKeys.setStoveStep_Req)
+                            .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
+                            .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
+                            .build();
+
+                    JSONArray jsonArray = new JSONArray();
+                    msg.putOpt(StoveConstant.stoveId, stoveId);
+                    if (null != curveSteps) {
+                        for (CurveStep curveStep : curveSteps) {
+                            JSONObject jsonObject = new JSONObject();
+                            jsonObject.putOpt(StoveConstant.control, 0x00); //控制方式
+                            jsonObject.putOpt(StoveConstant.level, 0x00);//挡位
+                            jsonObject.putOpt(StoveConstant.stepTemp, 0x00);
+                            jsonObject.putOpt(StoveConstant.stepTime, 0x00);
+                            jsonArray.put(jsonObject);
+                        }
+                        msg.putOpt(StoveConstant.attributeNum, jsonArray.length());
+                        msg.putOpt(StoveConstant.steps, jsonArray);
+                    }
+
                     //打包payload
                     byte[] mqtt_data = StoveFactory.getProtocol().encode(msg);
 

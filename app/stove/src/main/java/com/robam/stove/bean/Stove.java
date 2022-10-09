@@ -13,6 +13,7 @@ import com.robam.common.manager.BlueToothManager;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.utils.ByteUtils;
 import com.robam.common.utils.LogUtils;
+import com.robam.stove.constant.StoveConstant;
 
 import java.util.Arrays;
 
@@ -63,55 +64,89 @@ public class Stove extends Device {
      * 定时时间 s
      */
     public byte timingTime;
+
+    public int lockStatus; //童锁状态
+
     /**
      * 左灶工作模式
      */
     public int leftWorkMode;
+
+    public int leftStatus;
+
+    public int leftLevel;
     /**
      * 左灶工作时长
      */
-    public String leftWorkHours;
+    public int leftWorkHours;//剩余秒数
     //左灶工作温度
-    public String leftWorkTemp;
+    public float leftWorkTemp;
     //左灶
     public int leftStove;
     /**
      * 右灶工作模式
      */
     public int rightWorkMode;
+
+    public int rightStatus;
+
+    public int rightLevel;
     /**
      * 右灶工作时长
      */
-    public String rightWorkHours;
+    public int rightWorkHours;
     //右灶工作温度
-    public String rightWorkTemp;
+    public float rightWorkTemp;
     //右灶
     public int rightStove;
 
     @Override
     public boolean onMsgReceived(MqttMsg msg) {
-        byte[] mqtt_data = msg.getBytes();
-        String send_guid = msg.getGuid();
-        int cmd_id = ByteUtils.toInt(mqtt_data[BleDecoder.GUID_LEN]);
-        Byte[] mqtt_payload = BleDecoder.byteArraysToByteArrays(Arrays.copyOfRange(mqtt_data, BleDecoder.GUID_LEN + 1, mqtt_data.length - 1));
-        //转化成蓝牙包
-        BleDecoder.ExternBleData data = BleDecoder.make_external_send_packet(cmd_id, mqtt_payload);
-        //保存回复guid
-        BlueToothManager.send_map.put(data.cmd_key, send_guid);
+        if (null != msg) {
+            byte[] mqtt_data = msg.getBytes();
+            String send_guid = msg.getGuid();
+            int cmd_id = ByteUtils.toInt(mqtt_data[BleDecoder.GUID_LEN]);
+            Byte[] mqtt_payload = BleDecoder.byteArraysToByteArrays(Arrays.copyOfRange(mqtt_data, BleDecoder.GUID_LEN + 1, mqtt_data.length - 1));
+            //转化成蓝牙包
+            BleDecoder.ExternBleData data = BleDecoder.make_external_send_packet(cmd_id, mqtt_payload);
+            //保存回复guid
+            BlueToothManager.send_map.put(data.cmd_key, send_guid);
 //        ble_write_no_resp(dev.getChan(), BleDecoder.ByteArraysTobyteArrays(data.payload));
-        //发送蓝牙数据
-        BlueToothManager.write_no_response(bleDevice, characteristic, BleDecoder.ByteArraysTobyteArrays(data.payload), new BleWriteCallback() {
+            //发送蓝牙数据
+            BlueToothManager.write_no_response(bleDevice, characteristic, BleDecoder.ByteArraysTobyteArrays(data.payload), new BleWriteCallback() {
 
-            @Override
-            public void onWriteSuccess(final int current, final int total, final byte[] justWrite) {
-                LogUtils.e("onWriteSuccess");
-            }
+                @Override
+                public void onWriteSuccess(final int current, final int total, final byte[] justWrite) {
+                    LogUtils.e("onWriteSuccess");
+                }
 
-            @Override
-            public void onWriteFailure(final BleException exception) {
-                LogUtils.e("onWriteFailure");
-            }
-        });
+                @Override
+                public void onWriteFailure(final BleException exception) {
+                    LogUtils.e("onWriteFailure");
+                }
+            });
+        }
         return super.onMsgReceived(msg);
+    }
+    //收到蓝牙消息
+    public boolean onBleReceived(MqttMsg msg) {
+        if (null != msg && null != msg.opt(StoveConstant.stoveNum)) {
+            queryNum = 0; //查询超过一次无响应离线
+            status = Device.ONLINE;
+            lockStatus = (int) msg.opt(StoveConstant.lockStatus);
+            leftStatus = (int) msg.opt(StoveConstant.leftStatus);
+            leftLevel = (int) msg.opt(StoveConstant.leftLevel);
+            leftWorkHours = (int) msg.opt(StoveConstant.leftTime);
+            if (msg.has(StoveConstant.leftTemp))
+                leftWorkTemp = (float) msg.opt(StoveConstant.leftTemp);
+
+            rightStatus = (int) msg.opt(StoveConstant.rightStatus);
+            rightLevel = (int) msg.opt(StoveConstant.rightLevel);
+            rightWorkHours = (int) msg.opt(StoveConstant.rightTime);
+            if (msg.has(StoveConstant.rightTemp))
+                rightWorkTemp = (float) msg.opt(StoveConstant.rightTemp);
+            return true;
+        }
+        return false;
     }
 }

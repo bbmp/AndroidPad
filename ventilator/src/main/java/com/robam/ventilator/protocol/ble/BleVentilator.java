@@ -33,6 +33,7 @@ import com.robam.common.utils.MMKVUtils;
 import com.robam.common.utils.StringUtils;
 import com.robam.pan.bean.Pan;
 import com.robam.stove.bean.Stove;
+import com.robam.stove.device.StoveAbstractControl;
 import com.robam.stove.device.StoveFactory;
 import com.robam.ventilator.R;
 import com.robam.ventilator.constant.VentilatorConstant;
@@ -435,32 +436,24 @@ public class BleVentilator {
                                     delay_disconnect_ble(bleDevice);
                                     //通知下线
                                     break;
-                                case BleDecoder.RESP_GET_POT_STATUS_INT:  //烟机查询锅状态回复
-                                    for (Device device: AccountInfo.getInstance().deviceList) {
-                                        if (bleDevice.getMac().equals(device.mac)) {
-                                            device.queryNum = 0;
-                                            device.status = Device.ONLINE;
-                                            AccountInfo.getInstance().getGuid().setValue(device.guid);
-                                            break;
-                                        }
-                                    }
-                                    break;
                                 case BleDecoder.CMD_COOKER_STATUS_RES: //烟机查询灶状态返回
-                                    int maxLevel = ByteUtils.toInt(ret2[2]); //最大档位
-                                    int attributeNum = ByteUtils.toInt(ret2[3]); //参数个数
 
                                     for (Device device: AccountInfo.getInstance().deviceList) {
                                         if (bleDevice.getMac().equals(device.mac)) {
                                             if (device instanceof Stove) {
                                                 String target_guid = device.guid;
                                                 String topic = "/u/" + target_guid.substring(0, 5) + "/" + target_guid.substring(5);
-                                                byte paylaod[] = ble_make_external_mqtt(topic, topic, ret2);
-                                                StoveFactory.getProtocol().decode(topic, paylaod);
-                                                device.queryNum = 0;
-                                                device.status = Device.ONLINE;
-                                                AccountInfo.getInstance().getGuid().setValue(device.guid);
+                                                byte paylaod[] = ble_make_external_mqtt(topic, target_guid, ret2);
+                                                MqttMsg msg = StoveFactory.getProtocol().decode(topic, paylaod);
+                                                if (((Stove) device).onBleReceived(msg))
+                                                    AccountInfo.getInstance().getGuid().setValue(device.guid); //更新灶具状态
                                             } else if (device instanceof Pan) {
-
+                                                String target_guid = device.guid;
+                                                String topic = "/u/" + target_guid.substring(0, 5) + "/" + target_guid.substring(5);
+                                                byte paylaod[] = ble_make_external_mqtt(topic, target_guid, ret2);
+                                                MqttMsg msg = StoveFactory.getProtocol().decode(topic, paylaod);
+                                                if (((Pan) device).onBleReceived(msg))
+                                                    AccountInfo.getInstance().getGuid().setValue(device.guid); //更新锅状态
                                             }
                                             break;
                                         }
@@ -468,6 +461,14 @@ public class BleVentilator {
                                     break;
                                 case BleDecoder.CMD_COOKER_SET_RES: //设置灶状态返回
                                     int rc = ByteUtils.toInt(ret2[2]);
+                                    break;
+                                case BleDecoder.CMD_COOKER_LOCK_RES: //设置童锁返回
+                                    for (Device device: AccountInfo.getInstance().deviceList) {
+                                        if (bleDevice.getMac().equals(device.mac) && device instanceof Stove) {
+                                            StoveAbstractControl.getInstance().queryAttribute(device.guid); //查询状态
+                                            break;
+                                        }
+                                    }
                                     break;
                                 default:
                                     break;

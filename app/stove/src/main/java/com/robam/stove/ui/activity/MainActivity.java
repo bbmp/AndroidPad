@@ -17,7 +17,7 @@ import com.robam.stove.device.StoveBluetoothControl;
 import com.robam.stove.device.StoveFactory;
 
 //非主入口
-public class MainActivity extends StoveBaseActivity {
+public class MainActivity extends BaseActivity {
 
     @Override
     protected int getLayoutId() {
