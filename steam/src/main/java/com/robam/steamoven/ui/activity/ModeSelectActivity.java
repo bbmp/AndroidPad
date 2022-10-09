@@ -1,5 +1,6 @@
 package com.robam.steamoven.ui.activity;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,6 +57,9 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
 
     private SelectPagerAdapter selectPagerAdapter;
 
+    //是否需要设置result
+    private boolean needSetResult = false;
+
     @Override
     protected int getLayoutId() {
         return R.layout.steam_activity_layout_mode_select;
@@ -106,6 +110,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
     protected void initData() {
         if (null != getIntent())
             modes = (ArrayList<ModeBean>) getIntent().getSerializableExtra(SteamConstant.EXTRA_MODE_LIST);
+            needSetResult =  getIntent().getBooleanExtra(SteamConstant.NEED_SET_RESULT,false);
 
         //
         if (null != modes && modes.size() > 0) {
@@ -178,6 +183,9 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
 //        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(noScrollViewPager));
 //        noScrollViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         setOnClickListener(R.id.ll_left, R.id.ll_right, R.id.btn_start);
+        if(needSetResult){
+            ((TextView)findViewById(R.id.btn_start)).setText(R.string.steam_sure);
+        }
 
     }
 
@@ -189,8 +197,25 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
     public void onClick(View view) {
         if (R.id.ll_left == view.getId()) {
             finish();
+        }else if(R.id.btn_start == view.getId()){
+            if(needSetResult){
+                this.startSetResult();
+            }
         }
     }
+
+    private void startSetResult(){
+       Intent result = new Intent();
+       result.putExtra("TEMP","100C");
+       result.putExtra("duration","30min");
+       result.putExtra("model","营养蒸");
+       result.putExtra("fun",modes.get(0).funCode);
+       setResult(RESULT_OK,result);
+       finish();
+    }
+
+
+
 
     /**
      * 根据当前模式设置温度和时间
@@ -295,4 +320,6 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             return super.getPageTitle(position);
         }
     }
+
+
 }

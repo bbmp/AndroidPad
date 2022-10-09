@@ -66,4 +66,8 @@ public class SteamConstant {
     public final static String EXTRA_CURVE_ID = "curve_id";
     public static final String EXTRA_RECIPE_ID = "recipe_id";
     public static final String EXTRA_CURVE_DETAIL = "curve_detail";
+
+
+    public final static String NEED_SET_RESULT = "needSetResult";
+    //public static final String MULTI_PAGE_FLAG = "MULTI";
 }

@@ -255,7 +255,7 @@
     "backgroundImg": "steam_ic_bg_multi",
     "funtionCode": 5,
     "funtionName": "多段",
-    "into": "steamoven.mult",
+    "into": "com.robam.steamoven.ui.activity.MultiActivity",
     "mode": []
   },
   {
