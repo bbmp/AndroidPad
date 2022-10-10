@@ -134,14 +134,18 @@ public class RecipeDetailActivity extends StoveBaseActivity {
                         Stove stove = (Stove) device;
                         //开火提示状态
                         if (null != openDialog && openDialog.isShow()) {
+
                             if (stoveId == IPublicStoveApi.STOVE_LEFT && stove.leftStatus == StoveConstant.WORK_WORKING) { //左灶已点火
+                                openDialog.dismiss();
                                 //开始工作
                                 Intent intent = new Intent();
                                 intent.setClass(RecipeDetailActivity.this, RecipeCookActivity.class);
                                 if (null != stoveRecipeDetail)
                                     intent.putExtra(StoveConstant.EXTRA_RECIPE_DETAIL, stoveRecipeDetail);
+                                intent.putExtra(StoveConstant.stoveId, stoveId);
                                 startActivity(intent);
                             } else if (stoveId == IPublicStoveApi.STOVE_RIGHT && stove.rightStatus == StoveConstant.WORK_WORKING) { //右灶已点火
+                                openDialog.dismiss();
                                 //开始工作
                                 Intent intent = new Intent();
                                 intent.setClass(RecipeDetailActivity.this, RecipeCookActivity.class);

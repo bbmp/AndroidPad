@@ -16,6 +16,7 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.module.IPublicStoveApi;
+import com.robam.common.utils.TimeUtils;
 import com.robam.stove.bean.Stove;
 import com.robam.stove.device.HomeStove;
 import com.robam.common.manager.FunctionManager;
@@ -95,7 +96,7 @@ public class HomePage extends StoveBasePage {
             public void onChanged(String s) {
 
                 for (Device device: AccountInfo.getInstance().deviceList) {
-                    if (device.guid.equals(s) && device instanceof Stove) {
+                    if (device.guid.equals(s) && device instanceof Stove && device.guid.equals(HomeStove.getInstance().guid)) {
                         Stove stove = (Stove) device;
                         if (stove.lockStatus == StoveConstant.LOCK) { //锁屏状态
                             screenLock();
@@ -105,40 +106,35 @@ public class HomePage extends StoveBasePage {
                             }
                         }
                         //左灶
-                        if (stove.leftStove == StoveConstant.STOVE_CLOSE) {
+                        if (stove.leftStatus == StoveConstant.STOVE_CLOSE || stove.leftLevel == 0) {
                             //关火状态
                             llLeftStove.setVisibility(View.INVISIBLE);
                             stove.leftWorkMode = 0;
-                            stove.leftWorkHours = 0;
+                            stove.leftTimeHours = 0;
                             stove.leftWorkTemp = 0;
-                            if (null != homeLockDialog) { //关闭锁屏时的灶
-                                homeLockDialog.closeLeftStove();
-                            }
+
                         } else {
                             //开火状态
                             llLeftStove.setVisibility(View.VISIBLE);
                             if (stove.leftWorkMode == StoveConstant.MODE_FRY)
                                 tvLeftStove.setText("左灶 " + stove.leftWorkTemp + "℃");
                             else
-                                tvLeftStove.setText("左灶 " + stove.leftWorkHours + "min");
+                                tvLeftStove.setText("左灶 " + stove.leftLevel + "档 " +  TimeUtils.secToMin(stove.leftTimeHours));
                         }
                         //右灶
-                        if (stove.rightStove == StoveConstant.STOVE_CLOSE) {
+                        if (stove.rightStatus == StoveConstant.STOVE_CLOSE || stove.rightLevel == 0) {
                             //关火状态
                             llRightStove.setVisibility(View.INVISIBLE);
                             stove.rightWorkMode = 0;
-                            stove.rightWorkHours = 0;
+                            stove.rightTimeHours = 0;
                             stove.rightWorkTemp = 0;
-                            if (null != homeLockDialog) {
-                                homeLockDialog.closeRightStove();
-                            }
                         } else {
                             //开火状态
                             llRightStove.setVisibility(View.VISIBLE);
                             if (stove.rightWorkMode == StoveConstant.MODE_FRY)
                                 tvRightStove.setText("右灶 " + stove.rightWorkTemp + "℃");
                             else
-                                tvRightStove.setText("右灶 " + stove.rightWorkHours + "min");
+                                tvRightStove.setText("右灶 " + stove.rightLevel + "档 " +  TimeUtils.secToMin(stove.rightTimeHours));
                         }
                         break;
                     }

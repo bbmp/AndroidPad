@@ -1,6 +1,7 @@
 package com.robam.ventilator;
 
 import android.app.Application;
+import android.content.Intent;
 import android.serialport.helper.SerialPortConfig;
 import android.serialport.helper.SerialPortHelper;
 

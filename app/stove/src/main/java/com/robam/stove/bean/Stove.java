@@ -76,9 +76,9 @@ public class Stove extends Device {
 
     public int leftLevel;
     /**
-     * 左灶工作时长
+     * 左灶定时时长
      */
-    public int leftWorkHours;//剩余秒数
+    public int leftTimeHours;//剩余秒数
     //左灶工作温度
     public float leftWorkTemp;
     //左灶
@@ -94,7 +94,7 @@ public class Stove extends Device {
     /**
      * 右灶工作时长
      */
-    public int rightWorkHours;
+    public int rightTimeHours;
     //右灶工作温度
     public float rightWorkTemp;
     //右灶
@@ -136,13 +136,13 @@ public class Stove extends Device {
             lockStatus = (int) msg.opt(StoveConstant.lockStatus);
             leftStatus = (int) msg.opt(StoveConstant.leftStatus);
             leftLevel = (int) msg.opt(StoveConstant.leftLevel);
-            leftWorkHours = (int) msg.opt(StoveConstant.leftTime);
+            leftTimeHours = (int) msg.opt(StoveConstant.leftTime);
             if (msg.has(StoveConstant.leftTemp))
                 leftWorkTemp = (float) msg.opt(StoveConstant.leftTemp);
 
             rightStatus = (int) msg.opt(StoveConstant.rightStatus);
             rightLevel = (int) msg.opt(StoveConstant.rightLevel);
-            rightWorkHours = (int) msg.opt(StoveConstant.rightTime);
+            rightTimeHours = (int) msg.opt(StoveConstant.rightTime);
             if (msg.has(StoveConstant.rightTemp))
                 rightWorkTemp = (float) msg.opt(StoveConstant.rightTemp);
             return true;

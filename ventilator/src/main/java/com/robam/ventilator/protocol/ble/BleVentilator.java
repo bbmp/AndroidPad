@@ -4,6 +4,11 @@ import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+
+import androidx.annotation.NonNull;
 
 import com.clj.fastble.BleManager;
 import com.clj.fastble.callback.BleGattCallback;
@@ -15,6 +20,7 @@ import com.clj.fastble.exception.BleException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.robam.common.IDeviceType;
+import com.robam.common.ITerminalType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.RTopic;
@@ -35,6 +41,7 @@ import com.robam.pan.bean.Pan;
 import com.robam.stove.bean.Stove;
 import com.robam.stove.device.StoveAbstractControl;
 import com.robam.stove.device.StoveFactory;
+import com.robam.ventilator.AppVentilator;
 import com.robam.ventilator.R;
 import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.device.HomeVentilator;
@@ -299,7 +306,7 @@ public class BleVentilator {
     public static void bleParser(BleDevice bleDevice, BleDecoder decoder, byte[] data) {
         if (null == data)
             return;
-        LogUtils.e("bleParser " + StringUtils.bytes2Hex(data));
+        LogUtils.e("Thread " + Thread.currentThread() + " bleParser " + StringUtils.bytes2Hex(data));
 //        BleDecoder decoder = AccountInfo.getInstance().getBleDecoder(bleDevice.getMac());
         if(decoder != null) { //decoder一定是不为null的
             decoder.push_raw_data(BleDecoder.byteArraysToByteArrays(data));
@@ -460,13 +467,19 @@ public class BleVentilator {
                                     }
                                     break;
                                 case BleDecoder.CMD_COOKER_SET_RES: //设置灶状态返回
-                                    int rc = ByteUtils.toInt(ret2[2]);
-                                    break;
+                                case BleDecoder.CMD_COOKER_TIME_RES: //设置定时关火返回
                                 case BleDecoder.CMD_COOKER_LOCK_RES: //设置童锁返回
-                                    for (Device device: AccountInfo.getInstance().deviceList) {
-                                        if (bleDevice.getMac().equals(device.mac) && device instanceof Stove) {
-                                            StoveAbstractControl.getInstance().queryAttribute(device.guid); //查询状态
-                                            break;
+                                    int rc = ByteUtils.toInt(ret2[2]);
+                                    if (rc == 0) { //设置成功
+                                        for (Device device : AccountInfo.getInstance().deviceList) {
+                                            if (bleDevice.getMac().equals(device.mac) && device instanceof Stove) {
+                                                StoveAbstractControl.getInstance().queryAttribute(device.guid);
+                                                //封装成内部命令
+//                                                Byte[] mqtt_payload = new Byte[]{ITerminalType.PAD};
+//                                                Byte[] ble_paylaod = BleDecoder.make_internal_send_packet(MsgKeys.GetStoveStatus_Req, mqtt_payload);
+//                                                ble_write_no_resp(bleDevice, BleDecoder.ByteArraysTobyteArrays(ble_paylaod));
+                                                break;
+                                            }
                                         }
                                     }
                                     break;
@@ -578,4 +591,12 @@ public class BleVentilator {
         MqttManager.getInstance().publish(topic, mqtt_payload);
     }
 
+    private static Handler handler = new Handler(Looper.getMainLooper()) {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            if (null != msg)
+                StoveAbstractControl.getInstance().queryAttribute((String) msg.obj);
+        }
+    };
 }

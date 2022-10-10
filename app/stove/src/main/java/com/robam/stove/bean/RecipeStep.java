@@ -24,7 +24,7 @@ public class RecipeStep implements Serializable {
     /**
      * 步骤
      */
-    private int no;
+    public int no;
     //步骤参数
     public List<StepParams> params;
 
