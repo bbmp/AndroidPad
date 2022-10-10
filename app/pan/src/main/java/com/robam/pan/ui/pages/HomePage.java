@@ -15,6 +15,7 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.module.IPublicStoveApi;
 import com.robam.common.module.ModulePubliclHelper;
+import com.robam.pan.constant.PanConstant;
 import com.robam.pan.device.HomePan;
 import com.robam.common.ui.view.MCountdownView;
 import com.robam.common.utils.ToastUtils;
@@ -22,6 +23,7 @@ import com.robam.pan.constant.Constant;
 import com.robam.pan.R;
 import com.robam.pan.base.PanBasePage;
 import com.robam.pan.bean.PanFunBean;
+import com.robam.pan.device.PanAbstractControl;
 import com.robam.pan.ui.adapter.RvMainFunctionAdapter;
 
 import java.util.ArrayList;
@@ -113,6 +115,13 @@ public class HomePage extends PanBasePage {
                 llStir.setSelected(false);
                 tvStir.setText(R.string.pan_stir_fry);
                 tvStir.stop();
+                //持续快炒
+                PanAbstractControl.getInstance().setFryMode(HomePan.getInstance().guid, PanConstant.MODE_QUICK_FRY);
+            } else {
+                llQuick.setSelected(false);
+                tvQuick.setText(R.string.pan_quick_fry);
+                //关闭电机
+                PanAbstractControl.getInstance().setFryMode(HomePan.getInstance().guid, PanConstant.MODE_CLOSE_FRY);
             }
         } else if (id == R.id.ll_stir_fry) {
             if (!llStir.isSelected()) {
@@ -126,12 +135,22 @@ public class HomePage extends PanBasePage {
                         if (currentSecond <= 0) {
                             llStir.setSelected(false);
                             tvStir.setText(R.string.pan_stir_fry);
+                            //关闭电机
+                            PanAbstractControl.getInstance().setFryMode(HomePan.getInstance().guid, PanConstant.MODE_CLOSE_FRY);
                             return;
                         }
                         tvStir.setText("十秒翻炒 " + currentSecond + "s");
                     }
                 });
                 tvStir.start();
+                //十秒翻炒
+                PanAbstractControl.getInstance().setFryMode(HomePan.getInstance().guid, PanConstant.MODE_STIR_FRY);
+            } else {
+                llStir.setSelected(false);
+                tvStir.setText(R.string.pan_stir_fry);
+                tvStir.stop();
+                //关闭电机
+                PanAbstractControl.getInstance().setFryMode(HomePan.getInstance().guid, PanConstant.MODE_CLOSE_FRY);
             }
         }
     }

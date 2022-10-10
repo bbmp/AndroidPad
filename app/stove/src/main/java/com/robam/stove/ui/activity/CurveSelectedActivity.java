@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -12,8 +13,12 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.manager.DynamicLineChartManager;
+import com.robam.common.module.IPublicStoveApi;
+import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.VerticalSpaceItemDecoration;
 import com.robam.common.ui.view.MarkViewStep;
 import com.robam.common.utils.LogUtils;
@@ -21,12 +26,18 @@ import com.robam.common.utils.TimeUtils;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBaseActivity;
 import com.robam.stove.bean.CurveStep;
+import com.robam.stove.bean.Stove;
 import com.robam.stove.bean.StoveCurveDetail;
+import com.robam.stove.constant.DialogConstant;
 import com.robam.stove.constant.StoveConstant;
+import com.robam.stove.device.HomeStove;
+import com.robam.stove.device.StoveAbstractControl;
+import com.robam.stove.factory.StoveDialogFactory;
 import com.robam.stove.http.CloudHelper;
 import com.robam.stove.response.GetCurveCookbooksRes;
 import com.robam.stove.response.GetCurveDetailRes;
 import com.robam.stove.ui.adapter.RvStep3Adapter;
+import com.robam.stove.ui.dialog.SelectStoveDialog;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -56,6 +67,10 @@ public class CurveSelectedActivity extends StoveBaseActivity {
 
     private DynamicLineChartManager dm;
 
+    private IDialog openDialog;
+    private SelectStoveDialog selectStoveDialog;
+    private int stoveId;
+
     @Override
     protected int getLayoutId() {
         return R.layout.stove_activity_layout_curve_selected;
@@ -84,6 +99,28 @@ public class CurveSelectedActivity extends StoveBaseActivity {
         rvStep.setAdapter(rvStep3Adapter);
 
         setOnClickListener(R.id.tv_start_cook);
+        //监听开火状态
+        AccountInfo.getInstance().getGuid().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                for (Device device: AccountInfo.getInstance().deviceList) {
+                    if (device.guid.equals(s) && device.guid.equals(HomeStove.getInstance().guid) && device instanceof Stove) { //当前灶
+                        Stove stove = (Stove) device;
+                        //开火提示状态
+                        if (null != openDialog && openDialog.isShow()) {
+                            if (stoveId == IPublicStoveApi.STOVE_LEFT && stove.leftStatus == StoveConstant.WORK_WORKING) { //左灶已点火
+                                openDialog.dismiss();
+                                startRestore();
+                            } else if (stoveId == IPublicStoveApi.STOVE_RIGHT && stove.rightStatus == StoveConstant.WORK_WORKING) { //右灶已点火
+                                openDialog.dismiss();
+                                startRestore();
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -118,22 +155,86 @@ public class CurveSelectedActivity extends StoveBaseActivity {
         });
     }
 
+    //炉头选择
+    private void selectStove() {
+        //炉头选择提示
+        if (null == selectStoveDialog) {
+            selectStoveDialog = new SelectStoveDialog(this);
+            selectStoveDialog.setCancelable(false);
+
+            selectStoveDialog.setListeners(new IDialog.DialogOnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int id = v.getId();
+                    if (id == R.id.view_left) {
+                        setParams(stoveCurveDetail, IPublicStoveApi.STOVE_LEFT);  //设置锅参数
+                        openFire(IPublicStoveApi.STOVE_LEFT); //左灶
+                    } else if (id == R.id.view_right) {
+                        setParams(stoveCurveDetail, IPublicStoveApi.STOVE_RIGHT);
+                        openFire(IPublicStoveApi.STOVE_RIGHT); //右灶
+                    }
+                }
+            }, R.id.select_stove_dialog, R.id.view_left, R.id.view_right);
+        }
+        //检查炉头状态
+        selectStoveDialog.checkStoveStatus();
+        selectStoveDialog.show();
+    }
+    //设置曲线还原参数
+    private void setParams(StoveCurveDetail stoveCurveDetail, int stoveId) {
+        if (null != stoveCurveDetail) {
+            StoveAbstractControl.getInstance().setCurveStepParams(HomeStove.getInstance().guid, stoveId, stoveCurveDetail.stepList);
+        }
+    }
+
+    //点火提示
+    private void openFire(int stove) {
+
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device instanceof Stove && device.guid.equals(HomeStove.getInstance().guid)) {
+                if (null == openDialog) {
+                    openDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_OPEN_FIRE);
+                    openDialog.setCancelable(false);
+                }
+
+                if (stove == IPublicStoveApi.STOVE_LEFT) {
+                    openDialog.setContentText(R.string.stove_open_left_hint);
+                    //进入工作状态
+                    //选择左灶
+                    stoveId = IPublicStoveApi.STOVE_LEFT;
+
+                } else {
+                    openDialog.setContentText(R.string.stove_open_right_hint);
+                    //选择右灶
+                    stoveId = IPublicStoveApi.STOVE_RIGHT;
+                }
+                openDialog.show();
+                break;
+            }
+        }
+    }
+
     @Override
     public void onClick(View view) {
         super.onClick(view);
         int id = view.getId();
         if (id == R.id.tv_start_cook) {
-            //曲线还原
-            Intent intent = new Intent();
-            if (null != stoveCurveDetail)
-                intent.putExtra(StoveConstant.EXTRA_CURVE_DETAIL, stoveCurveDetail);
-            intent.setClass(this, CurveRestoreActivity.class);
-            startActivity(intent);
-            finish();
+            //选择炉头
+            selectStove();
         } else if (id == R.id.ll_left) { //返回
             finish();
         }
 
+    }
+    //跳转曲线还原
+    private void startRestore() {
+        //曲线还原
+        Intent intent = new Intent();
+        if (null != stoveCurveDetail)
+            intent.putExtra(StoveConstant.EXTRA_CURVE_DETAIL, stoveCurveDetail);
+        intent.setClass(this, CurveRestoreActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     //曲线绘制

@@ -15,19 +15,27 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.BaseResponse;
+import com.robam.common.bean.Device;
 import com.robam.common.bean.UserInfo;
 import com.robam.common.http.RetrofitCallback;
+import com.robam.common.module.IPublicStoveApi;
+import com.robam.common.module.IPublicVentilatorApi;
+import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
+import com.robam.pan.bean.Pan;
 import com.robam.pan.bean.PanCurveDetail;
 import com.robam.pan.constant.DialogConstant;
 import com.robam.pan.R;
 import com.robam.pan.base.PanBaseActivity;
 import com.robam.pan.constant.PanConstant;
+import com.robam.pan.device.HomePan;
+import com.robam.pan.device.PanAbstractControl;
 import com.robam.pan.factory.PanDialogFactory;
 import com.robam.pan.http.CloudHelper;
 import com.robam.pan.response.GetCurveCookbooksRes;
 import com.robam.pan.ui.adapter.RvCurveAdapter;
+import com.robam.pan.ui.dialog.SelectStoveDialog;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -42,7 +50,10 @@ public class CurveActivity extends PanBaseActivity {
     private List<PanCurveDetail> panCurveDetails = new ArrayList<>();
     private TextView tvDelete; //确认删除
 
-    private IDialog selectDialog, openDialog;
+    private IDialog openDialog, stoveDialog;
+    private SelectStoveDialog selectStoveDialog;
+    //炉头id
+    private int stoveId;
 
     @Override
     protected int getLayoutId() {
@@ -70,14 +81,22 @@ public class CurveActivity extends PanBaseActivity {
                 //删除状态不响应
                 if (rvCurveAdapter.getStatus() != rvCurveAdapter.STATUS_BACK)
                     return;
-                if (position == 0) //曲线创作
-                    selectStove();
-                else {
+                //检查灶具是否有连接
+                if (isStoveOffline())
+                    return;
+
+                PanCurveDetail panCurveDetail = null;
+                panCurveDetail = (PanCurveDetail) adapter.getItem(position);
+                if (position == 0) { //创建曲线
+                    //选择炉头
+                    selectStove(panCurveDetail);
+                } else {
+
                     //曲线选中页
-                    PanCurveDetail panCurveDetail = (PanCurveDetail) adapter.getItem(position);
                     Intent intent = new Intent();
+                    if (null != panCurveDetail)
+                        intent.putExtra(PanConstant.EXTRA_CURVE_ID, panCurveDetail.curveCookbookId);
                     intent.setClass(CurveActivity.this, RecipeSelectedActivity.class);
-                    intent.putExtra(PanConstant.EXTRA_CURVE_ID, panCurveDetail.curveCookbookId);
                     startActivity(intent);
                 }
             }
@@ -107,6 +126,33 @@ public class CurveActivity extends PanBaseActivity {
             }
         });
         setOnClickListener(R.id.ll_left, R.id.ll_right, R.id.tv_delete);
+    }
+    //检查灶具是否离线
+    private boolean isStoveOffline() {
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device.dc.equals(IDeviceType.RRQZ) && device.status == Device.ONLINE) {
+
+                return false;
+            }
+        }
+        if (null == stoveDialog) {
+            stoveDialog = PanDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_PAN_COMMON);
+            stoveDialog.setCancelable(false);
+            stoveDialog.setContentText(R.string.pan_need_match_pan);
+            stoveDialog.setOKText(R.string.pan_go_match);
+            stoveDialog.setListeners(new IDialog.DialogOnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (v.getId() == R.id.tv_ok) {
+                        IPublicVentilatorApi iPublicVentilatorApi = ModulePubliclHelper.getModulePublic(IPublicVentilatorApi.class, IPublicVentilatorApi.VENTILATOR_PUBLIC);
+                        if (null != iPublicVentilatorApi)
+                            iPublicVentilatorApi.startMatchNetwork(CurveActivity.this, IDeviceType.RZNG);
+                    }
+                }
+            }, R.id.tv_cancel, R.id.tv_ok);
+        }
+        stoveDialog.show();
+        return true;
     }
 
     @Override
@@ -154,28 +200,62 @@ public class CurveActivity extends PanBaseActivity {
     }
 
     //炉头选择
-    private void selectStove() {
+    private void selectStove(PanCurveDetail panCurveDetail) {
         //炉头选择提示
-        if (null == selectDialog) {
-            selectDialog = PanDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_SELECT_STOVE);
-            selectDialog.setCancelable(false);
-            selectDialog.setListeners(new IDialog.DialogOnClickListener() {
+        if (null == selectStoveDialog) {
+            selectStoveDialog = new SelectStoveDialog(this);
+            selectStoveDialog.setCancelable(false);
+
+            selectStoveDialog.setListeners(new IDialog.DialogOnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int id = v.getId();
-                    if (id == R.id.view_left || id == R.id.view_right)
-                        openFire();
+                    if (id == R.id.view_left) {
+                        setParams(panCurveDetail, IPublicStoveApi.STOVE_LEFT);  //设置锅参数
+                        openFire(IPublicStoveApi.STOVE_LEFT); //左灶
+                    } else if (id == R.id.view_right) {
+                        setParams(panCurveDetail, IPublicStoveApi.STOVE_RIGHT);
+                        openFire(IPublicStoveApi.STOVE_RIGHT); //右灶
+                    }
                 }
             }, R.id.select_stove_dialog, R.id.view_left, R.id.view_right);
         }
-        selectDialog.show();
+        //检查炉头状态
+        selectStoveDialog.checkStoveStatus();
+        selectStoveDialog.show();
+    }
+
+    //设置曲线还原参数
+    private void setParams(PanCurveDetail panCurveDetail, int stoveId) {
+        if (null != panCurveDetail) {
+            PanAbstractControl.getInstance().setCurveStepParams(HomePan.getInstance().guid, stoveId, panCurveDetail.stepList);
+        }
     }
     //点火提示
-    private void openFire() {
-//        IDialog iDialog = PanDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_OPEN_FIRE);
-//        iDialog.setCancelable(false);
-//        iDialog.show();
-        startActivity(CurveCreateActivity.class);
+    private void openFire(int stove) {
+
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device instanceof Pan && device.guid.equals(HomePan.getInstance().guid)) {
+                if (null == openDialog) {
+                    openDialog = PanDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_OPEN_FIRE);
+                    openDialog.setCancelable(false);
+                }
+
+                if (stove == IPublicStoveApi.STOVE_LEFT) {
+                    openDialog.setContentText(R.string.pan_open_left_hint);
+                    //进入工作状态
+                    //选择左灶
+                    stoveId = IPublicStoveApi.STOVE_LEFT;
+
+                } else {
+                    openDialog.setContentText(R.string.pan_open_right_hint);
+                    //选择右灶
+                    stoveId = IPublicStoveApi.STOVE_RIGHT;
+                }
+                openDialog.show();
+                break;
+            }
+        }
     }
 
     @Override
@@ -281,8 +361,8 @@ public class CurveActivity extends PanBaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (null != selectDialog && selectDialog.isShow())
-            selectDialog.dismiss();
+        if (null != selectStoveDialog && selectStoveDialog.isShow())
+            selectStoveDialog.dismiss();
         if (null != openDialog && openDialog.isShow())
             openDialog.dismiss();
     }
