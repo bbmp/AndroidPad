@@ -282,9 +282,9 @@ public class HomePage extends VentilatorBasePage {
                     drawerLayout.closeDrawer(Gravity.RIGHT);
                 }
                 Device device = (Device) adapter.getItem(position);
-                //非在线状态
-                if (device.status != Device.ONLINE)
-                    return;
+                //非在线状态  modify by zm TODO("了解流程，暂时屏蔽")
+//                if (device.status != Device.ONLINE)
+//                    return;
                 //跳转设备首页
                 Intent intent = new Intent();
                 intent.putExtra(ComnConstant.EXTRA_GUID, device.guid);
