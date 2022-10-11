@@ -1,8 +1,10 @@
 package com.robam.steamoven.ui.activity;
 
 import android.content.Intent;
+import android.os.Parcelable;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,7 +26,6 @@ import java.util.List;
 //一体机多段
 public class MultiWorkActivity extends SteamBaseActivity {
 
-
     //段数父容器
     private ViewGroup optContentParentView;
 
@@ -35,6 +36,14 @@ public class MultiWorkActivity extends SteamBaseActivity {
     public static final int  DATA_KEY = R.id.multi_opt;
     //跳转集合
     private List<FuntionBean> funtionBeans;
+
+    private ImageView pauseCookView;
+    private ImageView continueCookView;
+    private TextView cookDurationView;
+    private ViewGroup curCookInfoViewGroup;
+
+    private boolean isStart = false;
+
 
 
     @Override
@@ -47,19 +56,15 @@ public class MultiWorkActivity extends SteamBaseActivity {
         showLeft();
         showCenter();
         optContentParentView = findViewById(R.id.multi_work_model_list);
+        pauseCookView = findViewById(R.id.multi_work_pause);
+        continueCookView = findViewById(R.id.multi_work_start);
+        cookDurationView = findViewById(R.id.multi_work_total);
+        curCookInfoViewGroup = findViewById(R.id.multi_work_cur_info);
         initOptViewTag();
-//       initOptContent();
+        setOnClickListener(R.id.multi_work_pause,R.id.multi_work_start);
+        //initOptContent();
 //       initDelBtnView();
     }
-
-
-
-
-
-
-
-
-
 
 
     /**
@@ -95,7 +100,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
             this.toModelPage(funtionBean,Integer.parseInt(view.getTag()+""));
         }else{//去往当前选择模式页面
             //this.toCurModelPage((MultiSegment)data,Integer.parseInt(view.getTag()+""));
-            FuntionBean funtionBean = getFuntionBean(((MultiSegment)data).modelNum);
+            FuntionBean funtionBean = getFuntionBean(((MultiSegment)data).funCode);
             this.toModelPage(funtionBean,Integer.parseInt(view.getTag()+""));
         }
     }
@@ -115,7 +120,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
 
 
     private void toCurModelPage(MultiSegment multiSegment,int index){
-        FuntionBean funtionBean = getFuntionBean(multiSegment.modelNum);
+        FuntionBean funtionBean = getFuntionBean(multiSegment.funCode);
         this.toModelPage(funtionBean,index);
     }
 
@@ -137,9 +142,9 @@ public class MultiWorkActivity extends SteamBaseActivity {
      * 跳转到蒸设置页面
      */
     private void toSteamPage(){
-       if(funtionBeans == null){
-           throw new IllegalArgumentException("未在R.raw.steam中查询到设置页面，请检查R.raw.steam文件中内容是否有误");
-       }
+        if(funtionBeans == null){
+            throw new IllegalArgumentException("未在R.raw.steam中查询到设置页面，请检查R.raw.steam文件中内容是否有误");
+        }
 
 
     }
@@ -202,34 +207,41 @@ public class MultiWorkActivity extends SteamBaseActivity {
         //optBottomParentView.setVisibility(maxCount >= 1 ? View.VISIBLE : View.GONE);
         for(int i = 0; i < maxCount;i++){
             ViewGroup itemGroup = optContentParentView.findViewWithTag(i+"");
-            setOptItemContent(itemGroup,multiSegments.get(i),i,false);
+            setOptItemContent(itemGroup,multiSegments.get(i));
         }
         for(int i = maxCount; i < CUR_ITEM_VIEW_COUNT;i++){
             ViewGroup itemGroup = optContentParentView.findViewWithTag(i+"");
-            setOptItemContent(itemGroup,null,i,true);
+            itemGroup.setVisibility(View.INVISIBLE);
+            //setOptItemContent(itemGroup,null,i,true);
         }
     }
 
-    private void setOptItemContent(ViewGroup itemGroup,MultiSegment multiSegmentBean,int index,boolean isInit){
+    private void setOptItemContent(ViewGroup itemGroup,MultiSegment multiSegmentBean){
+        itemGroup.setVisibility(View.VISIBLE);
 
-        //TextView segmentView = itemGroup.findViewById(R.id.multi_item_name);
-        //segmentView.setText(this.getSegmentName(index));
-        itemGroup.setTag(DATA_KEY,isInit ? null:multiSegmentBean);
+        View view = itemGroup.findViewById(R.id.multi_work_item_index);
+        view.setVisibility(multiSegmentBean.isCooking ? View.VISIBLE:View.INVISIBLE);
+
+        itemGroup.setTag(DATA_KEY,multiSegmentBean);
 
         TextView temperatureView = itemGroup.findViewById(R.id.multi_item_temperature);
-        String temperature = isInit ? "" : multiSegmentBean.temperature;
+        int textColor = getResources().getColor(multiSegmentBean.isCooking ? R.color.steam_white: R.color.steam_mode_d9);
+        temperatureView.setTextColor(textColor);
+        String temperature =  multiSegmentBean.defTemp +"°c";
         temperatureView.setText(temperature);
 
         TextView modelView = itemGroup.findViewById(R.id.multi_item_model);
-        String model = isInit ? "" : multiSegmentBean.model;
+        modelView.setTextColor(textColor);
+        String model = multiSegmentBean.model;
         modelView.setText(model);
 
 
         TextView durationView = itemGroup.findViewById(R.id.multi_item_duration);
-        String duration = isInit ? "" : multiSegmentBean.duration;
+        durationView.setTextColor(textColor);
+        String duration = multiSegmentBean.duration +"min";
         durationView.setText(duration);
 
-       // itemGroup.findViewById(R.id.multi_item_add).setVisibility(isInit ? View.VISIBLE:View.INVISIBLE);
+        // itemGroup.findViewById(R.id.multi_item_add).setVisibility(isInit ? View.VISIBLE:View.INVISIBLE);
         //itemGroup.findViewById(R.id.multi_item_del).setVisibility(View.INVISIBLE);
     }
 
@@ -254,7 +266,6 @@ public class MultiWorkActivity extends SteamBaseActivity {
         //展示
         multiSegments = getIntent().getParcelableArrayListExtra(SteamConstant.SEGMENT_DATA_FALG);
         setOptContent(multiSegments);
-
     }
 
     @Override
@@ -263,11 +274,61 @@ public class MultiWorkActivity extends SteamBaseActivity {
         int id = view.getId();
         if (id == R.id.ll_left) {
             finish();
-        }else if(id == R.id.ll_right){//显示删除按钮
-            showItemDelView();
-        }else if(id == R.id.multi_item_del){//删除按钮被点击
-            showDealDialog(view);
+        }else if(id == R.id.multi_work_pause){//暂停工作
+            this.setOptViewsState(false);
+        }else if(id==R.id.multi_work_start){//继续工作
+            this.setOptViewsState(true);
         }
+    }
+
+
+
+    /**
+     * 暂停烹饪
+     */
+    private void pauseCook(){
+
+
+    }
+
+    /**
+     *
+     * @param cookState true -- 烹饪状态;false -- 暂停烹饪状态
+     */
+    private void setOptViewsState(boolean cookState){
+        pauseCookView.setVisibility(cookState?View.VISIBLE:View.INVISIBLE);
+        continueCookView.setVisibility(cookState?View.INVISIBLE:View.VISIBLE);
+        curCookInfoViewGroup.setVisibility(cookState?View.INVISIBLE:View.VISIBLE);
+        if(cookState){
+            cookDurationView.setText("70min");
+        }else{
+            cookDurationView.setText(R.string.steam_cook_in_pause);
+            //设置当前段工作信息 - 后面的时间是否为剩余时长？
+
+            for(MultiSegment segment : multiSegments){
+                if(segment.isCooking){
+                    TextView  curModel = curCookInfoViewGroup.findViewById(R.id.multi_item_cur_model);
+                    TextView  curTemp = curCookInfoViewGroup.findViewById(R.id.multi_item_cur_temperature);
+                    TextView  curDuration = curCookInfoViewGroup.findViewById(R.id.multi_item_cur_duration);
+                    curModel.setText(segment.model);
+                    curTemp.setText(segment.defTemp +"°c");
+                    //TODO("设置总多段剩余时长")
+                    curDuration.setText(segment.duration+"min");
+                }
+            }
+
+
+        }
+    }
+
+
+
+
+    /**
+     * 继续烹饪
+     */
+    private void ContinueCook(){
+
     }
 
     private void showDealDialog(final View view){
@@ -345,7 +406,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
         }
         List<Integer> settedList = new ArrayList<>();
         for(int i = 0;i < multiSegments.size();i++){
-            settedList.add(multiSegments.get(i).modelNum);
+            settedList.add(multiSegments.get(i).funCode);
         }
         return settedList;
     }
@@ -364,21 +425,16 @@ public class MultiWorkActivity extends SteamBaseActivity {
 
     private void dealResult(int requestCode, Intent data){
         if(multiSegments.size() > requestCode){//修改当前历史
-            MultiSegment segment = multiSegments.get(requestCode);
-            segment.modelNum = data.getIntExtra("fun",-1);
-            segment.model =   data.getStringExtra("model");
-            segment.temperature =   data.getStringExtra("TEMP");
-            segment.duration =   data.getStringExtra("duration");
+            MultiSegment resultData  = data.getParcelableExtra("resultData");
+            multiSegments.remove(requestCode);
+            multiSegments.add(requestCode,resultData);
         }else{//添加新对象
-            MultiSegment segment = new MultiSegment();
-            segment.modelNum = data.getIntExtra("fun",-1);
-            segment.model =   data.getStringExtra("model");
-            segment.temperature =   data.getStringExtra("TEMP");
-            segment.duration =   data.getStringExtra("duration");
-            multiSegments.add(segment);
+            MultiSegment resultData  = data.getParcelableExtra("resultData");
+            multiSegments.add(resultData);
         }
         setOptContent(multiSegments);
 
     }
+
 
 }

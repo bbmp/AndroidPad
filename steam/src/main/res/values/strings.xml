@@ -1157,4 +1157,5 @@
     <string name="steam_no_curve_data">没有曲线数据</string>
     <string name="steam_stop_cook_hint">确认结束当前烹饪?</string>
     <string name="steam_delete_ok_content">确认删除该内容</string>
+    <string name="steam_cook_in_pause">暂停中</string>
 </resources>

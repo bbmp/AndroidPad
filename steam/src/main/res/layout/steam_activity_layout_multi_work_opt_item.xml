@@ -7,6 +7,11 @@
     android:id="@+id/multi_work_item_parent"
     tools:context=".ui.activity.MultiWorkActivity">
 
+    <View android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:background="@color/cardview_dark_background"
+        />
+
 
     <ImageView
         android:visibility="invisible"
@@ -27,8 +32,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:textSize="@dimen/sp_30"
-        android:textColor="@color/steam_white"
+        android:textSize="@dimen/sp_32"
+        android:textColor="@color/steam_mode_d9"
         tools:text="100C"/>
 
 
@@ -36,12 +41,12 @@
         android:id="@+id/multi_item_model"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_30"
-        android:layout_marginBottom="@dimen/dp_10"
+        android:textSize="@dimen/sp_34"
+        android:layout_marginBottom="@dimen/dp_46"
         app:layout_constraintBottom_toTopOf="@id/multi_item_temperature"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:textColor="@color/steam_white"
+        android:textColor="@color/steam_mode_d9"
         tools:text="高温蒸"/>
 
 
@@ -49,26 +54,25 @@
         android:id="@+id/multi_item_duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_30"
-        android:layout_marginTop="@dimen/dp_10"
-        android:layout_marginBottom="@dimen/dp_10"
+        android:textSize="@dimen/sp_32"
+        android:layout_marginTop="@dimen/dp_46"
         app:layout_constraintTop_toBottomOf="@id/multi_item_temperature"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:textColor="@color/steam_white"
+        android:textColor="@color/steam_mode_d9"
         tools:text="20min"/>
 
     <ImageView
         android:id="@+id/multi_work_item_index"
-        android:src="@drawable/steam_ic_start_blue"
+        android:src="@drawable/steam_indicator_selected_blue"
         app:layout_constraintBottom_toTopOf="@id/multi_item_model"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_18"
         android:visibility="invisible"
         tools:visibility="visible"
-        android:layout_width="@dimen/dp_19"
-        android:layout_height="@dimen/dp_19"/>
+        android:layout_width="@dimen/dp_18"
+        android:layout_height="@dimen/dp_18"/>
 
 
 

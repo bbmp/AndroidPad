@@ -1,5 +1,6 @@
 package com.robam.steamoven.bean;
 
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -16,9 +17,25 @@ public class MultiSegment implements Parcelable {
     //时长
     public String duration;
     //温度
-    public String temperature;
+   // public String temperature;
 
-    public int modelNum = 0;
+    public int funCode = 0;
+
+    //蒸汽量
+    public String steam;
+
+    public String defTemp;//上温度
+
+    public String downTemp;//下温度
+
+    /**
+     * 是否正在烹饪
+     */
+    public boolean isCooking = false;
+    /**
+     * 是否烹饪结束
+     */
+    public boolean isCooked = false;
 
     public MultiSegment() {
 
@@ -28,8 +45,18 @@ public class MultiSegment implements Parcelable {
         no = in.readInt();
         model = in.readString();
         duration = in.readString();
-        temperature = in.readString();
-        modelNum = in.readInt();
+       // temperature = in.readString();
+        funCode = in.readInt();
+        steam = in.readString();
+        defTemp = in.readString();
+        downTemp = in.readString();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            isCooking = in.readBoolean();
+            isCooked = in.readBoolean();
+        }else{
+            isCooking = Boolean.parseBoolean(in.readInt()+"");
+            isCooked = Boolean.parseBoolean(in.readInt()+"");
+        }
     }
 
     public static final Creator<MultiSegment> CREATOR = new Creator<MultiSegment>() {
@@ -54,7 +81,17 @@ public class MultiSegment implements Parcelable {
         parcel.writeInt(no);
         parcel.writeString(model);
         parcel.writeString(duration);
-        parcel.writeString(temperature);
-        parcel.writeInt(modelNum);
+        //parcel.writeString(temperature);
+        parcel.writeInt(funCode);
+        parcel.writeString(steam);
+        parcel.writeString(defTemp);
+        parcel.writeString(downTemp);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            parcel.writeBoolean(isCooking);
+            parcel.writeBoolean(isCooked);
+        }else{
+            parcel.writeInt(isCooking ? 1 : 0);
+            parcel.writeInt(isCooked? 1:0);
+        }
     }
 }

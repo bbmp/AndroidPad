@@ -16,9 +16,11 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.robam.common.ui.IModeSelect;
+import com.robam.common.utils.LogUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.bean.ModeBean;
+import com.robam.steamoven.bean.MultiSegment;
 import com.robam.steamoven.constant.SteamConstant;
 import com.robam.steamoven.constant.SteamOvenSteamEnum;
 import com.robam.steamoven.device.HomeSteamOven;
@@ -30,6 +32,7 @@ import com.robam.steamoven.ui.pages.TimeSelectPage;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect {
     private TabLayout tabLayout;
@@ -59,6 +62,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
 
     //是否需要设置result
     private boolean needSetResult = false;
+    private ModeBean curModeBean;
 
     @Override
     protected int getLayoutId() {
@@ -205,14 +209,54 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
     }
 
     private void startSetResult(){
-       Intent result = new Intent();
-       result.putExtra("TEMP","100C");
-       result.putExtra("duration","30min");
-       result.putExtra("model","营养蒸");
-       result.putExtra("fun",modes.get(0).funCode);
+        //tv_mode tv_temp  tv_mode
+        Intent result = new Intent();
+        MultiSegment segment = new MultiSegment();
+        segment.funCode = curModeBean.funCode;
+        for(int i = 0;i < tabLayout.getTabCount();i++){
+            if(((ViewGroup)tabLayout.getChildAt(0)).getChildAt(i).getVisibility() != View.VISIBLE){
+                continue;
+            }
+
+            ViewGroup childGroup = (ViewGroup) tabLayout.getTabAt(i).getCustomView();
+            TextView valueTv = childGroup.findViewById(R.id.tv_mode); //模式
+            if(valueTv != null){
+                String value = valueTv.getText().toString();
+                //i = 0 模式 ; i = 1 蒸汽量  ;i = 2 上温度; i = 3 下温度 ; i = 4 时长
+                switch (i){
+                    case 0:
+                        segment.model = value;
+                        break;
+                    case 1:
+                        segment.steam = value;
+                        break;
+                    case 2:
+                        segment.defTemp = value;
+                        break;
+                    case 3:
+                        segment.downTemp = value;
+                        break;
+                    case 4:
+                        segment.duration = value;
+                        break;
+                    default:
+
+                }
+            }
+
+        }
+
+       result.putExtra("resultData",segment);
        setResult(RESULT_OK,result);
        finish();
     }
+
+
+    private Map<String,Object> getResultData(){
+
+        return null;
+    }
+
 
 
 
@@ -224,6 +268,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
         if (null != modes) {
             for (ModeBean modeBean: modes) {
                 if (mode == modeBean.code) {  //当前模式
+                    curModeBean = modeBean;
                     if (mode == SteamConstant.XIANNENZHENG || mode == SteamConstant.YIYANGZHENG || mode == SteamConstant.GAOWENZHENG || mode == SteamConstant.ZHIKONGZHENG) { //蒸模式
 
                         timeSelectPage.updateTimeTab(modeBean);
