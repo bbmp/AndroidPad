@@ -19,9 +19,9 @@ import com.robam.common.http.RetrofitCallback;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.common.utils.LogUtils;
 import com.robam.dishwasher.bean.DishWasher;
-import com.robam.pan.bean.Pan;
+import com.robam.common.device.subdevice.Pan;
 import com.robam.steamoven.bean.SteamOven;
-import com.robam.stove.bean.Stove;
+import com.robam.common.device.subdevice.Stove;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
 import com.robam.common.bean.Device;
@@ -86,14 +86,17 @@ public class ShortcutActivity extends VentilatorBaseActivity {
         });
         //设备
         List<Device> deviceList = new ArrayList<>();
-        deviceList.add(new Cabinet("消毒柜", IDeviceType.RXDG, "XG858"));
         deviceList.add(new Ventilator("油烟机", IDeviceType.RYYJ, "5068s"));
+        for (Device device: AccountInfo.getInstance().deviceList)
+            deviceList.add(device);
+//        deviceList.add(new Cabinet("消毒柜", IDeviceType.RXDG, "XG858"));
 
+//
         List<Device> deviceList2 = new ArrayList<>();
-        deviceList2.add(new Pan("无人锅", IDeviceType.RZNG, "KP100"));
-        deviceList2.add(new Stove("灶具", IDeviceType.RRQZ, "9B328"));
-        deviceList2.add(new SteamOven("一体机", IDeviceType.RZKY, "CQ928"));
-        deviceList2.add(new DishWasher("洗碗机", IDeviceType.RXWJ, "WB758"));
+//        deviceList2.add(new Pan("无人锅", IDeviceType.RZNG, "KP100"));
+//        deviceList2.add(new Stove("灶具", IDeviceType.RRQZ, "9B328"));
+//        deviceList2.add(new SteamOven("一体机", IDeviceType.RZKY, "CQ928"));
+//        deviceList2.add(new DishWasher("洗碗机", IDeviceType.RXWJ, "WB758"));
 
         getDeviceInfo(AccountInfo.getInstance().getUser().getValue());
 

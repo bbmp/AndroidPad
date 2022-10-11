@@ -1,9 +1,6 @@
 package com.robam.stove.device;
 
-import com.robam.common.bean.Device;
-import com.robam.common.mqtt.MqttMsg;
 import com.robam.stove.bean.CurveStep;
-import com.robam.stove.bean.Stove;
 
 import java.util.List;
 
@@ -62,6 +59,11 @@ public class StoveAbstractControl implements StoveFunction{
     @Override
     public void setCurveStepParams(String targetGuid, int stoveId, List<CurveStep> curveSteps) {
         function.setCurveStepParams(targetGuid, stoveId, curveSteps);
+    }
+
+    @Override
+    public void setTransfer(int cmd, byte[] payload) {
+        function.setTransfer(cmd, payload);
     }
 
 }

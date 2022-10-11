@@ -18,10 +18,9 @@ import com.robam.pan.R;
 import com.robam.pan.base.PanBaseActivity;
 import com.robam.pan.bean.PPanRecipe;
 import com.robam.pan.bean.PanRecipe;
-import com.robam.pan.constant.PanConstant;
+import com.robam.common.constant.PanConstant;
 import com.robam.pan.http.CloudHelper;
 import com.robam.pan.response.GetPRecipeRes;
-import com.robam.pan.ui.adapter.RvCurveAdapter;
 import com.robam.pan.ui.adapter.RvRecipeAdapter;
 
 import java.util.ArrayList;

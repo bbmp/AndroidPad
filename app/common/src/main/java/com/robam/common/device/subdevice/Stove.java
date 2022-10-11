@@ -1,4 +1,4 @@
-package com.robam.stove.bean;
+package com.robam.common.device.subdevice;
 
 import android.bluetooth.BluetoothGattCharacteristic;
 
@@ -9,12 +9,12 @@ import com.clj.fastble.data.BleDevice;
 import com.clj.fastble.exception.BleException;
 import com.robam.common.bean.Device;
 import com.robam.common.ble.BleDecoder;
+import com.robam.common.constant.StoveConstant;
 import com.robam.common.manager.BlueToothManager;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.ByteUtils;
 import com.robam.common.utils.LogUtils;
-import com.robam.stove.constant.StoveConstant;
 
 import java.util.Arrays;
 

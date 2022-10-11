@@ -13,9 +13,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
+import com.robam.common.device.subdevice.Pan;
 import com.robam.common.module.IPublicStoveApi;
 import com.robam.common.module.ModulePubliclHelper;
-import com.robam.pan.constant.PanConstant;
+import com.robam.common.constant.PanConstant;
 import com.robam.pan.device.HomePan;
 import com.robam.common.ui.view.MCountdownView;
 import com.robam.common.utils.ToastUtils;
@@ -91,15 +93,13 @@ public class HomePage extends PanBasePage {
         AccountInfo.getInstance().getGuid().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
+                for (Device device: AccountInfo.getInstance().deviceList) {
+                    if (device.guid.equals(s) && device.guid.equals(HomePan.getInstance().guid) && device instanceof Pan) {//当前锅
+                        Pan pan = (Pan) device;
 
-            }
-        });
-        //检测锅温度
-        HomePan.getInstance().panTemp.observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                if (integer < 60)
-                    ;
+                        break;
+                    }
+                }
             }
         });
     }

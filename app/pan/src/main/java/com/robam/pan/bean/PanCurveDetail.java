@@ -23,7 +23,7 @@ public class PanCurveDetail implements Serializable {
     //是否选中,用于显示
     private boolean selected;
     //左灶还是右灶
-    public int stove;
+    public int stoveId;
 
     public PanCurveDetail(String name) {
         this.name = name;

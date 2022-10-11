@@ -1,46 +1,31 @@
 package com.robam.stove.ui.activity;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
-import android.os.Bundle;
-import android.speech.tts.TextToSpeech;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
-import com.google.android.material.tabs.TabLayout;
 import com.robam.common.IDeviceType;
-import com.robam.common.bean.AccountInfo;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.common.utils.ToastUtils;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBaseActivity;
 import com.robam.stove.bean.StoveRecipe;
-import com.robam.stove.constant.StoveConstant;
+import com.robam.common.constant.StoveConstant;
 import com.robam.stove.http.CloudHelper;
 import com.robam.stove.response.GetRecipesByDeviceRes;
 import com.robam.stove.ui.adapter.RvRecipeAdapter;
-import com.robam.stove.ui.pages.RecipeClassifyPage;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 

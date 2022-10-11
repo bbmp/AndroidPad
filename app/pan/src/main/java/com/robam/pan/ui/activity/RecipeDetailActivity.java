@@ -24,7 +24,7 @@ import com.robam.pan.R;
 import com.robam.pan.bean.Material;
 import com.robam.pan.base.PanBaseActivity;
 import com.robam.pan.bean.PanRecipeDetail;
-import com.robam.pan.constant.PanConstant;
+import com.robam.common.constant.PanConstant;
 import com.robam.pan.http.CloudHelper;
 import com.robam.pan.response.GetRecipeDetailRes;
 import com.robam.pan.ui.adapter.RvMaterialAdapter;

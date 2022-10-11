@@ -1,29 +1,20 @@
 package com.robam.ventilator.ui.adapter;
 
 
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.Device;
 import com.robam.common.utils.DateUtil;
-import com.robam.common.utils.LogUtils;
-import com.robam.common.utils.TimeUtils;
 import com.robam.steamoven.bean.SteamOven;
-import com.robam.stove.bean.Stove;
-import com.robam.stove.device.HomeStove;
-import com.robam.common.utils.ImageUtils;
+import com.robam.common.device.subdevice.Stove;
 import com.robam.ventilator.R;
-import com.robam.ventilator.bean.Ventilator;
-
-import java.util.List;
 
 public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> {
     private LifecycleOwner mOwner;

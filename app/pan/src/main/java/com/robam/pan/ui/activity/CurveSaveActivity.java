@@ -7,28 +7,19 @@ import android.widget.TextView;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.google.zxing.aztec.encoder.HighLevelEncoder;
 import com.robam.common.manager.DynamicLineChartManager;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.ClearEditText;
-import com.robam.common.ui.view.MarkViewAdd;
 import com.robam.common.ui.view.MarkViewStep;
-import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ToastUtils;
-import com.robam.pan.bean.CurveStep;
-import com.robam.pan.bean.PanCurveDetail;
 import com.robam.pan.constant.DialogConstant;
 import com.robam.pan.R;
 import com.robam.pan.base.PanBaseActivity;
-import com.robam.pan.constant.PanConstant;
+import com.robam.common.constant.PanConstant;
 import com.robam.pan.factory.PanDialogFactory;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 //曲线保存
 public class CurveSaveActivity extends PanBaseActivity {

@@ -26,15 +26,14 @@ import com.robam.common.utils.TimeUtils;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBaseActivity;
 import com.robam.stove.bean.CurveStep;
-import com.robam.stove.bean.Stove;
+import com.robam.common.device.subdevice.Stove;
 import com.robam.stove.bean.StoveCurveDetail;
 import com.robam.stove.constant.DialogConstant;
-import com.robam.stove.constant.StoveConstant;
+import com.robam.common.constant.StoveConstant;
 import com.robam.stove.device.HomeStove;
 import com.robam.stove.device.StoveAbstractControl;
 import com.robam.stove.factory.StoveDialogFactory;
 import com.robam.stove.http.CloudHelper;
-import com.robam.stove.response.GetCurveCookbooksRes;
 import com.robam.stove.response.GetCurveDetailRes;
 import com.robam.stove.ui.adapter.RvStep3Adapter;
 import com.robam.stove.ui.dialog.SelectStoveDialog;
@@ -157,6 +156,11 @@ public class CurveSelectedActivity extends StoveBaseActivity {
 
     //炉头选择
     private void selectStove() {
+        //检查锅是否有连接
+        if (isPanOffline())
+            return;
+        //检查灶是否连接
+        if (isStoveOffline())
         //炉头选择提示
         if (null == selectStoveDialog) {
             selectStoveDialog = new SelectStoveDialog(this);

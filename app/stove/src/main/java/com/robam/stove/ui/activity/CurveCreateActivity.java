@@ -3,7 +3,6 @@ package com.robam.stove.ui.activity;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Handler;
-import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,13 +21,11 @@ import com.robam.common.utils.LogUtils;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBaseActivity;
 import com.robam.stove.constant.DialogConstant;
-import com.robam.stove.constant.StoveConstant;
+import com.robam.common.constant.StoveConstant;
 import com.robam.stove.factory.StoveDialogFactory;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 //曲线创作
 public class CurveCreateActivity extends StoveBaseActivity {

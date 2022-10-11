@@ -7,8 +7,8 @@ import android.widget.TextView;
 
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
-import com.robam.stove.bean.Stove;
-import com.robam.stove.constant.StoveConstant;
+import com.robam.common.device.subdevice.Stove;
+import com.robam.common.constant.StoveConstant;
 import com.robam.stove.device.HomeStove;
 import com.robam.common.ui.dialog.BaseDialog;
 import com.robam.common.ui.dialog.FullDialog;

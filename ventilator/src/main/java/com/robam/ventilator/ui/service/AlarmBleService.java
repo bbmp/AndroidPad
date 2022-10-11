@@ -10,21 +10,11 @@ import android.os.SystemClock;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
-import com.robam.common.bean.RTopic;
-import com.robam.common.device.Plat;
-import com.robam.common.manager.BlueToothManager;
-import com.robam.common.mqtt.MqttManager;
-import com.robam.common.mqtt.MqttMsg;
-import com.robam.common.mqtt.MsgKeys;
-import com.robam.common.utils.DeviceUtils;
-import com.robam.pan.bean.Pan;
+import com.robam.common.device.subdevice.Pan;
 import com.robam.pan.device.PanAbstractControl;
-import com.robam.stove.bean.Stove;
+import com.robam.common.device.subdevice.Stove;
 import com.robam.stove.device.StoveAbstractControl;
-import com.robam.ventilator.device.VentilatorFactory;
-import com.robam.ventilator.protocol.ble.BleVentilator;
 import com.robam.ventilator.ui.receiver.AlarmBleReceiver;
-import com.robam.ventilator.ui.receiver.AlarmMqttReceiver;
 
 //定时查询蓝牙设备
 public class AlarmBleService extends Service {

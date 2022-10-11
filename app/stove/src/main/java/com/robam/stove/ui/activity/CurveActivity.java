@@ -22,28 +22,21 @@ import com.robam.common.http.RetrofitCallback;
 import com.robam.common.module.IPublicStoveApi;
 import com.robam.common.module.IPublicVentilatorApi;
 import com.robam.common.module.ModulePubliclHelper;
-import com.robam.common.mqtt.MqttMsg;
-import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBaseActivity;
-import com.robam.stove.bean.CurveStep;
-import com.robam.stove.bean.Stove;
+import com.robam.common.device.subdevice.Stove;
 import com.robam.stove.bean.StoveCurveDetail;
 import com.robam.stove.constant.DialogConstant;
-import com.robam.stove.constant.StoveConstant;
+import com.robam.common.constant.StoveConstant;
 import com.robam.stove.device.HomeStove;
 import com.robam.stove.device.StoveAbstractControl;
-import com.robam.stove.device.StoveFactory;
 import com.robam.stove.factory.StoveDialogFactory;
 import com.robam.stove.http.CloudHelper;
 import com.robam.stove.response.GetCurveCookbooksRes;
 import com.robam.stove.ui.adapter.RvCurveAdapter;
 import com.robam.stove.ui.dialog.SelectStoveDialog;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -59,7 +52,7 @@ public class CurveActivity extends StoveBaseActivity {
     private TextView tvDelete; //确认删除
     private LinearLayoutManager linearLayoutManager;
 
-    private IDialog openDialog, panDialog;
+    private IDialog openDialog;
     private SelectStoveDialog selectStoveDialog;
     private int stoveId;
 
@@ -91,9 +84,6 @@ public class CurveActivity extends StoveBaseActivity {
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 //删除状态不响应
                 if (rvCurveAdapter.getStatus() != RvCurveAdapter.STATUS_BACK)
-                    return;
-                //检查锅是否有连接
-                if (isPanOffline())
                     return;
 
                 StoveCurveDetail stoveCurveDetail = null;
@@ -164,34 +154,6 @@ public class CurveActivity extends StoveBaseActivity {
     }
 
 
-    //检查锅是否离线
-    private boolean isPanOffline() {
-        for (Device device: AccountInfo.getInstance().deviceList) {
-            if (device.dc.equals(IDeviceType.RZNG) && device.status == Device.ONLINE) {
-
-                return false;
-            }
-        }
-        if (null == panDialog) {
-            panDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_STOVE_COMMON);
-            panDialog.setCancelable(false);
-            panDialog.setContentText(R.string.stove_need_match_pan);
-            panDialog.setOKText(R.string.stove_go_match);
-            panDialog.setListeners(new IDialog.DialogOnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (v.getId() == R.id.tv_ok) {
-                        IPublicVentilatorApi iPublicVentilatorApi = ModulePubliclHelper.getModulePublic(IPublicVentilatorApi.class, IPublicVentilatorApi.VENTILATOR_PUBLIC);
-                        if (null != iPublicVentilatorApi)
-                            iPublicVentilatorApi.startMatchNetwork(CurveActivity.this, IDeviceType.RZNG);
-                    }
-                }
-            }, R.id.tv_cancel, R.id.tv_ok);
-        }
-        panDialog.show();
-        return true;
-    }
-
     @Override
     protected void initData() {
         getCurveList();
@@ -240,6 +202,12 @@ public class CurveActivity extends StoveBaseActivity {
 
     //炉头选择
     private void selectStove(StoveCurveDetail stoveCurveDetail) {
+        //检查锅是否有连接
+        if (isPanOffline())
+            return;
+        //检查灶是否连接
+        if (isStoveOffline())
+            return;
         //炉头选择提示
         if (null == selectStoveDialog) {
             selectStoveDialog = new SelectStoveDialog(this);
@@ -408,5 +376,6 @@ public class CurveActivity extends StoveBaseActivity {
             selectStoveDialog.dismiss();
         if (null != openDialog && openDialog.isShow())
             openDialog.dismiss();
+
     }
 }

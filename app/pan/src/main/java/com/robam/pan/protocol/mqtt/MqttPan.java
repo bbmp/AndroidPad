@@ -11,8 +11,8 @@ import com.robam.common.mqtt.MqttPublic;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.MsgUtils;
-import com.robam.pan.bean.Pan;
-import com.robam.pan.constant.PanConstant;
+import com.robam.common.device.subdevice.Pan;
+import com.robam.common.constant.PanConstant;
 import com.robam.pan.constant.QualityKeys;
 import com.robam.pan.device.PanFactory;
 
@@ -64,7 +64,7 @@ public class MqttPan extends MqttPublic {
     protected void onDecodeMsg(MqttMsg msg, byte[] payload, int offset) throws Exception{
         //处理本机端消息
         switch (msg.getID()) {
-            case MsgKeys.FanGetPanStatus_Res: {//查询返回
+            case MsgKeys.SetPotTemp_Rep: {//查询返回
                 //属性个数
                 float temp = MsgUtils.bytes2FloatLittle(payload, offset);//锅温
                 msg.putOpt(PanConstant.temp, temp);
@@ -121,12 +121,8 @@ public class MqttPan extends MqttPublic {
                 }
             }
                 break;
-            case MsgKeys.FanInteractPan_res: {
-                int type = MsgUtils.getByte(payload[offset++]); //蓝牙品类
+            case MsgKeys.POT_INTERACTION_Rep: {
                 int rc = MsgUtils.getByte(payload[offset++]);
-                int temp = MsgUtils.bytes2ShortLittle(payload, offset); //锅温
-                offset += 2;
-                int attributeNum = MsgUtils.getByte(payload[offset++]);//参数个数
             }
                 break;
         }
@@ -138,13 +134,13 @@ public class MqttPan extends MqttPublic {
     protected void onEncodeMsg(ByteBuffer buf, MqttMsg msg) {
         //处理本机消息
         switch (msg.getID()) {
-            case MsgKeys.FanGetPanStatus_Req: //属性查询
+            case MsgKeys.GetPotTemp_Req: //属性查询
                 buf.put((byte) ITerminalType.PAD);
                 break;
-            case MsgKeys.FanInteractPan_req:
-                buf.put((byte) 0x00);// 蓝牙品类
+            case MsgKeys.POT_INTERACTION_Req:
+//                buf.put((byte) 0x00);// 蓝牙品类
                 buf.put((byte) 0x01);//参数个数
-                buf.put((byte) 0x01); //key
+                buf.put((byte) 0x06); //key
                 buf.put((byte) 0x01);//
                 buf.put((byte) msg.optInt(PanConstant.fryMode));
                 break;
