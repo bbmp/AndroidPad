@@ -13,6 +13,7 @@ import com.robam.common.manager.BlueToothManager;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.ByteUtils;
+import com.robam.pan.constant.PanConstant;
 
 import java.util.Arrays;
 
@@ -45,11 +46,11 @@ public class Pan extends Device {
 
     @Override
     public boolean onMsgReceived(MqttMsg msg) {
-        if (null != msg) {
+        if (null != msg && msg.getID() != MsgKeys.GetPotTemp_Req) { //非远程查询
             byte[] mqtt_data = msg.getBytes();
             byte[] send_guid_bytes = Arrays.copyOfRange(mqtt_data, 0, BleDecoder.GUID_LEN);
             int cmd_id = ByteUtils.toInt(mqtt_data[BleDecoder.GUID_LEN]);
-            Byte[] mqtt_payload = BleDecoder.byteArraysToByteArrays(Arrays.copyOfRange(mqtt_data, BleDecoder.GUID_LEN + 1, mqtt_data.length - 1));
+            Byte[] mqtt_payload = BleDecoder.byteArraysToByteArrays(Arrays.copyOfRange(mqtt_data, BleDecoder.GUID_LEN + 1, mqtt_data.length));
             //转化成蓝牙包
             BleDecoder.ExternBleData data = BleDecoder.make_external_send_packet(cmd_id, mqtt_payload);
 //        send_map.put(data.cmd_key, new String(send_guid_bytes));
@@ -73,7 +74,7 @@ public class Pan extends Device {
 
     //收到蓝牙消息
     public boolean onBleReceived(MqttMsg msg) {
-        if (null != msg) {
+        if (null != msg && null != msg.opt(PanConstant.status)) {
             queryNum = 0; //查询超过一次无响应离线
             status = Device.ONLINE;
 

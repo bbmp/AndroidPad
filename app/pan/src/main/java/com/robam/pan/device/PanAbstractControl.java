@@ -1,5 +1,9 @@
 package com.robam.pan.device;
 
+import com.robam.pan.bean.CurveStep;
+
+import java.util.List;
+
 public class PanAbstractControl implements PanFunction{
     private PanFunction function;
 
@@ -26,5 +30,15 @@ public class PanAbstractControl implements PanFunction{
     @Override
     public void queryAttribute(String targetGuid) {
         function.queryAttribute(targetGuid);
+    }
+
+    @Override
+    public void setCurveStepParams(String targetGuid, int stoveId, List<CurveStep> curveSteps) {
+        function.setCurveStepParams(targetGuid, stoveId, curveSteps);
+    }
+
+    @Override
+    public void setFryMode(String targetGuid, int mode) {
+        function.setFryMode(targetGuid, mode);
     }
 }

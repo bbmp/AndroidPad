@@ -151,8 +151,6 @@ public class MqttVentilator extends MqttPublic {
         //控制烟机需校验是否是本机
         if (targetGuid.equals(Plat.getPlatform().getDeviceOnlySign())) {
             switch (msg.getID()) {
-                case MsgKeys.GetStoveStatus_Rep: //查询灶应答
-                    break;
                 case MsgKeys.getDeviceAttribute_Req: { //查询烟机
                     //属性个数
                     short attributeNum = ByteUtils.toShort(payload[offset]);

@@ -20,6 +20,8 @@ import com.robam.common.bean.Device;
 import com.robam.common.bean.UserInfo;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.module.IPublicStoveApi;
+import com.robam.common.module.IPublicVentilatorApi;
+import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.dialog.IDialog;
@@ -61,8 +63,6 @@ public class CurveActivity extends StoveBaseActivity {
     private SelectStoveDialog selectStoveDialog;
     private int stoveId;
 
-    private int selectPosition;
-    private long curveCookbookId; //曲线id
 
     @Override
     protected int getLayoutId() {
@@ -96,14 +96,21 @@ public class CurveActivity extends StoveBaseActivity {
                 if (isPanOffline())
                     return;
 
-                selectPosition = position;
                 StoveCurveDetail stoveCurveDetail = null;
-                if (position != 0) {
-                    stoveCurveDetail = (StoveCurveDetail) adapter.getItem(position);
-                    curveCookbookId = stoveCurveDetail.curveCookbookId; //保存曲线id
+                stoveCurveDetail = (StoveCurveDetail) adapter.getItem(position);
+                if (position == 0) { //创建曲线
+                    //选择炉头
+                    selectStove(stoveCurveDetail);
+                } else {
+
+                    //曲线选中页
+                    Intent intent = new Intent();
+                    if (null != stoveCurveDetail)
+                        intent.putExtra(StoveConstant.EXTRA_CURVE_ID, stoveCurveDetail.curveCookbookId);
+                    intent.setClass(CurveActivity.this, CurveSelectedActivity.class);
+                    startActivity(intent);
                 }
-                //选择炉头
-                selectStove(stoveCurveDetail);
+
             }
         });
         rvCurveAdapter.setOnItemChildClickListener(new OnItemChildClickListener() {
@@ -142,9 +149,11 @@ public class CurveActivity extends StoveBaseActivity {
                         //开火提示状态
                         if (null != openDialog && openDialog.isShow()) {
                             if (stoveId == IPublicStoveApi.STOVE_LEFT && stove.leftStatus == StoveConstant.WORK_WORKING) { //左灶已点火
-                                startWork();
+                                openDialog.dismiss();
+                                startActivity(CurveCreateActivity.class);
                             } else if (stoveId == IPublicStoveApi.STOVE_RIGHT && stove.rightStatus == StoveConstant.WORK_WORKING) { //右灶已点火
-                                startWork();
+                                openDialog.dismiss();
+                                startActivity(CurveCreateActivity.class);
                             }
                         }
                         break;
@@ -154,36 +163,32 @@ public class CurveActivity extends StoveBaseActivity {
         });
     }
 
-    private void startWork() {
-        if (selectPosition == 0) //创建曲线
-            startActivity(CurveCreateActivity.class);
-        else { //曲线选中页
-            Intent intent = new Intent();
-            intent.putExtra(StoveConstant.EXTRA_CURVE_ID, curveCookbookId);
-            intent.setClass(CurveActivity.this, CurveSelectedActivity.class);
-            startActivity(intent);
-        }
-    }
+
     //检查锅是否离线
     private boolean isPanOffline() {
         for (Device device: AccountInfo.getInstance().deviceList) {
             if (device.dc.equals(IDeviceType.RZNG) && device.status == Device.ONLINE) {
-                if (null == panDialog) {
-                    panDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_STOVE_COMMON);
-                    panDialog.setCancelable(false);
-                    panDialog.setContentText(R.string.stove_need_match_pan);
-                    panDialog.setOKText(R.string.stove_go_match);
-                    panDialog.setListeners(new IDialog.DialogOnClickListener() {
-                        @Override
-                        public void onClick(View v) {
 
-                        }
-                    }, R.id.tv_cancel, R.id.tv_ok);
-                }
-                panDialog.show();
                 return false;
             }
         }
+        if (null == panDialog) {
+            panDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_STOVE_COMMON);
+            panDialog.setCancelable(false);
+            panDialog.setContentText(R.string.stove_need_match_pan);
+            panDialog.setOKText(R.string.stove_go_match);
+            panDialog.setListeners(new IDialog.DialogOnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (v.getId() == R.id.tv_ok) {
+                        IPublicVentilatorApi iPublicVentilatorApi = ModulePubliclHelper.getModulePublic(IPublicVentilatorApi.class, IPublicVentilatorApi.VENTILATOR_PUBLIC);
+                        if (null != iPublicVentilatorApi)
+                            iPublicVentilatorApi.startMatchNetwork(CurveActivity.this, IDeviceType.RZNG);
+                    }
+                }
+            }, R.id.tv_cancel, R.id.tv_ok);
+        }
+        panDialog.show();
         return true;
     }
 
@@ -245,7 +250,7 @@ public class CurveActivity extends StoveBaseActivity {
                 public void onClick(View v) {
                     int id = v.getId();
                     if (id == R.id.view_left) {
-                        setParams(stoveCurveDetail, IPublicStoveApi.STOVE_LEFT);
+                        setParams(stoveCurveDetail, IPublicStoveApi.STOVE_LEFT);  //设置锅参数
                         openFire(IPublicStoveApi.STOVE_LEFT); //左灶
                     } else if (id == R.id.view_right) {
                         setParams(stoveCurveDetail, IPublicStoveApi.STOVE_RIGHT);

@@ -11,6 +11,7 @@ import com.robam.common.bean.Device;
 import com.robam.common.ble.BleDecoder;
 import com.robam.common.manager.BlueToothManager;
 import com.robam.common.mqtt.MqttMsg;
+import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.ByteUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.stove.constant.StoveConstant;
@@ -83,6 +84,8 @@ public class Stove extends Device {
     public float leftWorkTemp;
     //左灶
     public int leftStove;
+    //
+    public int leftAlarm;
     /**
      * 右灶工作模式
      */
@@ -99,14 +102,16 @@ public class Stove extends Device {
     public float rightWorkTemp;
     //右灶
     public int rightStove;
+    //
+    public int rightAlarm;
 
     @Override
     public boolean onMsgReceived(MqttMsg msg) {
-        if (null != msg) {
+        if (null != msg && msg.getID() != MsgKeys.GetStoveStatus_Req) { //非查询消息
             byte[] mqtt_data = msg.getBytes();
             String send_guid = msg.getGuid();
             int cmd_id = ByteUtils.toInt(mqtt_data[BleDecoder.GUID_LEN]);
-            Byte[] mqtt_payload = BleDecoder.byteArraysToByteArrays(Arrays.copyOfRange(mqtt_data, BleDecoder.GUID_LEN + 1, mqtt_data.length - 1));
+            Byte[] mqtt_payload = BleDecoder.byteArraysToByteArrays(Arrays.copyOfRange(mqtt_data, BleDecoder.GUID_LEN + 1, mqtt_data.length));
             //转化成蓝牙包
             BleDecoder.ExternBleData data = BleDecoder.make_external_send_packet(cmd_id, mqtt_payload);
             //保存回复guid

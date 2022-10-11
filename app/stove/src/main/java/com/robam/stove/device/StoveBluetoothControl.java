@@ -31,9 +31,9 @@ import java.util.List;
 //灶具现在只有蓝牙控制
 public class StoveBluetoothControl implements StoveFunction{
     //烟机内部控制
-    private void write_no_response(BleDevice bleDevice, BluetoothGattCharacteristic characteristic, byte[] mqtt_data) {
+    private void write_no_response(int cmd, String targetGuid, BleDevice bleDevice, BluetoothGattCharacteristic characteristic, byte[] mqtt_data) {
         int cmd_id = ByteUtils.toInt(mqtt_data[BleDecoder.GUID_LEN]);
-        Byte[] mqtt_payload = BleDecoder.byteArraysToByteArrays(Arrays.copyOfRange(mqtt_data, BleDecoder.GUID_LEN + 1, mqtt_data.length - 1));
+        Byte[] mqtt_payload = BleDecoder.byteArraysToByteArrays(Arrays.copyOfRange(mqtt_data, BleDecoder.GUID_LEN + 1, mqtt_data.length));
         //封装成内部命令
         Byte[] data = BleDecoder.make_internal_send_packet(cmd_id, mqtt_payload);
 
@@ -43,6 +43,8 @@ public class StoveBluetoothControl implements StoveFunction{
             @Override
             public void onWriteSuccess(final int current, final int total, final byte[] justWrite) {
                 LogUtils.e("onWriteSuccess");
+//                if (cmd == MsgKeys.SetStoveLock_Req || cmd == MsgKeys.SetStoveStatus_Req || cmd == MsgKeys.SetStoveShutdown_Req)
+//                    queryAttribute(targetGuid); //立即查询
             }
 
             @Override
@@ -81,7 +83,7 @@ public class StoveBluetoothControl implements StoveFunction{
                     //打包payload
                     byte[] mqtt_data = StoveFactory.getProtocol().encode(msg);
 
-                    write_no_response(((Stove) device).bleDevice, ((Stove) device).characteristic, mqtt_data);
+                    write_no_response(MsgKeys.SetStoveLock_Req, targetGuid, ((Stove) device).bleDevice, ((Stove) device).characteristic, mqtt_data);
                     break;
                 }
             }
@@ -103,7 +105,7 @@ public class StoveBluetoothControl implements StoveFunction{
                     //打包payload
                     byte[] mqtt_data = StoveFactory.getProtocol().encode(msg);
 
-                    write_no_response(((Stove) device).bleDevice, ((Stove) device).characteristic, mqtt_data);
+                    write_no_response(MsgKeys.GetStoveStatus_Req, targetGuid, ((Stove) device).bleDevice, ((Stove) device).characteristic, mqtt_data);
                     break;
                 }
             }
@@ -132,7 +134,7 @@ public class StoveBluetoothControl implements StoveFunction{
                     //打包payload
                     byte[] mqtt_data = StoveFactory.getProtocol().encode(msg);
 
-                    write_no_response(((Stove) device).bleDevice, ((Stove) device).characteristic, mqtt_data);
+                    write_no_response(MsgKeys.SetStoveStatus_Req, targetGuid, ((Stove) device).bleDevice, ((Stove) device).characteristic, mqtt_data);
                     break;
                 }
             }
@@ -163,7 +165,7 @@ public class StoveBluetoothControl implements StoveFunction{
                     //打包payload
                     byte[] mqtt_data = StoveFactory.getProtocol().encode(msg);
 
-                    write_no_response(((Stove) device).bleDevice, ((Stove) device).characteristic, mqtt_data);
+                    write_no_response(MsgKeys.SetStoveLevel_Req, targetGuid, ((Stove) device).bleDevice, ((Stove) device).characteristic, mqtt_data);
                     break;
                 }
             }
@@ -191,7 +193,7 @@ public class StoveBluetoothControl implements StoveFunction{
                     //打包payload
                     byte[] mqtt_data = StoveFactory.getProtocol().encode(msg);
 
-                    write_no_response(((Stove) device).bleDevice, ((Stove) device).characteristic, mqtt_data);
+                    write_no_response(MsgKeys.SetStoveShutdown_Req, targetGuid, ((Stove) device).bleDevice, ((Stove) device).characteristic, mqtt_data);
                     break;
                 }
             }
@@ -218,7 +220,7 @@ public class StoveBluetoothControl implements StoveFunction{
                     //打包payload
                     byte[] mqtt_data = StoveFactory.getProtocol().encode(msg);
 
-                    write_no_response(((Stove) device).bleDevice, ((Stove) device).characteristic, mqtt_data);
+                    write_no_response(MsgKeys.setStoveRecipe_Req, targetGuid, ((Stove) device).bleDevice, ((Stove) device).characteristic, mqtt_data);
                     break;
                 }
             }
@@ -254,7 +256,7 @@ public class StoveBluetoothControl implements StoveFunction{
                     //打包payload
                     byte[] mqtt_data = StoveFactory.getProtocol().encode(msg);
 
-                    write_no_response(((Stove) device).bleDevice, ((Stove) device).characteristic, mqtt_data);
+                    write_no_response(MsgKeys.setStoveStep_Req, targetGuid, ((Stove) device).bleDevice, ((Stove) device).characteristic, mqtt_data);
                     break;
                 }
             }

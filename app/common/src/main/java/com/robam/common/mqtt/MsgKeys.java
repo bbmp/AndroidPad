@@ -510,6 +510,12 @@ public interface MsgKeys {
     //---------------------------无人锅--------------------------------------
     // 烟机内部查询锅状态
     short FanGetPanStatus_Req = 106;
+    //烟机内存查询锅返回
+    short FanGetPanStatus_Res = 107;
+    //内部控制无人锅
+    short FanInteractPan_req = 119;
+    //内部控制无人锅返回
+    short FanInteractPan_res = 120;
     /**
      * 获取温控锅温度(请求)
      */

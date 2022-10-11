@@ -2,6 +2,7 @@ package com.robam.stove.protocol.mqtt;
 
 import com.robam.common.ITerminalType;
 import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
 import com.robam.common.bean.RTopic;
 import com.robam.common.device.Plat;
 import com.robam.common.mqtt.IProtocol;
@@ -28,22 +29,38 @@ import java.util.Map;
 //灶具mqtt实现
 public class MqttStove extends MqttPublic {
 
+    private void decodeMsg(MqttMsg msg, byte[] payload, int offset) {
+        //处理远程消息
+        switch (msg.getID()) {
+            case MsgKeys.GetStoveStatus_Req: //远程查询灶状态
+                //答复
+                String curGuid = msg.getrTopic().getDeviceType() + msg.getrTopic().getSignNum(); //当前设备guid
+                MqttMsg newMsg = new MqttMsg.Builder()
+                        .setMsgId(MsgKeys.GetStoveStatus_Rep)
+                        .setGuid(curGuid)
+                        .setDt(Plat.getPlatform().getDt())
+                        .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(msg.getGuid()), DeviceUtils.getDeviceNumber(msg.getGuid())))
+                        .build();
+                MqttManager.getInstance().publish(newMsg, StoveFactory.getProtocol());
 
+                break;
+//            case MsgKeys.SetStoveStatus_Req: //远程设置灶状态
+//                short terminalType = ByteUtils.toShort(payload[offset++]); //控制端类型
+//                String user = MsgUtils.getString(payload, offset, 10); //user
+//                offset += 10;
+//                short isCook = ByteUtils.toShort(payload[offset++]); //是否菜谱做菜
+//                msg.putOpt(StoveConstant.isCook, isCook);
+//                short id = ByteUtils.toShort(payload[offset++]); //炉头id
+//                msg.putOpt(StoveConstant.stoveId, id);
+//                short workStatus = ByteUtils.toShort(payload[offset++]);//工作状态
+//                msg.putOpt(StoveConstant.workStatus, workStatus);
+//
+//                break;
+        }
+    }
     @Override
     protected void onDecodeMsg(MqttMsg msg, byte[] payload, int offset) throws Exception {
         switch (msg.getID()) {
-            case MsgKeys.GetStoveStatus_Req: //查询灶状态
-                //答复
-//                String curGuid = msg.getrTopic().getDeviceType() + msg.getrTopic().getSignNum(); //当前设备guid
-//                MqttMsg newMsg = new MqttMsg.Builder()
-//                        .setMsgId(MsgKeys.GetStoveStatus_Rep)
-//                        .setGuid(curGuid)
-//                        .setDt(Plat.getPlatform().getDt())
-//                        .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(msg.getGuid()), DeviceUtils.getDeviceNumber(msg.getGuid())))
-//                        .build();
-
-
-                break;
             case MsgKeys.GetStoveStatus_Rep: {//查询灶状态返回
                 int stoveNum = MsgUtils.getByte(payload[offset++]);
                 msg.putOpt(StoveConstant.stoveNum, stoveNum);
@@ -98,40 +115,46 @@ public class MqttStove extends MqttPublic {
                 }
             }
                 break;
-            case MsgKeys.SetStoveStatus_Req: //设置灶状态
-                short terminalType = ByteUtils.toShort(payload[offset++]); //控制端类型
-                String user = MsgUtils.getString(payload, offset, 10); //user
-                offset += 10;
-                short isCook = ByteUtils.toShort(payload[offset++]); //是否菜谱做菜
-                msg.putOpt(StoveConstant.isCook, isCook);
-                short id = ByteUtils.toShort(payload[offset++]); //炉头id
-                msg.putOpt(StoveConstant.stoveId, id);
-                short workStatus = ByteUtils.toShort(payload[offset++]);//工作状态
-                msg.putOpt(StoveConstant.workStatus, workStatus);
 
+        }
+        decodeMsg(msg, payload, offset);
+    }
+
+    private void encodeMsg(ByteBuffer buf, MqttMsg msg) {
+        //处理远程消息
+        switch (msg.getID()) {
+            case MsgKeys.GetStoveStatus_Rep: //远程查询回复
+                for (Device device: AccountInfo.getInstance().deviceList) {
+                    if (device.guid.equals(msg.getGuid()) && device instanceof Stove) { //当前灶具
+                        Stove stove = (Stove) device;
+                        buf.put((byte) 0x02); //炉头个数
+                        buf.put((byte) stove.lockStatus);//童锁
+                        buf.put((byte) stove.leftStatus);// 工作状态
+                        buf.put((byte) stove.leftLevel);// 功率等级
+                        buf.putShort((short) stove.leftTimeHours); //定时剩余秒数
+                        buf.put((byte) stove.leftAlarm);// 报警状态
+                        buf.put((byte) stove.rightStatus);// 工作状态
+                        buf.put((byte) stove.rightLevel);// 功率等级
+                        buf.putShort((short) stove.rightTimeHours); //定时剩余秒数
+                        buf.put((byte) stove.rightAlarm);// 报警状态
+                        buf.put((byte) 0x00); //参数个数
+                        break;
+                    }
+                }
                 break;
         }
     }
 
     @Override
     protected void onEncodeMsg(ByteBuffer buf, MqttMsg msg) {
+        //处理本机消息
         switch (msg.getID()) {
             case MsgKeys.GetStoveStatus_Req: //本机查询灶状态
                 //控制端类型
                 buf.put((byte) ITerminalType.PAD);
                 break;
-            case MsgKeys.GetStoveStatus_Rep:
-                buf.put((byte) 0x02); //炉头个数
-                buf.put((byte) 0x00);//童锁
-                buf.put((byte) 0x00);// 工作状态
-                buf.put((byte) 0x00);// 功率等级
-                buf.putShort((short) 0); //定时剩余秒数
-                buf.put((byte) 0x00);// 报警状态
-                buf.put((byte) 0x00);// 功率等级
-                buf.put((byte) 0x00); //参数个数
 
-                break;
-            case MsgKeys.SetStoveStatus_Req: //设置灶具状态
+            case MsgKeys.SetStoveStatus_Req: //本地设置灶具状态
                 //控制端类型
                 buf.put((byte) ITerminalType.PAD);
                 buf.put(AccountInfo.getInstance().getUserString().getBytes());
@@ -180,5 +203,6 @@ public class MqttStove extends MqttPublic {
                 }
                 break;
         }
+        encodeMsg(buf, msg);
     }
 }
