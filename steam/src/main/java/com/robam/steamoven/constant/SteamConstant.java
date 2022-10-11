@@ -69,5 +69,5 @@ public class SteamConstant {
 
 
     public final static String NEED_SET_RESULT = "needSetResult";
-    //public static final String MULTI_PAGE_FLAG = "MULTI";
+    public final static String SEGMENT_DATA_FALG = "segmentData";
 }

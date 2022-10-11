@@ -1156,4 +1156,5 @@
     <string name="steam_material">食材</string>
     <string name="steam_no_curve_data">没有曲线数据</string>
     <string name="steam_stop_cook_hint">确认结束当前烹饪?</string>
+    <string name="steam_delete_ok_content">确认删除该内容</string>
 </resources>

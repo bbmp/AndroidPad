@@ -114,13 +114,13 @@
             android:id="@+id/btn_start"
             android:layout_width="@dimen/dp_175"
             android:layout_height="@dimen/dp_56"
-            android:textSize="@dimen/sp_30"
-            android:gravity="center"
-            android:background="@drawable/steam_shape_button_selected"
-            android:textColor="@color/steam_white"
-            android:layout_marginEnd="@dimen/dp_40"
             android:layout_alignParentRight="true"
-            android:text="@string/steam_start"/>
+            android:layout_marginEnd="@dimen/dp_40"
+            android:background="@drawable/steam_shape_button_selected"
+            android:gravity="center"
+            android:text="@string/steam_start"
+            android:textColor="@color/steam_white"
+            android:textSize="@dimen/sp_30" />
 
     </RelativeLayout>
 

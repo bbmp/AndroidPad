@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/steam_ic_bg_xingkong"
+    tools:context=".ui.activity.RecipeActivity">
+
+    <include
+        android:id="@+id/ll_title"
+        layout="@layout/steam_view_layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+
+    <LinearLayout
+        android:id="@+id/multi_work_model_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintWidth_percent="0.5"
+        android:paddingLeft="@dimen/dp_85"
+        app:layout_constraintTop_toBottomOf="@id/ll_title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+       <include
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:layout_weight="1"
+          layout="@layout/steam_activity_layout_multi_work_opt_item"
+          />
+
+
+        <include
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            layout="@layout/steam_activity_layout_multi_work_opt_item"
+            />
+
+
+        <include
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            layout="@layout/steam_activity_layout_multi_work_opt_item"
+            />
+
+
+    </LinearLayout>
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.545"
+        android:layout_height="@dimen/dp_10"
+        android:layout_width="@dimen/dp_10"/>
+
+    <TextView
+        android:id="@+id/multi_work_total"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_50"
+        android:layout_marginLeft="@dimen/dp_67"
+        android:textColor="@color/steam_white"
+        app:layout_constraintTop_toTopOf="@id/guideline"
+        app:layout_constraintBottom_toBottomOf="@id/guideline"
+        app:layout_constraintLeft_toRightOf="@id/multi_work_model_list"
+        android:text="22min"/>
+
+    <ImageView
+        android:id="@+id/multi_work_opt"
+        android:layout_width="@dimen/sp_30"
+        android:layout_height="@dimen/sp_30"
+        android:src="@drawable/steam_ic_start"
+        android:layout_marginTop="@dimen/dp_20"
+        app:layout_constraintTop_toTopOf="@id/guideline"
+        app:layout_constraintBottom_toBottomOf="@id/guideline"
+        app:layout_constraintLeft_toRightOf="@id/multi_work_total"
+        app:layout_constraintRight_toRightOf="parent"
+        android:text="22min"/>
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

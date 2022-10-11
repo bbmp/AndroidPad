@@ -5,6 +5,10 @@
 
     <application>
         <activity
+            android:name=".ui.activity.MultiWorkActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
+        <activity
             android:name=".ui.activity.MultiActivity"
             android:exported="false"
             android:screenOrientation="landscape"/>

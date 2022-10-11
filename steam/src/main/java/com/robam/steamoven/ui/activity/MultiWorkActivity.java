@@ -1,37 +1,20 @@
 package com.robam.steamoven.ui.activity;
 
-import android.app.Activity;
-import android.app.Application;
-import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.robam.common.manager.FunctionManager;
-import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
-import com.robam.steamoven.bean.DeviceConfigurationFunctions;
 import com.robam.steamoven.bean.FuntionBean;
 import com.robam.steamoven.bean.MultiSegment;
 import com.robam.steamoven.constant.SteamConstant;
 import com.robam.steamoven.constant.SteamEnum;
-import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.ui.dialog.SteamCommonDialog;
 
 import java.util.ArrayList;
@@ -39,56 +22,41 @@ import java.util.Arrays;
 import java.util.List;
 
 //一体机多段
-public class MultiActivity extends SteamBaseActivity {
+public class MultiWorkActivity extends SteamBaseActivity {
 
-    //底部父容器
-    private ViewGroup optContentParentView;
+
     //段数父容器
-    private ViewGroup optBottomParentView;
+    private ViewGroup optContentParentView;
 
     //设置段数据
     private List<MultiSegment> multiSegments = new ArrayList<>();
     //当前段数（3段）
     public static final int  CUR_ITEM_VIEW_COUNT = 3;
     public static final int  DATA_KEY = R.id.multi_opt;
-    public static final int  START_WORK_CODE = 350;
     //跳转集合
     private List<FuntionBean> funtionBeans;
 
 
     @Override
     protected int getLayoutId() {
-        return R.layout.steam_activity_layout_multi;
+        return R.layout.steam_activity_layout_multi_work;
     }
 
     @Override
     protected void initView() {
         showLeft();
         showCenter();
-        //setRight(R.string.steam_title_delete);
-        optContentParentView = findViewById(R.id.multi_opt);
-        optBottomParentView = findViewById(R.id.multi_bottom);
+        optContentParentView = findViewById(R.id.multi_work_model_list);
         initOptViewTag();
-        initOptContent();
-        initDelBtnView();
-        setOnClickListener(R.id.btn_start);
+//       initOptContent();
+//       initDelBtnView();
     }
 
 
-    /**
-     * 设置删除文本与删除按钮图标
-     */
-    private void initDelBtnView(){
-        setOnClickListener(R.id.ll_right);
-        //设置删除ICON TODO("后期补上图片")
-        //((ImageView)findViewById(R.id.iv_right)).setImageResource();
-        ((TextView)findViewById(R.id.tv_right)).setText(R.string.steam_title_delete);
-    }
 
 
-    private void setDelBtnState(boolean isShow){
-        findViewById(R.id.ll_right).setVisibility(isShow? View.VISIBLE:View.INVISIBLE);
-    }
+
+
 
 
 
@@ -99,24 +67,17 @@ public class MultiActivity extends SteamBaseActivity {
      */
     private void initOptViewTag(){
         for(int i = 0; i < optContentParentView.getChildCount();i++){
-            if(i % 2 != 0){
-                String indexTag = i/2 +"";
-                optContentParentView.getChildAt(i).setTag(indexTag);
-                optContentParentView.getChildAt(i).setTag(DATA_KEY,null);
-                optContentParentView.getChildAt(i).findViewById(R.id.multi_item_del).setTag(indexTag);
-                optContentParentView.getChildAt(i).findViewById(R.id.multi_item_del).setOnClickListener(this);//删除按钮
-                optContentParentView.getChildAt(i).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if(!checkSegmentState(view)){
-                            Toast.makeText(getContext(),"请设置前面内容",Toast.LENGTH_LONG).show();
-                            return;
-                        }
-                        //调整到模式设置页面 ： 第一段 - 默认调整到专业模式下的 - 营养蒸； 第二段 - 默认跳转到考模式下的 - 烘焙 ； 第三段 - 默认调整到炸模式 - 空气炸
-                        MultiActivity.this.toTagPageModel(view);
-                    }
-                });
-            }
+            String indexTag = i +"";
+            optContentParentView.getChildAt(i).setTag(indexTag);
+            optContentParentView.getChildAt(i).setTag(DATA_KEY,null);
+            optContentParentView.getChildAt(i).setOnClickListener(view -> {
+                if(!checkSegmentState(view)){
+                    Toast.makeText(getContext(),"请设置前面内容",Toast.LENGTH_LONG).show();
+                    return;
+                }
+                //调整到模式设置页面 ： 第一段 - 默认调整到专业模式下的 - 营养蒸； 第二段 - 默认跳转到考模式下的 - 烘焙 ； 第三段 - 默认调整到炸模式 - 空气炸
+                MultiWorkActivity.this.toTagPageModel(view);
+            });
         }
     }
 
@@ -213,8 +174,7 @@ public class MultiActivity extends SteamBaseActivity {
         for(int i = 0; i < CUR_ITEM_VIEW_COUNT;i++){
             ViewGroup itemGroup = optContentParentView.findViewWithTag(i+"");
             itemGroup.setTag(DATA_KEY,null);
-            TextView segmentView = itemGroup.findViewById(R.id.multi_item_name);
-            segmentView.setText(this.getSegmentName(i));
+
 
 
             TextView temperatureView = itemGroup.findViewById(R.id.multi_item_temperature);
@@ -227,20 +187,19 @@ public class MultiActivity extends SteamBaseActivity {
             TextView durationView = itemGroup.findViewById(R.id.multi_item_duration);
             durationView.setText("");
 
-            itemGroup.findViewById(R.id.multi_item_add).setVisibility(View.VISIBLE);
-            itemGroup.findViewById(R.id.multi_item_del).setVisibility(View.INVISIBLE);
+
         }
     }
 
     private void setOptContent(List<MultiSegment> multiSegments){
         if(multiSegments.size() == 0){
             initOptContent();
-            optBottomParentView.setVisibility(View.GONE);
+            //optBottomParentView.setVisibility(View.GONE);
             return;
         }
 
         int maxCount = multiSegments.size() >= CUR_ITEM_VIEW_COUNT ? CUR_ITEM_VIEW_COUNT : multiSegments.size();
-        optBottomParentView.setVisibility(maxCount >= 1 ? View.VISIBLE : View.GONE);
+        //optBottomParentView.setVisibility(maxCount >= 1 ? View.VISIBLE : View.GONE);
         for(int i = 0; i < maxCount;i++){
             ViewGroup itemGroup = optContentParentView.findViewWithTag(i+"");
             setOptItemContent(itemGroup,multiSegments.get(i),i,false);
@@ -253,8 +212,8 @@ public class MultiActivity extends SteamBaseActivity {
 
     private void setOptItemContent(ViewGroup itemGroup,MultiSegment multiSegmentBean,int index,boolean isInit){
 
-        TextView segmentView = itemGroup.findViewById(R.id.multi_item_name);
-        segmentView.setText(this.getSegmentName(index));
+        //TextView segmentView = itemGroup.findViewById(R.id.multi_item_name);
+        //segmentView.setText(this.getSegmentName(index));
         itemGroup.setTag(DATA_KEY,isInit ? null:multiSegmentBean);
 
         TextView temperatureView = itemGroup.findViewById(R.id.multi_item_temperature);
@@ -270,8 +229,8 @@ public class MultiActivity extends SteamBaseActivity {
         String duration = isInit ? "" : multiSegmentBean.duration;
         durationView.setText(duration);
 
-        itemGroup.findViewById(R.id.multi_item_add).setVisibility(isInit ? View.VISIBLE:View.INVISIBLE);
-        itemGroup.findViewById(R.id.multi_item_del).setVisibility(View.INVISIBLE);
+       // itemGroup.findViewById(R.id.multi_item_add).setVisibility(isInit ? View.VISIBLE:View.INVISIBLE);
+        //itemGroup.findViewById(R.id.multi_item_del).setVisibility(View.INVISIBLE);
     }
 
     private String getSegmentName(int index){
@@ -291,6 +250,11 @@ public class MultiActivity extends SteamBaseActivity {
     @Override
     protected void initData() {
         funtionBeans = FunctionManager.getFuntionList(getContext(), FuntionBean.class, R.raw.steam);
+        //获取上一个页面传递过来的参数
+        //展示
+        multiSegments = getIntent().getParcelableArrayListExtra(SteamConstant.SEGMENT_DATA_FALG);
+        setOptContent(multiSegments);
+
     }
 
     @Override
@@ -298,31 +262,18 @@ public class MultiActivity extends SteamBaseActivity {
         super.onClick(view);
         int id = view.getId();
         if (id == R.id.ll_left) {
-            if(isDelState()){
-                setDelBtnItemState(false);
-                return;
-            }
             finish();
         }else if(id == R.id.ll_right){//显示删除按钮
             showItemDelView();
         }else if(id == R.id.multi_item_del){//删除按钮被点击
             showDealDialog(view);
-        }else if(id == R.id.btn_start){
-            toWorkAc();
         }
     }
-
-    private void toWorkAc(){
-        Intent intent = new Intent(this,MultiWorkActivity.class);
-        intent.putParcelableArrayListExtra(SteamConstant.SEGMENT_DATA_FALG, (ArrayList<? extends Parcelable>) multiSegments);
-        startActivityForResult(intent,START_WORK_CODE);
-    }
-
 
     private void showDealDialog(final View view){
         //final int index = ;//被点击的位置，从0开始
         //展示Dialog
-        SteamCommonDialog steamCommonDialog = new SteamCommonDialog(MultiActivity.this);
+        SteamCommonDialog steamCommonDialog = new SteamCommonDialog(MultiWorkActivity.this);
         steamCommonDialog.setContentText(R.string.steam_delete_ok_content);
         steamCommonDialog.setOKText(R.string.steam_delete);
         steamCommonDialog.setListeners(v -> {
@@ -357,7 +308,7 @@ public class MultiActivity extends SteamBaseActivity {
      * 展示删除按钮
      */
     private void showItemDelView() {
-        setDelBtnState(false);//隐藏删除按钮
+        //setDelBtnState(false);//隐藏删除按钮
         setDelBtnItemState(true);
     }
 
@@ -404,13 +355,8 @@ public class MultiActivity extends SteamBaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         LogUtils.e("MultiActivity onActivityResult " + resultCode);
         if(resultCode == RESULT_OK){
-            if(requestCode == START_WORK_CODE){//多段模式进入暂停模式，此时需要更新页面状态与数据
-
-            }else{
-                dealResult(requestCode,data);
-                setDelBtnState(multiSegments.size() > 0 ? true:false);
-            }
-
+            dealResult(requestCode,data);
+            //setDelBtnState(multiSegments.size() > 0 ? true:false);
         }
     }
 
