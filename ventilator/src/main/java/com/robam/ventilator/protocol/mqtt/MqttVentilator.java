@@ -3,6 +3,7 @@ package com.robam.ventilator.protocol.mqtt;
 import com.robam.common.ITerminalType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.RTopic;
+import com.robam.common.ble.BleDecoder;
 import com.robam.common.constant.ComnConstant;
 import com.robam.common.device.Plat;
 import com.robam.common.mqtt.MqttManager;
@@ -13,6 +14,7 @@ import com.robam.common.utils.ByteUtils;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MsgUtils;
+import com.robam.stove.device.StoveAbstractControl;
 import com.robam.ventilator.constant.QualityKeys;
 import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.device.HomeVentilator;
@@ -35,28 +37,20 @@ public class MqttVentilator extends MqttPublic {
 
     private void decodeMsg(MqttMsg msg, byte[] payload, int offset) throws Exception {
 //从payload中取值角标
-        //远程被控制
+        //内部命令
         switch (msg.getID()) {
-            case MsgKeys.GetStoveStatus_Req: //查询灶具
+            case BleDecoder.EVENT_POT_TEMPERATURE_DROP: //锅温度骤降
+                VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_FRY);
                 break;
-            case MsgKeys.getDeviceAttribute_Req:
+            case BleDecoder.EVENT_POT_TEMPERATURE_OV: //防干烧预警
+                //关闭灶具
 
                 break;
-            case MsgKeys.GetFanStatus_Rep: //烟机查询返回
-                short fanStatus =
-                        ByteUtils.toShort(payload[offset++]);
-                msg.putOpt(VentilatorConstant.FanStatus, fanStatus);
-                short fanLevel =
-                        ByteUtils.toShort(payload[offset++]);
-                short fanLight =
-                        ByteUtils.toShort(payload[offset++]);
-                short needClean =
-                        ByteUtils.toShort(payload[offset++]);
-
-//                short argumentLength = (short) (payload.length - offset);
-
-//                short aValue = ByteUtils.toShort(payload[offset]);
+            case BleDecoder.EVENT_POT_LINK_2_RH://烟锅联动
+                //烟机开2挡
+                VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_MID);
                 break;
+
             default:
 
                 break;

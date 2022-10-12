@@ -11,8 +11,4 @@ import java.util.Map;
 //锅
 public class PublicPanApi implements IPublicPanApi {
 
-    @Override
-    public MutableLiveData<Integer> getPanTemp() {
-        return HomePan.getInstance().panTemp;
-    }
 }

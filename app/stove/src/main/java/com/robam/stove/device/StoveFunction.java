@@ -1,9 +1,6 @@
 package com.robam.stove.device;
 
-import com.robam.common.bean.Device;
-import com.robam.common.mqtt.MqttMsg;
 import com.robam.stove.bean.CurveStep;
-import com.robam.stove.bean.Stove;
 
 import java.util.List;
 
@@ -26,4 +23,6 @@ public interface StoveFunction {
     void setRecipe(String targetGuid, int stoveId);
     //设置曲线步骤参数
     void setCurveStepParams(String targetGuid, int stoveId, List<CurveStep> curveSteps);
+    //锅上报转发给灶
+    void setTransfer(int cmd, byte[] payload);
 }

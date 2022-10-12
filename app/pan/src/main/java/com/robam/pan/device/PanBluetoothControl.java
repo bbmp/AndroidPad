@@ -17,8 +17,8 @@ import com.robam.common.utils.ByteUtils;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.pan.bean.CurveStep;
-import com.robam.pan.bean.Pan;
-import com.robam.pan.constant.PanConstant;
+import com.robam.common.device.subdevice.Pan;
+import com.robam.common.constant.PanConstant;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -30,14 +30,16 @@ import java.util.List;
 public class PanBluetoothControl implements PanFunction{
 
     //烟机内部控制
-    private void write_no_response(BleDevice bleDevice, BluetoothGattCharacteristic characteristic, byte[] mqtt_data) {
+    private void write_no_response(MqttMsg msg, BleDevice bleDevice, BluetoothGattCharacteristic characteristic, byte[] mqtt_data) {
         int cmd_id = ByteUtils.toInt(mqtt_data[BleDecoder.GUID_LEN]);
+        String send_guid = msg.getGuid();
         Byte[] mqtt_payload = BleDecoder.byteArraysToByteArrays(Arrays.copyOfRange(mqtt_data, BleDecoder.GUID_LEN + 1, mqtt_data.length));
         //封装成内部命令
-        Byte[] data = BleDecoder.make_internal_send_packet(cmd_id, mqtt_payload);
-
+        BleDecoder.ExternBleData data = BleDecoder.make_external_send_packet(cmd_id, mqtt_payload);
+        //保存回复guid
+        BlueToothManager.send_map.put(data.cmd_key, send_guid);
         //发送蓝牙数据
-        BlueToothManager.write_no_response(bleDevice, characteristic, BleDecoder.ByteArraysTobyteArrays(data), new BleWriteCallback() {
+        BlueToothManager.write_no_response(bleDevice, characteristic, BleDecoder.ByteArraysTobyteArrays(data.payload), new BleWriteCallback() {
 
             @Override
             public void onWriteSuccess(final int current, final int total, final byte[] justWrite) {
@@ -68,14 +70,14 @@ public class PanBluetoothControl implements PanFunction{
             for (Device device : AccountInfo.getInstance().deviceList) {
                 if (device instanceof Pan && null != device.guid && device.guid.equals(targetGuid)) {
                     MqttMsg msg = new MqttMsg.Builder()
-                            .setMsgId(MsgKeys.FanGetPanStatus_Req)
-                            .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
+                            .setMsgId(MsgKeys.GetPotTemp_Req)
+                            .setGuid(targetGuid) //源guid
                             .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                             .build();
                     //打包payload
                     byte[] mqtt_data = PanFactory.getProtocol().encode(msg);
 
-                    write_no_response(((Pan) device).bleDevice, ((Pan) device).characteristic, mqtt_data);
+                    write_no_response(msg, ((Pan) device).bleDevice, ((Pan) device).characteristic, mqtt_data);
                     break;
                 }
             }
@@ -89,7 +91,7 @@ public class PanBluetoothControl implements PanFunction{
                 if (device instanceof Pan && null != device.guid && device.guid.equals(targetGuid)) {
                     MqttMsg msg = new MqttMsg.Builder()
                             .setMsgId(MsgKeys.POT_CURVEElectric_Req)
-                            .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
+                            .setGuid(targetGuid) //源guid
                             .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                             .build();
 
@@ -111,7 +113,7 @@ public class PanBluetoothControl implements PanFunction{
                     //打包payload
                     byte[] mqtt_data = PanFactory.getProtocol().encode(msg);
 
-                    write_no_response(((Pan) device).bleDevice, ((Pan) device).characteristic, mqtt_data);
+                    write_no_response(msg, ((Pan) device).bleDevice, ((Pan) device).characteristic, mqtt_data);
                     break;
                 }
             }
@@ -124,8 +126,8 @@ public class PanBluetoothControl implements PanFunction{
             for (Device device : AccountInfo.getInstance().deviceList) {
                 if (device instanceof Pan && null != device.guid && device.guid.equals(targetGuid)) {
                     MqttMsg msg = new MqttMsg.Builder()
-                            .setMsgId(MsgKeys.FanInteractPan_req)
-                            .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
+                            .setMsgId(MsgKeys.POT_INTERACTION_Req)
+                            .setGuid(targetGuid) //源guid
                             .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                             .build();
 
@@ -133,7 +135,7 @@ public class PanBluetoothControl implements PanFunction{
                     //打包payload
                     byte[] mqtt_data = PanFactory.getProtocol().encode(msg);
 
-                    write_no_response(((Pan) device).bleDevice, ((Pan) device).characteristic, mqtt_data);
+                    write_no_response(msg, ((Pan) device).bleDevice, ((Pan) device).characteristic, mqtt_data);
                     break;
                 }
             }

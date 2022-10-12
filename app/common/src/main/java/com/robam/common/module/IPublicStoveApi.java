@@ -11,5 +11,6 @@ public interface IPublicStoveApi extends IPublicApi {
 
     int STOVE_LEFT = 0;
     int STOVE_RIGHT = 1;
-
+    //设置灶具状态
+    void setAttribute(String targetGuid, int stoveId, int isCook, int workStatus);
 }

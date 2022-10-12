@@ -9,12 +9,12 @@ import android.widget.TextView;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.utils.TimeUtils;
-import com.robam.stove.bean.Stove;
+import com.robam.common.device.subdevice.Stove;
 import com.robam.stove.device.HomeStove;
 import com.robam.common.ui.dialog.BaseDialog;
 import com.robam.common.ui.dialog.FullDialog;
 import com.robam.stove.R;
-import com.robam.stove.constant.StoveConstant;
+import com.robam.common.constant.StoveConstant;
 
 public class HomeLockDialog extends BaseDialog {
     private LinearLayout llLeftStove, llRightStove;

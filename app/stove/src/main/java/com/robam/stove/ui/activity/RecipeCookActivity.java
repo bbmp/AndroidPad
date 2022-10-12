@@ -22,7 +22,7 @@ import com.robam.stove.bean.RecipeStep;
 import com.robam.stove.bean.StepParams;
 import com.robam.stove.bean.StoveRecipeDetail;
 import com.robam.stove.constant.DialogConstant;
-import com.robam.stove.constant.StoveConstant;
+import com.robam.common.constant.StoveConstant;
 import com.robam.stove.device.HomeStove;
 import com.robam.stove.device.StoveAbstractControl;
 import com.robam.stove.factory.StoveDialogFactory;

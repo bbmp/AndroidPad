@@ -10,25 +10,30 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 
+import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
+import com.robam.common.module.IPublicVentilatorApi;
+import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.ui.activity.BaseActivity;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.utils.ClickUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.stove.R;
-import com.robam.stove.bean.Stove;
+import com.robam.common.device.subdevice.Stove;
 import com.robam.stove.constant.DialogConstant;
-import com.robam.stove.constant.StoveConstant;
+import com.robam.common.constant.StoveConstant;
 import com.robam.stove.device.HomeStove;
 import com.robam.stove.device.StoveAbstractControl;
 import com.robam.stove.factory.StoveDialogFactory;
+import com.robam.stove.ui.activity.CurveActivity;
 import com.robam.stove.ui.dialog.LockDialog;
 
 public abstract class StoveBaseActivity extends BaseActivity {
     private IDialog iDialogAffirm, ilockDialog;
     private TextView tvRightCenter;
     private ImageView ivRightCenter;
+    private IDialog panDialog, stoveDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -163,6 +168,10 @@ public abstract class StoveBaseActivity extends BaseActivity {
             iDialogAffirm.dismiss();
         if (null != ilockDialog && ilockDialog.isShow())
             ilockDialog.dismiss();
+        if (null != panDialog && panDialog.isShow())
+            panDialog.dismiss();
+        if (null != stoveDialog && stoveDialog.isShow())
+            stoveDialog.dismiss();
     }
 
     //是否锁屏状态
@@ -170,5 +179,60 @@ public abstract class StoveBaseActivity extends BaseActivity {
         if (null != ilockDialog && ilockDialog.isShow())
             return true;
         return false;
+    }
+    //检查锅是否离线
+    protected boolean isPanOffline() {
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device.dc.equals(IDeviceType.RZNG) && device.status == Device.ONLINE) {
+
+                return false;
+            }
+        }
+        if (null == panDialog) {
+            panDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_STOVE_COMMON);
+            panDialog.setCancelable(false);
+            panDialog.setContentText(R.string.stove_need_match_pan);
+            panDialog.setOKText(R.string.stove_go_match);
+            panDialog.setListeners(new IDialog.DialogOnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (v.getId() == R.id.tv_ok) {
+                        IPublicVentilatorApi iPublicVentilatorApi = ModulePubliclHelper.getModulePublic(IPublicVentilatorApi.class, IPublicVentilatorApi.VENTILATOR_PUBLIC);
+                        if (null != iPublicVentilatorApi)
+                            iPublicVentilatorApi.startMatchNetwork(StoveBaseActivity.this, IDeviceType.RZNG);
+                    }
+                }
+            }, R.id.tv_cancel, R.id.tv_ok);
+        }
+        panDialog.show();
+        return true;
+    }
+
+    //检查灶具是否离线
+    protected boolean isStoveOffline() {
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device.dc.equals(IDeviceType.RRQZ) && device.status == Device.ONLINE) {
+
+                return false;
+            }
+        }
+        if (null == stoveDialog) {
+            stoveDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_STOVE_COMMON);
+            stoveDialog.setCancelable(false);
+            stoveDialog.setContentText(R.string.stove_need_match_stove);
+            stoveDialog.setOKText(R.string.stove_go_match);
+            stoveDialog.setListeners(new IDialog.DialogOnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (v.getId() == R.id.tv_ok) {
+                        IPublicVentilatorApi iPublicVentilatorApi = ModulePubliclHelper.getModulePublic(IPublicVentilatorApi.class, IPublicVentilatorApi.VENTILATOR_PUBLIC);
+                        if (null != iPublicVentilatorApi)
+                            iPublicVentilatorApi.startMatchNetwork(StoveBaseActivity.this, IDeviceType.RZNG);
+                    }
+                }
+            }, R.id.tv_cancel, R.id.tv_ok);
+        }
+        stoveDialog.show();
+        return true;
     }
 }

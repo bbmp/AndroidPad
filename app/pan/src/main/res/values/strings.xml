@@ -56,6 +56,7 @@
     <string name="pan_open_left_hint">请在左灶点火\n为确保安全,不能远程开火</string>
     <string name="pan_open_right_hint">请在右灶点火\n为确保安全,不能远程开火</string>
     <string name="pan_no_curve_data">没有曲线数据</string>
-    <string name="pan_need_match_pan">需匹配智能灶具进行烹饪</string>
+    <string name="pan_need_match_pan">需匹配智能锅进行烹饪</string>
+    <string name="pan_need_match_stove">需匹配智能灶具进行烹饪</string>
     <string name="pan_go_match">去匹配</string>
 </resources>

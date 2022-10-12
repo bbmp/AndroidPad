@@ -14,8 +14,7 @@ import com.robam.pan.R;
 import com.robam.pan.base.PanBaseActivity;
 import com.robam.pan.bean.CurveStep;
 import com.robam.pan.bean.PanCurveDetail;
-import com.robam.pan.bean.PanRecipeDetail;
-import com.robam.pan.constant.PanConstant;
+import com.robam.common.constant.PanConstant;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

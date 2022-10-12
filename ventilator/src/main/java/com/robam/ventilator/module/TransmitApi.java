@@ -5,36 +5,26 @@ import android.annotation.SuppressLint;
 import androidx.core.util.Preconditions;
 
 import com.robam.cabinet.bean.Cabinet;
-import com.robam.cabinet.constant.CabinetConstant;
 import com.robam.cabinet.device.CabinetFactory;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
-import com.robam.common.bean.RTopic;
-import com.robam.common.module.IPublicVentilatorApi;
 import com.robam.common.mqtt.IProtocol;
 import com.robam.common.mqtt.MqttMsg;
-import com.robam.common.mqtt.RTopicParser;
 import com.robam.common.utils.ByteUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MsgUtils;
 import com.robam.common.utils.StringUtils;
 import com.robam.dishwasher.bean.DishWasher;
-import com.robam.dishwasher.constant.DishWasherConstant;
 import com.robam.dishwasher.device.DishWasherFactory;
-import com.robam.pan.bean.Pan;
+import com.robam.common.device.subdevice.Pan;
 import com.robam.pan.device.PanFactory;
 import com.robam.steamoven.bean.SteamOven;
-import com.robam.steamoven.constant.SteamConstant;
 import com.robam.steamoven.device.SteamFactory;
-import com.robam.stove.bean.Stove;
+import com.robam.common.device.subdevice.Stove;
 import com.robam.stove.device.StoveFactory;
-import com.robam.ventilator.bean.Ventilator;
-import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.device.VentilatorFactory;
 
-import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Map;
 
 //协议转发api
 public class TransmitApi implements IProtocol {

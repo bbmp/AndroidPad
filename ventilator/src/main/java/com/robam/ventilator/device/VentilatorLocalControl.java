@@ -42,6 +42,9 @@ public class VentilatorLocalControl implements VentilatorFunction{
         else
             byteGear = (byte) 0xA0;
 
+        if (byteGear == HomeVentilator.getInstance().gear) //挡位相同
+            return;
+
         byte[] data = SerialVentilator.setGear(byteGear);
         SerialPortHelper.getInstance().addCommands(data);
     }

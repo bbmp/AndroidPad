@@ -45,7 +45,7 @@ public class BleDecoder {
     public static final int CMD_GET_IH_STATUS_INT = 108;//烟机查询灶
     public static final int RESP_GET_IH_STATUS_INT = 109;
     public static final int EVENT_POT_TEMPERATURE_DROP = 110;//锅温度骤变通知烟机
-    //public static final int EVENT_POT_TEMPERATURE_OV = 111;//锅干烧预警通知烟机
+    public static final int EVENT_POT_TEMPERATURE_OV = 111;//锅干烧预警通知烟机
     public static final int EVENT_POT_LINK_2_RH = 112;//锅联动烟机(烟锅联动)
     public static final int CMD_RH_SET_INT = 115;//内部远程烟机交互
     public static final int RSP_RH_SET_INT = 116;
@@ -268,6 +268,10 @@ public class BleDecoder {
         }
         ext_data.payload = mcu_uart_pack(OPTION_CRC_BIT | OPTION_ENCRYPT_BIT, final_payload);
         return ext_data;
+    }
+    //加密数据
+    public static Byte[] mcu_uart_pack(Byte[] src) {
+        return mcu_uart_pack(OPTION_CRC_BIT | OPTION_ENCRYPT_BIT, src);
     }
 
     private static Byte [] mcu_uart_pack(int option, Byte[] src) {

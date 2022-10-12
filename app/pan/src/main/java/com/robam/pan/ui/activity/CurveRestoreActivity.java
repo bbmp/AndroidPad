@@ -1,5 +1,6 @@
 package com.robam.pan.ui.activity;
 
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
@@ -13,8 +14,14 @@ import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
+import com.robam.common.constant.StoveConstant;
+import com.robam.common.device.subdevice.Pan;
+import com.robam.common.device.subdevice.Stove;
 import com.robam.common.manager.DynamicLineChartManager;
 import com.robam.common.module.IPublicStoveApi;
+import com.robam.common.module.IPublicVentilatorApi;
 import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.VerticalSpaceItemDecoration;
@@ -24,13 +31,13 @@ import com.robam.pan.bean.PanCurveDetail;
 import com.robam.pan.constant.DialogConstant;
 import com.robam.pan.R;
 import com.robam.pan.base.PanBaseActivity;
-import com.robam.pan.constant.PanConstant;
+import com.robam.common.constant.PanConstant;
+import com.robam.pan.device.HomePan;
 import com.robam.pan.factory.PanDialogFactory;
 import com.robam.pan.ui.adapter.RvStep2Adapter;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 //曲线还原,
@@ -60,6 +67,9 @@ public class CurveRestoreActivity extends PanBaseActivity {
     private LineChart cookChart;
     private DynamicLineChartManager dm;
     private Map<String, String> params = null;
+
+    private Stove stove;
+    private Pan pan;
 
     ArrayList<Entry> restoreList = new ArrayList<>();  //还原列表
 
@@ -94,6 +104,12 @@ public class CurveRestoreActivity extends PanBaseActivity {
 
     @Override
     protected void initData() {
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device instanceof Pan)
+                pan = (Pan) device;
+            else if (device instanceof Stove)
+                stove = (Stove) device;
+        }
         if (null != panCurveDetail) {
 
             try {
@@ -163,8 +179,14 @@ public class CurveRestoreActivity extends PanBaseActivity {
                         String[] data = params.get(curTime + "").split("-");
                         restoreList.add(new Entry(curTime, Float.parseFloat(data[0])));//温度
                         cookChart.invalidate();
-                        tvFire.setText("火力：" + data[1] + "档");
-                        tvTemp.setText("温度：" + data[0] + "℃");
+                        if (null != stove) {
+                            if (panCurveDetail.stoveId == IPublicStoveApi.STOVE_LEFT) //左灶
+                                tvFire.setText("火力：" + stove.leftLevel + "档");
+                            else
+                                tvFire.setText("火力：" + stove.rightLevel + "档");
+                        }
+                        if (null != pan)
+                            tvTemp.setText("温度：" + pan.panTemp + "℃");
                     }
                 } catch (Exception e) {}
 
@@ -187,8 +209,14 @@ public class CurveRestoreActivity extends PanBaseActivity {
         try {
             if (params.containsKey("0")) {
                 String[] data = params.get(curTime + "").split("-");
-                tvFire.setText("火力：" + data[1] + "档");
-                tvTemp.setText("温度：" + data[0] + "℃");
+                if (null != stove) {
+                    if (panCurveDetail.stoveId == IPublicStoveApi.STOVE_LEFT) //左灶
+                        tvFire.setText("火力：" + stove.leftLevel + "档");
+                    else
+                        tvFire.setText("火力：" + stove.rightLevel + "档");
+                }
+                if (null != pan)
+                    tvTemp.setText("温度：" + pan.panTemp + "℃");
             }
         } catch (Exception e) {}
         mHandler.postDelayed(runnable, 1000L);
@@ -198,12 +226,16 @@ public class CurveRestoreActivity extends PanBaseActivity {
     private void closeFire() {
         IPublicStoveApi iPublicStoveApi = ModulePubliclHelper.getModulePublic(IPublicStoveApi.class,
                 IPublicStoveApi.STOVE_PUBLIC);
-//        if (null != iPublicStoveApi) {
-//            if (panCurveDetail.stove == IPublicStoveApi.STOVE_LEFT)
-//                iPublicStoveApi.getLeftStove().setValue(false);
-//            if (panCurveDetail.stove == IPublicStoveApi.STOVE_RIGHT)
-//                iPublicStoveApi.getRightStove().setValue(false);
-//        }
+        //关火
+        if (null != iPublicStoveApi) {
+            for (Device device: AccountInfo.getInstance().deviceList) {
+                if (device instanceof Stove) {
+                    iPublicStoveApi.setAttribute(device.guid, (byte) panCurveDetail.stoveId, (byte) 0x00, (byte) StoveConstant.STOVE_CLOSE);
+                    break;
+                }
+            }
+        }
+
     }
 
     @Override

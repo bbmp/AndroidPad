@@ -1,7 +1,6 @@
 package com.robam.pan.ui.activity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.view.MotionEvent;
@@ -21,7 +20,7 @@ import com.robam.common.utils.LogUtils;
 import com.robam.pan.constant.DialogConstant;
 import com.robam.pan.R;
 import com.robam.pan.base.PanBaseActivity;
-import com.robam.pan.constant.PanConstant;
+import com.robam.common.constant.PanConstant;
 import com.robam.pan.factory.PanDialogFactory;
 
 import java.util.ArrayList;

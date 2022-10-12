@@ -8,6 +8,10 @@ public interface IPublicVentilatorApi extends IPublicApi {
     String VENTILATOR_PUBLIC = "com.robam.ventilator.device.VentilatorFactory";
     //设置烟机挡位，对外接口
     void setFanGear(int gear);
+    //获取烟机挡位
+    int getFanGear();
     //调用网络匹配
     void startMatchNetwork(Context context, String model);
+    //查询烟机状态
+    void queryAttribute();
 }

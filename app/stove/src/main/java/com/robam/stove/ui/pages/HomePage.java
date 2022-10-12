@@ -17,7 +17,7 @@ import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.module.IPublicStoveApi;
 import com.robam.common.utils.TimeUtils;
-import com.robam.stove.bean.Stove;
+import com.robam.common.device.subdevice.Stove;
 import com.robam.stove.device.HomeStove;
 import com.robam.common.manager.FunctionManager;
 import com.robam.common.ui.dialog.IDialog;
@@ -28,7 +28,7 @@ import com.robam.stove.R;
 import com.robam.stove.base.StoveBasePage;
 import com.robam.stove.bean.StoveFunBean;
 import com.robam.stove.constant.DialogConstant;
-import com.robam.stove.constant.StoveConstant;
+import com.robam.common.constant.StoveConstant;
 import com.robam.stove.device.StoveAbstractControl;
 import com.robam.stove.factory.StoveDialogFactory;
 import com.robam.stove.ui.adapter.RvMainFunctionAdapter;
@@ -250,7 +250,7 @@ public class HomePage extends StoveBasePage {
     private void closeFire(int stoveId) {
         for (Device device: AccountInfo.getInstance().deviceList) {
             if (device instanceof Stove && null != device.guid) {
-                StoveAbstractControl.getInstance().setAttribute(device.guid, (byte) stoveId, (byte) 0x00, (byte) 0x00);
+                StoveAbstractControl.getInstance().setAttribute(device.guid, (byte) stoveId, (byte) 0x00, (byte) StoveConstant.STOVE_CLOSE);
                 break;
             }
         }

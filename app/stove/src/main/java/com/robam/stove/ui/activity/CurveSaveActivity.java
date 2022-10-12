@@ -1,18 +1,12 @@
 package com.robam.stove.ui.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.graphics.Color;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.robam.common.manager.DynamicLineChartManager;
-import com.robam.common.manager.LineChartManager;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.ClearEditText;
 import com.robam.common.ui.view.MarkViewStep;
@@ -20,7 +14,7 @@ import com.robam.common.utils.ToastUtils;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBaseActivity;
 import com.robam.stove.constant.DialogConstant;
-import com.robam.stove.constant.StoveConstant;
+import com.robam.common.constant.StoveConstant;
 import com.robam.stove.factory.StoveDialogFactory;
 
 import java.util.ArrayList;

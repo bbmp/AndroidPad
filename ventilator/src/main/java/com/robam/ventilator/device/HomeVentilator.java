@@ -9,8 +9,8 @@ import com.robam.common.mqtt.MqttManager;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.DeviceUtils;
-import com.robam.pan.bean.Pan;
-import com.robam.stove.bean.Stove;
+import com.robam.common.device.subdevice.Pan;
+import com.robam.common.device.subdevice.Stove;
 import com.robam.ventilator.constant.VentilatorConstant;
 
 import org.json.JSONArray;

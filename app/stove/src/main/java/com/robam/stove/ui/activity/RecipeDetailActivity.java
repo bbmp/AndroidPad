@@ -30,12 +30,11 @@ import com.robam.stove.R;
 import com.robam.stove.base.StoveBaseActivity;
 import com.robam.stove.bean.Material;
 import com.robam.stove.bean.RecipeStep;
-import com.robam.stove.bean.Stove;
+import com.robam.common.device.subdevice.Stove;
 import com.robam.stove.bean.StoveRecipeDetail;
 import com.robam.stove.constant.DialogConstant;
-import com.robam.stove.constant.StoveConstant;
+import com.robam.common.constant.StoveConstant;
 import com.robam.stove.device.HomeStove;
-import com.robam.stove.device.StoveAbstractControl;
 import com.robam.stove.factory.StoveDialogFactory;
 import com.robam.stove.http.CloudHelper;
 import com.robam.stove.response.GetRecipeDetailRes;
@@ -140,8 +139,10 @@ public class RecipeDetailActivity extends StoveBaseActivity {
                                 //开始工作
                                 Intent intent = new Intent();
                                 intent.setClass(RecipeDetailActivity.this, RecipeCookActivity.class);
-                                if (null != stoveRecipeDetail)
+                                if (null != stoveRecipeDetail) {
+                                    intent.putExtra(StoveConstant.stoveId, stoveId);
                                     intent.putExtra(StoveConstant.EXTRA_RECIPE_DETAIL, stoveRecipeDetail);
+                                }
                                 intent.putExtra(StoveConstant.stoveId, stoveId);
                                 startActivity(intent);
                             } else if (stoveId == IPublicStoveApi.STOVE_RIGHT && stove.rightStatus == StoveConstant.WORK_WORKING) { //右灶已点火
@@ -149,8 +150,10 @@ public class RecipeDetailActivity extends StoveBaseActivity {
                                 //开始工作
                                 Intent intent = new Intent();
                                 intent.setClass(RecipeDetailActivity.this, RecipeCookActivity.class);
-                                if (null != stoveRecipeDetail)
+                                if (null != stoveRecipeDetail) {
+                                    intent.putExtra(StoveConstant.stoveId, stoveId);
                                     intent.putExtra(StoveConstant.EXTRA_RECIPE_DETAIL, stoveRecipeDetail);
+                                }
                                 startActivity(intent);
                             }
                         }

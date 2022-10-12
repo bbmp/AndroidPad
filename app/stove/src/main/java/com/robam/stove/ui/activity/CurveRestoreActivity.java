@@ -16,7 +16,7 @@ import com.robam.stove.R;
 import com.robam.stove.base.StoveBaseActivity;
 import com.robam.stove.bean.StoveCurveDetail;
 import com.robam.stove.constant.DialogConstant;
-import com.robam.stove.constant.StoveConstant;
+import com.robam.common.constant.StoveConstant;
 import com.robam.stove.factory.StoveDialogFactory;
 
 import java.util.ArrayList;

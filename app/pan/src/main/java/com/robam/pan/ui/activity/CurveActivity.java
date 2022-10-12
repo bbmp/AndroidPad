@@ -23,12 +23,12 @@ import com.robam.common.module.IPublicVentilatorApi;
 import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
-import com.robam.pan.bean.Pan;
+import com.robam.common.device.subdevice.Pan;
 import com.robam.pan.bean.PanCurveDetail;
 import com.robam.pan.constant.DialogConstant;
 import com.robam.pan.R;
 import com.robam.pan.base.PanBaseActivity;
-import com.robam.pan.constant.PanConstant;
+import com.robam.common.constant.PanConstant;
 import com.robam.pan.device.HomePan;
 import com.robam.pan.device.PanAbstractControl;
 import com.robam.pan.factory.PanDialogFactory;
@@ -50,7 +50,7 @@ public class CurveActivity extends PanBaseActivity {
     private List<PanCurveDetail> panCurveDetails = new ArrayList<>();
     private TextView tvDelete; //确认删除
 
-    private IDialog openDialog, stoveDialog;
+    private IDialog openDialog;
     private SelectStoveDialog selectStoveDialog;
     //炉头id
     private int stoveId;
@@ -80,9 +80,6 @@ public class CurveActivity extends PanBaseActivity {
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 //删除状态不响应
                 if (rvCurveAdapter.getStatus() != rvCurveAdapter.STATUS_BACK)
-                    return;
-                //检查灶具是否有连接
-                if (isStoveOffline())
                     return;
 
                 PanCurveDetail panCurveDetail = null;
@@ -127,33 +124,7 @@ public class CurveActivity extends PanBaseActivity {
         });
         setOnClickListener(R.id.ll_left, R.id.ll_right, R.id.tv_delete);
     }
-    //检查灶具是否离线
-    private boolean isStoveOffline() {
-        for (Device device: AccountInfo.getInstance().deviceList) {
-            if (device.dc.equals(IDeviceType.RRQZ) && device.status == Device.ONLINE) {
 
-                return false;
-            }
-        }
-        if (null == stoveDialog) {
-            stoveDialog = PanDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_PAN_COMMON);
-            stoveDialog.setCancelable(false);
-            stoveDialog.setContentText(R.string.pan_need_match_pan);
-            stoveDialog.setOKText(R.string.pan_go_match);
-            stoveDialog.setListeners(new IDialog.DialogOnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (v.getId() == R.id.tv_ok) {
-                        IPublicVentilatorApi iPublicVentilatorApi = ModulePubliclHelper.getModulePublic(IPublicVentilatorApi.class, IPublicVentilatorApi.VENTILATOR_PUBLIC);
-                        if (null != iPublicVentilatorApi)
-                            iPublicVentilatorApi.startMatchNetwork(CurveActivity.this, IDeviceType.RZNG);
-                    }
-                }
-            }, R.id.tv_cancel, R.id.tv_ok);
-        }
-        stoveDialog.show();
-        return true;
-    }
 
     @Override
     protected void initData() {
@@ -201,6 +172,12 @@ public class CurveActivity extends PanBaseActivity {
 
     //炉头选择
     private void selectStove(PanCurveDetail panCurveDetail) {
+        //检查灶具是否有连接
+        if (isStoveOffline())
+            return;
+        //检查锅是否连接
+        if (isPanOffline())
+            return;
         //炉头选择提示
         if (null == selectStoveDialog) {
             selectStoveDialog = new SelectStoveDialog(this);
@@ -365,5 +342,6 @@ public class CurveActivity extends PanBaseActivity {
             selectStoveDialog.dismiss();
         if (null != openDialog && openDialog.isShow())
             openDialog.dismiss();
+
     }
 }

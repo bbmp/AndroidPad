@@ -20,46 +20,33 @@ import com.clj.fastble.exception.BleException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.robam.common.IDeviceType;
-import com.robam.common.ITerminalType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
-import com.robam.common.bean.RTopic;
 import com.robam.common.ble.BleDecoder;
-import com.robam.common.ble.BleDeviceInfo;
-import com.robam.common.constant.ComnConstant;
 import com.robam.common.device.Plat;
 import com.robam.common.manager.BlueToothManager;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.mqtt.MqttMsg;
-import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.ByteUtils;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MMKVUtils;
 import com.robam.common.utils.StringUtils;
-import com.robam.pan.bean.Pan;
+import com.robam.common.device.subdevice.Pan;
 import com.robam.pan.device.PanFactory;
-import com.robam.stove.bean.Stove;
+import com.robam.common.device.subdevice.Stove;
 import com.robam.stove.device.StoveAbstractControl;
 import com.robam.stove.device.StoveFactory;
-import com.robam.ventilator.AppVentilator;
-import com.robam.ventilator.R;
-import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.device.HomeVentilator;
 import com.robam.ventilator.device.VentilatorFactory;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -452,14 +439,14 @@ public class BleVentilator {
                                             if (device instanceof Stove) {
                                                 String target_guid = device.guid;
                                                 String topic = "/u/" + target_guid.substring(0, 5) + "/" + target_guid.substring(5);
-                                                byte paylaod[] = ble_make_external_mqtt(topic, target_guid, ret2);
+                                                byte paylaod[] = ble_make_external_mqtt(target_guid, ret2);
                                                 MqttMsg msg = StoveFactory.getProtocol().decode(topic, paylaod);
                                                 if (((Stove) device).onBleReceived(msg))
                                                     AccountInfo.getInstance().getGuid().setValue(device.guid); //更新灶具状态
                                             } else if (device instanceof Pan) {
                                                 String target_guid = device.guid;
                                                 String topic = "/u/" + target_guid.substring(0, 5) + "/" + target_guid.substring(5);
-                                                byte paylaod[] = ble_make_external_mqtt(topic, target_guid, ret2);
+                                                byte paylaod[] = ble_make_external_mqtt(target_guid, ret2);
                                                 MqttMsg msg = PanFactory.getProtocol().decode(topic, paylaod);
                                                 if (((Pan) device).onBleReceived(msg))
                                                     AccountInfo.getInstance().getGuid().setValue(device.guid); //更新锅状态
@@ -482,6 +469,26 @@ public class BleVentilator {
 //                                        }
 //                                    }
                                     break;
+                                case BleDecoder.EVENT_POT_TEMPERATURE_DROP://锅温度骤变
+                                case BleDecoder.EVENT_POT_TEMPERATURE_OV: //干烧预警
+                                case BleDecoder.EVENT_POT_LINK_2_RH: {  //烟锅联动
+                                    String target_guid = Plat.getPlatform().getDeviceOnlySign();
+                                    String topic = "/u/" + target_guid.substring(0, 5) + "/" + target_guid.substring(5);
+                                    byte payload[] = ble_make_external_mqtt(target_guid, ret2);
+                                    MqttMsg msg = VentilatorFactory.getProtocol().decode(topic, payload);
+                                }
+                                    break;
+                                case BleDecoder.CMD_RH_SET_INT: //内部远程烟机交互
+                                    String target_guid = Plat.getPlatform().getDeviceOnlySign();
+                                    String topic = "/u/" + target_guid.substring(0, 5) + "/" + target_guid.substring(5);
+                                    byte payload[] = ble_make_external_mqtt(target_guid, ret2);
+//                                    MqttMsg msg = VentilatorFactory.getProtocol().decode(topic, paylaod);
+
+                                    break;
+                                case BleDecoder.CMD_COOKER_SET_INT: //锅上报转发给灶
+
+                                    StoveAbstractControl.getInstance().setTransfer(BleDecoder.CMD_COOKER_SET_INT, ret2);
+                                    break;
                                 default:
                                     break;
                             }
@@ -503,9 +510,20 @@ public class BleVentilator {
                                         String target_guid = BlueToothManager.send_map.get(ByteUtils.toInt(ret2[BleDecoder.DECODE_CMD_KEY_OFFSET]));
                                         if (null != target_guid) {
                                             String topic = "/u/" + target_guid.substring(0, 5) + "/" + target_guid.substring(5);
-                                            ble_mqtt_publish(topic, device.guid, ret2);
                                             //移除消息
                                             BlueToothManager.send_map.remove(ByteUtils.toInt(ret2[BleDecoder.DECODE_CMD_KEY_OFFSET]));
+
+                                            if (device.guid.equals(target_guid) && device instanceof Pan) { //本机查询
+
+                                                byte payload[] = ble_make_external_mqtt(target_guid, ret2);
+                                                MqttMsg msg = PanFactory.getProtocol().decode(topic, payload);
+                                                if (((Pan) device).onBleReceived(msg))
+                                                    AccountInfo.getInstance().getGuid().setValue(device.guid); //更新锅状态
+                                                break;
+                                            }
+                                            //远程控制指令
+                                            ble_mqtt_publish(topic, device.guid, ret2);
+
                                         }
                                         break;
                                     }
@@ -570,7 +588,7 @@ public class BleVentilator {
         BlueToothManager.disConnect(bleDevice);
     }
     //从ble收到的数据发到设备解析
-    private static byte[] ble_make_external_mqtt(String topic, String sender_guid, byte[] ble_payload) {
+    private static byte[] ble_make_external_mqtt(String sender_guid, byte[] ble_payload) {
         byte[] guid_bytes = sender_guid.getBytes();
         byte [] mqtt_payload = new byte[guid_bytes.length + ble_payload.length - 1];
         System.arraycopy(guid_bytes, 0, mqtt_payload, 0, guid_bytes.length);

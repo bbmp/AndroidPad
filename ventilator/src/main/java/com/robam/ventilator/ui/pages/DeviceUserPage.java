@@ -10,10 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
-import com.clj.fastble.BleManager;
-import com.clj.fastble.data.BleDevice;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.BaseResponse;
 import com.robam.common.http.RetrofitCallback;
@@ -22,11 +19,10 @@ import com.robam.common.mqtt.MqttManager;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.GridSpaceItemDecoration;
 import com.robam.common.utils.DeviceUtils;
-import com.robam.common.utils.ImageUtils;
 import com.robam.common.utils.MMKVUtils;
 import com.robam.common.utils.ToastUtils;
-import com.robam.pan.bean.Pan;
-import com.robam.stove.bean.Stove;
+import com.robam.common.device.subdevice.Pan;
+import com.robam.common.device.subdevice.Stove;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBasePage;
 import com.robam.common.bean.AccountInfo;
@@ -39,7 +35,6 @@ import com.robam.ventilator.http.CloudHelper;
 import com.robam.ventilator.response.GetDeviceUserRes;
 import com.robam.ventilator.ui.adapter.RvDeviceUserAdapter;
 
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 

@@ -1,54 +1,22 @@
 package com.robam.ventilator.ui.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattService;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.clj.fastble.BleManager;
-import com.clj.fastble.callback.BleGattCallback;
-import com.clj.fastble.callback.BleIndicateCallback;
-import com.clj.fastble.callback.BleNotifyCallback;
-import com.clj.fastble.callback.BleScanCallback;
-import com.clj.fastble.callback.BleWriteCallback;
-import com.clj.fastble.data.BleDevice;
-import com.clj.fastble.data.BleScanState;
-import com.clj.fastble.exception.BleException;
-import com.clj.fastble.scan.BleScanRuleConfig;
-import com.clj.fastble.utils.HexUtil;
 import com.robam.common.IDeviceType;
-import com.robam.common.bean.AccountInfo;
-import com.robam.common.bean.Device;
-import com.robam.common.ble.BleDecoder;
-import com.robam.common.ble.BleDeviceInfo;
 import com.robam.common.manager.BlueToothManager;
 import com.robam.common.ui.view.ExtImageSpan;
-import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.PermissionUtils;
-import com.robam.common.utils.StringUtils;
-import com.robam.pan.bean.Pan;
-import com.robam.stove.bean.Stove;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
 import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.protocol.ble.BleVentilator;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 public class MatchNetworkActivity extends VentilatorBaseActivity implements BleVentilator.BleCallBack{
     private TextView tvHint;

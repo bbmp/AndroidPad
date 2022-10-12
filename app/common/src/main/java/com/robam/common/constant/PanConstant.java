@@ -1,4 +1,4 @@
-package com.robam.pan.constant;
+package com.robam.common.constant;
 
 public class PanConstant {
     public final static String EXTRA_RECIPE_ID = "recipeid";

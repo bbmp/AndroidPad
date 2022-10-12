@@ -1,4 +1,4 @@
-package com.robam.stove.constant;
+package com.robam.common.constant;
 
 public class StoveConstant {
     //主功能
