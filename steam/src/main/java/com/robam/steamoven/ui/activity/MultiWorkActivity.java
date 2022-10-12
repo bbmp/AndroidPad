@@ -44,6 +44,8 @@ public class MultiWorkActivity extends SteamBaseActivity {
 
     private boolean isStart = false;
 
+    private static final int REQUEST_CODE_SETTING  = 321;
+
 
 
     @Override
@@ -77,32 +79,24 @@ public class MultiWorkActivity extends SteamBaseActivity {
             optContentParentView.getChildAt(i).setTag(DATA_KEY,null);
             optContentParentView.getChildAt(i).setOnClickListener(view -> {
                 if(!checkSegmentState(view)){
-                    Toast.makeText(getContext(),"请设置前面内容",Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getContext(),"请设置前面内容",Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if(isWorking()){
+                    Toast.makeText(getContext(),R.string.steam_cook_setting_prompt,Toast.LENGTH_LONG).show();
                     return;
                 }
                 //调整到模式设置页面 ： 第一段 - 默认调整到专业模式下的 - 营养蒸； 第二段 - 默认跳转到考模式下的 - 烘焙 ； 第三段 - 默认调整到炸模式 - 空气炸
-                MultiWorkActivity.this.toTagPageModel(view);
+                MultiWorkActivity.this.toSettingPage(view);
             });
         }
     }
 
-    private void toTagPageModel(View view){
-        Object data = view.getTag(DATA_KEY);
-        if(data == null){//去往默认规则页面
-            List<Integer> settedFunList= getSettedFunList();
-            List<Integer> allFunList = getModelFunList();
-            if(settedFunList != null){
-                for(int i = 0;i < settedFunList.size();i++){
-                    allFunList.remove(settedFunList.get(i));
-                }
-            }
-            FuntionBean funtionBean = getFuntionBean(allFunList.get(0));
-            this.toModelPage(funtionBean,Integer.parseInt(view.getTag()+""));
-        }else{//去往当前选择模式页面
-            //this.toCurModelPage((MultiSegment)data,Integer.parseInt(view.getTag()+""));
-            FuntionBean funtionBean = getFuntionBean(((MultiSegment)data).funCode);
-            this.toModelPage(funtionBean,Integer.parseInt(view.getTag()+""));
-        }
+    private void toSettingPage(View view){
+        Intent intent = new Intent(this,MultiActivity.class);
+        intent.putParcelableArrayListExtra(SteamConstant.SEGMENT_DATA_FLAG, (ArrayList<? extends Parcelable>) multiSegments);
+        intent.putExtra(SteamConstant.SEGMENT_WORK_FLAG,true);
+        startActivityForResult(intent,REQUEST_CODE_SETTING);
     }
 
     private void toDefaultModelPage(int index){
@@ -264,7 +258,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
         funtionBeans = FunctionManager.getFuntionList(getContext(), FuntionBean.class, R.raw.steam);
         //获取上一个页面传递过来的参数
         //展示
-        multiSegments = getIntent().getParcelableArrayListExtra(SteamConstant.SEGMENT_DATA_FALG);
+        multiSegments = getIntent().getParcelableArrayListExtra(SteamConstant.SEGMENT_DATA_FLAG);
         setOptContent(multiSegments);
     }
 
@@ -281,6 +275,14 @@ public class MultiWorkActivity extends SteamBaseActivity {
         }
     }
 
+
+    /**
+     * 是否正在烹饪
+     * @return
+     */
+    private boolean isWorking(){
+        return pauseCookView.getVisibility() == View.VISIBLE;
+    }
 
 
     /**
@@ -424,16 +426,16 @@ public class MultiWorkActivity extends SteamBaseActivity {
 
 
     private void dealResult(int requestCode, Intent data){
-        if(multiSegments.size() > requestCode){//修改当前历史
-            MultiSegment resultData  = data.getParcelableExtra("resultData");
-            multiSegments.remove(requestCode);
-            multiSegments.add(requestCode,resultData);
-        }else{//添加新对象
-            MultiSegment resultData  = data.getParcelableExtra("resultData");
-            multiSegments.add(resultData);
-        }
+//        if(multiSegments.size() > requestCode){//修改当前历史
+//            MultiSegment resultData  = data.getParcelableExtra("resultData");
+//            multiSegments.remove(requestCode);
+//            multiSegments.add(requestCode,resultData);
+//        }else{//添加新对象
+//            MultiSegment resultData  = data.getParcelableExtra("resultData");
+//            multiSegments.add(resultData);
+//        }
+        multiSegments = data.getParcelableExtra(SteamConstant.SEGMENT_DATA_FLAG);
         setOptContent(multiSegments);
-
     }
 
 

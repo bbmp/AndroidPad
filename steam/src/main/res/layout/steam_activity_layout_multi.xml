@@ -116,11 +116,11 @@
             android:layout_height="@dimen/dp_56"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/steam_shape_button_selected"
+            android:background="@drawable/steam_shape_button_unselected"
             android:gravity="center"
             android:text="@string/steam_start"
             android:textAlignment="center"
-            android:textColor="@color/steam_white"
+            android:textColor="@color/steam_white_72"
             android:textSize="@dimen/sp_30" />
 
     </RelativeLayout>

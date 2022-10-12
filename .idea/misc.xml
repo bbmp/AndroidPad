@@ -554,6 +554,9 @@
         <entry key="..\:/code/AndroidPad/steam/src/main/res/drawable/steam_indicator_selected_blue.xml" value="0.2415" />
         <entry key="..\:/code/AndroidPad/steam/src/main/res/drawable/steam_indicator_unselected.xml" value="0.2645" />
         <entry key="..\:/code/AndroidPad/steam/src/main/res/drawable/steam_main_item_bg.xml" value="0.2645" />
+        <entry key="..\:/code/AndroidPad/steam/src/main/res/drawable/steam_recipe_img_bg.xml" value="0.2795" />
+        <entry key="..\:/code/AndroidPad/steam/src/main/res/drawable/steam_shape_border_bg.xml" value="0.2795" />
+        <entry key="..\:/code/AndroidPad/steam/src/main/res/drawable/steam_shape_button_bg_ok.xml" value="0.2795" />
         <entry key="..\:/code/AndroidPad/steam/src/main/res/drawable/steam_shape_button_selected.xml" value="0.2645" />
         <entry key="..\:/code/AndroidPad/steam/src/main/res/drawable/steam_shape_button_selector.xml" value="0.2645" />
         <entry key="..\:/code/AndroidPad/steam/src/main/res/drawable/steam_shape_button_unselected.xml" value="0.2645" />

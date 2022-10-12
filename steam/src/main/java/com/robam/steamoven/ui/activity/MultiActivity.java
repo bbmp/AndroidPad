@@ -48,6 +48,8 @@ public class MultiActivity extends SteamBaseActivity {
 
     private TextView totalDurationView;
 
+    private TextView startCookBtn;
+
     //设置段数据
     private List<MultiSegment> multiSegments = new ArrayList<>();
     //当前段数（3段）
@@ -69,15 +71,23 @@ public class MultiActivity extends SteamBaseActivity {
     protected void initView() {
         showLeft();
         showCenter();
-        //setRight(R.string.steam_title_delete);
+        showLight();
         optContentParentView = findViewById(R.id.multi_opt);
         optBottomParentView = findViewById(R.id.multi_bottom);
         totalDurationView = findViewById(R.id.steam_total_duration_value);
+        startCookBtn = findViewById(R.id.btn_start);
         initOptViewTag();
         initOptContent();
         initDelBtnView();
         setOnClickListener(R.id.btn_start);
     }
+
+    private void showLight(){
+        showRightCenter();
+        ((TextView)findViewById(R.id.tv_right_center)).setText(R.string.steam_light);
+        ((ImageView)findViewById(R.id.iv_right_center)).setImageResource(R.drawable.steam_ic_light_max);
+    }
+
 
 
     /**
@@ -85,14 +95,21 @@ public class MultiActivity extends SteamBaseActivity {
      */
     private void initDelBtnView(){
         setOnClickListener(R.id.ll_right);
-        //设置删除ICON TODO("后期补上图片")
-        //((ImageView)findViewById(R.id.iv_right)).setImageResource();
+        ((ImageView)findViewById(R.id.iv_right)).setImageResource(R.drawable.steam_ic_title_del);
         ((TextView)findViewById(R.id.tv_right)).setText(R.string.steam_title_delete);
     }
 
 
     private void setDelBtnState(boolean isShow){
         findViewById(R.id.ll_right).setVisibility(isShow? View.VISIBLE:View.INVISIBLE);
+        float paddingBottom;
+        if(isShow){
+            paddingBottom = getResources().getDimension(com.robam.common.R.dimen.dp_22);
+        }else{
+            paddingBottom = getResources().getDimension(com.robam.common.R.dimen.dp_36);
+        }
+        optContentParentView.setPadding(optContentParentView.getPaddingLeft(),optContentParentView.getPaddingTop(),optBottomParentView.getPaddingRight(), (int) paddingBottom);
+        optContentParentView.requestLayout();
     }
 
 
@@ -110,16 +127,17 @@ public class MultiActivity extends SteamBaseActivity {
                 optContentParentView.getChildAt(i).setTag(DATA_KEY,null);
                 optContentParentView.getChildAt(i).findViewById(R.id.multi_item_del).setTag(indexTag);
                 optContentParentView.getChildAt(i).findViewById(R.id.multi_item_del).setOnClickListener(this);//删除按钮
-                optContentParentView.getChildAt(i).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if(!checkSegmentState(view)){
-                            Toast.makeText(getContext(),"请设置前面内容",Toast.LENGTH_LONG).show();
-                            return;
-                        }
-                        //调整到模式设置页面 ： 第一段 - 默认调整到专业模式下的 - 营养蒸； 第二段 - 默认跳转到考模式下的 - 烘焙 ； 第三段 - 默认调整到炸模式 - 空气炸
-                        MultiActivity.this.toTagPageModel(view);
+                optContentParentView.getChildAt(i).setOnClickListener(view -> {
+                    if(!checkSegmentState(view) && !isStart){
+                        Toast.makeText(getContext(),"请设置前面内容",Toast.LENGTH_LONG).show();
+                        return;
                     }
+                    if(isStart && (multiSegments.get(Integer.parseInt(view.getTag()+"")).isCooked || multiSegments.get(Integer.parseInt(view.getTag()+"")).isCooking)){
+                        Toast.makeText(getContext(),"请设置前面内容",Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    //调整到模式设置页面 ： 第一段 - 默认调整到专业模式下的 - 营养蒸； 第二段 - 默认跳转到考模式下的 - 烘焙 ； 第三段 - 默认调整到炸模式 - 空气炸
+                    MultiActivity.this.toTagPageModel(view);
                 });
             }
         }
@@ -198,11 +216,6 @@ public class MultiActivity extends SteamBaseActivity {
     }
 
 
-    private void toBAKEPage(){}
-
-
-
-
 
     private boolean checkSegmentState(View view){
         String tag = (String) view.getTag();
@@ -216,7 +229,7 @@ public class MultiActivity extends SteamBaseActivity {
 
     private void initOptContent(){
         int enableColor = getResources().getColor(R.color.steam_white);
-        int disableColor = getResources().getColor(R.color.steam_mode_d9);
+        int disableColor = getResources().getColor(R.color.steam_white_72);
         for(int i = 0; i < CUR_ITEM_VIEW_COUNT;i++){
             ViewGroup itemGroup = optContentParentView.findViewWithTag(i+"");
             itemGroup.setTag(DATA_KEY,null);
@@ -257,12 +270,17 @@ public class MultiActivity extends SteamBaseActivity {
         }
 
         int enableColor = getResources().getColor(R.color.steam_white);
-        int disableColor = getResources().getColor(R.color.steam_mode_d9);
+        int disableColor = getResources().getColor(R.color.steam_white_72);
         int maxCount = multiSegments.size() >= CUR_ITEM_VIEW_COUNT ? CUR_ITEM_VIEW_COUNT : multiSegments.size();
         optBottomParentView.setVisibility(maxCount >= 1 ? View.VISIBLE : View.GONE);
         for(int i = 0; i < maxCount;i++){
             ViewGroup itemGroup = optContentParentView.findViewWithTag(i+"");
-            setOptItemContent(itemGroup,multiSegments.get(i),i,false,enableColor,R.drawable.steam_ic_multi_item_add);
+
+            if(multiSegments.get(i).isCooking || multiSegments.get(i).isCooked){
+                setOptItemContent(itemGroup,multiSegments.get(i),i,false,disableColor,R.drawable.steam_ic_multi_item_add);
+            }else{
+                setOptItemContent(itemGroup,multiSegments.get(i),i,false,enableColor,R.drawable.steam_ic_multi_item_add);
+            }
         }
         for(int i = maxCount; i < CUR_ITEM_VIEW_COUNT;i++){
             ViewGroup itemGroup = optContentParentView.findViewWithTag(i+"");
@@ -319,6 +337,11 @@ public class MultiActivity extends SteamBaseActivity {
     @Override
     protected void initData() {
         funtionBeans = FunctionManager.getFuntionList(getContext(), FuntionBean.class, R.raw.steam);
+        isStart = getIntent().getBooleanExtra(SteamConstant.SEGMENT_WORK_FLAG,false);
+        if(isStart){
+            multiSegments = getIntent().getParcelableArrayListExtra(SteamConstant.SEGMENT_DATA_FLAG);
+            setOptContent(multiSegments);
+        }
     }
 
     @Override
@@ -341,7 +364,8 @@ public class MultiActivity extends SteamBaseActivity {
     }
 
     private void toWorkAc(){
-        if(multiSegments.size() == 0){
+        if(!multiSegments.get(0).isCooking && !multiSegments.get(0).isCooked && multiSegments.size() < 2){
+            Toast.makeText(this, R.string.steam_cook_start_prompt,Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -350,7 +374,7 @@ public class MultiActivity extends SteamBaseActivity {
             multiSegments.get(0).isCooking = true;
         }
         Intent intent = new Intent(this,MultiWorkActivity.class);
-        intent.putParcelableArrayListExtra(SteamConstant.SEGMENT_DATA_FALG, (ArrayList<? extends Parcelable>) multiSegments);
+        intent.putParcelableArrayListExtra(SteamConstant.SEGMENT_DATA_FLAG, (ArrayList<? extends Parcelable>) multiSegments);
         startActivityForResult(intent,START_WORK_CODE);
     }
 
@@ -375,6 +399,7 @@ public class MultiActivity extends SteamBaseActivity {
         setOptContent(multiSegments);
         setDelBtnItemState(true);
         setTotalDuration();
+        initStartBtnState();
     }
 
 
@@ -445,8 +470,6 @@ public class MultiActivity extends SteamBaseActivity {
 
             }else{
                 dealResult(requestCode,data);
-                setDelBtnState(multiSegments.size() > 0 ? true:false);
-                setTotalDuration();
             }
 
         }
@@ -456,14 +479,17 @@ public class MultiActivity extends SteamBaseActivity {
 
     private void dealResult(int requestCode, Intent data){
         if(multiSegments.size() > requestCode){//修改当前历史
-            MultiSegment resultData  = data.getParcelableExtra("resultData");
+            MultiSegment resultData  = data.getParcelableExtra(SteamConstant.SEGMENT_DATA_FLAG);
             multiSegments.remove(requestCode);
             multiSegments.add(requestCode,resultData);
         }else{//添加新对象
-            MultiSegment resultData  = data.getParcelableExtra("resultData");
+            MultiSegment resultData  = data.getParcelableExtra(SteamConstant.SEGMENT_DATA_FLAG);
             multiSegments.add(resultData);
         }
+        setDelBtnState(multiSegments.size() > 0 ? true:false);
         setOptContent(multiSegments);
+        setTotalDuration();
+        initStartBtnState();
     }
 
     private void setTotalDuration(){
@@ -472,6 +498,28 @@ public class MultiActivity extends SteamBaseActivity {
             totalDuration += Integer.parseInt(multiSegments.get(i).duration);
         }
         totalDurationView.setText(totalDuration+"min");
+    }
+
+    private void initStartBtnState(){
+        if(multiSegments.size() == 0){
+            return;
+        }
+        startCookBtn.setVisibility(isDelState() ?View.INVISIBLE:View.VISIBLE);
+        if(multiSegments.get(0).isCooked || multiSegments.get(0).isCooking){
+            startCookBtn.setText(R.string.steam_work_continue);
+            startCookBtn.setTextColor(getResources().getColor(R.color.steam_white));
+            startCookBtn.setBackgroundResource(R.drawable.steam_shape_button_selected);
+        }else{
+            if(multiSegments.size() == 1){
+                startCookBtn.setText(R.string.steam_start);
+                startCookBtn.setTextColor(getResources().getColor(R.color.steam_white_72));
+                startCookBtn.setBackgroundResource(R.drawable.steam_shape_button_unselected);
+            }else if(multiSegments.size() >= 2){
+                startCookBtn.setText(R.string.steam_start);
+                startCookBtn.setTextColor(getResources().getColor(R.color.steam_white));
+                startCookBtn.setBackgroundResource(R.drawable.steam_shape_button_selected);
+            }
+        }
     }
 
 

@@ -69,5 +69,6 @@ public class SteamConstant {
 
 
     public final static String NEED_SET_RESULT = "needSetResult";
-    public final static String SEGMENT_DATA_FALG = "segmentData";
+    public final static String SEGMENT_DATA_FLAG = "segmentData";
+    public final static String SEGMENT_WORK_FLAG = "isWork";
 }

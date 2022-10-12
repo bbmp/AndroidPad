@@ -243,10 +243,9 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
 
                 }
             }
-
         }
 
-       result.putExtra("resultData",segment);
+       result.putExtra(SteamConstant.SEGMENT_DATA_FLAG,segment);
        setResult(RESULT_OK,result);
        finish();
     }
