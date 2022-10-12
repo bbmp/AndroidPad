@@ -62,8 +62,8 @@ public class StoveAbstractControl implements StoveFunction{
     }
 
     @Override
-    public void setTransfer(int cmd, byte[] payload) {
-        function.setTransfer(cmd, payload);
+    public void setStoveParams(int cmd, byte[] payload) {
+        function.setStoveParams(cmd, payload);
     }
 
 }

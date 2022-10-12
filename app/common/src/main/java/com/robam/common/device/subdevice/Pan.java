@@ -20,6 +20,8 @@ import java.util.Arrays;
 public class Pan extends Device {
     //锅温度
     public int panTemp;
+    //搅拌模式
+    public int fryMode;
     //蓝牙设备
     public BleDevice bleDevice;
     //蓝牙特征符
@@ -78,7 +80,9 @@ public class Pan extends Device {
         if (null != msg && null != msg.opt(PanConstant.status)) {
             queryNum = 0; //查询超过一次无响应离线
             status = Device.ONLINE;
-
+            panTemp = msg.optInt(PanConstant.temp);
+            if (msg.has(PanConstant.fryMode))
+                fryMode = msg.optInt(PanConstant.fryMode);
             return true;
         }
         return false;

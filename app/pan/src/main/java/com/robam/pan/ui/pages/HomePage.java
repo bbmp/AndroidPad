@@ -29,7 +29,9 @@ import com.robam.pan.device.PanAbstractControl;
 import com.robam.pan.ui.adapter.RvMainFunctionAdapter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class HomePage extends PanBasePage {
     /**
@@ -108,6 +110,10 @@ public class HomePage extends PanBasePage {
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.ll_quick_fry) {
+            if (HomePan.getInstance().isPanOffline()) {
+                ToastUtils.showShort(getContext(), R.string.pan_offline);
+                return;
+            }
             if (!llQuick.isSelected()) {
                 //关闭当前模式，持续快炒中
                 llQuick.setSelected(true);
@@ -116,14 +122,22 @@ public class HomePage extends PanBasePage {
                 tvStir.setText(R.string.pan_stir_fry);
                 tvStir.stop();
                 //持续快炒
-                PanAbstractControl.getInstance().setFryMode(HomePan.getInstance().guid, PanConstant.MODE_QUICK_FRY);
+                Map map = new HashMap();
+                map.put(PanConstant.KEY6, new byte[] {PanConstant.MODE_QUICK_FRY});
+                PanAbstractControl.getInstance().setInteractionParams(HomePan.getInstance().guid, map);
             } else {
                 llQuick.setSelected(false);
                 tvQuick.setText(R.string.pan_quick_fry);
                 //关闭电机
-                PanAbstractControl.getInstance().setFryMode(HomePan.getInstance().guid, PanConstant.MODE_CLOSE_FRY);
+                Map map = new HashMap();
+                map.put(PanConstant.KEY6, new byte[] {PanConstant.MODE_CLOSE_FRY});
+                PanAbstractControl.getInstance().setInteractionParams(HomePan.getInstance().guid, map);
             }
         } else if (id == R.id.ll_stir_fry) {
+            if (HomePan.getInstance().isPanOffline()) {
+                ToastUtils.showShort(getContext(), R.string.pan_offline);
+                return;
+            }
             if (!llStir.isSelected()) {
                 llStir.setSelected(true);
                 llQuick.setSelected(false);
@@ -136,7 +150,9 @@ public class HomePage extends PanBasePage {
                             llStir.setSelected(false);
                             tvStir.setText(R.string.pan_stir_fry);
                             //关闭电机
-                            PanAbstractControl.getInstance().setFryMode(HomePan.getInstance().guid, PanConstant.MODE_CLOSE_FRY);
+                            Map map = new HashMap();
+                            map.put(PanConstant.KEY6, new byte[] {PanConstant.MODE_CLOSE_FRY});
+                            PanAbstractControl.getInstance().setInteractionParams(HomePan.getInstance().guid, map);
                             return;
                         }
                         tvStir.setText("十秒翻炒 " + currentSecond + "s");
@@ -144,13 +160,17 @@ public class HomePage extends PanBasePage {
                 });
                 tvStir.start();
                 //十秒翻炒
-                PanAbstractControl.getInstance().setFryMode(HomePan.getInstance().guid, PanConstant.MODE_STIR_FRY);
+                Map map = new HashMap();
+                map.put(PanConstant.KEY6, new byte[] {PanConstant.MODE_STIR_FRY});
+                PanAbstractControl.getInstance().setInteractionParams(HomePan.getInstance().guid, map);
             } else {
                 llStir.setSelected(false);
                 tvStir.setText(R.string.pan_stir_fry);
                 tvStir.stop();
                 //关闭电机
-                PanAbstractControl.getInstance().setFryMode(HomePan.getInstance().guid, PanConstant.MODE_CLOSE_FRY);
+                Map map = new HashMap();
+                map.put(PanConstant.KEY6, new byte[] {PanConstant.MODE_CLOSE_FRY});
+                PanAbstractControl.getInstance().setInteractionParams(HomePan.getInstance().guid, map);
             }
         }
     }

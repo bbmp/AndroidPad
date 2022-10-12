@@ -161,6 +161,7 @@ public class CurveSelectedActivity extends StoveBaseActivity {
             return;
         //检查灶是否连接
         if (isStoveOffline())
+            return;
         //炉头选择提示
         if (null == selectStoveDialog) {
             selectStoveDialog = new SelectStoveDialog(this);
@@ -234,8 +235,10 @@ public class CurveSelectedActivity extends StoveBaseActivity {
     private void startRestore() {
         //曲线还原
         Intent intent = new Intent();
-        if (null != stoveCurveDetail)
+        if (null != stoveCurveDetail) {
+            stoveCurveDetail.stoveId = stoveId; //选中哪个炉头
             intent.putExtra(StoveConstant.EXTRA_CURVE_DETAIL, stoveCurveDetail);
+        }
         intent.setClass(this, CurveRestoreActivity.class);
         startActivity(intent);
         finish();

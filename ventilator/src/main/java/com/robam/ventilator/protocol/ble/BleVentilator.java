@@ -478,16 +478,25 @@ public class BleVentilator {
                                     MqttMsg msg = VentilatorFactory.getProtocol().decode(topic, payload);
                                 }
                                     break;
-                                case BleDecoder.CMD_RH_SET_INT: //内部远程烟机交互
+                                case BleDecoder.CMD_RH_SET_INT: {//内部远程烟机交互
                                     String target_guid = Plat.getPlatform().getDeviceOnlySign();
                                     String topic = "/u/" + target_guid.substring(0, 5) + "/" + target_guid.substring(5);
                                     byte payload[] = ble_make_external_mqtt(target_guid, ret2);
 //                                    MqttMsg msg = VentilatorFactory.getProtocol().decode(topic, paylaod);
-
+                                }
                                     break;
-                                case BleDecoder.CMD_COOKER_SET_INT: //锅上报转发给灶
-
-                                    StoveAbstractControl.getInstance().setTransfer(BleDecoder.CMD_COOKER_SET_INT, ret2);
+                                case BleDecoder.CMD_COOKER_SET_INT: {//锅上报转发给灶
+                                    for (Device device : AccountInfo.getInstance().deviceList) {
+                                        if (bleDevice.getMac().equals(device.mac)) {
+                                            String target_guid = device.guid;
+                                            String topic = "/b/" + target_guid.substring(0, 5) + "/" + target_guid.substring(5);
+                                            VentilatorFactory.getTransmitApi().decode(topic, ble_make_external_mqtt(target_guid, ret2)); //发到锅解析温度
+                                            break;
+                                        }
+                                    }
+                                    //设置参数给灶
+                                    StoveAbstractControl.getInstance().setStoveParams(BleDecoder.CMD_COOKER_SET_INT, ret2);
+                                }
                                     break;
                                 default:
                                     break;

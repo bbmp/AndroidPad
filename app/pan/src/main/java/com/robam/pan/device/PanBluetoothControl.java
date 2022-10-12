@@ -24,7 +24,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 //锅现在只有蓝牙控制
 public class PanBluetoothControl implements PanFunction{
@@ -121,7 +123,7 @@ public class PanBluetoothControl implements PanFunction{
     }
 
     @Override
-    public void setFryMode(String targetGuid, int mode) {
+    public void setInteractionParams(String targetGuid, Map params) {
         try {
             for (Device device : AccountInfo.getInstance().deviceList) {
                 if (device instanceof Pan && null != device.guid && device.guid.equals(targetGuid)) {
@@ -130,8 +132,16 @@ public class PanBluetoothControl implements PanFunction{
                             .setGuid(targetGuid) //源guid
                             .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                             .build();
-
-                    msg.putOpt(PanConstant.fryMode, mode);
+                    Iterator iterator = params.entrySet().iterator();
+                    JSONArray jsonArray = new JSONArray();
+                    while (iterator.hasNext()) {
+                        Map.Entry entry = (Map.Entry) iterator.next();
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.putOpt(PanConstant.key, entry.getKey());
+                        jsonObject.putOpt(PanConstant.value, entry.getValue());
+                        jsonArray.put(jsonObject);
+                    }
+                    msg.putOpt(PanConstant.interaction, jsonArray);
                     //打包payload
                     byte[] mqtt_data = PanFactory.getProtocol().encode(msg);
 

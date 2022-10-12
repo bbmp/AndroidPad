@@ -53,6 +53,7 @@ import com.robam.common.bean.UserInfo;
 import com.robam.ventilator.bean.VenFunBean;
 import com.robam.ventilator.constant.DialogConstant;
 import com.robam.ventilator.constant.VentilatorConstant;
+import com.robam.ventilator.device.HomeVentilator;
 import com.robam.ventilator.device.VentilatorAbstractControl;
 import com.robam.ventilator.factory.VentilatorDialogFactory;
 import com.robam.ventilator.http.CloudHelper;
@@ -104,6 +105,7 @@ public class HomePage extends VentilatorBasePage {
         return new HomePage();
     }
 
+    private long refreshTime;
 
     @Override
     protected int getLayoutId() {
@@ -355,14 +357,22 @@ public class HomePage extends VentilatorBasePage {
         AccountInfo.getInstance().getGuid().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
+                if (Plat.getPlatform().getDeviceOnlySign().equals(s)) { //烟机更新
+                    return;
+                }
                 for (Device device: AccountInfo.getInstance().deviceList) {
                     if (device.guid.equals(s)) {
-                        LogUtils.e("onChanged " + device.guid + " dc " + device.dc);
-                        rvProductsAdapter.setList(AccountInfo.getInstance().deviceList);
-                        return;
+
+//                        rvProductsAdapter.setList(AccountInfo.getInstance().deviceList);
+//                        return;
+                        break;
                     }
                 }
                 //找不到设备
+                if (System.currentTimeMillis() - refreshTime < 2000 && refreshTime != 0) //防止频繁刷
+                    return;
+                LogUtils.e("onChanged " + s);
+                refreshTime = System.currentTimeMillis();
                 rvProductsAdapter.setList(AccountInfo.getInstance().deviceList);
             }
         });

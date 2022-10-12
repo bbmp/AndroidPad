@@ -8,12 +8,22 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.lifecycle.Observer;
+
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
+import com.robam.common.constant.PanConstant;
+import com.robam.common.device.subdevice.Pan;
+import com.robam.common.device.subdevice.Stove;
 import com.robam.common.manager.DynamicLineChartManager;
+import com.robam.common.module.IPublicPanApi;
+import com.robam.common.module.IPublicStoveApi;
+import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.MarkViewAdd;
 import com.robam.common.utils.DateUtil;
@@ -22,10 +32,14 @@ import com.robam.stove.R;
 import com.robam.stove.base.StoveBaseActivity;
 import com.robam.stove.constant.DialogConstant;
 import com.robam.common.constant.StoveConstant;
+import com.robam.stove.device.HomeStove;
+import com.robam.stove.device.StoveAbstractControl;
 import com.robam.stove.factory.StoveDialogFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 //曲线创作
 public class CurveCreateActivity extends StoveBaseActivity {
@@ -43,6 +57,11 @@ public class CurveCreateActivity extends StoveBaseActivity {
     private DynamicLineChartManager dm;
     private ArrayList<Entry> entryList = new ArrayList<>();  //创作列表
     private ArrayList<Entry> stepList = new ArrayList<>(); //标记列表
+    private Stove stove;
+    private Pan pan;
+    private int stoveId;
+
+    private IPublicPanApi iPublicPanApi = ModulePubliclHelper.getModulePublic(IPublicPanApi.class, IPublicPanApi.PAN_PUBLIC);
     @Override
     protected int getLayoutId() {
         return R.layout.stove_activity_layout_curve_create;
@@ -54,17 +73,54 @@ public class CurveCreateActivity extends StoveBaseActivity {
         showCenter();
         showRightCenter();
 
+        if (null != getIntent())
+            stoveId = getIntent().getIntExtra(StoveConstant.stoveId, IPublicStoveApi.STOVE_LEFT);
         tvFire = findViewById(R.id.tv_fire);
         tvTemp = findViewById(R.id.tv_temp);
         tvTime = findViewById(R.id.tv_time);
         cookChart = findViewById(R.id.cook_chart);
         cookChart.setNoDataText(getResources().getString(R.string.stove_no_curve_data)); //没有数据时显示的文字
         setOnClickListener(R.id.ll_left, R.id.iv_stop_create);
+        //监听开火状态
+        AccountInfo.getInstance().getGuid().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                for (Device device: AccountInfo.getInstance().deviceList) {
+                    if (device.guid.equals(s) && device.guid.equals(HomeStove.getInstance().guid) && device instanceof Stove) { //当前灶
+                        Stove stove = (Stove) device;
+                        //开火提示状态
+                        if (stoveId == IPublicStoveApi.STOVE_LEFT && stove.leftStatus == StoveConstant.WORK_CLOSE) { //左灶已关火
+
+                        } else if (stoveId == IPublicStoveApi.STOVE_RIGHT && stove.rightStatus == StoveConstant.WORK_CLOSE) { //右灶已关火
+
+                        }
+
+                        break;
+                    }
+                }
+            }
+        });
     }
 
     @Override
     protected void initData() {
-        startCreate();
+        //查找锅和灶
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device instanceof Pan)
+                pan = (Pan) device;
+            else if (device instanceof Stove)
+                stove = (Stove) device;
+        }
+        if (null == pan || null == stove) //锅或灶不存在
+            finish();
+
+        if (null != iPublicPanApi) {
+            //启动记录
+            Map params = new HashMap();
+            params.put(PanConstant.KEY2, new byte[] {(byte) stoveId, (byte) PanConstant.start});
+            iPublicPanApi.setInteractionParams(pan.guid, params);
+            startCreate();
+        }
     }
 
     @Override
@@ -89,8 +145,12 @@ public class CurveCreateActivity extends StoveBaseActivity {
 
                 curTime += 2;
                 tvTime.setText(DateUtil.secForMatTime3(curTime));
-                Entry entry = new Entry(curTime, (float) (Math.random()*20 + 130));
+                Entry entry = new Entry(curTime, (float) pan.panTemp);
                 dm.addEntry(entry, 0);
+                if (stoveId == IPublicStoveApi.STOVE_RIGHT)
+                    tvFire.setText("火力：" + stove.rightLevel + "档");
+                else
+                    tvFire.setText("火力：" + stove.leftLevel + "档");
                 tvTemp.setText("温度：" + (int) entry.getY() + "℃");
 //                cookChart.highlightValue(entry.getX(), entry.getY(), 0);
                 highlights.set(highlights.size() - 1, new Highlight(entry.getX(), entry.getY(), 0)); //标记highlight只能加最后，maskview中坐标会覆盖
@@ -101,7 +161,7 @@ public class CurveCreateActivity extends StoveBaseActivity {
 
         };
         //添加第一个点
-        Entry entry = new Entry(0, (float) (Math.random()*20 + 130));
+        Entry entry = new Entry(0, (float) pan.panTemp);
         entryList.add(entry);
         dm = new DynamicLineChartManager(cookChart, this);
         dm.setLabelCount(5, 5);
@@ -109,7 +169,10 @@ public class CurveCreateActivity extends StoveBaseActivity {
         dm.setGridLine(false, true);
 //        dm.setScaled(entryList);
         dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.stove_chart), entryList, true, false);
-        tvFire.setText("火力：" + "档");
+        if (stoveId == IPublicStoveApi.STOVE_RIGHT)
+            tvFire.setText("火力：" + stove.rightLevel + "档");
+        else
+            tvFire.setText("火力：" + stove.leftLevel + "档");
         tvTemp.setText("温度：" + (int) entry.getY() + "℃");
         MarkViewAdd mv = new MarkViewAdd(this, cookChart.getXAxis().getValueFormatter());
         mv.setChartView(cookChart);
@@ -191,6 +254,12 @@ public class CurveCreateActivity extends StoveBaseActivity {
                 public void onClick(View v) {
                     //结束创作
                     if (v.getId() == R.id.tv_ok) {
+                        //关火
+                        StoveAbstractControl.getInstance().setAttribute(HomeStove.getInstance().guid, (byte) stoveId, (byte) 0x00, (byte) StoveConstant.STOVE_CLOSE);
+                        //停止记录
+                        Map params = new HashMap();
+                        params.put(PanConstant.KEY2, new byte[] {(byte) stoveId, (byte) PanConstant.stop});
+                        iPublicPanApi.setInteractionParams(pan.guid, params);
                         //保存曲线
                         Intent intent = new Intent();
                         intent.putParcelableArrayListExtra(StoveConstant.EXTRA_ENTRY_LIST, entryList);

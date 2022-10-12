@@ -1,6 +1,7 @@
 package com.robam.pan.ui.activity;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,6 +18,8 @@ import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.BaseResponse;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.UserInfo;
+import com.robam.common.constant.StoveConstant;
+import com.robam.common.device.subdevice.Stove;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.module.IPublicStoveApi;
 import com.robam.common.module.IPublicVentilatorApi;
@@ -54,6 +57,7 @@ public class CurveActivity extends PanBaseActivity {
     private SelectStoveDialog selectStoveDialog;
     //炉头id
     private int stoveId;
+    private IPublicVentilatorApi iPublicVentilatorApi = ModulePubliclHelper.getModulePublic(IPublicVentilatorApi.class, IPublicVentilatorApi.VENTILATOR_PUBLIC);
 
     @Override
     protected int getLayoutId() {
@@ -81,9 +85,14 @@ public class CurveActivity extends PanBaseActivity {
                 //删除状态不响应
                 if (rvCurveAdapter.getStatus() != rvCurveAdapter.STATUS_BACK)
                     return;
+                //未登录
+                if (null == AccountInfo.getInstance().getUser().getValue()) {
+                    if (null != iPublicVentilatorApi)
+                        iPublicVentilatorApi.startLogin(CurveActivity.this);
+                    return;
+                }
 
-                PanCurveDetail panCurveDetail = null;
-                panCurveDetail = (PanCurveDetail) adapter.getItem(position);
+                PanCurveDetail panCurveDetail = (PanCurveDetail) adapter.getItem(position);
                 if (position == 0) { //创建曲线
                     //选择炉头
                     selectStove(panCurveDetail);
@@ -123,19 +132,54 @@ public class CurveActivity extends PanBaseActivity {
             }
         });
         setOnClickListener(R.id.ll_left, R.id.ll_right, R.id.tv_delete);
+        //监听开火状态
+        AccountInfo.getInstance().getGuid().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                for (Device device: AccountInfo.getInstance().deviceList) {
+                    if (device.guid.equals(s) && device instanceof Stove) { //当前灶
+                        Stove stove = (Stove) device;
+                        //开火提示状态
+                        if (null != openDialog && openDialog.isShow()) {
+                            if (stoveId == IPublicStoveApi.STOVE_LEFT && stove.leftStatus == StoveConstant.WORK_WORKING) { //左灶已点火
+                                openDialog.dismiss();
+                                Intent intent = new Intent();
+                                intent.setClass(CurveActivity.this, CurveCreateActivity.class);
+                                intent.putExtra(StoveConstant.stoveId, stoveId);
+                                startActivity(intent);
+                            } else if (stoveId == IPublicStoveApi.STOVE_RIGHT && stove.rightStatus == StoveConstant.WORK_WORKING) { //右灶已点火
+                                openDialog.dismiss();
+                                Intent intent = new Intent();
+                                intent.setClass(CurveActivity.this, CurveCreateActivity.class);
+                                intent.putExtra(StoveConstant.stoveId, stoveId);
+                                startActivity(intent);
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        });
     }
 
 
     @Override
     protected void initData() {
-        getCurveList();
+        AccountInfo.getInstance().getUser().observe(this, new Observer<UserInfo>() {
+            @Override
+            public void onChanged(UserInfo userInfo) {
+                if (null != userInfo)
+                    getCurveList(userInfo);
+                else
+                    setData(null);
+            }
+        });
     }
 
     //获取烹饪曲线列表
-    private void getCurveList() {
-        UserInfo info = AccountInfo.getInstance().getUser().getValue();
+    private void getCurveList(UserInfo info) {
 
-        CloudHelper.queryCurveCookbooks(this, (info != null) ? info.id:0, GetCurveCookbooksRes.class,
+        CloudHelper.queryCurveCookbooks(this, info.id, GetCurveCookbooksRes.class,
                 new RetrofitCallback<GetCurveCookbooksRes>() {
                     @Override
                     public void onSuccess(GetCurveCookbooksRes getCurveCookbooksRes) {
@@ -188,10 +232,8 @@ public class CurveActivity extends PanBaseActivity {
                 public void onClick(View v) {
                     int id = v.getId();
                     if (id == R.id.view_left) {
-                        setParams(panCurveDetail, IPublicStoveApi.STOVE_LEFT);  //设置锅参数
                         openFire(IPublicStoveApi.STOVE_LEFT); //左灶
                     } else if (id == R.id.view_right) {
-                        setParams(panCurveDetail, IPublicStoveApi.STOVE_RIGHT);
                         openFire(IPublicStoveApi.STOVE_RIGHT); //右灶
                     }
                 }
@@ -202,12 +244,6 @@ public class CurveActivity extends PanBaseActivity {
         selectStoveDialog.show();
     }
 
-    //设置曲线还原参数
-    private void setParams(PanCurveDetail panCurveDetail, int stoveId) {
-        if (null != panCurveDetail) {
-            PanAbstractControl.getInstance().setCurveStepParams(HomePan.getInstance().guid, stoveId, panCurveDetail.stepList);
-        }
-    }
     //点火提示
     private void openFire(int stove) {
 

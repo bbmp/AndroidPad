@@ -12,6 +12,8 @@ public interface IPublicVentilatorApi extends IPublicApi {
     int getFanGear();
     //调用网络匹配
     void startMatchNetwork(Context context, String model);
+    //调用登录
+    void startLogin(Context context);
     //查询烟机状态
     void queryAttribute();
 }
