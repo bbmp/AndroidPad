@@ -5,6 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
+import com.robam.common.constant.StoveConstant;
+import com.robam.common.device.subdevice.Stove;
 import com.robam.common.module.IPublicStoveApi;
 import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.ui.dialog.BaseDialog;
@@ -44,24 +48,26 @@ public class SelectStoveDialog extends BaseDialog {
 
     //检查炉头状态
     public void checkStoveStatus() {
-        IPublicStoveApi iPublicStoveApi = ModulePubliclHelper.getModulePublic(IPublicStoveApi.class,
-                IPublicStoveApi.STOVE_PUBLIC);
-//        if (null != iPublicStoveApi) {
-//            if (iPublicStoveApi.getLeftWorkMode() != 0) {  //工作中
-//                viewLeft.setEnabled(false);
-//                tvLeftStove.setEnabled(false);
-//                tvLeftStatus.setEnabled(false);
-//                tvLeftStatus.setText(R.string.pan_stove_using);
-//                tvLeftClose.setVisibility(View.VISIBLE);
-//            }
-//            if (iPublicStoveApi.getRightWorkMode() != 0) {
-//                //工作中
-//                viewRight.setEnabled(false);
-//                tvRightStove.setEnabled(false);
-//                tvRightStatus.setEnabled(false);
-//                tvRightStatus.setText(R.string.pan_stove_using);
-//                tvRightClose.setVisibility(View.VISIBLE);
-//            }
-//        }
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device instanceof Stove) {
+                Stove stove = (Stove) device;
+                if (stove.leftStatus != StoveConstant.STOVE_CLOSE && stove.leftLevel != 0) {  //工作中
+                    viewLeft.setEnabled(false);
+                    tvLeftStove.setEnabled(false);
+                    tvLeftStatus.setEnabled(false);
+                    tvLeftStatus.setText(R.string.pan_stove_using);
+                    tvLeftClose.setVisibility(View.VISIBLE);
+                }
+                if (stove.rightStatus != StoveConstant.STOVE_CLOSE && stove.rightLevel != 0) {
+                    //工作中
+                    viewRight.setEnabled(false);
+                    tvRightStove.setEnabled(false);
+                    tvRightStatus.setEnabled(false);
+                    tvRightStatus.setText(R.string.pan_stove_using);
+                    tvRightClose.setVisibility(View.VISIBLE);
+                }
+                break;
+            }
+        }
     }
 }

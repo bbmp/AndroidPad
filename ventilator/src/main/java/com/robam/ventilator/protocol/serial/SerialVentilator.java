@@ -2,7 +2,9 @@ package com.robam.ventilator.protocol.serial;
 
 import android.serialport.helper.SerialPortHelper;
 
+import com.robam.common.bean.AccountInfo;
 import com.robam.common.ble.BleDecoder;
+import com.robam.common.device.Plat;
 import com.robam.common.utils.ByteUtils;
 import com.robam.common.utils.Crc16Utils;
 import com.robam.common.utils.LogUtils;
@@ -469,6 +471,7 @@ public class SerialVentilator {
                 HomeVentilator.getInstance().param7  = data[param7Index  - 1];
                 HomeVentilator.getInstance().param8  = data[param8Index  - 1];
                 HomeVentilator.getInstance().param9  = data[param9Index  - 1];
+                AccountInfo.getInstance().getGuid().setValue(Plat.getPlatform().getDeviceOnlySign());  //烟机更新
                 break;
             //控制返回
             case MSG_TYPE_CONTROL:

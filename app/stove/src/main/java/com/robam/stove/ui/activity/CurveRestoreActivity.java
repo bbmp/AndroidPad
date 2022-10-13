@@ -8,7 +8,12 @@ import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
+import com.robam.common.device.subdevice.Pan;
+import com.robam.common.device.subdevice.Stove;
 import com.robam.common.manager.DynamicLineChartManager;
+import com.robam.common.module.IPublicStoveApi;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.utils.DateUtil;
 import com.robam.common.utils.LogUtils;
@@ -17,6 +22,8 @@ import com.robam.stove.base.StoveBaseActivity;
 import com.robam.stove.bean.StoveCurveDetail;
 import com.robam.stove.constant.DialogConstant;
 import com.robam.common.constant.StoveConstant;
+import com.robam.stove.device.HomeStove;
+import com.robam.stove.device.StoveAbstractControl;
 import com.robam.stove.factory.StoveDialogFactory;
 
 import java.util.ArrayList;
@@ -39,6 +46,9 @@ public class CurveRestoreActivity extends StoveBaseActivity {
     private DynamicLineChartManager dm;
     private Map<String, String> params = null;
     private ArrayList<Entry> restoreList = new ArrayList<>();  //还原列表
+
+    private Stove stove;
+    private Pan pan;
     @Override
     protected int getLayoutId() {
         return R.layout.stove_activity_layout_curve_restore;
@@ -52,6 +62,8 @@ public class CurveRestoreActivity extends StoveBaseActivity {
 
         if (null != getIntent())
             stoveCurveDetail = (StoveCurveDetail) getIntent().getSerializableExtra(StoveConstant.EXTRA_CURVE_DETAIL);
+        if (null == stoveCurveDetail)  //曲线详情为空
+            finish();
         tvFire = findViewById(R.id.tv_fire);
         tvTemp = findViewById(R.id.tv_temp);
         tvTime = findViewById(R.id.tv_time);
@@ -62,6 +74,14 @@ public class CurveRestoreActivity extends StoveBaseActivity {
 
     @Override
     protected void initData() {
+        //查找锅和灶
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device instanceof Pan)
+                pan = (Pan) device;
+            else if (device instanceof Stove)
+                stove = (Stove) device;
+        }
+
         if (null != stoveCurveDetail) {
             Map<String, String> params = null;
             try {
@@ -77,7 +97,7 @@ public class CurveRestoreActivity extends StoveBaseActivity {
                 dm.setGridLine(false, true);
                 dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.stove_white_40), entryList, true, true);
                 //添加第一个点
-                restoreList.add(entryList.get(0));
+                restoreList.add(new Entry(curTime, pan.panTemp));
                 dm.initLineDataSet("", getResources().getColor(R.color.stove_chart), restoreList, true, false);
             } catch (Exception e) {
                 LogUtils.e(e.getMessage());
@@ -109,10 +129,16 @@ public class CurveRestoreActivity extends StoveBaseActivity {
                 try {
                     if (params.containsKey(curTime + "")) {
                         String[] data = params.get(curTime + "").split("-");
-                        restoreList.add(new Entry(curTime, Float.parseFloat(data[0])));//温度
+                        restoreList.add(new Entry(curTime, pan.panTemp));//温度
                         cookChart.invalidate();
-                        tvFire.setText("火力：" + data[1] + "档");
-                        tvTemp.setText("温度：" + data[0] + "℃");
+                        if (null != stove) {
+                            if (stoveCurveDetail.stoveId == IPublicStoveApi.STOVE_LEFT) //左灶
+                                tvFire.setText("火力：" + stove.leftLevel + "档");
+                            else
+                                tvFire.setText("火力：" + stove.rightLevel + "档");
+                        }
+                        if (null != pan)
+                            tvTemp.setText("温度：" + pan.panTemp + "℃");
                     }
                 } catch (Exception e) {}
 
@@ -132,14 +158,23 @@ public class CurveRestoreActivity extends StoveBaseActivity {
             tvTime.setText("1");
             if (params.containsKey("0")) {
                 String[] data = params.get("0").split("-");
-                tvFire.setText("火力：" + data[1] + "档");
-                tvTemp.setText("温度：" + data[0] + "℃");
+                if (null != stove) {
+                    if (stoveCurveDetail.stoveId == IPublicStoveApi.STOVE_LEFT) //左灶
+                        tvFire.setText("火力：" + stove.leftLevel + "档");
+                    else
+                        tvFire.setText("火力：" + stove.rightLevel + "档");
+                }
+                if (null != pan)
+                    tvTemp.setText("温度：" + pan.panTemp + "℃");
             }
         } catch (Exception e) {}
         mHandler.postDelayed(runnable, 1000);
     }
     //还原结束提示
     private void workComplete() {
+        //关火
+        StoveAbstractControl.getInstance().setAttribute(HomeStove.getInstance().guid, (byte) stoveCurveDetail.stoveId, (byte) 0x00, (byte) StoveConstant.STOVE_CLOSE);
+
         if (null == completeDialog) {
             completeDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_COMPLETE);
             completeDialog.setCancelable(false);
@@ -170,8 +205,11 @@ public class CurveRestoreActivity extends StoveBaseActivity {
             stopDialog.setListeners(new IDialog.DialogOnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (v.getId() == R.id.tv_ok)
+                    if (v.getId() == R.id.tv_ok) {
+                        //关火
+                        StoveAbstractControl.getInstance().setAttribute(HomeStove.getInstance().guid, (byte) stoveCurveDetail.stoveId, (byte) 0x01, (byte) StoveConstant.STOVE_CLOSE);
                         finish();
+                    }
                 }
             }, R.id.tv_cancel, R.id.tv_ok);
         }

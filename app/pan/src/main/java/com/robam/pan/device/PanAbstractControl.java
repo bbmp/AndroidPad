@@ -3,6 +3,7 @@ package com.robam.pan.device;
 import com.robam.pan.bean.CurveStep;
 
 import java.util.List;
+import java.util.Map;
 
 public class PanAbstractControl implements PanFunction{
     private PanFunction function;
@@ -38,7 +39,7 @@ public class PanAbstractControl implements PanFunction{
     }
 
     @Override
-    public void setFryMode(String targetGuid, int mode) {
-        function.setFryMode(targetGuid, mode);
+    public void setInteractionParams(String targetGuid, Map params) {
+        function.setInteractionParams(targetGuid, params);
     }
 }

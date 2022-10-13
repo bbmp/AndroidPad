@@ -24,5 +24,5 @@ public interface StoveFunction {
     //设置曲线步骤参数
     void setCurveStepParams(String targetGuid, int stoveId, List<CurveStep> curveSteps);
     //锅上报转发给灶
-    void setTransfer(int cmd, byte[] payload);
+    void setStoveParams(int cmd, byte[] payload);
 }

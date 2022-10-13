@@ -84,6 +84,8 @@ public class CurveRestoreActivity extends PanBaseActivity {
         showCenter();
         if (null != getIntent())
             panCurveDetail = (PanCurveDetail) getIntent().getSerializableExtra(PanConstant.EXTRA_CURVE_DETAIL);
+        if (null == panCurveDetail) //曲线详情为空
+            finish();
         rvStep = findViewById(R.id.rv_step);
         tvStop = findViewById(R.id.tv_stop_cook);
         tvStep = findViewById(R.id.tv_cur_step);
@@ -177,7 +179,7 @@ public class CurveRestoreActivity extends PanBaseActivity {
                     curTime++; //总时间
                     if (params.containsKey(curTime + "")) {
                         String[] data = params.get(curTime + "").split("-");
-                        restoreList.add(new Entry(curTime, Float.parseFloat(data[0])));//温度
+                        restoreList.add(new Entry(curTime, pan.panTemp));//温度
                         cookChart.invalidate();
                         if (null != stove) {
                             if (panCurveDetail.stoveId == IPublicStoveApi.STOVE_LEFT) //左灶

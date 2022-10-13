@@ -20,7 +20,7 @@ import com.robam.ventilator.ui.receiver.AlarmBleReceiver;
 public class AlarmBleService extends Service {
 
     private static final int PENDING_REQUEST = 0;
-    private static final int INTERVAL = 15000;
+    private static final int INTERVAL = 2000;
     private AlarmManager alarmManager;
     private PendingIntent pIntent;
 

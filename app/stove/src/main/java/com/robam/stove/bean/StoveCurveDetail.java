@@ -23,6 +23,8 @@ public class StoveCurveDetail implements Serializable {
     public String deviceParams;
     //是否选中,用于显示
     private boolean selected;
+    //炉头id
+    public int stoveId;
 
     public StoveCurveDetail(String name) {
         this.name = name;

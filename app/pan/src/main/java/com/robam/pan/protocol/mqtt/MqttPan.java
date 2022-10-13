@@ -4,6 +4,7 @@ import com.robam.common.ITerminalType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.RTopic;
+import com.robam.common.ble.BleDecoder;
 import com.robam.common.device.Plat;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.mqtt.MqttMsg;
@@ -15,6 +16,9 @@ import com.robam.common.device.subdevice.Pan;
 import com.robam.common.constant.PanConstant;
 import com.robam.pan.constant.QualityKeys;
 import com.robam.pan.device.PanFactory;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -64,6 +68,23 @@ public class MqttPan extends MqttPublic {
     protected void onDecodeMsg(MqttMsg msg, byte[] payload, int offset) throws Exception{
         //处理本机端消息
         switch (msg.getID()) {
+            case BleDecoder.CMD_COOKER_SET_INT: {
+                int type = MsgUtils.getByte(payload[offset++]);//蓝牙品类
+                int attributeNum = MsgUtils.getByte(payload[offset++]); //参数个数
+                while (attributeNum > 0) {
+                    attributeNum--;
+                    int key = MsgUtils.getByte(payload[offset++]);
+                    int length = MsgUtils.getByte(payload[offset++]);
+                    switch (key) {
+                        case 1:
+                            float temp = MsgUtils.bytes2ShortLittle(payload, offset);
+                            msg.putOpt(PanConstant.temp, temp);
+                            offset += 2;
+                            break;
+                    }
+                }
+            }
+            break;
             case MsgKeys.SetPotTemp_Rep: {//查询返回
                 //属性个数
                 float temp = MsgUtils.bytes2FloatLittle(payload, offset);//锅温
@@ -79,7 +100,8 @@ public class MqttPan extends MqttPublic {
                     switch (key) {
                         case QualityKeys.key1:
                             if (length == 1) {
-                                MsgUtils.getByte(payload[offset]);
+                                int mode = MsgUtils.getByte(payload[offset]);
+                                msg.putOpt(PanConstant.fryMode, mode); //搅拌模式
                             } else
                                 MsgUtils.getString(payload, offset, length);
                             offset += length;
@@ -139,10 +161,16 @@ public class MqttPan extends MqttPublic {
                 break;
             case MsgKeys.POT_INTERACTION_Req:
 //                buf.put((byte) 0x00);// 蓝牙品类
-                buf.put((byte) 0x01);//参数个数
-                buf.put((byte) 0x06); //key
-                buf.put((byte) 0x01);//
-                buf.put((byte) msg.optInt(PanConstant.fryMode));
+
+                JSONArray jsonArray = msg.optJSONArray(PanConstant.interaction);
+                buf.put((byte) jsonArray.length());//参数个数
+                for (int i = 0; i<jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.optJSONObject(i);
+                    buf.put((byte) jsonObject.optInt(PanConstant.key)); //key
+                    byte[] value = (byte[]) jsonObject.opt(PanConstant.value);
+                    buf.put((byte) value.length); //
+                    buf.put(value);
+                }
                 break;
         }
         encodeMsg(buf, msg);

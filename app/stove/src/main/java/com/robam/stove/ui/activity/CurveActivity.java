@@ -19,6 +19,7 @@ import com.robam.common.bean.BaseResponse;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.UserInfo;
 import com.robam.common.http.RetrofitCallback;
+import com.robam.common.module.IPublicPanApi;
 import com.robam.common.module.IPublicStoveApi;
 import com.robam.common.module.IPublicVentilatorApi;
 import com.robam.common.module.ModulePubliclHelper;
@@ -55,7 +56,7 @@ public class CurveActivity extends StoveBaseActivity {
     private IDialog openDialog;
     private SelectStoveDialog selectStoveDialog;
     private int stoveId;
-
+    private IPublicVentilatorApi iPublicVentilatorApi = ModulePubliclHelper.getModulePublic(IPublicVentilatorApi.class, IPublicVentilatorApi.VENTILATOR_PUBLIC);
 
     @Override
     protected int getLayoutId() {
@@ -85,9 +86,13 @@ public class CurveActivity extends StoveBaseActivity {
                 //删除状态不响应
                 if (rvCurveAdapter.getStatus() != RvCurveAdapter.STATUS_BACK)
                     return;
-
-                StoveCurveDetail stoveCurveDetail = null;
-                stoveCurveDetail = (StoveCurveDetail) adapter.getItem(position);
+                //未登录
+                if (null == AccountInfo.getInstance().getUser().getValue()) {
+                    if (null != iPublicVentilatorApi)
+                        iPublicVentilatorApi.startLogin(CurveActivity.this);
+                    return;
+                }
+                StoveCurveDetail stoveCurveDetail = (StoveCurveDetail) adapter.getItem(position);
                 if (position == 0) { //创建曲线
                     //选择炉头
                     selectStove(stoveCurveDetail);
@@ -140,10 +145,16 @@ public class CurveActivity extends StoveBaseActivity {
                         if (null != openDialog && openDialog.isShow()) {
                             if (stoveId == IPublicStoveApi.STOVE_LEFT && stove.leftStatus == StoveConstant.WORK_WORKING) { //左灶已点火
                                 openDialog.dismiss();
-                                startActivity(CurveCreateActivity.class);
+                                Intent intent = new Intent();
+                                intent.setClass(CurveActivity.this, CurveCreateActivity.class);
+                                intent.putExtra(StoveConstant.stoveId, stoveId);
+                                startActivity(intent);
                             } else if (stoveId == IPublicStoveApi.STOVE_RIGHT && stove.rightStatus == StoveConstant.WORK_WORKING) { //右灶已点火
                                 openDialog.dismiss();
-                                startActivity(CurveCreateActivity.class);
+                                Intent intent = new Intent();
+                                intent.setClass(CurveActivity.this, CurveCreateActivity.class);
+                                intent.putExtra(StoveConstant.stoveId, stoveId);
+                                startActivity(intent);
                             }
                         }
                         break;
@@ -156,14 +167,21 @@ public class CurveActivity extends StoveBaseActivity {
 
     @Override
     protected void initData() {
-        getCurveList();
+        AccountInfo.getInstance().getUser().observe(this, new Observer<UserInfo>() {
+            @Override
+            public void onChanged(UserInfo userInfo) {
+                if (null != userInfo)
+                    getCurveList(userInfo);
+                else
+                    setData(null);
+            }
+        });
 
     }
     //获取烹饪曲线列表
-    private void getCurveList() {
-        UserInfo info = AccountInfo.getInstance().getUser().getValue();
+    private void getCurveList(UserInfo info) {
 
-        CloudHelper.queryCurveCookbooks(this, (info != null) ? info.id:0, GetCurveCookbooksRes.class,
+        CloudHelper.queryCurveCookbooks(this, info.id, GetCurveCookbooksRes.class,
                 new RetrofitCallback<GetCurveCookbooksRes>() {
                     @Override
                     public void onSuccess(GetCurveCookbooksRes getCurveCookbooksRes) {
@@ -218,10 +236,8 @@ public class CurveActivity extends StoveBaseActivity {
                 public void onClick(View v) {
                     int id = v.getId();
                     if (id == R.id.view_left) {
-                        setParams(stoveCurveDetail, IPublicStoveApi.STOVE_LEFT);  //设置锅参数
                         openFire(IPublicStoveApi.STOVE_LEFT); //左灶
                     } else if (id == R.id.view_right) {
-                        setParams(stoveCurveDetail, IPublicStoveApi.STOVE_RIGHT);
                         openFire(IPublicStoveApi.STOVE_RIGHT); //右灶
                     }
                 }
@@ -230,12 +246,6 @@ public class CurveActivity extends StoveBaseActivity {
         //检查炉头状态
         selectStoveDialog.checkStoveStatus();
         selectStoveDialog.show();
-    }
-    //设置曲线还原参数
-    private void setParams(StoveCurveDetail stoveCurveDetail, int stoveId) {
-        if (null != stoveCurveDetail) {
-            StoveAbstractControl.getInstance().setCurveStepParams(HomeStove.getInstance().guid, stoveId, stoveCurveDetail.stepList);
-        }
     }
 
     //点火提示

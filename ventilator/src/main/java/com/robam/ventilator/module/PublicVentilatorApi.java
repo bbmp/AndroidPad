@@ -9,6 +9,7 @@ import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.device.HomeVentilator;
 import com.robam.ventilator.device.VentilatorAbstractControl;
 import com.robam.ventilator.protocol.serial.SerialVentilator;
+import com.robam.ventilator.ui.activity.LoginPhoneActivity;
 import com.robam.ventilator.ui.activity.MatchNetworkActivity;
 
 public class PublicVentilatorApi implements IPublicVentilatorApi {
@@ -29,6 +30,12 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
         intent.putExtra(VentilatorConstant.EXTRA_MODEL, model);
         intent.setClass(context, MatchNetworkActivity.class);
         context.startActivity(intent);
+    }
+
+    @Override
+    public void startLogin(Context context) {
+        //调用手机登录
+        context.startActivity(new Intent(context, LoginPhoneActivity.class));
     }
 
     @Override

@@ -263,7 +263,7 @@ public class StoveBluetoothControl implements StoveFunction{
     }
 
     @Override
-    public void setTransfer(int cmd, byte[] payload) {
+    public void setStoveParams(int cmd, byte[] payload) {
         try {
             for (Device device : AccountInfo.getInstance().deviceList) {
                 if (device instanceof Stove) { //这里没有guid校验
