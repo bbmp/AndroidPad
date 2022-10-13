@@ -92,4 +92,12 @@ public interface Constant {
      * 工作guid
      */
     String WORK_GUID = "work_guid" ;
+
+    String NEED_SET_RESULT = "needSetResult";
+
+    String SEGMENT_DATA_FLAG = "segmentData";
+
+    String SEGMENT_WORK_FLAG = "isWork";
+
+    String RECIPE_LIST_FLAG = "RecipeList";
 }

@@ -5,8 +5,10 @@ public class SteamRecipe {
     private String imgUrl;
     //菜谱名称
     private String name;
+    public long id;
 
-    public SteamRecipe(String name, String imgUrl) {
+    public SteamRecipe(long id,String name, String imgUrl) {
+        this.id = id;
         this.name = name;
         this.imgUrl = imgUrl;
     }

@@ -28,35 +28,28 @@ public class MultiSegment implements Parcelable {
 
     public String downTemp;//下温度
 
-    /**
-     * 是否正在烹饪
-     */
-    public boolean isCooking = false;
-    /**
-     * 是否烹饪结束
-     */
-    public boolean isCooked = false;
+    private int cookState = 1;//1 默认 未开始;3(<<1) 开始烹饪; 4(<<2) 暂停烹饪;8(<<3) 烹饪结束
+    public static final int COOK_STATE_START = 1 << 1;
+    public static final int COOK_STATE_PAUSE = 1 << 2;
+    public static final int COOK_STATE_FINISH = 1 << 3;
+
+
+
 
     public MultiSegment() {
 
     }
 
+
     public MultiSegment(Parcel in) {
         no = in.readInt();
         model = in.readString();
         duration = in.readString();
-       // temperature = in.readString();
         funCode = in.readInt();
         steam = in.readString();
         defTemp = in.readString();
         downTemp = in.readString();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            isCooking = in.readBoolean();
-            isCooked = in.readBoolean();
-        }else{
-            isCooking = Boolean.parseBoolean(in.readInt()+"");
-            isCooked = Boolean.parseBoolean(in.readInt()+"");
-        }
+        cookState = in.readInt();
     }
 
     public static final Creator<MultiSegment> CREATOR = new Creator<MultiSegment>() {
@@ -76,22 +69,47 @@ public class MultiSegment implements Parcelable {
         return 0;
     }
 
+    public boolean isCooking(){
+        return (cookState & COOK_STATE_START) != 0;
+    }
+
+    public boolean isPause(){
+        return (cookState & COOK_STATE_PAUSE) != 0;
+    }
+
+    /**
+     *是否工作过（开始、暂停、完成）
+     * @return
+     */
+    public boolean isStart(){
+        return isCooking() || isPause() || isFinish();
+    }
+
+
+    public boolean isFinish(){
+        return (cookState & COOK_STATE_FINISH) != 0;
+    }
+
+    public void setCookState(int cookState){
+        if(cookState != COOK_STATE_START && cookState != COOK_STATE_PAUSE && cookState != COOK_STATE_FINISH){
+            throw new IllegalStateException(" 参数不正确,传递的参数需要是 [COOK_STATE_START、COOK_STATE_PAUSE、COOK_STATE_FINISH] 中任意一个");
+        }
+        this.cookState = cookState;
+    }
+
+    public void reSetCookState(){
+        this.cookState = 1;
+    }
+
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeInt(no);
         parcel.writeString(model);
         parcel.writeString(duration);
-        //parcel.writeString(temperature);
         parcel.writeInt(funCode);
         parcel.writeString(steam);
         parcel.writeString(defTemp);
         parcel.writeString(downTemp);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            parcel.writeBoolean(isCooking);
-            parcel.writeBoolean(isCooked);
-        }else{
-            parcel.writeInt(isCooking ? 1 : 0);
-            parcel.writeInt(isCooked? 1:0);
-        }
+        parcel.writeInt(cookState);
     }
 }

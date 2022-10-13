@@ -45,14 +45,14 @@ public class RecipeDetail extends LitePalSupport {
     /**
      * 菜谱步骤
      */
-    public List<RecipeStep> step;
+    public List<RecipeStep2> step;
 
     /**
      * 获取步骤
      * @return
      */
-    public List<RecipeStep> getRecipe_steps() {
-        List<RecipeStep> recipeSteps = LitePal.where("recipedetail_id = ?", id + "").find(RecipeStep.class);
+    public List<RecipeStep2> getRecipe_steps() {
+        List<RecipeStep2> recipeSteps = LitePal.where("recipedetail_id = ?", id + "").find(RecipeStep2.class);
         return recipeSteps;
     }
 }

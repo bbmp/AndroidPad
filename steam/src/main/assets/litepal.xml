@@ -6,7 +6,7 @@
         <mapping class="com.robam.steamoven.bean.model.RecipeClassifyMode" />
         <mapping class="com.robam.steamoven.bean.model.Recipe" />
         <mapping class="com.robam.steamoven.bean.model.RecipeMaterialBean" />
-        <mapping class="com.robam.steamoven.bean.model.RecipeStep" />
+        <mapping class="com.robam.steamoven.bean.model.RecipeStep2" />
         <mapping class="com.robam.steamoven.bean.model.MCarve" />
         <mapping class="com.robam.steamoven.bean.ModeBean" />
         <mapping class="com.robam.steamoven.bean.model.WorkRecord" />

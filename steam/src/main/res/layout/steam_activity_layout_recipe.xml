@@ -33,7 +33,7 @@
         android:paddingHorizontal="@dimen/dp_8"
         android:includeFontPadding="false"
         android:background="@null"
-        android:text="搜索"
+        android:hint="搜索"
         android:textColor="@color/steam_white"
         android:textColorHint="@color/steam_white25"
         android:textSize="@dimen/sp_24"

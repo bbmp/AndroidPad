@@ -8,16 +8,16 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.robam.common.utils.ImageUtils;
 import com.robam.steamoven.R;
-import com.robam.steamoven.bean.model.RecipeStep;
+import com.robam.steamoven.bean.model.RecipeStep2;
 
 //云端菜谱
-public class RvStepAdapter extends BaseQuickAdapter<RecipeStep, BaseViewHolder> {
+public class RvStepAdapter extends BaseQuickAdapter<RecipeStep2, BaseViewHolder> {
     public RvStepAdapter() {
         super(R.layout.steam_item_recipe_step);
     }
 
     @Override
-    protected void convert(@NonNull BaseViewHolder baseViewHolder, RecipeStep recipeStep) {
+    protected void convert(@NonNull BaseViewHolder baseViewHolder, RecipeStep2 recipeStep) {
         baseViewHolder.setText(R.id.tv_step_des, String.format(getContext().getString(R.string.steam_recipe_step_des), recipeStep.step_no +"", recipeStep.step_des));
         ImageView imageView = baseViewHolder.getView(R.id.iv_step_img);
         ImageUtils.loadImage(getContext(), recipeStep.step_img, imageView);

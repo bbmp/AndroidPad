@@ -1,6 +1,7 @@
 package com.robam.steamoven.ui.activity;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -23,6 +24,7 @@ import com.robam.steamoven.bean.DeviceConfigurationFunctions;
 import com.robam.steamoven.bean.OtherFunc;
 import com.robam.steamoven.bean.SubViewModelMap;
 import com.robam.steamoven.bean.SubViewModelMapSubView;
+import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.http.CloudHelper;
 import com.robam.steamoven.response.GetDeviceParamsRes;
@@ -156,7 +158,7 @@ public class RecipeActivity extends SteamBaseActivity {
                 SubViewModelMapSubView subViewModelMapSubView = deviceConfigurationFunctions.subView.modelMap.subView;
                 if (null != subViewModelMapSubView && null != subViewModelMapSubView.deviceConfigurationFunctions) {
                     bundle.putInt("classify", i);
-
+                    bundle.putParcelableArrayList(Constant.RECIPE_LIST_FLAG, (ArrayList<? extends Parcelable>) subViewModelMapSubView.deviceConfigurationFunctions);
                     recipeClassifyPage.setArguments(bundle);
                 }
             }

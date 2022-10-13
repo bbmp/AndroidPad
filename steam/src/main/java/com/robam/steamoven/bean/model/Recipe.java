@@ -84,7 +84,7 @@ public class Recipe extends LitePalSupport {
 
     public List<RecipeMode> recipe_mode;
     public List<RecipeMaterialBean> recipe_materials;
-    public List<RecipeStep> recipe_steps;
+    public List<RecipeStep2> recipe_steps;
 
     public RecipeClassifyMode getRecipeClassifyMode() {
         return recipeClassifyMode;
@@ -104,8 +104,8 @@ public class Recipe extends LitePalSupport {
         return materialBeans;
     }
 
-    public List<RecipeStep> getRecipe_steps() {
-        List<RecipeStep> recipeSteps = LitePal.where("recipe_id = ?", recipe_id + "").find(RecipeStep.class);
+    public List<RecipeStep2> getRecipe_steps() {
+        List<RecipeStep2> recipeSteps = LitePal.where("recipe_id = ?", recipe_id + "").find(RecipeStep2.class);
         return recipeSteps;
     }
 }

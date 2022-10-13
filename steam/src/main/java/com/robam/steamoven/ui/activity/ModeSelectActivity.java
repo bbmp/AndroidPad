@@ -21,6 +21,7 @@ import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.bean.ModeBean;
 import com.robam.steamoven.bean.MultiSegment;
+import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.SteamConstant;
 import com.robam.steamoven.constant.SteamOvenSteamEnum;
 import com.robam.steamoven.device.HomeSteamOven;
@@ -114,7 +115,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
     protected void initData() {
         if (null != getIntent())
             modes = (ArrayList<ModeBean>) getIntent().getSerializableExtra(SteamConstant.EXTRA_MODE_LIST);
-            needSetResult =  getIntent().getBooleanExtra(SteamConstant.NEED_SET_RESULT,false);
+            needSetResult =  getIntent().getBooleanExtra(Constant.NEED_SET_RESULT,false);
 
         //
         if (null != modes && modes.size() > 0) {
@@ -245,7 +246,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             }
         }
 
-       result.putExtra(SteamConstant.SEGMENT_DATA_FLAG,segment);
+       result.putExtra(Constant.SEGMENT_DATA_FLAG,segment);
        setResult(RESULT_OK,result);
        finish();
     }

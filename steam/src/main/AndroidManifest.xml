@@ -39,6 +39,7 @@
         <activity
             android:name=".ui.activity.MainActivity"
             android:exported="false"
+            android:launchMode="singleTask"
             android:screenOrientation="landscape" /> <!-- 模式选择 -->
         <activity
             android:name=".ui.activity.ModeSelectActivity"

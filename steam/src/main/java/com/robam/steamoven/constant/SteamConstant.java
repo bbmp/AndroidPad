@@ -67,8 +67,4 @@ public class SteamConstant {
     public static final String EXTRA_RECIPE_ID = "recipe_id";
     public static final String EXTRA_CURVE_DETAIL = "curve_detail";
 
-
-    public final static String NEED_SET_RESULT = "needSetResult";
-    public final static String SEGMENT_DATA_FLAG = "segmentData";
-    public final static String SEGMENT_WORK_FLAG = "isWork";
 }

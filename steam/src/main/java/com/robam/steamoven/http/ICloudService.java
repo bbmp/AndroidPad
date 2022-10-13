@@ -19,6 +19,9 @@ public interface ICloudService {
     //曲线详情
     String curveCookDetailUrl= "/rest/cks/api/curve_cookbook/v2/cooking_curve/query";
 
+    //获取菜谱详情
+    String getRecipeDetail ="/rest/cks/api/cookbook/details/get-by-id";
+
     @POST(queryCurveCookbooks)
     @Headers("Content-Type: application/json")
     Call<ResponseBody> queryCurveCookbooks(@Body RequestBody body);
@@ -33,4 +36,9 @@ public interface ICloudService {
     @POST(curveCookDetailUrl)
     @Headers("Content-Type: application/json")
     Call<ResponseBody> getCurveCookDetail(@Body RequestBody body);
+
+    @POST(getRecipeDetail)
+    @Headers("Content-Type: application/json")
+    Call<ResponseBody> getRecipeDetail(@Body RequestBody body);
+
 }

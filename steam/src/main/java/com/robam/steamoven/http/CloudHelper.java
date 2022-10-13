@@ -9,6 +9,7 @@ import com.robam.common.utils.LogUtils;
 import com.robam.steamoven.constant.HostServer;
 import com.robam.steamoven.request.GetCurveDetailReq;
 import com.robam.steamoven.request.GetDeviceParamsReq;
+import com.robam.steamoven.request.GetRecipeDetailReq;
 import com.robam.steamoven.request.GetUserReq;
 
 import okhttp3.MediaType;
@@ -49,6 +50,16 @@ public class CloudHelper {
         RequestBody requestBody =
                 RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
         Call<ResponseBody> call = svr.getCurveCookDetail(requestBody);
+        enqueue(iLife, entity, call, callback);
+    }
+
+    //获取菜谱详情
+    public static <T extends BaseResponse> void getRecipeDetail(ILife iLife, long cookid, String entranceCode, String needStepsInfo,
+                                                                Class<T> entity, final RetrofitCallback<T> callback) {
+        String json = new GetRecipeDetailReq(cookid, entranceCode, needStepsInfo).toString();
+        RequestBody requestBody =
+                RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
+        Call<ResponseBody> call = svr.getRecipeDetail(requestBody);
         enqueue(iLife, entity, call, callback);
     }
 

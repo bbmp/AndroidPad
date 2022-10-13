@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/steam_guideline3"
+        android:id="@+id/stove_guideline3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -32,7 +32,7 @@
         android:background="@drawable/steam_shape_border_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="@id/steam_guideline3"
+        app:layout_constraintRight_toRightOf="@id/stove_guideline3"
         app:layout_constraintTop_toBottomOf="@id/ll_title" />
 
     <com.robam.common.ui.view.CircleImageView
@@ -42,7 +42,7 @@
         android:scaleType="centerCrop"
         android:layout_marginVertical="@dimen/dp_20"
         android:layout_marginLeft="@dimen/dp_54"
-        android:src="@drawable/steam_main_item_bg"
+        android:src="@drawable/stove_main_item_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -136,7 +136,7 @@
         android:textColor="@color/steam_white"
         android:textSize="@dimen/sp_30"
         app:layout_constraintBottom_toTopOf="@id/tv_material"
-        app:layout_constraintLeft_toLeftOf="@id/steam_guideline3"
+        app:layout_constraintLeft_toLeftOf="@id/stove_guideline3"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/view_board"
         app:layout_constraintVertical_chainStyle="spread_inside" />
@@ -150,7 +150,7 @@
         android:text="@string/steam_material"
         android:textColor="@color/steam_white"
         android:textSize="@dimen/sp_30"
-        app:layout_constraintLeft_toLeftOf="@id/steam_guideline3"
+        app:layout_constraintLeft_toLeftOf="@id/stove_guideline3"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_qrcode"
         app:layout_constraintBottom_toTopOf="@id/tv_step"/>
@@ -164,7 +164,7 @@
         android:text="@string/steam_step"
         android:textColor="@color/steam_white"
         android:textSize="@dimen/sp_30"
-        app:layout_constraintLeft_toLeftOf="@id/steam_guideline3"
+        app:layout_constraintLeft_toLeftOf="@id/stove_guideline3"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_material"
         app:layout_constraintBottom_toTopOf="@id/btn_start"/>
@@ -179,26 +179,26 @@
         android:text="@string/steam_start_working"
         android:textColor="@color/steam_white"
         android:textSize="@dimen/sp_30"
-        app:layout_constraintLeft_toLeftOf="@id/steam_guideline3"
+        app:layout_constraintLeft_toLeftOf="@id/stove_guideline3"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_step"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <androidx.constraintlayout.widget.Group
-        android:id="@+id/steam_group1"
+        android:id="@+id/stove_group1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:constraint_referenced_ids="iv_recipe_img,tv_recipe_name,iv_time,tv_time,iv_qrcode" />
 
     <androidx.constraintlayout.widget.Group
-        android:id="@+id/steam_group2"
+        android:id="@+id/stove_group2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:constraint_referenced_ids="view_line,rv_material" />
 
     <androidx.constraintlayout.widget.Group
-        android:id="@+id/steam_group3"
+        android:id="@+id/stove_group3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
