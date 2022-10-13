@@ -89,6 +89,8 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
         AccountInfo.getInstance().getGuid().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
+                if (Plat.getPlatform().getDeviceOnlySign().equals(s)) //当前烟机
+                    return;
                 for (Device device: AccountInfo.getInstance().deviceList) {
                     if (device.guid.equals(s))
                         return;

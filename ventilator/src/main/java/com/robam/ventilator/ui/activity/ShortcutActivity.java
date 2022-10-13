@@ -1,6 +1,7 @@
 package com.robam.ventilator.ui.activity;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,6 +16,7 @@ import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.UserInfo;
 import com.robam.common.constant.ComnConstant;
+import com.robam.common.device.Plat;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.common.utils.LogUtils;
@@ -27,6 +29,9 @@ import com.robam.ventilator.base.VentilatorBaseActivity;
 import com.robam.common.bean.Device;
 import com.robam.ventilator.bean.VenFunBean;
 import com.robam.ventilator.bean.Ventilator;
+import com.robam.ventilator.constant.VentilatorConstant;
+import com.robam.ventilator.device.HomeVentilator;
+import com.robam.ventilator.device.VentilatorAbstractControl;
 import com.robam.ventilator.http.CloudHelper;
 import com.robam.ventilator.response.GetDeviceRes;
 import com.robam.ventilator.ui.adapter.RvShortcutFunAdapter;
@@ -66,6 +71,22 @@ public class ShortcutActivity extends VentilatorBaseActivity {
         rvDeviceWork.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
 
         rvDevideOnline.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
+        //监听烟机
+        AccountInfo.getInstance().getGuid().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                if (Plat.getPlatform().getDeviceOnlySign().equals(s)) { //当前烟机
+                    if (HomeVentilator.getInstance().gear == (byte) 0xA1 && null != rvShortcutFunAdapter)
+                        rvShortcutFunAdapter.setPickPosition(0);
+                    else if (HomeVentilator.getInstance().gear == (byte) 0xA2 && null != rvShortcutFunAdapter)
+                        rvShortcutFunAdapter.setPickPosition(1);
+                    else if (HomeVentilator.getInstance().gear == (byte) 0xA6 && null != rvShortcutFunAdapter)
+                        rvShortcutFunAdapter.setPickPosition(2);
+                    else if (null != rvShortcutFunAdapter)
+                        rvShortcutFunAdapter.setPickPosition(-1);
+                }
+            }
+        });
     }
 
     @Override
@@ -81,6 +102,15 @@ public class ShortcutActivity extends VentilatorBaseActivity {
         rvShortcutFunAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                if (position == rvShortcutFunAdapter.getPickPosition()) {//已经选中了
+                    VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_CLOSE);
+                } else if (position == 0) {
+                    VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_WEAK);
+                } else if (position == 1) {
+                    VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_MID);
+                } else if (position == 2) {
+                    VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_FRY);
+                }
                 finish();
             }
         });

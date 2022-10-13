@@ -80,6 +80,24 @@ public class HomePage extends PanBasePage {
         });
         rvMain.setAdapter(rvMainFunctionAdapter);
         setOnClickListener(llQuick, llStir);
+        //监听锅状态
+        AccountInfo.getInstance().getGuid().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                for (Device device: AccountInfo.getInstance().deviceList) {
+                    if (device.guid.equals(s) && device instanceof Pan && device.guid.equals(HomePan.getInstance().guid)) { //当前锅
+                        Pan pan = (Pan) device;
+                        if (pan.fryMode == PanConstant.MODE_QUICK_FRY) {
+                            llQuick.setSelected(true);
+                            tvQuick.setText(R.string.pan_quick_frying);
+                        } else if (pan.fryMode == PanConstant.MODE_STIR_FRY) {
+                            llStir.setSelected(true);
+                        }
+                        break;
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -91,19 +109,7 @@ public class HomePage extends PanBasePage {
         rvMainFunctionAdapter.setList(functionList);
         IPublicStoveApi iPublicStoveApi = ModulePubliclHelper.getModulePublic(IPublicStoveApi.class,
                 IPublicStoveApi.STOVE_PUBLIC);
-        //监听设备变化
-        AccountInfo.getInstance().getGuid().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                for (Device device: AccountInfo.getInstance().deviceList) {
-                    if (device.guid.equals(s) && device.guid.equals(HomePan.getInstance().guid) && device instanceof Pan) {//当前锅
-                        Pan pan = (Pan) device;
 
-                        break;
-                    }
-                }
-            }
-        });
     }
 
     @Override
@@ -149,10 +155,6 @@ public class HomePage extends PanBasePage {
                         if (currentSecond <= 0) {
                             llStir.setSelected(false);
                             tvStir.setText(R.string.pan_stir_fry);
-                            //关闭电机
-                            Map map = new HashMap();
-                            map.put(PanConstant.KEY6, new byte[] {PanConstant.MODE_CLOSE_FRY});
-                            PanAbstractControl.getInstance().setInteractionParams(HomePan.getInstance().guid, map);
                             return;
                         }
                         tvStir.setText("十秒翻炒 " + currentSecond + "s");

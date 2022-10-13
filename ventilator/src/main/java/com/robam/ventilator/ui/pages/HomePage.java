@@ -101,6 +101,8 @@ public class HomePage extends VentilatorBasePage {
     private DrawerLayout drawerLayout;
     private LinearLayout llSetting, llProducts;
 
+    private IDialog homeLock;
+
     public static HomePage newInstance() {
         return new HomePage();
     }
@@ -204,8 +206,8 @@ public class HomePage extends VentilatorBasePage {
         rvFunctionAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                if (position == 0) { //锁屏
-                    screenLock();
+                if (position == 0) { //锁屏清洗提示
+                    lockClean();
                 } else { //挡位选择
                     if (position == rvFunctionAdapter.getPickPosition()) {//已经选中了
                         position = -1;
@@ -218,7 +220,6 @@ public class HomePage extends VentilatorBasePage {
                         VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_FRY);
                     }
                 }
-                rvFunctionAdapter.setPickPosition(position);
             }
         });
         //左边菜单
@@ -358,6 +359,16 @@ public class HomePage extends VentilatorBasePage {
             @Override
             public void onChanged(String s) {
                 if (Plat.getPlatform().getDeviceOnlySign().equals(s)) { //烟机更新
+                    if (null != rvFunctionAdapter && null != homeLock && homeLock.isShow()) //锁定
+                        rvFunctionAdapter.setPickPosition(0);
+                    else if (HomeVentilator.getInstance().gear == (byte) 0xA1 && null != rvFunctionAdapter)
+                        rvFunctionAdapter.setPickPosition(1);
+                    else if (HomeVentilator.getInstance().gear == (byte) 0xA2 && null != rvFunctionAdapter)
+                        rvFunctionAdapter.setPickPosition(2);
+                    else if (HomeVentilator.getInstance().gear == (byte) 0xA6 && null != rvFunctionAdapter)
+                        rvFunctionAdapter.setPickPosition(3);
+                    else if (null != rvFunctionAdapter)
+                        rvFunctionAdapter.setPickPosition(-1);
                     return;
                 }
                 for (Device device: AccountInfo.getInstance().deviceList) {
@@ -573,24 +584,45 @@ public class HomePage extends VentilatorBasePage {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (null != homeLock && homeLock.isShow())
+            homeLock.dismiss();
     }
+    //锁屏清洗提示
+    private void lockClean() {
+        IDialog iDialog = VentilatorDialogFactory.createDialogByType(getContext(), DialogConstant.DIALOG_TYPE_VENTILATOR_COMMON);
+        iDialog.setCancelable(false);
+        iDialog.setContentText(R.string.ventilator_clean_oil_hint);
+        iDialog.setListeners(new IDialog.DialogOnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (v.getId() == R.id.tv_ok) {
+                    screenLock();
 
+                    //关闭
+                    VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_CLOSE);
+                }
+            }
+        }, R.id.tv_cancel, R.id.tv_ok);
+        iDialog.show();
+    }
     //锁屏
     private void screenLock() {
-        IDialog iDialog = VentilatorDialogFactory.createDialogByType(getContext(), DialogConstant.DIALOG_TYPE_LOCK);
-        iDialog.setCancelable(false);
-        //长按解锁
-        ImageView imageView = iDialog.getRootView().findViewById(R.id.iv_lock);
-        ClickUtils.setLongClick(new Handler(), imageView, 2000, new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                iDialog.dismiss();
-                if (null != rvFunctionAdapter)
-                    rvFunctionAdapter.setPickPosition(-1);
-                return true;
-            }
-        });
-        iDialog.show();
+        if (null == homeLock) {
+            homeLock = VentilatorDialogFactory.createDialogByType(getContext(), DialogConstant.DIALOG_TYPE_LOCK);
+            homeLock.setCancelable(false);
+            //长按解锁
+            ImageView imageView = homeLock.getRootView().findViewById(R.id.iv_lock);
+            ClickUtils.setLongClick(new Handler(), imageView, 2000, new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    homeLock.dismiss();
+                    if (null != rvFunctionAdapter)
+                        rvFunctionAdapter.setPickPosition(-1);
+                    return true;
+                }
+            });
+        }
+        homeLock.show();
     }
 
     //切换至极简模式

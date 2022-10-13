@@ -4,6 +4,8 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.lifecycle.Observer;
+
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.google.gson.Gson;
@@ -17,6 +19,7 @@ import com.robam.common.module.IPublicStoveApi;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.utils.DateUtil;
 import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.ToastUtils;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBaseActivity;
 import com.robam.stove.bean.StoveCurveDetail;
@@ -49,6 +52,8 @@ public class CurveRestoreActivity extends StoveBaseActivity {
 
     private Stove stove;
     private Pan pan;
+    private int stoveId;
+
     @Override
     protected int getLayoutId() {
         return R.layout.stove_activity_layout_curve_restore;
@@ -60,8 +65,10 @@ public class CurveRestoreActivity extends StoveBaseActivity {
         showCenter();
         showRightCenter();
 
-        if (null != getIntent())
+        if (null != getIntent()) {
+            stoveId = getIntent().getIntExtra(StoveConstant.EXTRA_STOVE_ID, IPublicStoveApi.STOVE_LEFT);
             stoveCurveDetail = (StoveCurveDetail) getIntent().getSerializableExtra(StoveConstant.EXTRA_CURVE_DETAIL);
+        }
         if (null == stoveCurveDetail)  //曲线详情为空
             finish();
         tvFire = findViewById(R.id.tv_fire);
@@ -70,6 +77,34 @@ public class CurveRestoreActivity extends StoveBaseActivity {
         cookChart = findViewById(R.id.cook_chart);
         cookChart.setNoDataText(getResources().getString(R.string.stove_no_curve_data)); //没有数据时显示的文字
         setOnClickListener(R.id.ll_left);
+        //监听开火状态
+        AccountInfo.getInstance().getGuid().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                for (Device device: AccountInfo.getInstance().deviceList) {
+                    if (device.guid.equals(s) && device.guid.equals(HomeStove.getInstance().guid) && device instanceof Stove) { //当前灶
+                        Stove stove = (Stove) device;
+                        //开火提示状态
+                        if (stoveId == IPublicStoveApi.STOVE_LEFT && stove.leftStatus == StoveConstant.WORK_CLOSE) { //左灶已关火
+                            //还原结束
+                            workComplete(false);
+                        } else if (stoveId == IPublicStoveApi.STOVE_RIGHT && stove.rightStatus == StoveConstant.WORK_CLOSE) { //右灶已关火
+                            //还原结束
+                            workComplete(false);
+                        } else if (stove.status == Device.OFFLINE) {
+                            ToastUtils.showShort(CurveRestoreActivity.this, R.string.stove_stove_offline);
+                        }
+
+                        break;
+                    } else if (device.guid.equals(s) && device instanceof Pan) { //检查锅状态锅
+                        Pan pan = (Pan) device;
+                        if (pan.status == Device.OFFLINE) { //锅已离线
+                            ToastUtils.showShort(CurveRestoreActivity.this, R.string.stove_pan_offline);
+                        }
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -132,7 +167,7 @@ public class CurveRestoreActivity extends StoveBaseActivity {
                         restoreList.add(new Entry(curTime, pan.panTemp));//温度
                         cookChart.invalidate();
                         if (null != stove) {
-                            if (stoveCurveDetail.stoveId == IPublicStoveApi.STOVE_LEFT) //左灶
+                            if (stoveId == IPublicStoveApi.STOVE_LEFT) //左灶
                                 tvFire.setText("火力：" + stove.leftLevel + "档");
                             else
                                 tvFire.setText("火力：" + stove.rightLevel + "档");
@@ -145,7 +180,7 @@ public class CurveRestoreActivity extends StoveBaseActivity {
                 if (curTime >= lastMark) {
                     //工作结束
                     //提示烹饪完成
-                    workComplete();
+                    workComplete(true);
                     return;
                 }
                 mHandler.postDelayed(runnable, 1000L);
@@ -159,7 +194,7 @@ public class CurveRestoreActivity extends StoveBaseActivity {
             if (params.containsKey("0")) {
                 String[] data = params.get("0").split("-");
                 if (null != stove) {
-                    if (stoveCurveDetail.stoveId == IPublicStoveApi.STOVE_LEFT) //左灶
+                    if (stoveId == IPublicStoveApi.STOVE_LEFT) //左灶
                         tvFire.setText("火力：" + stove.leftLevel + "档");
                     else
                         tvFire.setText("火力：" + stove.rightLevel + "档");
@@ -171,9 +206,10 @@ public class CurveRestoreActivity extends StoveBaseActivity {
         mHandler.postDelayed(runnable, 1000);
     }
     //还原结束提示
-    private void workComplete() {
+    private void workComplete(boolean closeFire) {
         //关火
-        StoveAbstractControl.getInstance().setAttribute(HomeStove.getInstance().guid, (byte) stoveCurveDetail.stoveId, (byte) 0x00, (byte) StoveConstant.STOVE_CLOSE);
+        if (closeFire)
+            StoveAbstractControl.getInstance().setAttribute(HomeStove.getInstance().guid, (byte) stoveId, (byte) 0x00, (byte) StoveConstant.STOVE_CLOSE);
 
         if (null == completeDialog) {
             completeDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_COMPLETE);
@@ -207,7 +243,7 @@ public class CurveRestoreActivity extends StoveBaseActivity {
                 public void onClick(View v) {
                     if (v.getId() == R.id.tv_ok) {
                         //关火
-                        StoveAbstractControl.getInstance().setAttribute(HomeStove.getInstance().guid, (byte) stoveCurveDetail.stoveId, (byte) 0x01, (byte) StoveConstant.STOVE_CLOSE);
+                        StoveAbstractControl.getInstance().setAttribute(HomeStove.getInstance().guid, (byte) stoveId, (byte) 0x01, (byte) StoveConstant.STOVE_CLOSE);
                         finish();
                     }
                 }

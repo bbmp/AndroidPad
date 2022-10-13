@@ -23,6 +23,7 @@ import com.robam.common.ui.helper.VerticalSpaceItemDecoration;
 import com.robam.common.ui.view.MarkViewStep;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.TimeUtils;
+import com.robam.common.utils.ToastUtils;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBaseActivity;
 import com.robam.stove.bean.CurveStep;
@@ -225,6 +226,10 @@ public class CurveSelectedActivity extends StoveBaseActivity {
         int id = view.getId();
         if (id == R.id.tv_start_cook) {
             //选择炉头
+            if (null == stoveCurveDetail || null == stoveCurveDetail.temperatureCurveParams) {
+                ToastUtils.showShort(this, R.string.stove_no_curve_data);
+                return;
+            }
             selectStove();
         } else if (id == R.id.ll_left) { //返回
             finish();
@@ -236,7 +241,7 @@ public class CurveSelectedActivity extends StoveBaseActivity {
         //曲线还原
         Intent intent = new Intent();
         if (null != stoveCurveDetail) {
-            stoveCurveDetail.stoveId = stoveId; //选中哪个炉头
+            intent.putExtra(StoveConstant.EXTRA_STOVE_ID, stoveId); //选中哪个炉头
             intent.putExtra(StoveConstant.EXTRA_CURVE_DETAIL, stoveCurveDetail);
         }
         intent.setClass(this, CurveRestoreActivity.class);

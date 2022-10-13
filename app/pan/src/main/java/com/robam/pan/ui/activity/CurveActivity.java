@@ -145,13 +145,13 @@ public class CurveActivity extends PanBaseActivity {
                                 openDialog.dismiss();
                                 Intent intent = new Intent();
                                 intent.setClass(CurveActivity.this, CurveCreateActivity.class);
-                                intent.putExtra(StoveConstant.stoveId, stoveId);
+                                intent.putExtra(StoveConstant.EXTRA_STOVE_ID, stoveId);
                                 startActivity(intent);
                             } else if (stoveId == IPublicStoveApi.STOVE_RIGHT && stove.rightStatus == StoveConstant.WORK_WORKING) { //右灶已点火
                                 openDialog.dismiss();
                                 Intent intent = new Intent();
                                 intent.setClass(CurveActivity.this, CurveCreateActivity.class);
-                                intent.putExtra(StoveConstant.stoveId, stoveId);
+                                intent.putExtra(StoveConstant.EXTRA_STOVE_ID, stoveId);
                                 startActivity(intent);
                             }
                         }

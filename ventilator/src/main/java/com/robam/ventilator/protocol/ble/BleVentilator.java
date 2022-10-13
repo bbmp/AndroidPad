@@ -458,16 +458,16 @@ public class BleVentilator {
                                 case BleDecoder.CMD_COOKER_SET_RES: //设置灶状态返回
                                 case BleDecoder.CMD_COOKER_TIME_RES: //设置定时关火返回
                                 case BleDecoder.CMD_COOKER_LOCK_RES: //设置童锁返回
-//                                    int rc = ByteUtils.toInt(ret2[2]);
-//                                    if (rc == 0) { //设置成功
-//                                        for (Device device : AccountInfo.getInstance().deviceList) {
-//                                            if (bleDevice.getMac().equals(device.mac) && device instanceof Stove) {
-//                                                StoveAbstractControl.getInstance().queryAttribute(device.guid);
-//
-//                                                break;
-//                                            }
-//                                        }
-//                                    }
+                                    int rc = ByteUtils.toInt(ret2[2]);
+                                    if (rc == 0) { //设置成功
+                                        for (Device device : AccountInfo.getInstance().deviceList) {
+                                            if (bleDevice.getMac().equals(device.mac) && device instanceof Stove) {
+                                                StoveAbstractControl.getInstance().queryAttribute(device.guid);
+
+                                                break;
+                                            }
+                                        }
+                                    }
                                     break;
                                 case BleDecoder.EVENT_POT_TEMPERATURE_DROP://锅温度骤变
                                 case BleDecoder.EVENT_POT_TEMPERATURE_OV: //干烧预警

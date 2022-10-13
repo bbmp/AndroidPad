@@ -90,8 +90,8 @@ public class MqttPan extends MqttPublic {
                 float temp = MsgUtils.bytes2FloatLittle(payload, offset);//锅温
                 msg.putOpt(PanConstant.temp, temp);
                 offset += 4;
-                int status = MsgUtils.getByte(payload[offset++]);//状态
-                msg.putOpt(PanConstant.status, status);
+                int workStatus = MsgUtils.getByte(payload[offset++]);//状态
+                msg.putOpt(PanConstant.workStatus, workStatus);
                 int attributeNum = MsgUtils.getByte(payload[offset++]);//属性个数
                 while (attributeNum > 0) {
                     attributeNum--;
