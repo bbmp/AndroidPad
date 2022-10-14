@@ -11,11 +11,17 @@ public class CurveStep implements Serializable {
     //标记时间
     public String markTime;
     //温度
-    public int markTemp;
+    public float markTemp;
     //图片
     public String imageUrl;
     //总时间
     public int needTime;
     //已经过去的时间 用于显示
     public int elapsedTime;
+
+    public CurveStep(int no, String markTime, float markTemp) {
+        this.no = no;
+        this.markTime = markTime;
+        this.markTemp = markTemp;
+    }
 }

@@ -143,7 +143,9 @@ public class MqttPan extends MqttPublic {
                 }
             }
                 break;
-            case MsgKeys.POT_INTERACTION_Rep: {
+            case MsgKeys.ActiveTemp_Rep: //锅温度上报
+                break;
+            case MsgKeys.POT_INTERACTION_Rep: {  //设置锅智能互动参数返回
                 int rc = MsgUtils.getByte(payload[offset++]);
             }
                 break;

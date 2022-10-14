@@ -170,9 +170,11 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
                         baseViewHolder.setGone(R.id.layout_work, true);
                         baseViewHolder.setGone(R.id.btn_detail, true);
                         baseViewHolder.setText(R.id.tv_hint, "轻松烹饪\n智享厨房");
-                    } else if (device.getWorkStatus() != 0) {
+                    } else if (device.getWorkStatus() == 3) { //低电量
                         baseViewHolder.setGone(R.id.layout_offline, true);
                         baseViewHolder.setVisible(R.id.layout_work, true);
+                        baseViewHolder.setText(R.id.tv_mode, R.string.ventilator_low_battery);
+                        baseViewHolder.setText(R.id.btn_work, R.string.ventilator_detail);
                     } else {
                         //故障
                     }

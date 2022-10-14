@@ -127,7 +127,7 @@ public abstract class PanBaseActivity extends BaseActivity {
                     if (v.getId() == R.id.tv_ok) {
                         IPublicVentilatorApi iPublicVentilatorApi = ModulePubliclHelper.getModulePublic(IPublicVentilatorApi.class, IPublicVentilatorApi.VENTILATOR_PUBLIC);
                         if (null != iPublicVentilatorApi)
-                            iPublicVentilatorApi.startMatchNetwork(PanBaseActivity.this, IDeviceType.RZNG);
+                            iPublicVentilatorApi.startMatchNetwork(PanBaseActivity.this, IDeviceType.RRQZ);
                     }
                 }
             }, R.id.tv_cancel, R.id.tv_ok);

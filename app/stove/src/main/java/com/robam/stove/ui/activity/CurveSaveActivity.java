@@ -113,6 +113,7 @@ public class CurveSaveActivity extends StoveBaseActivity {
                         ToastUtils.showShort(CurveSaveActivity.this, R.string.stove_input_empty);
                         return;
                     }
+                    tvCurveName.setText(editText.getText());
                     editDialog.dismiss();
                 }
             });

@@ -227,7 +227,7 @@ public abstract class StoveBaseActivity extends BaseActivity {
                     if (v.getId() == R.id.tv_ok) {
                         IPublicVentilatorApi iPublicVentilatorApi = ModulePubliclHelper.getModulePublic(IPublicVentilatorApi.class, IPublicVentilatorApi.VENTILATOR_PUBLIC);
                         if (null != iPublicVentilatorApi)
-                            iPublicVentilatorApi.startMatchNetwork(StoveBaseActivity.this, IDeviceType.RZNG);
+                            iPublicVentilatorApi.startMatchNetwork(StoveBaseActivity.this, IDeviceType.RRQZ);
                     }
                 }
             }, R.id.tv_cancel, R.id.tv_ok);

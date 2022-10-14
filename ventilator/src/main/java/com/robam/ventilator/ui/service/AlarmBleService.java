@@ -20,7 +20,7 @@ import com.robam.ventilator.ui.receiver.AlarmBleReceiver;
 public class AlarmBleService extends Service {
 
     private static final int PENDING_REQUEST = 0;
-    private static final int INTERVAL = 2000;
+    private static final int INTERVAL = 15000;
     private AlarmManager alarmManager;
     private PendingIntent pIntent;
 
@@ -55,22 +55,23 @@ public class AlarmBleService extends Service {
         for (Device device: AccountInfo.getInstance().deviceList) {
             if (!IDeviceType.RRQZ.equals(device.dc) && !IDeviceType.RZNG.equals(device.dc))
                 continue;
-            if (device.queryNum == 1) { //已经查过一次
+            if (device.queryNum == 1 && device.status == Device.ONLINE) { //已经查过一次
                 device.status = Device.OFFLINE;
                 AccountInfo.getInstance().getGuid().setValue(device.guid); //更新设备状态
             }
-            device.queryNum++;
+
             if (device instanceof Pan) { //查询锅
                 if (((Pan) device).bleDevice == null) {
                     continue;
                 }
+                device.queryNum++;
                 //本机查询锅
                 PanAbstractControl.getInstance().queryAttribute(device.guid);
             } else if (device instanceof Stove) { //查询灶具
                 if (((Stove) device).bleDevice == null) { //未连接
-
                     continue;
                 }
+                device.queryNum++;
                 //本机端查询灶具
                 StoveAbstractControl.getInstance().queryAttribute(device.guid);
             }

@@ -5,7 +5,10 @@ import android.graphics.Rect;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.lifecycle.Observer;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
@@ -13,10 +16,12 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.BaseResponse;
 import com.robam.common.bean.Device;
 import com.robam.common.constant.StoveConstant;
 import com.robam.common.device.subdevice.Pan;
 import com.robam.common.device.subdevice.Stove;
+import com.robam.common.http.RetrofitCallback;
 import com.robam.common.manager.DynamicLineChartManager;
 import com.robam.common.module.IPublicPanApi;
 import com.robam.common.module.IPublicStoveApi;
@@ -25,6 +30,7 @@ import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.MarkViewAdd;
 import com.robam.common.utils.DateUtil;
 import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.ToastUtils;
 import com.robam.pan.constant.DialogConstant;
 import com.robam.pan.R;
 import com.robam.pan.base.PanBaseActivity;
@@ -32,6 +38,8 @@ import com.robam.common.constant.PanConstant;
 import com.robam.pan.device.HomePan;
 import com.robam.pan.device.PanAbstractControl;
 import com.robam.pan.factory.PanDialogFactory;
+import com.robam.pan.http.CloudHelper;
+import com.robam.pan.response.CreateCurveStartRes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,6 +54,9 @@ public class CurveCreateActivity extends PanBaseActivity {
     private int curTime = 0;
     private TextView tvFire, tvTemp, tvTime;
 
+    private TextView tvTimeUnit;
+    private ImageView ivStop;
+
     private IDialog stopDialog;
     //
     private LineChart cookChart;
@@ -53,9 +64,11 @@ public class CurveCreateActivity extends PanBaseActivity {
     private DynamicLineChartManager dm;
     private ArrayList<Entry> entryList = new ArrayList<>();  //创作列表
     private ArrayList<Entry> stepList = new ArrayList<>(); //标记列表
+    private List<Highlight> highlights = new ArrayList<>();
     private Stove stove;
     private Pan pan;
     private int stoveId;
+    private long curveId;
 
     private IPublicStoveApi iPublicStoveApi = ModulePubliclHelper.getModulePublic(IPublicStoveApi.class,
             IPublicStoveApi.STOVE_PUBLIC);
@@ -75,9 +88,39 @@ public class CurveCreateActivity extends PanBaseActivity {
         tvFire = findViewById(R.id.tv_fire);
         tvTemp = findViewById(R.id.tv_temp);
         tvTime = findViewById(R.id.tv_time);
+        tvTimeUnit = findViewById(R.id.tv_time_unit);
+        ivStop = findViewById(R.id.iv_stop_create);
         cookChart = findViewById(R.id.cook_chart);
         cookChart.setNoDataText(getResources().getString(R.string.pan_no_curve_data)); //没有数据时显示的文字
         setOnClickListener(R.id.ll_left, R.id.iv_stop_create);
+        //监听开火状态
+        AccountInfo.getInstance().getGuid().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                for (Device device: AccountInfo.getInstance().deviceList) {
+                    if (device.guid.equals(s) && device instanceof Stove && curTime > 0) { //当前灶且创建已开始
+                        Stove stove = (Stove) device;
+                        //开火提示状态
+                        if (stoveId == IPublicStoveApi.STOVE_LEFT && stove.leftStatus == StoveConstant.WORK_CLOSE) { //左灶已关火
+                            //跳转保存
+                            saveCurve(false);
+                        } else if (stoveId == IPublicStoveApi.STOVE_RIGHT && stove.rightStatus == StoveConstant.WORK_CLOSE) { //右灶已关火
+                            //跳转保存
+                            saveCurve(false);
+                        } else if (stove.status == Device.OFFLINE) {
+
+                        }
+
+                        break;
+                    } else if (device.guid.equals(s) && device instanceof Pan && curTime > 0) { //检查锅状态锅
+                        Pan pan = (Pan) device;
+                        if (pan.status == Device.OFFLINE) { //锅已离线
+
+                        }
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -92,12 +135,28 @@ public class CurveCreateActivity extends PanBaseActivity {
         if (null == pan || null == stove) //锅或灶不存在
             finish();
 
+        //创建曲线记录开始请求
+        CloudHelper.createCurveStart(this, AccountInfo.getInstance().getUser().getValue().id, pan.guid, stoveId, CreateCurveStartRes.class, new RetrofitCallback<CreateCurveStartRes>() {
+            @Override
+            public void onSuccess(CreateCurveStartRes createCurveStartRes) {
+                if (null != createCurveStartRes && createCurveStartRes.rc == 0) {
+                    tvTimeUnit.setVisibility(View.VISIBLE);
+                    ivStop.setVisibility(View.VISIBLE);
+                    curveId = createCurveStartRes.payload;
+                    //启动记录
+                    Map params = new HashMap();
+                    params.put(PanConstant.KEY2, new byte[] {(byte) stoveId, (byte) PanConstant.start});
+                    PanAbstractControl.getInstance().setInteractionParams(pan.guid, params);
+                    startCreate();
+                }
+            }
 
-        //启动记录
-        Map params = new HashMap();
-        params.put(PanConstant.KEY2, new byte[] {(byte) stoveId, (byte) PanConstant.start});
-        PanAbstractControl.getInstance().setInteractionParams(HomePan.getInstance().guid, params);
-        startCreate();
+            @Override
+            public void onFaild(String err) {
+                ToastUtils.showShort(CurveCreateActivity.this, R.string.pan_connect_failed);
+                finish();
+            }
+        });
 
     }
 
@@ -111,7 +170,7 @@ public class CurveCreateActivity extends PanBaseActivity {
 
     //开始创建
     private void startCreate() {
-        List<Highlight> highlights = new ArrayList<>();
+
         runnable = new Runnable() {
 
             @Override
@@ -188,11 +247,7 @@ public class CurveCreateActivity extends PanBaseActivity {
                     Rect rect = new Rect((int) mv.drawingPosX, (int) mv.drawingPosY, (int) mv.drawingPosX + mv.getWidth(), (int) mv.drawingPosY + mv.getHeight());
                     if (cookChart.isDrawMarkersEnabled() && cookChart.valuesToHighlight() && rect.contains((int) me.getX(), (int) me.getY())) {
                         LogUtils.e("click" + Thread.currentThread().getName());
-                        Entry entry = entryList.get(entryList.size() - 1); //最后一个点
-                        highlights.add(0, new Highlight(entry.getX(), entry.getY(), 1, highlights.size())); //第二条线highlight,加前面
-
-                        cookChart.highlightValues(highlights.toArray(new Highlight[highlights.size()]));
-                        dm.addEntry(entry, 1);
+                        addStep();
 
                     }
                 }
@@ -214,6 +269,17 @@ public class CurveCreateActivity extends PanBaseActivity {
             }
         });
         mHandler.post(runnable);
+        //添加启动标记
+        addStep();
+    }
+
+    private void addStep() {
+        Entry entry = entryList.get(entryList.size() - 1); //最后一个点
+        stepList.add(entry);
+        highlights.add(0, new Highlight(entry.getX(), entry.getY(), 1, highlights.size())); //第二条线highlight,加前面
+
+        cookChart.highlightValues(highlights.toArray(new Highlight[highlights.size()]));
+        dm.addEntry(entry, 1);
     }
 
     //创作结束提示
@@ -228,19 +294,7 @@ public class CurveCreateActivity extends PanBaseActivity {
                 public void onClick(View v) {
                     //结束创作
                     if (v.getId() == R.id.tv_ok) {
-                        //关火
-                        if (null != iPublicStoveApi)
-                            iPublicStoveApi.setAttribute(stove.guid, (byte) stoveId, (byte) 0x00, (byte) StoveConstant.STOVE_CLOSE);
-                        //停止记录
-                        Map params = new HashMap();
-                        params.put(PanConstant.KEY2, new byte[] {(byte) stoveId, (byte) PanConstant.stop});
-                        PanAbstractControl.getInstance().setInteractionParams(HomePan.getInstance().guid, params);
-                        //保存曲线
-                        Intent intent = new Intent();
-                        intent.putParcelableArrayListExtra(PanConstant.EXTRA_ENTRY_LIST, entryList);
-                        intent.putParcelableArrayListExtra(PanConstant.EXTRA_STEP_LIST, stepList);
-                        intent.setClass(CurveCreateActivity.this, CurveSaveActivity.class);
-                        startActivity(intent);
+                        saveCurve(true);
                         finish();
                     }
                 }
@@ -248,7 +302,32 @@ public class CurveCreateActivity extends PanBaseActivity {
         }
         stopDialog.show();
     }
-
+    //保存曲线
+    private void saveCurve(boolean closeFire) {
+        if (entryList.size() == 0) {
+            finish();   //没有曲线数据
+            return;
+        }
+        //结束步骤
+        addStep();
+        //关火
+        if (closeFire && null != iPublicStoveApi)
+            iPublicStoveApi.setAttribute(stove.guid, (byte) stoveId, (byte) 0x00, (byte) StoveConstant.STOVE_CLOSE);
+        //停止记录
+        Map params = new HashMap();
+        params.put(PanConstant.KEY2, new byte[] {(byte) stoveId, (byte) PanConstant.stop});
+        params.put(PanConstant.KEY6, new byte[] {(byte) PanConstant.MODE_CLOSE_FRY}); //停止搅拌
+        PanAbstractControl.getInstance().setInteractionParams(pan.guid, params);
+        //保存曲线
+        Intent intent = new Intent();
+        intent.putExtra(PanConstant.EXTRA_CURVE_ID, curveId);
+        intent.putExtra(PanConstant.EXTRA_NEED_TIME, curTime);
+        intent.putParcelableArrayListExtra(PanConstant.EXTRA_ENTRY_LIST, entryList);
+        intent.putParcelableArrayListExtra(PanConstant.EXTRA_STEP_LIST, stepList);
+        intent.setClass(CurveCreateActivity.this, CurveSaveActivity.class);
+        startActivity(intent);
+        finish();
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();

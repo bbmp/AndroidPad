@@ -63,11 +63,13 @@
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <TextView
+        android:id="@+id/tv_time_unit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/stove_white"
         android:textSize="@dimen/sp_60"
         android:text="min"
+        android:visibility="gone"
         app:layout_constraintLeft_toRightOf="@id/tv_time"
         app:layout_constraintBaseline_toBaselineOf="@id/tv_time"/>
 
@@ -77,6 +79,7 @@
         android:layout_height="@dimen/dp_60"
         android:layout_marginRight="@dimen/dp_95"
         android:src="@drawable/stove_stop_create"
+        android:visibility="gone"
         app:layout_constraintTop_toTopOf="@id/tv_time"
         app:layout_constraintBottom_toBottomOf="@id/tv_time"
         app:layout_constraintRight_toRightOf="parent"/>

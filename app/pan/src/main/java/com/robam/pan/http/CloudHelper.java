@@ -6,12 +6,17 @@ import com.robam.common.http.ILife;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.http.RetrofitClient;
 import com.robam.common.utils.LogUtils;
+import com.robam.pan.bean.CurveStep;
 import com.robam.pan.constant.HostServer;
+import com.robam.pan.request.CreateCurveStartReq;
+import com.robam.pan.request.CurveSaveReq;
 import com.robam.pan.request.GetCurveDetailReq;
 import com.robam.pan.request.GetRecipeDetailReq;
 import com.robam.pan.request.GetRecipesByDeviceReq;
 import com.robam.pan.request.GetUserReq;
 import com.robam.pan.request.RecipeSearchReq;
+
+import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -77,7 +82,22 @@ public class CloudHelper {
         Call<ResponseBody> call = svr.queryCurveCookbooks(requestBody);
         enqueue(iLife, entity, call, callback);
     }
-
+    //创建曲线开始记录
+    public static <T extends BaseResponse> void createCurveStart(ILife iLife, long userId, String guid, int stoveId, Class<T> entity, final RetrofitCallback<T> callback) {
+        String json = new CreateCurveStartReq(userId, guid, stoveId).toString();
+        RequestBody requestBody =
+                RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
+        Call<ResponseBody> call = svr.createCurveStart(requestBody);
+        enqueue(iLife, entity, call, callback);
+    }
+    //曲线保存
+    public static <T extends BaseResponse> void curveSave(ILife iLife, long userId, long curveId, String guid, String name, int needTime, List<CurveStep> stepList, Class<T> entity, final RetrofitCallback<T> callback) {
+        String json = new CurveSaveReq(userId, curveId, guid, name, needTime, stepList).toString();
+        RequestBody requestBody =
+                RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
+        Call<ResponseBody> call = svr.curveSave(requestBody);
+        enqueue(iLife, entity, call, callback);
+    }
     //统一处理回调
     private static <T extends BaseResponse> void enqueue(ILife iLife, final Class<T> entity, Call<ResponseBody> call, final RetrofitCallback<T> callback) {
         call.enqueue(new retrofit2.Callback<ResponseBody>() {
