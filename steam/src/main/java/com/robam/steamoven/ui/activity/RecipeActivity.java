@@ -2,8 +2,12 @@ package com.robam.steamoven.ui.activity;
 
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,6 +22,7 @@ import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.UserInfo;
 import com.robam.common.http.RetrofitCallback;
+import com.robam.common.utils.ToastUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.bean.DeviceConfigurationFunctions;
@@ -38,6 +43,10 @@ import java.util.List;
 public class RecipeActivity extends SteamBaseActivity {
     private TabLayout tabLayout;
     private ViewPager noScrollViewPager;
+    private EditText etSearch;
+
+    private View searchPromptView;
+    private TextView searchPromptBtn;
     //分类
     private List<String> classifyList = new ArrayList<>();
     //弱引用，防止内存泄漏
@@ -55,9 +64,12 @@ public class RecipeActivity extends SteamBaseActivity {
         showLeft();
         showCenter();
 
+        etSearch = findViewById(R.id.tv_search);
         tabLayout = findViewById(R.id.tablayout);
         noScrollViewPager = findViewById(R.id.pager);
         tabLayout.setSelectedTabIndicatorHeight(0);
+        searchPromptView = findViewById(R.id.recipe_search_prompt);
+        searchPromptBtn = findViewById(R.id.recipe_search_prompt_btn);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -74,6 +86,24 @@ public class RecipeActivity extends SteamBaseActivity {
 
             }
         });
+        etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    String text = etSearch.getText().toString();
+                    if (!TextUtils.isEmpty(text)) {
+                        //处理搜索
+                        searchResult(text);
+                    } else {
+                        //ToastUtils.showShort(RecipeActivity.this, R.string.stove_input_empty);
+                    }
+                    return false;
+                }
+                return false;
+            }
+        });
+
+        setOnClickListener(R.id.recipe_search_prompt_btn);
     }
 
     @Override
@@ -100,8 +130,12 @@ public class RecipeActivity extends SteamBaseActivity {
         int id = view.getId();
         if (id == R.id.ll_left) {
             finish();
+        }else if(id == R.id.recipe_search_prompt_btn){
+            etSearch.setText("");
+            setSearchState(false);
         }
     }
+
     //本地菜谱
     private void getLocalRecipe() {
         UserInfo info = AccountInfo.getInstance().getUser().getValue();
@@ -196,5 +230,42 @@ public class RecipeActivity extends SteamBaseActivity {
             return super.getPageTitle(position);
         }
     }
+
+    //搜索结果
+    private void searchResult(String text) {
+//        CloudHelper.getCookbooksByName(this, text, false, 0L, false, true,
+//                GetRecipesByDeviceRes.class, new RetrofitCallback<GetRecipesByDeviceRes>() {
+//
+//                    @Override
+//                    public void onSuccess(GetRecipesByDeviceRes getRecipesByDeviceRes) {
+//
+//                        setData(getRecipesByDeviceRes);
+//                    }
+//
+//                    @Override
+//                    public void onFaild(String err) {
+//                        setData(null);
+//                    }
+//                });
+        if(TextUtils.isEmpty(text)){
+            return;
+        }
+        this.setSearchState(searchPromptView.getVisibility() != View.VISIBLE);
+    }
+
+    private void setSearchState(boolean showSearchPrompt){
+        if(showSearchPrompt){
+            searchPromptView.setVisibility(View.VISIBLE);
+            searchPromptBtn.setVisibility(View.VISIBLE);
+            tabLayout.setVisibility(View.INVISIBLE);
+            noScrollViewPager.setVisibility(View.INVISIBLE);
+        }else{
+            searchPromptView.setVisibility(View.INVISIBLE);
+            searchPromptBtn.setVisibility(View.INVISIBLE);
+            tabLayout.setVisibility(View.VISIBLE);
+            noScrollViewPager.setVisibility(View.VISIBLE);
+        }
+    }
+
 
 }

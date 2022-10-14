@@ -16,7 +16,6 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.robam.common.ui.IModeSelect;
-import com.robam.common.utils.LogUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.bean.ModeBean;
@@ -35,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect {
+public class RecipeModeActivity extends SteamBaseActivity implements IModeSelect {
     private TabLayout tabLayout;
     private ViewPager noScrollViewPager;
     //弱引用，防止内存泄漏
@@ -205,13 +204,6 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
         }else if(R.id.btn_start == view.getId()){
             if(needSetResult){
                 this.startSetResult();
-            }else{
-                ViewGroup childGroup = (ViewGroup) tabLayout.getTabAt(0).getCustomView();
-                TextView valueTv = childGroup.findViewById(R.id.tv_mode); //模式
-                if("除垢".equals(valueTv.getText().toString())){
-                    Intent intent = new Intent(this,DescalingActivity.class);
-                    startActivity(intent);
-                }
             }
         }
     }

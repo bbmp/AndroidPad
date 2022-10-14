@@ -8,17 +8,33 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.robam.common.http.RetrofitCallback;
+import com.robam.common.manager.DynamicLineChartManager;
 import com.robam.common.manager.FunctionManager;
+import com.robam.common.ui.view.MarkViewStep;
 import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.TimeUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
+import com.robam.steamoven.bean.CurveStep;
 import com.robam.steamoven.bean.FuntionBean;
 import com.robam.steamoven.bean.MultiSegment;
+import com.robam.steamoven.bean.PanCurveDetail;
+import com.robam.steamoven.bean.SteamCurveDetail;
 import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.SteamConstant;
+import com.robam.steamoven.http.CloudHelper;
+import com.robam.steamoven.response.GetCurveDetailRes;
 import com.robam.steamoven.ui.dialog.SteamCommonDialog;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 //一体机多段
 public class MultiWorkActivity extends SteamBaseActivity {
@@ -38,10 +54,11 @@ public class MultiWorkActivity extends SteamBaseActivity {
     private ViewGroup curCookInfoViewGroup;
 
     private boolean isStart = false;
-
     private static final int REQUEST_CODE_SETTING  = 321;
 
 
+    private LineChart cookChart;
+    private DynamicLineChartManager dm;
 
     @Override
     protected int getLayoutId() {
@@ -57,6 +74,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
         continueCookView = findViewById(R.id.multi_work_start);
         cookDurationView = findViewById(R.id.multi_work_total);
         curCookInfoViewGroup = findViewById(R.id.multi_work_cur_info);
+        cookChart = findViewById(R.id.cook_chart);
         initOptViewTag();
         setOnClickListener(R.id.multi_work_pause,R.id.multi_work_start);
     }
@@ -169,6 +187,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
         //展示
         multiSegments = getIntent().getParcelableArrayListExtra(Constant.SEGMENT_DATA_FLAG);
         setOptContent(multiSegments);
+        cookChart.setNoDataText(getResources().getString(R.string.steam_no_curve_data));
     }
 
     @Override
@@ -275,6 +294,93 @@ public class MultiWorkActivity extends SteamBaseActivity {
         multiSegments = data.getParcelableExtra(Constant.SEGMENT_DATA_FLAG);
         setOptContent(multiSegments);
     }
+
+    private long curveId = 3432;
+    //曲线详情
+    private SteamCurveDetail panCurveDetail;
+    //获取曲线详情
+    private void getCurveDetail() {
+        CloudHelper.getCurvebookDetail(this, curveId, GetCurveDetailRes.class, new RetrofitCallback<GetCurveDetailRes>() {
+            @Override
+            public void onSuccess(GetCurveDetailRes getCurveDetailRes) {
+                if (null != getCurveDetailRes && null != getCurveDetailRes.payload) {
+                    panCurveDetail = getCurveDetailRes.payload;
+                    //这里用了曲线名
+                    //tvRecipeName.setText(panCurveDetail.name);
+
+                    List<CurveStep> curveSteps = new ArrayList<>();
+                    if (null != panCurveDetail.stepList) {
+                        curveSteps.addAll(panCurveDetail.stepList);
+                        //tvStartCook.setVisibility(View.VISIBLE);
+                    }
+                    //rvStep3Adapter.setList(curveSteps);
+                    //画曲线
+                    drawCurve(panCurveDetail);
+                }
+            }
+
+            @Override
+            public void onFaild(String err) {
+
+            }
+        });
+    }
+
+    //曲线绘制
+    private void drawCurve(SteamCurveDetail panCurveDetail) {
+        Map<String, String> params = null;
+        try {
+            String[] data = new String[3];
+            params = new Gson().fromJson(panCurveDetail.temperatureCurveParams, new TypeToken<LinkedHashMap<String, String>>(){}.getType());
+            ArrayList<Entry> entryList = new ArrayList<>();
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                data = entry.getValue().split("-");
+                entryList.add(new Entry(Float.parseFloat(entry.getKey()), Float.parseFloat(data[0]))); //时间和温度
+            }
+
+            dm = new DynamicLineChartManager(cookChart, this);
+            dm.setLabelCount(5, 5);
+            dm.setAxisLine(true, false);
+            dm.setGridLine(false, false);
+            dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.steam_chart), entryList, true, false);
+            cookChart.notifyDataSetChanged();
+            //绘制步骤标记
+            List<CurveStep> stepList = panCurveDetail.stepList;
+            if (null != stepList) {
+                MarkViewStep mv = new MarkViewStep(this, cookChart.getXAxis().getValueFormatter());
+                mv.setChartView(cookChart);
+                cookChart.setMarker(mv);
+                List<Highlight> highlights = new ArrayList<>();
+                int dataIndex = 1;
+                for (CurveStep step : stepList) {
+                    highlights.add(new Highlight(Float.parseFloat(step.markTime), step.markTemp, 0, dataIndex));
+                    dataIndex++;
+                }
+                cookChart.highlightValues(highlights.toArray(new Highlight[highlights.size()]));
+            }
+            //最后一点
+            //tvFire.setText("火力：" + data[1] + "档");
+            //tvTemp.setText("温度：" + data[0] + "℃");
+            //tvTime.setText("时间：" + TimeUtils.secToMinSecond(panCurveDetail.needTime));
+        } catch (Exception e) {
+            LogUtils.e(e.getMessage());
+            params = null;
+        }
+    }
+
+    private void showWorkEndDialog(){
+        SteamCommonDialog steamCommonDialog = new SteamCommonDialog(this);
+        steamCommonDialog.setContentText(R.string.steam_work_complete);
+        steamCommonDialog.setOKText(R.string.steam_common_step_complete);
+        steamCommonDialog.setListeners(v -> {
+            steamCommonDialog.dismiss();
+            if(v.getId() == R.id.tv_ok){
+
+            }
+        },R.id.tv_cancel,R.id.tv_ok);
+        steamCommonDialog.show();
+    }
+
 
 
 }

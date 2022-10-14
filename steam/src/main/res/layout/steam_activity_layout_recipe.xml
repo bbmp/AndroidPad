@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/steam_ic_bg_xingkong"
+    android:background="@drawable/steam_ic_bg_recipe_2"
     tools:context=".ui.activity.RecipeActivity">
 
     <include
@@ -34,6 +34,7 @@
         android:includeFontPadding="false"
         android:background="@null"
         android:hint="搜索"
+        android:imeOptions="actionSearch"
         android:textColor="@color/steam_white"
         android:textColorHint="@color/steam_white25"
         android:textSize="@dimen/sp_24"
@@ -72,6 +73,34 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ll_search"
         app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:id="@+id/recipe_search_prompt"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:text="@string/steam_recipe_search_no_result"
+        android:textColor="@color/steam_white"
+        android:textSize="@dimen/sp_48"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/recipe_search_prompt_btn"
+        app:layout_constraintTop_toTopOf="@id/recipe_search_prompt"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:text="@string/steam_all_recipe"
+        android:textSize="@dimen/sp_30"
+        android:gravity="center"
+        android:visibility="invisible"
+        android:background="@drawable/steam_shape_button_selected"
+        android:textColor="@color/steam_white"
+        android:layout_width="@dimen/dp_174"
+        android:layout_height="@dimen/dp_56"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

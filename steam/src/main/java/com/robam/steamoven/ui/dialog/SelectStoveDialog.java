@@ -51,21 +51,21 @@ public class SelectStoveDialog extends BaseDialog {
         for (Device device: AccountInfo.getInstance().deviceList) {
             if (device instanceof Stove && device.guid.equals(HomeSteamOven.getInstance().guid)) {
                 Stove stove = (Stove) device;
-                if (stove.leftStatus != StoveConstant.STOVE_CLOSE && stove.leftLevel != 0) {  //工作中
-                    viewLeft.setEnabled(false);
-                    tvLeftStove.setEnabled(false);
-                    tvLeftStatus.setEnabled(false);
-                    tvLeftStatus.setText(R.string.stove_stove_using);
-                    tvLeftClose.setVisibility(View.VISIBLE);
-                }
-                if (stove.rightStatus != StoveConstant.STOVE_CLOSE && stove.rightLevel != 0) {
-                    //工作中
-                    viewRight.setEnabled(false);
-                    tvRightStove.setEnabled(false);
-                    tvRightStatus.setEnabled(false);
-                    tvRightStatus.setText(R.string.stove_stove_using);
-                    tvRightClose.setVisibility(View.VISIBLE);
-                }
+//                if (stove.leftStatus != StoveConstant.STOVE_CLOSE && stove.leftLevel != 0) {  //工作中
+//                    viewLeft.setEnabled(false);
+//                    tvLeftStove.setEnabled(false);
+//                    tvLeftStatus.setEnabled(false);
+//                    tvLeftStatus.setText(R.string.st_stove_using);
+//                    tvLeftClose.setVisibility(View.VISIBLE);
+//                }
+//                if (stove.rightStatus != StoveConstant.STOVE_CLOSE && stove.rightLevel != 0) {
+//                    //工作中
+//                    viewRight.setEnabled(false);
+//                    tvRightStove.setEnabled(false);
+//                    tvRightStatus.setEnabled(false);
+//                    tvRightStatus.setText(R.string.stove_stove_using);
+//                    tvRightClose.setVisibility(View.VISIBLE);
+//                }
                 break;
             }
         }

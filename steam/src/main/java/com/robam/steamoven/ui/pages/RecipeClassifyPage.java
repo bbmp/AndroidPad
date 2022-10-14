@@ -18,6 +18,7 @@ import com.robam.steamoven.bean.DeviceConfigurationFunctions;
 import com.robam.steamoven.bean.model.SteamRecipe;
 import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.ui.activity.RecipeDetailActivity;
+import com.robam.steamoven.ui.activity.RecipeModeActivity;
 import com.robam.steamoven.ui.adapter.RvRecipeAdapter;
 
 import java.util.ArrayList;
@@ -49,12 +50,12 @@ public class RecipeClassifyPage extends SteamBasePage {
         Bundle bundle = getArguments();
         convertData(bundle.getParcelableArrayList(Constant.RECIPE_LIST_FLAG));
         rvRecipeAdapter.setList(stoveRecipeList);
-        rvRecipeAdapter.setOnItemClickListener((adapter, view, position) -> {
+        rvRecipeAdapter.setOnItemClickListener((adapter, view, pOosition) -> {
                 //startActivity(RecipeSelectedActivity.class);
-            SteamRecipe stoveRecipe = (SteamRecipe) adapter.getItem(position);
-            Intent intent = new Intent(getContext(), RecipeDetailActivity.class);
-            intent.putExtra(StoveConstant.EXTRA_RECIPE_ID, stoveRecipe.id);
-            startActivity(intent);
+//            SteamRecipe stoveRecipe = (SteamRecipe) adapter.getItem(position);
+//            Intent intent = new Intent(getContext(), RecipeModeActivity.class);
+//            intent.putExtra(StoveConstant.EXTRA_RECIPE_ID, stoveRecipe.id);
+//            startActivity(intent);
         });
     }
 

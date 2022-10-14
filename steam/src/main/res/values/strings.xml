@@ -1162,7 +1162,8 @@
     <string name="steam_cook_setting_prompt">暂停烹饪后,可调整烹饪设置</string>
     <string name="steam_work_multi_back_message">是否结束当前多段烹饪工作？</string>
     <string name="steam_work_multi_check_message">请设置前段内容</string>
-    <string name="stove_stove_using">占用</string>
-    <string name="stove_close_fire_use">关火后可以使用</string>
-    <string name="stove_stove_leisure">空闲</string>
+    <string name="steam_stove_using">占用</string>
+    <string name="steam_recipe_search_no_result">抱歉，未找到相关菜谱</string>
+    <string name="steam_all_recipe">全部菜谱</string>
+
 </resources>

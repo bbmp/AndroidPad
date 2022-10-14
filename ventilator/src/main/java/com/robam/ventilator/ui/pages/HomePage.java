@@ -288,6 +288,7 @@ public class HomePage extends VentilatorBasePage {
                 //跳转设备首页
                 Intent intent = new Intent();
                 intent.putExtra(ComnConstant.EXTRA_GUID, device.guid);
+                //device.dc = IDeviceType.RXDG;
                 switch (device.dc) {
                     case IDeviceType.RRQZ:
                         intent.setClassName(getContext(), IPublicStoveApi.STOVE_HOME);
