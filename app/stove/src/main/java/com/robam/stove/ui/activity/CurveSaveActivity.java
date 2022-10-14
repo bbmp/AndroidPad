@@ -2,10 +2,14 @@ package com.robam.stove.ui.activity;
 
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.BaseResponse;
+import com.robam.common.http.RetrofitCallback;
 import com.robam.common.manager.DynamicLineChartManager;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.ClearEditText;
@@ -13,9 +17,12 @@ import com.robam.common.ui.view.MarkViewStep;
 import com.robam.common.utils.ToastUtils;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBaseActivity;
+import com.robam.stove.bean.CurveStep;
 import com.robam.stove.constant.DialogConstant;
 import com.robam.common.constant.StoveConstant;
+import com.robam.stove.device.HomeStove;
 import com.robam.stove.factory.StoveDialogFactory;
+import com.robam.stove.http.CloudHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +35,10 @@ public class CurveSaveActivity extends StoveBaseActivity {
 
     private DynamicLineChartManager dm;
 
+    private TextView tvCurveName;
+
+    private List<CurveStep> curveSteps = new ArrayList<>();
+
     @Override
     protected int getLayoutId() {
         return R.layout.stove_activity_layout_curve_save;
@@ -38,6 +49,7 @@ public class CurveSaveActivity extends StoveBaseActivity {
         showCenter();
         showRightCenter();
 
+        tvCurveName = findViewById(R.id.tv_curve_name);
         cookChart = findViewById(R.id.cook_chart);
         cookChart.setNoDataText(getResources().getString(R.string.stove_no_curve_data)); //没有数据时显示的文字
         setOnClickListener(R.id.tv_back, R.id.tv_save, R.id.iv_edit_name);
@@ -56,13 +68,31 @@ public class CurveSaveActivity extends StoveBaseActivity {
             //回到首页
             startActivity(MainActivity.class);
         } else if (id == R.id.tv_save) {
-            //保存成功
-            ToastUtils.showShort(this, R.string.stove_save_success);
+            //保存曲线
+            saveCurve();
+
         } else if (id == R.id.iv_edit_name) {
             //编辑曲线名字
             curveEidt();
         }
     }
+    //保存曲线
+    private void saveCurve() {
+        CloudHelper.curveSave(this, AccountInfo.getInstance().getUser().getValue().id, HomeStove.getInstance().guid, tvCurveName.getText().toString(),
+                curveSteps, BaseResponse.class, new RetrofitCallback<BaseResponse>() {
+
+                    @Override
+                    public void onSuccess(BaseResponse baseResponse) {
+                        ToastUtils.showShort(CurveSaveActivity.this, R.string.stove_save_success);
+                    }
+
+                    @Override
+                    public void onFaild(String err) {
+
+                    }
+                });
+    }
+
     //曲线名称
     private void curveEidt() {
         if (null == editDialog) {
@@ -103,6 +133,10 @@ public class CurveSaveActivity extends StoveBaseActivity {
             ArrayList<Entry> entryList = getIntent().getParcelableArrayListExtra(StoveConstant.EXTRA_ENTRY_LIST);
 
             ArrayList<Entry> stepList = getIntent().getParcelableArrayListExtra(StoveConstant.EXTRA_STEP_LIST);
+            if (null != stepList) { //转化成标记步骤
+                for (int i=0; i<stepList.size(); i++)
+                    curveSteps.add(new CurveStep(i+1, stepList.get(i).getX() + "", stepList.get(i).getY()));
+            }
 
             if (null != entryList) {
                 dm = new DynamicLineChartManager(cookChart, this);

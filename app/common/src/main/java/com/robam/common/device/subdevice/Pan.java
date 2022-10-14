@@ -77,10 +77,11 @@ public class Pan extends Device {
 
     //收到蓝牙消息
     public boolean onBleReceived(MqttMsg msg) {
-        if (null != msg && null != msg.opt(PanConstant.status)) {
+        if (null != msg && null != msg.opt(PanConstant.workStatus)) {
             queryNum = 0; //查询超过一次无响应离线
             status = Device.ONLINE;
             panTemp = msg.optInt(PanConstant.temp);
+            workStatus = msg.optInt(PanConstant.workStatus);
             if (msg.has(PanConstant.fryMode))
                 fryMode = msg.optInt(PanConstant.fryMode);
             return true;

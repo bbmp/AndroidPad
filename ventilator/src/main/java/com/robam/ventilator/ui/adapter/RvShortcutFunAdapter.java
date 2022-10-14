@@ -6,6 +6,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.robam.ventilator.R;
 import com.robam.ventilator.bean.VenFunBean;
+import com.robam.ventilator.device.HomeVentilator;
 
 public class RvShortcutFunAdapter extends BaseQuickAdapter<VenFunBean, BaseViewHolder> {
     private int pickPosition = -1;
@@ -16,6 +17,10 @@ public class RvShortcutFunAdapter extends BaseQuickAdapter<VenFunBean, BaseViewH
         else
             this.pickPosition = pickPosition;
         notifyDataSetChanged();
+    }
+
+    public int getPickPosition() {
+        return pickPosition;
     }
 
     public RvShortcutFunAdapter() {

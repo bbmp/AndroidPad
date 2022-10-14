@@ -24,6 +24,10 @@ public interface ICloudService {
     String curveCookDetailUrl= "/rest/cks/api/curve_cookbook/v2/cooking_curve/query";
     //菜谱搜索
     String getCookbooksByName = "/rest/cks/api/cookbook/by-name/search";
+    //曲线创建开始记录
+    String createCurveStart = "/rest/cks/api/curve_cookbook/v2/cooking_curve/save";
+    //曲线保存
+    String submitStepUrl="/rest/cks/api/curve_cookbook/v2/cooking_curve_step/update";
 
 
     @POST(getRecipesByDevice)
@@ -48,4 +52,12 @@ public interface ICloudService {
     @POST(getCookbooksByName)
     @Headers("Content-Type: application/json")
     Call<ResponseBody> getCookbooksByName(@Body RequestBody body);
+
+    @POST(createCurveStart)
+    @Headers("Content-Type: application/json")
+    Call<ResponseBody> createCurveStart(@Body RequestBody body);
+
+    @POST(submitStepUrl)
+    @Headers("Content-Type: application/json")
+    Call<ResponseBody> curveSave(@Body RequestBody body);
 }

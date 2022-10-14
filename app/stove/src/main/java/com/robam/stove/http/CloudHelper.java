@@ -6,12 +6,17 @@ import com.robam.common.http.ILife;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.http.RetrofitClient;
 import com.robam.common.utils.LogUtils;
+import com.robam.stove.bean.CurveStep;
 import com.robam.stove.constant.HostServer;
+import com.robam.stove.request.CreateCurveStartReq;
+import com.robam.stove.request.CurveSaveReq;
 import com.robam.stove.request.GetCurveDetailReq;
 import com.robam.stove.request.GetRecipeDetailReq;
 import com.robam.stove.request.GetRecipesByDeviceReq;
 import com.robam.stove.request.GetUserReq;
 import com.robam.stove.request.RecipeSearchReq;
+
+import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -72,6 +77,22 @@ public class CloudHelper {
         RequestBody requestBody =
                 RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
         Call<ResponseBody> call = svr.getCookbooksByName(requestBody);
+        enqueue(iLife, entity, call, callback);
+    }
+    //创建曲线开始记录
+    public static <T extends BaseResponse> void createCurveStart(ILife iLife, long userId, String guid, int stoveId, Class<T> entity, final RetrofitCallback<T> callback) {
+        String json = new CreateCurveStartReq(userId, guid, stoveId).toString();
+        RequestBody requestBody =
+                RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
+        Call<ResponseBody> call = svr.createCurveStart(requestBody);
+        enqueue(iLife, entity, call, callback);
+    }
+    //曲线保存
+    public static <T extends BaseResponse> void curveSave(ILife iLife, long userId, String guid, String name, List<CurveStep> stepList, Class<T> entity, final RetrofitCallback<T> callback) {
+        String json = new CurveSaveReq(userId, guid, name, stepList).toString();
+        RequestBody requestBody =
+                RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
+        Call<ResponseBody> call = svr.curveSave(requestBody);
         enqueue(iLife, entity, call, callback);
     }
 

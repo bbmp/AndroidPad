@@ -16,6 +16,14 @@ public class PanConstant {
     public final static int MODE_CLOSE_FRY = 0;
     public final static int MODE_QUICK_FRY = 1; //持续快炒
     public final static int MODE_STIR_FRY = 2;//十秒翻炒
+    //工作状态
+    //0: 待机 1: 开机 2: 干烧预警(烟机WiFi检测到该标志且灶有开火,主动关闭 灶具所有炉头) 3: 低电量提醒 4: 温度传感器故障 5: 电机故障
+    public final static int WORK_0 = 0;
+    public final static int WORK_1 = 1;
+    public final static int WORK_2 = 2;
+    public final static int WORK_3 = 3;
+    public final static int WORK_4 = 4;
+    public final static int WORK_5 = 5;
 
     public final static int KEY1 = 1;//p档菜谱启停
     public final static int KEY2 = 2;//实时曲线记录启停
@@ -35,7 +43,7 @@ public class PanConstant {
     public final static String stepTemp = "step_temp";//温度
     public final static String stepTime = "step_time";//时间
     public final static String temp = "temp";  //锅温
-    public final static String status = "status"; //工作状态
+    public final static String workStatus = "work_status"; //工作状态
     public final static String lidStatus = "lid_status";//锅盖状态
     public final static String battery = "battery"; //电量
     public final static String runTime = "run_time"; //运行时间

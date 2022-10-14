@@ -200,6 +200,7 @@ public class RecipeCookActivity extends StoveBaseActivity {
             @Override
 
             public void run() {
+                //检查灶具是否离线
 
                 if (curStep >= rvStep2Adapter.getData().size()) {
                     //工作结束
