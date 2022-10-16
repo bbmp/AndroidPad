@@ -39,6 +39,7 @@ import com.robam.stove.device.HomeStove;
 import com.robam.stove.device.StoveAbstractControl;
 import com.robam.stove.factory.StoveDialogFactory;
 import com.robam.stove.http.CloudHelper;
+import com.robam.stove.response.CreateCurveStartRes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,6 +68,8 @@ public class CurveCreateActivity extends StoveBaseActivity {
     private Stove stove;
     private Pan pan;
     private int stoveId;
+    private long curveId;
+
 
     private IPublicPanApi iPublicPanApi = ModulePubliclHelper.getModulePublic(IPublicPanApi.class, IPublicPanApi.PAN_PUBLIC);
     @Override
@@ -133,12 +136,13 @@ public class CurveCreateActivity extends StoveBaseActivity {
             finish();
 
         if (null != iPublicPanApi) {
-            CloudHelper.createCurveStart(this, AccountInfo.getInstance().getUser().getValue().id, pan.guid, stoveId, BaseResponse.class, new RetrofitCallback<BaseResponse>() {
+            CloudHelper.createCurveStart(this, AccountInfo.getInstance().getUser().getValue().id, pan.guid, stoveId, CreateCurveStartRes.class, new RetrofitCallback<CreateCurveStartRes>() {
                 @Override
-                public void onSuccess(BaseResponse baseResponse) {
-                    if (null != baseResponse && baseResponse.rc == 0) {
+                public void onSuccess(CreateCurveStartRes createCurveStartRes) {
+                    if (null != createCurveStartRes && createCurveStartRes.rc == 0) {
                         tvTimeUnit.setVisibility(View.VISIBLE);
                         ivStop.setVisibility(View.VISIBLE);
+                        curveId = createCurveStartRes.payload;
                         //启动记录
                         Map params = new HashMap();
                         params.put(PanConstant.KEY2, new byte[] {(byte) stoveId, (byte) PanConstant.start});
@@ -317,6 +321,9 @@ public class CurveCreateActivity extends StoveBaseActivity {
         iPublicPanApi.setInteractionParams(pan.guid, params);
         //保存曲线
         Intent intent = new Intent();
+        intent.putExtra(StoveConstant.EXTRA_CURVE_ID, curveId);
+        intent.putExtra(StoveConstant.EXTRA_NEED_TIME, curTime);
+        intent.putExtra(StoveConstant.EXTRA_PAN_GUID, pan.guid);
         intent.putParcelableArrayListExtra(StoveConstant.EXTRA_ENTRY_LIST, entryList);
         intent.putParcelableArrayListExtra(StoveConstant.EXTRA_STEP_LIST, stepList);
         intent.setClass(CurveCreateActivity.this, CurveSaveActivity.class);

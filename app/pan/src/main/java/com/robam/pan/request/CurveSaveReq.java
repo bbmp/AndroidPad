@@ -6,6 +6,7 @@ import com.robam.pan.bean.CurveStep;
 import java.util.List;
 
 public class CurveSaveReq extends GetUserReq{
+
     private long curveCookbookId;
     public int needTime;
     private String deviceGuid;
