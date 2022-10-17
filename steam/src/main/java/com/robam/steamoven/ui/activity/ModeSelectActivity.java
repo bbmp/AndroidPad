@@ -1,6 +1,7 @@
 package com.robam.steamoven.ui.activity;
 
 import android.content.Intent;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -178,7 +179,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             tabLayout.addTab(timeTab);
             timeSelectPage = new TimeSelectPage(timeTab, defaultBean);
             fragments.add(new WeakReference<>(timeSelectPage));
-//添加设置适配器
+            //添加设置适配器
             selectPagerAdapter = new SelectPagerAdapter(getSupportFragmentManager());
             noScrollViewPager.setAdapter(selectPagerAdapter);
             noScrollViewPager.setOffscreenPageLimit(fragments.size());
@@ -196,8 +197,6 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
 
 
 
-
-
     @Override
     public void onClick(View view) {
         if (R.id.ll_left == view.getId()) {
@@ -208,17 +207,22 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             }else{
                 ViewGroup childGroup = (ViewGroup) tabLayout.getTabAt(0).getCustomView();
                 TextView valueTv = childGroup.findViewById(R.id.tv_mode); //模式
-                if("除垢".equals(valueTv.getText().toString())){
+                if(Constant.DESCALING_FLAG.equals(valueTv.getText().toString())){
                     Intent intent = new Intent(this,DescalingActivity.class);
+                    startActivity(intent);
+                }else{
+                    Intent intent = new Intent(this,ModelWorkActivity.class);
+                    List<MultiSegment> list = new ArrayList<>();
+                    list.add(getResult());
+                    list.get(0).setWorkModel(1);
+                    intent.putParcelableArrayListExtra(Constant.SEGMENT_DATA_FLAG, (ArrayList<? extends Parcelable>) list);
                     startActivity(intent);
                 }
             }
         }
     }
 
-    private void startSetResult(){
-        //tv_mode tv_temp  tv_mode
-        Intent result = new Intent();
+    private MultiSegment getResult(){
         MultiSegment segment = new MultiSegment();
         segment.funCode = curModeBean.funCode;
         for(int i = 0;i < tabLayout.getTabCount();i++){
@@ -252,8 +256,12 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
                 }
             }
         }
+        return segment;
+    }
 
-       result.putExtra(Constant.SEGMENT_DATA_FLAG,segment);
+    private void startSetResult(){
+       Intent result = new Intent();
+       result.putExtra(Constant.SEGMENT_DATA_FLAG,getResult());
        setResult(RESULT_OK,result);
        finish();
     }

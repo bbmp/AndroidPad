@@ -167,7 +167,7 @@ public class RecipeDetailActivity extends SteamBaseActivity {
 
     //获取菜谱详情
     private void getRecipeDetail() {
-        recipeId = 12598;
+        //recipeId = 12598;
         CloudHelper.getRecipeDetail(this, recipeId, "1", "1", GetRecipeDetailRes.class, new RetrofitCallback<GetRecipeDetailRes>() {
             @Override
             public void onSuccess(GetRecipeDetailRes getRecipeDetailRes) {

@@ -100,4 +100,7 @@ public interface Constant {
     String SEGMENT_WORK_FLAG = "isWork";
 
     String RECIPE_LIST_FLAG = "RecipeList";
+
+    String DESCALING_FLAG = "除垢";
+
 }

@@ -574,6 +574,7 @@
         <entry key="..\:/code/AndroidPad/steam/src/main/res/layout/steam_activity_layout_descaling.xml" value="0.25480974775545107" />
         <entry key="..\:/code/AndroidPad/steam/src/main/res/layout/steam_activity_layout_main.xml" value="0.20108695652173914" />
         <entry key="..\:/code/AndroidPad/steam/src/main/res/layout/steam_activity_layout_mode_select.xml" value="0.2612227447627191" />
+        <entry key="..\:/code/AndroidPad/steam/src/main/res/layout/steam_activity_layout_model_work.xml" value="0.23599828986746474" />
         <entry key="..\:/code/AndroidPad/steam/src/main/res/layout/steam_activity_layout_multi.xml" value="0.18" />
         <entry key="..\:/code/AndroidPad/steam/src/main/res/layout/steam_activity_layout_multi_opt_item.xml" value="0.1" />
         <entry key="..\:/code/AndroidPad/steam/src/main/res/layout/steam_activity_layout_multi_work.xml" value="0.31765711842667804" />
@@ -582,6 +583,7 @@
         <entry key="..\:/code/AndroidPad/steam/src/main/res/layout/steam_activity_layout_work.xml" value="0.3142368533561351" />
         <entry key="..\:/code/AndroidPad/steam/src/main/res/layout/steam_dialog_layout_common.xml" value="0.23300555793073963" />
         <entry key="..\:/code/AndroidPad/steam/src/main/res/layout/steam_dialog_layout_error.xml" value="0.3142368533561351" />
+        <entry key="..\:/code/AndroidPad/steam/src/main/res/layout/steam_dialog_layout_overtime.xml" value="0.3142368533561351" />
         <entry key="..\:/code/AndroidPad/steam/src/main/res/layout/steam_item_mode_select.xml" value="0.21633176571184268" />
         <entry key="..\:/code/AndroidPad/steam/src/main/res/layout/steam_page_layout_home.xml" value="0.20108695652173914" />
         <entry key="..\:/code/AndroidPad/steam/src/main/res/layout/steam_page_layout_mode_select.xml" value="0.21633176571184268" />
@@ -615,7 +617,7 @@
   <component name="VisualizationToolProject">
     <option name="state">
       <ProjectState>
-        <option name="scale" value="0.3142368533561351" />
+        <option name="scale" value="0.23300555793073963" />
       </ProjectState>
     </option>
   </component>

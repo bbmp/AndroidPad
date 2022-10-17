@@ -50,12 +50,12 @@ public class RecipeClassifyPage extends SteamBasePage {
         Bundle bundle = getArguments();
         convertData(bundle.getParcelableArrayList(Constant.RECIPE_LIST_FLAG));
         rvRecipeAdapter.setList(stoveRecipeList);
-        rvRecipeAdapter.setOnItemClickListener((adapter, view, pOosition) -> {
+        rvRecipeAdapter.setOnItemClickListener((adapter, view, position) -> {
                 //startActivity(RecipeSelectedActivity.class);
-//            SteamRecipe stoveRecipe = (SteamRecipe) adapter.getItem(position);
-//            Intent intent = new Intent(getContext(), RecipeModeActivity.class);
-//            intent.putExtra(StoveConstant.EXTRA_RECIPE_ID, stoveRecipe.id);
-//            startActivity(intent);
+            SteamRecipe stoveRecipe = (SteamRecipe) adapter.getItem(position);
+            Intent intent = new Intent(getContext(), RecipeDetailActivity.class);
+            intent.putExtra(StoveConstant.EXTRA_RECIPE_ID, stoveRecipe.id);
+            startActivity(intent);
         });
     }
 

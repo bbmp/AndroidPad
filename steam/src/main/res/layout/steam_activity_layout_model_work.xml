@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/steam_ic_bg_xingkong"
+    tools:context=".ui.activity.RecipeActivity">
+
+    <include
+        android:id="@+id/ll_title"
+        layout="@layout/steam_view_layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5"
+        android:layout_height="@dimen/dp_10"
+        android:layout_width="@dimen/dp_10"/>
+
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/cook_chart"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/dp_140"
+        android:layout_marginBottom="@dimen/dp_80"
+        android:layout_marginTop="@dimen/dp_174"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/guideline2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:keepScreenOn="true" />
+
+
+
+
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.68"
+        android:layout_height="@dimen/dp_10"
+        android:layout_width="@dimen/dp_10"/>
+
+    <TextView
+        android:id="@+id/multi_work_total"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_100"
+        android:layout_marginLeft="@dimen/dp_67"
+        android:textColor="@color/steam_white"
+        app:layout_constraintTop_toTopOf="@id/guideline"
+        app:layout_constraintBottom_toBottomOf="@id/guideline"
+        app:layout_constraintLeft_toRightOf="@id/guideline2"
+        tools:text="22min"/>
+
+    <TextView
+        android:id="@+id/model_work_prompt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_32"
+        android:layout_marginLeft="@dimen/dp_60"
+        android:textColor="@color/steam_white"
+        android:visibility="invisible"
+        android:text="@string/steam_preheating"
+        app:layout_constraintTop_toTopOf="@id/guideline"
+        app:layout_constraintBottom_toBottomOf="@id/guideline"
+        app:layout_constraintLeft_toRightOf="@id/multi_work_total"
+        tools:visibility="visible"/>
+
+    <ImageView
+        android:id="@+id/multi_work_pause"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
+        android:src="@drawable/steam_ic_pause"
+        app:layout_constraintTop_toTopOf="@id/guideline"
+        app:layout_constraintBottom_toBottomOf="@id/guideline"
+        app:layout_constraintLeft_toRightOf="@id/model_work_prompt"
+        app:layout_constraintRight_toRightOf="parent"
+        android:text="22min"/>
+
+
+    <ImageView
+        android:id="@+id/multi_work_start"
+        android:layout_width="@dimen/dp_112"
+        android:layout_height="@dimen/dp_112"
+        android:src="@drawable/steam_ic_start_blue"
+        app:layout_constraintBottom_toBottomOf="@id/guideline"
+        app:layout_constraintTop_toTopOf="@id/guideline"
+        app:layout_constraintLeft_toRightOf="@id/multi_work_total"
+        app:layout_constraintRight_toRightOf="parent"
+        android:visibility="invisible"
+        android:text="22min"/>
+
+    <LinearLayout
+        android:id="@+id/multi_work_cur_info"
+        android:layout_marginLeft="@dimen/dp_67"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/cook_chart"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/dp_166"
+        android:orientation="horizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/multi_item_cur_model"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_40"
+            android:textColor="@color/steam_white_65"
+            tools:text="高温蒸"/>
+
+        <TextView
+            android:id="@+id/multi_item_cur_temperature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/sp_40"
+            android:textSize="@dimen/sp_40"
+            android:textColor="@color/steam_white_65"
+            tools:text="100C"/>
+
+        <TextView
+            android:id="@+id/multi_item_cur_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_40"
+            android:layout_marginLeft="@dimen/sp_40"
+            android:textColor="@color/steam_white_65"
+            tools:text="20min"/>
+    </LinearLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

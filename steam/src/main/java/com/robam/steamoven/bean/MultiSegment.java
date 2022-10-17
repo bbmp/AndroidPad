@@ -3,6 +3,9 @@ package com.robam.steamoven.bean;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Range;
+
+import androidx.annotation.IntRange;
 
 import java.io.Serializable;
 
@@ -33,6 +36,14 @@ public class MultiSegment implements Parcelable {
     public static final int COOK_STATE_PAUSE = 1 << 2;
     public static final int COOK_STATE_FINISH = 1 << 3;
 
+    /**
+     *  0 - 工作模式 ； 1 - 预热模式
+     */
+    private int workModel = 0;
+
+    public static final int WORK_MODEL_ = 0;
+    public static final int COOK_STATE_PREHEAT = 1;
+
 
 
 
@@ -50,6 +61,7 @@ public class MultiSegment implements Parcelable {
         defTemp = in.readString();
         downTemp = in.readString();
         cookState = in.readInt();
+        workModel = in.readInt();
     }
 
     public static final Creator<MultiSegment> CREATOR = new Creator<MultiSegment>() {
@@ -75,6 +87,18 @@ public class MultiSegment implements Parcelable {
 
     public boolean isPause(){
         return (cookState & COOK_STATE_PAUSE) != 0;
+    }
+
+    public void setWorkModel(@IntRange(from = 0,to = 1) int workModel) {
+        this.workModel = workModel;
+    }
+
+    public boolean isPreheat(){
+        return workModel == COOK_STATE_PREHEAT;
+    }
+
+    public int getWorkModel() {
+        return workModel;
     }
 
     /**
@@ -111,5 +135,6 @@ public class MultiSegment implements Parcelable {
         parcel.writeString(defTemp);
         parcel.writeString(downTemp);
         parcel.writeInt(cookState);
+        parcel.writeInt(workModel);
     }
 }
