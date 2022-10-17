@@ -12,8 +12,10 @@ public class PanCurveDetail implements Serializable {
     public String imageCover;
     //温度
     public String temperatureCurveParams;
-    //电机
+    //灶具控制方式
     public String curveStageParams;
+    //无人锅搅拌参数
+    public String smartPanModeCurveParams;
     //
     public int needTime;
     //步骤

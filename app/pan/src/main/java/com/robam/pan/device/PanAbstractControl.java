@@ -34,8 +34,13 @@ public class PanAbstractControl implements PanFunction{
     }
 
     @Override
-    public void setCurveStepParams(String targetGuid, int stoveId, List<CurveStep> curveSteps) {
-        function.setCurveStepParams(targetGuid, stoveId, curveSteps);
+    public void setCurvePanParams(String targetGuid, String smartPanCurveParams) {
+        function.setCurvePanParams(targetGuid, smartPanCurveParams);
+    }
+
+    @Override
+    public void setCurveStoveParams(String targetGuid, int stoveId, String curveStageParams) {
+        function.setCurveStoveParams(targetGuid, stoveId, curveStageParams);
     }
 
     @Override

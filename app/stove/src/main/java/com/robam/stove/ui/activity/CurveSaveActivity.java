@@ -9,19 +9,19 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.BaseResponse;
-import com.robam.common.constant.PanConstant;
+import com.robam.common.bean.LineChartDataBean;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.manager.DynamicLineChartManager;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.ClearEditText;
 import com.robam.common.ui.view.MarkViewStep;
+import com.robam.common.utils.ChartDataUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBaseActivity;
 import com.robam.stove.bean.CurveStep;
 import com.robam.stove.constant.DialogConstant;
 import com.robam.common.constant.StoveConstant;
-import com.robam.stove.device.HomeStove;
 import com.robam.stove.factory.StoveDialogFactory;
 import com.robam.stove.http.CloudHelper;
 
@@ -39,6 +39,8 @@ public class CurveSaveActivity extends StoveBaseActivity {
     private TextView tvCurveName;
 
     private List<CurveStep> curveSteps = new ArrayList<>();
+
+    private String curveStageParams;
 
     private long curveId; //曲线id
     private int needTime;
@@ -84,7 +86,7 @@ public class CurveSaveActivity extends StoveBaseActivity {
     //保存曲线
     private void saveCurve() {
         CloudHelper.curveSave(this, AccountInfo.getInstance().getUser().getValue().id, curveId, panGuid, tvCurveName.getText().toString(),
-                needTime, curveSteps, BaseResponse.class, new RetrofitCallback<BaseResponse>() {
+                needTime, curveSteps, curveStageParams, BaseResponse.class, new RetrofitCallback<BaseResponse>() {
 
                     @Override
                     public void onSuccess(BaseResponse baseResponse) {
@@ -140,6 +142,12 @@ public class CurveSaveActivity extends StoveBaseActivity {
             curveId = getIntent().getLongExtra(StoveConstant.EXTRA_CURVE_ID, -1);
             panGuid = getIntent().getStringExtra(StoveConstant.EXTRA_PAN_GUID);
             ArrayList<Entry> entryList = getIntent().getParcelableArrayListExtra(StoveConstant.EXTRA_ENTRY_LIST);
+            if (null != entryList) {
+                List<LineChartDataBean> list = new ArrayList<>();
+                for (int i=0; i<entryList.size(); i++)
+                    list.add(new LineChartDataBean(entryList.get(i).getX(), entryList.get(i).getY()));
+                curveStageParams = ChartDataUtils.listToJsonStr(list);
+            }
 
             ArrayList<Entry> stepList = getIntent().getParcelableArrayListExtra(StoveConstant.EXTRA_STEP_LIST);
             if (null != stepList) { //转化成标记步骤

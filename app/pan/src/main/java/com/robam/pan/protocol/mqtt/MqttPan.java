@@ -5,6 +5,7 @@ import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.RTopic;
 import com.robam.common.ble.BleDecoder;
+import com.robam.common.constant.StoveConstant;
 import com.robam.common.device.Plat;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.mqtt.MqttMsg;
@@ -161,18 +162,52 @@ public class MqttPan extends MqttPublic {
             case MsgKeys.GetPotTemp_Req: //属性查询
                 buf.put((byte) ITerminalType.PAD);
                 break;
-            case MsgKeys.POT_INTERACTION_Req:
+            case MsgKeys.POT_INTERACTION_Req: {
 //                buf.put((byte) 0x00);// 蓝牙品类
 
                 JSONArray jsonArray = msg.optJSONArray(PanConstant.interaction);
                 buf.put((byte) jsonArray.length());//参数个数
-                for (int i = 0; i<jsonArray.length(); i++) {
+                for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.optJSONObject(i);
                     buf.put((byte) jsonObject.optInt(PanConstant.key)); //key
                     byte[] value = (byte[]) jsonObject.opt(PanConstant.value);
                     buf.put((byte) value.length); //
                     buf.put(value);
                 }
+            }
+                break;
+            case MsgKeys.POT_CURVETEMP_Req: { //曲线还原灶参数设置
+                buf.putFloat(0); //菜谱id ，0为曲线还原，4个字节
+                buf.put((byte) msg.optInt(PanConstant.stoveId)); //炉头id
+                JSONArray jsonArray = msg.optJSONArray(PanConstant.steps);
+                buf.put((byte) jsonArray.length()); //参数个数
+                for (int i = 0; i<jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.optJSONObject(i);
+                    buf.put((byte) jsonObject.optInt(PanConstant.key)); //步骤key
+                    buf.put((byte) 6); //length
+                    buf.put((byte) 0);//控制方式
+                    buf.put((byte) jsonObject.optInt(PanConstant.level)); //灶具挡位
+                    buf.putShort((short) jsonObject.opt(PanConstant.stepTemp)); //温度
+                    buf.putShort((short) jsonObject.optInt(PanConstant.stepTime)); //步骤时间
+                }
+            }
+            break;
+            case MsgKeys.POT_CURVEElectric_Req: {//曲线还原锅参数设置
+                buf.putFloat(0);// 菜谱id ，0为曲线还原，4个字节
+                JSONArray jsonArray = msg.optJSONArray(PanConstant.steps);
+                buf.put((byte) jsonArray.length()); //参数个数
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.optJSONObject(i);
+                    buf.put((byte) jsonObject.optInt(PanConstant.key)); //步骤key
+                    buf.put((byte) 7);
+                    buf.put((byte) jsonObject.optInt(PanConstant.value)); //搅拌参数
+                    buf.putShort((short) jsonObject.optInt(PanConstant.stepTime)); //当前步骤持续时间
+                    buf.put((byte) 0);   //正转转速
+                    buf.put((byte) 0);   //反转转速
+                    buf.put((byte) 0); //正转时间
+                    buf.put((byte) 0); //反转时间
+                }
+            }
                 break;
         }
         encodeMsg(buf, msg);

@@ -26,13 +26,12 @@ import com.robam.common.utils.TimeUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBaseActivity;
-import com.robam.stove.bean.CurveStep;
 import com.robam.common.device.subdevice.Stove;
+import com.robam.stove.bean.CurveStep;
 import com.robam.stove.bean.StoveCurveDetail;
 import com.robam.stove.constant.DialogConstant;
 import com.robam.common.constant.StoveConstant;
 import com.robam.stove.device.HomeStove;
-import com.robam.stove.device.StoveAbstractControl;
 import com.robam.stove.factory.StoveDialogFactory;
 import com.robam.stove.http.CloudHelper;
 import com.robam.stove.response.GetCurveDetailRes;
@@ -189,7 +188,7 @@ public class CurveSelectedActivity extends StoveBaseActivity {
     //设置曲线还原参数
     private void setParams(StoveCurveDetail stoveCurveDetail, int stoveId) {
         if (null != stoveCurveDetail) {
-            StoveAbstractControl.getInstance().setCurveStepParams(HomeStove.getInstance().guid, stoveId, stoveCurveDetail.stepList);
+//            StoveAbstractControl.getInstance().setCurveStepParams(HomeStove.getInstance().guid, stoveId, stoveCurveDetail.stepList);
         }
     }
 

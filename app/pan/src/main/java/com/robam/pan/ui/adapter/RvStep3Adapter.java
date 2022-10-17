@@ -1,6 +1,5 @@
 package com.robam.pan.ui.adapter;
 
-import android.view.View;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -10,7 +9,6 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.robam.common.utils.ImageUtils;
 import com.robam.pan.R;
 import com.robam.pan.bean.CurveStep;
-import com.robam.pan.bean.RecipeStep;
 
 //曲线步骤
 public class RvStep3Adapter extends BaseQuickAdapter<CurveStep, BaseViewHolder> {

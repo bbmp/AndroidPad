@@ -11,7 +11,6 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.robam.common.utils.DateUtil;
 import com.robam.pan.R;
 import com.robam.pan.bean.CurveStep;
-import com.robam.pan.bean.RecipeStep;
 
 public class RvStep2Adapter extends BaseQuickAdapter<CurveStep, BaseViewHolder> {
     private int curStep;

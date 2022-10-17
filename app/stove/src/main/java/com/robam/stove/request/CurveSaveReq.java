@@ -12,14 +12,16 @@ public class CurveSaveReq extends GetUserReq{
     private String deviceGuid;
     private String name;
     private List<CurveStep> stepList;
+    private String curveStageParams; //控制方式
 
-    public CurveSaveReq(long userId, long curveId, String guid, String name, int needTime, List<CurveStep> stepList) {
+    public CurveSaveReq(long userId, long curveId, String guid, String name, int needTime, List<CurveStep> stepList, String curveStage) {
         super(userId);
         this.curveCookbookId = curveId;
         this.deviceGuid = guid;
         this.name = name;
         this.stepList = stepList;
         this.needTime = needTime;
+        this.curveStageParams = curveStage;
     }
 
     @Override

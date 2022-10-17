@@ -66,28 +66,36 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
                     baseViewHolder.setImageResource(R.id.iv_online, R.drawable.ventilator_shape_offline_bg);
                 } else {
                     //在线
+                    Stove stove = (Stove) device;
                     baseViewHolder.setText(R.id.tv_online, R.string.ventilator_online);
                     baseViewHolder.setImageResource(R.id.iv_online, R.drawable.ventilator_shape_online_bg);
-                    if (device.getWorkStatus() == 0) {  //未工作
+                    if (stove.leftLevel == 0 && stove.rightLevel == 0) {  //未工作
                         baseViewHolder.setVisible(R.id.layout_offline, true);
                         baseViewHolder.setGone(R.id.layout_work, true);
                         baseViewHolder.setGone(R.id.btn_detail, true);
                         baseViewHolder.setText(R.id.tv_hint, "轻松烹饪\n智享厨房");
                     } else {
-                        if (device.getWorkStatus() != 0) { //工作状态
-                            baseViewHolder.setGone(R.id.layout_offline, true);
-                            baseViewHolder.setVisible(R.id.layout_work, true);
-                            baseViewHolder.setVisible(R.id.ventilator_group7, true);//显示灶具
-                            baseViewHolder.setGone(R.id.ventilator_group6, true);
-                            TextView leftClose = baseViewHolder.getView(R.id.btn_left_close);
-                            Stove stove = (Stove) device;
-                            if (stove.leftWorkMode != 0) {
-                                leftClose.setBackgroundResource(R.drawable.ventilator_shape_button_selected);
-                                leftClose.setTextColor(getContext().getResources().getColor(R.color.ventilator_white));
-                            } else {
-                                leftClose.setBackgroundResource(R.drawable.ventilator_shape_button_unselected);
-                                leftClose.setTextColor(getContext().getResources().getColor(R.color.ventilator_white_50));
-                            }
+                        //工作状态
+                        baseViewHolder.setGone(R.id.layout_offline, true);
+                        baseViewHolder.setVisible(R.id.layout_work, true);
+                        baseViewHolder.setVisible(R.id.ventilator_group7, true);//显示灶具
+                        baseViewHolder.setGone(R.id.ventilator_group6, true);
+                        TextView leftClose = baseViewHolder.getView(R.id.btn_left_close);
+                        TextView rightClose = baseViewHolder.getView(R.id.btn_right_close);
+
+                        if (stove.leftLevel != 0) {
+                            leftClose.setBackgroundResource(R.drawable.ventilator_shape_button_selected);
+                            leftClose.setTextColor(getContext().getResources().getColor(R.color.ventilator_white));
+                        } else {
+                            leftClose.setBackgroundResource(R.drawable.ventilator_shape_button_unselected);
+                            leftClose.setTextColor(getContext().getResources().getColor(R.color.ventilator_white_50));
+                        }
+                        if (stove.rightLevel != 0) {
+                            rightClose.setBackgroundResource(R.drawable.ventilator_shape_button_selected);
+                            rightClose.setTextColor(getContext().getResources().getColor(R.color.ventilator_white));
+                        } else {
+                            rightClose.setBackgroundResource(R.drawable.ventilator_shape_button_unselected);
+                            rightClose.setTextColor(getContext().getResources().getColor(R.color.ventilator_white_50));
                         }
                     }
                 }
