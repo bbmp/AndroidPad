@@ -39,6 +39,7 @@ import com.robam.stove.device.HomeStove;
 import com.robam.stove.device.StoveAbstractControl;
 import com.robam.stove.factory.StoveDialogFactory;
 import com.robam.stove.http.CloudHelper;
+import com.robam.stove.response.CreateCurveStartRes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,6 +55,8 @@ public class CurveCreateActivity extends StoveBaseActivity {
     private int curTime = 0;
     private TextView tvFire, tvTemp, tvTime;
 
+    private TextView tvTimeUnit;
+
     private IDialog stopDialog;
     //
     private LineChart cookChart;
@@ -65,6 +68,8 @@ public class CurveCreateActivity extends StoveBaseActivity {
     private Stove stove;
     private Pan pan;
     private int stoveId;
+    private long curveId;
+
 
     private IPublicPanApi iPublicPanApi = ModulePubliclHelper.getModulePublic(IPublicPanApi.class, IPublicPanApi.PAN_PUBLIC);
     @Override
@@ -83,6 +88,8 @@ public class CurveCreateActivity extends StoveBaseActivity {
         tvFire = findViewById(R.id.tv_fire);
         tvTemp = findViewById(R.id.tv_temp);
         tvTime = findViewById(R.id.tv_time);
+        tvTimeUnit = findViewById(R.id.tv_time_unit);
+        ivStop = findViewById(R.id.iv_stop_create);
         cookChart = findViewById(R.id.cook_chart);
         cookChart.setNoDataText(getResources().getString(R.string.stove_no_curve_data)); //没有数据时显示的文字
         setOnClickListener(R.id.ll_left, R.id.iv_stop_create);
@@ -91,7 +98,7 @@ public class CurveCreateActivity extends StoveBaseActivity {
             @Override
             public void onChanged(String s) {
                 for (Device device: AccountInfo.getInstance().deviceList) {
-                    if (device.guid.equals(s) && device.guid.equals(HomeStove.getInstance().guid) && device instanceof Stove) { //当前灶
+                    if (device.guid.equals(s) && device.guid.equals(HomeStove.getInstance().guid) && device instanceof Stove && curTime > 0) { //当前灶且创建已开始
                         Stove stove = (Stove) device;
                         //开火提示状态
                         if (stoveId == IPublicStoveApi.STOVE_LEFT && stove.leftStatus == StoveConstant.WORK_CLOSE) { //左灶已关火
@@ -101,14 +108,14 @@ public class CurveCreateActivity extends StoveBaseActivity {
                             //跳转保存
                             saveCurve(false);
                         } else if (stove.status == Device.OFFLINE) {
-                            ToastUtils.showShort(CurveCreateActivity.this, R.string.stove_stove_offline);
+
                         }
 
                         break;
-                    } else if (device.guid.equals(s) && device instanceof Pan) { //检查锅状态锅
+                    } else if (device.guid.equals(s) && device instanceof Pan && curTime > 0) { //检查锅状态锅
                         Pan pan = (Pan) device;
                         if (pan.status == Device.OFFLINE) { //锅已离线
-                            ToastUtils.showShort(CurveCreateActivity.this, R.string.stove_pan_offline);
+
                         }
                     }
                 }
@@ -129,10 +136,13 @@ public class CurveCreateActivity extends StoveBaseActivity {
             finish();
 
         if (null != iPublicPanApi) {
-            CloudHelper.createCurveStart(this, AccountInfo.getInstance().getUser().getValue().id, stove.guid, stoveId, BaseResponse.class, new RetrofitCallback<BaseResponse>() {
+            CloudHelper.createCurveStart(this, AccountInfo.getInstance().getUser().getValue().id, pan.guid, stoveId, CreateCurveStartRes.class, new RetrofitCallback<CreateCurveStartRes>() {
                 @Override
-                public void onSuccess(BaseResponse baseResponse) {
-                    if (null != baseResponse && baseResponse.rc == 0) {
+                public void onSuccess(CreateCurveStartRes createCurveStartRes) {
+                    if (null != createCurveStartRes && createCurveStartRes.rc == 0) {
+                        tvTimeUnit.setVisibility(View.VISIBLE);
+                        ivStop.setVisibility(View.VISIBLE);
+                        curveId = createCurveStartRes.payload;
                         //启动记录
                         Map params = new HashMap();
                         params.put(PanConstant.KEY2, new byte[] {(byte) stoveId, (byte) PanConstant.start});
@@ -143,7 +153,8 @@ public class CurveCreateActivity extends StoveBaseActivity {
 
                 @Override
                 public void onFaild(String err) {
-
+                    ToastUtils.showShort(CurveCreateActivity.this, R.string.stove_connect_failed);
+                    finish();
                 }
             });
         }
@@ -294,6 +305,10 @@ public class CurveCreateActivity extends StoveBaseActivity {
     }
     //保存曲线
     private void saveCurve(boolean closeFire) {
+        if (entryList.size() == 0) {
+            finish();   //没有曲线数据
+            return;
+        }
         //结束步骤
         addStep();
         //关火
@@ -302,9 +317,13 @@ public class CurveCreateActivity extends StoveBaseActivity {
         //停止记录
         Map params = new HashMap();
         params.put(PanConstant.KEY2, new byte[] {(byte) stoveId, (byte) PanConstant.stop});
+        params.put(PanConstant.KEY6, new byte[] {(byte) PanConstant.MODE_CLOSE_FRY}); //停止搅拌
         iPublicPanApi.setInteractionParams(pan.guid, params);
         //保存曲线
         Intent intent = new Intent();
+        intent.putExtra(StoveConstant.EXTRA_CURVE_ID, curveId);
+        intent.putExtra(StoveConstant.EXTRA_NEED_TIME, curTime);
+        intent.putExtra(StoveConstant.EXTRA_PAN_GUID, pan.guid);
         intent.putParcelableArrayListExtra(StoveConstant.EXTRA_ENTRY_LIST, entryList);
         intent.putParcelableArrayListExtra(StoveConstant.EXTRA_STEP_LIST, stepList);
         intent.setClass(CurveCreateActivity.this, CurveSaveActivity.class);

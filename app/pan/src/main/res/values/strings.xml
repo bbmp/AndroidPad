@@ -60,4 +60,7 @@
     <string name="pan_need_match_stove">需匹配智能灶具进行烹饪</string>
     <string name="pan_go_match">去匹配</string>
     <string name="pan_offline">智能锅已离线</string>
+    <string name="pan_stove_offline">智能灶已离线</string>
+    <string name="pan_pan_offline">智能锅已离线</string>
+    <string name="pan_connect_failed">网络连接失败</string>
 </resources>

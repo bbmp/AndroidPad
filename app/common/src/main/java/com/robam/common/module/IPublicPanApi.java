@@ -1,5 +1,7 @@
 package com.robam.common.module;
 
+import android.content.Context;
+
 import androidx.lifecycle.MutableLiveData;
 
 import com.robam.common.mqtt.IProtocol;
@@ -12,4 +14,6 @@ public interface IPublicPanApi extends IPublicApi {
     String PAN_PUBLIC = "com.robam.pan.device.PanFactory";
     //设置无人锅智能互动参数
     void setInteractionParams(String targetGuid, Map params);
+
+    void lowBatteryHint(Context context);  //低电量提示
 }

@@ -57,6 +57,12 @@ public class SelectStoveDialog extends BaseDialog {
                     tvLeftStatus.setEnabled(false);
                     tvLeftStatus.setText(R.string.stove_stove_using);
                     tvLeftClose.setVisibility(View.VISIBLE);
+                } else {
+                    viewLeft.setEnabled(true);
+                    tvLeftStove.setEnabled(true);
+                    tvLeftStatus.setEnabled(true);
+                    tvLeftStatus.setText(R.string.stove_stove_leisure);
+                    tvLeftClose.setVisibility(View.GONE);
                 }
                 if (stove.rightStatus != StoveConstant.STOVE_CLOSE && stove.rightLevel != 0) {
                     //工作中
@@ -65,6 +71,12 @@ public class SelectStoveDialog extends BaseDialog {
                     tvRightStatus.setEnabled(false);
                     tvRightStatus.setText(R.string.stove_stove_using);
                     tvRightClose.setVisibility(View.VISIBLE);
+                } else {
+                    viewRight.setEnabled(true);
+                    tvRightStove.setEnabled(true);
+                    tvRightStatus.setEnabled(true);
+                    tvRightStatus.setText(R.string.stove_stove_leisure);
+                    tvRightClose.setVisibility(View.GONE);
                 }
                 break;
             }

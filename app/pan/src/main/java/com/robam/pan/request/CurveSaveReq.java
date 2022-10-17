@@ -1,7 +1,7 @@
-package com.robam.stove.request;
+package com.robam.pan.request;
 
 import com.google.gson.Gson;
-import com.robam.stove.bean.CurveStep;
+import com.robam.pan.bean.CurveStep;
 
 import java.util.List;
 

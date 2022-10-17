@@ -7,16 +7,22 @@ import android.widget.TextView;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.BaseResponse;
+import com.robam.common.http.RetrofitCallback;
 import com.robam.common.manager.DynamicLineChartManager;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.ClearEditText;
 import com.robam.common.ui.view.MarkViewStep;
 import com.robam.common.utils.ToastUtils;
+import com.robam.pan.bean.CurveStep;
 import com.robam.pan.constant.DialogConstant;
 import com.robam.pan.R;
 import com.robam.pan.base.PanBaseActivity;
 import com.robam.common.constant.PanConstant;
+import com.robam.pan.device.HomePan;
 import com.robam.pan.factory.PanDialogFactory;
+import com.robam.pan.http.CloudHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +38,11 @@ public class CurveSaveActivity extends PanBaseActivity {
     private LineChart cookChart;
 
     private DynamicLineChartManager dm;
+
+    private List<CurveStep> curveSteps = new ArrayList<>();
+
+    private long curveId; //曲线id
+    private int needTime;
 
     @Override
     protected int getLayoutId() {
@@ -60,13 +71,30 @@ public class CurveSaveActivity extends PanBaseActivity {
             //回到首页
             startActivity(MainActivity.class);
         } else if (id == R.id.tv_save) {
-            //保存成功
-            ToastUtils.showShort(this, R.string.pan_save_success);
+            //保存曲线
+            saveCurve();
         } else if (id == R.id.iv_edit_name) {
             //编辑曲线名字
             curveEidt();
         }
     }
+    //保存曲线
+    private void saveCurve() {
+        CloudHelper.curveSave(this, AccountInfo.getInstance().getUser().getValue().id, curveId, HomePan.getInstance().guid, tvCurveName.getText().toString(),
+                needTime, curveSteps, BaseResponse.class, new RetrofitCallback<BaseResponse>() {
+
+                    @Override
+                    public void onSuccess(BaseResponse baseResponse) {
+                        ToastUtils.showShort(CurveSaveActivity.this, R.string.pan_save_success);
+                    }
+
+                    @Override
+                    public void onFaild(String err) {
+
+                    }
+                });
+    }
+
     //曲线命名
     private void curveEidt() {
         if (null == editDialog) {
@@ -106,9 +134,15 @@ public class CurveSaveActivity extends PanBaseActivity {
     //曲线绘制
     private void drawCurve() {
         if (null != getIntent()) {
+            needTime = getIntent().getIntExtra(PanConstant.EXTRA_NEED_TIME, 0);
+            curveId = getIntent().getLongExtra(PanConstant.EXTRA_CURVE_ID, -1);
             ArrayList<Entry> entryList = getIntent().getParcelableArrayListExtra(PanConstant.EXTRA_ENTRY_LIST);
 
             ArrayList<Entry> stepList = getIntent().getParcelableArrayListExtra(PanConstant.EXTRA_STEP_LIST);
+            if (null != stepList) { //转化成标记步骤
+                for (int i=0; i<stepList.size(); i++)
+                    curveSteps.add(new CurveStep(i+1, stepList.get(i).getX() + "", stepList.get(i).getY()));
+            }
 
             if (null != entryList) {
                 dm = new DynamicLineChartManager(cookChart, this);

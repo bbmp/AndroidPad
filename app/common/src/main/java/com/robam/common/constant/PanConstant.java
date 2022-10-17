@@ -9,10 +9,12 @@ public class PanConstant {
     public final static String EXTRA_CURVE_DETAIL = "curvedetail";
     public final static String EXTRA_ENTRY_LIST = "entry_list";
     public final static String EXTRA_STEP_LIST = "step_list";
+    public static final String EXTRA_NEED_TIME = "needtime";
+
 
     //锅状态
     public final static String Pot_status = "Pot_status";
-
+    //搅拌功能
     public final static int MODE_CLOSE_FRY = 0;
     public final static int MODE_QUICK_FRY = 1; //持续快炒
     public final static int MODE_STIR_FRY = 2;//十秒翻炒

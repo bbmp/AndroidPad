@@ -28,6 +28,8 @@ public class StoveConstant {
     public final static String EXTRA_ENTRY_LIST = "entry_list";
     public final static String EXTRA_STEP_LIST = "step_list";
     public final static String EXTRA_STOVE_ID = "stove_id";
+    public final static String EXTRA_NEED_TIME = "needtime";
+    public final static String EXTRA_PAN_GUID = "pan_guid";
 
     //炉头id
     public final static String isCook = "is_cook";

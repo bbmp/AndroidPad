@@ -26,6 +26,7 @@ import com.robam.common.ui.helper.VerticalSpaceItemDecoration;
 import com.robam.common.ui.view.MarkViewStep;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.TimeUtils;
+import com.robam.common.utils.ToastUtils;
 import com.robam.pan.R;
 import com.robam.pan.base.PanBaseActivity;
 import com.robam.pan.bean.CurveStep;
@@ -139,7 +140,7 @@ public class RecipeSelectedActivity extends PanBaseActivity {
         Intent intent = new Intent();
         intent.setClass(this, CurveRestoreActivity.class);
         if (null != panCurveDetail) {
-            panCurveDetail.stoveId = stoveId; //选中哪个炉头
+            intent.putExtra(StoveConstant.EXTRA_STOVE_ID, stoveId); //选中哪个炉头
             intent.putExtra(PanConstant.EXTRA_CURVE_DETAIL, panCurveDetail);
         }
         startActivity(intent);
@@ -171,6 +172,11 @@ public class RecipeSelectedActivity extends PanBaseActivity {
             //开始烹饪
             //炉头选择
             //检测锅和灶是否连接
+            //选择炉头
+            if (null == panCurveDetail || null == panCurveDetail.temperatureCurveParams) {
+                ToastUtils.showShort(this, R.string.pan_no_curve_data);
+                return;
+            }
             selectStove();
         }
     }

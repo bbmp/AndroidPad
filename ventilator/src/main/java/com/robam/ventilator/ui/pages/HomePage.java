@@ -26,6 +26,7 @@ import com.robam.common.bean.BaseResponse;
 import com.robam.common.constant.ComnConstant;
 import com.robam.common.device.Plat;
 import com.robam.common.manager.BlueToothManager;
+import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.MMKVUtils;
 import com.robam.dishwasher.bean.DishWasher;
@@ -108,6 +109,8 @@ public class HomePage extends VentilatorBasePage {
     }
 
     private long refreshTime;
+
+    private IPublicPanApi iPublicPanApi = ModulePubliclHelper.getModulePublic(IPublicPanApi.class, IPublicPanApi.PAN_PUBLIC);
 
     @Override
     protected int getLayoutId() {
@@ -340,6 +343,10 @@ public class HomePage extends VentilatorBasePage {
                             SteamAbstractControl.getInstance().pauseWork(device.guid);
                         else if (steamOven.workStatus == 5 || steamOven.workStatus == 3)  //暂停中
                             SteamAbstractControl.getInstance().continueWork(device.guid);
+                    } else if (device instanceof Pan) {
+                        Pan pan = (Pan) device;
+                        if (pan.workStatus == 3 && null != iPublicPanApi) //电量不足
+                            iPublicPanApi.lowBatteryHint(getContext());
                     }
                 }
                 //close products menu

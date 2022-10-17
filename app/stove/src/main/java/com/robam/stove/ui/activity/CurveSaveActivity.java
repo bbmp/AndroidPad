@@ -9,6 +9,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.BaseResponse;
+import com.robam.common.constant.PanConstant;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.manager.DynamicLineChartManager;
 import com.robam.common.ui.dialog.IDialog;
@@ -38,6 +39,10 @@ public class CurveSaveActivity extends StoveBaseActivity {
     private TextView tvCurveName;
 
     private List<CurveStep> curveSteps = new ArrayList<>();
+
+    private long curveId; //曲线id
+    private int needTime;
+    private String panGuid;
 
     @Override
     protected int getLayoutId() {
@@ -78,8 +83,8 @@ public class CurveSaveActivity extends StoveBaseActivity {
     }
     //保存曲线
     private void saveCurve() {
-        CloudHelper.curveSave(this, AccountInfo.getInstance().getUser().getValue().id, HomeStove.getInstance().guid, tvCurveName.getText().toString(),
-                curveSteps, BaseResponse.class, new RetrofitCallback<BaseResponse>() {
+        CloudHelper.curveSave(this, AccountInfo.getInstance().getUser().getValue().id, curveId, panGuid, tvCurveName.getText().toString(),
+                needTime, curveSteps, BaseResponse.class, new RetrofitCallback<BaseResponse>() {
 
                     @Override
                     public void onSuccess(BaseResponse baseResponse) {
@@ -113,6 +118,7 @@ public class CurveSaveActivity extends StoveBaseActivity {
                         ToastUtils.showShort(CurveSaveActivity.this, R.string.stove_input_empty);
                         return;
                     }
+                    tvCurveName.setText(editText.getText());
                     editDialog.dismiss();
                 }
             });
@@ -130,6 +136,9 @@ public class CurveSaveActivity extends StoveBaseActivity {
     //曲线绘制
     private void drawCurve() {
         if (null != getIntent()) {
+            needTime = getIntent().getIntExtra(StoveConstant.EXTRA_NEED_TIME, 0);
+            curveId = getIntent().getLongExtra(StoveConstant.EXTRA_CURVE_ID, -1);
+            panGuid = getIntent().getStringExtra(StoveConstant.EXTRA_PAN_GUID);
             ArrayList<Entry> entryList = getIntent().getParcelableArrayListExtra(StoveConstant.EXTRA_ENTRY_LIST);
 
             ArrayList<Entry> stepList = getIntent().getParcelableArrayListExtra(StoveConstant.EXTRA_STEP_LIST);

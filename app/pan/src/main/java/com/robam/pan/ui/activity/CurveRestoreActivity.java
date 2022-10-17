@@ -26,6 +26,7 @@ import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.VerticalSpaceItemDecoration;
 import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.ToastUtils;
 import com.robam.pan.bean.CurveStep;
 import com.robam.pan.bean.PanCurveDetail;
 import com.robam.pan.constant.DialogConstant;
@@ -70,6 +71,7 @@ public class CurveRestoreActivity extends PanBaseActivity {
 
     private Stove stove;
     private Pan pan;
+    private int stoveId;
 
     ArrayList<Entry> restoreList = new ArrayList<>();  //还原列表
 
@@ -82,8 +84,10 @@ public class CurveRestoreActivity extends PanBaseActivity {
     protected void initView() {
         showLeft();
         showCenter();
-        if (null != getIntent())
+        if (null != getIntent()) {
+            stoveId = getIntent().getIntExtra(StoveConstant.EXTRA_STOVE_ID, IPublicStoveApi.STOVE_LEFT);
             panCurveDetail = (PanCurveDetail) getIntent().getSerializableExtra(PanConstant.EXTRA_CURVE_DETAIL);
+        }
         if (null == panCurveDetail) //曲线详情为空
             finish();
         rvStep = findViewById(R.id.rv_step);
@@ -101,7 +105,34 @@ public class CurveRestoreActivity extends PanBaseActivity {
         //关闭动画,防止闪烁
         ((SimpleItemAnimator)rvStep.getItemAnimator()).setSupportsChangeAnimations(false);
         setOnClickListener(R.id.ll_left, R.id.tv_stop_cook);
+        //监听开火状态
+        AccountInfo.getInstance().getGuid().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                for (Device device: AccountInfo.getInstance().deviceList) {
+                    if (device.guid.equals(s) && device instanceof Stove && curTime > 0) { //当前灶且还原开始
+                        Stove stove = (Stove) device;
+                        //开火提示状态
+                        if (stoveId == IPublicStoveApi.STOVE_LEFT && stove.leftStatus == StoveConstant.WORK_CLOSE) { //左灶已关火
+                            //还原结束
+                            restoreComplete(false);
+                        } else if (stoveId == IPublicStoveApi.STOVE_RIGHT && stove.rightStatus == StoveConstant.WORK_CLOSE) { //右灶已关火
+                            //还原结束
+                            restoreComplete(false);
+                        } else if (stove.status == Device.OFFLINE) {
 
+                        }
+
+                        break;
+                    } else if (device.guid.equals(s) && device instanceof Pan && curTime > 0) { //检查锅状态锅
+                        Pan pan = (Pan) device;
+                        if (pan.status == Device.OFFLINE) { //锅已离线
+
+                        }
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -162,15 +193,7 @@ public class CurveRestoreActivity extends PanBaseActivity {
                 if (curStep >= rvStep2Adapter.getData().size()) {
                     //还原结束
                     //去烹饪结束
-                    Intent intent = new Intent();
-                    if (null != panCurveDetail) {
-                        intent.putExtra(PanConstant.EXTRA_CURVE_DETAIL, panCurveDetail);
-                        //关火
-                        closeFire();
-                    }
-                    intent.setClass(CurveRestoreActivity.this, RestoreCompleteActivity.class);
-                    startActivity(intent);
-                    finish();
+                    restoreComplete(true);
                     return;
                 }
                 CurveStep curveStep = rvStep2Adapter.getData().get(curStep);
@@ -182,7 +205,7 @@ public class CurveRestoreActivity extends PanBaseActivity {
                         restoreList.add(new Entry(curTime, pan.panTemp));//温度
                         cookChart.invalidate();
                         if (null != stove) {
-                            if (panCurveDetail.stoveId == IPublicStoveApi.STOVE_LEFT) //左灶
+                            if (stoveId == IPublicStoveApi.STOVE_LEFT) //左灶
                                 tvFire.setText("火力：" + stove.leftLevel + "档");
                             else
                                 tvFire.setText("火力：" + stove.rightLevel + "档");
@@ -212,7 +235,7 @@ public class CurveRestoreActivity extends PanBaseActivity {
             if (params.containsKey("0")) {
                 String[] data = params.get(curTime + "").split("-");
                 if (null != stove) {
-                    if (panCurveDetail.stoveId == IPublicStoveApi.STOVE_LEFT) //左灶
+                    if (stoveId == IPublicStoveApi.STOVE_LEFT) //左灶
                         tvFire.setText("火力：" + stove.leftLevel + "档");
                     else
                         tvFire.setText("火力：" + stove.rightLevel + "档");
@@ -223,19 +246,27 @@ public class CurveRestoreActivity extends PanBaseActivity {
         } catch (Exception e) {}
         mHandler.postDelayed(runnable, 1000L);
     }
+    //还原结束
+    private void restoreComplete(boolean closeFire) {
+        Intent intent = new Intent();
+        if (null != panCurveDetail) {
+            intent.putExtra(PanConstant.EXTRA_CURVE_DETAIL, panCurveDetail);
+            //关火
+            closeFire(closeFire);
+        }
+        intent.setClass(CurveRestoreActivity.this, RestoreCompleteActivity.class);
+        startActivity(intent);
+        finish();
+    }
 
     //关火操作
-    private void closeFire() {
+    private void closeFire(boolean closeFire) {
         IPublicStoveApi iPublicStoveApi = ModulePubliclHelper.getModulePublic(IPublicStoveApi.class,
                 IPublicStoveApi.STOVE_PUBLIC);
         //关火
-        if (null != iPublicStoveApi) {
-            for (Device device: AccountInfo.getInstance().deviceList) {
-                if (device instanceof Stove) {
-                    iPublicStoveApi.setAttribute(device.guid, (byte) panCurveDetail.stoveId, (byte) 0x00, (byte) StoveConstant.STOVE_CLOSE);
-                    break;
-                }
-            }
+        if (null != iPublicStoveApi && closeFire) {
+            iPublicStoveApi.setAttribute(stove.guid, (byte) stoveId, (byte) 0x00, (byte) StoveConstant.STOVE_CLOSE);
+
         }
 
     }
@@ -263,7 +294,7 @@ public class CurveRestoreActivity extends PanBaseActivity {
                     if (v.getId() == R.id.tv_ok) {
                         //关闭炉头
                         if (null != panCurveDetail) {
-                            closeFire();
+                            closeFire(true);
                         }
                         //回首页
                         startActivity(MainActivity.class);
