@@ -1,6 +1,5 @@
 package com.robam.stove.device;
 
-import com.robam.stove.bean.CurveStep;
 
 import java.util.List;
 
@@ -54,11 +53,6 @@ public class StoveAbstractControl implements StoveFunction{
     @Override
     public void setRecipe(String targetGuid, int stoveId) {
         function.setRecipe(targetGuid, stoveId);
-    }
-
-    @Override
-    public void setCurveStepParams(String targetGuid, int stoveId, List<CurveStep> curveSteps) {
-        function.setCurveStepParams(targetGuid, stoveId, curveSteps);
     }
 
     @Override

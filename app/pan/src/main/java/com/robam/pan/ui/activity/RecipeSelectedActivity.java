@@ -215,7 +215,9 @@ public class RecipeSelectedActivity extends PanBaseActivity {
     //设置曲线还原参数
     private void setParams(PanCurveDetail panCurveDetail, int stoveId) {
         if (null != panCurveDetail) {
-            PanAbstractControl.getInstance().setCurveStepParams(HomePan.getInstance().guid, stoveId, panCurveDetail.stepList);
+            PanAbstractControl.getInstance().setCurvePanParams(HomePan.getInstance().guid, panCurveDetail.smartPanModeCurveParams); //设置锅参数
+
+            PanAbstractControl.getInstance().setCurveStoveParams(HomePan.getInstance().guid, stoveId, panCurveDetail.curveStageParams); //设置灶参数
         }
     }
     //点火提示
@@ -290,6 +292,7 @@ public class RecipeSelectedActivity extends PanBaseActivity {
             }
         });
     }
+
     //曲线绘制
     private void drawCurve(PanCurveDetail panCurveDetail) {
         Map<String, String> params = null;

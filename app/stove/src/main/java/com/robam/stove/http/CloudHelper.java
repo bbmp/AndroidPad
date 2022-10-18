@@ -88,12 +88,16 @@ public class CloudHelper {
         enqueue(iLife, entity, call, callback);
     }
     //曲线保存
-    public static <T extends BaseResponse> void curveSave(ILife iLife, long userId, long curveId, String guid, String name, int needTime, List<CurveStep> stepList, Class<T> entity, final RetrofitCallback<T> callback) {
-        String json = new CurveSaveReq(userId, curveId, guid, name, needTime, stepList).toString();
+    public static <T extends BaseResponse> void curveSave(ILife iLife, long userId, long curveId, String guid, String name, int needTime, List<CurveStep> stepList, String curveStage, Class<T> entity, final RetrofitCallback<T> callback) {
+        String json = new CurveSaveReq(userId, curveId, guid, name, needTime, stepList, curveStage).toString();
         RequestBody requestBody =
                 RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
         Call<ResponseBody> call = svr.curveSave(requestBody);
         enqueue(iLife, entity, call, callback);
+    }
+    //曲线标记步骤
+    public static <T extends BaseResponse> void curveMarkStep(ILife iLife, long curveId, List<CurveStep> stepList, Class<T> entity, final RetrofitCallback<T> callback) {
+
     }
 
     //统一处理回调

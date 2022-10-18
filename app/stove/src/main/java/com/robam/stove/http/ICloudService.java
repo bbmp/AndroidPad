@@ -28,6 +28,8 @@ public interface ICloudService {
     String createCurveStart = "/rest/cks/api/curve_cookbook/v2/cooking_curve/save";
     //曲线保存
     String submitStepUrl="/rest/cks/api/curve_cookbook/v2/cooking_curve_step/update";
+    //更新标记步骤
+    String cookingCurveMarkStep = "/rest/cks/api/curve_cookbook/v2/cooking_curve/markStep";
 
 
     @POST(getRecipesByDevice)
@@ -60,4 +62,8 @@ public interface ICloudService {
     @POST(submitStepUrl)
     @Headers("Content-Type: application/json")
     Call<ResponseBody> curveSave(@Body RequestBody body);
+
+    @POST(cookingCurveMarkStep)
+    @Headers("Content-Type: application/json")
+    Call<ResponseBody> curveMarkStep(@Body RequestBody body);
 }

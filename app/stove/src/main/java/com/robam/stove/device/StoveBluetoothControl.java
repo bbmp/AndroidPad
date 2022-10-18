@@ -16,7 +16,6 @@ import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.ByteUtils;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.LogUtils;
-import com.robam.stove.bean.CurveStep;
 import com.robam.common.device.subdevice.Stove;
 import com.robam.common.constant.StoveConstant;
 
@@ -216,42 +215,6 @@ public class StoveBluetoothControl implements StoveFunction{
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    //打包payload
-                    byte[] mqtt_data = StoveFactory.getProtocol().encode(msg);
-
-                    write_no_response(targetGuid, ((Stove) device).bleDevice, ((Stove) device).characteristic, mqtt_data);
-                    break;
-                }
-            }
-        } catch (Exception e) {}
-    }
-
-    @Override
-    public void setCurveStepParams(String targetGuid, int stoveId, List<CurveStep> curveSteps) {
-        try {
-            for (Device device : AccountInfo.getInstance().deviceList) {
-                if (device instanceof Stove && null != device.guid && device.guid.equals(targetGuid)) {
-                    MqttMsg msg = new MqttMsg.Builder()
-                            .setMsgId(MsgKeys.setStoveStep_Req)
-                            .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
-                            .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
-                            .build();
-
-                    JSONArray jsonArray = new JSONArray();
-                    msg.putOpt(StoveConstant.stoveId, stoveId);
-                    if (null != curveSteps) {
-                        for (CurveStep curveStep : curveSteps) {
-                            JSONObject jsonObject = new JSONObject();
-                            jsonObject.putOpt(StoveConstant.control, 0x00); //控制方式
-                            jsonObject.putOpt(StoveConstant.level, 0x00);//挡位
-                            jsonObject.putOpt(StoveConstant.stepTemp, 0x00);
-                            jsonObject.putOpt(StoveConstant.stepTime, 0x00);
-                            jsonArray.put(jsonObject);
-                        }
-                        msg.putOpt(StoveConstant.attributeNum, jsonArray.length());
-                        msg.putOpt(StoveConstant.steps, jsonArray);
-                    }
-
                     //打包payload
                     byte[] mqtt_data = StoveFactory.getProtocol().encode(msg);
 

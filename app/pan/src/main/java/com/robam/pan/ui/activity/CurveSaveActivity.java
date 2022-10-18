@@ -9,11 +9,13 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.BaseResponse;
+import com.robam.common.bean.LineChartDataBean;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.manager.DynamicLineChartManager;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.ClearEditText;
 import com.robam.common.ui.view.MarkViewStep;
+import com.robam.common.utils.ChartDataUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.pan.bean.CurveStep;
 import com.robam.pan.constant.DialogConstant;
@@ -43,6 +45,8 @@ public class CurveSaveActivity extends PanBaseActivity {
 
     private long curveId; //曲线id
     private int needTime;
+
+    private String curveStageParams;
 
     @Override
     protected int getLayoutId() {
@@ -81,7 +85,7 @@ public class CurveSaveActivity extends PanBaseActivity {
     //保存曲线
     private void saveCurve() {
         CloudHelper.curveSave(this, AccountInfo.getInstance().getUser().getValue().id, curveId, HomePan.getInstance().guid, tvCurveName.getText().toString(),
-                needTime, curveSteps, BaseResponse.class, new RetrofitCallback<BaseResponse>() {
+                needTime, curveSteps, curveStageParams, BaseResponse.class, new RetrofitCallback<BaseResponse>() {
 
                     @Override
                     public void onSuccess(BaseResponse baseResponse) {
@@ -137,6 +141,12 @@ public class CurveSaveActivity extends PanBaseActivity {
             needTime = getIntent().getIntExtra(PanConstant.EXTRA_NEED_TIME, 0);
             curveId = getIntent().getLongExtra(PanConstant.EXTRA_CURVE_ID, -1);
             ArrayList<Entry> entryList = getIntent().getParcelableArrayListExtra(PanConstant.EXTRA_ENTRY_LIST);
+            if (null != entryList) {
+                List<LineChartDataBean> list = new ArrayList<>();
+                for (int i=0; i<entryList.size(); i++)
+                    list.add(new LineChartDataBean(entryList.get(i).getX(), entryList.get(i).getY()));
+                curveStageParams = ChartDataUtils.listToJsonStr(list);
+            }
 
             ArrayList<Entry> stepList = getIntent().getParcelableArrayListExtra(PanConstant.EXTRA_STEP_LIST);
             if (null != stepList) { //转化成标记步骤

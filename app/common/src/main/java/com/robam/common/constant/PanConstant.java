@@ -53,6 +53,5 @@ public class PanConstant {
     public final static String fryMode = "fry_mode";//电机模式
     public final static String interaction = "interaction";//互动参数
     public final static String key = "key";//
-
     public final static String value = "value";
 }

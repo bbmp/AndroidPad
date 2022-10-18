@@ -144,12 +144,13 @@ public class SerialVentilator {
     public static byte[] powerOn(){
         byte startup = (byte) 0x01;  //开机
         byte beep = (byte) 0x02;     //蜂鸣
+        byte baffle = (byte) 0xA1; //风门挡板
         byte[] payload = new byte[]{
                 startup,
                 HomeVentilator.getInstance().lightOn,
                 HomeVentilator.getInstance().gear,
                 beep,
-                HomeVentilator.getInstance().baffle,
+                baffle,
                 HomeVentilator.getInstance().param1,
                 HomeVentilator.getInstance().param2,
                 HomeVentilator.getInstance().param3,
