@@ -67,17 +67,16 @@ public class MqttDishWasher extends MqttPublic {
     }
 
     @Override
-    protected void onEncodeMsg(ByteBuffer bufT, MqttMsg msg) {
+    protected void onEncodeMsg(ByteBuffer buf, MqttMsg msg) {
 //        switch (msg.getID()) {
 //            case MsgKeys.setDishWasherStatus: //洗碗机状态查询
 //                buf.put((byte) ITerminalType.PAD);
 //                break;
 //        }
-        ByteBuffer buf = ByteBuffer.allocate(BufferSize).order(BYTE_ORDER);
+        //ByteBuffer buf = ByteBuffer.allocate(BufferSize).order(BYTE_ORDER);
         byte b;
         String str;
-        int key = msg.getID();
-        switch (key) {
+        switch (msg.getID()) {
             case MsgKeys.setDishWasherPower:
                 str = msg.optString(DishWasherConstant.UserId);
                 buf.put(str.getBytes());
@@ -121,8 +120,8 @@ public class MqttDishWasher extends MqttPublic {
                 break;
             case MsgKeys.setDishWasherStatus:
                 buf.put((byte) ITerminalType.PAD);
-               /* str = msg.optString(DishWasherConstant.UserId);
-                buf.put(str.getBytes());*/
+                //str = msg.optString(DishWasherConstant.UserId);
+                //buf.put(str.getBytes());
                 break;
             case MsgKeys.setDishWasherUserOperate:
                 str = msg.optString(DishWasherConstant.UserId);
@@ -150,10 +149,13 @@ public class MqttDishWasher extends MqttPublic {
                     }
                 }
                 break;
+            case MsgKeys.getDeviceAttribute_Req:
+                    buf.put((byte) 0x00);
+                    break;
         }
-        byte[] data = new byte[buf.position()];
+        /*byte[] data = new byte[buf.position()];
         System.arraycopy(buf.array(), 0, data, 0, data.length);
-        bufT.put(data);
+        bufT.put(data);*/
         //将所有数据放入 新创建的byte[] 最后设置给buf？
     }
 
