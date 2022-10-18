@@ -185,9 +185,9 @@ public class MqttPan extends MqttPublic {
                     JSONObject jsonObject = jsonArray.optJSONObject(i);
                     buf.put((byte) jsonObject.optInt(PanConstant.key)); //步骤key
                     buf.put((byte) 6); //length
-                    buf.put((byte) 0);//控制方式
+                    buf.put((byte) jsonObject.optInt(PanConstant.control));//控制方式
                     buf.put((byte) jsonObject.optInt(PanConstant.level)); //灶具挡位
-                    buf.putShort((short) jsonObject.opt(PanConstant.stepTemp)); //温度
+                    buf.putShort((short) jsonObject.optInt(PanConstant.stepTemp)); //温度
                     buf.putShort((short) jsonObject.optInt(PanConstant.stepTime)); //步骤时间
                 }
             }
@@ -200,7 +200,7 @@ public class MqttPan extends MqttPublic {
                     JSONObject jsonObject = jsonArray.optJSONObject(i);
                     buf.put((byte) jsonObject.optInt(PanConstant.key)); //步骤key
                     buf.put((byte) 7);
-                    buf.put((byte) jsonObject.optInt(PanConstant.value)); //搅拌参数
+                    buf.put((byte) jsonObject.optInt(PanConstant.fryMode)); //搅拌参数
                     buf.putShort((short) jsonObject.optInt(PanConstant.stepTime)); //当前步骤持续时间
                     buf.put((byte) 0);   //正转转速
                     buf.put((byte) 0);   //反转转速

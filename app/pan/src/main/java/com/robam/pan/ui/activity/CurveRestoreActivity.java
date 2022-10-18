@@ -31,17 +31,19 @@ import com.robam.pan.constant.DialogConstant;
 import com.robam.pan.R;
 import com.robam.pan.base.PanBaseActivity;
 import com.robam.common.constant.PanConstant;
+import com.robam.pan.device.PanAbstractControl;
 import com.robam.pan.factory.PanDialogFactory;
 import com.robam.pan.ui.adapter.RvStep2Adapter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 //曲线还原,
 public class CurveRestoreActivity extends PanBaseActivity {
     private RecyclerView rvStep;
-    private TextView tvStop;
+//    private TextView tvStop;
     //步骤
     RvStep2Adapter rvStep2Adapter;
     //当前步骤
@@ -88,7 +90,7 @@ public class CurveRestoreActivity extends PanBaseActivity {
         if (null == panCurveDetail) //曲线详情为空
             finish();
         rvStep = findViewById(R.id.rv_step);
-        tvStop = findViewById(R.id.tv_stop_cook);
+//        tvStop = findViewById(R.id.tv_stop_cook);
         tvStep = findViewById(R.id.tv_cur_step);
         cookChart = findViewById(R.id.cook_chart);
         cookChart.setNoDataText(getResources().getString(R.string.pan_no_curve_data)); //没有数据时显示的文字
@@ -101,7 +103,7 @@ public class CurveRestoreActivity extends PanBaseActivity {
         rvStep.setAdapter(rvStep2Adapter);
         //关闭动画,防止闪烁
         ((SimpleItemAnimator)rvStep.getItemAnimator()).setSupportsChangeAnimations(false);
-        setOnClickListener(R.id.ll_left, R.id.tv_stop_cook);
+        setOnClickListener(R.id.ll_left);
         //监听开火状态
         AccountInfo.getInstance().getGuid().observe(this, new Observer<String>() {
             @Override
@@ -174,6 +176,10 @@ public class CurveRestoreActivity extends PanBaseActivity {
                 curveSteps.get(i).needTime = (int) (panCurveDetail.needTime - Float.parseFloat(curveSteps.get(i).markTime));
                 //步骤
                 rvStep2Adapter.setList(curveSteps);
+                //启动记录
+                Map params = new HashMap();
+                params.put(PanConstant.KEY4, new byte[] {(byte) stoveId, 0, 0, 0, 0, (byte) PanConstant.start}); //曲线还原，菜谱id为0
+                PanAbstractControl.getInstance().setInteractionParams(pan.guid, params);
                 Countdown();
             }
         }
@@ -220,7 +226,8 @@ public class CurveRestoreActivity extends PanBaseActivity {
                     }
                     rvStep2Adapter.notifyItemChanged(curStep);
 
-                }
+                } else
+                    nextStep();
 
                 mHandler.postDelayed(runnable, 1000L);
 
@@ -265,13 +272,17 @@ public class CurveRestoreActivity extends PanBaseActivity {
             iPublicStoveApi.setAttribute(stove.guid, (byte) stoveId, (byte) 0x00, (byte) StoveConstant.STOVE_CLOSE);
 
         }
-
+        //停止记录
+        Map params = new HashMap();
+        params.put(PanConstant.KEY4, new byte[] {(byte) stoveId, 0, 0, 0, 0, (byte) PanConstant.stop});
+        params.put(PanConstant.KEY6, new byte[] {(byte) PanConstant.MODE_CLOSE_FRY}); //停止搅拌
+        PanAbstractControl.getInstance().setInteractionParams(pan.guid, params);
     }
 
     @Override
     public void onClick(View view) {
         int id = view.getId();
-        if (id == R.id.ll_left || id == R.id.tv_stop_cook) {
+        if (id == R.id.ll_left) {
             //停止烹饪
             stopCook();
         }

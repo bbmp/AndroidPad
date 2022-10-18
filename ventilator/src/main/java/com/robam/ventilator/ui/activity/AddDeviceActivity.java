@@ -74,7 +74,7 @@ public class AddDeviceActivity extends VentilatorBaseActivity {
             @Override
             public void onChanged(String s) {
                 for (Device device: AccountInfo.getInstance().deviceList) {
-                    if (device.guid.equals(s)) {
+                    if (null != device.guid && device.guid.equals(s)) {
                         if (device instanceof Pan) {
                             List<Device> deviceList2 = new ArrayList<>();
                             for (Device device1: deviceList) {

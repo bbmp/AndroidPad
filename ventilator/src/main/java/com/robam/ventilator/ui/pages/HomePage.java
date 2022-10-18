@@ -376,6 +376,16 @@ public class HomePage extends VentilatorBasePage {
                         rvFunctionAdapter.setPickPosition(3);
                     else if (null != rvFunctionAdapter)
                         rvFunctionAdapter.setPickPosition(-1);
+
+                    if (HomeVentilator.getInstance().param7 == 0x00) { //性能模式
+                        tvPerformance.setSelected(true);
+                        tvComfort.setSelected(false);
+                        group.setVisibility(View.GONE);
+                    } else {  //舒适模式
+                        tvPerformance.setSelected(false);
+                        tvComfort.setSelected(true);
+                        group.setVisibility(View.VISIBLE);
+                    }
                     return;
                 }
                 for (Device device: AccountInfo.getInstance().deviceList) {
@@ -555,16 +565,12 @@ public class HomePage extends VentilatorBasePage {
         int id = view.getId();
         if (id == R.id.tv_performance) {
             if (!tvPerformance.isSelected()) {
-                tvPerformance.setSelected(true);
-                tvComfort.setSelected(false);
-                group.setVisibility(View.GONE);
+
                 VentilatorAbstractControl.getInstance().setSmart(VentilatorConstant.FAN_SMART_CLOSE); //智感恒吸关闭
             }
         } else if (id == R.id.tv_comfort) {
             if (!tvComfort.isSelected()) {
-                tvPerformance.setSelected(false);
-                tvComfort.setSelected(true);
-                group.setVisibility(View.VISIBLE);
+
                 VentilatorAbstractControl.getInstance().setSmart(VentilatorConstant.FAN_SMART_OPEN);  //打开智感恒吸
             }
         } else if (id == R.id.ll_drawer_left) {

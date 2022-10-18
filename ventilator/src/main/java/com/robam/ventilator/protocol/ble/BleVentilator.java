@@ -33,6 +33,7 @@ import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MMKVUtils;
 import com.robam.common.utils.StringUtils;
 import com.robam.common.device.subdevice.Pan;
+import com.robam.pan.device.PanAbstractControl;
 import com.robam.pan.device.PanFactory;
 import com.robam.common.device.subdevice.Stove;
 import com.robam.stove.device.StoveAbstractControl;
@@ -160,7 +161,7 @@ public class BleVentilator {
         String deviceNum = changeMac(bleDevice.getMac());
         for (Device device: AccountInfo.getInstance().deviceList) {
             //已经存在锅或灶，mac地址判断
-            if (deviceNum.equals(DeviceUtils.getDeviceNumber(device.guid))) {
+            if (bleDevice.getMac().equals(device.mac)) {
                 if (device instanceof Pan) {
                     BleDecoder bleDecoder = ((Pan) device).bleDecoder;
                     if (null != bleDecoder)
@@ -390,6 +391,7 @@ public class BleVentilator {
                                                     //上线
                                                     if (device.status != Device.ONLINE) {
                                                         device.status = Device.ONLINE;
+                                                        device.queryNum = 0;
                                                         AccountInfo.getInstance().getGuid().setValue(device.guid);
 
                                                         updateSubdevice(device);
@@ -457,7 +459,7 @@ public class BleVentilator {
                                     break;
                                 case BleDecoder.CMD_COOKER_SET_RES: //设置灶状态返回
                                 case BleDecoder.CMD_COOKER_TIME_RES: //设置定时关火返回
-                                case BleDecoder.CMD_COOKER_LOCK_RES: //设置童锁返回
+                                case BleDecoder.CMD_COOKER_LOCK_RES: { //设置童锁返回
                                     int rc = ByteUtils.toInt(ret2[2]);
                                     if (rc == 0) { //设置成功
                                         for (Device device : AccountInfo.getInstance().deviceList) {
@@ -468,6 +470,7 @@ public class BleVentilator {
                                             }
                                         }
                                     }
+                                }
                                     break;
                                 case BleDecoder.EVENT_POT_TEMPERATURE_DROP://锅温度骤变
                                 case BleDecoder.EVENT_POT_TEMPERATURE_OV: //干烧预警
@@ -498,6 +501,10 @@ public class BleVentilator {
                                     StoveAbstractControl.getInstance().setStoveParams(BleDecoder.CMD_COOKER_SET_INT, ret2);
                                 }
                                     break;
+                                case BleDecoder.CMD_POT_INTERACTION_RES: { //智能锅智能互动回复
+
+                                }
+                                break;
                                 default:
                                     break;
                             }

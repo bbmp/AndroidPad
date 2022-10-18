@@ -15,8 +15,8 @@ public class RetrofitClient {
     private String ecsHost = "118.178.157.97";
     private int ecsPort;
     private final static int CONNECT_TIMEOUT = 20;
-    private final static int READ_TIMEOUT = 20;
-    private final static int WRITE_TIMEOUT = 20;
+    private final static int READ_TIMEOUT = 30;
+    private final static int WRITE_TIMEOUT = 30;
     private String defaultHost = "https://api.github.com";
     private Map header;
 

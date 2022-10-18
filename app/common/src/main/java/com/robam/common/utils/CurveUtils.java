@@ -1,6 +1,7 @@
 package com.robam.common.utils;
 
 import com.robam.common.bean.LineChartDataBean;
+import com.robam.common.bean.SetPotCurveStageParams;
 
 import org.json.JSONObject;
 
@@ -8,7 +9,71 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ChartDataUtils {
+public class CurveUtils {
+
+    public static List<SetPotCurveStageParams> curveStageParamsToList(String strData) {
+        List<SetPotCurveStageParams> list = new ArrayList<>();
+        strData = strData.substring(1, strData.indexOf("}"));
+        String str[] = strData.split(",");
+        for (int i = 0; i < str.length; i++) {
+            int time = Integer.parseInt(str[i].split(":")[0].trim().replace("\"", ""));
+            String strNe[] = str[i].split(":")[1].trim().replace("\"", "").split("-");
+            int temp = (int) Float.parseFloat(strNe[0].trim().replace("\"", ""));
+            int control = Integer.parseInt(strNe[1].trim().replace("\"", ""));
+            list.add(new SetPotCurveStageParams(time, temp, control));
+        }
+        Collections.sort(list, (bean1, bean2) -> {
+            if (bean1.time > bean2.time) {
+                return 1;
+            } else if (bean1.time == bean2.time) {
+                return 0;
+            } else {
+                return -1;
+            }
+        });
+        return list;
+    }
+
+    public static List<LineChartDataBean> curveDataToLine(String strData) {
+        List<LineChartDataBean> list = new ArrayList<>();
+        strData = strData.substring(1, strData.indexOf("}"));
+        String str[] = strData.split(",");
+        for (int i = 0; i < str.length; i++) {
+            float xValue = Integer.parseInt(str[i].split(":")[0].trim().replace("\"", ""));
+            String strNe[] = str[i].split(":")[1].trim().replace("\"", "").split("-");
+            float yValue = (int) Float.parseFloat(strNe[0].trim().replace("\"", ""));
+            int gear = Integer.parseInt(strNe[1].trim().replace("\"", ""));
+            int power = 0;
+            if (strNe.length > 2) {
+                power = Integer.parseInt(strNe[2].trim().replace("\"", ""));
+            }
+            list.add(new LineChartDataBean(xValue, yValue, power, gear));
+        }
+        Collections.sort(list, (bean1, bean2) -> {
+            if (bean1.xValue > bean2.xValue) {
+                return 1;
+            } else if (bean1.xValue == bean2.xValue) {
+                return 0;
+            } else {
+                return -1;
+            }
+        });
+        return list;
+    }
+
+    public static List<SetPotCurveStageParams> curveStageParamsListSetGear(List<SetPotCurveStageParams> paramsList, List<LineChartDataBean> lineList) {
+        for (int i = 0; i < paramsList.size(); i++) {
+            for (int j = 0; j < lineList.size(); j++) {
+//                if (paramsList.get(i).time == lineList.get(j).xValue) {
+//                    paramsList.get(i).gear = lineList.get(j).gear;
+//                }
+                if (paramsList.get(i).time <= lineList.get(j).xValue && paramsList.get(i).gear == 0) {
+                    paramsList.get(i).gear = lineList.get(j).gear;
+                }
+            }
+        }
+        return paramsList;
+    }
     /**
      * 数据转曲线
      *

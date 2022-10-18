@@ -62,7 +62,7 @@ public class BleDecoder {
     public static final int CMD_COOKER_TIME_RES = 135; //定时设置返回
     public static final int CMD_COOKER_LOCK_RES = 137;//设置童锁返回
     //CMD ID--无人锅外部指令
-    //public static final int
+    public static final int CMD_POT_INTERACTION_RES = 154;//智能锅智能互动返回
 
     private static final int MCU_UART_MIN_PAYLOAD_LEN = 1;
     private static final int MCU_UART_TX_MAX_PAYLOAD_LEN = 240;

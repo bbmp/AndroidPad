@@ -15,7 +15,7 @@ import com.robam.common.manager.DynamicLineChartManager;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.ClearEditText;
 import com.robam.common.ui.view.MarkViewStep;
-import com.robam.common.utils.ChartDataUtils;
+import com.robam.common.utils.CurveUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.pan.bean.CurveStep;
 import com.robam.pan.constant.DialogConstant;
@@ -145,7 +145,7 @@ public class CurveSaveActivity extends PanBaseActivity {
                 List<LineChartDataBean> list = new ArrayList<>();
                 for (int i=0; i<entryList.size(); i++)
                     list.add(new LineChartDataBean(entryList.get(i).getX(), entryList.get(i).getY()));
-                curveStageParams = ChartDataUtils.listToJsonStr(list);
+                curveStageParams = CurveUtils.listToJsonStr(list);
             }
 
             ArrayList<Entry> stepList = getIntent().getParcelableArrayListExtra(PanConstant.EXTRA_STEP_LIST);
