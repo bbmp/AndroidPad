@@ -1,7 +1,6 @@
 package com.robam.dishwasher.protocol.mqtt;
 
 import com.robam.common.ITerminalType;
-import com.robam.common.mqtt.IProtocol;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MqttPublic;
 import com.robam.common.mqtt.MsgKeys;
@@ -9,8 +8,6 @@ import com.robam.common.utils.ByteUtils;
 import com.robam.dishwasher.constant.DishWasherConstant;
 
 import java.nio.ByteBuffer;
-import java.util.HashMap;
-import java.util.Map;
 
 //mqtt洗碗机
 public class MqttDishWasher extends MqttPublic {
@@ -70,11 +67,95 @@ public class MqttDishWasher extends MqttPublic {
     }
 
     @Override
-    protected void onEncodeMsg(ByteBuffer buf, MqttMsg msg) {
-        switch (msg.getID()) {
-            case MsgKeys.setDishWasherStatus: //洗碗机状态查询
+    protected void onEncodeMsg(ByteBuffer bufT, MqttMsg msg) {
+//        switch (msg.getID()) {
+//            case MsgKeys.setDishWasherStatus: //洗碗机状态查询
+//                buf.put((byte) ITerminalType.PAD);
+//                break;
+//        }
+        ByteBuffer buf = ByteBuffer.allocate(BufferSize).order(BYTE_ORDER);
+        byte b;
+        String str;
+        int key = msg.getID();
+        switch (key) {
+            case MsgKeys.setDishWasherPower:
+                str = msg.optString(DishWasherConstant.UserId);
+                buf.put(str.getBytes());
+                b = (byte) msg.optInt(DishWasherConstant.PowerMode);
+                buf.put(b);
+                break;
+            case MsgKeys.setDishWasherChildLock:
+                str = msg.optString(DishWasherConstant.UserId);
+                buf.put(str.getBytes());
+                b = (byte) msg.optInt(DishWasherConstant.StoveLock);
+                buf.put(b);
+                break;
+            case MsgKeys.setDishWasherWorkMode:
+                str = msg.optString(DishWasherConstant.UserId);
+                buf.put(str.getBytes());
+                b = (byte) msg.optInt(DishWasherConstant.DishWasherWorkMode);
+                buf.put(b);
+                b = (byte) msg.optInt(DishWasherConstant.LowerLayerWasher);
+                buf.put(b);
+                b = (byte) msg.optInt(DishWasherConstant.AutoVentilation);
+                buf.put(b);
+                b = (byte) msg.optInt(DishWasherConstant.EnhancedDrySwitch);
+                buf.put(b);
+                b = (byte) msg.optInt(DishWasherConstant.AppointmentSwitch);
+                buf.put(b);
+                int appointTime = msg.optInt(DishWasherConstant.AppointmentTime);
+                buf.put((byte) (appointTime & 0Xff));
+                buf.put((byte) ((appointTime >> 8) & 0Xff));
+                //参数个数
+                int argumentNum = msg.optInt(DishWasherConstant.ArgumentNumber);
+                if (argumentNum != 0){
+                    buf.put((byte) argumentNum);
+                    //附加功能
+                    int addAux = msg.optInt(DishWasherConstant.ADD_AUX);
+                    buf.put((byte) 1);
+                    buf.put((byte) 1);
+                    buf.put((byte) addAux);
+                }
+
+
+                break;
+            case MsgKeys.setDishWasherStatus:
                 buf.put((byte) ITerminalType.PAD);
+               /* str = msg.optString(DishWasherConstant.UserId);
+                buf.put(str.getBytes());*/
+                break;
+            case MsgKeys.setDishWasherUserOperate:
+                str = msg.optString(DishWasherConstant.UserId);
+                buf.put(str.getBytes());
+                str = msg.optString(DishWasherConstant.ArgumentNumber);
+                buf.put(str.getBytes());
+                if (msg.optInt(DishWasherConstant.ArgumentNumber) > 0) {
+                    if (msg.optInt(DishWasherConstant.SaltFlushKey) == 1) {
+                        b = (byte) msg.optInt(DishWasherConstant.SaltFlushKey);
+                        buf.put(b);
+                        b = (byte) msg.optInt(DishWasherConstant.SaltFlushLength);
+                        buf.put(b);
+                        b = (byte) msg.optInt(DishWasherConstant.SaltFlushValue);
+                        buf.put(b);
+
+                    }
+                    if (msg.optInt(DishWasherConstant.RinseAgentPositionKey) == 2) {
+                        b = (byte) msg.optInt(DishWasherConstant.RinseAgentPositionKey);
+                        buf.put(b);
+                        b = (byte) msg.optInt(DishWasherConstant.RinseAgentPositionLength);
+                        buf.put(b);
+                        b = (byte) msg.optInt(DishWasherConstant.RinseAgentPositionValue);
+                        buf.put(b);
+
+                    }
+                }
                 break;
         }
+        byte[] data = new byte[buf.position()];
+        System.arraycopy(buf.array(), 0, data, 0, data.length);
+        bufT.put(data);
+        //将所有数据放入 新创建的byte[] 最后设置给buf？
     }
+
+
 }

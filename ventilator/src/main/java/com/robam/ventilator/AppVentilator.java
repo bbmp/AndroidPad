@@ -8,6 +8,8 @@ import android.serialport.helper.SerialPortHelper;
 import com.clj.fastble.BleManager;
 import com.robam.common.http.RetrofitClient;
 import com.robam.common.mqtt.MqttManager;
+import com.robam.dishwasher.device.DishWasherAbstractControl;
+import com.robam.dishwasher.device.DishWasherMqttControl;
 import com.robam.pan.device.PanAbstractControl;
 import com.robam.pan.device.PanBluetoothControl;
 import com.robam.steamoven.device.SteamAbstractControl;
@@ -44,6 +46,8 @@ public class AppVentilator {
         StoveAbstractControl.getInstance().init(new StoveBluetoothControl());
         //蓝牙控制锅
         PanAbstractControl.getInstance().init(new PanBluetoothControl());
+        //洗碗机控制
+        DishWasherAbstractControl.getInstance().init(new DishWasherMqttControl());
 
     }
 

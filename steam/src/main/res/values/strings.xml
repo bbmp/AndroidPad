@@ -1165,5 +1165,10 @@
     <string name="steam_stove_using">占用</string>
     <string name="steam_recipe_search_no_result">抱歉，未找到相关菜谱</string>
     <string name="steam_all_recipe">全部菜谱</string>
+    <string name="steam_work_order_hint1">将在%s启动工作</string>
+    <string name="steam_work_order_hint2">次日 %s</string>
+    <string name="steam_work_order_hint3">今日 %s</string>
+    <string name="steam_appointment_time">预约启动时间</string>
+    <string name="steam_ok_appointment">确认预约</string>
 
 </resources>

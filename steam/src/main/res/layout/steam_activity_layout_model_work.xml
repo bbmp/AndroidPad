@@ -136,6 +136,64 @@
             tools:text="20min"/>
     </LinearLayout>
 
+    <EditText
+        android:id="@+id/multi_work_finish_prompt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_48"
+        android:visibility="invisible"
+        android:layout_marginLeft="@dimen/dp_120"
+        android:layout_marginTop="@dimen/dp_180"
+        android:textColor="@color/steam_white"
+        app:layout_constraintLeft_toRightOf="@id/cook_chart"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="专业模式"
+        tools:text="22min"/>
+
+    <View
+        android:id="@+id/multi_work_finish_opt"
+        android:background="@drawable/steam_ic_editor"
+        app:layout_constraintLeft_toRightOf="@id/multi_work_finish_prompt"
+        app:layout_constraintTop_toTopOf="@id/multi_work_finish_prompt"
+        app:layout_constraintBottom_toBottomOf="@id/multi_work_finish_prompt"
+        android:layout_marginLeft="@dimen/dp_24"
+        android:visibility="invisible"
+        android:layout_height="@dimen/dp_48"
+        android:layout_width="@dimen/dp_48"/>
+
+
+
+    <TextView
+        android:id="@+id/finish_go_home"
+        android:layout_width="@dimen/dp_175"
+        android:layout_height="@dimen/dp_56"
+        app:layout_constraintLeft_toRightOf="@id/cook_chart"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="@dimen/dp_100"
+        android:background="@drawable/steam_shape_button_unselected"
+        android:gravity="center"
+        android:layout_marginLeft="@dimen/dp_120"
+        android:text="@string/steam_back_home"
+        android:textAlignment="center"
+        android:textColor="@color/steam_white"
+        android:visibility="invisible"
+        android:textSize="@dimen/sp_30" />
+
+    <TextView
+        android:id="@+id/finish_save_curve"
+        android:layout_width="@dimen/dp_175"
+        android:layout_height="@dimen/dp_56"
+        app:layout_constraintLeft_toRightOf="@id/finish_go_home"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="@dimen/dp_100"
+        android:background="@drawable/steam_shape_button_selected"
+        android:gravity="center"
+        android:visibility="invisible"
+        android:layout_marginLeft="@dimen/dp_64"
+        android:text="@string/steam_carve_saving"
+        android:textAlignment="center"
+        android:textColor="@color/steam_white"
+        android:textSize="@dimen/sp_30" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

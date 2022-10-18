@@ -24,6 +24,8 @@ public class MultiSegment implements Parcelable {
 
     public int funCode = 0;
 
+    public int code;
+
     //蒸汽量
     public String steam;
 
@@ -62,6 +64,7 @@ public class MultiSegment implements Parcelable {
         downTemp = in.readString();
         cookState = in.readInt();
         workModel = in.readInt();
+        code = in.readInt();
     }
 
     public static final Creator<MultiSegment> CREATOR = new Creator<MultiSegment>() {
@@ -136,5 +139,6 @@ public class MultiSegment implements Parcelable {
         parcel.writeString(downTemp);
         parcel.writeInt(cookState);
         parcel.writeInt(workModel);
+        parcel.writeInt(code);
     }
 }

@@ -10,10 +10,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
+import com.robam.common.constant.PanConstant;
+import com.robam.common.device.subdevice.Pan;
 import com.robam.common.manager.FunctionManager;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.common.ui.view.ExtImageSpan;
@@ -70,6 +75,26 @@ public class HomePage extends DishWasherBasePage {
         rvMain.setAdapter(rvMainModeAdapter);
         showCenter();
         setOnClickListener(R.id.iv_float);
+
+        //监听洗碗机状态
+        AccountInfo.getInstance().getGuid().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                for (Device device: AccountInfo.getInstance().deviceList) {
+                    if (device.guid.equals(s) && device instanceof DishWasher && device.guid.equals(HomeDishWasher.getInstance().guid)) { //当前锅
+                        DishWasher dishWasher = (DishWasher) device;
+
+//                        if (pan.fryMode == PanConstant.MODE_QUICK_FRY) {
+//                            llQuick.setSelected(true);
+//                            tvQuick.setText(R.string.pan_quick_frying);
+//                        } else if (pan.fryMode == PanConstant.MODE_STIR_FRY) {
+//                            llStir.setSelected(true);
+//                        }
+                        break;
+                    }
+                }
+            }
+        });
     }
     //模式参数设置
     private void setData(DishWaherModeBean modeBean) {
@@ -121,6 +146,8 @@ public class HomePage extends DishWasherBasePage {
                 startActivity(intent);
             }
         });
+
+
     }
     /**
      * 设置背景图片

@@ -1,5 +1,10 @@
 package com.robam.steamoven.device;
 
+import com.robam.common.IDeviceType;
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
+import com.robam.common.utils.ToastUtils;
+
 public class HomeSteamOven {
     //当前进入的一体机
     public static HomeSteamOven getInstance() {
@@ -35,4 +40,33 @@ public class HomeSteamOven {
     public int totalRemainSeconds;
     //工作温度
     public int workTemp;
+
+
+
+    /**
+     * 预约开始时间
+     */
+    public String orderTime;
+    /**
+     * 工作模式
+     */
+    //public int workMode;
+    /**
+     * 工作时长
+     */
+    public int workHours;
+
+    /**
+     * 是否离线
+     * @return
+     */
+    public boolean isPanOffline() {
+        for (Device device : AccountInfo.getInstance().deviceList) {
+            if (device.dc.equals(IDeviceType.RZNG) && device.status == Device.ONLINE) {
+
+                return false;
+            }
+        }
+        return true;
+    }
 }

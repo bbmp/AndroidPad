@@ -8,6 +8,9 @@ public class HomeDishWasher {
     private static class DishWasherHolder {
         private static final HomeDishWasher instance = new HomeDishWasher();
     }
+    //当前guid
+    public String guid;
+
 
     /**
      * 预约开始时间

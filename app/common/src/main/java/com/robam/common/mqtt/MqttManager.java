@@ -242,6 +242,7 @@ public class MqttManager {
 
         @Override
         public void messageArrived(String topic, MqttMessage message) throws Exception {
+            LogUtils.i("messageArrived "+topic);
             iProtocol.decode(topic, message.getPayload());
 //            if (null != mqttMsgCallback && null != message)
 //                mqttMsgCallback.messageArrived(message.getPayload());
@@ -313,10 +314,22 @@ public class MqttManager {
         Boolean retained = false;
         try {
             byte[] data = protocol.encode(msg);
-            LogUtils.e( "发送的主题： " + topic);
-            LogUtils.e( "发送的消息： " + StringUtils.bytes2Hex(data));
+            //LogUtils.e( "发送的主题： " + topic);
+            //LogUtils.e( "发送的消息： " + StringUtils.bytes2Hex(data));
+            LogUtils.e( "发送的消息： top " + topic + " data " + StringUtils.bytes2Hex(data));
             //参数分别为：主题、消息的字节数组、服务质量、是否在服务器保留断开连接后的最后一条消息
             mqttAndroidClient.publish(topic, data, qos.intValue(), retained.booleanValue());
+            /*mqttAndroidClient.publish(topic, data, qos.intValue(), retained.booleanValue(), null, new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+
+                }
+            });*/
         } catch (Exception e) {
             e.printStackTrace();
         }

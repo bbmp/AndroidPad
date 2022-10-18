@@ -1,10 +1,13 @@
 package com.robam.steamoven.ui.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,6 +55,10 @@ public class ModelWorkActivity extends SteamBaseActivity {
     private DynamicLineChartManager dm;
 
     private TextView preHeadTv;
+    private EditText finishTv;
+    private View finishOptView;
+    private TextView finishGoHomeTv;
+    private TextView finishSaveCurve;
 
 
 
@@ -70,14 +77,18 @@ public class ModelWorkActivity extends SteamBaseActivity {
         curCookInfoViewGroup = findViewById(R.id.multi_work_cur_info);
         cookChart = findViewById(R.id.cook_chart);
         preHeadTv = findViewById(R.id.model_work_prompt);
-        setOnClickListener(R.id.multi_work_pause,R.id.multi_work_start);
+        finishTv = findViewById(R.id.multi_work_finish_prompt);
+        finishOptView = findViewById(R.id.multi_work_finish_opt);
+        finishGoHomeTv = findViewById(R.id.finish_go_home);
+        finishSaveCurve = findViewById(R.id.finish_save_curve);
+        setOnClickListener(R.id.multi_work_pause,R.id.multi_work_start,R.id.multi_work_finish_opt,R.id.finish_go_home,R.id.finish_save_curve);
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                showWorkFinishDialog();
-            }
-        },5000);
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                showWorkFinishDialog();
+//            }
+//        },5000);
     }
 
 
@@ -111,6 +122,17 @@ public class ModelWorkActivity extends SteamBaseActivity {
             this.setOptViewsState(false);
         }else if(id==R.id.multi_work_start){//继续工作
             this.setOptViewsState(true);
+        }else if(id==R.id.finish_go_home){//回到主页
+            goHome();
+        }else if(id==R.id.finish_save_curve){//保存曲线
+            //TODO(调用保存曲线接口)
+            goHome();
+        }else if(id == R.id.multi_work_finish_opt){
+            finishTv.setFocusable(true);
+            finishTv.setFocusableInTouchMode(true);
+            finishTv.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(finishTv,0);
         }
     }
 
@@ -128,12 +150,17 @@ public class ModelWorkActivity extends SteamBaseActivity {
         steamCommonDialog.setListeners(v -> {
             steamCommonDialog.dismiss();
             if(v.getId() == R.id.tv_ok){
-                Intent intent = new Intent(ModelWorkActivity.this,MainActivity.class);
-                startActivity(intent);
+                goHome();
             }
         },R.id.tv_cancel,R.id.tv_ok);
         steamCommonDialog.show();
     }
+
+    private void goHome(){
+        Intent intent = new Intent(ModelWorkActivity.this,MainActivity.class);
+        startActivity(intent);
+    }
+
 
 
     /**
@@ -278,8 +305,8 @@ public class ModelWorkActivity extends SteamBaseActivity {
         steamCommonDialog.setListeners(v -> {
             steamCommonDialog.dismiss();
             if(v.getId() == R.id.tv_ok){//完成
-                steamCommonDialog.dismiss();
                 //切换到烹饪结束状态
+                setFinishState();
             }else if(v.getId() == R.id.tv_cancel) {//加时
                 showOverTimeDialog();
             }
@@ -296,11 +323,31 @@ public class ModelWorkActivity extends SteamBaseActivity {
             timeDialog.dismiss();
             if(v.getId() == R.id.tv_ok){//确认
                 //切换到烹饪结束状态
+
             }else if(v.getId() == R.id.tv_cancel) {//取消
 
             }
         },R.id.tv_cancel,R.id.tv_ok);
         timeDialog.show();
+    }
+
+    private void setFinishState(){
+
+        //TODO(设置当前模式名称)
+        //finishTv.setText();
+
+        finishTv.setVisibility(View.VISIBLE);
+        finishOptView.setVisibility(View.VISIBLE);
+        finishGoHomeTv.setVisibility(View.VISIBLE);
+        finishSaveCurve.setVisibility(View.VISIBLE);
+
+
+        curCookInfoViewGroup.setVisibility(View.INVISIBLE);
+        pauseCookView.setVisibility(View.INVISIBLE);
+        continueCookView.setVisibility(View.INVISIBLE);
+        cookDurationView.setVisibility(View.INVISIBLE);
+        preHeadTv.setVisibility(View.INVISIBLE);
+
     }
 
 }

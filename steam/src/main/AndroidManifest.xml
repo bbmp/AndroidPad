@@ -5,7 +5,15 @@
 
     <application>
         <activity
+            android:name=".ui.activity.AppointingActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
+        <activity
             android:name=".ui.activity.ModelWorkActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".ui.activity.AppointmentActivity"
             android:exported="false"
             android:screenOrientation="landscape"/>
         <activity

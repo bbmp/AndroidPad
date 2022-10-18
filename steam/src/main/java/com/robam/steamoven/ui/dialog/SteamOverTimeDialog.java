@@ -72,7 +72,7 @@ public class SteamOverTimeDialog extends BaseDialog {
         List<ModeBean> modeBeanList = new ArrayList<>();
         for(int i = 0;i < 10;i++){
             ModeBean modeBean = new ModeBean();
-            modeBean.name = i + "";
+            modeBean.name = (i + 1) + "";
             modeBeanList.add(modeBean);
         }
         return modeBeanList;
@@ -83,9 +83,9 @@ public class SteamOverTimeDialog extends BaseDialog {
 
         //初始位置
         int initPos = Integer.MAX_VALUE / 2 - (Integer.MAX_VALUE/2) % selectList.size();
+        //int initPos = Integer.MAX_VALUE / 2 - (Integer.MAX_VALUE/2) % selectList.size();
         pickerLayoutManager.scrollToPosition(initPos);
         rvModeAdapter.setPickPosition(initPos);
-
     }
 
     private void setLayoutManage(int maxItem, float scale) {

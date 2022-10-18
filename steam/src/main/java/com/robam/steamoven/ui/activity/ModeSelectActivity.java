@@ -219,12 +219,17 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
                     startActivity(intent);
                 }
             }
+        }else if(R.id.ll_right == view.getId()){
+            Intent intent = new Intent(this,AppointmentActivity.class);
+            intent.putExtra(Constant.SEGMENT_DATA_FLAG,getResult());
+            startActivity(intent);
         }
     }
 
     private MultiSegment getResult(){
         MultiSegment segment = new MultiSegment();
         segment.funCode = curModeBean.funCode;
+        segment.code = curModeBean.code;
         for(int i = 0;i < tabLayout.getTabCount();i++){
             if(((ViewGroup)tabLayout.getChildAt(0)).getChildAt(i).getVisibility() != View.VISIBLE){
                 continue;
@@ -234,7 +239,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             TextView valueTv = childGroup.findViewById(R.id.tv_mode); //模式
             if(valueTv != null){
                 String value = valueTv.getText().toString();
-                //i = 0 模式 ; i = 1 蒸汽量  ;i = 2 上温度; i = 3 下温度 ; i = 4 时长
+                //i = 0 模式名称; i = 1 蒸汽量  ;i = 2 上温度; i = 3 下温度 ; i = 4 时长
                 switch (i){
                     case 0:
                         segment.model = value;

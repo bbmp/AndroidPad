@@ -28,6 +28,20 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="@id/dishwasher_guideline2"/>
+
+    <TextView
+        android:id="@+id/tv_mode_cur"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_32"
+        android:textColor="@color/dishwasher_white70"
+        android:textSize="@dimen/sp_80"
+        android:text="洗涤"
+        app:layout_constraintLeft_toLeftOf="@id/progress"
+        app:layout_constraintTop_toTopOf="@id/progress"
+        app:layout_constraintBottom_toBottomOf="@id/progress"
+        app:layout_constraintRight_toRightOf="@id/progress"/>
+
     <TextView
         android:id="@+id/tv_mode"
         android:layout_width="wrap_content"
