@@ -27,6 +27,8 @@ public class DeviceUtils {
     }
     public static String getDeviceNumber(String guid) {
         int venderLen = VENDOR_LENGTH;
+        if (null == guid)
+            return "";
         if (guid.length() == GUID_LENGTH) {
             venderLen = 0;
         }

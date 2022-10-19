@@ -141,17 +141,19 @@ public class BleVentilator {
                 if (null != gatt)
                     gatt.close();
                 //清除设备蓝牙信息
-                setBleDevice(bleDevice.getMac(), null, null);
-                //重新连接
-                threadPoolExecutor.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Thread.sleep(2000);
-                        } catch (Exception e) {}
-                        connect(model, bleDevice);
-                    }
-                });
+                if (setBleDevice(bleDevice.getMac(), null, null)) {
+                    //重新连接
+                    threadPoolExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.sleep(2000);
+                            } catch (Exception e) {
+                            }
+                            connect(model, bleDevice);
+                        }
+                    });
+                }
             }
         });
     }
@@ -161,7 +163,7 @@ public class BleVentilator {
         String deviceNum = changeMac(bleDevice.getMac());
         for (Device device: AccountInfo.getInstance().deviceList) {
             //已经存在锅或灶，mac地址判断
-            if (bleDevice.getMac().equals(device.mac)) {
+            if (bleDevice.getMac().equals(device.mac) || deviceNum.equals(DeviceUtils.getDeviceNumber(device.guid))) {
                 if (device instanceof Pan) {
                     BleDecoder bleDecoder = ((Pan) device).bleDecoder;
                     if (null != bleDecoder)
@@ -209,7 +211,7 @@ public class BleVentilator {
     }
 
     //设置蓝牙设备的读写特征符
-    public static void setBleDevice(String mac, BleDevice bleDevice, BluetoothGattCharacteristic characteristic) {
+    public static boolean setBleDevice(String mac, BleDevice bleDevice, BluetoothGattCharacteristic characteristic) {
         for (Device device: AccountInfo.getInstance().deviceList) {
             if (mac.equals(device.mac)) {
                 if (device instanceof Pan) {
@@ -217,15 +219,18 @@ public class BleVentilator {
                     ((Pan) device).characteristic = characteristic;
                     if (null == bleDevice)
                         device.bleType = 0;
+                    return true;
                 } else if (device instanceof Stove) {
                     ((Stove) device).bleDevice = bleDevice;
                     ((Stove) device).characteristic = characteristic;
                     if (null == bleDevice)
                         device.bleType = 0;
+                    return true;
                 }
                 break;
             }
         }
+        return false;
     }
     //获取gatt提供的服务
     public static void getBuletoothGatt(BleDevice bleDevice) {
@@ -279,6 +284,7 @@ public class BleVentilator {
                     @Override
                     public void onCharacteristicChanged(byte[] data) {
                         // 打开通知后，设备发过来的数据将在这里出现（UI线程）
+                        LogUtils.e("Thread " + Thread.currentThread() + " onCharacteristicChanged " + StringUtils.bytes2Hex(data));
                         for (Device device: AccountInfo.getInstance().deviceList) {
                             if (bleDevice.getMac().equals(device.mac)) {
                                 if (device instanceof Pan)
@@ -295,7 +301,7 @@ public class BleVentilator {
     public static void bleParser(BleDevice bleDevice, BleDecoder decoder, byte[] data) {
         if (null == data)
             return;
-        LogUtils.e("Thread " + Thread.currentThread() + " bleParser " + StringUtils.bytes2Hex(data));
+
 //        BleDecoder decoder = AccountInfo.getInstance().getBleDecoder(bleDevice.getMac());
         if(decoder != null) { //decoder一定是不为null的
             decoder.push_raw_data(BleDecoder.byteArraysToByteArrays(data));

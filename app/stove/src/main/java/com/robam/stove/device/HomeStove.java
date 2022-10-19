@@ -2,6 +2,10 @@ package com.robam.stove.device;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.robam.common.IDeviceType;
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
+
 public class HomeStove {
 
 
@@ -43,4 +47,13 @@ public class HomeStove {
 //    public String rightWorkTemp;
 //    //右灶
 //    public MutableLiveData<Boolean> rightStove = new MutableLiveData<>(false);
+    public boolean isStoveOffline() {
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device.dc.equals(IDeviceType.RRQZ) && device.status == Device.ONLINE) {
+
+                return false;
+            }
+        }
+        return true;
+    }
 }

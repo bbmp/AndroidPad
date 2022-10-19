@@ -11,6 +11,7 @@ import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.device.subdevice.Pan;
+import com.robam.common.utils.LogUtils;
 import com.robam.pan.device.PanAbstractControl;
 import com.robam.common.device.subdevice.Stove;
 import com.robam.stove.device.StoveAbstractControl;
@@ -55,6 +56,7 @@ public class AlarmBleService extends Service {
         for (Device device: AccountInfo.getInstance().deviceList) {
             if (!IDeviceType.RRQZ.equals(device.dc) && !IDeviceType.RZNG.equals(device.dc))
                 continue;
+            LogUtils.e("dc = " + device.dc + " queryNum " + device.queryNum);
             if (device.queryNum == 1 && device.status == Device.ONLINE) { //已经查过一次
                 device.status = Device.OFFLINE;
                 AccountInfo.getInstance().getGuid().setValue(device.guid); //更新设备状态

@@ -24,6 +24,7 @@ import com.robam.cabinet.bean.Cabinet;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.BaseResponse;
 import com.robam.common.constant.ComnConstant;
+import com.robam.common.constant.StoveConstant;
 import com.robam.common.device.Plat;
 import com.robam.common.manager.BlueToothManager;
 import com.robam.common.module.ModulePubliclHelper;
@@ -46,6 +47,7 @@ import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.common.utils.ClickUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ScreenUtils;
+import com.robam.stove.device.StoveAbstractControl;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBasePage;
 import com.robam.common.bean.AccountInfo;
@@ -321,11 +323,18 @@ public class HomePage extends VentilatorBasePage {
             public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                 if (view.getId() == R.id.btn_left_close) {
                     Device device = (Device) adapter.getItem(position);
-//                    device.status = 1;
-//                    device.workStatus = 1;
-//                    HomeStove.getInstance().leftWorkMode = 1;
-//                    //加head需要加1
-//                    rvProductsAdapter.notifyItemChanged(position + 1);
+                    if (device instanceof Stove) {
+                        Stove stove = (Stove) device;
+                        if (stove.leftLevel != 0) //关左灶
+                            StoveAbstractControl.getInstance().setAttribute(device.guid, IPublicStoveApi.STOVE_LEFT, 0x00, StoveConstant.STOVE_CLOSE);
+                    }
+                } else if (view.getId() == R.id.btn_right_close) {
+                    Device device = (Device) adapter.getItem(position);
+                    if (device instanceof Stove) {
+                        Stove stove = (Stove) device;
+                        if (stove.rightLevel != 0) //关右灶
+                            StoveAbstractControl.getInstance().setAttribute(device.guid, IPublicStoveApi.STOVE_RIGHT, 0x00, StoveConstant.STOVE_CLOSE);
+                    }
                 } else if (view.getId() == R.id.btn_detail) {
                     //查看详情
                     Device device = (Device) adapter.getItem(position);
@@ -515,9 +524,9 @@ public class HomePage extends VentilatorBasePage {
 
         for (Device device: AccountInfo.getInstance().deviceList) {
             if (device instanceof Pan && null == ((Pan) device).bleDevice)
-                names.add("ROKI_KP100");
+                names.add(BlueToothManager.pan);
             else if (device instanceof Stove && null == ((Stove) device).bleDevice)
-                names.add("ROKI");
+                names.add(BlueToothManager.stove);
         }
         if (names.size() > 0) {
             BlueToothManager.setScanRule(names.toArray(new String[names.size()]));

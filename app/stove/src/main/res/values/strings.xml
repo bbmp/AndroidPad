@@ -53,4 +53,5 @@
     <string name="stove_go_match">去匹配</string>
     <string name="stove_pan_offline">智能锅已离线</string>
     <string name="stove_stove_offline">智能灶已离线</string>
+    <string name="stove_offline">智能灶已离线</string>
 </resources>

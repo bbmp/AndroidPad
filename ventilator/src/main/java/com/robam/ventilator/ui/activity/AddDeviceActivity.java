@@ -54,8 +54,8 @@ public class AddDeviceActivity extends VentilatorBaseActivity {
                     //添加设备
                     Device device = (Device) adapter.getItem(position);
                     //判断设备类型 非锅和灶判断是否登录
-                    if (!"9B328".equals(device.getDisplayType()) &&
-                            !"KP100".equals(device.getDisplayType())) {
+                    if (!IDeviceType.RRQZ.equals(device.dc) &&
+                            !IDeviceType.RZNG.equals(device.dc)) {
                         if (null == AccountInfo.getInstance().getUser().getValue()) {
                             startActivity(LoginPhoneActivity.class);
                             return;

@@ -227,6 +227,10 @@ public class MqttVentilator extends MqttPublic {
                     short num = ByteUtils.toShort(payload[offset++]);
                 }
                 break;
+                case MsgKeys.DeviceConnected_Noti: { //子设备更新
+
+                }
+                break;
             }
         }
         //其他通知类消息
