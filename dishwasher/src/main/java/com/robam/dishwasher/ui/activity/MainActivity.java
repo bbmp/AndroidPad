@@ -3,12 +3,14 @@ package com.robam.dishwasher.ui.activity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.robam.common.constant.ComnConstant;
 import com.robam.common.ui.activity.BaseActivity;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.base.DishWasherBaseActivity;
 import com.robam.dishwasher.device.DishWasherAbstractControl;
 import com.robam.dishwasher.device.DishWasherFactory;
 import com.robam.dishwasher.device.DishWasherMqttControl;
+import com.robam.dishwasher.device.HomeDishWasher;
 
 //远程入口，供烟机调用
 public class MainActivity extends DishWasherBaseActivity {
@@ -29,6 +31,7 @@ public class MainActivity extends DishWasherBaseActivity {
 
         //开启远程控制
         DishWasherAbstractControl.getInstance().init(new DishWasherMqttControl());
+        HomeDishWasher.getInstance().guid = getIntent().getStringExtra(ComnConstant.EXTRA_GUID);
 
     }
 }

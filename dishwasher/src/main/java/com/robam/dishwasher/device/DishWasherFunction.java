@@ -7,5 +7,5 @@ public interface DishWasherFunction {
 
     void powerOn();
 
-    void sendCommonMsg(Map<String,Object> params,String targetGuid);
+    void sendCommonMsg(Map<String,Object> params,String targetGuid,short msg_id);
 }

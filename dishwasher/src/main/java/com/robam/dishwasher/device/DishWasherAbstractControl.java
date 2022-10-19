@@ -37,8 +37,8 @@ public class DishWasherAbstractControl implements DishWasherFunction{
     }
 
     @Override
-    public void sendCommonMsg(Map<String,Object> params, String targetGuid) {
-        function.sendCommonMsg(params,targetGuid);
+    public void sendCommonMsg(Map<String,Object> params, String targetGuid,short msg_id) {
+        function.sendCommonMsg(params,targetGuid,msg_id);
     }
 
 

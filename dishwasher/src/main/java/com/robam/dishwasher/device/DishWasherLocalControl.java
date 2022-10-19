@@ -16,7 +16,7 @@ public class DishWasherLocalControl implements DishWasherFunction{
     }
 
     @Override
-    public void sendCommonMsg(Map<String,Object> params, String targetGuid) {
+    public void sendCommonMsg(Map<String,Object> params, String targetGuid,short msg_id) {
 
     }
 }

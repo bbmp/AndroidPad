@@ -7,6 +7,7 @@ import com.robam.common.mqtt.MqttManager;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.DeviceUtils;
+import com.robam.dishwasher.constant.DishWasherConstant;
 
 import org.json.JSONException;
 
@@ -26,18 +27,16 @@ public class DishWasherMqttControl implements DishWasherFunction{
     }
 
     @Override
-    public void sendCommonMsg(Map<String,Object> params, String targetGuid) {
+    public void sendCommonMsg(Map<String,Object> params, String targetGuid,short msg_id) {
         try{
             MqttMsg msg = new MqttMsg.Builder()
-                    .setMsgId(MsgKeys.getDeviceAttribute_Req) //查询一体机
+                    .setMsgId(msg_id)
                     .setGuid(Plat.getPlatform().getDeviceOnlySign())
                     .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(targetGuid),
                             DeviceUtils.getDeviceNumber(targetGuid)))
                     .build();
-            Iterator iterator = params.entrySet().iterator();
-            while (iterator.hasNext()) {
-                Map.Entry entry = (Map.Entry) iterator.next();
-                msg.put(PanConstant.key, entry.getKey());
+            for(String key: params.keySet()){
+                msg.putOpt(key,params.get(key));
             }
             MqttManager.getInstance().publish(msg, DishWasherFactory.getProtocol());
         }catch (JSONException e){

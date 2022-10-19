@@ -29,6 +29,7 @@ public class DishWasherConstant {
     public final static String AppointmentSwitch = "AppointmentSwitch";//预约开关
     public final static String AppointmentTime = "AppointmentTime";//预约时间
 
+
     /**
      * 用户编码[10Byte]
      */
@@ -75,5 +76,8 @@ public class DishWasherConstant {
     public final static String DishWasherFanSwitch = "DishWasherFanSwitch";//风机开关
     public final static String LackRinseStatus = "LackRinseStatus";//缺漂洗剂状态
     public final static String DishWasherAlarm = "DishWasherAlarm";//洗碗机报警
+
+
+    public final static String MSG_ID = "MSG_ID";//预约时间
 
 }

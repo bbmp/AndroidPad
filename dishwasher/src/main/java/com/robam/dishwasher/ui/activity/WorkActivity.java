@@ -157,7 +157,7 @@ public class WorkActivity extends DishWasherBaseActivity {
         //2、先切换洗碗机状态至开机
 
         //3、切换成功后，在设置洗碗机工作模式
-        DishWasherAbstractControl.getInstance().sendCommonMsg(getModelWorkParamMsg(), HomeDishWasher.getInstance().guid);
+        //DishWasherAbstractControl.getInstance().sendCommonMsg(getModelWorkParamMsg(), HomeDishWasher.getInstance().guid);
 
     }
 

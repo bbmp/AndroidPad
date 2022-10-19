@@ -9,13 +9,22 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.mqtt.MsgKeys;
+import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.TimeUtils;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.base.DishWasherBaseActivity;
 import com.robam.dishwasher.bean.DishWaherModeBean;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.dishwasher.constant.DishWasherConstant;
+import com.robam.dishwasher.device.DishWasherAbstractControl;
 import com.robam.dishwasher.device.HomeDishWasher;
+
+import org.eclipse.paho.client.mqttv3.util.Strings;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ModeSelectActivity extends DishWasherBaseActivity {
     private RadioGroup radioGroup;
@@ -26,6 +35,21 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
     private TextView tvStartHint;
     //当前模式
     private DishWaherModeBean modeBean = null;
+
+
+    private short lowerWash = 1;//下层洗
+    private short autoVentilation; //自动换气
+    private short autoVentilationTime; //自动换气时间
+    private short appointment; //预约
+    private short appointmentTime; //预约时间
+
+    //todo(一些模式暂无 - 需寻求正在ROKI　APP相关人员支持)
+    private short enhancedDry;//加强干燥 - 暂无
+    private short panSWash; //锅具强洗  - 暂无
+    private short intensifyDegerming; //加强除菌   -暂无
+    private short cxjc;  //长效净存   - 暂无
+
+
 
     @Override
     protected int getLayoutId() {
@@ -140,15 +164,51 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
             startActivity(intent);
         } else if (id == R.id.btn_start) {
             //开始工作
-            Intent intent = new Intent();
-            if (null != modeBean)
-                intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, modeBean);
-            intent.setClass(this, WorkActivity.class);
-            startActivity(intent);
-            finish();
+//            Intent intent = new Intent();
+//            if (null != modeBean)
+//                intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, modeBean);
+//            intent.setClass(this, WorkActivity.class);
+//            startActivity(intent);
+//            finish();
+            startWork();
         } else if (id == R.id.ll_left) {
             //返回
             finish();
         }
     }
+
+    private void startWork(){
+        Map map = new HashMap();
+        map.put(DishWasherConstant.UserId,getSrcUser());
+        map.put(DishWasherConstant.DishWasherWorkMode, HomeDishWasher.getInstance().workMode);
+
+        map.put(DishWasherConstant.LowerLayerWasher, lowerWash);
+
+        map.put(DishWasherConstant.AutoVentilation, 0);
+        map.put(DishWasherConstant.EnhancedDrySwitch, 0);
+        map.put(DishWasherConstant.AppointmentSwitch, 0);
+        map.put(DishWasherConstant.AppointmentTime, 0);
+        /*msg.putOpt(MsgParams.UserId, getSrcUser());
+        msg.putOpt(MsgParams.DishWasherWorkMode, workMode);
+        msg.putOpt(MsgParams.LowerLayerWasher, bottomWasherSwitch);
+        msg.putOpt(MsgParams.AutoVentilation, autoVentilation);
+        msg.putOpt(MsgParams.EnhancedDrySwitch, enhancedDrySwitch);
+        msg.putOpt(MsgParams.AppointmentSwitch, appointmentSwitch);
+        msg.putOpt(MsgParams.AppointmentTime, appointmentTime);*/
+        //HomeDishWasher.getInstance().auxMode   当前选中的附加程序(默认是0 未选择任何附加程序)
+
+        DishWasherAbstractControl.getInstance().sendCommonMsg(map,HomeDishWasher.getInstance().guid, MsgKeys.setDishWasherWorkMode);
+    }
+
+    final public String getSrcUser() {
+        long id =AccountInfo.getInstance().getUser().getValue().id;
+        String userId = String.valueOf(id);
+        if(userId.length() < 10){
+            for(int i = 10 - userId.length();i<10;i++){
+                userId += "0";
+            }
+        }
+        return userId;
+    }
+
 }
