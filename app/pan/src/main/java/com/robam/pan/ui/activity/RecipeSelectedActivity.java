@@ -173,7 +173,7 @@ public class RecipeSelectedActivity extends PanBaseActivity {
             //炉头选择
             //检测锅和灶是否连接
             //选择炉头
-            if (null == panCurveDetail || null == panCurveDetail.temperatureCurveParams) {
+            if (null == panCurveDetail || null == panCurveDetail.temperatureCurveParams || null == panCurveDetail.curveStageParams) {
                 ToastUtils.showShort(this, R.string.pan_no_curve_data);
                 return;
             }
@@ -215,9 +215,9 @@ public class RecipeSelectedActivity extends PanBaseActivity {
     //设置曲线还原参数
     private void setParams(PanCurveDetail panCurveDetail, int stoveId) {
         if (null != panCurveDetail) {
-            PanAbstractControl.getInstance().setCurvePanParams(HomePan.getInstance().guid, panCurveDetail.smartPanModeCurveParams); //设置锅参数
+            PanAbstractControl.getInstance().setCurveStoveParams(HomePan.getInstance().guid, stoveId, panCurveDetail.curveStageParams, panCurveDetail.temperatureCurveParams); //设置灶参数
 
-            PanAbstractControl.getInstance().setCurveStoveParams(HomePan.getInstance().guid, stoveId, panCurveDetail.curveStageParams); //设置灶参数
+            PanAbstractControl.getInstance().setCurvePanParams(HomePan.getInstance().guid, panCurveDetail.smartPanModeCurveParams); //设置锅参数
         }
     }
     //点火提示

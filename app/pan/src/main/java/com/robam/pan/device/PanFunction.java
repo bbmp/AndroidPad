@@ -15,7 +15,7 @@ public interface PanFunction {
     //设置曲线还原，P档菜谱锅参数
     void setCurvePanParams(String targetGuid, String smartPanCurveParams);
     //设置曲线还原，P档菜谱灶参数
-    void setCurveStoveParams(String targetGuid, int stoveId, String curveStageParams);
+    void setCurveStoveParams(String targetGuid, int stoveId, String curveStageParams, String curveTempParams);
     //设置智能锅互动参数
     void setInteractionParams(String targetGuid, Map params);
 }

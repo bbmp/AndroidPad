@@ -28,8 +28,8 @@ public class PublicPanApi implements IPublicPanApi {
     }
 
     @Override
-    public void setCurveStoveParams(String targetGuid, int stoveId, String curveStageParams) {
-        PanAbstractControl.getInstance().setCurveStoveParams(targetGuid, stoveId, curveStageParams);
+    public void setCurveStoveParams(String targetGuid, int stoveId, String curveStageParams, String curveTempParams) {
+        PanAbstractControl.getInstance().setCurveStoveParams(targetGuid, stoveId, curveStageParams, curveTempParams);
     }
 
     @Override

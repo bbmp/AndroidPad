@@ -170,13 +170,16 @@ public class SerialVentilator {
     //关机机
     public static byte[] shutDown(){
         byte startup = (byte) 0x00;
+        byte lightOn = (byte) 0xA0;
+        byte gear = (byte) 0xA0;
         byte beep = (byte) 0x03;
+        byte baffle = (byte) 0xA0;
         byte[] payload = new byte[]{
                 startup,
-                HomeVentilator.getInstance().lightOn,
-                HomeVentilator.getInstance().gear,
+                lightOn,
+                gear,
                 beep,
-                HomeVentilator.getInstance().baffle,
+                baffle,
                 HomeVentilator.getInstance().param1,
                 HomeVentilator.getInstance().param2,
                 HomeVentilator.getInstance().param3,
@@ -458,6 +461,7 @@ public class SerialVentilator {
             //查询返回
             case MSG_TYPE_QUERY:
                 HomeVentilator.getInstance().startup = data[startupIndex - 1];
+                HomeVentilator.getInstance().status  = data[startupIndex - 1]; //工作状态
                 HomeVentilator.getInstance().lightOn = data[lightOnIndex - 1];
                 HomeVentilator.getInstance().gear    = data[gearIndex    - 1];
                 HomeVentilator.getInstance().beep    = data[beepIndex    - 1];

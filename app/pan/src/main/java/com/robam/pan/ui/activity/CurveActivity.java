@@ -200,8 +200,8 @@ public class CurveActivity extends PanBaseActivity {
         //需过滤掉其他曲线,锅和灶一起
         if (null != getCurveCookbooksRes && null != getCurveCookbooksRes.payload) {
             for (PanCurveDetail panCurveDetail : getCurveCookbooksRes.payload) {
-                if (panCurveDetail.deviceParams.contains(IDeviceType.RRQZ) ||
-                        panCurveDetail.deviceParams.contains(IDeviceType.RZNG))
+                if (null != panCurveDetail.deviceParams && (panCurveDetail.deviceParams.contains(IDeviceType.RRQZ) ||
+                        panCurveDetail.deviceParams.contains(IDeviceType.RZNG)))
                     panCurveDetails.add(panCurveDetail);
             }
         }

@@ -33,6 +33,7 @@ import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MMKVUtils;
 import com.robam.common.utils.StringUtils;
 import com.robam.common.device.subdevice.Pan;
+import com.robam.pan.device.PanAbstractControl;
 import com.robam.pan.device.PanFactory;
 import com.robam.common.device.subdevice.Stove;
 import com.robam.stove.device.StoveAbstractControl;
@@ -140,17 +141,19 @@ public class BleVentilator {
                 if (null != gatt)
                     gatt.close();
                 //清除设备蓝牙信息
-                setBleDevice(bleDevice.getMac(), null, null);
-                //重新连接
-                threadPoolExecutor.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Thread.sleep(2000);
-                        } catch (Exception e) {}
-                        connect(model, bleDevice);
-                    }
-                });
+                if (setBleDevice(bleDevice.getMac(), null, null)) {
+                    //重新连接
+                    threadPoolExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.sleep(2000);
+                            } catch (Exception e) {
+                            }
+                            connect(model, bleDevice);
+                        }
+                    });
+                }
             }
         });
     }
@@ -160,7 +163,7 @@ public class BleVentilator {
         String deviceNum = changeMac(bleDevice.getMac());
         for (Device device: AccountInfo.getInstance().deviceList) {
             //已经存在锅或灶，mac地址判断
-            if (deviceNum.equals(DeviceUtils.getDeviceNumber(device.guid))) {
+            if (bleDevice.getMac().equals(device.mac) || deviceNum.equals(DeviceUtils.getDeviceNumber(device.guid))) {
                 if (device instanceof Pan) {
                     BleDecoder bleDecoder = ((Pan) device).bleDecoder;
                     if (null != bleDecoder)
@@ -208,7 +211,7 @@ public class BleVentilator {
     }
 
     //设置蓝牙设备的读写特征符
-    public static void setBleDevice(String mac, BleDevice bleDevice, BluetoothGattCharacteristic characteristic) {
+    public static boolean setBleDevice(String mac, BleDevice bleDevice, BluetoothGattCharacteristic characteristic) {
         for (Device device: AccountInfo.getInstance().deviceList) {
             if (mac.equals(device.mac)) {
                 if (device instanceof Pan) {
@@ -216,15 +219,18 @@ public class BleVentilator {
                     ((Pan) device).characteristic = characteristic;
                     if (null == bleDevice)
                         device.bleType = 0;
+                    return true;
                 } else if (device instanceof Stove) {
                     ((Stove) device).bleDevice = bleDevice;
                     ((Stove) device).characteristic = characteristic;
                     if (null == bleDevice)
                         device.bleType = 0;
+                    return true;
                 }
                 break;
             }
         }
+        return false;
     }
     //获取gatt提供的服务
     public static void getBuletoothGatt(BleDevice bleDevice) {
@@ -278,6 +284,7 @@ public class BleVentilator {
                     @Override
                     public void onCharacteristicChanged(byte[] data) {
                         // 打开通知后，设备发过来的数据将在这里出现（UI线程）
+                        LogUtils.e("Thread " + Thread.currentThread() + " onCharacteristicChanged " + StringUtils.bytes2Hex(data));
                         for (Device device: AccountInfo.getInstance().deviceList) {
                             if (bleDevice.getMac().equals(device.mac)) {
                                 if (device instanceof Pan)
@@ -294,7 +301,7 @@ public class BleVentilator {
     public static void bleParser(BleDevice bleDevice, BleDecoder decoder, byte[] data) {
         if (null == data)
             return;
-        LogUtils.e("Thread " + Thread.currentThread() + " bleParser " + StringUtils.bytes2Hex(data));
+
 //        BleDecoder decoder = AccountInfo.getInstance().getBleDecoder(bleDevice.getMac());
         if(decoder != null) { //decoder一定是不为null的
             decoder.push_raw_data(BleDecoder.byteArraysToByteArrays(data));
@@ -390,6 +397,7 @@ public class BleVentilator {
                                                     //上线
                                                     if (device.status != Device.ONLINE) {
                                                         device.status = Device.ONLINE;
+                                                        device.queryNum = 0;
                                                         AccountInfo.getInstance().getGuid().setValue(device.guid);
 
                                                         updateSubdevice(device);
@@ -457,7 +465,7 @@ public class BleVentilator {
                                     break;
                                 case BleDecoder.CMD_COOKER_SET_RES: //设置灶状态返回
                                 case BleDecoder.CMD_COOKER_TIME_RES: //设置定时关火返回
-                                case BleDecoder.CMD_COOKER_LOCK_RES: //设置童锁返回
+                                case BleDecoder.CMD_COOKER_LOCK_RES: { //设置童锁返回
                                     int rc = ByteUtils.toInt(ret2[2]);
                                     if (rc == 0) { //设置成功
                                         for (Device device : AccountInfo.getInstance().deviceList) {
@@ -468,6 +476,7 @@ public class BleVentilator {
                                             }
                                         }
                                     }
+                                }
                                     break;
                                 case BleDecoder.EVENT_POT_TEMPERATURE_DROP://锅温度骤变
                                 case BleDecoder.EVENT_POT_TEMPERATURE_OV: //干烧预警
@@ -498,6 +507,10 @@ public class BleVentilator {
                                     StoveAbstractControl.getInstance().setStoveParams(BleDecoder.CMD_COOKER_SET_INT, ret2);
                                 }
                                     break;
+                                case BleDecoder.CMD_POT_INTERACTION_RES: { //智能锅智能互动回复
+
+                                }
+                                break;
                                 default:
                                     break;
                             }

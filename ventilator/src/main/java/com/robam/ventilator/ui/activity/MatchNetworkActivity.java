@@ -134,10 +134,10 @@ public class MatchNetworkActivity extends VentilatorBaseActivity implements BleV
     //已授权
     private void onPermissionGranted() {
         if (model.equals(IDeviceType.RRQZ)) {
-            String[] names = new String[]{"ROKI"};
+            String[] names = new String[]{BlueToothManager.stove};
             BlueToothManager.setScanRule(names);
         } else if (model.equals(IDeviceType.RZNG)) {
-            String[] names = new String[]{"ROKI_KP100"};
+            String[] names = new String[]{BlueToothManager.pan};
             BlueToothManager.setScanRule(names);
         }
         startScan();

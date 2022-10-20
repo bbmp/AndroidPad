@@ -30,6 +30,8 @@ import java.util.concurrent.locks.ReentrantLock;
 public class BlueToothManager {
     public static final Map<Integer, String> send_map = new HashMap<>();//外部命令发送关系表
     private static final Lock lock = new ReentrantLock();
+    public static final String pan = "ROKI_KP100"; //无人锅
+    public static final String stove = "ROKI_1082_V08";//灶具
 
     //扫描规则
     public static void setScanRule(String[] names) {

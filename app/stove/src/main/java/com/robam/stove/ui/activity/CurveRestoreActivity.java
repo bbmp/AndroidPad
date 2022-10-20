@@ -16,7 +16,9 @@ import com.robam.common.constant.PanConstant;
 import com.robam.common.device.subdevice.Pan;
 import com.robam.common.device.subdevice.Stove;
 import com.robam.common.manager.DynamicLineChartManager;
+import com.robam.common.module.IPublicPanApi;
 import com.robam.common.module.IPublicStoveApi;
+import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.utils.DateUtil;
 import com.robam.common.utils.LogUtils;
@@ -31,6 +33,7 @@ import com.robam.stove.device.StoveAbstractControl;
 import com.robam.stove.factory.StoveDialogFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -54,6 +57,8 @@ public class CurveRestoreActivity extends StoveBaseActivity {
     private Stove stove;
     private Pan pan;
     private int stoveId;
+
+    private IPublicPanApi iPublicPanApi = ModulePubliclHelper.getModulePublic(IPublicPanApi.class, IPublicPanApi.PAN_PUBLIC);
 
     @Override
     protected int getLayoutId() {
@@ -212,6 +217,14 @@ public class CurveRestoreActivity extends StoveBaseActivity {
         if (closeFire)
             StoveAbstractControl.getInstance().setAttribute(HomeStove.getInstance().guid, (byte) stoveId, (byte) 0x00, (byte) StoveConstant.STOVE_CLOSE);
 
+        //停止记录
+        if (null != iPublicPanApi) {
+            Map params = new HashMap();
+            params.put(PanConstant.KEY4, new byte[]{(byte) stoveId, 0, 0, 0, 0, (byte) PanConstant.stop});
+            params.put(PanConstant.KEY6, new byte[]{(byte) PanConstant.MODE_CLOSE_FRY}); //停止搅拌
+            iPublicPanApi.setInteractionParams(pan.guid, params);
+        }
+
         if (null == completeDialog) {
             completeDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_COMPLETE);
             completeDialog.setCancelable(false);
@@ -245,6 +258,13 @@ public class CurveRestoreActivity extends StoveBaseActivity {
                     if (v.getId() == R.id.tv_ok) {
                         //关火
                         StoveAbstractControl.getInstance().setAttribute(HomeStove.getInstance().guid, (byte) stoveId, (byte) 0x01, (byte) StoveConstant.STOVE_CLOSE);
+                        //停止记录
+                        if (null != iPublicPanApi) {
+                            Map params = new HashMap();
+                            params.put(PanConstant.KEY4, new byte[]{(byte) stoveId, 0, 0, 0, 0, (byte) PanConstant.stop});
+                            params.put(PanConstant.KEY6, new byte[]{(byte) PanConstant.MODE_CLOSE_FRY}); //停止搅拌
+                            iPublicPanApi.setInteractionParams(pan.guid, params);
+                        }
                         finish();
                     }
                 }

@@ -83,7 +83,7 @@ public class MqttManager {
         public void onSuccess(IMqttToken arg0) {
             LogUtils.e( "连接成功 ");
             try {
-                String topic = new RTopic(RTopic.TOPIC_UNICAST, iPlat.getDt()
+                String topic = new RTopic(RTopic.TOPIC_BROADCAST, iPlat.getDt()
                         , iPlat.getMac()).getTopic();
                 LogUtils.e("订阅主题 " + topic);
                 mqttAndroidClient.subscribe(topic, 2, iPlat.getDeviceOnlySign(), mqttActionListener);//订阅主题，参数：主题、服务质量
@@ -174,7 +174,7 @@ public class MqttManager {
                         iConncect.onSuccess();
                     LogUtils.e( "重连成功 ");
                     try {
-                        String topic = new RTopic(RTopic.TOPIC_UNICAST, iPlat.getDt()
+                        String topic = new RTopic(RTopic.TOPIC_BROADCAST, iPlat.getDt()
                                 , iPlat.getMac()).getTopic();
                         LogUtils.e("订阅主题 " + topic);
                         mqttAndroidClient.subscribe(topic, 2, iPlat.getDeviceOnlySign(), mqttActionListener);//订阅主题，参数：主题、服务质量
@@ -279,7 +279,7 @@ public class MqttManager {
     };
 
     private String getPublishTopic() {
-        return "/u/" + "DB620/" + iPlat.getMac();
+        return "/b/" +  iPlat.getDt() + "/" + iPlat.getMac();
     }
 
     /**

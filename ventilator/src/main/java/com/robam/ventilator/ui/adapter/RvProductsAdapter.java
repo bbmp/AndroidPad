@@ -23,7 +23,7 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
         super(R.layout.ventilator_item_layout_device);
         this.mOwner = owner;
         //左灶关火
-        addChildClickViewIds(R.id.btn_left_close, R.id.btn_detail, R.id.btn_work);
+        addChildClickViewIds(R.id.btn_left_close, R.id.btn_right_close, R.id.btn_detail, R.id.btn_work);
     }
     @Override
     protected void convert(@NonNull BaseViewHolder baseViewHolder, Device device) {

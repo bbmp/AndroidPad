@@ -15,7 +15,7 @@ import com.robam.common.manager.DynamicLineChartManager;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.ClearEditText;
 import com.robam.common.ui.view.MarkViewStep;
-import com.robam.common.utils.ChartDataUtils;
+import com.robam.common.utils.CurveUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBaseActivity;
@@ -146,7 +146,7 @@ public class CurveSaveActivity extends StoveBaseActivity {
                 List<LineChartDataBean> list = new ArrayList<>();
                 for (int i=0; i<entryList.size(); i++)
                     list.add(new LineChartDataBean(entryList.get(i).getX(), entryList.get(i).getY()));
-                curveStageParams = ChartDataUtils.listToJsonStr(list);
+                curveStageParams = CurveUtils.listToJsonStr(list);
             }
 
             ArrayList<Entry> stepList = getIntent().getParcelableArrayListExtra(StoveConstant.EXTRA_STEP_LIST);

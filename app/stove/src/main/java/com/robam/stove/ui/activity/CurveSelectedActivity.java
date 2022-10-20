@@ -225,7 +225,7 @@ public class CurveSelectedActivity extends StoveBaseActivity {
         int id = view.getId();
         if (id == R.id.tv_start_cook) {
             //选择炉头
-            if (null == stoveCurveDetail || null == stoveCurveDetail.temperatureCurveParams) {
+            if (null == stoveCurveDetail || null == stoveCurveDetail.temperatureCurveParams || null == stoveCurveDetail.curveStageParams) {
                 ToastUtils.showShort(this, R.string.stove_no_curve_data);
                 return;
             }

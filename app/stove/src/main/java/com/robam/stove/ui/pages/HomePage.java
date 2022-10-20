@@ -18,6 +18,7 @@ import com.robam.common.bean.Device;
 import com.robam.common.module.IPublicStoveApi;
 import com.robam.common.utils.TimeUtils;
 import com.robam.common.device.subdevice.Stove;
+import com.robam.common.utils.ToastUtils;
 import com.robam.stove.device.HomeStove;
 import com.robam.common.manager.FunctionManager;
 import com.robam.common.ui.dialog.IDialog;
@@ -276,10 +277,22 @@ public class HomePage extends StoveBasePage {
             intent.setClassName(getContext(), "com.robam.ventilator.ui.activity.ShortcutActivity");
             startActivity(intent);
         } else if (id == R.id.ll_left_stove) {
+            if (HomeStove.getInstance().isStoveOffline()) {
+                ToastUtils.showShort(getContext(), R.string.stove_offline);
+                return;
+            }
             stopCook(IPublicStoveApi.STOVE_LEFT);
         } else if (id == R.id.ll_right_stove) {
+            if (HomeStove.getInstance().isStoveOffline()) {
+                ToastUtils.showShort(getContext(), R.string.stove_offline);
+                return;
+            }
             stopCook(IPublicStoveApi.STOVE_RIGHT);
         } else if (id == R.id.iv_lock) {
+            if (HomeStove.getInstance().isStoveOffline()) {
+                ToastUtils.showShort(getContext(), R.string.stove_offline);
+                return;
+            }
             //锁屏提示
             affirmLock();
         }
