@@ -4,17 +4,34 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.TextView;
 
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
+import com.robam.common.manager.FunctionManager;
+import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.MCountdownView;
 import com.robam.common.utils.DateUtil;
+import com.robam.common.utils.LogUtils;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.base.DishWasherBaseActivity;
-import com.robam.dishwasher.bean.DishWaherModeBean;
+import com.robam.dishwasher.bean.DishWasher;
+import com.robam.dishwasher.bean.DishWasherModeBean;
 import com.robam.dishwasher.constant.DishWasherEnum;
 import com.robam.dishwasher.constant.DialogConstant;
 import com.robam.dishwasher.constant.DishWasherConstant;
+import com.robam.dishwasher.constant.DishWasherState;
+import com.robam.dishwasher.device.DishWasherAbstractControl;
 import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.factory.DishWasherDialogFactory;
+import com.robam.dishwasher.ui.dialog.DiashWasherCommonDialog;
+import com.robam.dishwasher.util.DishWasherCommonHelper;
+import com.robam.dishwasher.util.DishWasherModelUtil;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 预约中
@@ -30,8 +47,11 @@ public class AppointingActivity extends DishWasherBaseActivity {
     private TextView tvMode;
     //工作时长
     private TextView tvWorkHours;
+    private TextView tvModeAux;//辅助模式
     //当前模式
-    private DishWaherModeBean modeBean = null;
+    private DishWasherModeBean modeBean = null;
+
+    private StringBuffer buffer = new StringBuffer();
 
     @Override
     protected int getLayoutId() {
@@ -43,25 +63,108 @@ public class AppointingActivity extends DishWasherBaseActivity {
         showLeft();
         showCenter();
         tvCountdown = findViewById(R.id.tv_countdown);
-        tvAppointmentHint = findViewById(R.id.tv_appointment_hint);
+        tvAppointmentHint = findViewById(R.id.tv_start_work_hint);
         tvMode = findViewById(R.id.tv_mode);
+        tvModeAux = findViewById(R.id.tv_mode_aux);
         tvWorkHours = findViewById(R.id.tv_time);
 
         setOnClickListener(R.id.ll_left, R.id.iv_start);
+
+        AccountInfo.getInstance().getGuid().observe(this, s -> {
+            for (Device device: AccountInfo.getInstance().deviceList) {
+                if (device.guid.equals(s) && device instanceof DishWasher && device.guid.equals(HomeDishWasher.getInstance().guid)) { //当前锅
+                    DishWasher dishWasher = (DishWasher) device;
+                    LogUtils.e("AppointingActivity mqtt msg arrive isWorking "+dishWasher.powerStatus);
+                    switch (dishWasher.powerStatus){
+                        case DishWasherConstant.WORKING:
+                        case DishWasherConstant.PAUSE:
+                            dealWasherWorkingState(dishWasher);
+                            break;
+                        case DishWasherState.OFF:
+                            finish();
+                            break;
+                    }
+                    break;
+                }
+            }
+        });
     }
+
+    private void dealWasherWorkingState( DishWasher dishWasher){
+        switch (dishWasher.AppointmentSwitchStatus){
+            case DishWasherState.APPOINTMENT_OFF:
+                List<DishWasherModeBean> modeBeanList = FunctionManager.getFuntionList(getContext(), DishWasherModeBean.class,R.raw.dishwahser);
+                Intent intent = new Intent();
+                DishWasherModeBean dishWasherModeBean = DishWasherModelUtil.getDishWasher(modeBeanList,dishWasher.DishWasherWorkMode);
+                intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, dishWasherModeBean);
+                intent.setClass(this, WorkActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            case DishWasherState.APPOINTMENT_ON:
+                setViewsContent(dishWasher);
+                break;
+        }
+    }
+
+    private void setViewsContent(DishWasher dishWasher){
+        //工作剩余时间 dishWasher.DishWasherRemainingWorkingTime
+        //工作时长 dishWasher.SetWorkTimeValue
+        //剩余预约时间 AppointmentRemainingTime
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                tvWorkHours.setText(String.format("%s分钟", dishWasher.DishWasherRemainingWorkingTime));
+                int totalTime = dishWasher.AppointmentRemainingTime * 60;
+                tvCountdown.setTotalTime(totalTime);
+                tvCountdown.setText(getTimeStr(dishWasher.AppointmentRemainingTime));
+                tvAppointmentHint.setText(startTimePoint(dishWasher.AppointmentRemainingTime));
+            }
+        });
+
+
+    }
+
+    private String  getTimeStr(int remainingTime){
+        int aHour = remainingTime / 60;
+        int aHour_surplus = remainingTime % 60;
+        return (aHour <= 9 ? ("0"+aHour) : aHour) + ":" + (aHour_surplus <= 9 ? ("0"+aHour_surplus) : aHour_surplus);
+    }
+
+    private String startTimePoint(int remainingTime){
+        Calendar calendar = GregorianCalendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int min = calendar.get(Calendar.MINUTE);
+
+        int aHour = remainingTime / 60;
+        int aHour_surplus = remainingTime % 60;
+        int addHour = (min + aHour_surplus) / 60;
+        int addHour_surplus = (min + aHour_surplus) % 60;
+
+        int totalHour = hour + aHour + addHour;
+        int totalMin = addHour_surplus;
+
+        return "将在" + (totalHour <= 9 ? ("0"+totalHour) : totalHour) + ":" + (totalMin <= 9 ? ("0"+totalMin) : totalMin) +"启动工作";
+    }
+
 
     @Override
     protected void initData() {
         if (null != getIntent())
-            modeBean = (DishWaherModeBean) getIntent().getSerializableExtra(DishWasherConstant.EXTRA_MODEBEAN);
+            modeBean = (DishWasherModeBean) getIntent().getSerializableExtra(DishWasherConstant.EXTRA_MODEBEAN);
         if (null != modeBean) {
             setCountDownTime();
             //工作时长
             tvWorkHours.setText(HomeDishWasher.getInstance().workHours + "min");
             //工作模式
-            tvMode.setText(DishWasherEnum.match(HomeDishWasher.getInstance().workMode));
+            tvMode.setText(DishWasherEnum.match(modeBean.code));
         }
 
+    }
+
+    private void setCountDownTime(String appointTime) {
+        int totalTime = Integer.parseInt(appointTime) * 60;
+        tvCountdown.setTotalTime(totalTime);
     }
 
     /**
@@ -69,28 +172,26 @@ public class AppointingActivity extends DishWasherBaseActivity {
      */
     private void setCountDownTime() {
         String orderTime = HomeDishWasher.getInstance().orderTime;
-
+        if(orderTime == null || orderTime.trim().length() == 0){
+            return;
+        }
         int housGap = DateUtil.getHousGap(orderTime);
         int minGap = DateUtil.getMinGap(orderTime);
         int totalTime = housGap * 60 * 60 + minGap * 60;
-//        SteamOven.getInstance().orderTime = totalTime;
+        //SteamOven.getInstance().orderTime = totalTime;
         tvCountdown.setTotalTime(totalTime);
 
-        tvCountdown.addOnCountDownListener(new MCountdownView.OnCountDownListener() {
-            @Override
-            public void onCountDown(int currentSecond) {
-//                SteamOven.getInstance().orderLeftTime = currentSecond;
-                String time = DateUtil.secForMatTime2(currentSecond);
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        tvCountdown.setText(time);
-                        if (currentSecond <= 0)
-                            toStartWork();
-                    }
-                });
-            }
+        tvCountdown.addOnCountDownListener(currentSecond -> {
+            // SteamOven.getInstance().orderLeftTime = currentSecond;
+            String time = DateUtil.secForMatTime2(currentSecond);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    tvCountdown.setText(time);
+                    if (currentSecond <= 0)
+                        toStartWork();
+                }
+            });
         });
         tvCountdown.start();
     }
@@ -115,11 +216,8 @@ public class AppointingActivity extends DishWasherBaseActivity {
         } else if (id == R.id.iv_start) {
             //立即开始
             tvCountdown.stop();
-            Intent intent = new Intent();
-            if (null != modeBean)
-                intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, modeBean);
-            intent.setClass(this, WorkActivity.class);
-            finish();
+            Map params = DishWasherCommonHelper.getModelMap(MsgKeys.setDishWasherWorkMode,(Short)modeBean.code,(short) 0,0);
+            DishWasherCommonHelper.sendCommonMsg(params);
         }
     }
     //取消预约
@@ -140,5 +238,24 @@ public class AppointingActivity extends DishWasherBaseActivity {
             }
         }, R.id.tv_cancel, R.id.tv_ok);
         iDialog.show();
+    }
+
+    private void showCancelAppointingDialog(){
+        DiashWasherCommonDialog washerCommonDialog = new DiashWasherCommonDialog(this);
+        washerCommonDialog.setContentText(R.string.dishwasher_cancel_appointment_hint);
+        washerCommonDialog.setCancelText(R.string.dishwasher_cancel);
+        washerCommonDialog.setOKText(R.string.dishwasher_cancel_appointment);
+        washerCommonDialog.setListeners(v -> {
+            washerCommonDialog.dismiss();
+            if(v.getId() == R.id.tv_ok){
+                Map map = new HashMap();
+                map.put(DishWasherConstant.MSG_ID, MsgKeys.setDishWasherPower);
+                map.put(DishWasherConstant.UserId, AccountInfo.getInstance().getUserString());
+                map.put(DishWasherConstant.TARGET_GUID, HomeDishWasher.getInstance().guid);
+                map.put(DishWasherConstant.PowerMode,DishWasherConstant.OFF);
+                DishWasherCommonHelper.sendCommonMsg(map);
+            }
+        });
+
     }
 }

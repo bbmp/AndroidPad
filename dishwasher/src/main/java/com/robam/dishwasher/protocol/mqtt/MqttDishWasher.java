@@ -17,31 +17,19 @@ public class MqttDishWasher extends MqttPublic {
         //解析需要的字段存放
         switch (msg.getID()) {
             case MsgKeys.getDishWasherStatus:
-                short powerStatus =
-                        ByteUtils.toShort(payload[offset++]);
-                msg.putOpt(DishWasherConstant.powerStatus, powerStatus);
-                short stoveLock =
-                        ByteUtils.toShort(payload[offset++]);
-                short dishWasherWorkMode =
-                        ByteUtils.toShort(payload[offset++]);
-                msg.putOpt(DishWasherConstant.DishWasherWorkMode, dishWasherWorkMode);
-                int dishWasherRemainingWorkingTime =
-                        ByteUtils.toInt32(payload, offset++, ByteUtils.BYTE_ORDER);
-                msg.putOpt(DishWasherConstant.DishWasherRemainingWorkingTime, dishWasherRemainingWorkingTime);
+                short powerStatus =  ByteUtils.toShort(payload[offset++]);
+                short stoveLock = ByteUtils.toShort(payload[offset++]);
+                short dishWasherWorkMode = ByteUtils.toShort(payload[offset++]);
+                int dishWasherRemainingWorkingTime = ByteUtils.toInt32(payload, offset++, ByteUtils.BYTE_ORDER);
                 offset++;
-                short lowerLayerWasher =
-                        ByteUtils.toShort(payload[offset++]);
-                short enhancedDryStatus =
-                        ByteUtils.toShort(payload[offset++]);
-                short appointmentSwitchStatus =
-                        ByteUtils.toShort(payload[offset++]);
-                short autoVentilation =
-                        ByteUtils.toShort(payload[offset++]);
-                int appointmentTime =
-                        ByteUtils.toInt32(payload, offset++, ByteUtils.BYTE_ORDER);
+                short lowerLayerWasher = ByteUtils.toShort(payload[offset++]);
+                short enhancedDryStatus = ByteUtils.toShort(payload[offset++]);
+                short appointmentSwitchStatus = ByteUtils.toShort(payload[offset++]);
+                short autoVentilation = ByteUtils.toShort(payload[offset++]);
+                int appointmentTime = ByteUtils.toInt32(payload, offset++, ByteUtils.BYTE_ORDER);
                 offset++;
-                int appointmentRemainingTime =
-                        ByteUtils.toInt32(payload, offset++, ByteUtils.BYTE_ORDER);
+                int appointmentRemainingTime = ByteUtils.toInt32(payload, offset++, ByteUtils.BYTE_ORDER);
+
                 offset++;
                 short rinseAgentPositionKey =
                         ByteUtils.toShort(payload[offset++]);
@@ -62,6 +50,15 @@ public class MqttDishWasher extends MqttPublic {
                         ByteUtils.toShort(payload[payload.length - 1]);
 
                 short argument = ByteUtils.toShort(payload[offset++]);
+
+                msg.putOpt(DishWasherConstant.powerStatus, powerStatus);
+                msg.putOpt(DishWasherConstant.DishWasherWorkMode, dishWasherWorkMode);
+                msg.putOpt(DishWasherConstant.DishWasherRemainingWorkingTime, dishWasherRemainingWorkingTime);
+                msg.putOpt(DishWasherConstant.LowerLayerWasher, lowerLayerWasher);
+                msg.putOpt(DishWasherConstant.AppointmentSwitchStatus, appointmentSwitchStatus);
+                msg.putOpt(DishWasherConstant.AutoVentilation, autoVentilation);
+                msg.putOpt(DishWasherConstant.AppointmentTime, appointmentTime);
+                msg.putOpt(DishWasherConstant.AppointmentRemainingTime, appointmentRemainingTime);
                 break;
         }
     }

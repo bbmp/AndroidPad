@@ -4,30 +4,22 @@ import android.content.Intent;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.RelativeSizeSpan;
-import android.text.style.ScaleXSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
-import com.robam.common.bean.AccountInfo;
-import com.robam.common.bean.Device;
-import com.robam.common.constant.PanConstant;
-import com.robam.common.device.subdevice.Pan;
 import com.robam.common.manager.FunctionManager;
 import com.robam.common.ui.helper.PickerLayoutManager;
-import com.robam.common.ui.view.ExtImageSpan;
 import com.robam.common.utils.ImageUtils;
 import com.robam.common.utils.TimeUtils;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.base.DishWasherBasePage;
-import com.robam.dishwasher.bean.DishWaherModeBean;
-import com.robam.dishwasher.bean.DishWasher;
+import com.robam.dishwasher.bean.DishWasherModeBean;
 import com.robam.dishwasher.constant.DishWasherConstant;
 import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.ui.adapter.RvMainModeAdapter;
@@ -75,29 +67,9 @@ public class HomePage extends DishWasherBasePage {
         rvMain.setAdapter(rvMainModeAdapter);
         showCenter();
         setOnClickListener(R.id.iv_float);
-
-        //监听洗碗机状态
-        AccountInfo.getInstance().getGuid().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                for (Device device: AccountInfo.getInstance().deviceList) {
-                    if (device.guid.equals(s) && device instanceof DishWasher && device.guid.equals(HomeDishWasher.getInstance().guid)) { //当前锅
-                        DishWasher dishWasher = (DishWasher) device;
-
-//                        if (pan.fryMode == PanConstant.MODE_QUICK_FRY) {
-//                            llQuick.setSelected(true);
-//                            tvQuick.setText(R.string.pan_quick_frying);
-//                        } else if (pan.fryMode == PanConstant.MODE_STIR_FRY) {
-//                            llStir.setSelected(true);
-//                        }
-                        break;
-                    }
-                }
-            }
-        });
     }
     //模式参数设置
-    private void setData(DishWaherModeBean modeBean) {
+    private void setData(DishWasherModeBean modeBean) {
         if (null != modeBean) {
             tvFunhint.setText(modeBean.desc);
             String time = TimeUtils.secToHourMinH(modeBean.time);
@@ -122,7 +94,7 @@ public class HomePage extends DishWasherBasePage {
 
     @Override
     protected void initData() {
-        List<DishWaherModeBean> modeBeanList = FunctionManager.getFuntionList(getContext(), DishWaherModeBean.class,R.raw.dishwahser);
+        List<DishWasherModeBean> modeBeanList = FunctionManager.getFuntionList(getContext(), DishWasherModeBean.class,R.raw.dishwahser);
 
         rvMainModeAdapter.setList(modeBeanList);
 
@@ -137,7 +109,7 @@ public class HomePage extends DishWasherBasePage {
         rvMainModeAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                DishWaherModeBean dishWaherModeBean = (DishWaherModeBean) adapter.getItem(position);
+                DishWasherModeBean dishWaherModeBean = (DishWasherModeBean) adapter.getItem(position);
 
                 HomeDishWasher.getInstance().workMode = dishWaherModeBean.code;
                 Intent intent = new Intent();
@@ -146,6 +118,7 @@ public class HomePage extends DishWasherBasePage {
                 startActivity(intent);
             }
         });
+
 
 
     }

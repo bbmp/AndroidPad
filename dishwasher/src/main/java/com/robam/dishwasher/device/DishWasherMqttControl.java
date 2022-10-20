@@ -44,4 +44,22 @@ public class DishWasherMqttControl implements DishWasherFunction{
         }
 
     }
+
+    @Override
+    public void sendCommonMsg(Map<String, Object> params, String targetGuid, short msg_id, MqttManager.MqttSendMsgListener listening) {
+        try{
+            MqttMsg msg = new MqttMsg.Builder()
+                    .setMsgId(msg_id)
+                    .setGuid(Plat.getPlatform().getDeviceOnlySign())
+                    .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(targetGuid),
+                            DeviceUtils.getDeviceNumber(targetGuid)))
+                    .build();
+            for(String key: params.keySet()){
+                msg.putOpt(key,params.get(key));
+            }
+            MqttManager.getInstance().publish(msg, DishWasherFactory.getProtocol(),listening);
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+    }
 }

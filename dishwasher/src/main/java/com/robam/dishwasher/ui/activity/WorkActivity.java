@@ -1,11 +1,8 @@
 package com.robam.dishwasher.ui.activity;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 
-import android.graphics.Color;
-import android.os.Bundle;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.text.SpannableString;
@@ -16,25 +13,23 @@ import android.widget.TextView;
 
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
-import com.robam.common.bean.RTopic;
-import com.robam.common.device.Plat;
-import com.robam.common.device.subdevice.Pan;
-import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.CircleProgressView;
-import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.TimeUtils;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.base.DishWasherBaseActivity;
-import com.robam.dishwasher.bean.DishWaherModeBean;
+import com.robam.dishwasher.bean.DishWasherModeBean;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.dishwasher.constant.DialogConstant;
 import com.robam.dishwasher.constant.DishWasherConstant;
+import com.robam.dishwasher.constant.DishWasherEnum;
+import com.robam.dishwasher.constant.DishWasherState;
 import com.robam.dishwasher.device.DishWasherAbstractControl;
 import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.factory.DishWasherDialogFactory;
+import com.robam.dishwasher.util.DishWasherModelUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,11 +40,15 @@ public class WorkActivity extends DishWasherBaseActivity {
      */
     private CircleProgressView cpgBar;
 
-    private TextView tvTime;
-    private TextView tvMode;
-    private TextView tvModeCur;
-    //当前模式
-    private DishWaherModeBean modeBean = null;
+    private TextView tvModeCur;//洗涤、漂洗、干燥、换气
+    private TextView tvTime;//时间
+    private TextView tvDuration;//时间
+    private TextView tvMode;//模式
+    private TextView tvAuxMode;//附加模式 - 锅具强洗、加强除菌、长效净存、下层洗
+
+    private View startIcon,pauseIcon;
+    //当前模式 - 注意该对象可能未空（比如APP异常退出，在进入，比如在洗碗机中直接直接进行操作）
+    private DishWasherModeBean modeBean = null;
 
     @Override
     protected int getLayoutId() {
@@ -63,17 +62,31 @@ public class WorkActivity extends DishWasherBaseActivity {
 
         cpgBar = findViewById(R.id.progress);
         tvTime = findViewById(R.id.tv_time);
+        tvDuration = findViewById(R.id.tv_duration);
         tvMode = findViewById(R.id.tv_mode);
         tvModeCur = findViewById(R.id.tv_mode_cur);
-        cpgBar.setProgress(0);
-        setOnClickListener(R.id.ll_left, R.id.iv_float);
+        tvAuxMode = findViewById(R.id.tv_aux_mode);
+        startIcon = findViewById(R.id.iv_start);
+        pauseIcon = findViewById(R.id.iv_pause);
+
+        cpgBar.setProgress(85);
+        setOnClickListener(R.id.ll_left, R.id.iv_float,R.id.iv_start,R.id.iv_pause);
 
         AccountInfo.getInstance().getGuid().observe(this, s -> {
             for (Device device: AccountInfo.getInstance().deviceList) {
                 if (device.guid.equals(s) && device instanceof DishWasher && device.guid.equals(HomeDishWasher.getInstance().guid)) { //当前锅
                     DishWasher dishWasher = (DishWasher) device;
-                    //TODO(更新页面)
-                    LogUtils.i("dishwasher . WorkActivity . "+dishWasher);
+                    LogUtils.e("WorkActivity mqtt msg arrive isWorking "+dishWasher.powerStatus);
+                    switch (dishWasher.powerStatus){
+                        case DishWasherState.WORKING:
+                        case DishWasherState.PAUSE:
+                        case DishWasherState.END:
+                            setWorkingState(dishWasher);
+                            break;
+                        case DishWasherState.OFF:
+                            finish();
+                            break;
+                    }
                     break;
                 }
             }
@@ -95,17 +108,17 @@ public class WorkActivity extends DishWasherBaseActivity {
     protected void initData() {
         //当前模式
         if (null != getIntent())
-            modeBean = (DishWaherModeBean) getIntent().getSerializableExtra(DishWasherConstant.EXTRA_MODEBEAN);
+            modeBean = (DishWasherModeBean) getIntent().getSerializableExtra(DishWasherConstant.EXTRA_MODEBEAN);
 
         if (null != modeBean) {
             setData(modeBean);
 
-            handler.sendEmptyMessageDelayed(0, 1000);
+            //handler.sendEmptyMessageDelayed(0, 1000);
         }
     }
 
     //模式参数设置
-    private void setData(DishWaherModeBean modeBean) {
+    private void setData(DishWasherModeBean modeBean) {
         tvMode.setText(modeBean.name);
         String time = TimeUtils.secToHourMinH(modeBean.time);
         SpannableString spannableString = new SpannableString(time);
@@ -125,21 +138,46 @@ public class WorkActivity extends DishWasherBaseActivity {
             //工作结束提示
             stopWork();
         } else if (id == R.id.iv_start) {
-            //暂停，开始
+            //进入暂停
+            stateViewWasClick(false);
+        }else if(id == R.id.iv_pause){
+            //回复运行
+            stateViewWasClick(true);
         }
+    }
+
+    private void stateViewWasClick(boolean isStart){
+        sendCommand(isStart);
+        //changeViewsState(isStart?DishWasherConstant.WORKING:DishWasherConstant.PAUSE);
+    }
+
+    private void sendCommand(boolean isStart){
+        Map map = new HashMap();
+        /*Msg msg = newReqMsg(MsgKeys.setDishWasherPower);
+        msg.putOpt(MsgParams.UserId, getSrcUser());
+        msg.putOpt(MsgParams.PowerMode, status);*/
+        map.put(DishWasherConstant.UserId,AccountInfo.getInstance().getUserString());
+        if(isStart){//回复运行
+            map.put(DishWasherConstant.PowerMode,DishWasherConstant.WORKING);
+        }else{//暂停
+            map.put(DishWasherConstant.PowerMode,DishWasherConstant.PAUSE);
+        }
+        DishWasherAbstractControl.getInstance().sendCommonMsg(map,HomeDishWasher.getInstance().guid, MsgKeys.setDishWasherPower);
 
     }
+
 
     //停止工作提示
     private void stopWork() {
         IDialog iDialog = DishWasherDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_COMMON_DIALOG);
         iDialog.setCancelable(false);
-        iDialog.setListeners(new IDialog.DialogOnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (v.getId() == R.id.tv_ok) {
-                    finish();
-                }
+        iDialog.setListeners(v -> {
+            iDialog.dismiss();
+            if (v.getId() == R.id.tv_ok) {
+                Map map = new HashMap();
+                map.put(DishWasherConstant.UserId,AccountInfo.getInstance().getUserString());
+                map.put(DishWasherConstant.PowerMode,DishWasherConstant.OFF);
+                DishWasherAbstractControl.getInstance().sendCommonMsg(map,HomeDishWasher.getInstance().guid, MsgKeys.setDishWasherPower);
             }
         }, R.id.tv_cancel, R.id.tv_ok);
         iDialog.show();
@@ -148,7 +186,7 @@ public class WorkActivity extends DishWasherBaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        handler.removeCallbacksAndMessages(null);
+        //handler.removeCallbacksAndMessages(null);
     }
 
     private void work() {
@@ -162,15 +200,34 @@ public class WorkActivity extends DishWasherBaseActivity {
     }
 
 
-    private Map<String,Object> getModelWorkParamMsg() {
-       Map<String,Object> request = new HashMap<>();
-            //msg.putOpt(MsgParams.UserId, getSrcUser());
-//        msg.putOpt(DishWasherConstant.DishWasherWorkMode, workMode);
-//        msg.putOpt(DishWasherConstant.LowerLayerWasher, bottomWasherSwitch);
-//        msg.putOpt(DishWasherConstant.AutoVentilation, autoVentilation);
-//        msg.putOpt(DishWasherConstant.EnhancedDrySwitch, enhancedDrySwitch);
-//        msg.putOpt(DishWasherConstant.AppointmentSwitch, appointmentSwitch);
-//        msg.putOpt(DishWasherConstant.AppointmentTime, appointmentTime);
-        return request;
+    //工作中 - 需更新时间
+    private void setWorkingState(DishWasher dishWasher){
+        changeViewsState(dishWasher.powerStatus);
+        if(dishWasher.powerStatus == DishWasherConstant.WORKING){
+            //工作剩余时间 dishWasher.DishWasherRemainingWorkingTime
+            //工作时长 dishWasher.SetWorkTimeValue
+            tvTime.setText(String.format("%s分钟", dishWasher.DishWasherRemainingWorkingTime));
+        }else if(dishWasher.powerStatus == DishWasherConstant.PAUSE){
+            tvDuration.setText(String.format("%s分钟", dishWasher.DishWasherRemainingWorkingTime));
+        }
+        tvAuxMode.setText(DishWasherModelUtil.autoMode(dishWasher));//附加模式
     }
+
+    private void changeViewsState(int state){
+        if(state == DishWasherConstant.PAUSE){
+            startIcon.setVisibility(View.INVISIBLE);
+            pauseIcon.setVisibility(View.VISIBLE);
+            tvDuration.setVisibility(View.VISIBLE);
+            tvTime.setText(R.string.dishwasher_pausing);
+        }else if(state == DishWasherConstant.WORKING){
+            startIcon.setVisibility(View.VISIBLE);
+            tvDuration.setVisibility(View.INVISIBLE);
+            pauseIcon.setVisibility(View.INVISIBLE);
+        }else if(state == DishWasherConstant.END){
+
+        }
+    }
+
+
+
 }

@@ -3,6 +3,7 @@ package com.robam.dishwasher.device;
 import com.robam.common.bean.RTopic;
 import com.robam.common.constant.PanConstant;
 import com.robam.common.device.Plat;
+import com.robam.common.mqtt.MqttManager;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.DeviceUtils;
@@ -39,6 +40,11 @@ public class DishWasherAbstractControl implements DishWasherFunction{
     @Override
     public void sendCommonMsg(Map<String,Object> params, String targetGuid,short msg_id) {
         function.sendCommonMsg(params,targetGuid,msg_id);
+    }
+
+    @Override
+    public void sendCommonMsg(Map<String, Object> params, String targetGuid, short msg_id, MqttManager.MqttSendMsgListener listening) {
+        function.sendCommonMsg(params,targetGuid,msg_id,listening);
     }
 
 

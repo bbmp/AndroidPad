@@ -22,7 +22,7 @@ import com.robam.common.R;
 
 public class CircleProgressView extends View {
 
-    private Paint mBackPaint, mProgPaint;   // 绘制画笔
+    private Paint mBackPaint, mProgPaint,mRoundPaint;   // 绘制画笔
     private RectF mRectF;       // 绘制区域
     private int[] mColorArray;  // 圆环渐变色
     private float mProgress;      // 圆环进度(0-100)
@@ -57,6 +57,15 @@ public class CircleProgressView extends View {
         mProgPaint.setDither(true);                 // 设置抖动
         mProgPaint.setStrokeWidth(typedArray.getDimension(R.styleable.common_CircleProgressView_common_progWidth, 10));
         mProgPaint.setColor(typedArray.getColor(R.styleable.common_CircleProgressView_common_progColor, Color.BLUE));
+
+
+        mRoundPaint = new Paint();
+        mRoundPaint.setStyle(Paint.Style.STROKE);    // 只描边，不填充
+        mRoundPaint.setStrokeCap(Paint.Cap.ROUND);   // 设置圆角
+        mRoundPaint.setAntiAlias(true);              // 设置抗锯齿
+        mRoundPaint.setDither(true);                 // 设置抖动
+        mRoundPaint.setStrokeWidth(typedArray.getDimension(R.styleable.common_CircleProgressView_common_progWidth, 10));
+        mRoundPaint.setColor(typedArray.getColor(R.styleable.common_CircleProgressView_common_progColor, Color.BLUE));
 
         // 初始化进度圆环渐变色
         int startColor = typedArray.getColor(R.styleable.common_CircleProgressView_common_progStartColor, -1);
@@ -103,6 +112,9 @@ public class CircleProgressView extends View {
             canvas.drawArc(mRectF, (float) (360 * 0.25 / 100), (float) (360 * (24.5) / 100), false, mProgPaint);
             canvas.drawArc(mRectF, 90 + (float) (360 * 0.25 / 100), (float) (360 * (mProgress-50.25) / 100), false, mProgPaint);
         }
+
+        canvas.drawArc(mRectF, 270, 360 * 0.05f / 100, false, mRoundPaint);//开始圆角
+        canvas.drawArc(mRectF, 270 + 360 * mProgress / 100, 360 * 0.05f / 100, false, mRoundPaint);//结束圆角
     }
 
     // ---------------------------------------------------------------------------------------------

@@ -3,19 +3,29 @@ package com.robam.dishwasher.ui.activity;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
+import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.common.utils.DateUtil;
+import com.robam.common.utils.LogUtils;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.base.DishWasherBaseActivity;
 import com.robam.dishwasher.bean.DishWasher;
+import com.robam.dishwasher.bean.DishWasherModeBean;
+import com.robam.dishwasher.constant.DishWasherConstant;
 import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.ui.adapter.RvStringAdapter;
+import com.robam.dishwasher.util.DishWasherCommonHelper;
+import com.robam.dishwasher.util.DishWasherModelUtil;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 //工作预约
 public class AppointmentActivity extends DishWasherBaseActivity {
@@ -47,6 +57,10 @@ public class AppointmentActivity extends DishWasherBaseActivity {
      */
     private String orderTime;
     private TextView tvTime;
+
+    //当前模式
+    private DishWasherModeBean modeBean = null;
+
     @Override
     protected int getLayoutId() {
         return R.layout.dishwasher_activity_layout_appointment;
@@ -73,17 +87,12 @@ public class AppointmentActivity extends DishWasherBaseActivity {
                 }).build();
         mMinuteManager = new PickerLayoutManager.Builder(this)
                 .setScale(0.5f)
-                .setOnPickerListener(new PickerLayoutManager.OnPickerListener() {
-                    @Override
-                    public void onPicked(RecyclerView recyclerView, int position) {
-                        setOrderDate();
-                    }
-                })
+                .setOnPickerListener((recyclerView, position) -> setOrderDate())
                 .build();
         mHourView.setLayoutManager(mHourManager);
         mMinuteView.setLayoutManager(mMinuteManager);
 
-        setOnClickListener(R.id.btn_cancel, R.id.btn_ok);
+        setOnClickListener(R.id.btn_cancel, R.id.btn_ok,R.id.ll_left);
     }
 
     @Override
@@ -95,16 +104,39 @@ public class AppointmentActivity extends DishWasherBaseActivity {
         }
 
         // 生产分钟
-        ArrayList<String> minuteData = new ArrayList<>(60);
-        for (int i = 0; i <= 59; i++) {
-            minuteData.add((i < 10 ? "0" : "") + i + "");
-        }
+        ArrayList<String> minuteData = new ArrayList<>(6);
+        minuteData.add("00");
+        minuteData.add("10");
+        minuteData.add("20");
+        minuteData.add("30");
+        minuteData.add("40");
+        minuteData.add("50");
         mHourAdapter.setList(hourData);
         mMinuteAdapter.setList(minuteData);
         mHourView.setAdapter(mHourAdapter);
         mMinuteView.setAdapter(mMinuteAdapter);
+        modeBean = (DishWasherModeBean) getIntent().getSerializableExtra(DishWasherConstant.EXTRA_MODEBEAN);
         //默认
         setOrderDate();
+
+        AccountInfo.getInstance().getGuid().observe(this, s -> {
+            for (Device device: AccountInfo.getInstance().deviceList) {
+                if (device.guid.equals(s) && device instanceof DishWasher && device.guid.equals(HomeDishWasher.getInstance().guid)) { //当前锅
+                    DishWasher dishWasher = (DishWasher) device;
+                    LogUtils.e("AppointmentActivity mqtt msg arrive isWorking "+dishWasher.powerStatus);
+                    switch (dishWasher.powerStatus){
+                        case DishWasherConstant.WORKING:
+                        case DishWasherConstant.PAUSE:
+                            Intent intent = new Intent();
+                            intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, modeBean);
+                            intent.setClass(this, AppointingActivity.class);
+                            startActivity(intent);
+                            finish();
+                    }
+                    break;
+                }
+            }
+        });
     }
 
     @Override
@@ -115,10 +147,13 @@ public class AppointmentActivity extends DishWasherBaseActivity {
             finish();
         else if (id == R.id.btn_ok) { //确认预约
             HomeDishWasher.getInstance().orderTime = orderTime;
-            startActivity(AppointingActivity.class);
+            Map params = DishWasherCommonHelper.getModelMap(MsgKeys.setDishWasherWorkMode,(short)modeBean.code,(short) 1,DishWasherCommonHelper.getAppointingTimeMin(tvTime.getText().toString()));
+            DishWasherCommonHelper.sendCommonMsg(params);
+        }else if(id == R.id.ll_left){
             finish();
         }
     }
+
 
     /**
      * 设置下方提示的开始时间

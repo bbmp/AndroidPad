@@ -9,9 +9,9 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.robam.common.utils.LogUtils;
 import com.robam.dishwasher.R;
-import com.robam.dishwasher.bean.DishWaherModeBean;
+import com.robam.dishwasher.bean.DishWasherModeBean;
 
-public class RvMainModeAdapter extends BaseQuickAdapter<DishWaherModeBean, BaseViewHolder> {
+public class RvMainModeAdapter extends BaseQuickAdapter<DishWasherModeBean, BaseViewHolder> {
     private int pickPosition;
 //    private RequestOptions options = RequestOptions.bitmapTransform(new MultiTransformation(new BlurTransformation(30, 3)));
 
@@ -30,7 +30,7 @@ public class RvMainModeAdapter extends BaseQuickAdapter<DishWaherModeBean, BaseV
     }
 
     @Override
-    public DishWaherModeBean getItem(int position) {
+    public DishWasherModeBean getItem(int position) {
         int count = getHeaderLayoutCount() + getData().size();
         position = position % count ;
         return super.getItem(position);
@@ -50,7 +50,7 @@ public class RvMainModeAdapter extends BaseQuickAdapter<DishWaherModeBean, BaseV
     }
 
     @Override
-    protected void convert(@NonNull BaseViewHolder baseViewHolder, DishWaherModeBean dishWaherModeBean) {
+    protected void convert(@NonNull BaseViewHolder baseViewHolder, DishWasherModeBean dishWaherModeBean) {
         if (null != dishWaherModeBean) {
             TextView textView = baseViewHolder.getView(R.id.tv_mode_name);
             textView.setText(dishWaherModeBean.name);

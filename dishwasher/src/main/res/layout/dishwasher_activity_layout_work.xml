@@ -65,6 +65,17 @@
         app:layout_constraintBaseline_toBaselineOf="@id/tv_mode"/>
 
     <TextView
+        android:id="@+id/tv_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="@id/iv_pause"
+        app:layout_constraintRight_toRightOf="@id/iv_pause"
+        android:textColor="@color/dishwasher_white70"
+        android:textSize="@dimen/sp_40"
+        android:visibility="invisible"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_mode"/>
+
+    <TextView
         android:id="@+id/tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -84,6 +95,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
+
+    <ImageView
+        android:id="@+id/iv_pause"
+        android:layout_width="@dimen/dp_112"
+        android:layout_height="@dimen/dp_112"
+        android:src="@drawable/dishwasher_ic_start_blue"
+        android:layout_marginLeft="@dimen/dp_152"
+        app:layout_constraintTop_toTopOf="@id/tv_time"
+        app:layout_constraintBottom_toBottomOf="@id/tv_time"
+        app:layout_constraintLeft_toRightOf="@id/tv_time"
+        app:layout_constraintRight_toRightOf="parent"
+        android:visibility="invisible"/>
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/dishwasher_guideline2"
         android:layout_width="wrap_content"

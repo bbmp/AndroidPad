@@ -1,7 +1,7 @@
 [
   {
     "backgroundImg": "",
-    "code": 1,
+    "code": 5,
     "name": "智能洗",
     "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
     "desc" : "自动识别匹配餐具脏污程度进行清洗",
@@ -10,7 +10,7 @@
   },
   {
     "backgroundImg": "",
-    "code": 2,
+    "code": 1,
     "name": "强力洗",
     "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
     "desc" : "清洗重度脏污餐具、残渣干结餐具",
@@ -19,7 +19,7 @@
   },
   {
     "backgroundImg": "",
-    "code": 3,
+    "code": 4,
     "name": "快速洗",
     "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
     "desc" : "清洗轻度脏污餐具，无需干燥",
@@ -28,7 +28,7 @@
   },
   {
     "backgroundImg": "",
-    "code": 4,
+    "code": 2,
     "name": "日常洗",
     "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
     "desc" : "清洗中度脏污餐具",
@@ -37,7 +37,7 @@
   },
   {
     "backgroundImg": "",
-    "code": 5,
+    "code": 3,
     "name": "节能洗",
     "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
     "desc" : "清洗未干结的中度脏污餐具",

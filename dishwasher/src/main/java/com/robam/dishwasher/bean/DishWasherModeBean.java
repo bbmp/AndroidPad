@@ -2,9 +2,9 @@ package com.robam.dishwasher.bean;
 
 import java.io.Serializable;
 
-public class DishWaherModeBean implements Serializable {
+public class DishWasherModeBean implements Serializable {
     //模式id
-    public int code ;
+    public short code ;
     //模式名称
     public String name ;
 
