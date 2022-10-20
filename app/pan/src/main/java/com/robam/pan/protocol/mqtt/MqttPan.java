@@ -16,6 +16,7 @@ import com.robam.common.utils.MsgUtils;
 import com.robam.common.device.subdevice.Pan;
 import com.robam.common.constant.PanConstant;
 import com.robam.pan.constant.QualityKeys;
+import com.robam.pan.device.PanAbstractControl;
 import com.robam.pan.device.PanFactory;
 
 import org.json.JSONArray;
@@ -39,7 +40,7 @@ public class MqttPan extends MqttPublic {
                     if (device.guid.equals(msg.getGuid()) && device instanceof Pan) { //当前锅
                         Pan pan = (Pan) device;
                         buf.putFloat((float) pan.panTemp); //温度
-                        buf.put((byte) pan.status);//系统状态
+                        buf.put((byte) pan.workStatus);//系统状态
                         buf.put((byte) 0x00); //参数个数
                         break;
                     }
@@ -51,7 +52,7 @@ public class MqttPan extends MqttPublic {
     private void decodeMsg(MqttMsg msg, byte[] payload, int offset) {
         //处理远程消息
         switch (msg.getID()) {
-            case MsgKeys.GetPotTemp_Req: //查询锅
+            case MsgKeys.GetPotTemp_Req: {//查询锅
                 //答复
                 String curGuid = msg.getrTopic().getDeviceType() + msg.getrTopic().getSignNum(); //当前设备guid
                 MqttMsg newMsg = new MqttMsg.Builder()
@@ -61,6 +62,12 @@ public class MqttPan extends MqttPublic {
                         .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(msg.getGuid()), DeviceUtils.getDeviceNumber(msg.getGuid())))
                         .build();
                 MqttManager.getInstance().publish(newMsg, PanFactory.getProtocol());
+            }
+                break;
+            case MsgKeys.POT_INTERACTION_Req: {//智能互动
+                String curGuid = msg.getrTopic().getDeviceType() + msg.getrTopic().getSignNum(); //当前设备guid
+                PanAbstractControl.getInstance().remoteControl(curGuid, payload);
+            }
                 break;
         }
     }

@@ -3,6 +3,7 @@ package com.robam.common.mqtt;
 import android.content.Context;
 import android.util.Log;
 
+import com.robam.common.IDeviceType;
 import com.robam.common.bean.RTopic;
 import com.robam.common.constant.ComnConstant;
 import com.robam.common.device.IPlat;
@@ -85,7 +86,7 @@ public class MqttManager {
         public void onSuccess(IMqttToken arg0) {
             LogUtils.e( "连接成功 ");
             try {
-                String topic = new RTopic(RTopic.TOPIC_BROADCAST, iPlat.getDt()
+                String topic = new RTopic(RTopic.TOPIC_UNICAST, iPlat.getDt()
                         , iPlat.getMac()).getTopic();
                 LogUtils.e("订阅主题 " + topic);
                 mqttAndroidClient.subscribe(topic, 2, iPlat.getDeviceOnlySign(), mqttActionListener);//订阅主题，参数：主题、服务质量
@@ -115,10 +116,15 @@ public class MqttManager {
     /**
      * 单个订阅设备
      */
-    public void subscribe(String dt, String number) {
+    public void subscribe(String dc, String dt, String number) {
         try {
-            String topic = new RTopic(RTopic.TOPIC_BROADCAST, dt
-                    , number).getTopic();
+            String topic;
+            if (IDeviceType.RRQZ.equals(dc) || IDeviceType.RZNG.equals(dc))  //子设备
+                topic = new RTopic(RTopic.TOPIC_UNICAST, dt,
+                        number).getTopic();
+            else
+                topic = new RTopic(RTopic.TOPIC_BROADCAST, dt,
+                        number).getTopic();
             LogUtils.e("订阅主题" + topic);
             mqttAndroidClient.subscribe(topic, 2, null, mqttActionListener);//订阅主题，参数：主题、服务质量
         } catch (Exception e) {
@@ -128,10 +134,15 @@ public class MqttManager {
     /**
      * 取消订阅
      */
-    public void unSubscribe(String dt, String number) {
+    public void unSubscribe(String dc, String dt, String number) {
         try {
-            String topic = new RTopic(RTopic.TOPIC_UNICAST, dt
-                    , number).getTopic();
+            String topic;
+            if (IDeviceType.RRQZ.equals(dc) || IDeviceType.RZNG.equals(dc))  //子设备
+                topic = new RTopic(RTopic.TOPIC_UNICAST, dt,
+                        number).getTopic();
+            else
+                topic = new RTopic(RTopic.TOPIC_BROADCAST, dt,
+                        number).getTopic();
             mqttAndroidClient.unsubscribe(topic);
         } catch (Exception e) {
             e.printStackTrace();
@@ -176,7 +187,7 @@ public class MqttManager {
                         iConncect.onSuccess();
                     LogUtils.e( "重连成功 ");
                     try {
-                        String topic = new RTopic(RTopic.TOPIC_BROADCAST, iPlat.getDt()
+                        String topic = new RTopic(RTopic.TOPIC_UNICAST, iPlat.getDt()
                                 , iPlat.getMac()).getTopic();
                         LogUtils.e("订阅主题 " + topic);
                         mqttAndroidClient.subscribe(topic, 2, iPlat.getDeviceOnlySign(), mqttActionListener);//订阅主题，参数：主题、服务质量
@@ -281,7 +292,7 @@ public class MqttManager {
     };
 
     private String getPublishTopic() {
-        return "/b/" +  iPlat.getDt() + "/" + iPlat.getMac();
+        return "/u/" +  iPlat.getDt() + "/" + iPlat.getMac();
     }
 
     /**

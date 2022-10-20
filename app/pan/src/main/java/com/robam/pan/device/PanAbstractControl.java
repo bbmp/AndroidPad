@@ -47,4 +47,14 @@ public class PanAbstractControl implements PanFunction{
     public void setInteractionParams(String targetGuid, Map params) {
         function.setInteractionParams(targetGuid, params);
     }
+
+    @Override
+    public void setPanParams(int cmd, byte[] payload) {
+        function.setPanParams(cmd, payload);
+    }
+
+    @Override
+    public void remoteControl(String targetGuid, byte[] payload) {
+        function.remoteControl(targetGuid, payload);
+    }
 }

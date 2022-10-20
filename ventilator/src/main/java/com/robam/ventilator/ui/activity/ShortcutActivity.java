@@ -16,6 +16,7 @@ import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.UserInfo;
 import com.robam.common.constant.ComnConstant;
+import com.robam.common.constant.StoveConstant;
 import com.robam.common.device.Plat;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
@@ -71,22 +72,17 @@ public class ShortcutActivity extends VentilatorBaseActivity {
         rvDeviceWork.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
 
         rvDevideOnline.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
-        //监听烟机
-        AccountInfo.getInstance().getGuid().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                if (Plat.getPlatform().getDeviceOnlySign().equals(s)) { //当前烟机
-                    if (HomeVentilator.getInstance().gear == (byte) 0xA1 && null != rvShortcutFunAdapter)
-                        rvShortcutFunAdapter.setPickPosition(0);
-                    else if (HomeVentilator.getInstance().gear == (byte) 0xA2 && null != rvShortcutFunAdapter)
-                        rvShortcutFunAdapter.setPickPosition(1);
-                    else if (HomeVentilator.getInstance().gear == (byte) 0xA6 && null != rvShortcutFunAdapter)
-                        rvShortcutFunAdapter.setPickPosition(2);
-                    else if (null != rvShortcutFunAdapter)
-                        rvShortcutFunAdapter.setPickPosition(-1);
-                }
-            }
-        });
+        rvShortcutFunAdapter = new RvShortcutFunAdapter();
+        recyclerView.setAdapter(rvShortcutFunAdapter);
+        //烟机状态
+        if (HomeVentilator.getInstance().gear == (byte) 0xA1)
+            rvShortcutFunAdapter.setPickPosition(0);
+        else if (HomeVentilator.getInstance().gear == (byte) 0xA2)
+            rvShortcutFunAdapter.setPickPosition(1);
+        else if (HomeVentilator.getInstance().gear == (byte) 0xA6)
+            rvShortcutFunAdapter.setPickPosition(2);
+        else
+            rvShortcutFunAdapter.setPickPosition(-1);
     }
 
     @Override
@@ -96,8 +92,7 @@ public class ShortcutActivity extends VentilatorBaseActivity {
         funList.add(new VenFunBean(1, "fun1", "logo_roki", R.drawable.ventilator_gear_weak, "into"));
         funList.add(new VenFunBean(1, "fun2", "logo_roki", R.drawable.ventilator_gear_medium, "into"));
         funList.add(new VenFunBean(1, "fun3", "logo_roki", R.drawable.ventilator_gear_max, "into"));
-        rvShortcutFunAdapter = new RvShortcutFunAdapter();
-        recyclerView.setAdapter(rvShortcutFunAdapter);
+
         rvShortcutFunAdapter.setList(funList);
         rvShortcutFunAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
@@ -115,28 +110,11 @@ public class ShortcutActivity extends VentilatorBaseActivity {
             }
         });
         //设备
-        List<Device> deviceList = new ArrayList<>();
-        deviceList.add(new Ventilator("油烟机", IDeviceType.RYYJ, "5068s"));
-        for (Device device: AccountInfo.getInstance().deviceList)
-            deviceList.add(device);
-//        deviceList.add(new Cabinet("消毒柜", IDeviceType.RXDG, "XG858"));
-
-//
-        List<Device> deviceList2 = new ArrayList<>();
-//        deviceList2.add(new Pan("无人锅", IDeviceType.RZNG, "KP100"));
-//        deviceList2.add(new Stove("灶具", IDeviceType.RRQZ, "9B328"));
-//        deviceList2.add(new SteamOven("一体机", IDeviceType.RZKY, "CQ928"));
-//        deviceList2.add(new DishWasher("洗碗机", IDeviceType.RXWJ, "WB758"));
-
-        getDeviceInfo(AccountInfo.getInstance().getUser().getValue());
-
         rvShortcutWorkAdapter = new RvShortcutDeviceAdapter();
         rvDeviceWork.setAdapter(rvShortcutWorkAdapter);
-        rvShortcutWorkAdapter.setList(deviceList);
 
         rvShortcutOnlineAdapter = new RvShortcutDeviceAdapter();
         rvDevideOnline.setAdapter(rvShortcutOnlineAdapter);
-        rvShortcutOnlineAdapter.setList(deviceList2);
 
         setOnClickListener(R.id.activity_short);
         //工作设备
@@ -153,6 +131,7 @@ public class ShortcutActivity extends VentilatorBaseActivity {
                 shortCutForward(adapter, position);
             }
         });
+        getDeviceInfo(AccountInfo.getInstance().getUser().getValue());
     }
     //快捷入口跳转
     private void shortCutForward(@NonNull BaseQuickAdapter<?, ?> adapter, int position) {
@@ -191,43 +170,46 @@ public class ShortcutActivity extends VentilatorBaseActivity {
     }
 
     private void getDeviceInfo(UserInfo userInfo) {
-        List<Device> deviceList = new ArrayList<>();
-        if (null != userInfo) {
-            CloudHelper.getDevices(this, userInfo.id, GetDeviceRes.class, new RetrofitCallback<GetDeviceRes>() {
-                @Override
-                public void onSuccess(GetDeviceRes getDeviceRes) {
-                    if (null != getDeviceRes && null != getDeviceRes.devices) {
-                        List<Device> deviceList = getDeviceRes.devices;
-                        for (Device device: deviceList) {
-                            if (IDeviceType.RYYJ.equals(device.dc))    //烟机
-                                deviceList.add(new Ventilator(device));
-                            else if (IDeviceType.RZKY.equals(device.dc)) //一体机
-                                deviceList.add(new SteamOven(device));
-                            else if (IDeviceType.RXWJ.equals(device.dc)) //洗碗机
-                                deviceList.add(new DishWasher(device));
-                            else if (IDeviceType.RXDG.equals(device.dc))  //消毒柜
-                                deviceList.add(new Cabinet(device));
-                            List<Device> subDevices = device.subDevices;  //子设备
-                            if (null != subDevices) {
-                                for (Device subDevice : subDevices) {
-                                    if (IDeviceType.RZNG.equals(subDevice.dc)) //锅
-                                        deviceList.add(new Pan(subDevice));
-                                    else if (IDeviceType.RRQZ.equals(subDevice.dc))
-                                        deviceList.add(new Stove(subDevice));
-                                }
-                            }
-                        }
-                    }
-                }
-
-                @Override
-                public void onFaild(String err) {
-                    LogUtils.e("getDevices" + err);
-                }
-            });
-        } else {
-            //未登录只展示烟机
-            deviceList.add(new Ventilator("油烟机", IDeviceType.RYYJ, "5068s"));
+        List<Device> workList = new ArrayList<>();
+        List<Device> onlineList = new ArrayList<>();
+        if (HomeVentilator.getInstance().gear == (byte) 0xA0)
+            onlineList.add(new Ventilator("油烟机", IDeviceType.RYYJ, "5068s"));
+        else
+            workList.add(new Ventilator("油烟机", IDeviceType.RYYJ, "5068s"));
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (IDeviceType.RZKY.equals(device.dc) && device.status == Device.ONLINE) {//一体机
+                SteamOven steamOven = (SteamOven) device;
+                if (steamOven.workStatus != 0)
+                    workList.add(steamOven);
+                else
+                    onlineList.add(steamOven);
+            } else if (IDeviceType.RXWJ.equals(device.dc) && device.status == Device.ONLINE) { //洗碗机
+                DishWasher dishWasher = (DishWasher) device;
+                if (dishWasher.workStatus != 0)
+                    workList.add(dishWasher);
+                else
+                    onlineList.add(dishWasher);
+            } else if (IDeviceType.RXDG.equals(device.dc) && device.status == Device.ONLINE) { //消毒柜
+                Cabinet cabinet = (Cabinet) device;
+                if (cabinet.workStatus != 0)
+                    workList.add(cabinet);
+                else
+                    onlineList.add(cabinet);
+            } else if (IDeviceType.RRQZ.equals(device.dc) && device.status == Device.ONLINE) {
+                Stove stove = (Stove) device;
+                if (stove.leftLevel == 0 && stove.rightLevel == 0)
+                    onlineList.add(stove);
+                else
+                    workList.add(stove);
+            } else if (IDeviceType.RZNG.equals(device.dc) && device.status == Device.ONLINE) {
+                Pan pan = (Pan) device;
+                onlineList.add(pan);
+            }
         }
+        if (null != rvShortcutWorkAdapter)
+            rvShortcutWorkAdapter.setList(workList);
+        //在线设备
+        if (null != rvShortcutOnlineAdapter)
+            rvShortcutOnlineAdapter.setList(onlineList);
     }
 }

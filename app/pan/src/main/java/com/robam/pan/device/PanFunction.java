@@ -18,4 +18,8 @@ public interface PanFunction {
     void setCurveStoveParams(String targetGuid, int stoveId, String curveStageParams, String curveTempParams);
     //设置智能锅互动参数
     void setInteractionParams(String targetGuid, Map params);
+    //灶上报转发给锅
+    void setPanParams(int cmd, byte[] payload);
+    //远程控制命令
+    void remoteControl(String targetGuid, byte[] payload);
 }

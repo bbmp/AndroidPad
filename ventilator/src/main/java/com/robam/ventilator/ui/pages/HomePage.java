@@ -565,7 +565,7 @@ public class HomePage extends VentilatorBasePage {
     //循环订阅
     private void subscribeDevice() {
         for (Device device: AccountInfo.getInstance().deviceList) {
-            MqttManager.getInstance().subscribe(DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid));
+            MqttManager.getInstance().subscribe(device.dc, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid));
         }
     }
 

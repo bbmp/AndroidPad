@@ -8,8 +8,10 @@ import com.robam.cabinet.bean.Cabinet;
 import com.robam.cabinet.device.CabinetFactory;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
+import com.robam.common.bean.RTopic;
 import com.robam.common.mqtt.IProtocol;
 import com.robam.common.mqtt.MqttMsg;
+import com.robam.common.mqtt.RTopicParser;
 import com.robam.common.utils.ByteUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MsgUtils;
@@ -71,9 +73,6 @@ public class TransmitApi implements IProtocol {
         try {
             Preconditions.checkNotNull(payload);
 
-//            RTopic rTopic = RTopicParser.parse(topic);
-//            Preconditions.checkNotNull(rTopic);
-
             Preconditions.checkState(payload.length >= GUID_SIZE + CMD_CODE_SIZE,
                     "数据长度不符");
 
@@ -83,7 +82,7 @@ public class TransmitApi implements IProtocol {
             offset += GUID_SIZE;
 
             short msgId = ByteUtils.toShort(payload[offset++]);
-            LogUtils.e("收到消息： " + "topic = " + topic + " ,msgId = " + msgId + " srcguid = " + srcGuid);
+            LogUtils.e("收到消息： " + "topic = " + topic + " ,msgId = " + msgId + " srcguid = " + srcGuid); //设备发上来
             LogUtils.e("收到消息： " + StringUtils.bytes2Hex(payload));
             MqttMsg msg = null;
             //分发到各设备
@@ -118,6 +117,22 @@ public class TransmitApi implements IProtocol {
 
                         return msg;
                     }
+                }
+            }
+            //发给锅和灶 必须锅和灶在线
+            RTopic rTopic = RTopicParser.parse(topic);
+            Preconditions.checkNotNull(rTopic);
+            String targetGuid = rTopic.getDeviceType() + rTopic.getSignNum();
+
+            for (Device device: AccountInfo.getInstance().deviceList) {
+                if (targetGuid.equals(device.guid) && (device instanceof Pan) && device.status == Device.ONLINE) {
+                    LogUtils.e("查询锅 " + targetGuid);
+                    return PanFactory.getProtocol().decode(topic, payload);
+
+                }
+                if (targetGuid.equals(device.guid) && (device instanceof Stove) && device.status == Device.ONLINE) {
+                    LogUtils.e("查询灶 " + targetGuid);
+                    return StoveFactory.getProtocol().decode(topic, payload);
                 }
             }
 

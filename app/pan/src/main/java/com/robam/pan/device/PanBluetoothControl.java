@@ -14,6 +14,7 @@ import com.robam.common.bean.LineChartDataBean;
 import com.robam.common.bean.RTopic;
 import com.robam.common.bean.SetPotCurveStageParams;
 import com.robam.common.ble.BleDecoder;
+import com.robam.common.device.subdevice.Stove;
 import com.robam.common.manager.BlueToothManager;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MsgKeys;
@@ -202,6 +203,49 @@ public class PanBluetoothControl implements PanFunction{
                     byte[] mqtt_data = PanFactory.getProtocol().encode(msg);
 
                     write_no_response(msg, ((Pan) device).bleDevice, ((Pan) device).characteristic, mqtt_data);
+                    break;
+                }
+            }
+        } catch (Exception e) {}
+    }
+
+    @Override
+    public void setPanParams(int cmd, byte[] payload) {
+        try {
+            for (Device device : AccountInfo.getInstance().deviceList) {
+                if (device instanceof Pan) { //这里没有guid校验
+                    //加密数据
+                    Byte[] data = BleDecoder.mcu_uart_pack(BleDecoder.byteArraysToByteArrays(payload));
+
+                    //发送蓝牙数据
+                    BlueToothManager.write_no_response(((Pan) device).bleDevice, ((Pan) device).characteristic, BleDecoder.ByteArraysTobyteArrays(data), new BleWriteCallback() {
+
+                        @Override
+                        public void onWriteSuccess(final int current, final int total, final byte[] justWrite) {
+                            LogUtils.e("pan onWriteSuccess");
+                        }
+
+                        @Override
+                        public void onWriteFailure(final BleException exception) {
+                            LogUtils.e("pan onWriteFailure");
+                        }
+                    });
+                    break;
+                }
+            }
+        } catch (Exception e) {}
+    }
+
+    @Override
+    public void remoteControl(String targetGuid, byte[] payload) {
+        try {
+            for (Device device: AccountInfo.getInstance().deviceList) {
+                if (device instanceof Pan && targetGuid.equals(device.guid)) {
+                    byte[] send_guid_bytes = Arrays.copyOfRange(payload, 0, BleDecoder.GUID_LEN);
+                    MqttMsg msg = new MqttMsg.Builder()
+                            .setGuid(new String(send_guid_bytes)) //源guid
+                            .build();
+                    write_no_response(msg, ((Pan) device).bleDevice, ((Pan) device).characteristic, payload);
                     break;
                 }
             }

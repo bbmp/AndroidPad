@@ -73,7 +73,7 @@ public class AlarmMqttService extends Service {
                 public void onSuccess() {
                     //重连成功 重新订阅
                     for (Device device: AccountInfo.getInstance().deviceList) {
-                        MqttManager.getInstance().subscribe(DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid));
+                        MqttManager.getInstance().subscribe(device.dc, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid));
                     }
                 }
             });

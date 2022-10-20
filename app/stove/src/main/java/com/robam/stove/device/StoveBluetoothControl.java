@@ -18,6 +18,7 @@ import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.device.subdevice.Stove;
 import com.robam.common.constant.StoveConstant;
+import com.robam.common.utils.StringUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,7 +41,7 @@ public class StoveBluetoothControl implements StoveFunction{
 
             @Override
             public void onWriteSuccess(final int current, final int total, final byte[] justWrite) {
-                LogUtils.e("onWriteSuccess");
+                LogUtils.e("onWriteSuccess " + StringUtils.bytes2Hex(justWrite));
 //                if (cmd_id == MsgKeys.SetStoveLock_Req || cmd_id == MsgKeys.SetStoveStatus_Req || cmd_id == MsgKeys.SetStoveShutdown_Req)
 //                    queryAttribute(targetGuid); //立即查询
             }
@@ -238,12 +239,12 @@ public class StoveBluetoothControl implements StoveFunction{
 
                         @Override
                         public void onWriteSuccess(final int current, final int total, final byte[] justWrite) {
-                            LogUtils.e("onWriteSuccess");
+                            LogUtils.e("stove onWriteSuccess");
                         }
 
                         @Override
                         public void onWriteFailure(final BleException exception) {
-                            LogUtils.e("onWriteFailure");
+                            LogUtils.e("stove onWriteFailure");
                         }
                     });
                     break;

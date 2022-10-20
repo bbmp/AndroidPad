@@ -313,7 +313,7 @@ public class CurveCreateActivity extends StoveBaseActivity {
         addStep();
         //关火
         if (closeFire)
-            StoveAbstractControl.getInstance().setAttribute(HomeStove.getInstance().guid, (byte) stoveId, (byte) 0x00, (byte) StoveConstant.STOVE_CLOSE);
+            StoveAbstractControl.getInstance().setAttribute(HomeStove.getInstance().guid, stoveId, 0x00, StoveConstant.STOVE_CLOSE);
         //停止记录
         Map params = new HashMap();
         params.put(PanConstant.KEY2, new byte[] {(byte) stoveId, (byte) PanConstant.stop});
