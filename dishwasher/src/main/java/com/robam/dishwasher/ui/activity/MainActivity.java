@@ -55,7 +55,7 @@ public class MainActivity extends DishWasherBaseActivity {
                     switch (dishWasher.powerStatus){
                         case DishWasherConstant.WORKING:
                         case DishWasherConstant.PAUSE:
-                            this.dealWasherWorkingState(modeBeanList,dishWasher);
+                            //this.dealWasherWorkingState(modeBeanList,dishWasher);
                     }
                     break;
                 }

@@ -24,7 +24,7 @@ import retrofit2.Response;
 
 public class CloudHelper {
     private static final String APPLICATION_JSON_ACCEPT_APPLICATION_JSON = "application/json; Accept: application/json";
-    private static ICloudService svr = RetrofitClient.getInstance().createApi(ICloudService.class, HostServer.apiHost);
+    private static ICloudService svr = RetrofitClient.getInstance().createApi(ICloudService.class, HostServer.apiHostTest);
 
     //获取验证码
     public static <T extends BaseResponse> void getVerifyCode(ILife iLife, String phone, Class<T> entity,

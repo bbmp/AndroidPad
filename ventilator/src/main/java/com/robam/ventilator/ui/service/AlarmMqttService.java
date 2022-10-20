@@ -107,8 +107,7 @@ public class AlarmMqttService extends Service {
                         .setDt(device.dt)
                         .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                         .build();
-
-                MqttManager.getInstance().publish(msg, VentilatorFactory.getTransmitApi());
+               MqttManager.getInstance().publish(msg, DishWasherFactory.getProtocol());
             } else if (device instanceof SteamOven) {
                 //查询一体机
                 SteamAbstractControl.getInstance().queryAttribute(device.guid);

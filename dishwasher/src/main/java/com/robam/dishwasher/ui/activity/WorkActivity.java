@@ -77,17 +77,17 @@ public class WorkActivity extends DishWasherBaseActivity {
                 if (device.guid.equals(s) && device instanceof DishWasher && device.guid.equals(HomeDishWasher.getInstance().guid)) { //当前锅
                     DishWasher dishWasher = (DishWasher) device;
                     LogUtils.e("WorkActivity mqtt msg arrive isWorking "+dishWasher.powerStatus);
-                    switch (dishWasher.powerStatus){
+                    /*switch (dishWasher.powerStatus){
                         case DishWasherState.WORKING:
                         case DishWasherState.PAUSE:
                         case DishWasherState.END:
                             setWorkingState(dishWasher);
                             break;
                         case DishWasherState.OFF:
-                            finish();
+                            //finish();
                             break;
                     }
-                    break;
+                    break;*/
                 }
             }
         });

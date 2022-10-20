@@ -44,7 +44,8 @@ public class DishWasherAbstractControl implements DishWasherFunction{
 
     @Override
     public void sendCommonMsg(Map<String, Object> params, String targetGuid, short msg_id, MqttManager.MqttSendMsgListener listening) {
-        function.sendCommonMsg(params,targetGuid,msg_id,listening);
+        //function.sendCommonMsg(params,targetGuid,msg_id,listening);
+        function.sendCommonMsg(params,targetGuid,msg_id);
     }
 
 

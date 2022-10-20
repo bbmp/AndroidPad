@@ -4,8 +4,10 @@ import android.content.Context;
 import android.util.Log;
 
 import com.robam.common.bean.RTopic;
+import com.robam.common.constant.ComnConstant;
 import com.robam.common.device.IPlat;
 import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.MsgUtils;
 import com.robam.common.utils.StringUtils;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
@@ -16,6 +18,7 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.json.JSONException;
 
 import java.util.Arrays;
 
@@ -25,8 +28,8 @@ public class MqttManager {
     private String CLIENTID = "";
     private MqttAndroidClient mqttAndroidClient;
     private MqttConnectOptions mMqttConnectOptions;
-    private String HOST = "tcp://mqtt.myroki.com:1883";//服务器地址（协议+地址+端口号）
-    //public String HOST = "tcp://develop.mqtt.myroki.com:1883";//服务器地址（协议+地址+端口号） //modify by zm TODO(暂时切换到测试环境)
+    //private String HOST = "tcp://mqtt.myroki.com:1883";//服务器地址（协议+地址+端口号）
+    public String HOST = "tcp://develop.mqtt.myroki.com:1883";//服务器地址（协议+地址+端口号） //modify by zm TODO(暂时切换到测试环境)
     private String USERNAME = "admin";//用户名
     private String PASSWORD = "jnkj2014";//密码
     public String RESPONSE_TOPIC = "message_arrived";//响应主题
@@ -81,11 +84,11 @@ public class MqttManager {
 
         @Override
         public void onSuccess(IMqttToken arg0) {
-            LogUtils.e( "连接成功 ");
+            LogUtils.e( "MQTT connect success ");
             try {
-                String topic = new RTopic(RTopic.TOPIC_BROADCAST, iPlat.getDt()
+                String topic = new RTopic(RTopic.TOPIC_UNICAST, iPlat.getDt()
                         , iPlat.getMac()).getTopic();
-                LogUtils.e("订阅主题 " + topic);
+                LogUtils.e("MQTT connect success subscribe " + topic);
                 mqttAndroidClient.subscribe(topic, 2, iPlat.getDeviceOnlySign(), mqttActionListener);//订阅主题，参数：主题、服务质量
             } catch (MqttException e) {
                 e.printStackTrace();
@@ -117,7 +120,7 @@ public class MqttManager {
         try {
             String topic = new RTopic(RTopic.TOPIC_BROADCAST, dt
                     , number).getTopic();
-            LogUtils.e("订阅主题" + topic);
+            LogUtils.e("subscribe " + topic);
             mqttAndroidClient.subscribe(topic, 2, null, mqttActionListener);//订阅主题，参数：主题、服务质量
         } catch (Exception e) {
             e.printStackTrace();
@@ -174,9 +177,10 @@ public class MqttManager {
                         iConncect.onSuccess();
                     LogUtils.e( "重连成功 ");
                     try {
-                        String topic = new RTopic(RTopic.TOPIC_BROADCAST, iPlat.getDt()
+                        String topic = new RTopic(RTopic.TOPIC_UNICAST, iPlat.getDt()
                                 , iPlat.getMac()).getTopic();
-                        LogUtils.e("订阅主题 " + topic);
+                        //LogUtils.e("订阅主题 " + topic);
+                        LogUtils.e("reConnect subscribe "+topic);
                         mqttAndroidClient.subscribe(topic, 2, iPlat.getDeviceOnlySign(), mqttActionListener);//订阅主题，参数：主题、服务质量
                     } catch (MqttException e) {
                         e.printStackTrace();
@@ -199,10 +203,12 @@ public class MqttManager {
     IMqttActionListener mqttActionListener = new IMqttActionListener() {
         @Override
         public void onSuccess(IMqttToken asyncActionToken) {
-            LogUtils.e( "订阅成功 ");
+            //LogUtils.e( "订阅成功 ");
+            LogUtils.e("subscribe onSuccess");
             //发送设备上线成功 主设备
-            if (null != asyncActionToken && iPlat.getDeviceOnlySign().equals(asyncActionToken.getUserContext()))
-                deviceConnectedNoti();
+//            if (null != asyncActionToken && iPlat.getDeviceOnlySign().equals(asyncActionToken.getUserContext()))
+//                deviceConnectedNoti();
+
         }
 
         @Override
@@ -240,6 +246,9 @@ public class MqttManager {
 
         @Override
         public void messageArrived(String topic, MqttMessage message) throws Exception {
+
+            String srcGuid = MsgUtils.getString(message.getPayload(), 0, 17);
+            LogUtils.e( "messageArrived  topic " +topic + " srcGuid " + srcGuid);
             iProtocol.decode(topic, message.getPayload());
 //            if (null != mqttMsgCallback && null != message)
 //                mqttMsgCallback.messageArrived(message.getPayload());
@@ -331,6 +340,7 @@ public class MqttManager {
             //LogUtils.e( "发送的主题： " + topic);
             LogUtils.e( "发送的消息： top " +topic + " " +StringUtils.bytes2Hex(data));
             //参数分别为：主题、消息的字节数组、服务质量、是否在服务器保留断开连接后的最后一条消息
+            //mqttAndroidClient.publish(topic, data, qos.intValue(), retained.booleanValue());
             mqttAndroidClient.publish(topic, data, qos.intValue(), retained.booleanValue(), null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
@@ -379,7 +389,11 @@ public class MqttManager {
                 .setUserId(iPlat.getMac())
                 .setTopic(new RTopic(RTopic.TOPIC_BROADCAST, iPlat.getDt(), iPlat.getMac()))
                 .build();
-
+        try {
+            msg.putOpt(ComnConstant.DEVICE_NUM, 1);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         publish(msg, iProtocol);
     }
 
