@@ -25,8 +25,8 @@ public class MqttManager {
     private String CLIENTID = "";
     private MqttAndroidClient mqttAndroidClient;
     private MqttConnectOptions mMqttConnectOptions;
-    private String HOST = "tcp://mqtt.myroki.com:1883";//服务器地址（协议+地址+端口号）
-    //    public String HOST = "tcp://develop.mqtt.myroki.com:1883";//服务器地址（协议+地址+端口号）
+    //private String HOST = "tcp://mqtt.myroki.com:1883";//服务器地址（协议+地址+端口号）
+    public String HOST = "tcp://develop.mqtt.myroki.com:1883";//服务器地址（协议+地址+端口号） //modify by zm TODO(暂时切换到测试环境)
     private String USERNAME = "admin";//用户名
     private String PASSWORD = "jnkj2014";//密码
     public String RESPONSE_TOPIC = "message_arrived";//响应主题
@@ -320,6 +320,37 @@ public class MqttManager {
         }
 
     }
+
+    public void publish(MqttMsg msg, IProtocol protocol,MqttSendMsgListener listener) {
+        //获取发布主题
+        String topic = msg.getrTopic().getTopic();
+        Integer qos = 0;
+        Boolean retained = false;
+        try {
+            byte[] data = protocol.encode(msg);
+            //LogUtils.e( "发送的主题： " + topic);
+            LogUtils.e( "发送的消息： top " +topic + " " +StringUtils.bytes2Hex(data));
+            //参数分别为：主题、消息的字节数组、服务质量、是否在服务器保留断开连接后的最后一条消息
+            mqttAndroidClient.publish(topic, data, qos.intValue(), retained.booleanValue(), null, new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    if(listener != null){
+                        listener.onSuccess();
+                    }
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                    if(listener != null){
+                        listener.onFailure();
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
     /**
      * 响应 （收到其他客户端的消息后，响应给对方告知消息已到达或者消息有问题等）
      *
@@ -350,5 +381,10 @@ public class MqttManager {
                 .build();
 
         publish(msg, iProtocol);
+    }
+
+    public static interface MqttSendMsgListener{
+        void onSuccess();
+        void onFailure();
     }
 }
