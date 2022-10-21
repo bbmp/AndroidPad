@@ -3,6 +3,7 @@ package com.robam.common.mqtt;
 import android.content.Context;
 import android.util.Log;
 
+import com.robam.common.BuildConfig;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.RTopic;
 import com.robam.common.constant.ComnConstant;
@@ -29,8 +30,8 @@ public class MqttManager {
     private String CLIENTID = "";
     private MqttAndroidClient mqttAndroidClient;
     private MqttConnectOptions mMqttConnectOptions;
-    //private String HOST = "tcp://mqtt.myroki.com:1883";//服务器地址（协议+地址+端口号）
-    public String HOST = "tcp://develop.mqtt.myroki.com:1883";//服务器地址（协议+地址+端口号） //modify by zm TODO(暂时切换到测试环境)
+    private String HOST = "tcp://mqtt.myroki.com:1883";//服务器地址（协议+地址+端口号）
+    public String HOST_DEV = "tcp://develop.mqtt.myroki.com:1883";//服务器地址（协议+地址+端口号） //modify by zm TODO(暂时切换到测试环境)
     private String USERNAME = "admin";//用户名
     private String PASSWORD = "jnkj2014";//密码
     public String RESPONSE_TOPIC = "message_arrived";//响应主题
@@ -53,7 +54,7 @@ public class MqttManager {
         iPlat = plat;
         iProtocol = protocol;
         CLIENTID = iPlat.getDeviceOnlySign();
-        mqttAndroidClient = new MqttAndroidClient(context, HOST, CLIENTID);
+        mqttAndroidClient = new MqttAndroidClient(context, BuildConfig.API_PRO?HOST:HOST_DEV, CLIENTID);
         mqttAndroidClient.setCallback(mqttCallback); //设置监听订阅消息的回调
         mMqttConnectOptions = new MqttConnectOptions();
         mMqttConnectOptions.setCleanSession(true); //设置是否清除缓存
