@@ -20,6 +20,7 @@ import com.robam.dishwasher.constant.DishWasherState;
 import com.robam.dishwasher.device.DishWasherAbstractControl;
 import com.robam.dishwasher.device.DishWasherMqttControl;
 import com.robam.dishwasher.device.HomeDishWasher;
+import com.robam.dishwasher.util.DishWasherCommonHelper;
 import com.robam.dishwasher.util.DishWasherModelUtil;
 
 import java.util.List;
@@ -55,7 +56,9 @@ public class MainActivity extends DishWasherBaseActivity {
                     switch (dishWasher.powerStatus){
                         case DishWasherConstant.WORKING:
                         case DishWasherConstant.PAUSE:
-                            //this.dealWasherWorkingState(modeBeanList,dishWasher);
+                            if(DishWasherCommonHelper.isSafe()){
+                                this.dealWasherWorkingState(modeBeanList,dishWasher);
+                            }
                     }
                     break;
                 }

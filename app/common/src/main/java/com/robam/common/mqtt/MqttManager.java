@@ -340,7 +340,6 @@ public class MqttManager {
             //LogUtils.e( "发送的主题： " + topic);
             LogUtils.e( "发送的消息： top " +topic + " " +StringUtils.bytes2Hex(data));
             //参数分别为：主题、消息的字节数组、服务质量、是否在服务器保留断开连接后的最后一条消息
-            //mqttAndroidClient.publish(topic, data, qos.intValue(), retained.booleanValue());
             mqttAndroidClient.publish(topic, data, qos.intValue(), retained.booleanValue(), null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {

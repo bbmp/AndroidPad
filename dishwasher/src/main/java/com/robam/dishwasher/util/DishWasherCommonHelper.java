@@ -12,12 +12,16 @@ import java.util.Map;
 
 public class DishWasherCommonHelper {
 
+    public static long perOrderTimeMin = System.currentTimeMillis() ;
+    public static final long COMMON_DELAY_DUR = 2*1000 ;
+    public static short preCommonId = -100;
 
     public static void sendCommonMsg(Map map){
         DishWasherAbstractControl.getInstance().sendCommonMsg(map,(String) map.get(DishWasherConstant.TARGET_GUID), (Short) map.get(DishWasherConstant.MSG_ID));
     }
 
     public static void sendCommonMsg(Map map, MqttManager.MqttSendMsgListener listener){
+        perOrderTimeMin = System.currentTimeMillis();
         DishWasherAbstractControl.getInstance().sendCommonMsg(map,(String) map.get(DishWasherConstant.TARGET_GUID), (Short) map.get(DishWasherConstant.MSG_ID),listener);
     }
 
@@ -36,12 +40,24 @@ public class DishWasherCommonHelper {
         return map;
     }
 
+    public static Map getCommonMap(short msgId){
+        Map map = new HashMap();
+        map.put(DishWasherConstant.UserId, AccountInfo.getInstance().getUserString());
+        map.put(DishWasherConstant.TARGET_GUID, HomeDishWasher.getInstance().guid);
+        map.put(DishWasherConstant.MSG_ID, msgId);
+        return map;
+    }
+
     /**
      * 获取预约执行时间
      * @return
      */
     public static int getAppointingTimeMin(String appointTimeStr){
         return 40;
+    }
+
+    public static boolean isSafe(){
+        return System.currentTimeMillis()  - perOrderTimeMin >= COMMON_DELAY_DUR;
     }
 
 

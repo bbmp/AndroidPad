@@ -90,7 +90,7 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
             }
         });
 
-        AccountInfo.getInstance().getGuid().observe(this, s -> {
+        /*AccountInfo.getInstance().getGuid().observe(this, s -> {
             for (Device device: AccountInfo.getInstance().deviceList) {
                 if (device.guid.equals(s) && device instanceof DishWasher && device.guid.equals(HomeDishWasher.getInstance().guid)) { //当前锅
                     DishWasher dishWasher = (DishWasher) device;
@@ -109,7 +109,7 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
                     break;
                 }
             }
-        });
+        });*/
     }
 
 
@@ -203,7 +203,7 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
 
     private void startWork(){
 
-        Map map = new HashMap();
+        /*Map map = new HashMap();
         map.put(DishWasherConstant.UserId,getSrcUser());
         map.put(DishWasherConstant.DishWasherWorkMode, HomeDishWasher.getInstance().workMode);
         map.put(DishWasherConstant.LowerLayerWasher, lowerWash);
@@ -212,34 +212,32 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
         map.put(DishWasherConstant.EnhancedDrySwitch, 0);
         map.put(DishWasherConstant.AppointmentSwitch, 0);
         map.put(DishWasherConstant.AppointmentTime, 0);
-       /* msg.putOpt(MsgParams.UserId, getSrcUser());
+       *//* msg.putOpt(MsgParams.UserId, getSrcUser());
         msg.putOpt(MsgParams.DishWasherWorkMode, workMode);
         msg.putOpt(MsgParams.LowerLayerWasher, bottomWasherSwitch);
         msg.putOpt(MsgParams.AutoVentilation, autoVentilation);
         msg.putOpt(MsgParams.EnhancedDrySwitch, enhancedDrySwitch);
         msg.putOpt(MsgParams.AppointmentSwitch, appointmentSwitch);
-        msg.putOpt(MsgParams.AppointmentTime, appointmentTime);*/
+        msg.putOpt(MsgParams.AppointmentTime, appointmentTime);*//*
         //HomeDishWasher.getInstance().auxMode   当前选中的附加程序(默认是0 未选择任何附加程序)
 
-        DishWasherAbstractControl.getInstance().sendCommonMsg(map,HomeDishWasher.getInstance().guid, MsgKeys.setDishWasherWorkMode);
+        DishWasherAbstractControl.getInstance().sendCommonMsg(map,HomeDishWasher.getInstance().guid, MsgKeys.setDishWasherWorkMode);*/
 
 
 
-       /* Map params = DishWasherCommonHelper.getModelMap(MsgKeys.setDishWasherWorkMode,(short)modeBean.code,(short) 0,0);
+        Map params = DishWasherCommonHelper.getModelMap(MsgKeys.setDishWasherWorkMode, modeBean.code,(short) 0,0);
         DishWasherCommonHelper.sendCommonMsg(params, new MqttManager.MqttSendMsgListener() {
             @Override
             public void onSuccess() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Intent intent = new Intent();
-                        if (null != modeBean){
-                            intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, modeBean);
-                        }
-                        intent.setClass(ModeSelectActivity.this, WorkActivity.class);
-                        startActivity(intent);
-                        finish();
+                runOnUiThread(() -> {
+                    Intent intent = new Intent();
+                    if (null != modeBean){
+                        intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, modeBean);
                     }
+                    intent.setClass(ModeSelectActivity.this, WorkActivity.class);
+                    startActivity(intent);
+                    finish();
+                    LogUtils.e("sendCommonMsg success");
                 });
             }
 
@@ -247,7 +245,7 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
             public void onFailure() {
 
             }
-        });*/
+        });
     }
 
     final public String getSrcUser() {
