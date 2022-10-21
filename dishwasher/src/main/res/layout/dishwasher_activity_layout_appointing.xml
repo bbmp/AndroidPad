@@ -43,8 +43,8 @@
     <!--    SpannableString-->
     <TextView
         android:id="@+id/tv_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="11dp"
+        android:layout_height="9dp"
         android:layout_marginTop="@dimen/dp_70"
         android:text="22"
         android:textColor="@color/dishwasher_mode70"

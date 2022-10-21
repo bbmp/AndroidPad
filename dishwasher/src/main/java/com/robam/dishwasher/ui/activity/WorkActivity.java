@@ -30,6 +30,8 @@ import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.factory.DishWasherDialogFactory;
 import com.robam.dishwasher.util.DishWasherCommonHelper;
 import com.robam.dishwasher.util.DishWasherModelUtil;
+import com.robam.dishwasher.util.TimeDisplayUtil;
+
 import java.util.Map;
 
 public class WorkActivity extends DishWasherBaseActivity {
@@ -47,6 +49,8 @@ public class WorkActivity extends DishWasherBaseActivity {
     private View startIcon,pauseIcon;
     //当前模式 - 注意该对象可能未空（比如APP异常退出，在进入，比如在洗碗机中直接直接进行操作）
     private DishWasherModeBean modeBean = null;
+
+    private int preRemainingTime;
 
     @Override
     protected int getLayoutId() {
@@ -102,10 +106,12 @@ public class WorkActivity extends DishWasherBaseActivity {
                     finish();
                     break;
                 case DishWasherState.WORKING:
+                    tvTime.setText(getSpan(preRemainingTime));
                     changeViewsState(DishWasherState.WORKING);
                     break;
                 case DishWasherState.PAUSE:
                     changeViewsState(DishWasherState.PAUSE);
+                    tvDuration.setText(getSpan(preRemainingTime));
                     break;
                 case DishWasherState.END:
                     break;
@@ -132,7 +138,7 @@ public class WorkActivity extends DishWasherBaseActivity {
 
         if (null != modeBean) {
             setData(modeBean);
-
+            preRemainingTime = modeBean.time / 60;
             //handler.sendEmptyMessageDelayed(0, 1000);
         }
     }
@@ -223,9 +229,10 @@ public class WorkActivity extends DishWasherBaseActivity {
         if(dishWasher.powerStatus == DishWasherState.WORKING){
             //工作剩余时间 dishWasher.DishWasherRemainingWorkingTime
             //工作时长 dishWasher.SetWorkTimeValue
-            tvTime.setText(String.format("%s分钟", dishWasher.DishWasherRemainingWorkingTime));
+            preRemainingTime = dishWasher.DishWasherRemainingWorkingTime;
+            tvTime.setText(getSpan(dishWasher.DishWasherRemainingWorkingTime));
         }else if(dishWasher.powerStatus == DishWasherState.PAUSE){
-            tvDuration.setText(String.format("%s分钟", dishWasher.DishWasherRemainingWorkingTime));
+            tvDuration.setText(getSpan(dishWasher.DishWasherRemainingWorkingTime));
         }
         tvAuxMode.setText(DishWasherModelUtil.autoMode(dishWasher));//附加模式
     }
@@ -243,6 +250,18 @@ public class WorkActivity extends DishWasherBaseActivity {
         }else if(state == DishWasherState.END){
 
         }
+    }
+
+    private SpannableString getSpan(int remainTime){
+        String time = TimeDisplayUtil.getHourAndMin(remainTime);
+        SpannableString spannableString = new SpannableString(time);
+        int pos = time.indexOf("h");
+        if (pos >= 0)
+            spannableString.setSpan(new RelativeSizeSpan(0.5f), pos, pos + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        pos = time.indexOf("min");
+        if (pos >= 0)
+            spannableString.setSpan(new RelativeSizeSpan(0.5f), pos, pos + 3, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spannableString;
     }
 
 

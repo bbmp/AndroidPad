@@ -1,6 +1,9 @@
 package com.robam.dishwasher.ui.activity;
 
 import android.content.Intent;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.RelativeSizeSpan;
 import android.view.View;
 import android.widget.TextView;
 
@@ -27,6 +30,7 @@ import com.robam.dishwasher.factory.DishWasherDialogFactory;
 import com.robam.dishwasher.ui.dialog.DiashWasherCommonDialog;
 import com.robam.dishwasher.util.DishWasherCommonHelper;
 import com.robam.dishwasher.util.DishWasherModelUtil;
+import com.robam.dishwasher.util.TimeDisplayUtil;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -180,11 +184,11 @@ public class AppointingActivity extends DishWasherBaseActivity {
         if (null != modeBean) {
             setCountDownTime();
             //工作时长
-            tvWorkHours.setText(HomeDishWasher.getInstance().workHours + "min");
+            //tvWorkHours.setText(HomeDishWasher.getInstance().workHours + "min");
             //工作模式
             tvMode.setText(DishWasherEnum.match(modeBean.code));
 
-            tvWorkHours.setText(String.format("%s分钟", HomeDishWasher.getInstance().orderWorkTime));
+            tvWorkHours.setText(getSpan( modeBean.time/60));
             int totalTime =HomeDishWasher.getInstance().orderWorkTime * 60;
             tvCountdown.setTotalTime(totalTime);
             tvCountdown.setText(getTimeStr(HomeDishWasher.getInstance().orderWorkTime));
@@ -289,4 +293,16 @@ public class AppointingActivity extends DishWasherBaseActivity {
         washerCommonDialog.show();
 
     }*/
+
+    private SpannableString getSpan(int remainTime){
+        String time = TimeDisplayUtil.getHourAndMin(remainTime);
+        SpannableString spannableString = new SpannableString(time);
+        int pos = time.indexOf("h");
+        if (pos >= 0)
+            spannableString.setSpan(new RelativeSizeSpan(0.5f), pos, pos + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        pos = time.indexOf("min");
+        if (pos >= 0)
+            spannableString.setSpan(new RelativeSizeSpan(0.5f), pos, pos + 3, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spannableString;
+    }
 }

@@ -68,12 +68,12 @@
         android:id="@+id/tv_duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="@id/iv_pause"
-        app:layout_constraintRight_toRightOf="@id/iv_pause"
         android:textColor="@color/dishwasher_white70"
         android:textSize="@dimen/sp_40"
         android:visibility="invisible"
-        app:layout_constraintBaseline_toBaselineOf="@id/tv_mode"/>
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_mode"
+        app:layout_constraintLeft_toLeftOf="@id/iv_pause"
+        app:layout_constraintRight_toRightOf="@id/iv_pause" />
 
     <TextView
         android:id="@+id/tv_time"

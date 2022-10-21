@@ -6,6 +6,7 @@ import android.serialport.helper.SerialPortConfig;
 import android.serialport.helper.SerialPortHelper;
 
 import com.clj.fastble.BleManager;
+import com.robam.common.bean.MqttDirective;
 import com.robam.common.http.RetrofitClient;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.dishwasher.device.DishWasherAbstractControl;
@@ -48,6 +49,9 @@ public class AppVentilator {
         PanAbstractControl.getInstance().init(new PanBluetoothControl());
         //洗碗机控制
         DishWasherAbstractControl.getInstance().init(new DishWasherMqttControl());
+
+        //初始化
+        MqttDirective.getInstance();
 
     }
 
