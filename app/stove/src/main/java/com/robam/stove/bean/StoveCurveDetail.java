@@ -16,6 +16,8 @@ public class StoveCurveDetail implements Serializable {
     public String temperatureCurveParams;
     //电机
     public String curveStageParams;
+    //无人锅搅拌参数
+    public String smartPanModeCurveParams;
     //
     public int needTime;
     //步骤

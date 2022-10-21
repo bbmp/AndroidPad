@@ -35,6 +35,8 @@ import com.robam.pan.device.PanAbstractControl;
 import com.robam.pan.factory.PanDialogFactory;
 import com.robam.pan.ui.adapter.RvStep2Adapter;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -68,9 +70,11 @@ public class CurveRestoreActivity extends PanBaseActivity {
     private DynamicLineChartManager dm;
     private Map<String, String> params = null;
 
-    private Stove stove;
+    Stove stove;
     private Pan pan;
     private int stoveId;
+    private boolean favorite;
+    private long recipeId;
 
     ArrayList<Entry> restoreList = new ArrayList<>();  //还原列表
 
@@ -84,6 +88,8 @@ public class CurveRestoreActivity extends PanBaseActivity {
         showLeft();
         showCenter();
         if (null != getIntent()) {
+            favorite = getIntent().getBooleanExtra(PanConstant.EXTRA_FAVORITE, false);
+            recipeId = getIntent().getLongExtra(PanConstant.EXTRA_RECIPE_ID, 0);
             stoveId = getIntent().getIntExtra(StoveConstant.EXTRA_STOVE_ID, IPublicStoveApi.STOVE_LEFT);
             panCurveDetail = (PanCurveDetail) getIntent().getSerializableExtra(PanConstant.EXTRA_CURVE_DETAIL);
         }
@@ -178,7 +184,18 @@ public class CurveRestoreActivity extends PanBaseActivity {
                 rvStep2Adapter.setList(curveSteps);
                 //启动记录
                 Map params = new HashMap();
-                params.put(PanConstant.KEY4, new byte[] {(byte) stoveId, 0, 0, 0, 0, (byte) PanConstant.start}); //曲线还原，菜谱id为0
+                if (favorite) { //我的最爱p档菜谱
+                    params.put(PanConstant.KEY1, new byte[] {(byte) stoveId, 0, (byte) PanConstant.start});
+                } else { //曲线还原或云端菜谱
+                    ByteBuffer buf = ByteBuffer.allocate(10).order(ByteOrder.LITTLE_ENDIAN);
+                    buf.put((byte) stoveId);
+                    buf.putFloat(recipeId);
+                    buf.put((byte) PanConstant.start);
+                    byte[] data = new byte[buf.position()];
+                    System.arraycopy(buf.array(), 0, data, 0, data.length);
+                    buf.clear();
+                    params.put(PanConstant.KEY4, data); //曲线还原，菜谱id为0
+                }
                 PanAbstractControl.getInstance().setInteractionParams(pan.guid, params);
                 Countdown();
             }
@@ -254,6 +271,7 @@ public class CurveRestoreActivity extends PanBaseActivity {
     private void restoreComplete(boolean closeFire) {
         Intent intent = new Intent();
         if (null != panCurveDetail) {
+            intent.putParcelableArrayListExtra(PanConstant.EXTRA_RESTORE_LIST, restoreList);
             intent.putExtra(PanConstant.EXTRA_CURVE_DETAIL, panCurveDetail);
             //关火
             closeFire(closeFire);

@@ -15,9 +15,13 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
+import com.robam.common.constant.PanConstant;
+import com.robam.common.device.subdevice.Pan;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.manager.DynamicLineChartManager;
+import com.robam.common.module.IPublicPanApi;
 import com.robam.common.module.IPublicStoveApi;
+import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.VerticalSpaceItemDecoration;
 import com.robam.common.ui.view.MarkViewStep;
@@ -45,6 +49,7 @@ import java.util.Map;
 
 //曲线选中，烹饪曲线其他进入
 public class CurveSelectedActivity extends StoveBaseActivity {
+    //曲线id
     private long curveid;
     //曲线步骤
     private RvStep3Adapter rvStep3Adapter;
@@ -70,6 +75,8 @@ public class CurveSelectedActivity extends StoveBaseActivity {
     private SelectStoveDialog selectStoveDialog;
     private int stoveId;
 
+    private IPublicPanApi iPublicPanApi = ModulePubliclHelper.getModulePublic(IPublicPanApi.class, IPublicPanApi.PAN_PUBLIC);
+
     @Override
     protected int getLayoutId() {
         return R.layout.stove_activity_layout_curve_selected;
@@ -81,8 +88,9 @@ public class CurveSelectedActivity extends StoveBaseActivity {
         showCenter();
         showRightCenter();
 
-        if (null != getIntent())
+        if (null != getIntent()) {
             curveid = getIntent().getLongExtra(StoveConstant.EXTRA_CURVE_ID, -1);
+        }
         rvStep = findViewById(R.id.rv_step);
         tvCurveName = findViewById(R.id.tv_recipe_name);
         tvStartCook = findViewById(R.id.tv_start_cook);
@@ -124,6 +132,7 @@ public class CurveSelectedActivity extends StoveBaseActivity {
 
     @Override
     protected void initData() {
+
         getCurveDetail();
 
     }
@@ -187,8 +196,16 @@ public class CurveSelectedActivity extends StoveBaseActivity {
     }
     //设置曲线还原参数
     private void setParams(StoveCurveDetail stoveCurveDetail, int stoveId) {
-        if (null != stoveCurveDetail) {
-//            StoveAbstractControl.getInstance().setCurveStepParams(HomeStove.getInstance().guid, stoveId, stoveCurveDetail.stepList);
+        if (null != stoveCurveDetail && null != iPublicPanApi) {
+            for (Device device: AccountInfo.getInstance().deviceList) {
+                if (device instanceof Pan) {
+                    Pan pan = (Pan) device;
+                    iPublicPanApi.setCurveStoveParams(pan.guid, 0, stoveId, stoveCurveDetail.curveStageParams, stoveCurveDetail.temperatureCurveParams);
+
+                    iPublicPanApi.setCurvePanParams(pan.guid, 0, stoveCurveDetail.smartPanModeCurveParams); //设置锅参数
+                    break;
+                }
+            }
         }
     }
 

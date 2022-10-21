@@ -79,6 +79,8 @@ public class RecipeSelectedActivity extends PanBaseActivity {
 
     private DynamicLineChartManager dm;
 
+    private boolean favorite;//是否我的最爱
+
 
     @Override
     protected int getLayoutId() {
@@ -93,6 +95,7 @@ public class RecipeSelectedActivity extends PanBaseActivity {
         if (null != getIntent()) {
             curveId = getIntent().getLongExtra(PanConstant.EXTRA_CURVE_ID, 0);
             recipeId = getIntent().getLongExtra(PanConstant.EXTRA_RECIPE_ID, 0);
+            favorite = getIntent().getBooleanExtra(PanConstant.EXTRA_FAVORITE, false);
         }
 
         tvRight = findViewById(R.id.tv_right);
@@ -140,7 +143,9 @@ public class RecipeSelectedActivity extends PanBaseActivity {
         Intent intent = new Intent();
         intent.setClass(this, CurveRestoreActivity.class);
         if (null != panCurveDetail) {
+            intent.putExtra(PanConstant.EXTRA_FAVORITE, favorite); //是否我的最爱
             intent.putExtra(StoveConstant.EXTRA_STOVE_ID, stoveId); //选中哪个炉头
+            intent.putExtra(PanConstant.EXTRA_RECIPE_ID, recipeId); //菜谱id
             intent.putExtra(PanConstant.EXTRA_CURVE_DETAIL, panCurveDetail);
         }
         startActivity(intent);
@@ -215,9 +220,15 @@ public class RecipeSelectedActivity extends PanBaseActivity {
     //设置曲线还原参数
     private void setParams(PanCurveDetail panCurveDetail, int stoveId) {
         if (null != panCurveDetail) {
-            PanAbstractControl.getInstance().setCurveStoveParams(HomePan.getInstance().guid, stoveId, panCurveDetail.curveStageParams, panCurveDetail.temperatureCurveParams); //设置灶参数
+            if (favorite) {  //我的最爱 p档菜谱// 148-150-153
+                PanAbstractControl.getInstance().setPRecipeStoveParams(HomePan.getInstance().guid, 0, stoveId, panCurveDetail.curveStageParams, panCurveDetail.temperatureCurveParams);
 
-            PanAbstractControl.getInstance().setCurvePanParams(HomePan.getInstance().guid, panCurveDetail.smartPanModeCurveParams); //设置锅参数
+                PanAbstractControl.getInstance().setPRecipePanParams(HomePan.getInstance().guid, 0, panCurveDetail.smartPanModeCurveParams);
+            } else {  //曲线还原
+                PanAbstractControl.getInstance().setCurveStoveParams(HomePan.getInstance().guid, recipeId, stoveId, panCurveDetail.curveStageParams, panCurveDetail.temperatureCurveParams); //设置灶参数
+
+                PanAbstractControl.getInstance().setCurvePanParams(HomePan.getInstance().guid, recipeId, panCurveDetail.smartPanModeCurveParams); //设置锅参数
+            }
         }
     }
     //点火提示

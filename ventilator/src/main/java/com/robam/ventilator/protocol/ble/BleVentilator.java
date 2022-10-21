@@ -185,18 +185,22 @@ public class BleVentilator {
             }
         }
         if (IDeviceType.RRQZ.equals(model)) {
-            for (Device device: AccountInfo.getInstance().deviceList) {
-                if (device instanceof Stove)  //存在其他灶
-                    return;
+            Iterator<Device> iterator = AccountInfo.getInstance().deviceList.iterator();
+            while (iterator.hasNext()) {
+                Device device = iterator.next();
+                if (device instanceof Stove)
+                    iterator.remove();  //删除其他灶
             }
             Stove stove = new Stove("燃气灶", IDeviceType.RRQZ, "9B328");
             stove.mac = bleDevice.getMac();
             stove.bleDecoder = new BleDecoder(0);
             AccountInfo.getInstance().deviceList.add(stove);
         } else if (IDeviceType.RZNG.equals(model)) {
-            for (Device device: AccountInfo.getInstance().deviceList) {
-                if (device instanceof Pan)  //存在其他锅
-                    return;
+            Iterator<Device> iterator = AccountInfo.getInstance().deviceList.iterator();
+            while (iterator.hasNext()) {
+                Device device = iterator.next();
+                if (device instanceof Pan)
+                    iterator.remove();  //删除其他锅
             }
             Pan pan = new Pan("明火自动翻炒锅", IDeviceType.RZNG, "KP100");
             pan.mac = bleDevice.getMac();
@@ -478,10 +482,10 @@ public class BleVentilator {
                                     if (rc == 0) { //设置成功
                                         for (Device device : AccountInfo.getInstance().deviceList) {
                                             if (bleDevice.getMac().equals(device.mac) && device instanceof Stove) {
-//                                                StoveAbstractControl.getInstance().queryAttribute(device.guid);
-                                                Message msg = handler.obtainMessage();
-                                                msg.obj = device.guid;
-                                                handler.sendMessageDelayed(msg, 1000); //延时查询
+                                                StoveAbstractControl.getInstance().queryAttribute(device.guid);
+//                                                Message msg = handler.obtainMessage();
+//                                                msg.obj = device.guid;
+//                                                handler.sendMessageDelayed(msg, 1000); //延时查询
                                                 break;
                                             }
                                         }

@@ -57,7 +57,8 @@ public class FavoriteActivity extends PanBaseActivity {
                 Intent intent = new Intent();
                 intent.setClass(FavoriteActivity.this, RecipeSelectedActivity.class);
                 intent.putExtra(PanConstant.EXTRA_RECIPE_ID, recipe.id);
-//                intent.putExtra(PanConstant.EXTRA_CURVE_ID, recipe.curveId);
+                intent.putExtra(PanConstant.EXTRA_FAVORITE, true);
+                intent.putExtra(PanConstant.EXTRA_CURVE_ID, recipe.curveId);
                 startActivity(intent);
             }
         });
@@ -90,8 +91,10 @@ public class FavoriteActivity extends PanBaseActivity {
         if (null != getPRecipeRes && null != getPRecipeRes.datas) {
             List<PanRecipe> panRecipes = new ArrayList<>();
             //转成正常菜谱显示
-            for (PPanRecipe pPanRecipe: getPRecipeRes.datas)
-                panRecipes.add(new PanRecipe(pPanRecipe.cookbookId, pPanRecipe.cookbookImgCover, pPanRecipe.cookbookName, pPanRecipe.curveCookbookId));
+            for (PPanRecipe pPanRecipe: getPRecipeRes.datas) {
+                if (pPanRecipe.isSent) //已下发
+                    panRecipes.add(new PanRecipe(pPanRecipe.cookbookId, pPanRecipe.cookbookImgCover, pPanRecipe.cookbookName, pPanRecipe.curveCookbookId));
+            }
             if (panRecipes.size() > 0) {
                 rvRecipeAdapter.setList(panRecipes);
                 return;

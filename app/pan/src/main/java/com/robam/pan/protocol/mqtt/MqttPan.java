@@ -52,7 +52,7 @@ public class MqttPan extends MqttPublic {
     private void decodeMsg(MqttMsg msg, byte[] payload, int offset) {
         //处理远程消息
         switch (msg.getID()) {
-            case MsgKeys.GetPotTemp_Req: {//查询锅
+            case MsgKeys.GetPotTemp_Req: {//查询锅,避免蓝牙查询频繁，返回当前状态
                 //答复
                 String curGuid = msg.getrTopic().getDeviceType() + msg.getrTopic().getSignNum(); //当前设备guid
                 MqttMsg newMsg = new MqttMsg.Builder()
@@ -64,7 +64,9 @@ public class MqttPan extends MqttPublic {
                 MqttManager.getInstance().publish(newMsg, PanFactory.getProtocol());
             }
                 break;
-            case MsgKeys.POT_INTERACTION_Req: {//智能互动
+            case MsgKeys.POT_INTERACTION_Req: //智能互动
+            case MsgKeys.POT_CURVETEMP_Req:   //曲线还原灶参数下发
+            case MsgKeys.POT_CURVEElectric_Req: {  //曲线还原锅参数下发
                 String curGuid = msg.getrTopic().getDeviceType() + msg.getrTopic().getSignNum(); //当前设备guid
                 PanAbstractControl.getInstance().remoteControl(curGuid, payload);
             }
@@ -183,8 +185,8 @@ public class MqttPan extends MqttPublic {
                 }
             }
                 break;
-            case MsgKeys.POT_CURVETEMP_Req: { //曲线还原灶参数设置
-                buf.putFloat(0); //菜谱id ，0为曲线还原，4个字节
+            case MsgKeys.POT_P_MENU_Req: { //p档菜谱灶参数设置
+                buf.putFloat(msg.optInt(PanConstant.pno)); //p档菜谱序号
                 buf.put((byte) msg.optInt(PanConstant.stoveId)); //炉头id
                 JSONArray jsonArray = msg.optJSONArray(PanConstant.steps);
                 buf.put((byte) jsonArray.length()); //参数个数
@@ -199,8 +201,41 @@ public class MqttPan extends MqttPublic {
                 }
             }
             break;
+            case MsgKeys.POT_CURVETEMP_Req: { //曲线还原灶参数设置
+                buf.putFloat(msg.optInt(PanConstant.recipeId)); //菜谱id ，0为曲线还原，4个字节
+                buf.put((byte) msg.optInt(PanConstant.stoveId)); //炉头id
+                JSONArray jsonArray = msg.optJSONArray(PanConstant.steps);
+                buf.put((byte) jsonArray.length()); //参数个数
+                for (int i = 0; i<jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.optJSONObject(i);
+                    buf.put((byte) jsonObject.optInt(PanConstant.key)); //步骤key
+                    buf.put((byte) 6); //length
+                    buf.put((byte) jsonObject.optInt(PanConstant.control));//控制方式
+                    buf.put((byte) jsonObject.optInt(PanConstant.level)); //灶具挡位
+                    buf.putShort((short) jsonObject.optInt(PanConstant.stepTemp)); //温度
+                    buf.putShort((short) jsonObject.optInt(PanConstant.stepTime)); //步骤时间
+                }
+            }
+            break;
+            case MsgKeys.POT_Electric_Req: { //p档菜谱锅参数设置
+                buf.putFloat(msg.optInt(PanConstant.pno)); //p档菜谱序号
+                JSONArray jsonArray = msg.optJSONArray(PanConstant.steps);
+                buf.put((byte) jsonArray.length()); //参数个数
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.optJSONObject(i);
+                    buf.put((byte) jsonObject.optInt(PanConstant.key)); //步骤key
+                    buf.put((byte) 7);
+                    buf.put((byte) jsonObject.optInt(PanConstant.fryMode)); //搅拌参数
+                    buf.putShort((short) jsonObject.optInt(PanConstant.stepTime)); //当前步骤持续时间
+                    buf.put((byte) 0);   //正转转速
+                    buf.put((byte) 0);   //反转转速
+                    buf.put((byte) 0); //正转时间
+                    buf.put((byte) 0); //反转时间
+                }
+            }
+            break;
             case MsgKeys.POT_CURVEElectric_Req: {//曲线还原锅参数设置
-                buf.putFloat(0);// 菜谱id ，0为曲线还原，4个字节
+                buf.putFloat(msg.optInt(PanConstant.recipeId));// 菜谱id ，0为曲线还原，4个字节
                 JSONArray jsonArray = msg.optJSONArray(PanConstant.steps);
                 buf.put((byte) jsonArray.length()); //参数个数
                 for (int i = 0; i < jsonArray.length(); i++) {

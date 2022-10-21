@@ -92,6 +92,10 @@ public class HomePage extends PanBasePage {
                             tvQuick.setText(R.string.pan_quick_frying);
                         } else if (pan.fryMode == PanConstant.MODE_STIR_FRY) {
                             llStir.setSelected(true);
+                            tvStir.setText(R.string.pan_stir_frying);
+                        } else {
+                            llQuick.setSelected(false);
+                            llStir.setSelected(false);
                         }
                         break;
                     }

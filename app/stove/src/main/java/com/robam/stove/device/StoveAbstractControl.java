@@ -60,4 +60,9 @@ public class StoveAbstractControl implements StoveFunction{
         function.setStoveParams(cmd, payload);
     }
 
+    @Override
+    public void remoteControl(String targetGuid, byte[] payload) {
+        function.remoteControl(targetGuid, payload);
+    }
+
 }

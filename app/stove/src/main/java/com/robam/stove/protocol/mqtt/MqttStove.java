@@ -14,6 +14,7 @@ import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.MsgUtils;
 import com.robam.common.device.subdevice.Stove;
 import com.robam.common.constant.StoveConstant;
+import com.robam.stove.device.StoveAbstractControl;
 import com.robam.stove.device.StoveFactory;
 
 import org.json.JSONArray;
@@ -27,7 +28,7 @@ public class MqttStove extends MqttPublic {
     private void decodeMsg(MqttMsg msg, byte[] payload, int offset) {
         //处理远程消息
         switch (msg.getID()) {
-            case MsgKeys.GetStoveStatus_Req: //远程查询灶状态
+            case MsgKeys.GetStoveStatus_Req: { //远程查询灶状态,避免蓝牙查询频繁，返回当前状态
                 //答复
                 String curGuid = msg.getrTopic().getDeviceType() + msg.getrTopic().getSignNum(); //当前设备guid
                 MqttMsg newMsg = new MqttMsg.Builder()
@@ -37,20 +38,16 @@ public class MqttStove extends MqttPublic {
                         .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(msg.getGuid()), DeviceUtils.getDeviceNumber(msg.getGuid())))
                         .build();
                 MqttManager.getInstance().publish(newMsg, StoveFactory.getProtocol());
-
+            }
                 break;
-//            case MsgKeys.SetStoveStatus_Req: //远程设置灶状态
-//                short terminalType = ByteUtils.toShort(payload[offset++]); //控制端类型
-//                String user = MsgUtils.getString(payload, offset, 10); //user
-//                offset += 10;
-//                short isCook = ByteUtils.toShort(payload[offset++]); //是否菜谱做菜
-//                msg.putOpt(StoveConstant.isCook, isCook);
-//                short id = ByteUtils.toShort(payload[offset++]); //炉头id
-//                msg.putOpt(StoveConstant.stoveId, id);
-//                short workStatus = ByteUtils.toShort(payload[offset++]);//工作状态
-//                msg.putOpt(StoveConstant.workStatus, workStatus);
-//
-//                break;
+            case MsgKeys.SetStoveLock_Req: //设置童锁
+            case MsgKeys.SetStoveStatus_Req: //设置灶具状态
+            case MsgKeys.SetStoveLevel_Req: //设置挡位
+            case MsgKeys.SetStoveShutdown_Req: { //定时设置
+                String curGuid = msg.getrTopic().getDeviceType() + msg.getrTopic().getSignNum(); //当前设备guid
+                StoveAbstractControl.getInstance().remoteControl(curGuid, payload);
+            }
+                break;
         }
     }
     @Override
