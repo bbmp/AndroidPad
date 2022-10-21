@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
+import com.robam.common.bean.MqttDirective;
 import com.robam.common.manager.FunctionManager;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.mqtt.MsgKeys;
@@ -53,6 +54,8 @@ public class AppointingActivity extends DishWasherBaseActivity {
 
     private StringBuffer buffer = new StringBuffer();
 
+    public int directive_offset = 30000;
+
     @Override
     protected int getLayoutId() {
         return R.layout.dishwasher_activity_layout_appointing;
@@ -76,8 +79,8 @@ public class AppointingActivity extends DishWasherBaseActivity {
                     DishWasher dishWasher = (DishWasher) device;
                     LogUtils.e("AppointingActivity mqtt msg arrive isWorking "+dishWasher.powerStatus);
                     switch (dishWasher.powerStatus){
-                        case DishWasherConstant.WORKING:
-                        case DishWasherConstant.PAUSE:
+                        case DishWasherState.WORKING:
+                        case DishWasherState.PAUSE:
                             if(DishWasherCommonHelper.isSafe()){
                                 dealWasherWorkingState(dishWasher);
                             }
@@ -91,6 +94,24 @@ public class AppointingActivity extends DishWasherBaseActivity {
                     break;
                 }
             }
+        });
+        MqttDirective.getInstance().getDirective().observe(this,s->{
+            switch (s.intValue() - directive_offset){
+                case MsgKeys.setDishWasherPower:
+                    startActivity(MainActivity.class);
+                    finish();
+                    break;
+                case MsgKeys.setDishWasherWorkMode:
+                    List<DishWasherModeBean> modeBeanList = FunctionManager.getFuntionList(getContext(), DishWasherModeBean.class,R.raw.dishwahser);
+                    Intent intent = new Intent();
+                    DishWasherModeBean dishWasherModeBean = DishWasherModelUtil.getDishWasher(modeBeanList,modeBean.code);
+                    intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, dishWasherModeBean);
+                    intent.setClass(AppointingActivity.this, WorkActivity.class);
+                    startActivity(intent);
+                    finish();
+                    break;
+            }
+
         });
     }
 
@@ -220,31 +241,8 @@ public class AppointingActivity extends DishWasherBaseActivity {
         } else if (id == R.id.iv_start) {
             //立即开始
             //tvCountdown.stop();
-            /*Map params = DishWasherCommonHelper.getModelMap(MsgKeys.setDishWasherWorkMode,(Short)modeBean.code,(short) 0,0);
-            DishWasherCommonHelper.sendCommonMsg(params);*/
             Map params = DishWasherCommonHelper.getModelMap(MsgKeys.setDishWasherWorkMode, modeBean.code,(short) 0,0);
-            DishWasherCommonHelper.sendCommonMsg(params, new MqttManager.MqttSendMsgListener() {
-                @Override
-                public void onSuccess() {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            List<DishWasherModeBean> modeBeanList = FunctionManager.getFuntionList(getContext(), DishWasherModeBean.class,R.raw.dishwahser);
-                            Intent intent = new Intent();
-                            DishWasherModeBean dishWasherModeBean = DishWasherModelUtil.getDishWasher(modeBeanList,modeBean.code);
-                            intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, dishWasherModeBean);
-                            intent.setClass(AppointingActivity.this, WorkActivity.class);
-                            startActivity(intent);
-                            finish();
-                        }
-                    });
-                }
-
-                @Override
-                public void onFailure() {
-
-                }
-            });
+            DishWasherCommonHelper.sendCommonMsgForLiveData(params,directive_offset+MsgKeys.setDishWasherWorkMode);//立即开始
         }
     }
     //取消预约
@@ -253,21 +251,23 @@ public class AppointingActivity extends DishWasherBaseActivity {
         iDialog.setCancelable(false);
         iDialog.setContentText(R.string.dishwasher_cancel_appointment_hint);
         iDialog.setCancelText(R.string.dishwasher_cancel);
-        iDialog.setOKText(R.string.dishwasher_ok);
+        iDialog.setOKText(R.string.dishwasher_cancel_appointment);
         iDialog.setListeners(new IDialog.DialogOnClickListener() {
             @Override
             public void onClick(View v) {
                 if (v.getId() == R.id.tv_ok) {
                     //结束倒计时
-                    tvCountdown.stop();
-                    finish();
-                }
+                    /*tvCountdown.stop();
+                    finish();*/
+                    Map map = DishWasherCommonHelper.getCommonMap(MsgKeys.setDishWasherPower);
+                    map.put(DishWasherConstant.PowerMode,DishWasherState.OFF);
+                    DishWasherCommonHelper.sendCommonMsgForLiveData(map,MsgKeys.setDishWasherPower+directive_offset);                }
             }
         }, R.id.tv_cancel, R.id.tv_ok);
         iDialog.show();
     }
 
-    private void showCancelAppointingDialog(){
+   /* private void cancelAppointment(){
         DiashWasherCommonDialog washerCommonDialog = new DiashWasherCommonDialog(this);
         washerCommonDialog.setContentText(R.string.dishwasher_cancel_appointment_hint);
         washerCommonDialog.setCancelText(R.string.dishwasher_cancel);
@@ -275,28 +275,12 @@ public class AppointingActivity extends DishWasherBaseActivity {
         washerCommonDialog.setListeners(v -> {
             washerCommonDialog.dismiss();
             if(v.getId() == R.id.tv_ok){
-                /*Map map = new HashMap();
-                map.put(DishWasherConstant.MSG_ID, MsgKeys.setDishWasherPower);
-                map.put(DishWasherConstant.UserId, AccountInfo.getInstance().getUserString());
-                map.put(DishWasherConstant.TARGET_GUID, HomeDishWasher.getInstance().guid);
-                map.put(DishWasherConstant.PowerMode,DishWasherConstant.OFF);
-
-                DishWasherCommonHelper.sendCommonMsg(map);*/
                 Map map = DishWasherCommonHelper.getCommonMap(MsgKeys.setDishWasherPower);
-                map.put(DishWasherConstant.PowerMode,DishWasherConstant.OFF);
-                DishWasherCommonHelper.sendCommonMsg(map, new MqttManager.MqttSendMsgListener() {
-                    @Override
-                    public void onSuccess() {
-                        finish();
-                    }
-
-                    @Override
-                    public void onFailure() {
-
-                    }
-                });
+                map.put(DishWasherConstant.PowerMode,DishWasherState.OFF);
+                DishWasherCommonHelper.sendCommonMsgForLiveData(map,MsgKeys.setDishWasherPower+directive_offset);
             }
-        });
+        },R.id.tv_cancel, R.id.tv_ok);
+        washerCommonDialog.show();
 
-    }
+    }*/
 }

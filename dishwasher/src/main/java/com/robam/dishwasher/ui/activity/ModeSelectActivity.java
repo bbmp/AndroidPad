@@ -9,18 +9,14 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.robam.common.bean.AccountInfo;
-import com.robam.common.bean.Device;
-import com.robam.common.mqtt.MqttManager;
+import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.TimeUtils;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.base.DishWasherBaseActivity;
 import com.robam.dishwasher.bean.DishWasherModeBean;
-import com.robam.dishwasher.bean.DishWasher;
 import com.robam.dishwasher.constant.DishWasherConstant;
-import com.robam.dishwasher.device.DishWasherAbstractControl;
 import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.util.DishWasherCommonHelper;
 
@@ -51,6 +47,7 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
     private short cxjc;  //长效净存   - 暂无
 
 
+    public int directive_offset = 10000;
 
     @Override
     protected int getLayoutId() {
@@ -90,26 +87,21 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
             }
         });
 
-        /*AccountInfo.getInstance().getGuid().observe(this, s -> {
-            for (Device device: AccountInfo.getInstance().deviceList) {
-                if (device.guid.equals(s) && device instanceof DishWasher && device.guid.equals(HomeDishWasher.getInstance().guid)) { //当前锅
-                    DishWasher dishWasher = (DishWasher) device;
-                    LogUtils.e("ModeSelectActivity mqtt msg arrive isWorking "+dishWasher.powerStatus);
-                    switch (dishWasher.powerStatus){
-                        case DishWasherConstant.WORKING:
-                        case DishWasherConstant.PAUSE:
-                            Intent intent = new Intent();
-                            if (null != modeBean){
-                                intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, modeBean);
-                            }
-                            intent.setClass(this, WorkActivity.class);
-                            startActivity(intent);
-                            finish();
+        MqttDirective.getInstance().getDirective().observe(this, s -> {
+            if(s == (MsgKeys.setDishWasherWorkMode + directive_offset)){
+                runOnUiThread(() -> {
+                    Intent intent = new Intent();
+                    if (null != modeBean){
+                        intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, modeBean);
                     }
-                    break;
-                }
+                    intent.setClass(ModeSelectActivity.this, WorkActivity.class);
+                    startActivity(intent);
+                    finish();
+                    LogUtils.e("sendCommonMsg success");
+                });
             }
-        });*/
+        });
+
     }
 
 
@@ -223,45 +215,8 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
 
         DishWasherAbstractControl.getInstance().sendCommonMsg(map,HomeDishWasher.getInstance().guid, MsgKeys.setDishWasherWorkMode);*/
 
-
-
         Map params = DishWasherCommonHelper.getModelMap(MsgKeys.setDishWasherWorkMode, modeBean.code,(short) 0,0);
-        DishWasherCommonHelper.sendCommonMsg(params, new MqttManager.MqttSendMsgListener() {
-            @Override
-            public void onSuccess() {
-                runOnUiThread(() -> {
-                    Intent intent = new Intent();
-                    if (null != modeBean){
-                        intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, modeBean);
-                    }
-                    intent.setClass(ModeSelectActivity.this, WorkActivity.class);
-                    startActivity(intent);
-                    finish();
-                    LogUtils.e("sendCommonMsg success");
-                });
-            }
-
-            @Override
-            public void onFailure() {
-
-            }
-        });
+        DishWasherCommonHelper.sendCommonMsgForLiveData(params,MsgKeys.setDishWasherWorkMode + directive_offset);
     }
-
-    final public String getSrcUser() {
-        long id =AccountInfo.getInstance().getUser().getValue().id;
-        String userId = String.valueOf(id);
-        if(userId.length() < 10){
-            for(int i = 10 - userId.length();i<10;i++){
-                userId += "0";
-            }
-        }
-        return userId;
-    }
-
-
-
-
-
 
 }

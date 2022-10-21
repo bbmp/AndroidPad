@@ -82,10 +82,10 @@ public class DishWasherConstant {
     public final static String TARGET_GUID = "target_guid";
 
 
-    public final static short OFF=0;//关机
+   /* public final static short OFF=0;//关机
     public final static short WAIT=1;//待机
     public final static short WORKING=2;//工作中
     public final static short PAUSE=3;//暂停
-    public final static short END=4;//结束
+    public final static short END=4;//结束*/
 
 }

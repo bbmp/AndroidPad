@@ -28,6 +28,8 @@ import java.util.List;
 //远程入口，供烟机调用
 public class MainActivity extends DishWasherBaseActivity {
 
+
+
     @Override
     protected int getLayoutId() {
         return R.layout.dishwasher_activity_layout_main;
@@ -54,8 +56,8 @@ public class MainActivity extends DishWasherBaseActivity {
                     LogUtils.e("ModeSelectActivity mqtt msg arrive isWorking "+dishWasher.powerStatus);
                     //washer.AppointmentSwitchStatus 预约状态  开： DishWasherStatus.appointmentSwitchOn 关 ： DishWasherStatus.appointmentSwitchOff
                     switch (dishWasher.powerStatus){
-                        case DishWasherConstant.WORKING:
-                        case DishWasherConstant.PAUSE:
+                        case DishWasherState.WORKING:
+                        case DishWasherState.PAUSE:
                             if(DishWasherCommonHelper.isSafe()){
                                 this.dealWasherWorkingState(modeBeanList,dishWasher);
                             }

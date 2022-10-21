@@ -5,8 +5,8 @@
     "name": "智能洗",
     "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
     "desc" : "自动识别匹配餐具脏污程度进行清洗",
-    "time": 1200,
-    "temp": 40
+    "time": 6000,
+    "temp": 70
   },
   {
     "backgroundImg": "",
@@ -14,8 +14,8 @@
     "name": "强力洗",
     "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
     "desc" : "清洗重度脏污餐具、残渣干结餐具",
-    "time": 2400,
-    "temp": 55
+    "time": 9000,
+    "temp": 75
   },
   {
     "backgroundImg": "",
@@ -23,8 +23,8 @@
     "name": "快速洗",
     "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
     "desc" : "清洗轻度脏污餐具，无需干燥",
-    "time": 2700,
-    "temp": 65
+    "time": 2100,
+    "temp": 50
   },
   {
     "backgroundImg": "",
@@ -32,8 +32,8 @@
     "name": "日常洗",
     "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
     "desc" : "清洗中度脏污餐具",
-    "time": 3900,
-    "temp": 55
+    "time": 5880,
+    "temp": 72
   },
   {
     "backgroundImg": "",
@@ -41,8 +41,8 @@
     "name": "节能洗",
     "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
     "desc" : "清洗未干结的中度脏污餐具",
-    "time": 7500,
-    "temp": 55
+    "time": 14280,
+    "temp": 50
   },
   {
     "backgroundImg": "",
@@ -50,8 +50,8 @@
     "name": "晶亮洗",
     "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
     "desc" : "清洗精致易碎、轻度脏污餐具",
-    "time": 36000,
-    "temp": 55
+    "time": 5520,
+    "temp": 50
   },
   {
     "backgroundImg": "",
@@ -59,8 +59,8 @@
     "name": "护婴洗",
     "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
     "desc" : "清洗需要持续高温除菌餐具",
-    "time": 39000,
-    "temp": 55
+    "time": 7200,
+    "temp": 72
   },
   {
     "backgroundImg": "",
@@ -68,8 +68,8 @@
     "name": "自清洁",
     "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
     "desc" : "洗碗机内腔的清洁",
-    "time": 7800,
-    "temp": 55
+    "time": 5040,
+    "temp": 60
   },
   {
     "backgroundImg": "",
@@ -77,7 +77,7 @@
     "name": "护婴\n净存",
     "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
     "desc" : "餐具在洗碗机内部的储存",
-    "time": 0,
+    "time": 432000,
     "temp": 0
   }
 ]

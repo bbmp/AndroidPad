@@ -350,7 +350,7 @@ public class MqttManager {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     if(listener != null){
-                        listener.onSuccess();
+                        listener.onSuccess(topic, (short) msg.getID());
                     }
                 }
 
@@ -403,7 +403,7 @@ public class MqttManager {
     }
 
     public static interface MqttSendMsgListener{
-        void onSuccess();
+        void onSuccess(String top,short msgId);
         void onFailure();
     }
 }
