@@ -3,12 +3,15 @@ package com.robam.pan.ui.dialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.TextView;
 
 import com.robam.common.ui.dialog.BaseDialog;
 import com.robam.common.ui.dialog.FullDialog;
 import com.robam.pan.R;
 
 public class OpenFireDialog extends BaseDialog {
+    private TextView mContent;
+
     public OpenFireDialog(Context context) {
         super(context);
     }
@@ -16,7 +19,7 @@ public class OpenFireDialog extends BaseDialog {
     @Override
     protected void initView() {
         rootView = LayoutInflater.from(mContext).inflate(R.layout.pan_dialog_layout_open_fire, null);
-
+        mContent = rootView.findViewById(R.id.tv_work_content);
         if (mDialog == null) {
             mDialog = new FullDialog(mContext, rootView);
         }
@@ -28,5 +31,9 @@ public class OpenFireDialog extends BaseDialog {
                 dismiss();
             }
         }, R.id.full_dialog);
+    }
+    @Override
+    public void setContentText(int res) {
+        mContent.setText(res);
     }
 }

@@ -3,6 +3,7 @@ package com.robam.common.mqtt;
 import android.content.Context;
 import android.util.Log;
 
+import com.robam.common.IDeviceType;
 import com.robam.common.bean.RTopic;
 import com.robam.common.constant.ComnConstant;
 import com.robam.common.device.IPlat;
@@ -84,11 +85,11 @@ public class MqttManager {
 
         @Override
         public void onSuccess(IMqttToken arg0) {
-            LogUtils.e( "MQTT connect success ");
+            LogUtils.e( "连接成功 ");
             try {
                 String topic = new RTopic(RTopic.TOPIC_UNICAST, iPlat.getDt()
                         , iPlat.getMac()).getTopic();
-                LogUtils.e("MQTT connect success subscribe " + topic);
+                LogUtils.e("订阅主题 " + topic);
                 mqttAndroidClient.subscribe(topic, 2, iPlat.getDeviceOnlySign(), mqttActionListener);//订阅主题，参数：主题、服务质量
             } catch (MqttException e) {
                 e.printStackTrace();
@@ -116,11 +117,16 @@ public class MqttManager {
     /**
      * 单个订阅设备
      */
-    public void subscribe(String dt, String number) {
+    public void subscribe(String dc, String dt, String number) {
         try {
-            String topic = new RTopic(RTopic.TOPIC_BROADCAST, dt
-                    , number).getTopic();
-            LogUtils.e("subscribe " + topic);
+            String topic;
+            if (IDeviceType.RRQZ.equals(dc) || IDeviceType.RZNG.equals(dc))  //子设备
+                topic = new RTopic(RTopic.TOPIC_UNICAST, dt,
+                        number).getTopic();
+            else
+                topic = new RTopic(RTopic.TOPIC_BROADCAST, dt,
+                        number).getTopic();
+            LogUtils.e("订阅主题" + topic);
             mqttAndroidClient.subscribe(topic, 2, null, mqttActionListener);//订阅主题，参数：主题、服务质量
         } catch (Exception e) {
             e.printStackTrace();
@@ -129,10 +135,15 @@ public class MqttManager {
     /**
      * 取消订阅
      */
-    public void unSubscribe(String dt, String number) {
+    public void unSubscribe(String dc, String dt, String number) {
         try {
-            String topic = new RTopic(RTopic.TOPIC_UNICAST, dt
-                    , number).getTopic();
+            String topic;
+            if (IDeviceType.RRQZ.equals(dc) || IDeviceType.RZNG.equals(dc))  //子设备
+                topic = new RTopic(RTopic.TOPIC_UNICAST, dt,
+                        number).getTopic();
+            else
+                topic = new RTopic(RTopic.TOPIC_BROADCAST, dt,
+                        number).getTopic();
             mqttAndroidClient.unsubscribe(topic);
         } catch (Exception e) {
             e.printStackTrace();
@@ -179,8 +190,7 @@ public class MqttManager {
                     try {
                         String topic = new RTopic(RTopic.TOPIC_UNICAST, iPlat.getDt()
                                 , iPlat.getMac()).getTopic();
-                        //LogUtils.e("订阅主题 " + topic);
-                        LogUtils.e("reConnect subscribe "+topic);
+                        LogUtils.e("订阅主题 " + topic);
                         mqttAndroidClient.subscribe(topic, 2, iPlat.getDeviceOnlySign(), mqttActionListener);//订阅主题，参数：主题、服务质量
                     } catch (MqttException e) {
                         e.printStackTrace();
@@ -203,12 +213,10 @@ public class MqttManager {
     IMqttActionListener mqttActionListener = new IMqttActionListener() {
         @Override
         public void onSuccess(IMqttToken asyncActionToken) {
-            //LogUtils.e( "订阅成功 ");
-            LogUtils.e("subscribe onSuccess");
+            LogUtils.e( "订阅成功 ");
             //发送设备上线成功 主设备
 //            if (null != asyncActionToken && iPlat.getDeviceOnlySign().equals(asyncActionToken.getUserContext()))
 //                deviceConnectedNoti();
-
         }
 
         @Override
@@ -246,9 +254,6 @@ public class MqttManager {
 
         @Override
         public void messageArrived(String topic, MqttMessage message) throws Exception {
-
-            String srcGuid = MsgUtils.getString(message.getPayload(), 0, 17);
-            LogUtils.e( "messageArrived  topic " +topic + " srcGuid " + srcGuid);
             iProtocol.decode(topic, message.getPayload());
 //            if (null != mqttMsgCallback && null != message)
 //                mqttMsgCallback.messageArrived(message.getPayload());
@@ -288,7 +293,7 @@ public class MqttManager {
     };
 
     private String getPublishTopic() {
-        return "/b/" +  iPlat.getDt() + "/" + iPlat.getMac();
+        return "/u/" +  iPlat.getDt() + "/" + iPlat.getMac();
     }
 
     /**

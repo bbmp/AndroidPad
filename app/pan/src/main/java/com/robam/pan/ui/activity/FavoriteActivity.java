@@ -19,6 +19,7 @@ import com.robam.pan.base.PanBaseActivity;
 import com.robam.pan.bean.PPanRecipe;
 import com.robam.pan.bean.PanRecipe;
 import com.robam.common.constant.PanConstant;
+import com.robam.pan.device.HomePan;
 import com.robam.pan.http.CloudHelper;
 import com.robam.pan.response.GetPRecipeRes;
 import com.robam.pan.ui.adapter.RvRecipeAdapter;
@@ -72,7 +73,7 @@ public class FavoriteActivity extends PanBaseActivity {
     private void getPotPCookPage() {
         UserInfo info = AccountInfo.getInstance().getUser().getValue();
         //传入设备guid
-        CloudHelper.getPotPCookPage(this, "", (info != null) ? info.id:0, GetPRecipeRes.class, new RetrofitCallback<GetPRecipeRes>() {
+        CloudHelper.getPotPCookPage(this, HomePan.getInstance().guid, (info != null) ? info.id:0, GetPRecipeRes.class, new RetrofitCallback<GetPRecipeRes>() {
             @Override
             public void onSuccess(GetPRecipeRes getPRecipeRes) {
                 setData(getPRecipeRes);

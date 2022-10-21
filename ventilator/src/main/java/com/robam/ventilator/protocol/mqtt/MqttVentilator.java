@@ -2,10 +2,15 @@ package com.robam.ventilator.protocol.mqtt;
 
 import com.robam.common.ITerminalType;
 import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
 import com.robam.common.bean.RTopic;
 import com.robam.common.ble.BleDecoder;
 import com.robam.common.constant.ComnConstant;
+import com.robam.common.constant.StoveConstant;
 import com.robam.common.device.Plat;
+import com.robam.common.device.subdevice.Pan;
+import com.robam.common.device.subdevice.Stove;
+import com.robam.common.module.IPublicStoveApi;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MqttPublic;
@@ -14,6 +19,7 @@ import com.robam.common.utils.ByteUtils;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MsgUtils;
+import com.robam.stove.device.HomeStove;
 import com.robam.stove.device.StoveAbstractControl;
 import com.robam.ventilator.constant.QualityKeys;
 import com.robam.ventilator.constant.VentilatorConstant;
@@ -39,14 +45,14 @@ public class MqttVentilator extends MqttPublic {
 //从payload中取值角标
         //内部命令
         switch (msg.getID()) {
-            case BleDecoder.EVENT_POT_TEMPERATURE_DROP: //锅温度骤降
+            case BleDecoder.EVENT_POT_TEMPERATURE_DROP: //锅温度骤降,烟机爆炒档
                 VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_FRY);
                 break;
-            case BleDecoder.EVENT_POT_TEMPERATURE_OV: //防干烧预警
+            case BleDecoder.EVENT_POT_TEMPERATURE_OV: //防干烧预警 锅温280以上
                 //关闭灶具
-
+                StoveAbstractControl.getInstance().setAttribute(HomeStove.getInstance().guid, IPublicStoveApi.STOVE_LEFT, 0x00, StoveConstant.STOVE_CLOSE);
                 break;
-            case BleDecoder.EVENT_POT_LINK_2_RH://烟锅联动
+            case BleDecoder.EVENT_POT_LINK_2_RH://烟锅联动锅温50以上，烟机未开
                 //烟机开2挡
                 VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_MID);
                 break;

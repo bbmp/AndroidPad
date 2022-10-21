@@ -93,7 +93,7 @@ public class BleVentilator {
 
                 if (null != scanResultList && scanResultList.size() > 0) {
                     for (BleDevice bleDevice: scanResultList) {
-                        if (bleDevice.getName().contains("ROKI") || bleDevice.getName().contains("ROKI_KP100"))
+                        if (bleDevice.getName().contains(BlueToothManager.stove) || bleDevice.getName().contains(BlueToothManager.pan))
                             connect(model, bleDevice);
                     }
                 } else {
@@ -185,11 +185,19 @@ public class BleVentilator {
             }
         }
         if (IDeviceType.RRQZ.equals(model)) {
+            for (Device device: AccountInfo.getInstance().deviceList) {
+                if (device instanceof Stove)  //存在其他灶
+                    return;
+            }
             Stove stove = new Stove("燃气灶", IDeviceType.RRQZ, "9B328");
             stove.mac = bleDevice.getMac();
             stove.bleDecoder = new BleDecoder(0);
             AccountInfo.getInstance().deviceList.add(stove);
         } else if (IDeviceType.RZNG.equals(model)) {
+            for (Device device: AccountInfo.getInstance().deviceList) {
+                if (device instanceof Pan)  //存在其他锅
+                    return;
+            }
             Pan pan = new Pan("明火自动翻炒锅", IDeviceType.RZNG, "KP100");
             pan.mac = bleDevice.getMac();
             pan.bleDecoder = new BleDecoder(0);
@@ -470,8 +478,10 @@ public class BleVentilator {
                                     if (rc == 0) { //设置成功
                                         for (Device device : AccountInfo.getInstance().deviceList) {
                                             if (bleDevice.getMac().equals(device.mac) && device instanceof Stove) {
-                                                StoveAbstractControl.getInstance().queryAttribute(device.guid);
-
+//                                                StoveAbstractControl.getInstance().queryAttribute(device.guid);
+                                                Message msg = handler.obtainMessage();
+                                                msg.obj = device.guid;
+                                                handler.sendMessageDelayed(msg, 1000); //延时查询
                                                 break;
                                             }
                                         }
@@ -505,6 +515,11 @@ public class BleVentilator {
                                     }
                                     //设置参数给灶
                                     StoveAbstractControl.getInstance().setStoveParams(BleDecoder.CMD_COOKER_SET_INT, ret2);
+                                }
+                                    break;
+                                case BleDecoder.RSP_COOKER_SET_INT: { //灶上报转发给锅
+                                    //设置参数给锅
+                                    PanAbstractControl.getInstance().setPanParams(BleDecoder.RSP_COOKER_SET_INT, ret2);
                                 }
                                     break;
                                 case BleDecoder.CMD_POT_INTERACTION_RES: { //智能锅智能互动回复

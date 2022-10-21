@@ -190,7 +190,7 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
                 continue;
             iterator.remove();
             deleteGuid = device.guid;  //删除的设备
-            MqttManager.getInstance().unSubscribe(DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)); //取消订阅
+            MqttManager.getInstance().unSubscribe(device.dc, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)); //取消订阅
         }
         if (null != deleteGuid)
             AccountInfo.getInstance().getGuid().setValue(deleteGuid);

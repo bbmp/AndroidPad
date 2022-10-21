@@ -216,7 +216,7 @@ public class DeviceUserPage extends VentilatorBasePage {
                 } else if (device instanceof Stove) {
                     BlueToothManager.disConnect(((Stove) device).bleDevice);
                 }
-                MqttManager.getInstance().unSubscribe(DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)); //取消订阅
+                MqttManager.getInstance().unSubscribe(device.dc, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)); //取消订阅
                 break;
             }
         }
