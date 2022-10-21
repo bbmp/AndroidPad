@@ -1,7 +1,7 @@
 package com.robam.dishwasher.constant;
 
 public enum DishWasherEnum {
-    SMART(DishWasherConstant.MODE_SMART,"智能洗"),
+    SMART(5,"智能洗"),
     POWFULL(1,"强力洗"),
     QUICK(4,"快速洗"),
     DAILY(2,"日常洗"),

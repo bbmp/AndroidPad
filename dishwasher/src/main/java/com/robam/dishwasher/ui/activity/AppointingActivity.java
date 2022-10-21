@@ -143,7 +143,7 @@ public class AppointingActivity extends DishWasherBaseActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                tvWorkHours.setText(String.format("%s分钟", dishWasher.DishWasherRemainingWorkingTime));
+                //tvWorkHours.setText(String.format("%s分钟", dishWasher.DishWasherRemainingWorkingTime));
                 int totalTime = dishWasher.AppointmentRemainingTime * 60;
                 tvCountdown.setTotalTime(totalTime);
                 tvCountdown.setText(getTimeStr(dishWasher.AppointmentRemainingTime));
