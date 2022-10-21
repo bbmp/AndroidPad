@@ -16,6 +16,11 @@ public class HomeDishWasher {
      * 预约开始时间
      */
     public String orderTime;
+
+    /**
+     * 预约工作时长
+     */
+    public int orderWorkTime;
     /**
      * 工作模式
      */

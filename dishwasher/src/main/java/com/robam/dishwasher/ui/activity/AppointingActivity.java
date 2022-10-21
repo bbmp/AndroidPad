@@ -183,6 +183,12 @@ public class AppointingActivity extends DishWasherBaseActivity {
             tvWorkHours.setText(HomeDishWasher.getInstance().workHours + "min");
             //工作模式
             tvMode.setText(DishWasherEnum.match(modeBean.code));
+
+            tvWorkHours.setText(String.format("%s分钟", HomeDishWasher.getInstance().orderWorkTime));
+            int totalTime =HomeDishWasher.getInstance().orderWorkTime * 60;
+            tvCountdown.setTotalTime(totalTime);
+            tvCountdown.setText(getTimeStr(HomeDishWasher.getInstance().orderWorkTime));
+            tvAppointmentHint.setText(startTimePoint(HomeDishWasher.getInstance().orderWorkTime));
         }
 
     }

@@ -84,8 +84,10 @@ public class WorkActivity extends DishWasherBaseActivity {
                             }
                             break;
                         case DishWasherState.OFF:
-                            startActivity(MainActivity.class);
-                            finish();
+                            if(DishWasherCommonHelper.isSafe()){
+                                startActivity(MainActivity.class);
+                                finish();
+                            }
                             break;
                     }
                     break;

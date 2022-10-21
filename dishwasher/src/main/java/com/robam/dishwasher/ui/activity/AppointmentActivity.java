@@ -26,6 +26,8 @@ import com.robam.dishwasher.ui.adapter.RvStringAdapter;
 import com.robam.dishwasher.util.DishWasherCommonHelper;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Map;
 
 //工作预约
@@ -147,6 +149,8 @@ public class AppointmentActivity extends DishWasherBaseActivity {
             finish();
         else if (id == R.id.btn_ok) { //确认预约
             Map params = DishWasherCommonHelper.getModelMap(MsgKeys.setDishWasherWorkMode, modeBean.code,(short) 1,DishWasherCommonHelper.getAppointingTimeMin(tvTime.getText().toString()));
+            HomeDishWasher.getInstance().workHours = modeBean.time;
+            HomeDishWasher.getInstance().orderWorkTime = DishWasherCommonHelper.getAppointingTimeMin(tvTime.getText().toString());
             DishWasherCommonHelper.sendCommonMsgForLiveData(params,MsgKeys.setDishWasherWorkMode+directive_offset);
         }else if(id == R.id.ll_left){
             finish();
@@ -167,4 +171,6 @@ public class AppointmentActivity extends DishWasherBaseActivity {
             tvTime.setText(String.format(getString(R.string.dishwasher_work_order_hint3), orderTime ));
         }
     }
+
+
 }
