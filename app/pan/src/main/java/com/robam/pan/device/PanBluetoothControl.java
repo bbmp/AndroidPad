@@ -14,6 +14,7 @@ import com.robam.common.bean.LineChartDataBean;
 import com.robam.common.bean.RTopic;
 import com.robam.common.bean.SetPotCurveStageParams;
 import com.robam.common.ble.BleDecoder;
+import com.robam.common.device.Plat;
 import com.robam.common.device.subdevice.Stove;
 import com.robam.common.manager.BlueToothManager;
 import com.robam.common.mqtt.MqttMsg;
@@ -24,6 +25,7 @@ import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.device.subdevice.Pan;
 import com.robam.common.constant.PanConstant;
+import com.robam.common.utils.StringUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -52,7 +54,7 @@ public class PanBluetoothControl implements PanFunction{
 
             @Override
             public void onWriteSuccess(final int current, final int total, final byte[] justWrite) {
-                LogUtils.e("onWriteSuccess");
+                LogUtils.e("pan onWriteSuccess " + StringUtils.bytes2Hex(justWrite));
             }
 
             @Override
@@ -80,7 +82,7 @@ public class PanBluetoothControl implements PanFunction{
                 if (device instanceof Pan && null != device.guid && device.guid.equals(targetGuid)) {
                     MqttMsg msg = new MqttMsg.Builder()
                             .setMsgId(MsgKeys.GetPotTemp_Req)
-                            .setGuid(targetGuid) //源guid
+                            .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
                             .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                             .build();
                     //打包payload
@@ -100,7 +102,7 @@ public class PanBluetoothControl implements PanFunction{
                 if (device instanceof Pan && null != device.guid && device.guid.equals(targetGuid)) {
                     MqttMsg msg = new MqttMsg.Builder()
                             .setMsgId(MsgKeys.POT_CURVEElectric_Req)
-                            .setGuid(targetGuid) //源guid
+                            .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
                             .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                             .build();
 
@@ -141,7 +143,7 @@ public class PanBluetoothControl implements PanFunction{
                 if (device instanceof Pan && null != device.guid && device.guid.equals(targetGuid)) {
                     MqttMsg msg = new MqttMsg.Builder()
                             .setMsgId(MsgKeys.POT_Electric_Req)
-                            .setGuid(targetGuid) //源guid
+                            .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
                             .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                             .build();
 
@@ -182,7 +184,7 @@ public class PanBluetoothControl implements PanFunction{
                 if (device instanceof Pan && null != device.guid && device.guid.equals(targetGuid)) {
                     MqttMsg msg = new MqttMsg.Builder()
                             .setMsgId(MsgKeys.POT_CURVETEMP_Req)
-                            .setGuid(targetGuid) //源guid
+                            .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
                             .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                             .build();
 
@@ -229,7 +231,7 @@ public class PanBluetoothControl implements PanFunction{
                 if (device instanceof Pan && null != device.guid && device.guid.equals(targetGuid)) {
                     MqttMsg msg = new MqttMsg.Builder()
                             .setMsgId(MsgKeys.POT_P_MENU_Req)
-                            .setGuid(targetGuid) //源guid
+                            .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
                             .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                             .build();
 
@@ -276,7 +278,7 @@ public class PanBluetoothControl implements PanFunction{
                 if (device instanceof Pan && null != device.guid && device.guid.equals(targetGuid)) {
                     MqttMsg msg = new MqttMsg.Builder()
                             .setMsgId(MsgKeys.POT_INTERACTION_Req)
-                            .setGuid(targetGuid) //源guid
+                            .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
                             .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                             .build();
                     Iterator iterator = params.entrySet().iterator();

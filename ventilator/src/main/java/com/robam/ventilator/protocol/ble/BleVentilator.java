@@ -124,6 +124,8 @@ public class BleVentilator {
             @Override
             public void onConnectSuccess(BleDevice bleDevice, BluetoothGatt gatt, int status) {
                 LogUtils.e("onConnectSuccess " + bleDevice.getName());
+                //设置mtu
+//                BlueToothManager.setMtu(bleDevice);
                 //连接成功
                 addSubDevice(model, bleDevice);
 
@@ -143,16 +145,18 @@ public class BleVentilator {
                 //清除设备蓝牙信息
                 if (setBleDevice(bleDevice.getMac(), null, null)) {
                     //重新连接
-                    threadPoolExecutor.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                Thread.sleep(2000);
-                            } catch (Exception e) {
+                    try {
+                        threadPoolExecutor.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Thread.sleep(2000);
+                                } catch (Exception e) {
+                                }
+                                connect(model, bleDevice);
                             }
-                            connect(model, bleDevice);
-                        }
-                    });
+                        });
+                    } catch (Exception e) {}
                 }
             }
         });
@@ -526,10 +530,6 @@ public class BleVentilator {
                                     PanAbstractControl.getInstance().setPanParams(BleDecoder.RSP_COOKER_SET_INT, ret2);
                                 }
                                     break;
-                                case BleDecoder.CMD_POT_INTERACTION_RES: { //智能锅智能互动回复
-
-                                }
-                                break;
                                 default:
                                     break;
                             }
@@ -554,16 +554,15 @@ public class BleVentilator {
                                             //移除消息
                                             BlueToothManager.send_map.remove(ByteUtils.toInt(ret2[BleDecoder.DECODE_CMD_KEY_OFFSET]));
 
-                                            if (device.guid.equals(target_guid) && device instanceof Pan) { //本机查询
+                                            if (Plat.getPlatform().getDeviceOnlySign().equals(target_guid) && device instanceof Pan) { //烟机查询
 
                                                 byte payload[] = ble_make_external_mqtt(target_guid, ret2);
                                                 MqttMsg msg = PanFactory.getProtocol().decode(topic, payload);
                                                 if (((Pan) device).onBleReceived(msg))
                                                     AccountInfo.getInstance().getGuid().setValue(device.guid); //更新锅状态
-                                                break;
-                                            }
-                                            //远程控制指令
-                                            ble_mqtt_publish(topic, device.guid, ret2);
+                                            } else
+                                                //远程控制指令
+                                                ble_mqtt_publish(topic, device.guid, ret2);
 
                                         }
                                         break;

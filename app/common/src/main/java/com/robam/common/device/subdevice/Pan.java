@@ -19,6 +19,10 @@ import com.robam.common.utils.LogUtils;
 import java.util.Arrays;
 
 public class Pan extends Device {
+    //系统状态
+    public int sysytemStatus;
+    //工作模式
+    public int mode;
     //锅温度
     public int panTemp;
     //搅拌模式
@@ -78,13 +82,15 @@ public class Pan extends Device {
 
     //收到蓝牙消息
     public boolean onBleReceived(MqttMsg msg) {
-        if (null != msg && null != msg.opt(PanConstant.workStatus)) {
+        if (null != msg && msg.has(PanConstant.systemStatus)) {
             queryNum = 0; //查询超过一次无响应离线
             status = Device.ONLINE;
             panTemp = msg.optInt(PanConstant.temp);
-            workStatus = msg.optInt(PanConstant.workStatus);
+            sysytemStatus = msg.optInt(PanConstant.systemStatus);
             if (msg.has(PanConstant.fryMode))
                 fryMode = msg.optInt(PanConstant.fryMode);
+            if (msg.has(PanConstant.mode))
+                mode = msg.optInt(PanConstant.mode);
             return true;
         }
         return false;

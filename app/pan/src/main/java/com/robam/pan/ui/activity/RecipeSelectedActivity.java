@@ -1,10 +1,14 @@
 package com.robam.pan.ui.activity;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -217,17 +221,28 @@ public class RecipeSelectedActivity extends PanBaseActivity {
         selectStoveDialog.show();
     }
 
+    private Handler handler = new Handler(Looper.getMainLooper()) {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            if (msg.what == 0)
+                PanAbstractControl.getInstance().setPRecipePanParams(HomePan.getInstance().guid, 0, panCurveDetail.smartPanModeCurveParams);
+
+            if (msg.what == 1)
+                PanAbstractControl.getInstance().setCurvePanParams(HomePan.getInstance().guid, recipeId, panCurveDetail.smartPanModeCurveParams); //设置锅参数
+        }
+    };
+
     //设置曲线还原参数
     private void setParams(PanCurveDetail panCurveDetail, int stoveId) {
         if (null != panCurveDetail) {
             if (favorite) {  //我的最爱 p档菜谱// 148-150-153
                 PanAbstractControl.getInstance().setPRecipeStoveParams(HomePan.getInstance().guid, 0, stoveId, panCurveDetail.curveStageParams, panCurveDetail.temperatureCurveParams);
 
-                PanAbstractControl.getInstance().setPRecipePanParams(HomePan.getInstance().guid, 0, panCurveDetail.smartPanModeCurveParams);
+                handler.sendEmptyMessageDelayed(0, 1000);
             } else {  //曲线还原
                 PanAbstractControl.getInstance().setCurveStoveParams(HomePan.getInstance().guid, recipeId, stoveId, panCurveDetail.curveStageParams, panCurveDetail.temperatureCurveParams); //设置灶参数
 
-                PanAbstractControl.getInstance().setCurvePanParams(HomePan.getInstance().guid, recipeId, panCurveDetail.smartPanModeCurveParams); //设置锅参数
+                handler.sendEmptyMessageDelayed(1, 1000);
             }
         }
     }
@@ -353,5 +368,6 @@ public class RecipeSelectedActivity extends PanBaseActivity {
             selectStoveDialog.dismiss();
         if (null != openDialog && openDialog.isShow())
             openDialog.dismiss();
+        handler.removeCallbacksAndMessages(null);
     }
 }

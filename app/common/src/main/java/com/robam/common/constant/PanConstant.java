@@ -49,9 +49,10 @@ public class PanConstant {
     public final static String stepTemp = "step_temp";//温度
     public final static String stepTime = "step_time";//时间
     public final static String temp = "temp";  //锅温
-    public final static String workStatus = "work_status"; //工作状态
+    public final static String systemStatus = "system_status"; //系统状态
     public final static String lidStatus = "lid_status";//锅盖状态
     public final static String battery = "battery"; //电量
+    public final static String mode = "mode";//工作模式
     public final static String runTime = "run_time"; //运行时间
     public final static String setTime = "set_time"; //设置时间
     public final static String fryMode = "fry_mode";//电机模式

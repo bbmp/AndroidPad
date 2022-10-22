@@ -16,6 +16,7 @@ import com.robam.common.utils.MsgUtils;
 import com.robam.common.device.subdevice.Pan;
 import com.robam.common.constant.PanConstant;
 import com.robam.pan.constant.QualityKeys;
+import com.robam.pan.device.HomePan;
 import com.robam.pan.device.PanAbstractControl;
 import com.robam.pan.device.PanFactory;
 
@@ -100,8 +101,8 @@ public class MqttPan extends MqttPublic {
                 float temp = MsgUtils.bytes2FloatLittle(payload, offset);//锅温
                 msg.putOpt(PanConstant.temp, temp);
                 offset += 4;
-                int workStatus = MsgUtils.getByte(payload[offset++]);//状态
-                msg.putOpt(PanConstant.workStatus, workStatus);
+                int systemStatus = MsgUtils.getByte(payload[offset++]);//状态
+                msg.putOpt(PanConstant.systemStatus, systemStatus);
                 int attributeNum = MsgUtils.getByte(payload[offset++]);//属性个数
                 while (attributeNum > 0) {
                     attributeNum--;
@@ -133,6 +134,7 @@ public class MqttPan extends MqttPublic {
                             break;
                         case QualityKeys.key6:
                             int mode = MsgUtils.getByte(payload[offset++]);//模式
+                            msg.putOpt(PanConstant.mode, mode);
                             break;
                         case QualityKeys.key7:
                             int localStatus = MsgUtils.getByte(payload[offset++]);//本地记录状态
@@ -157,8 +159,17 @@ public class MqttPan extends MqttPublic {
                 break;
             case MsgKeys.POT_INTERACTION_Rep: {  //设置锅智能互动参数返回
                 int rc = MsgUtils.getByte(payload[offset++]);
+                if (rc == 0)
+                    PanAbstractControl.getInstance().queryAttribute(HomePan.getInstance().guid);
             }
                 break;
+            case MsgKeys.POT_CURVETEMP_Rep: //设置灶参数返回
+            case MsgKeys.POT_CURVEElectric_Rep: { //设置锅参数返回
+                int rc = MsgUtils.getByte(payload[offset++]);
+                if (rc == 0)
+                    ;
+            }
+            break;
         }
 
         decodeMsg(msg, payload, offset);
