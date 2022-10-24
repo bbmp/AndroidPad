@@ -29,6 +29,8 @@ public class WorkActivity extends CabinetBaseActivity {
 
     private ImageView ivStart;
 
+
+
     @Override
     protected int getLayoutId() {
         return R.layout.cabinet_activity_layout_work;

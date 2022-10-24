@@ -9,6 +9,8 @@ public class HomeCabinet {
         private static final HomeCabinet instance = new HomeCabinet();
     }
 
+    public String guid;
+
     /**
      * 预约开始时间
      */

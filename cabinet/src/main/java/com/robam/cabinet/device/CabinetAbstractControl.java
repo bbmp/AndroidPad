@@ -1,5 +1,9 @@
 package com.robam.cabinet.device;
 
+import com.robam.common.mqtt.MqttManager;
+
+import java.util.Map;
+
 //控制协议切换和调用
 public class CabinetAbstractControl implements CabinetFunction{
 
@@ -22,5 +26,15 @@ public class CabinetAbstractControl implements CabinetFunction{
     @Override
     public void powerOn() {
         function.powerOn();
+    }
+
+    @Override
+    public void sendCommonMsg(Map<String, Object> params, String targetGuid, short msg_id) {
+        function.sendCommonMsg(params,targetGuid,msg_id);
+    }
+
+    @Override
+    public void sendCommonMsg(Map<String, Object> params, String targetGuid, short msg_id, MqttManager.MqttSendMsgListener listening) {
+        function.sendCommonMsg(params,targetGuid,msg_id,listening);
     }
 }

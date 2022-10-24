@@ -11,6 +11,8 @@ import com.robam.cabinet.base.CabinetBaseActivity;
 import com.robam.cabinet.device.CabinetAbstractControl;
 import com.robam.cabinet.device.CabinetFactory;
 import com.robam.cabinet.device.CabinetMqttControl;
+import com.robam.cabinet.device.HomeCabinet;
+import com.robam.common.constant.ComnConstant;
 import com.robam.common.ui.activity.BaseActivity;
 
 public class MainActivity extends CabinetBaseActivity {
@@ -30,6 +32,7 @@ public class MainActivity extends CabinetBaseActivity {
     protected void initData() {
 
         //开启远程控制
+        HomeCabinet.getInstance().guid = getIntent().getStringExtra(ComnConstant.EXTRA_GUID);
         CabinetAbstractControl.getInstance().init(new CabinetMqttControl());
 
     }

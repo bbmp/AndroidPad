@@ -9,6 +9,8 @@ import android.os.SystemClock;
 
 import androidx.annotation.Nullable;
 
+import com.robam.cabinet.bean.Cabinet;
+import com.robam.cabinet.device.CabinetFactory;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
@@ -98,8 +100,14 @@ public class AlarmMqttService extends Service {
                         .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                         .build();
                 MqttManager.getInstance().publish(msg, VentilatorFactory.getTransmitApi());
-//            } else if (device instanceof Cabinet) {
-//                MqttManager.getInstance().publish(msg, CabinetFactory.getProtocol());
+            } else if (device instanceof Cabinet) {
+               MqttMsg msg = new MqttMsg.Builder()
+                       .setMsgId(MsgKeys.GetSteriStatus_Req)
+                       .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
+                       .setDt(device.dt)
+                       .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
+                       .build();
+                MqttManager.getInstance().publish(msg, CabinetFactory.getProtocol());
             } else if (device instanceof DishWasher) {
                 MqttMsg msg = new MqttMsg.Builder()
                         .setMsgId(MsgKeys.setDishWasherStatus)
