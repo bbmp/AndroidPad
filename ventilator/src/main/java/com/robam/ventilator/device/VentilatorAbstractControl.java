@@ -48,4 +48,9 @@ public class VentilatorAbstractControl implements VentilatorFunction{
     public void setSmart(int smart) {
         function.setSmart(smart);
     }
+
+    @Override
+    public void queryAttribute() {
+        function.queryAttribute();
+    }
 }

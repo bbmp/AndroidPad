@@ -189,11 +189,12 @@ public class CurveRestoreActivity extends PanBaseActivity {
                 //步骤
                 rvStep2Adapter.setList(curveSteps);
                 //启动记录
-                Map params = new HashMap();
+                Map params = new LinkedHashMap();
                 if (favorite) { //我的最爱p档菜谱
-                    params.put(PanConstant.KEY1, new byte[] {(byte) stoveId, 0, (byte) PanConstant.start});
                     params.put(PanConstant.KEY5, new byte[] {(byte) stoveId}); //更换炉头id
+                    params.put(PanConstant.KEY1, new byte[] {(byte) stoveId, 0, (byte) PanConstant.start});
                 } else { //曲线还原或云端菜谱
+                    params.put(PanConstant.KEY5, new byte[] {(byte) stoveId}); //更换炉头id
                     ByteBuffer buf = ByteBuffer.allocate(10).order(ByteOrder.LITTLE_ENDIAN);
                     buf.put((byte) stoveId);
                     buf.putFloat(recipeId);
@@ -202,7 +203,6 @@ public class CurveRestoreActivity extends PanBaseActivity {
                     System.arraycopy(buf.array(), 0, data, 0, data.length);
                     buf.clear();
                     params.put(PanConstant.KEY4, data); //曲线还原，菜谱id为0
-                    params.put(PanConstant.KEY5, new byte[] {(byte) stoveId}); //更换炉头id
                 }
                 PanAbstractControl.getInstance().setInteractionParams(pan.guid, params);
             }

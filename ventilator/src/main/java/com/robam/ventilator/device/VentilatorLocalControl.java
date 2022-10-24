@@ -75,4 +75,9 @@ public class VentilatorLocalControl implements VentilatorFunction{
         byte[] data = SerialVentilator.setSmart(byteSmart);
         SerialPortHelper.getInstance().addCommands(data);
     }
+
+    @Override
+    public void queryAttribute() {
+        SerialPortHelper.getInstance().addCommands(SerialVentilator.packQueryCmd()); //查询状态
+    }
 }

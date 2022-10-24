@@ -69,7 +69,7 @@ public class CurveCreateActivity extends StoveBaseActivity {
     private Pan pan;
     private int stoveId;
     private long curveId;
-
+    private boolean create = false;
 
     private IPublicPanApi iPublicPanApi = ModulePubliclHelper.getModulePublic(IPublicPanApi.class, IPublicPanApi.PAN_PUBLIC);
     @Override
@@ -93,34 +93,6 @@ public class CurveCreateActivity extends StoveBaseActivity {
         cookChart = findViewById(R.id.cook_chart);
         cookChart.setNoDataText(getResources().getString(R.string.stove_no_curve_data)); //没有数据时显示的文字
         setOnClickListener(R.id.ll_left, R.id.iv_stop_create);
-        //监听开火状态
-        AccountInfo.getInstance().getGuid().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                for (Device device: AccountInfo.getInstance().deviceList) {
-                    if (device.guid.equals(s) && device.guid.equals(HomeStove.getInstance().guid) && device instanceof Stove && curTime > 0) { //当前灶且创建已开始
-                        Stove stove = (Stove) device;
-                        //开火提示状态
-                        if (stoveId == IPublicStoveApi.STOVE_LEFT && stove.leftStatus == StoveConstant.WORK_CLOSE) { //左灶已关火
-                            //跳转保存
-                            saveCurve(false);
-                        } else if (stoveId == IPublicStoveApi.STOVE_RIGHT && stove.rightStatus == StoveConstant.WORK_CLOSE) { //右灶已关火
-                            //跳转保存
-                            saveCurve(false);
-                        } else if (stove.status == Device.OFFLINE) {
-
-                        }
-
-                        break;
-                    } else if (device.guid.equals(s) && device instanceof Pan && curTime > 0) { //检查锅状态锅
-                        Pan pan = (Pan) device;
-                        if (pan.status == Device.OFFLINE) { //锅已离线
-
-                        }
-                    }
-                }
-            }
-        });
     }
 
     @Override
@@ -135,29 +107,70 @@ public class CurveCreateActivity extends StoveBaseActivity {
         if (null == pan || null == stove) //锅或灶不存在
             finish();
 
+        //启动记录
         if (null != iPublicPanApi) {
-            CloudHelper.createCurveStart(this, AccountInfo.getInstance().getUser().getValue().id, pan.guid, stoveId, CreateCurveStartRes.class, new RetrofitCallback<CreateCurveStartRes>() {
-                @Override
-                public void onSuccess(CreateCurveStartRes createCurveStartRes) {
-                    if (null != createCurveStartRes && createCurveStartRes.rc == 0) {
-                        tvTimeUnit.setVisibility(View.VISIBLE);
-                        ivStop.setVisibility(View.VISIBLE);
-                        curveId = createCurveStartRes.payload;
-                        //启动记录
-                        Map params = new HashMap();
-                        params.put(PanConstant.KEY2, new byte[] {(byte) stoveId, (byte) PanConstant.start});
-                        iPublicPanApi.setInteractionParams(pan.guid, params);
-                        startCreate();
+            Map params = new HashMap();
+            params.put(PanConstant.KEY2, new byte[]{(byte) stoveId, (byte) PanConstant.start});
+            params.put(PanConstant.KEY5, new byte[] {(byte) stoveId}); //更换炉头id
+            iPublicPanApi.setInteractionParams(pan.guid, params);
+        }
+
+        //监听开火状态
+        AccountInfo.getInstance().getGuid().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                for (Device device: AccountInfo.getInstance().deviceList) {
+                    if (device.guid.equals(s) && device.guid.equals(HomeStove.getInstance().guid) && device instanceof Stove && create) { //当前灶且创建已开始
+                        Stove stove = (Stove) device;
+                        //开火提示状态
+                        if (stoveId == IPublicStoveApi.STOVE_LEFT && stove.leftStatus == StoveConstant.WORK_CLOSE) { //左灶已关火
+                            //跳转保存
+                            saveCurve(false);
+                        } else if (stoveId == IPublicStoveApi.STOVE_RIGHT && stove.rightStatus == StoveConstant.WORK_CLOSE) { //右灶已关火
+                            //跳转保存
+                            saveCurve(false);
+                        } else if (stove.status == Device.OFFLINE) {
+
+                        }
+
+                        break;
+                    } else if (device.guid.equals(s) && device instanceof Pan && create) { //检查锅状态锅
+                        Pan pan = (Pan) device;
+                        if (pan.status == Device.OFFLINE) { //锅已离线
+
+                        }
+                    } else if (device.guid.equals(s) && device instanceof Pan) { //未开始状态
+                        Pan pan = (Pan) device;
+                        if (pan.mode == 1) {//实时记录模式
+                            createCurveStart();
+                        }
                     }
                 }
+            }
+        });
+    }
 
-                @Override
-                public void onFaild(String err) {
-                    ToastUtils.showShort(CurveCreateActivity.this, R.string.stove_connect_failed);
-                    finish();
+    private void createCurveStart() {
+        create = true;
+        //创建曲线记录开始请求
+        CloudHelper.createCurveStart(this, AccountInfo.getInstance().getUser().getValue().id, pan.guid, stoveId, CreateCurveStartRes.class, new RetrofitCallback<CreateCurveStartRes>() {
+            @Override
+            public void onSuccess(CreateCurveStartRes createCurveStartRes) {
+                if (null != createCurveStartRes && createCurveStartRes.rc == 0) {
+                    tvTimeUnit.setVisibility(View.VISIBLE);
+                    ivStop.setVisibility(View.VISIBLE);
+                    curveId = createCurveStartRes.payload;
+
+                    startCreate();
                 }
-            });
-        }
+            }
+
+            @Override
+            public void onFaild(String err) {
+                ToastUtils.showShort(CurveCreateActivity.this, R.string.stove_connect_failed);
+                finish();
+            }
+        });
     }
 
     @Override
@@ -305,12 +318,6 @@ public class CurveCreateActivity extends StoveBaseActivity {
     }
     //保存曲线
     private void saveCurve(boolean closeFire) {
-        if (entryList.size() == 0) {
-            finish();   //没有曲线数据
-            return;
-        }
-        //结束步骤
-        addStep();
         //关火
         if (closeFire)
             StoveAbstractControl.getInstance().setAttribute(HomeStove.getInstance().guid, stoveId, 0x00, StoveConstant.STOVE_CLOSE);
@@ -319,6 +326,13 @@ public class CurveCreateActivity extends StoveBaseActivity {
         params.put(PanConstant.KEY2, new byte[] {(byte) stoveId, (byte) PanConstant.stop});
         params.put(PanConstant.KEY6, new byte[] {(byte) PanConstant.MODE_CLOSE_FRY}); //停止搅拌
         iPublicPanApi.setInteractionParams(pan.guid, params);
+
+        if (entryList.size() == 0) {
+            finish();   //没有曲线数据
+            return;
+        }
+        //结束步骤
+        addStep();
         //保存曲线
         Intent intent = new Intent();
         intent.putExtra(StoveConstant.EXTRA_CURVE_ID, curveId);

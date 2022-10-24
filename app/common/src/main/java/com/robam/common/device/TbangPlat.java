@@ -61,4 +61,14 @@ public class TbangPlat implements IPlat{
         LogUtils.e("mac = " + tbManager.getWiFiMac().replace(":" , ""));
         return "121212121212";
     }
+
+    @Override
+    public void screenOn() {
+       tbManager.screenOn();
+    }
+
+    @Override
+    public void screenOff() {
+        tbManager.screenOff();
+    }
 }

@@ -44,6 +44,7 @@ public class PanBluetoothControl implements PanFunction{
     private void write_no_response(MqttMsg msg, BleDevice bleDevice, BluetoothGattCharacteristic characteristic, byte[] mqtt_data) {
         int cmd_id = ByteUtils.toInt(mqtt_data[BleDecoder.GUID_LEN]);
         String send_guid = msg.getGuid();
+        LogUtils.e("mqtt_data " + StringUtils.bytes2Hex(mqtt_data));
         Byte[] mqtt_payload = BleDecoder.byteArraysToByteArrays(Arrays.copyOfRange(mqtt_data, BleDecoder.GUID_LEN + 1, mqtt_data.length));
         //封装成外部命令
         BleDecoder.ExternBleData data = BleDecoder.make_external_send_packet(cmd_id, mqtt_payload);

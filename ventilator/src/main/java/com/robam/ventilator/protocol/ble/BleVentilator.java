@@ -525,9 +525,18 @@ public class BleVentilator {
                                     StoveAbstractControl.getInstance().setStoveParams(BleDecoder.CMD_COOKER_SET_INT, ret2);
                                 }
                                     break;
+                                case BleDecoder.CMD_COOKER_RECIPE_SET_INT: { //锅设置参数给灶
+                                    StoveAbstractControl.getInstance().setStoveParams(BleDecoder.CMD_COOKER_RECIPE_SET_INT, ret2);
+                                }
+                                    break;
                                 case BleDecoder.RSP_COOKER_SET_INT: { //灶上报转发给锅
                                     //设置参数给锅
                                     PanAbstractControl.getInstance().setPanParams(BleDecoder.RSP_COOKER_SET_INT, ret2);
+                                }
+                                    break;
+                                case BleDecoder.RSP_COOKER_RECIPE_SET_INT: {
+                                    //设置参数给锅
+                                    PanAbstractControl.getInstance().setPanParams(BleDecoder.RSP_COOKER_RECIPE_SET_INT, ret2);
                                 }
                                     break;
                                 default:

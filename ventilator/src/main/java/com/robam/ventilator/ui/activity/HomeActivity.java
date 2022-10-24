@@ -115,8 +115,11 @@ public class HomeActivity extends BaseActivity {
             public void onOpenSuccess() {
 
                 //开机
-                if (HomeVentilator.getInstance().startup == 0x00)
+                if (HomeVentilator.getInstance().startup == 0x00) {
                     SerialPortHelper.getInstance().addCommands(SerialVentilator.powerOn());
+                    Plat.getPlatform().screenOn();
+                    Plat.getPlatform().openPowerLamp();
+                }
                 //循环查询
 //                new Thread() {
 //                    @Override
