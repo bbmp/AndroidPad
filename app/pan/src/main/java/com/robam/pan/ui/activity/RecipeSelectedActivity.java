@@ -225,10 +225,10 @@ public class RecipeSelectedActivity extends PanBaseActivity {
         @Override
         public void handleMessage(@NonNull Message msg) {
             if (msg.what == 0)
-                PanAbstractControl.getInstance().setPRecipePanParams(HomePan.getInstance().guid, 0, panCurveDetail.smartPanModeCurveParams);
+                PanAbstractControl.getInstance().setPRecipeStoveParams(HomePan.getInstance().guid, 0, stoveId, panCurveDetail.curveStageParams, panCurveDetail.temperatureCurveParams);
 
             if (msg.what == 1)
-                PanAbstractControl.getInstance().setCurvePanParams(HomePan.getInstance().guid, recipeId, panCurveDetail.smartPanModeCurveParams); //设置锅参数
+                PanAbstractControl.getInstance().setCurveStoveParams(HomePan.getInstance().guid, recipeId, stoveId, panCurveDetail.curveStageParams, panCurveDetail.temperatureCurveParams); //设置灶参数
         }
     };
 
@@ -236,11 +236,11 @@ public class RecipeSelectedActivity extends PanBaseActivity {
     private void setParams(PanCurveDetail panCurveDetail, int stoveId) {
         if (null != panCurveDetail) {
             if (favorite) {  //我的最爱 p档菜谱// 148-150-153
-                PanAbstractControl.getInstance().setPRecipeStoveParams(HomePan.getInstance().guid, 0, stoveId, panCurveDetail.curveStageParams, panCurveDetail.temperatureCurveParams);
+                PanAbstractControl.getInstance().setPRecipePanParams(HomePan.getInstance().guid, 0, panCurveDetail.smartPanModeCurveParams);
 
                 handler.sendEmptyMessageDelayed(0, 1000);
             } else {  //曲线还原
-                PanAbstractControl.getInstance().setCurveStoveParams(HomePan.getInstance().guid, recipeId, stoveId, panCurveDetail.curveStageParams, panCurveDetail.temperatureCurveParams); //设置灶参数
+                PanAbstractControl.getInstance().setCurvePanParams(HomePan.getInstance().guid, recipeId, panCurveDetail.smartPanModeCurveParams); //设置锅参数
 
                 handler.sendEmptyMessageDelayed(1, 1000);
             }

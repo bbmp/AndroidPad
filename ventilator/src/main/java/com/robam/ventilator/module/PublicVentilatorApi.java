@@ -2,6 +2,7 @@ package com.robam.ventilator.module;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.PowerManager;
 import android.serialport.helper.SerialPortHelper;
 
 import com.robam.common.module.IPublicVentilatorApi;
@@ -25,6 +26,19 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
     }
 
     @Override
+    public void setFanLight(int lightOn) {
+        VentilatorAbstractControl.getInstance().setFanLight(lightOn);
+    }
+
+    @Override
+    public int getFanLight() {
+        if (HomeVentilator.getInstance().lightOn == 0xA1)
+            return VentilatorConstant.FAN_LIGHT_OPEN;
+        else
+            return VentilatorConstant.FAN_LIGHT_CLOSE;
+    }
+
+    @Override
     public void startMatchNetwork(Context context, String model) {
         Intent intent = new Intent();
         intent.putExtra(VentilatorConstant.EXTRA_MODEL, model);
@@ -40,6 +54,18 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
 
     @Override
     public void queryAttribute() {
-        SerialPortHelper.getInstance().addCommands(SerialVentilator.packQueryCmd()); //查询状态
+        VentilatorAbstractControl.getInstance().queryAttribute(); //查询状态
+    }
+
+    @Override
+    public boolean isScreenOn(Context context) {
+        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        boolean isScreenOn = pm.isInteractive();
+        return isScreenOn ;
+    }
+
+    @Override
+    public void shutDown() {
+        VentilatorAbstractControl.getInstance().shutDown();
     }
 }

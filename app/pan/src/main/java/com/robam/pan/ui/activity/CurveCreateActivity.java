@@ -307,7 +307,7 @@ public class CurveCreateActivity extends PanBaseActivity {
                     //结束创作
                     if (v.getId() == R.id.tv_ok) {
                         saveCurve(true);
-                        finish();
+//                        finish();
                     }
                 }
             }, R.id.tv_cancel, R.id.tv_ok);
