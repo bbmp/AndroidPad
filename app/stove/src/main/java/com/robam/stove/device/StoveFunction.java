@@ -22,4 +22,6 @@ public interface StoveFunction {
     void setRecipe(String targetGuid, int stoveId);
     //锅上报转发给灶
     void setStoveParams(int cmd, byte[] payload);
+    //远程控制命令
+    void remoteControl(String targetGuid, byte[] payload);
 }

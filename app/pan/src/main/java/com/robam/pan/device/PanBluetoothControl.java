@@ -14,6 +14,7 @@ import com.robam.common.bean.LineChartDataBean;
 import com.robam.common.bean.RTopic;
 import com.robam.common.bean.SetPotCurveStageParams;
 import com.robam.common.ble.BleDecoder;
+import com.robam.common.device.Plat;
 import com.robam.common.device.subdevice.Stove;
 import com.robam.common.manager.BlueToothManager;
 import com.robam.common.mqtt.MqttMsg;
@@ -24,6 +25,7 @@ import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.device.subdevice.Pan;
 import com.robam.common.constant.PanConstant;
+import com.robam.common.utils.StringUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -43,7 +45,7 @@ public class PanBluetoothControl implements PanFunction{
         int cmd_id = ByteUtils.toInt(mqtt_data[BleDecoder.GUID_LEN]);
         String send_guid = msg.getGuid();
         Byte[] mqtt_payload = BleDecoder.byteArraysToByteArrays(Arrays.copyOfRange(mqtt_data, BleDecoder.GUID_LEN + 1, mqtt_data.length));
-        //封装成内部命令
+        //封装成外部命令
         BleDecoder.ExternBleData data = BleDecoder.make_external_send_packet(cmd_id, mqtt_payload);
         //保存回复guid
         BlueToothManager.send_map.put(data.cmd_key, send_guid);
@@ -52,7 +54,7 @@ public class PanBluetoothControl implements PanFunction{
 
             @Override
             public void onWriteSuccess(final int current, final int total, final byte[] justWrite) {
-                LogUtils.e("onWriteSuccess");
+                LogUtils.e("pan onWriteSuccess " + StringUtils.bytes2Hex(justWrite));
             }
 
             @Override
@@ -80,7 +82,7 @@ public class PanBluetoothControl implements PanFunction{
                 if (device instanceof Pan && null != device.guid && device.guid.equals(targetGuid)) {
                     MqttMsg msg = new MqttMsg.Builder()
                             .setMsgId(MsgKeys.GetPotTemp_Req)
-                            .setGuid(targetGuid) //源guid
+                            .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
                             .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                             .build();
                     //打包payload
@@ -94,13 +96,13 @@ public class PanBluetoothControl implements PanFunction{
     }
 
     @Override
-    public void setCurvePanParams(String targetGuid, String smartPanCurveParams) {
+    public void setCurvePanParams(String targetGuid, long recipeId, String smartPanCurveParams) {
         try {
             for (Device device : AccountInfo.getInstance().deviceList) {
                 if (device instanceof Pan && null != device.guid && device.guid.equals(targetGuid)) {
                     MqttMsg msg = new MqttMsg.Builder()
                             .setMsgId(MsgKeys.POT_CURVEElectric_Req)
-                            .setGuid(targetGuid) //源guid
+                            .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
                             .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                             .build();
 
@@ -109,16 +111,17 @@ public class PanBluetoothControl implements PanFunction{
                     JSONArray jsonArray = new JSONArray();
 
                     if (null != mapPanCurve) {
-                        int no = 1; //从1开始
+                        int step = 1; //从1开始
                         for (Map.Entry<String, String> entry : mapPanCurve.entrySet())  {
                             String[] data = entry.getValue().split("-");
                             JSONObject jsonObject = new JSONObject();
-                            jsonObject.putOpt(PanConstant.key, no); //第几步
+                            jsonObject.putOpt(PanConstant.key, step); //第几步
                             jsonObject.putOpt(PanConstant.fryMode, Integer.parseInt(data[0]));//搅拌参数
                             jsonObject.putOpt(PanConstant.stepTime, Integer.parseInt(data[1])); //步骤时间
                             jsonArray.put(jsonObject);
-                            no++;
+                            step++;
                         }
+                        msg.putOpt(PanConstant.recipeId, recipeId);
                         msg.putOpt(PanConstant.attributeNum, jsonArray.length());
                         msg.putOpt(PanConstant.steps, jsonArray);
                     }
@@ -134,13 +137,54 @@ public class PanBluetoothControl implements PanFunction{
     }
 
     @Override
-    public void setCurveStoveParams(String targetGuid, int stoveId, String curveStageParams, String curveTempParams) {
+    public void setPRecipePanParams(String targetGuid, int no, String smartPanCurveParams) {
+        try {
+            for (Device device : AccountInfo.getInstance().deviceList) {
+                if (device instanceof Pan && null != device.guid && device.guid.equals(targetGuid)) {
+                    MqttMsg msg = new MqttMsg.Builder()
+                            .setMsgId(MsgKeys.POT_Electric_Req)
+                            .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
+                            .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
+                            .build();
+
+                    Map<String, String> mapPanCurve = new Gson().fromJson(smartPanCurveParams, new TypeToken<LinkedHashMap<String, String>>(){}.getType());
+
+                    JSONArray jsonArray = new JSONArray();
+
+                    if (null != mapPanCurve) {
+                        int step = 1; //从1开始
+                        for (Map.Entry<String, String> entry : mapPanCurve.entrySet())  {
+                            String[] data = entry.getValue().split("-");
+                            JSONObject jsonObject = new JSONObject();
+                            jsonObject.putOpt(PanConstant.key, step); //第几步
+                            jsonObject.putOpt(PanConstant.fryMode, Integer.parseInt(data[0]));//搅拌参数
+                            jsonObject.putOpt(PanConstant.stepTime, Integer.parseInt(data[1])); //步骤时间
+                            jsonArray.put(jsonObject);
+                            step++;
+                        }
+                        msg.putOpt(PanConstant.pno, no);
+                        msg.putOpt(PanConstant.attributeNum, jsonArray.length());
+                        msg.putOpt(PanConstant.steps, jsonArray);
+                    }
+
+                    //打包payload
+                    byte[] mqtt_data = PanFactory.getProtocol().encode(msg);
+
+                    write_no_response(msg, ((Pan) device).bleDevice, ((Pan) device).characteristic, mqtt_data);
+                    break;
+                }
+            }
+        } catch (Exception e) {}
+    }
+
+    @Override
+    public void setCurveStoveParams(String targetGuid, long recipeId, int stoveId, String curveStageParams, String curveTempParams) {
         try {
             for (Device device : AccountInfo.getInstance().deviceList) {
                 if (device instanceof Pan && null != device.guid && device.guid.equals(targetGuid)) {
                     MqttMsg msg = new MqttMsg.Builder()
                             .setMsgId(MsgKeys.POT_CURVETEMP_Req)
-                            .setGuid(targetGuid) //源guid
+                            .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
                             .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                             .build();
 
@@ -165,6 +209,54 @@ public class PanBluetoothControl implements PanFunction{
                         jsonArray.put(jsonObject);
 
                     }
+                    msg.putOpt(PanConstant.recipeId, recipeId); //菜谱id
+                    msg.putOpt(PanConstant.stoveId, stoveId);//炉头id
+                    msg.putOpt(PanConstant.attributeNum, jsonArray.length());
+                    msg.putOpt(PanConstant.steps, jsonArray);
+
+                    //打包payload
+                    byte[] mqtt_data = PanFactory.getProtocol().encode(msg);
+
+                    write_no_response(msg, ((Pan) device).bleDevice, ((Pan) device).characteristic, mqtt_data);
+                    break;
+                }
+            }
+        } catch (Exception e) {}
+    }
+
+    @Override
+    public void setPRecipeStoveParams(String targetGuid, int no, int stoveId, String curveStageParams, String curveTempParams) {
+        try {
+            for (Device device : AccountInfo.getInstance().deviceList) {
+                if (device instanceof Pan && null != device.guid && device.guid.equals(targetGuid)) {
+                    MqttMsg msg = new MqttMsg.Builder()
+                            .setMsgId(MsgKeys.POT_P_MENU_Req)
+                            .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
+                            .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
+                            .build();
+
+                    JSONObject object = new JSONObject(curveStageParams);
+                    String strData = object.get("cmdPoints").toString();
+                    List<SetPotCurveStageParams> ParamsList = CurveUtils.curveStageParamsToList(strData);
+
+                    List<LineChartDataBean> dataBeanList = CurveUtils.curveDataToLine(curveTempParams);
+
+                    List<SetPotCurveStageParams> ParamsHasGearList = CurveUtils.curveStageParamsListSetGear(ParamsList, dataBeanList);
+
+                    JSONArray jsonArray = new JSONArray();
+
+                    for (int i = 1; i < ParamsHasGearList.size(); i++)  {
+
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.putOpt(PanConstant.key, i); //第几步
+                        jsonObject.putOpt(PanConstant.control, ParamsHasGearList.get(i).control); //控制方式
+                        jsonObject.putOpt(PanConstant.level, ParamsHasGearList.get(i).gear); //灶具挡位
+                        jsonObject.putOpt(PanConstant.stepTemp, ParamsHasGearList.get(i).temp); //标记温度
+                        jsonObject.putOpt(PanConstant.stepTime, ParamsHasGearList.get(i).time - ParamsHasGearList.get(i - 1).time); //步骤时间
+                        jsonArray.put(jsonObject);
+
+                    }
+                    msg.putOpt(PanConstant.pno, no); //p档菜谱序号
                     msg.putOpt(PanConstant.stoveId, stoveId);//炉头id
                     msg.putOpt(PanConstant.attributeNum, jsonArray.length());
                     msg.putOpt(PanConstant.steps, jsonArray);
@@ -186,7 +278,7 @@ public class PanBluetoothControl implements PanFunction{
                 if (device instanceof Pan && null != device.guid && device.guid.equals(targetGuid)) {
                     MqttMsg msg = new MqttMsg.Builder()
                             .setMsgId(MsgKeys.POT_INTERACTION_Req)
-                            .setGuid(targetGuid) //源guid
+                            .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
                             .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                             .build();
                     Iterator iterator = params.entrySet().iterator();

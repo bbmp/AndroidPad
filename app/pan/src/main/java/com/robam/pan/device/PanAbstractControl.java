@@ -34,13 +34,23 @@ public class PanAbstractControl implements PanFunction{
     }
 
     @Override
-    public void setCurvePanParams(String targetGuid, String smartPanCurveParams) {
-        function.setCurvePanParams(targetGuid, smartPanCurveParams);
+    public void setCurvePanParams(String targetGuid, long recipeId, String smartPanCurveParams) {
+        function.setCurvePanParams(targetGuid, recipeId, smartPanCurveParams);
     }
 
     @Override
-    public void setCurveStoveParams(String targetGuid, int stoveId, String curveStageParams, String curveTempParams) {
-        function.setCurveStoveParams(targetGuid, stoveId, curveStageParams, curveTempParams);
+    public void setPRecipePanParams(String targetGuid, int no, String smartPanCurveParams) {
+        function.setPRecipePanParams(targetGuid, no, smartPanCurveParams);
+    }
+
+    @Override
+    public void setCurveStoveParams(String targetGuid, long recipeId, int stoveId, String curveStageParams, String curveTempParams) {
+        function.setCurveStoveParams(targetGuid, recipeId, stoveId, curveStageParams, curveTempParams);
+    }
+
+    @Override
+    public void setPRecipeStoveParams(String targetGuid, int no, int stoveId, String curveStageParams, String curveTempParams) {
+        function.setPRecipeStoveParams(targetGuid, no, stoveId, curveStageParams, curveTempParams);
     }
 
     @Override

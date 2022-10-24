@@ -204,7 +204,7 @@ public class CurveActivity extends StoveBaseActivity {
         //需过滤掉其他曲线,锅和灶一起
         if (null != getCurveCookbooksRes && null != getCurveCookbooksRes.payload) {
             for (StoveCurveDetail stoveCurveDetail : getCurveCookbooksRes.payload) {
-                if (null != stoveCurveDetail.deviceParams && (stoveCurveDetail.deviceParams.contains(IDeviceType.RRQZ) ||
+                if (null != stoveCurveDetail.deviceParams && (/*stoveCurveDetail.deviceParams.contains(IDeviceType.RRQZ) ||*/
                         stoveCurveDetail.deviceParams.contains(IDeviceType.RZNG)))
                     stoveCurveDetails.add(stoveCurveDetail);
             }

@@ -13,9 +13,9 @@ public interface IPublicPanApi extends IPublicApi {
     //设置无人锅智能互动参数
     void setInteractionParams(String targetGuid, Map params);
     //设置无人锅参数
-    void setCurvePanParams(String targetGuid, String smartPanCurveParams);
+    void setCurvePanParams(String targetGuid, long recipeId, String smartPanCurveParams);
     //设置灶参数
-    void setCurveStoveParams(String targetGuid, int stoveId, String curveStageParams, String curveTempParams);
+    void setCurveStoveParams(String targetGuid, long recipeId, int stoveId, String curveStageParams, String curveTempParams);
 
     void lowBatteryHint(Context context);  //低电量提示
 }

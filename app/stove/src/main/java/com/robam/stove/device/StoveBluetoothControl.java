@@ -10,6 +10,7 @@ import com.robam.common.bean.Device;
 import com.robam.common.bean.RTopic;
 import com.robam.common.ble.BleDecoder;
 import com.robam.common.device.Plat;
+import com.robam.common.device.subdevice.Pan;
 import com.robam.common.manager.BlueToothManager;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MsgKeys;
@@ -44,6 +45,29 @@ public class StoveBluetoothControl implements StoveFunction{
                 LogUtils.e("onWriteSuccess " + StringUtils.bytes2Hex(justWrite));
 //                if (cmd_id == MsgKeys.SetStoveLock_Req || cmd_id == MsgKeys.SetStoveStatus_Req || cmd_id == MsgKeys.SetStoveShutdown_Req)
 //                    queryAttribute(targetGuid); //立即查询
+            }
+
+            @Override
+            public void onWriteFailure(final BleException exception) {
+                LogUtils.e("onWriteFailure");
+            }
+        });
+    }
+    //外部控制命令
+    private void write_no_response(MqttMsg msg, BleDevice bleDevice, BluetoothGattCharacteristic characteristic, byte[] mqtt_data) {
+        int cmd_id = ByteUtils.toInt(mqtt_data[BleDecoder.GUID_LEN]);
+        String send_guid = msg.getGuid();
+        Byte[] mqtt_payload = BleDecoder.byteArraysToByteArrays(Arrays.copyOfRange(mqtt_data, BleDecoder.GUID_LEN + 1, mqtt_data.length));
+        //封装成外部命令
+        BleDecoder.ExternBleData data = BleDecoder.make_external_send_packet(cmd_id, mqtt_payload);
+        //保存回复guid
+        BlueToothManager.send_map.put(data.cmd_key, send_guid);
+        //发送蓝牙数据
+        BlueToothManager.write_no_response(bleDevice, characteristic, BleDecoder.ByteArraysTobyteArrays(data.payload), new BleWriteCallback() {
+
+            @Override
+            public void onWriteSuccess(final int current, final int total, final byte[] justWrite) {
+                LogUtils.e("onWriteSuccess");
             }
 
             @Override
@@ -247,6 +271,22 @@ public class StoveBluetoothControl implements StoveFunction{
                             LogUtils.e("stove onWriteFailure");
                         }
                     });
+                    break;
+                }
+            }
+        } catch (Exception e) {}
+    }
+
+    @Override
+    public void remoteControl(String targetGuid, byte[] payload) {
+        try {
+            for (Device device: AccountInfo.getInstance().deviceList) {
+                if (device instanceof Stove && targetGuid.equals(device.guid)) {
+                    byte[] send_guid_bytes = Arrays.copyOfRange(payload, 0, BleDecoder.GUID_LEN);
+                    MqttMsg msg = new MqttMsg.Builder()
+                            .setGuid(new String(send_guid_bytes)) //源guid
+                            .build();
+                    write_no_response(msg, ((Stove) device).bleDevice, ((Stove) device).characteristic, payload);
                     break;
                 }
             }

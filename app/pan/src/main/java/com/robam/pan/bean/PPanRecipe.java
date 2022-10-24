@@ -14,6 +14,8 @@ public class PPanRecipe implements Serializable {
     public String cookbookImgCover;
     //曲线id
     public long curveCookbookId;
+
+    public boolean isSent;
     //曲线名
 //    public String curveCookbookName;
 //    //温度参数

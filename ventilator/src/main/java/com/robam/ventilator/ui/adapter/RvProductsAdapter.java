@@ -11,6 +11,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.Device;
+import com.robam.common.device.subdevice.Pan;
 import com.robam.common.utils.DateUtil;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.common.device.subdevice.Stove;
@@ -170,15 +171,16 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
                     baseViewHolder.setText(R.id.tv_online, R.string.ventilator_offline);
                     baseViewHolder.setImageResource(R.id.iv_online, R.drawable.ventilator_shape_offline_bg);
                 } else {
+                    Pan pan = (Pan) device;
                     //在线
                     baseViewHolder.setText(R.id.tv_online, R.string.ventilator_online);
                     baseViewHolder.setImageResource(R.id.iv_online, R.drawable.ventilator_shape_online_bg);
-                    if (device.getWorkStatus() == 0) {
+                    if (pan.sysytemStatus == 0) {
                         baseViewHolder.setVisible(R.id.layout_offline, true);
                         baseViewHolder.setGone(R.id.layout_work, true);
                         baseViewHolder.setGone(R.id.btn_detail, true);
                         baseViewHolder.setText(R.id.tv_hint, "轻松烹饪\n智享厨房");
-                    } else if (device.getWorkStatus() == 3) { //低电量
+                    } else if (pan.sysytemStatus == 3) { //低电量
                         baseViewHolder.setGone(R.id.layout_offline, true);
                         baseViewHolder.setVisible(R.id.layout_work, true);
                         baseViewHolder.setText(R.id.tv_mode, R.string.ventilator_low_battery);

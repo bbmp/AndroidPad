@@ -75,7 +75,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public class HomePage extends VentilatorBasePage {
+public class    HomePage extends VentilatorBasePage {
     /**
      * 主功能
      */

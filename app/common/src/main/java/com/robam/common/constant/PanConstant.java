@@ -8,8 +8,10 @@ public class PanConstant {
     public final static String EXTRA_CURVE_ID = "curveid";
     public final static String EXTRA_CURVE_DETAIL = "curvedetail";
     public final static String EXTRA_ENTRY_LIST = "entry_list";
+    public final static String EXTRA_RESTORE_LIST = "restore_list";
     public final static String EXTRA_STEP_LIST = "step_list";
     public static final String EXTRA_NEED_TIME = "needtime";
+    public static final String EXTRA_FAVORITE = "favorite";
 
 
     //锅状态
@@ -36,7 +38,9 @@ public class PanConstant {
 
     public final static int start = 1;
     public final static int stop = 0;
-
+    //mqtt 参数
+    public final static String pno = "pno";// p档菜谱序号
+    public final static String recipeId = "recipe_id";
     public final static String stoveId = "stove_id";
     public final static String level = "level";   //挡位
     public final static String attributeNum = "attribute_num";//参数个数
@@ -45,9 +49,10 @@ public class PanConstant {
     public final static String stepTemp = "step_temp";//温度
     public final static String stepTime = "step_time";//时间
     public final static String temp = "temp";  //锅温
-    public final static String workStatus = "work_status"; //工作状态
+    public final static String systemStatus = "system_status"; //系统状态
     public final static String lidStatus = "lid_status";//锅盖状态
     public final static String battery = "battery"; //电量
+    public final static String mode = "mode";//工作模式
     public final static String runTime = "run_time"; //运行时间
     public final static String setTime = "set_time"; //设置时间
     public final static String fryMode = "fry_mode";//电机模式

@@ -2,10 +2,12 @@ package com.robam.common.manager;
 
 
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.util.Log;
 
 import com.clj.fastble.BleManager;
 import com.clj.fastble.callback.BleGattCallback;
 import com.clj.fastble.callback.BleIndicateCallback;
+import com.clj.fastble.callback.BleMtuChangedCallback;
 import com.clj.fastble.callback.BleNotifyCallback;
 import com.clj.fastble.callback.BleScanCallback;
 import com.clj.fastble.callback.BleWriteCallback;
@@ -148,7 +150,6 @@ public class BlueToothManager {
     public static void write_no_response(BleDevice bleDevice, BluetoothGattCharacteristic characteristic, byte[] payload, BleWriteCallback bleWriteCallback) {
         try {
             LogUtils.e(StringUtils.bytes2Hex(payload));
-            LogUtils.e(characteristic.getUuid().toString());
             BleManager.getInstance().write(
                     bleDevice,
                     characteristic.getService().getUuid().toString(),
@@ -160,4 +161,23 @@ public class BlueToothManager {
         }
     }
 
+    public static void setMtu(BleDevice bleDevice) {
+        try {
+            BleManager.getInstance().setMtu(bleDevice, 200, new BleMtuChangedCallback() {
+                @Override
+                public void onSetMTUFailure(BleException exception) {
+                    // 设置MTU失败
+                    LogUtils.e("设置MTU失败");
+                }
+
+                @Override
+                public void onMtuChanged(int mtu) {
+                    // 设置MTU成功，并获得当前设备传输支持的MTU值
+                    LogUtils.e("设置MTU成功mtu:" + mtu);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

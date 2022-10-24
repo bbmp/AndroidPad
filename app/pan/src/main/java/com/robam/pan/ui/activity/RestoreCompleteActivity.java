@@ -37,6 +37,8 @@ public class RestoreCompleteActivity extends PanBaseActivity {
 
     private DynamicLineChartManager dm;
 
+    private ArrayList<Entry> restoreList;
+
     @Override
     protected int getLayoutId() {
         return R.layout.pan_activity_layout_restore_complete;
@@ -46,8 +48,10 @@ public class RestoreCompleteActivity extends PanBaseActivity {
     protected void initView() {
         showCenter();
 
-        if (null != getIntent())
+        if (null != getIntent()) {
             panCurveDetail = (PanCurveDetail) getIntent().getSerializableExtra(PanConstant.EXTRA_CURVE_DETAIL);
+            restoreList = getIntent().getParcelableArrayListExtra(PanConstant.EXTRA_RESTORE_LIST);
+        }
         tvRecipeName = findViewById(R.id.tv_recipe_name);
         cookChart = findViewById(R.id.cook_chart);
         cookChart.setNoDataText(getResources().getString(R.string.pan_no_curve_data)); //没有数据时显示的文字

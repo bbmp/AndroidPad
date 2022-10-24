@@ -144,8 +144,14 @@ public class CurveRestoreActivity extends StoveBaseActivity {
                 LogUtils.e(e.getMessage());
                 params = null;
             }
-            if (null != params)
+            if (null != params) {
+                if (null != iPublicPanApi) {
+                    Map data = new HashMap();
+                    data.put(PanConstant.KEY4, new byte[]{(byte) stoveId, 0, 0, 0, 0, (byte) PanConstant.start}); //曲线还原启动
+                    iPublicPanApi.setInteractionParams(pan.guid, data);
+                }
                 startRestore(params);
+            }
         }
     }
 
@@ -213,17 +219,7 @@ public class CurveRestoreActivity extends StoveBaseActivity {
     }
     //还原结束提示
     private void workComplete(boolean closeFire) {
-        //关火
-        if (closeFire)
-            StoveAbstractControl.getInstance().setAttribute(HomeStove.getInstance().guid, (byte) stoveId, (byte) 0x00, (byte) StoveConstant.STOVE_CLOSE);
-
-        //停止记录
-        if (null != iPublicPanApi) {
-            Map params = new HashMap();
-            params.put(PanConstant.KEY4, new byte[]{(byte) stoveId, 0, 0, 0, 0, (byte) PanConstant.stop});
-            params.put(PanConstant.KEY6, new byte[]{(byte) PanConstant.MODE_CLOSE_FRY}); //停止搅拌
-            iPublicPanApi.setInteractionParams(pan.guid, params);
-        }
+        closeFire(closeFire);
 
         if (null == completeDialog) {
             completeDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_COMPLETE);
@@ -237,6 +233,20 @@ public class CurveRestoreActivity extends StoveBaseActivity {
             }, R.id.tv_ok);
         }
         completeDialog.show();
+    }
+
+    private void closeFire(boolean closeFire) {
+        //关火
+        if (closeFire)
+            StoveAbstractControl.getInstance().setAttribute(HomeStove.getInstance().guid, (byte) stoveId, (byte) 0x00, (byte) StoveConstant.STOVE_CLOSE);
+
+        //停止记录
+        if (null != iPublicPanApi) {
+            Map params = new HashMap();
+            params.put(PanConstant.KEY4, new byte[]{(byte) stoveId, 0, 0, 0, 0, (byte) PanConstant.stop});
+            params.put(PanConstant.KEY6, new byte[]{(byte) PanConstant.MODE_CLOSE_FRY}); //停止搅拌
+            iPublicPanApi.setInteractionParams(pan.guid, params);
+        }
     }
 
     @Override
@@ -257,14 +267,8 @@ public class CurveRestoreActivity extends StoveBaseActivity {
                 public void onClick(View v) {
                     if (v.getId() == R.id.tv_ok) {
                         //关火
-                        StoveAbstractControl.getInstance().setAttribute(HomeStove.getInstance().guid, (byte) stoveId, (byte) 0x01, (byte) StoveConstant.STOVE_CLOSE);
-                        //停止记录
-                        if (null != iPublicPanApi) {
-                            Map params = new HashMap();
-                            params.put(PanConstant.KEY4, new byte[]{(byte) stoveId, 0, 0, 0, 0, (byte) PanConstant.stop});
-                            params.put(PanConstant.KEY6, new byte[]{(byte) PanConstant.MODE_CLOSE_FRY}); //停止搅拌
-                            iPublicPanApi.setInteractionParams(pan.guid, params);
-                        }
+                        closeFire(true);
+
                         finish();
                     }
                 }

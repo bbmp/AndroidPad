@@ -23,13 +23,13 @@ public class PublicPanApi implements IPublicPanApi {
     }
 
     @Override
-    public void setCurvePanParams(String targetGuid, String smartPanCurveParams) {
-        PanAbstractControl.getInstance().setCurvePanParams(targetGuid, smartPanCurveParams);
+    public void setCurvePanParams(String targetGuid, long recipeId, String smartPanCurveParams) {
+        PanAbstractControl.getInstance().setCurvePanParams(targetGuid, recipeId, smartPanCurveParams);
     }
 
     @Override
-    public void setCurveStoveParams(String targetGuid, int stoveId, String curveStageParams, String curveTempParams) {
-        PanAbstractControl.getInstance().setCurveStoveParams(targetGuid, stoveId, curveStageParams, curveTempParams);
+    public void setCurveStoveParams(String targetGuid, long recipeId, int stoveId, String curveStageParams, String curveTempParams) {
+        PanAbstractControl.getInstance().setCurveStoveParams(targetGuid, recipeId, stoveId, curveStageParams, curveTempParams);
     }
 
     @Override
