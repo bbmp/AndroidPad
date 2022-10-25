@@ -3,6 +3,7 @@ package com.robam.cabinet.ui.pages;
 import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,6 +20,7 @@ import com.robam.cabinet.ui.adapter.RvMainFunctionAdapter;
 import com.robam.common.manager.FunctionManager;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.common.utils.ImageUtils;
+import com.robam.common.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +40,8 @@ public class HomePage extends CabinetBasePage {
 
     @Override
     protected void initView() {
-        showCenter();
+        //showCenter();
+
 
         rvMain = findViewById(R.id.rv_main);
         rvDot = findViewById(R.id.rv_dot);
@@ -66,7 +69,14 @@ public class HomePage extends CabinetBasePage {
         rvDot.setAdapter(rvDotAdapter);
 
         showCenter();
-        setOnClickListener(R.id.iv_float);
+        showRightCenter();
+        setOnClickListener(R.id.iv_float,R.id.ll_right_center);
+        findViewById(R.id.ll_right_center).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ToastUtils.show(getContext(),"解锁了",Toast.LENGTH_SHORT);
+            }
+        });
     }
 
     @Override
@@ -129,6 +139,8 @@ public class HomePage extends CabinetBasePage {
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             intent.setClassName(getContext(), "com.robam.ventilator.ui.activity.HomeActivity");
             startActivity(intent);
+        }else if(view.getId() == R.id.ll_right_center){
+
         }
     }
 }

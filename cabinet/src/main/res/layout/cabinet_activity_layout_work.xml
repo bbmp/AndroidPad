@@ -39,17 +39,17 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="" />
 
-    <TextView
-        android:id="@+id/tv_min"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_6"
-        android:layout_marginBottom="@dimen/dp_10"
-        android:text="min"
-        android:textColor="@color/cabinet_white"
-        android:textSize="@dimen/sp_48"
-        app:layout_constraintBottom_toBottomOf="@id/tv_countdown"
-        app:layout_constraintLeft_toRightOf="@id/cabinet_guideline" />
+<!--    <TextView-->
+<!--        android:id="@+id/tv_min"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginLeft="@dimen/dp_6"-->
+<!--        android:layout_marginBottom="@dimen/dp_10"-->
+<!--        android:text="min"-->
+<!--        android:textColor="@color/cabinet_white"-->
+<!--        android:textSize="@dimen/sp_48"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/tv_countdown"-->
+<!--        app:layout_constraintLeft_toRightOf="@id/cabinet_guideline" />-->
 
 
     <ImageView
@@ -67,6 +67,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_percent="0.57" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -407,11 +407,11 @@ public interface MsgKeys {
     /**
      * 设置消毒柜童锁（829请求）
      */
-    short SetSteriLock_Req = 138;//消毒柜829童锁
+    short SetSteriLock_Req = 153;//消毒柜829童锁  138
     /**
      * 设置消毒柜童锁（829应答）
      */
-    short SetSteriLock_Rep = 139;
+    short SetSteriLock_Rep = 154;  //139
 
     /**
      * 设置消毒柜童锁（826请求）

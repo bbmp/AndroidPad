@@ -59,7 +59,7 @@ public class MqttCabinet extends MqttPublic {
                             short aShort = ByteUtils.toShort(payload[offset++]);
                             msg.putOpt(CabinetConstant.Length,aShort);
                             int anInt = ByteUtils.toInt16(payload, offset++,ByteOrder.LITTLE_ENDIAN);
-                            msg.putOpt(CabinetConstant.SteriReminderTime,anInt);
+                            msg.putOpt(CabinetConstant.REMAINING_APPOINT_TIME,anInt);
                             offset++;
                             break;
                         // TODO: 2019/12/13 新增安全锁定

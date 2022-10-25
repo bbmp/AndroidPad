@@ -3,11 +3,20 @@ package com.robam.cabinet.constant;
 public class
 CabinetConstant {
     //主功能
-    public final static int FUN_DISINFECT = 1;
-    public final static int FUN_CLEAN = 2;
-    public final static int FUN_DRY = 3;
-    public final static int FUN_FLUSH = 4;
-    public final static int FUN_SMART = 5;
+    //消毒
+    public final static int FUN_DISINFECT = 2;
+    //快洁
+    public final static int FUN_CLEAN = 7;
+    //烘干
+    public final static int FUN_DRY = 4;
+
+    //净存
+    public final static int FUN_FLUSH = -1;
+    //智能
+    public final static int FUN_SMART = -1;
+
+    //预约
+    public final static int APPOINTMENT = 5;
 
     //模式
     public final static int MODE_DISINFECT = 1;
@@ -15,6 +24,12 @@ CabinetConstant {
     public final static int MODE_DRY = 3;
     public final static int MODE_FLUSH = 4;
     public final static int MODE_SMART = 5;
+
+    /**
+     * 预约剩余时间
+     */
+    public final static String REMAINING_APPOINT_TIME = "remainingAppointTime";
+    //public final static String SteriReminderTime = "SteriReminderTime";
 
 
     /**
@@ -35,10 +50,9 @@ CabinetConstant {
     public final static String SteriTime = "SteriTime";
 
 
-    /**
-     * 预约剩余时间
-     */
-    public final static String SteriReminderTime = "SteriReminderTime";
+
+
+
 
     /**
      * 安全锁定

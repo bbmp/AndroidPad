@@ -1,13 +1,13 @@
 [
   {
     "backgroundImg": "cabinet_ic_bg_steam",
-    "funtionCode": 1,
+    "funtionCode": 2,
     "funtionName": "消毒",
     "into": "com.robam.cabinet.ui.activity.ModeSelectActivity",
     "mode": {
-        "code": 1,
+        "code": 2,
         "name": "消毒",
-        "defTime": 40,
+        "defTime": 110,
         "minTime": 40,
         "maxTime" : 60,
         "stepTime": 5
@@ -15,11 +15,11 @@
   },
   {
     "backgroundImg": "cabinet_ic_bg_oven",
-    "funtionCode": 2,
+    "funtionCode": 7,
     "funtionName": "快洁",
     "into": "com.robam.cabinet.ui.activity.ModeSelectActivity",
     "mode": {
-      "code": 2,
+      "code": 7,
       "name": "快洁",
       "defTime": 3,
       "minTime": 3,
@@ -29,11 +29,11 @@
   },
   {
     "backgroundImg": "cabinet_ic_bg_zha",
-    "funtionCode": 3,
+    "funtionCode": 4,
     "funtionName": "烘干",
     "into": "com.robam.cabinet.ui.activity.ModeSelectActivity",
     "mode": {
-      "code": 3,
+      "code": 4,
       "name": "烘干",
       "defTime": 20,
       "minTime": 20,

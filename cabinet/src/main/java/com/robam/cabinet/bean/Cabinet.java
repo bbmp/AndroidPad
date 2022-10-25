@@ -44,9 +44,11 @@ public class Cabinet extends Device{
             queryNum = 0;
             status = Device.ONLINE;
             parserDeviceInfo(msg);
-            return true;
+        }else{
+            status = Device.OFFLINE;
         }
-        return super.onMsgReceived(msg);
+        return true;
+        //return super.onMsgReceived(msg);
     }
 
     private void parserDeviceInfo(MqttMsg msg){
@@ -58,19 +60,22 @@ public class Cabinet extends Device{
                     short alarmId = (short) msg.optInt(CabinetConstant.AlarmId);
                     break;
                 case MsgKeys.GetSteriStatus_Rep:
-                    //oldstatus = status;
                     status = (short) msg.optInt(CabinetConstant.SteriStatus);
                     isChildLock = (short) msg.optInt(CabinetConstant.SteriLock);
-                    work_left_time_l = (short) msg.optInt(CabinetConstant.SteriWorkLeftTimeL);
-                    work_left_time_h = (short) msg.optInt(CabinetConstant.SteriWorkLeftTimeH);
+                    remainingModeWorkTime = (short) msg.optInt(CabinetConstant.SteriWorkLeftTimeL);
+                    doorLock = (short) msg.optInt(CabinetConstant.SteriDoorLock);
                     AlarmStautus = (short) msg.optInt(CabinetConstant.SteriAlarmStatus);
-
-                    break;
-                case MsgKeys.GetSteriParam_Rep:
                     temp = (short) msg.optInt(CabinetConstant.SteriParaTem);
                     hum = (short) msg.optInt(CabinetConstant.SteriParaHum);
                     germ = (short) msg.optInt(CabinetConstant.SteriParaGerm);
                     ozone = (short) msg.optInt(CabinetConstant.SteriParaOzone);
+                    argumentNumber = (short) msg.optInt(CabinetConstant.ArgumentNumber);
+                    if (argumentNumber > 0) {
+                        // 预约剩余时间
+                        remainingAppointTime = (short) msg.optInt(CabinetConstant.REMAINING_APPOINT_TIME);
+                        //停止工作时是否进入安全锁
+                        steriSecurityLock = (short) msg.optInt(CabinetConstant.SteriSecurityLock);
+                    }
                     break;
                 case MsgKeys.GetSteriPVConfig_Rep:
                     break;
@@ -80,6 +85,7 @@ public class Cabinet extends Device{
                     break;
                 default:
                     break;
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -93,11 +99,13 @@ public class Cabinet extends Device{
     public short isChildLock;
     public boolean isDoorLock;
     public short AlarmStautus;
+    public short remainingAppointTime;//预约剩余时间
     public short SteriReserveTime;
     public short SteriDrying;
-    public short SteriCleanTime;
-    public short SteriDisinfectTime, work_left_time_l, work_left_time_h;
+    public short remainingModeWorkTime; //剩余工作时间
     public short temp, hum, germ, ozone;
-    short weeklySteri_week;
-    private static int times = 0;
+    //short weeklySteri_week;
+    public short doorLock;
+    public short argumentNumber;
+    public short steriSecurityLock;
 }

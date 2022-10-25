@@ -23,4 +23,9 @@ public class HomeCabinet {
      * 工作时长
      */
     public int workHours;
+
+    /**
+     * 是否开启童锁
+     */
+    public boolean lock = false;
 }

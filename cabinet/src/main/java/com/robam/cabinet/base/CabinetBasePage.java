@@ -32,4 +32,12 @@ public abstract class CabinetBasePage extends HeadPage {
         });
     }
 
+    public void showRightCenter(){
+
+
+        findViewById(R.id.ll_right_center).setVisibility(View.VISIBLE);
+        //监听网络连接状态
+
+    }
+
 }

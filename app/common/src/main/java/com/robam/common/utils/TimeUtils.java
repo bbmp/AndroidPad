@@ -325,4 +325,25 @@ public class TimeUtils {
         return weekTime;
     }
 
+    public static String secToHourMinUp(int seconds) {
+        short hour = (short) (seconds / 3600);
+        short min = (short) ((seconds % 3600) / 60);
+        short sec = (short) (seconds % 60);
+        if(sec != 0){
+            min += 1;
+        }
+
+        if(hour>0){
+            if (min > 0)
+                return  hour + "h" + min + "min";
+            else
+                return hour + "h";
+        }else{
+            if (min > 0)
+                return   min + "min";
+            else
+                return "";
+        }
+    }
+
 }

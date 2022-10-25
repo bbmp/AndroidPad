@@ -1,6 +1,7 @@
 package com.robam.cabinet.ui.activity;
 
 import android.content.Intent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
@@ -9,15 +10,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.robam.cabinet.R;
 import com.robam.cabinet.base.CabinetBaseActivity;
 import com.robam.cabinet.bean.CabModeBean;
+import com.robam.cabinet.bean.Cabinet;
 import com.robam.cabinet.constant.CabinetConstant;
 import com.robam.cabinet.device.HomeCabinet;
 import com.robam.cabinet.ui.adapter.RvTimeAdapter;
 import com.robam.cabinet.util.CabinetCommonHelper;
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
 import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.helper.PickerLayoutManager;
-import com.robam.common.utils.LogUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +29,10 @@ public class ModeSelectActivity extends CabinetBaseActivity {
     private RvTimeAdapter rvTimeAdapter;
     private PickerLayoutManager pickerLayoutManager;
     private TextView tvMode, tvNum;
+    CabModeBean cabModeBean = null;
 
     public int directive_offset = 30000;
+    private boolean lock = false;
     @Override
     protected int getLayoutId() {
         return R.layout.cabinet_activity_layout_modeselect;
@@ -60,19 +64,32 @@ public class ModeSelectActivity extends CabinetBaseActivity {
                 }).build();
         rvMode.setLayoutManager(pickerLayoutManager);
         setOnClickListener(R.id.ll_right, R.id.ll_right_center, R.id.btn_start, R.id.iv_float);
+
+        AccountInfo.getInstance().getGuid().observe(this, s -> {
+            for (Device device: AccountInfo.getInstance().deviceList) {
+                if (device.guid.equals(s) && device instanceof Cabinet && device.guid.equals(HomeCabinet.getInstance().guid)) {
+                    Cabinet cabinet = (Cabinet) device;
+                    setLock(cabinet.isChildLock == 1);
+                }
+            }
+        });
+
         MqttDirective.getInstance().getDirective().observe(this, s -> {
             if(s == (MsgKeys.SetSteriPowerOnOff_Req + directive_offset)){
                 runOnUiThread(() -> {
+                    HomeCabinet.getInstance().workMode = cabModeBean.code;
+                    HomeCabinet.getInstance().workHours = cabModeBean.defTime;
                     startActivity(WorkActivity.class);
                     finish();
                 });
             }
         });
+
     }
 
     @Override
     protected void initData() {
-        CabModeBean cabModeBean = null;
+        //CabModeBean cabModeBean = null;
         if (null != getIntent())
             cabModeBean = (CabModeBean) getIntent().getSerializableExtra(CabinetConstant.EXTRA_MODE_BEAN);
         if (null != cabModeBean) {
@@ -104,7 +121,11 @@ public class ModeSelectActivity extends CabinetBaseActivity {
         int id = view.getId();
         if (id == R.id.ll_right) {
             //预约
-            startActivity(new Intent(this, AppointmentActivity.class));
+            //HomeCabinet.getInstance().workMode = cabModeBean.code;
+            //cabModeBean.defTime = Integer.parseInt(rvTimeAdapter.getItem(pickerLayoutManager.getPickedPosition()));
+            Intent intent = new Intent(this,AppointmentActivity.class);
+            intent.putExtra(CabinetConstant.EXTRA_MODE_BEAN, cabModeBean);
+            startActivity(intent);
         } else if (id == R.id.btn_start) {
             //开始工作
 
@@ -120,24 +141,11 @@ public class ModeSelectActivity extends CabinetBaseActivity {
     }
 
     private void startWork(){
-        //CabinetCommonHelper.COMMON_DELAY_DUR
-        //电源
-//        Map map = CabinetCommonHelper.getCommonMap(MsgKeys.SetSteriPowerOnOff_Req);
-//        map.put(CabinetConstant.SteriStatus, 1);
-//        map.put(CabinetConstant.SteriTime, 0);
-//        map.put(CabinetConstant.ArgumentNumber, 0);
-//        CabinetCommonHelper.sendCommonMsgForLiveData(map,directive_offset + MsgKeys.SetSteriPowerOnOff_Req);
-
-      //烘干
         Map map = CabinetCommonHelper.getCommonMap(MsgKeys.SetSteriPowerOnOff_Req);
-        map.put(CabinetConstant.SteriStatus, 4);
-        map.put(CabinetConstant.SteriTime, 20);
+        map.put(CabinetConstant.SteriStatus, cabModeBean.code);
+        //TODO(目前855运行时间有限定，非限定值，不会相应, 暂时显示设置限定值，使其能够工作)
+        //map.put(CabinetConstant.SteriTime, Integer.parseInt(rvTimeAdapter.getItem(pickerLayoutManager.getPickedPosition())));
+        map.put(CabinetConstant.SteriTime, cabModeBean.defTime);
         CabinetCommonHelper.sendCommonMsgForLiveData(map,directive_offset + MsgKeys.SetSteriPowerOnOff_Req);
-//        Msg msg = newReqMsg(MsgKeys.SetSteriPowerOnOff_Req);
-//        msg.putOpt(MsgParams.TerminalType, terminalType);
-//        msg.putOpt(MsgParams.UserId, getSrcUser());
-//        msg.putOpt(MsgParams.SteriStatus, status);
-//        msg.putOpt(MsgParams.SteriTime, powerTime);
-//        msg.putOpt(MsgParams.ArgumentNumber, argumentNumber);
     }
 }
