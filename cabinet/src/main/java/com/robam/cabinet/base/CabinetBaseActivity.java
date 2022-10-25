@@ -128,7 +128,7 @@ public abstract class CabinetBaseActivity extends BaseActivity {
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if(lock){
             boolean isTouchAble = lockTouchArea(ev);
-            LogUtils.e("caTouch "+isTouchAble);
+            //LogUtils.e("caTouch "+isTouchAble);
             if(isTouchAble){
                 return super.dispatchTouchEvent(ev);
             }
