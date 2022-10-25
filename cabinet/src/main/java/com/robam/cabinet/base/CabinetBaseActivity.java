@@ -142,7 +142,7 @@ public abstract class CabinetBaseActivity extends BaseActivity {
     }
 
     /**
-     * 是否为童锁可相应区域
+     * 是否为童锁可触控区域
      * @return
      */
     private boolean lockTouchArea(MotionEvent ev){
@@ -155,23 +155,20 @@ public abstract class CabinetBaseActivity extends BaseActivity {
         int[] location = new int[2];
         touchAbleView.getLocationInWindow(location);
 
-        if(x >= location[0] &&
+        return x >= location[0] &&
                 x <= location[0] + touchAbleView.getWidth() &&
-           y >= location[1] &&
-           y <= location[1] + touchAbleView.getHeight()){
-            return true;
-        }
-        return false;
+                y >= location[1] &&
+                y <= location[1] + touchAbleView.getHeight();
     }
 
     public void setLock(boolean lock){
         this.lock = lock;
+        HomeCabinet.getInstance().lock = lock;
         View iconView = findViewById(R.id.iv_right_center);
         View tvView = findViewById(R.id.tv_right_center);
         if(iconView == null || !(iconView instanceof ImageView) || tvView == null || !(tvView instanceof TextView)){
             return;
         }
-        HomeCabinet.getInstance().lock = lock;
         ((ImageView) iconView).setImageResource(lock ? R.drawable.cabinet_screen_lock : R.drawable.cabinet_screen_unlock);
         ((TextView) tvView).setTextColor(getResources().getColor(lock?R.color.cabinet_lock:R.color.cabinet_white));
     }

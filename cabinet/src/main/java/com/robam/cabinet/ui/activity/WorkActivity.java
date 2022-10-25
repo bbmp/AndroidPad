@@ -23,6 +23,7 @@ import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.MCountdownView;
 import com.robam.common.utils.DateUtil;
+import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.TimeUtils;
 import java.util.Map;
 
@@ -62,18 +63,12 @@ public class WorkActivity extends CabinetBaseActivity {
         tvCountdown = findViewById(R.id.tv_countdown);
         ivStart = findViewById(R.id.iv_start);
         setOnClickListener(R.id.ll_left, R.id.iv_start);
-
-        AccountInfo.getInstance().getGuid().observe(this, s -> {
-            for (Device device: AccountInfo.getInstance().deviceList) {
-                if (device.guid.equals(s) && device instanceof Cabinet && device.guid.equals(HomeCabinet.getInstance().guid)) {
-                    Cabinet cabinet = (Cabinet) device;
-                    setLock(cabinet.isChildLock == 1);
-                }
-            }
-        });
         AccountInfo.getInstance().getGuid().observe(this, s -> {
             for (Device device: AccountInfo.getInstance().deviceList) {
                 if (device.guid.equals(s) && device instanceof Cabinet && device.guid.equals(HomeCabinet.getInstance().guid)) { //当前锅
+                    if(!CabinetCommonHelper.isSafe()){
+                        return;
+                    }
                     Cabinet cabinet = (Cabinet) device;
                     setLock(cabinet.isChildLock == 1);
                     if(cabinet.remainingModeWorkTime > 0){
@@ -104,7 +99,7 @@ public class WorkActivity extends CabinetBaseActivity {
         //工作模式
         tvMode.setText(CabinetEnum.match(HomeCabinet.getInstance().workMode));
         //工作时长
-        updateWorkTime(HomeCabinet.getInstance().workHours);
+        updateWorkTime(HomeCabinet.getInstance().workHours*60);
         //setCountDownTime();
     }
 
@@ -113,6 +108,7 @@ public class WorkActivity extends CabinetBaseActivity {
      * @param remainingTime
      */
     private void updateWorkTime(int remainingTime){
+        //LogUtils.e("updateWorkTime " + remainingTime + " from  "+flag);
         String time = TimeUtils.secToHourMinUp(remainingTime);
         SpannableString spannableString = new SpannableString(time);
         int pos = time.indexOf("h");
