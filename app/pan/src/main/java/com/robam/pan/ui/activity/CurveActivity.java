@@ -33,7 +33,6 @@ import com.robam.pan.R;
 import com.robam.pan.base.PanBaseActivity;
 import com.robam.common.constant.PanConstant;
 import com.robam.pan.device.HomePan;
-import com.robam.pan.device.PanAbstractControl;
 import com.robam.pan.factory.PanDialogFactory;
 import com.robam.pan.http.CloudHelper;
 import com.robam.pan.response.GetCurveCookbooksRes;

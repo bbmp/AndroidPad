@@ -19,10 +19,10 @@ import com.robam.common.manager.DynamicLineChartManager;
 import com.robam.common.module.IPublicPanApi;
 import com.robam.common.module.IPublicStoveApi;
 import com.robam.common.module.ModulePubliclHelper;
+import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.utils.DateUtil;
 import com.robam.common.utils.LogUtils;
-import com.robam.common.utils.ToastUtils;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBaseActivity;
 import com.robam.stove.bean.StoveCurveDetail;
@@ -145,16 +145,21 @@ public class CurveRestoreActivity extends StoveBaseActivity {
                 params = null;
             }
             if (null != params) {
-                if (null != iPublicPanApi) {
-                    Map data = new HashMap();
-                    data.put(PanConstant.KEY4, new byte[]{(byte) stoveId, 0, 0, 0, 0, (byte) PanConstant.start}); //曲线还原启动
-                    iPublicPanApi.setInteractionParams(pan.guid, data);
-                }
-                startRestore(params);
+               setInteraction();
+
+               startRestore(params);
             }
         }
     }
-
+    //设置锅互动参数
+    private void setInteraction() {
+        if (null != iPublicPanApi) {
+            Map params = new LinkedHashMap();
+            params.put(PanConstant.KEY5, new byte[] {(byte) stoveId}); //更换炉头id
+            params.put(PanConstant.KEY4, new byte[]{(byte) stoveId, 0, 0, 0, 0, (byte) PanConstant.start}); //曲线还原启动
+            iPublicPanApi.setInteractionParams(pan.guid, params);
+        }
+    }
     //开始还原
     private void startRestore(Map<String, String> params) {
 
@@ -169,11 +174,32 @@ public class CurveRestoreActivity extends StoveBaseActivity {
             @Override
 
             public void run() {
+                if (pan.msgId == MsgKeys.POT_INTERACTION_Req) {
+                    setInteraction();  //设置互动参数
+                    mHandler.postDelayed(runnable, 1000L);
+                    return;
+                }
+                if (pan.mode != 3 && null != iPublicPanApi) { //锅不是曲线还原模式
+                    iPublicPanApi.queryAttribute(pan.guid); //查询锅状态
+                    mHandler.postDelayed(runnable, 1000L);
+                    return;
+                }
+                if (curTime >= lastMark) {
+                    //工作结束
+                    //提示烹饪完成
+                    workComplete(true);
+                    return;
+                }
+                if ((curTime % 2) == 0) {
+                    if (null != iPublicPanApi)
+                        iPublicPanApi.queryAttribute(pan.guid); //查询锅状态
 
-                curTime++;
-                tvTime.setText(DateUtil.secForMatTime3(curTime));
+                    StoveAbstractControl.getInstance().queryAttribute(stove.guid); //查询灶状态
+                }
                 //曲线绘制
                 try {
+                    curTime++;
+                    tvTime.setText(DateUtil.secForMatTime3(curTime) + "min");
                     if (params.containsKey(curTime + "")) {
                         String[] data = params.get(curTime + "").split("-");
                         restoreList.add(new Entry(curTime, pan.panTemp));//温度
@@ -189,12 +215,7 @@ public class CurveRestoreActivity extends StoveBaseActivity {
                     }
                 } catch (Exception e) {}
 
-                if (curTime >= lastMark) {
-                    //工作结束
-                    //提示烹饪完成
-                    workComplete(true);
-                    return;
-                }
+
                 mHandler.postDelayed(runnable, 1000L);
 
             }
@@ -202,7 +223,7 @@ public class CurveRestoreActivity extends StoveBaseActivity {
         };
         //第一个点
         try {
-            tvTime.setText("1");
+            tvTime.setText("1min");
             if (params.containsKey("0")) {
                 String[] data = params.get("0").split("-");
                 if (null != stove) {
@@ -219,6 +240,7 @@ public class CurveRestoreActivity extends StoveBaseActivity {
     }
     //还原结束提示
     private void workComplete(boolean closeFire) {
+        curTime = 0; //工作结束
         closeFire(closeFire);
 
         if (null == completeDialog) {

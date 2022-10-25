@@ -2,8 +2,6 @@ package com.robam.common.device.subdevice;
 
 import android.bluetooth.BluetoothGattCharacteristic;
 
-import androidx.lifecycle.MutableLiveData;
-
 import com.clj.fastble.callback.BleWriteCallback;
 import com.clj.fastble.data.BleDevice;
 import com.clj.fastble.exception.BleException;
@@ -14,11 +12,11 @@ import com.robam.common.manager.BlueToothManager;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.ByteUtils;
-import com.robam.common.utils.LogUtils;
 
 import java.util.Arrays;
 
 public class Pan extends Device {
+    public int msgId;
     //系统状态
     public int sysytemStatus;
     //工作模式
@@ -92,6 +90,19 @@ public class Pan extends Device {
             if (msg.has(PanConstant.mode))
                 mode = msg.optInt(PanConstant.mode);
             return true;
+        } else if (null != msg && msg.has(PanConstant.panParams)) { //设置锅参数返回
+            int rc = msg.optInt(PanConstant.panParams);
+            if (rc == 0)
+                msgId = MsgKeys.POT_CURVETEMP_Req;
+            //这里不返回true
+        } else if (null != msg && msg.has(PanConstant.stoveParams)) { //设置灶参数返回
+            int rc = msg.optInt(PanConstant.panParams);
+            if (rc == 0)
+                msgId = MsgKeys.POT_INTERACTION_Req;
+        } else if (null != msg && msg.has(PanConstant.interaction)) { //设置互动参数返回
+            int rc = msg.optInt(PanConstant.interaction);
+            if (rc == 0)
+                msgId = MsgKeys.POT_INTERACTION_Rep;
         }
         return false;
     }

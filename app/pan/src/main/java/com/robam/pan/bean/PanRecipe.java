@@ -13,6 +13,8 @@ public class PanRecipe {
     public List<DCS> dcs;
     //曲线id
     public long curveId;
+    //我的最爱序号
+    public int orderNo;
 
 
     public PanRecipe(String name, String imgUrl) {
@@ -20,7 +22,8 @@ public class PanRecipe {
         this.imgSmall = imgUrl;
     }
 
-    public PanRecipe(long id, String imgSmall, String name, long curveId) {
+    public PanRecipe(int no, long id, String imgSmall, String name, long curveId) {
+        this.orderNo = no;
         this.id = id;
         this.imgSmall = imgSmall;
         this.name = name;

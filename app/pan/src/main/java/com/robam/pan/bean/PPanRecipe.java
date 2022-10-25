@@ -5,6 +5,9 @@ import java.util.List;
 
 //我的最爱P档菜谱
 public class PPanRecipe implements Serializable {
+    //我的最爱序号
+    public int orderNo;
+
     public String deviceGuid;
     //菜谱id
     public long cookbookId;

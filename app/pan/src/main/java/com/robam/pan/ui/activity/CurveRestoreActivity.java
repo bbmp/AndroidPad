@@ -22,6 +22,7 @@ import com.robam.common.device.subdevice.Stove;
 import com.robam.common.manager.DynamicLineChartManager;
 import com.robam.common.module.IPublicStoveApi;
 import com.robam.common.module.ModulePubliclHelper;
+import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.VerticalSpaceItemDecoration;
 import com.robam.common.utils.LogUtils;
@@ -72,13 +73,15 @@ public class CurveRestoreActivity extends PanBaseActivity {
 
     Stove stove;
     private Pan pan;
-    private int stoveId;
-    private boolean favorite;
+    private int stoveId; //炉头id
+    private boolean favorite = false;
+    private int orderNo; //我的最爱序号
     private long recipeId;
-    private boolean restore = false;
 
     ArrayList<Entry> restoreList = new ArrayList<>();  //还原列表
 
+    IPublicStoveApi iPublicStoveApi = ModulePubliclHelper.getModulePublic(IPublicStoveApi.class,
+            IPublicStoveApi.STOVE_PUBLIC);
     @Override
     protected int getLayoutId() {
         return R.layout.pan_activity_layout_curve_restore;
@@ -89,6 +92,7 @@ public class CurveRestoreActivity extends PanBaseActivity {
         showLeft();
         showCenter();
         if (null != getIntent()) {
+            orderNo = getIntent().getIntExtra(PanConstant.EXTRA_ORDER_ID, 0);
             favorite = getIntent().getBooleanExtra(PanConstant.EXTRA_FAVORITE, false);
             recipeId = getIntent().getLongExtra(PanConstant.EXTRA_RECIPE_ID, 0);
             stoveId = getIntent().getIntExtra(StoveConstant.EXTRA_STOVE_ID, IPublicStoveApi.STOVE_LEFT);
@@ -116,7 +120,7 @@ public class CurveRestoreActivity extends PanBaseActivity {
             @Override
             public void onChanged(String s) {
                 for (Device device: AccountInfo.getInstance().deviceList) {
-                    if (device.guid.equals(s) && device instanceof Stove && restore) { //当前灶且还原开始
+                    if (device.guid.equals(s) && device instanceof Stove && curTime > 0) { //当前灶且还原开始
                         Stove stove = (Stove) device;
                         //开火提示状态
                         if (stoveId == IPublicStoveApi.STOVE_LEFT && stove.leftStatus == StoveConstant.WORK_CLOSE) { //左灶已关火
@@ -130,15 +134,10 @@ public class CurveRestoreActivity extends PanBaseActivity {
                         }
 
                         break;
-                    } else if (device.guid.equals(s) && device instanceof Pan && restore) { //检查锅状态锅
+                    } else if (device.guid.equals(s) && device instanceof Pan && curTime > 0) { //检查锅状态锅
                         Pan pan = (Pan) device;
                         if (pan.status == Device.OFFLINE) { //锅已离线
 
-                        }
-                    } else if (device.guid.equals(s) && device instanceof Pan) {  //还原未开始
-                        Pan pan = (Pan) device;
-                        if (pan.mode == 2 || pan.mode == 3) {//p档或还原模式
-                            Countdown();
                         }
                     }
                 }
@@ -188,40 +187,61 @@ public class CurveRestoreActivity extends PanBaseActivity {
                 curveSteps.get(i).needTime = (int) (panCurveDetail.needTime - Float.parseFloat(curveSteps.get(i).markTime));
                 //步骤
                 rvStep2Adapter.setList(curveSteps);
-                //启动记录
-                Map params = new LinkedHashMap();
-                if (favorite) { //我的最爱p档菜谱
-                    params.put(PanConstant.KEY5, new byte[] {(byte) stoveId}); //更换炉头id
-                    params.put(PanConstant.KEY1, new byte[] {(byte) stoveId, 0, (byte) PanConstant.start});
-                } else { //曲线还原或云端菜谱
-                    params.put(PanConstant.KEY5, new byte[] {(byte) stoveId}); //更换炉头id
-                    ByteBuffer buf = ByteBuffer.allocate(10).order(ByteOrder.LITTLE_ENDIAN);
-                    buf.put((byte) stoveId);
-                    buf.putFloat(recipeId);
-                    buf.put((byte) PanConstant.start);
-                    byte[] data = new byte[buf.position()];
-                    System.arraycopy(buf.array(), 0, data, 0, data.length);
-                    buf.clear();
-                    params.put(PanConstant.KEY4, data); //曲线还原，菜谱id为0
-                }
-                PanAbstractControl.getInstance().setInteractionParams(pan.guid, params);
+                setInteraction(); //153互动参数
+
+                Countdown();
             }
         }
     }
+
+    private void setInteraction() {
+        //启动记录
+        Map params = new LinkedHashMap();
+        if (favorite) { //我的最爱p档菜谱
+            params.put(PanConstant.KEY5, new byte[] {(byte) stoveId}); //更换炉头id
+            params.put(PanConstant.KEY1, new byte[] {(byte) stoveId, (byte) orderNo, (byte) PanConstant.start});
+        } else { //曲线还原或云端菜谱
+            params.put(PanConstant.KEY5, new byte[] {(byte) stoveId}); //更换炉头id
+            ByteBuffer buf = ByteBuffer.allocate(10).order(ByteOrder.LITTLE_ENDIAN);
+            buf.put((byte) stoveId);
+            buf.putFloat(recipeId);
+            buf.put((byte) PanConstant.start);
+            byte[] data = new byte[buf.position()];
+            System.arraycopy(buf.array(), 0, data, 0, data.length);
+            buf.clear();
+            params.put(PanConstant.KEY4, data); //曲线还原，菜谱id为0
+        }
+        PanAbstractControl.getInstance().setInteractionParams(pan.guid, params);
+    }
+
     //启动倒计时
     private void Countdown() {
-        restore = true;
         runnable = new Runnable() {
 
             @Override
 
             public void run() {
+                if (pan.msgId == MsgKeys.POT_INTERACTION_Req) {
+                    setInteraction();  //设置互动参数
+                    mHandler.postDelayed(runnable, 1000L);
+                    return;
+                }
+                if (pan.mode != 2 && pan.mode != 3) { //锅未开始工作
+                    PanAbstractControl.getInstance().queryAttribute(pan.guid); //查询锅状态
+                    mHandler.postDelayed(runnable, 1000L);
+                    return;
+                }
                 //判断是否结束
                 if (curStep >= rvStep2Adapter.getData().size()) {
                     //还原结束
                     //去烹饪结束
                     restoreComplete(true);
                     return;
+                }
+                if ((curTime % 2) == 0) {
+                    PanAbstractControl.getInstance().queryAttribute(pan.guid); //查询锅状态
+                    if (null != iPublicStoveApi)
+                        iPublicStoveApi.queryAttribute(stove.guid); //查询灶状态
                 }
                 CurveStep curveStep = rvStep2Adapter.getData().get(curStep);
                 //曲线绘制
@@ -290,18 +310,30 @@ public class CurveRestoreActivity extends PanBaseActivity {
 
     //关火操作
     private void closeFire(boolean closeFire) {
-        IPublicStoveApi iPublicStoveApi = ModulePubliclHelper.getModulePublic(IPublicStoveApi.class,
-                IPublicStoveApi.STOVE_PUBLIC);
         //关火
         if (null != iPublicStoveApi && closeFire) {
             iPublicStoveApi.setAttribute(stove.guid, (byte) stoveId, (byte) 0x00, (byte) StoveConstant.STOVE_CLOSE);
 
         }
-        //停止记录
-        Map params = new HashMap();
-        params.put(PanConstant.KEY4, new byte[] {(byte) stoveId, 0, 0, 0, 0, (byte) PanConstant.stop});
-        params.put(PanConstant.KEY6, new byte[] {(byte) PanConstant.MODE_CLOSE_FRY}); //停止搅拌
-        PanAbstractControl.getInstance().setInteractionParams(pan.guid, params);
+        if (favorite) { //p档菜谱停止
+            Map params = new HashMap();
+            params.put(PanConstant.KEY1, new byte[] {(byte) stoveId, (byte) orderNo, (byte) PanConstant.stop});
+            params.put(PanConstant.KEY6, new byte[]{(byte) PanConstant.MODE_CLOSE_FRY}); //停止搅拌
+            PanAbstractControl.getInstance().setInteractionParams(pan.guid, params);
+        } else { //曲线还原或菜谱还原
+            //停止记录
+            Map params = new HashMap();
+            ByteBuffer buf = ByteBuffer.allocate(10).order(ByteOrder.LITTLE_ENDIAN);
+            buf.put((byte) stoveId);
+            buf.putFloat(recipeId);
+            buf.put((byte) PanConstant.stop);
+            byte[] data = new byte[buf.position()];
+            System.arraycopy(buf.array(), 0, data, 0, data.length);
+            buf.clear();
+            params.put(PanConstant.KEY4, data);
+            params.put(PanConstant.KEY6, new byte[]{(byte) PanConstant.MODE_CLOSE_FRY}); //停止搅拌
+            PanAbstractControl.getInstance().setInteractionParams(pan.guid, params);
+        }
     }
 
     @Override

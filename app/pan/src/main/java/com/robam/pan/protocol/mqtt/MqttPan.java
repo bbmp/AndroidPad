@@ -5,7 +5,6 @@ import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.RTopic;
 import com.robam.common.ble.BleDecoder;
-import com.robam.common.constant.StoveConstant;
 import com.robam.common.device.Plat;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.mqtt.MqttMsg;
@@ -16,7 +15,6 @@ import com.robam.common.utils.MsgUtils;
 import com.robam.common.device.subdevice.Pan;
 import com.robam.common.constant.PanConstant;
 import com.robam.pan.constant.QualityKeys;
-import com.robam.pan.device.HomePan;
 import com.robam.pan.device.PanAbstractControl;
 import com.robam.pan.device.PanFactory;
 
@@ -159,15 +157,22 @@ public class MqttPan extends MqttPublic {
                 break;
             case MsgKeys.POT_INTERACTION_Rep: {  //设置锅智能互动参数返回
                 int rc = MsgUtils.getByte(payload[offset++]);
-                if (rc == 0)
-                    PanAbstractControl.getInstance().queryAttribute(HomePan.getInstance().guid);
+                msg.putOpt(PanConstant.interaction, rc);
+//                if (rc == 0)
+//                    PanAbstractControl.getInstance().queryAttribute(HomePan.getInstance().guid);
             }
                 break;
-            case MsgKeys.POT_CURVETEMP_Rep: //设置灶参数返回
+            case MsgKeys.POT_P_MENU_Rep: //p档菜谱
+            case MsgKeys.POT_CURVETEMP_Rep: {//设置灶参数返回
+                int rc = MsgUtils.getByte(payload[offset++]);
+                msg.putOpt(PanConstant.stoveParams, rc);
+            }
+            break;
+            case MsgKeys.POT_Electric_Rep: //p档菜谱
             case MsgKeys.POT_CURVEElectric_Rep: { //设置锅参数返回
                 int rc = MsgUtils.getByte(payload[offset++]);
-                if (rc == 0)
-                    ;
+
+                msg.putOpt(PanConstant.panParams, rc);
             }
             break;
         }
