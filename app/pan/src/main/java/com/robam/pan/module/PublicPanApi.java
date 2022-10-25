@@ -18,6 +18,11 @@ import java.util.Map;
 public class PublicPanApi implements IPublicPanApi {
 
     @Override
+    public void queryAttribute(String targetGuid) {
+        PanAbstractControl.getInstance().queryAttribute(targetGuid);
+    }
+
+    @Override
     public void setInteractionParams(String targetGuid, Map params) {
         PanAbstractControl.getInstance().setInteractionParams(targetGuid, params);
     }

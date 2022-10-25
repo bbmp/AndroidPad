@@ -1,7 +1,5 @@
 package com.robam.stove.device;
 
-import androidx.lifecycle.MutableLiveData;
-
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;

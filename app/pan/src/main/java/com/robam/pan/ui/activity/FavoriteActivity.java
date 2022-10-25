@@ -56,6 +56,7 @@ public class FavoriteActivity extends PanBaseActivity {
                 PanRecipe recipe = (PanRecipe) adapter.getItem(position);
                 Intent intent = new Intent();
                 intent.setClass(FavoriteActivity.this, RecipeSelectedActivity.class);
+                intent.putExtra(PanConstant.EXTRA_ORDER_ID, recipe.orderNo);
                 intent.putExtra(PanConstant.EXTRA_RECIPE_ID, recipe.id);
                 intent.putExtra(PanConstant.EXTRA_FAVORITE, true);
                 intent.putExtra(PanConstant.EXTRA_CURVE_ID, recipe.curveId);
@@ -93,7 +94,7 @@ public class FavoriteActivity extends PanBaseActivity {
             //转成正常菜谱显示
             for (PPanRecipe pPanRecipe: getPRecipeRes.datas) {
                 if (pPanRecipe.isSent) //已下发
-                    panRecipes.add(new PanRecipe(pPanRecipe.cookbookId, pPanRecipe.cookbookImgCover, pPanRecipe.cookbookName, pPanRecipe.curveCookbookId));
+                    panRecipes.add(new PanRecipe(pPanRecipe.orderNo, pPanRecipe.cookbookId, pPanRecipe.cookbookImgCover, pPanRecipe.cookbookName, pPanRecipe.curveCookbookId));
             }
             if (panRecipes.size() > 0) {
                 rvRecipeAdapter.setList(panRecipes);

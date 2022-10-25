@@ -16,7 +16,6 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.robam.common.bean.AccountInfo;
-import com.robam.common.bean.BaseResponse;
 import com.robam.common.bean.Device;
 import com.robam.common.constant.PanConstant;
 import com.robam.common.device.subdevice.Pan;
@@ -26,6 +25,7 @@ import com.robam.common.manager.DynamicLineChartManager;
 import com.robam.common.module.IPublicPanApi;
 import com.robam.common.module.IPublicStoveApi;
 import com.robam.common.module.ModulePubliclHelper;
+import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.MarkViewAdd;
 import com.robam.common.utils.DateUtil;
@@ -69,7 +69,7 @@ public class CurveCreateActivity extends StoveBaseActivity {
     private Pan pan;
     private int stoveId;
     private long curveId;
-    private boolean create = false;
+
 
     private IPublicPanApi iPublicPanApi = ModulePubliclHelper.getModulePublic(IPublicPanApi.class, IPublicPanApi.PAN_PUBLIC);
     @Override
@@ -107,20 +107,14 @@ public class CurveCreateActivity extends StoveBaseActivity {
         if (null == pan || null == stove) //锅或灶不存在
             finish();
 
-        //启动记录
-        if (null != iPublicPanApi) {
-            Map params = new HashMap();
-            params.put(PanConstant.KEY2, new byte[]{(byte) stoveId, (byte) PanConstant.start});
-            params.put(PanConstant.KEY5, new byte[] {(byte) stoveId}); //更换炉头id
-            iPublicPanApi.setInteractionParams(pan.guid, params);
-        }
-
+        //创建曲线
+        createCurveStart();
         //监听开火状态
         AccountInfo.getInstance().getGuid().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
                 for (Device device: AccountInfo.getInstance().deviceList) {
-                    if (device.guid.equals(s) && device.guid.equals(HomeStove.getInstance().guid) && device instanceof Stove && create) { //当前灶且创建已开始
+                    if (device.guid.equals(s) && device.guid.equals(HomeStove.getInstance().guid) && device instanceof Stove && curTime > 0) { //当前灶且创建已开始
                         Stove stove = (Stove) device;
                         //开火提示状态
                         if (stoveId == IPublicStoveApi.STOVE_LEFT && stove.leftStatus == StoveConstant.WORK_CLOSE) { //左灶已关火
@@ -134,15 +128,10 @@ public class CurveCreateActivity extends StoveBaseActivity {
                         }
 
                         break;
-                    } else if (device.guid.equals(s) && device instanceof Pan && create) { //检查锅状态锅
+                    } else if (device.guid.equals(s) && device instanceof Pan && curTime > 0) { //检查锅状态锅
                         Pan pan = (Pan) device;
                         if (pan.status == Device.OFFLINE) { //锅已离线
 
-                        }
-                    } else if (device.guid.equals(s) && device instanceof Pan) { //未开始状态
-                        Pan pan = (Pan) device;
-                        if (pan.mode == 1) {//实时记录模式
-                            createCurveStart();
                         }
                     }
                 }
@@ -150,8 +139,19 @@ public class CurveCreateActivity extends StoveBaseActivity {
         });
     }
 
+    //153设置互动参数
+    private void setInteraction() {
+        //启动记录
+        if (null != iPublicPanApi) {
+            pan.msgId = MsgKeys.POT_INTERACTION_Req;
+            Map params = new HashMap();
+            params.put(PanConstant.KEY2, new byte[]{(byte) stoveId, (byte) PanConstant.start});
+            params.put(PanConstant.KEY5, new byte[] {(byte) stoveId}); //更换炉头id
+            iPublicPanApi.setInteractionParams(pan.guid, params);
+        }
+    }
+
     private void createCurveStart() {
-        create = true;
         //创建曲线记录开始请求
         CloudHelper.createCurveStart(this, AccountInfo.getInstance().getUser().getValue().id, pan.guid, stoveId, CreateCurveStartRes.class, new RetrofitCallback<CreateCurveStartRes>() {
             @Override
@@ -160,6 +160,8 @@ public class CurveCreateActivity extends StoveBaseActivity {
                     tvTimeUnit.setVisibility(View.VISIBLE);
                     ivStop.setVisibility(View.VISIBLE);
                     curveId = createCurveStartRes.payload;
+                    //设置互动参数
+                    setInteraction();
 
                     startCreate();
                 }
@@ -191,9 +193,23 @@ public class CurveCreateActivity extends StoveBaseActivity {
             @Override
 
             public void run() {
+                if (pan.msgId == MsgKeys.POT_INTERACTION_Req) {
+                    setInteraction();  //设置互动参数
+                    mHandler.postDelayed(runnable, 1000L);
+                    return;
+                }
+                if (pan.mode != 1 && null != iPublicPanApi) {
+                    iPublicPanApi.queryAttribute(pan.guid); //查询锅状态
+                    mHandler.postDelayed(runnable, 1000L);
+                    return;
+                }
+                if (null != iPublicPanApi)
+                    iPublicPanApi.queryAttribute(pan.guid); //查询锅状态
+
+                StoveAbstractControl.getInstance().queryAttribute(stove.guid); //查询灶状态
 
                 curTime += 2;
-                tvTime.setText(DateUtil.secForMatTime3(curTime));
+                tvTime.setText(DateUtil.secForMatTime3(curTime) + "min");
                 Entry entry = new Entry(curTime, (float) pan.panTemp);
                 dm.addEntry(entry, 0);
                 if (stoveId == IPublicStoveApi.STOVE_RIGHT)
@@ -282,7 +298,7 @@ public class CurveCreateActivity extends StoveBaseActivity {
 
             }
         });
-        mHandler.post(runnable);
+        mHandler.postDelayed(runnable, 1000);
         //添加启动标记
         addStep();
     }

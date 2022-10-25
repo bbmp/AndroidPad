@@ -1,7 +1,6 @@
 package com.robam.pan.ui.activity;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,6 +24,7 @@ import com.robam.common.device.subdevice.Stove;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.manager.DynamicLineChartManager;
 import com.robam.common.module.IPublicStoveApi;
+import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.VerticalSpaceItemDecoration;
 import com.robam.common.ui.view.MarkViewStep;
@@ -55,6 +55,8 @@ import java.util.Map;
 //菜谱和曲线选中页面
 public class RecipeSelectedActivity extends PanBaseActivity {
     private TextView tvRight;
+    //菜谱序号
+    private int orderNo;
     //菜谱id
     private long recipeId;
     //曲线id
@@ -85,6 +87,8 @@ public class RecipeSelectedActivity extends PanBaseActivity {
 
     private boolean favorite;//是否我的最爱
 
+    private Stove stove;
+    private Pan pan;
 
     @Override
     protected int getLayoutId() {
@@ -100,6 +104,7 @@ public class RecipeSelectedActivity extends PanBaseActivity {
             curveId = getIntent().getLongExtra(PanConstant.EXTRA_CURVE_ID, 0);
             recipeId = getIntent().getLongExtra(PanConstant.EXTRA_RECIPE_ID, 0);
             favorite = getIntent().getBooleanExtra(PanConstant.EXTRA_FAVORITE, false);
+            orderNo = getIntent().getIntExtra(PanConstant.EXTRA_ORDER_ID, 0);
         }
 
         tvRight = findViewById(R.id.tv_right);
@@ -119,34 +124,13 @@ public class RecipeSelectedActivity extends PanBaseActivity {
         rvStep.setAdapter(rvStep3Adapter);
 
         setOnClickListener(R.id.tv_right, R.id.tv_start_cook);
-        //监听开火状态
-        AccountInfo.getInstance().getGuid().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                for (Device device: AccountInfo.getInstance().deviceList) {
-                    if (device.guid.equals(s) && device instanceof Stove) { //当前灶
-                        Stove stove = (Stove) device;
-                        //开火提示状态
-                        if (null != openDialog && openDialog.isShow()) {
-                            if (stoveId == IPublicStoveApi.STOVE_LEFT && stove.leftStatus == StoveConstant.WORK_WORKING) { //左灶已点火
-                                openDialog.dismiss();
-                                startRestore();
-                            } else if (stoveId == IPublicStoveApi.STOVE_RIGHT && stove.rightStatus == StoveConstant.WORK_WORKING) { //右灶已点火
-                                openDialog.dismiss();
-                                startRestore();
-                            }
-                        }
-                        break;
-                    }
-                }
-            }
-        });
     }
     //开始还原
     private void startRestore() {
         Intent intent = new Intent();
         intent.setClass(this, CurveRestoreActivity.class);
         if (null != panCurveDetail) {
+            intent.putExtra(PanConstant.EXTRA_ORDER_ID, orderNo); //我的最爱菜谱序号
             intent.putExtra(PanConstant.EXTRA_FAVORITE, favorite); //是否我的最爱
             intent.putExtra(StoveConstant.EXTRA_STOVE_ID, stoveId); //选中哪个炉头
             intent.putExtra(PanConstant.EXTRA_RECIPE_ID, recipeId); //菜谱id
@@ -157,6 +141,14 @@ public class RecipeSelectedActivity extends PanBaseActivity {
 
     @Override
     protected void initData() {
+        //查找锅和灶
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device instanceof Pan)
+                pan = (Pan) device;
+            else if (device instanceof Stove)
+                stove = (Stove) device;
+        }
+
         if (curveId != 0)  //获取曲线详情
             getCurveDetail();
         else if (recipeId != 0) {
@@ -207,10 +199,10 @@ public class RecipeSelectedActivity extends PanBaseActivity {
                 public void onClick(View v) {
                     int id = v.getId();
                     if (id == R.id.view_left) {
-                        setParams(panCurveDetail, IPublicStoveApi.STOVE_LEFT);  //设置锅参数
+
                         openFire(IPublicStoveApi.STOVE_LEFT);  //左灶
                     } else if (id == R.id.view_right) {
-                        setParams(panCurveDetail, IPublicStoveApi.STOVE_LEFT);  //设置锅参数
+
                         openFire(IPublicStoveApi.STOVE_RIGHT);   //右灶
                     }
                 }
@@ -224,35 +216,102 @@ public class RecipeSelectedActivity extends PanBaseActivity {
     private Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(@NonNull Message msg) {
-            if (msg.what == 0)
-                PanAbstractControl.getInstance().setPRecipeStoveParams(HomePan.getInstance().guid, 0, stoveId, panCurveDetail.curveStageParams, panCurveDetail.temperatureCurveParams);
 
-            if (msg.what == 1)
-                PanAbstractControl.getInstance().setCurveStoveParams(HomePan.getInstance().guid, recipeId, stoveId, panCurveDetail.curveStageParams, panCurveDetail.temperatureCurveParams); //设置灶参数
+            if (msg.what == PanConstant.MSG_PRECIPE) {  //P档菜谱
+                if (pan.msgId == MsgKeys.POT_CURVETEMP_Req) { //设置灶参数
+
+                    PanAbstractControl.getInstance().setPRecipeStoveParams(HomePan.getInstance().guid, orderNo, stoveId, panCurveDetail.curveStageParams, panCurveDetail.temperatureCurveParams); //设置灶参数
+                    handler.sendEmptyMessageDelayed(PanConstant.MSG_PRECIPE, 1000);
+                } else if (pan.msgId == MsgKeys.POT_CURVEElectric_Req) {
+                    PanAbstractControl.getInstance().setPRecipePanParams(HomePan.getInstance().guid, orderNo, panCurveDetail.smartPanModeCurveParams); //设置锅参数
+
+                    handler.sendEmptyMessageDelayed(PanConstant.MSG_PRECIPE, 1000);
+                } else if (pan.msgId == MsgKeys.POT_INTERACTION_Req) { //设置锅互动参数
+                    //开火提示状态
+                    if (null != openDialog && openDialog.isShow()) {
+                        if (stoveId == IPublicStoveApi.STOVE_LEFT && stove.leftStatus == StoveConstant.WORK_WORKING) { //左灶已点火
+                            openDialog.dismiss();
+                            startRestore();
+
+                            return;
+                        } else if (stoveId == IPublicStoveApi.STOVE_RIGHT && stove.rightStatus == StoveConstant.WORK_WORKING) { //右灶已点火
+                            openDialog.dismiss();
+                            startRestore();
+
+                            return;
+                        }
+                    }
+
+                    handler.sendEmptyMessageDelayed(PanConstant.MSG_PRECIPE, 1000);
+                }
+            }
+
+            if (msg.what == PanConstant.MSG_CURVE_RESTORE) {//曲线还原
+                if (pan.msgId == MsgKeys.POT_CURVETEMP_Req) {  //设置灶参数
+                    PanAbstractControl.getInstance().setCurveStoveParams(HomePan.getInstance().guid, recipeId, stoveId, panCurveDetail.curveStageParams, panCurveDetail.temperatureCurveParams); //设置灶参数
+
+                    handler.sendEmptyMessageDelayed(PanConstant.MSG_CURVE_RESTORE, 1000);
+                } else if (pan.msgId == MsgKeys.POT_CURVEElectric_Req) {
+
+                    PanAbstractControl.getInstance().setCurvePanParams(HomePan.getInstance().guid, recipeId, panCurveDetail.smartPanModeCurveParams); //设置锅参数
+
+                    handler.sendEmptyMessageDelayed(PanConstant.MSG_CURVE_RESTORE, 1000);
+                } else if (pan.msgId == MsgKeys.POT_INTERACTION_Req) { //设置锅互动参数
+
+                    //开火提示状态
+                    if (null != openDialog && openDialog.isShow()) {
+                        if (stoveId == IPublicStoveApi.STOVE_LEFT && stove.leftStatus == StoveConstant.WORK_WORKING) { //左灶已点火
+                            openDialog.dismiss();
+                            startRestore();
+
+                            return;
+                        } else if (stoveId == IPublicStoveApi.STOVE_RIGHT && stove.rightStatus == StoveConstant.WORK_WORKING) { //右灶已点火
+                            openDialog.dismiss();
+                            startRestore();
+
+                            return;
+                        }
+                    }
+
+                    handler.sendEmptyMessageDelayed(PanConstant.MSG_CURVE_RESTORE, 1000);
+                }
+            }
         }
     };
 
     //设置曲线还原参数
-    private void setParams(PanCurveDetail panCurveDetail, int stoveId) {
+    private void setParams() {
         if (null != panCurveDetail) {
-            if (favorite) {  //我的最爱 p档菜谱// 148-150-153
-                PanAbstractControl.getInstance().setPRecipePanParams(HomePan.getInstance().guid, 0, panCurveDetail.smartPanModeCurveParams);
+            if (favorite) {  //我的最爱 p档菜谱// 150-148-153
+                pan.msgId = MsgKeys.POT_CURVEElectric_Req; //设置锅参数
 
-                handler.sendEmptyMessageDelayed(0, 1000);
+                PanAbstractControl.getInstance().setPRecipePanParams(HomePan.getInstance().guid, orderNo, panCurveDetail.smartPanModeCurveParams);
+
+                handler.sendEmptyMessageDelayed(PanConstant.MSG_PRECIPE, 1000);
             } else {  //曲线还原
+                pan.msgId = MsgKeys.POT_CURVEElectric_Req; //设置锅参数
+
                 PanAbstractControl.getInstance().setCurvePanParams(HomePan.getInstance().guid, recipeId, panCurveDetail.smartPanModeCurveParams); //设置锅参数
 
-                handler.sendEmptyMessageDelayed(1, 1000);
+                handler.sendEmptyMessageDelayed(PanConstant.MSG_CURVE_RESTORE, 1000);
             }
         }
     }
     //点火提示
     private void openFire(int stove) {
+        setParams();  //设置锅参数
+
         for (Device device: AccountInfo.getInstance().deviceList) {
             if (device instanceof Pan && device.guid.equals(HomePan.getInstance().guid)) {
                 if (null == openDialog) {
                     openDialog = PanDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_OPEN_FIRE);
                     openDialog.setCancelable(false);
+                    openDialog.setListeners(new IDialog.DialogOnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            handler.removeCallbacksAndMessages(null);
+                        }
+                    }, R.id.full_dialog);
                 }
                 if (stove == IPublicStoveApi.STOVE_LEFT) {
                     openDialog.setContentText(R.string.pan_open_left_hint);

@@ -19,6 +19,7 @@ import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.module.IPublicStoveApi;
 import com.robam.common.device.subdevice.Stove;
+import com.robam.common.utils.ToastUtils;
 import com.robam.stove.device.HomeStove;
 import com.robam.common.ui.IModeSelect;
 import com.robam.common.ui.dialog.IDialog;
@@ -198,6 +199,11 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
 
     //炉头选择
     private void selectStove() {
+        //检查灶是否连接
+        if (HomeStove.getInstance().isStoveOffline()) {
+            ToastUtils.showShort(this, R.string.stove_offline);
+            return;
+        }
         //炉头选择提示
         if (null == selectStoveDialog) {
             selectStoveDialog = new SelectStoveDialog(this);

@@ -1,22 +1,14 @@
 package com.robam.pan.ui.activity;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-
-import android.os.Bundle;
 
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.constant.ComnConstant;
 import com.robam.common.ui.activity.BaseActivity;
 import com.robam.common.utils.LogUtils;
 import com.robam.pan.R;
-import com.robam.pan.base.PanBaseActivity;
 import com.robam.pan.device.HomePan;
-import com.robam.pan.device.PanAbstractControl;
-import com.robam.pan.device.PanBluetoothControl;
-import com.robam.pan.device.PanFactory;
 
 public class MainActivity extends BaseActivity {
 

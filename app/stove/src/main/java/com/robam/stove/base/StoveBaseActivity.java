@@ -26,7 +26,6 @@ import com.robam.common.constant.StoveConstant;
 import com.robam.stove.device.HomeStove;
 import com.robam.stove.device.StoveAbstractControl;
 import com.robam.stove.factory.StoveDialogFactory;
-import com.robam.stove.ui.activity.CurveActivity;
 import com.robam.stove.ui.dialog.LockDialog;
 
 public abstract class StoveBaseActivity extends BaseActivity {
@@ -110,6 +109,10 @@ public abstract class StoveBaseActivity extends BaseActivity {
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.ll_right_center) {//童锁处理
+            if (HomeStove.getInstance().isStoveOffline()) {
+                ToastUtils.showShort(this, R.string.stove_offline);
+                return;
+            }
             affirmLock();
         }
     }
@@ -125,6 +128,10 @@ public abstract class StoveBaseActivity extends BaseActivity {
                 @Override
                 public void onClick(View v) {
                     if (v.getId() == R.id.tv_ok) {
+                        if (HomeStove.getInstance().isStoveOffline()) {
+                            ToastUtils.showShort(StoveBaseActivity.this, R.string.stove_offline);
+                            return;
+                        }
 
                         StoveAbstractControl.getInstance().setLock(HomeStove.getInstance().guid, StoveConstant.LOCK);
                     }

@@ -68,7 +68,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/stove_white"
         android:textSize="@dimen/sp_60"
-        android:text="min"
+        android:text=""
         android:visibility="gone"
         app:layout_constraintLeft_toRightOf="@id/tv_time"
         app:layout_constraintBaseline_toBaselineOf="@id/tv_time"/>

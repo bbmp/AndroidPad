@@ -12,7 +12,10 @@ public class PanConstant {
     public final static String EXTRA_STEP_LIST = "step_list";
     public static final String EXTRA_NEED_TIME = "needtime";
     public static final String EXTRA_FAVORITE = "favorite";
+    public static final String EXTRA_ORDER_ID = "order_id";//我的最爱菜谱序号
 
+    public final static int MSG_PRECIPE = 0; //P档菜谱
+    public final static int MSG_CURVE_RESTORE = 1; //曲线还原
 
     //锅状态
     public final static String Pot_status = "Pot_status";
@@ -57,6 +60,8 @@ public class PanConstant {
     public final static String setTime = "set_time"; //设置时间
     public final static String fryMode = "fry_mode";//电机模式
     public final static String interaction = "interaction";//互动参数
+    public final static String panParams = "panparams"; //设置锅参数
+    public final static String stoveParams = "stoveParams"; //设置灶参数
     public final static String key = "key";//
     public final static String value = "value";
 }
