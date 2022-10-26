@@ -138,7 +138,7 @@ public class PanBluetoothControl implements PanFunction{
     }
 
     @Override
-    public void setPRecipePanParams(String targetGuid, int no, String smartPanCurveParams) {
+    public void setPRecipePanParams(String targetGuid, int no, long recipeId, String smartPanCurveParams) {
         try {
             for (Device device : AccountInfo.getInstance().deviceList) {
                 if (device instanceof Pan && null != device.guid && device.guid.equals(targetGuid)) {
@@ -164,6 +164,7 @@ public class PanBluetoothControl implements PanFunction{
                             step++;
                         }
                         msg.putOpt(PanConstant.pno, no);
+                        msg.putOpt(PanConstant.recipeId, recipeId);
                         msg.putOpt(PanConstant.attributeNum, jsonArray.length());
                         msg.putOpt(PanConstant.steps, jsonArray);
                     }

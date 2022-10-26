@@ -223,7 +223,7 @@ public class RecipeSelectedActivity extends PanBaseActivity {
                     PanAbstractControl.getInstance().setPRecipeStoveParams(HomePan.getInstance().guid, orderNo, stoveId, panCurveDetail.curveStageParams, panCurveDetail.temperatureCurveParams); //设置灶参数
                     handler.sendEmptyMessageDelayed(PanConstant.MSG_PRECIPE, 1000);
                 } else if (pan.msgId == MsgKeys.POT_CURVEElectric_Req) {
-                    PanAbstractControl.getInstance().setPRecipePanParams(HomePan.getInstance().guid, orderNo, panCurveDetail.smartPanModeCurveParams); //设置锅参数
+                    PanAbstractControl.getInstance().setPRecipePanParams(HomePan.getInstance().guid, orderNo, recipeId, panCurveDetail.smartPanModeCurveParams); //设置锅参数
 
                     handler.sendEmptyMessageDelayed(PanConstant.MSG_PRECIPE, 1000);
                 } else if (pan.msgId == MsgKeys.POT_INTERACTION_Req) { //设置锅互动参数
@@ -285,7 +285,7 @@ public class RecipeSelectedActivity extends PanBaseActivity {
             if (favorite) {  //我的最爱 p档菜谱// 150-148-153
                 pan.msgId = MsgKeys.POT_CURVEElectric_Req; //设置锅参数
 
-                PanAbstractControl.getInstance().setPRecipePanParams(HomePan.getInstance().guid, orderNo, panCurveDetail.smartPanModeCurveParams);
+                PanAbstractControl.getInstance().setPRecipePanParams(HomePan.getInstance().guid, orderNo, recipeId, panCurveDetail.smartPanModeCurveParams);
 
                 handler.sendEmptyMessageDelayed(PanConstant.MSG_PRECIPE, 1000);
             } else {  //曲线还原

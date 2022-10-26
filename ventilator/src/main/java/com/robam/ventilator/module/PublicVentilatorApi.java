@@ -58,14 +58,17 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
     }
 
     @Override
-    public boolean isScreenOn(Context context) {
-        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        boolean isScreenOn = pm.isInteractive();
-        return isScreenOn ;
+    public boolean isStartUp() {
+        return (HomeVentilator.getInstance().startup == 0x01) ? true:false;
     }
 
     @Override
     public void shutDown() {
         VentilatorAbstractControl.getInstance().shutDown();
+    }
+
+    @Override
+    public void powerOn() {
+        VentilatorAbstractControl.getInstance().powerOn();
     }
 }

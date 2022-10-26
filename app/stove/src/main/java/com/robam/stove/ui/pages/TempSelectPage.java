@@ -80,7 +80,7 @@ public class TempSelectPage extends StoveBasePage {
         rvSelect.setAdapter(rvTempAdapter);
         //煎炸温度
         ArrayList<String> tempList = new ArrayList<>();
-        for (int i = modeBean.minTemp; i <= modeBean.maxTemp; i++) {
+        for (int i = modeBean.minTemp; i <= modeBean.maxTemp; i=i+10) {
             tempList.add(i + "");
         }
         rvTempAdapter.setList(tempList);
