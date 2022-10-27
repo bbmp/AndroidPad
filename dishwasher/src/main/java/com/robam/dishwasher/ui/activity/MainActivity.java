@@ -7,8 +7,14 @@ import androidx.navigation.Navigation;
 
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
+import com.robam.common.bean.RTopic;
 import com.robam.common.constant.ComnConstant;
+import com.robam.common.device.Plat;
 import com.robam.common.manager.FunctionManager;
+import com.robam.common.mqtt.MqttManager;
+import com.robam.common.mqtt.MqttMsg;
+import com.robam.common.mqtt.MsgKeys;
+import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.base.DishWasherBaseActivity;
@@ -17,6 +23,7 @@ import com.robam.dishwasher.bean.DishWasherModeBean;
 import com.robam.dishwasher.constant.DishWasherConstant;
 import com.robam.dishwasher.constant.DishWasherState;
 import com.robam.dishwasher.device.DishWasherAbstractControl;
+import com.robam.dishwasher.device.DishWasherFactory;
 import com.robam.dishwasher.device.DishWasherMqttControl;
 import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.util.DishWasherCommandHelper;
@@ -75,7 +82,10 @@ public class MainActivity extends DishWasherBaseActivity {
             }
         });
         setLock(HomeDishWasher.getInstance().lock);
+        getLastState();
     }
+
+
 
 
 

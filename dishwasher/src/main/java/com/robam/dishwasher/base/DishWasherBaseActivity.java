@@ -13,14 +13,20 @@ import androidx.lifecycle.Observer;
 
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
+import com.robam.common.bean.RTopic;
+import com.robam.common.device.Plat;
+import com.robam.common.mqtt.MqttManager;
+import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.activity.BaseActivity;
+import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.dishwasher.constant.DishWasherConstant;
 import com.robam.dishwasher.constant.DishWasherWaringEnum;
+import com.robam.dishwasher.device.DishWasherFactory;
 import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.manager.AppManager;
 import com.robam.dishwasher.ui.activity.WaringActivity;
@@ -171,5 +177,17 @@ public abstract class DishWasherBaseActivity extends BaseActivity {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 主动获取查询最新状态
+     */
+    public void getLastState(){
+        MqttMsg msg = new MqttMsg.Builder()
+                .setMsgId(MsgKeys.setDishWasherStatus)
+                .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
+                .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(HomeDishWasher.getInstance().guid), DeviceUtils.getDeviceNumber(HomeDishWasher.getInstance().guid)))
+                .build();
+        MqttManager.getInstance().publish(msg, DishWasherFactory.getProtocol());
     }
 }

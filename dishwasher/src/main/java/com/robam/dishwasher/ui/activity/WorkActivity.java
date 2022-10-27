@@ -115,6 +115,7 @@ public class WorkActivity extends DishWasherBaseActivity {
         MqttDirective.getInstance().getDirective().observe(this, s -> {
             switch (s.shortValue()){
                 case  DishWasherState.OFF:
+                    //getLastState();
                     startActivity(MainActivity.class);
                     finish();
                     break;

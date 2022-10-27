@@ -90,7 +90,7 @@ public class MqttDishWasher extends MqttPublic {
                 MqttMsg newMsg = new MqttMsg.Builder()
                         .setMsgId(MsgKeys.SetPotTemp_Rep)
                         .setGuid(curGuid)
-                        .setDt(Plat.getPlatform().getDt())
+                        //.setDt(Plat.getPlatform().getDt())
                         .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(msg.getGuid()), DeviceUtils.getDeviceNumber(msg.getGuid())))
                         .build();
                 MqttManager.getInstance().publish(newMsg, DishWasherFactory.getProtocol());
