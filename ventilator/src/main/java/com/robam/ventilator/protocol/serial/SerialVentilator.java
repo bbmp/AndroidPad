@@ -167,7 +167,7 @@ public class SerialVentilator {
         return data ;
     }
 
-    //关机机
+    //关机
     public static byte[] shutDown(){
         byte startup = (byte) 0x00;
         byte lightOn = (byte) 0xA0;

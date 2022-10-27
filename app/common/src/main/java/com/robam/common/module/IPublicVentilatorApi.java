@@ -20,8 +20,10 @@ public interface IPublicVentilatorApi extends IPublicApi {
     void startLogin(Context context);
     //查询烟机状态
     void queryAttribute();
-    //
-    boolean isScreenOn(Context context);
+    //是否开机
+    boolean isStartUp();
     //关机
     void shutDown();
+    //开机
+    void powerOn();
 }

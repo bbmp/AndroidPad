@@ -64,11 +64,13 @@ public class TbangPlat implements IPlat{
 
     @Override
     public void screenOn() {
-       tbManager.screenOn();
+//       tbManager.screenOn();
+        tbManager.setBackLight(true);
     }
 
     @Override
     public void screenOff() {
-        tbManager.screenOff();
+//        tbManager.screenOff();
+        tbManager.setBackLight(false);
     }
 }

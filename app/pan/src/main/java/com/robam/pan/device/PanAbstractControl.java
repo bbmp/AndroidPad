@@ -39,8 +39,8 @@ public class PanAbstractControl implements PanFunction{
     }
 
     @Override
-    public void setPRecipePanParams(String targetGuid, int no, String smartPanCurveParams) {
-        function.setPRecipePanParams(targetGuid, no, smartPanCurveParams);
+    public void setPRecipePanParams(String targetGuid, int no, long recipeId, String smartPanCurveParams) {
+        function.setPRecipePanParams(targetGuid, no, recipeId, smartPanCurveParams);
     }
 
     @Override

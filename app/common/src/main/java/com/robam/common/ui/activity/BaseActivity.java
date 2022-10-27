@@ -117,13 +117,14 @@ public abstract class BaseActivity extends AbsActivity implements ActivityAction
             }
         } else if (event.getKeyCode() == KeyEvent.KEYCODE_F1 && event.getAction() == KeyEvent.ACTION_UP) { //右键
             if (null != iPublicVentilatorApi) {
-                if (iPublicVentilatorApi.isScreenOn(this)) {
-                    Plat.getPlatform().screenOff();
-                    Plat.getPlatform().closePowerLamp();
-//                iPublicVentilatorApi.shutDown();
+                if (iPublicVentilatorApi.isStartUp()) {
+                    Plat.getPlatform().screenOff(); //熄灭ping
+                    Plat.getPlatform().closePowerLamp();//关灯
+                    iPublicVentilatorApi.shutDown();
                 } else {
                     Plat.getPlatform().screenOn();
                     Plat.getPlatform().openPowerLamp();
+                    iPublicVentilatorApi.powerOn(); //开机
                 }
             }
 

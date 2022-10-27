@@ -78,6 +78,8 @@ public class CurveRestoreActivity extends PanBaseActivity {
     private int orderNo; //我的最爱序号
     private long recipeId;
 
+    private int retryNum = 0;//重试次数
+
     ArrayList<Entry> restoreList = new ArrayList<>();  //还原列表
 
     IPublicStoveApi iPublicStoveApi = ModulePubliclHelper.getModulePublic(IPublicStoveApi.class,
@@ -204,7 +206,7 @@ public class CurveRestoreActivity extends PanBaseActivity {
             params.put(PanConstant.KEY5, new byte[] {(byte) stoveId}); //更换炉头id
             ByteBuffer buf = ByteBuffer.allocate(10).order(ByteOrder.LITTLE_ENDIAN);
             buf.put((byte) stoveId);
-            buf.putFloat(recipeId);
+            buf.putInt((int) recipeId);
             buf.put((byte) PanConstant.start);
             byte[] data = new byte[buf.position()];
             System.arraycopy(buf.array(), 0, data, 0, data.length);
@@ -227,10 +229,17 @@ public class CurveRestoreActivity extends PanBaseActivity {
                     return;
                 }
                 if (pan.mode != 2 && pan.mode != 3) { //锅未开始工作
+
+//                    retryNum++; //查询次数,中途停止
+//                    if (retryNum >= 10) {
+//                        restoreComplete(true);
+//                        return;
+//                    }
                     PanAbstractControl.getInstance().queryAttribute(pan.guid); //查询锅状态
                     mHandler.postDelayed(runnable, 1000L);
                     return;
                 }
+                retryNum = 0;
                 //判断是否结束
                 if (curStep >= rvStep2Adapter.getData().size()) {
                     //还原结束
@@ -325,7 +334,7 @@ public class CurveRestoreActivity extends PanBaseActivity {
             Map params = new HashMap();
             ByteBuffer buf = ByteBuffer.allocate(10).order(ByteOrder.LITTLE_ENDIAN);
             buf.put((byte) stoveId);
-            buf.putFloat(recipeId);
+            buf.putInt((int) recipeId);
             buf.put((byte) PanConstant.stop);
             byte[] data = new byte[buf.position()];
             System.arraycopy(buf.array(), 0, data, 0, data.length);

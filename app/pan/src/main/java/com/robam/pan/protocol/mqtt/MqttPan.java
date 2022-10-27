@@ -10,6 +10,7 @@ import com.robam.common.mqtt.MqttManager;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MqttPublic;
 import com.robam.common.mqtt.MsgKeys;
+import com.robam.common.utils.ByteUtils;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.MsgUtils;
 import com.robam.common.device.subdevice.Pan;
@@ -38,7 +39,7 @@ public class MqttPan extends MqttPublic {
                 for (Device device: AccountInfo.getInstance().deviceList) {
                     if (device.guid.equals(msg.getGuid()) && device instanceof Pan) { //当前锅
                         Pan pan = (Pan) device;
-                        buf.putFloat((float) pan.panTemp); //温度
+                        buf.putInt((int) pan.panTemp); //温度
                         buf.put((byte) pan.workStatus);//系统状态
                         buf.put((byte) 0x00); //参数个数
                         break;
@@ -120,10 +121,12 @@ public class MqttPan extends MqttPublic {
                             msg.putOpt(PanConstant.lidStatus, lidStatus);
                             break;
                         case QualityKeys.key3:
-                            int pValue = MsgUtils.getByte(payload[offset++]);//p档菜谱值
+                            int orderNo = MsgUtils.getByte(payload[offset++]);//p档菜谱值
+                            msg.putOpt(PanConstant.pno, orderNo);//p档序号
                             break;
                         case QualityKeys.key4:
                             int recipeid = MsgUtils.bytes2IntLittle(payload, offset);
+                            msg.putOpt(PanConstant.recipeId, recipeid);//菜谱id
                             offset += 4;
                             break;
                         case QualityKeys.key5:
@@ -202,7 +205,7 @@ public class MqttPan extends MqttPublic {
             }
                 break;
             case MsgKeys.POT_P_MENU_Req: { //p档菜谱灶参数设置
-                buf.putFloat(msg.optInt(PanConstant.pno)); //p档菜谱序号
+                buf.putInt(msg.optInt(PanConstant.pno)); //p档菜谱序号
                 buf.put((byte) msg.optInt(PanConstant.stoveId)); //炉头id
                 JSONArray jsonArray = msg.optJSONArray(PanConstant.steps);
                 buf.put((byte) jsonArray.length()); //参数个数
@@ -218,7 +221,7 @@ public class MqttPan extends MqttPublic {
             }
             break;
             case MsgKeys.POT_CURVETEMP_Req: { //曲线还原灶参数设置
-                buf.putFloat(msg.optInt(PanConstant.recipeId)); //菜谱id ，0为曲线还原，4个字节
+                buf.putInt(msg.optInt(PanConstant.recipeId)); //菜谱id ，0为曲线还原，4个字节
                 buf.put((byte) msg.optInt(PanConstant.stoveId)); //炉头id
                 JSONArray jsonArray = msg.optJSONArray(PanConstant.steps);
                 buf.put((byte) jsonArray.length()); //参数个数
@@ -234,7 +237,7 @@ public class MqttPan extends MqttPublic {
             }
             break;
             case MsgKeys.POT_Electric_Req: { //p档菜谱锅参数设置
-                buf.putFloat(msg.optInt(PanConstant.pno)); //p档菜谱序号
+                buf.putInt(msg.optInt(PanConstant.pno)); //p档菜谱序号
                 JSONArray jsonArray = msg.optJSONArray(PanConstant.steps);
                 buf.put((byte) jsonArray.length()); //参数个数
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -248,10 +251,14 @@ public class MqttPan extends MqttPublic {
                     buf.put((byte) 0); //正转时间
                     buf.put((byte) 0); //反转时间
                 }
+                buf.put((byte) 1);//其它参数个数
+                buf.put((byte) 'A'); //key
+                buf.put((byte) 4); //length
+                buf.putInt(msg.optInt(PanConstant.recipeId));//菜谱id
             }
             break;
             case MsgKeys.POT_CURVEElectric_Req: {//曲线还原锅参数设置
-                buf.putFloat(msg.optInt(PanConstant.recipeId));// 菜谱id ，0为曲线还原，4个字节
+                buf.putInt(msg.optInt(PanConstant.recipeId));// 菜谱id ，0为曲线还原，4个字节
                 JSONArray jsonArray = msg.optJSONArray(PanConstant.steps);
                 buf.put((byte) jsonArray.length()); //参数个数
                 for (int i = 0; i < jsonArray.length(); i++) {

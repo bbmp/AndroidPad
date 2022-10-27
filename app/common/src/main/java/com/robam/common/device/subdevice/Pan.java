@@ -22,7 +22,7 @@ public class Pan extends Device {
     //工作模式
     public int mode;
     //锅温度
-    public int panTemp;
+    public float panTemp;
     //搅拌模式
     public int fryMode;
     //蓝牙设备
@@ -31,6 +31,10 @@ public class Pan extends Device {
     public BluetoothGattCharacteristic characteristic;
     //蓝牙解析
     public BleDecoder bleDecoder;
+    //p档序号
+    public int orderNo;
+    //菜谱id
+    public int recipeId;
 
     public Pan(Device device) {
         this.ownerId = device.ownerId;
@@ -83,12 +87,16 @@ public class Pan extends Device {
         if (null != msg && msg.has(PanConstant.systemStatus)) {
             queryNum = 0; //查询超过一次无响应离线
             status = Device.ONLINE;
-            panTemp = msg.optInt(PanConstant.temp);
+            panTemp = (float) msg.opt(PanConstant.temp);
             sysytemStatus = msg.optInt(PanConstant.systemStatus);
             if (msg.has(PanConstant.fryMode))
                 fryMode = msg.optInt(PanConstant.fryMode);
             if (msg.has(PanConstant.mode))
                 mode = msg.optInt(PanConstant.mode);
+            if (msg.has(PanConstant.pno))
+                orderNo = msg.optInt(PanConstant.pno);
+            if (msg.has(PanConstant.recipeId))
+                recipeId = msg.optInt(PanConstant.recipeId);
             return true;
         } else if (null != msg && msg.has(PanConstant.panParams)) { //设置锅参数返回
             int rc = msg.optInt(PanConstant.panParams);
