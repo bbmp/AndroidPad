@@ -5,7 +5,7 @@
     "name": "智能洗",
     "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
     "desc" : "自动识别匹配餐具脏污程度进行清洗",
-    "time": 6000,
+    "time": 6600,
     "temp": 70
   },
   {
@@ -55,7 +55,7 @@
   },
   {
     "backgroundImg": "",
-    "code": 7,
+    "code": 14,
     "name": "护婴洗",
     "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
     "desc" : "清洗需要持续高温除菌餐具",
@@ -64,7 +64,7 @@
   },
   {
     "backgroundImg": "",
-    "code": 8,
+    "code": 15,
     "name": "自清洁",
     "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
     "desc" : "洗碗机内腔的清洁",
@@ -73,7 +73,7 @@
   },
   {
     "backgroundImg": "",
-    "code": 9,
+    "code": 17,
     "name": "护婴\n净存",
     "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
     "desc" : "餐具在洗碗机内部的储存",

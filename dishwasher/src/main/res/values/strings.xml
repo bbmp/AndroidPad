@@ -28,7 +28,7 @@
     <string name="dishwasher_sale_service">维修电话：658889789</string>
     <string name="dishwasher_lack_liquid">检测到您的设备缺少漂洗剂\n请及时添加</string>
     <string name="dishwasher_pan_powfull">锅具强洗</string>
-    <string name="dishwasher_kill_powfull">加强杀菌</string>
+    <string name="dishwasher_kill_powfull">加强除菌</string>
     <string name="dishwasher_flush">长效净存</string>
     <string name="dishwasher_down_wash">下层洗</string>
     <string name="dishwasher_start_working">启动</string>
@@ -37,4 +37,29 @@
     <string name="dishwasher_cancel_appointment_hint">确认取消预约当前工作吗？</string>
     <string name="dishwasher_start_work_hint">将在%s后启动工作</string>
     <string name="dishwasher_pausing">暂停中</string>
+    <string name="dishwasher_unlock_hint">请长按2s童锁解除锁定</string>
+    <string name="dishwasher_prompt_down_wash">适用于清洗少量餐具，餐具应放于下层碗蓝</string>
+    <string name="dishwasher_prompt_flush">餐具在洗碗机内部进行存储，最长达120小时</string>
+    <string name="dishwasher_prompt_kill_powfull">对餐具进行加强除菌</string>
+    <string name="dishwasher_prompt_pan_powfull">对锅具等重油污餐具进行加强清洗</string>
+    <string name="dishwasher_waring_e1_title">E1：进水异常报警</string>
+    <string name="dishwasher_waring_e3_title">E3：加热异常报警</string>
+    <string name="dishwasher_waring_e4_title">E4：溢水报警</string>
+    <string name="dishwasher_waring_e5_title">E5：温度传感器报警</string>
+    <string name="dishwasher_waring_e6_title">E6：通讯异常报警</string>
+    <string name="dishwasher_waring_e7_title">E7：流量计报警</string>
+    <string name="dishwasher_waring_e9_title">E9：分水阀异常报警</string>
+    <string name="dishwasher_waring_e10_title">E10：电机故障报警</string>
+
+    <string name="dishwasher_waring_e1_content">检测到您的设备进水异常，请检查进水阀是否开启</string>
+    <string name="dishwasher_waring_e3_content">加热异常，请联系专业技术人员咨询或维修</string>
+    <string name="dishwasher_waring_e4_content">溢水报警，断电后请联系专业技术人员咨询或维修</string>
+    <string name="dishwasher_waring_e5_content">温度传感器故障，请联系专业技术人员咨询或维修</string>
+    <string name="dishwasher_waring_e6_content">通讯故障，请关闭洗碗机并申请售后服务</string>
+    <string name="dishwasher_waring_e7_content"> </string>
+    <string name="dishwasher_waring_e9_content">分水阀异常报警，请联系专业技术人员咨询或维修</string>
+    <string name="dishwasher_waring_e10_content">电机故障，请联系专业技术人员咨询或维修</string>
+    <string name="dishwasher_maintain_phone">维修电话：658889789</string>
+    <string name="dishwasher_lock">童锁</string>
+
 </resources>

@@ -32,4 +32,8 @@ public abstract class DishWasherBasePage extends HeadPage {
             }
         });
     }
+
+    public void showRightCenter(){
+        findViewById(R.id.ll_right_center).setVisibility(View.VISIBLE);
+    }
 }

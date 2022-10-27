@@ -1,20 +1,34 @@
 package com.robam.dishwasher.constant;
 
 public class DishWasherConstant {
-    public final static int MODE_SMART = 1;
-    public final static int MODE_POWFULL = 2;
-    public final static int MODE_QUICK = 3;
-    public final static int MODE_DAILY = 4;
-    public final static int MODE_SAVING = 5;
-    public final static int MODE_BRIGHT = 6;
-    public final static int MODE_BABYCARE = 7;
-    public final static int MODE_SELFCLEAN = 8;
-    public final static int MODE_FLUSH = 9;
+    public final static int MODE_SMART = 5;//智能洗
+    public final static int MODE_POWFULL = 1;//强力洗
+    public final static int MODE_QUICK = 4;//快速洗
+    public final static int MODE_DAILY = 2;//日常洗
+    public final static int MODE_SAVING = 3;//节能洗
+    public final static int MODE_BRIGHT = 6;//晶亮洗
+    public final static int MODE_BABYCARE = 14;// 护婴洗
+    public final static int MODE_SELFCLEAN = 15;//自清洁
+    public final static int MODE_FLUSH = 9;//护婴净存/自动换气
 
-    public final static int AUX_PAN_POWFULL = 10;
-    public final static int AUX_KILL_POWFULL = 11;
-    public final static int AUX_FLUSH = 12;
-    public final static int AUX_DOWN_WASH = 13;
+    //附加模式
+    public final static int AUX_NONE = 0;//无
+    public final static int AUX_PAN_POWFULL = 1;//锅具强洗
+    public final static int AUX_KILL_POWFULL = 6;//加强除菌
+    public final static int AUX_FLUSH = 8;//长效净存
+    public final static int AUX_DOWN_WASH = 3;//下层洗
+
+    public final static int DEVICE_WARING_E0 = 0;//下层洗
+    public final static int DEVICE_WARING_E1 = 1;//下层洗
+    public final static int DEVICE_WARING_E3 = 2;//下层洗
+    public final static int DEVICE_WARING_E4 = 4;//下层洗
+    public final static int DEVICE_WARING_E5 = 5;//下层洗
+    public final static int DEVICE_WARING_E6 = 6;//下层洗
+    public final static int DEVICE_WARING_E7 = 7;//下层洗
+    //public final static int DEVICE_WARING_E8 = 8;//下层洗
+    public final static int DEVICE_WARING_E9 = 9;//下层洗
+    public final static int DEVICE_WARING_E10 = 10;//下层洗
+
 
     public final static String EXTRA_MODEBEAN = "modebean";
 
@@ -80,6 +94,9 @@ public class DishWasherConstant {
 
     public final static String MSG_ID = "MSG_ID";//预约时间targetGuid
     public final static String TARGET_GUID = "target_guid";
+
+    public final static String RC = "RC";
+    public final static String WARING_CODE = "RC";
 
 
    /* public final static short OFF=0;//关机

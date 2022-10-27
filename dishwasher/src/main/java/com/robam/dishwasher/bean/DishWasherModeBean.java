@@ -22,4 +22,18 @@ public class DishWasherModeBean implements Serializable {
      * 附加code（锅具强洗/加强除菌/长效净存/下层洗）
      */
     public int auxCode = -1;
+
+    public DishWasherModeBean getNewMode(){
+        DishWasherModeBean modeBean = new DishWasherModeBean();
+        modeBean.code = code;
+        modeBean.name = name;
+        modeBean.backgroundImg = backgroundImg;
+        modeBean.desc = desc;
+        modeBean.into = into;
+        modeBean.temp = temp;
+        modeBean.time = time;
+        modeBean.auxCode = auxCode;
+        return modeBean;
+    }
+
 }

@@ -33,4 +33,9 @@ public class HomeDishWasher {
      *   辅助模式
      */
     public int auxMode;
+
+    /**
+     * 是否启动童锁
+     */
+    public boolean lock;
 }

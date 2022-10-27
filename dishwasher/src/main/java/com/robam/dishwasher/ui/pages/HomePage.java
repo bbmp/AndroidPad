@@ -66,6 +66,7 @@ public class HomePage extends DishWasherBasePage {
         rvMainModeAdapter = new RvMainModeAdapter();
         rvMain.setAdapter(rvMainModeAdapter);
         showCenter();
+        showRightCenter();
         setOnClickListener(R.id.iv_float);
     }
     //模式参数设置

@@ -82,7 +82,7 @@ public class DishWasher extends Device{
 
                 this.LackSaltStatus = (short) msg.optInt(DishWasherConstant.LackSaltStatus);
 
-                this.AbnormalAlarmStatus = (short) msg.optInt(DishWasherConstant.AbnormalAlarmStatus);
+                this.abnormalAlarmStatus = (short) msg.optInt(DishWasherConstant.AbnormalAlarmStatus);
 
                 this.ArgumentNumber = (short) msg.optInt(DishWasherConstant.ArgumentNumber);
 
@@ -90,7 +90,7 @@ public class DishWasher extends Device{
 
                 this.SetWorkTimeValue = (short) msg.optInt(DishWasherConstant.SetWorkTimeValue);
 
-                this.addAux = (short) msg.optInt(DishWasherConstant.ADD_AUX);
+                this.auxMode = (short) msg.optInt(DishWasherConstant.ADD_AUX);
 
                 //postEvent(new DisherWasherStatusChangeEvent(this));
 
@@ -160,7 +160,7 @@ public class DishWasher extends Device{
     public short AppointmentSwitchStatus;
     public short AutoVentilation;
 
-    public short addAux ;
+    //public short addAux ;
     /**
      * 设置的预约时间
      */
@@ -196,7 +196,7 @@ public class DishWasher extends Device{
     /**
      * 异常报警状态
      */
-    public short AbnormalAlarmStatus;
+    public short abnormalAlarmStatus;
     public short ArgumentNumber;
     public short CurrentWaterTemperatureValue;
     public short SetWorkTimeValue;

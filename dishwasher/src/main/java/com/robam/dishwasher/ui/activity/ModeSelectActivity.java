@@ -9,18 +9,21 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
 import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.TimeUtils;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.base.DishWasherBaseActivity;
+import com.robam.dishwasher.bean.DishWasher;
 import com.robam.dishwasher.bean.DishWasherModeBean;
+import com.robam.dishwasher.constant.DishWasherAuxEnum;
 import com.robam.dishwasher.constant.DishWasherConstant;
+import com.robam.dishwasher.constant.DishWasherState;
 import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.util.DishWasherCommonHelper;
-
-import java.util.HashMap;
 import java.util.Map;
 
 public class ModeSelectActivity extends DishWasherBaseActivity {
@@ -30,6 +33,7 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
     private TextView tvTime, tvTemp, tvTempUnit;
     private RadioButton rButton1, rButton2, rButton3, rButton4;
     private TextView tvStartHint;
+    private TextView tvAuxPrompt;
     //当前模式
     private DishWasherModeBean modeBean = null;
 
@@ -68,22 +72,31 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
         rButton3 = findViewById(R.id.rb_button3);
         rButton4 = findViewById(R.id.rb_button4);
         tvStartHint = findViewById(R.id.tv_start);
+        tvAuxPrompt = findViewById(R.id.aux_prompt_tv);
         setRight(R.string.dishwasher_appointment);
+        showRightCenter();
         setOnClickListener(R.id.ll_left, R.id.ll_right, R.id.btn_start);
 
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (checkedId == R.id.rb_button1) {
-                    HomeDishWasher.getInstance().auxMode = DishWasherConstant.AUX_PAN_POWFULL;
-                } else if (checkedId == R.id.rb_button2) {
-                    HomeDishWasher.getInstance().auxMode = DishWasherConstant.AUX_KILL_POWFULL;
-                } else if (checkedId == R.id.rb_button3) {
-                    HomeDishWasher.getInstance().auxMode = DishWasherConstant.AUX_FLUSH;
-                } else if (checkedId == R.id.rb_button4) {
-                    HomeDishWasher.getInstance().auxMode = DishWasherConstant.AUX_DOWN_WASH;
-                } else
-                    HomeDishWasher.getInstance().auxMode = -1;
+        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            setTvAuxPrompt(group,checkedId);
+            if (checkedId == R.id.rb_button1) {
+                HomeDishWasher.getInstance().auxMode = DishWasherConstant.AUX_PAN_POWFULL;
+            } else if (checkedId == R.id.rb_button2) {
+                HomeDishWasher.getInstance().auxMode = DishWasherConstant.AUX_KILL_POWFULL;
+            } else if (checkedId == R.id.rb_button3) {
+                HomeDishWasher.getInstance().auxMode = DishWasherConstant.AUX_FLUSH;
+            } else if (checkedId == R.id.rb_button4) {
+                HomeDishWasher.getInstance().auxMode = DishWasherConstant.AUX_DOWN_WASH;
+            } else
+                HomeDishWasher.getInstance().auxMode = -1;
+        });
+
+        AccountInfo.getInstance().getGuid().observe(this, s -> {
+            for (Device device: AccountInfo.getInstance().deviceList) {
+                if (device.guid.equals(s) && device instanceof DishWasher && device.guid.equals(HomeDishWasher.getInstance().guid)) {
+                    DishWasher dishWasher = (DishWasher) device;
+                    setLock(dishWasher.StoveLock == 1);
+                }
             }
         });
 
@@ -97,11 +110,28 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
                     intent.setClass(ModeSelectActivity.this, WorkActivity.class);
                     startActivity(intent);
                     finish();
-                    LogUtils.e("sendCommonMsg success");
+                    //LogUtils.e("sendCommonMsg success");
                 });
+            }else if(s == (MsgKeys.setDishWasherPower + directive_offset)){
+                sendStartWorkCommand();
             }
         });
 
+    }
+
+    private void setTvAuxPrompt(RadioGroup group, int checkedId){
+        if(checkedId != -1){
+            int resId = DishWasherAuxEnum.matchPromptRes(((RadioButton)group.findViewById(checkedId)).getText().toString());
+            if(resId > 0){
+                tvAuxPrompt.setText(resId);
+            }else{
+                tvAuxPrompt.setText("");
+            }
+            tvTime.setTextColor(getResources().getColor(R.color.dishwasher_lock));
+        }else{
+            tvAuxPrompt.setText("");
+            tvTime.setTextColor(getResources().getColor(R.color.dishwasher_white));
+        }
     }
 
 
@@ -174,18 +204,12 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
         if (id == R.id.ll_right) {
             //预约
             Intent intent = new Intent();
-            //if (null != modeBean)
-            intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, modeBean);
+            DishWasherModeBean newMode = modeBean.getNewMode();
+            newMode.auxCode = getAuxCode();
+            intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, newMode);
             intent.setClass(this, AppointmentActivity.class);
             startActivity(intent);
         } else if (id == R.id.btn_start) {
-            //开始工作
-//            Intent intent = new Intent();
-//            if (null != modeBean)
-//                intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, modeBean);
-//            intent.setClass(this, WorkActivity.class);
-//            startActivity(intent);
-//            finish();
             startWork();
         } else if (id == R.id.ll_left) {
             //返回
@@ -194,29 +218,52 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
     }
 
     private void startWork(){
+        DishWasher curDevice = getCurDevice();
+        if(curDevice.powerStatus == DishWasherState.OFF){
+            sendSetPowerStateCommand();
+        }else {
+            sendStartWorkCommand();
+        }
+    }
 
-        /*Map map = new HashMap();
-        map.put(DishWasherConstant.UserId,getSrcUser());
-        map.put(DishWasherConstant.DishWasherWorkMode, HomeDishWasher.getInstance().workMode);
-        map.put(DishWasherConstant.LowerLayerWasher, lowerWash);
+    private void sendSetPowerStateCommand(){
+        Map map = DishWasherCommonHelper.getCommonMap(MsgKeys.setDishWasherPower);
+        map.put(DishWasherConstant.PowerMode,1);
+        DishWasherCommonHelper.sendCommonMsgForLiveData(map,MsgKeys.setDishWasherPower + directive_offset);
+    }
 
+    private void sendStartWorkCommand(){
+        Map map = DishWasherCommonHelper.getModelMap(MsgKeys.setDishWasherWorkMode, modeBean.code,(short) 0,0);
         map.put(DishWasherConstant.AutoVentilation, 0);
         map.put(DishWasherConstant.EnhancedDrySwitch, 0);
         map.put(DishWasherConstant.AppointmentSwitch, 0);
         map.put(DishWasherConstant.AppointmentTime, 0);
-       *//* msg.putOpt(MsgParams.UserId, getSrcUser());
-        msg.putOpt(MsgParams.DishWasherWorkMode, workMode);
-        msg.putOpt(MsgParams.LowerLayerWasher, bottomWasherSwitch);
-        msg.putOpt(MsgParams.AutoVentilation, autoVentilation);
-        msg.putOpt(MsgParams.EnhancedDrySwitch, enhancedDrySwitch);
-        msg.putOpt(MsgParams.AppointmentSwitch, appointmentSwitch);
-        msg.putOpt(MsgParams.AppointmentTime, appointmentTime);*//*
-        //HomeDishWasher.getInstance().auxMode   当前选中的附加程序(默认是0 未选择任何附加程序)
+        map.put(DishWasherConstant.ArgumentNumber, 1);
+        map.put(DishWasherConstant.ADD_AUX, getAuxCode());
+        DishWasherCommonHelper.sendCommonMsgForLiveData(map,MsgKeys.setDishWasherWorkMode + directive_offset);
 
-        DishWasherAbstractControl.getInstance().sendCommonMsg(map,HomeDishWasher.getInstance().guid, MsgKeys.setDishWasherWorkMode);*/
-
-        Map params = DishWasherCommonHelper.getModelMap(MsgKeys.setDishWasherWorkMode, modeBean.code,(short) 0,0);
-        DishWasherCommonHelper.sendCommonMsgForLiveData(params,MsgKeys.setDishWasherWorkMode + directive_offset);
     }
+
+
+
+
+    /**
+     *
+     * @return 获取附加模式code
+     */
+    private int getAuxCode(){
+        if(radioGroup.getVisibility() == View.VISIBLE){
+            int checkedRadioButtonId = radioGroup.getCheckedRadioButtonId();
+            RadioButton radioButton = radioGroup.findViewById(checkedRadioButtonId);
+            if(radioButton == null){
+                return DishWasherAuxEnum.AUX_NONE.getCode();
+            }else{
+                return DishWasherAuxEnum.matchValue(radioButton.getText().toString());
+            }
+        }
+        return DishWasherAuxEnum.AUX_NONE.getCode();
+    }
+
+
 
 }

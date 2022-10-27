@@ -9,4 +9,5 @@
     <color name="dishwasher_mode">#fff6f6f6</color>
     <color name="dishwasher_white_50">#80ffffff</color>
     <color name="dishwasher_white_20">#33ffffff</color>
+    <color name="dishwasher_lock">#ff72afff</color>
 </resources>

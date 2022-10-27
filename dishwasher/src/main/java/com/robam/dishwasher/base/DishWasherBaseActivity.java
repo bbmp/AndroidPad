@@ -1,17 +1,23 @@
 package com.robam.dishwasher.base;
 
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 
 import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
 import com.robam.common.ui.activity.BaseActivity;
 import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.ToastUtils;
 import com.robam.dishwasher.R;
+import com.robam.dishwasher.bean.DishWasher;
+import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.manager.AppManager;
 
 public abstract class DishWasherBaseActivity extends BaseActivity {
@@ -19,6 +25,9 @@ public abstract class DishWasherBaseActivity extends BaseActivity {
 //    public void showFloat() {
 //        findViewById(R.id.iv_float).setVisibility(View.VISIBLE);
 //    }
+    //是否启动童锁
+    private boolean lock;
+    private long lastTouchMil;
 
     public void showLeft() {
         findViewById(R.id.ll_left).setVisibility(View.VISIBLE);
@@ -61,5 +70,74 @@ public abstract class DishWasherBaseActivity extends BaseActivity {
         super.onDestroy();
         AppManager.getInstance().removeActivity(this);
         LogUtils.i("washer onDestroy stack size = " + AppManager.getInstance().getActivityStackSize());
+    }
+
+    public void showRightCenter(){
+        findViewById(R.id.ll_right_center).setVisibility(View.VISIBLE);
+    }
+
+
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if(lock){
+            boolean isTouchAble = lockTouchArea(ev);
+            //LogUtils.e("caTouch "+isTouchAble);
+            if(isTouchAble){
+                return super.dispatchTouchEvent(ev);
+            }
+            if(System.currentTimeMillis() - lastTouchMil >= 3000){
+                ToastUtils.show(this,R.string.dishwasher_unlock_hint, Toast.LENGTH_LONG);
+                lastTouchMil = System.currentTimeMillis();
+            }
+            return true;
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    /**
+     * 是否为童锁可触控区域
+     * @return
+     */
+    private boolean lockTouchArea(MotionEvent ev){
+        float x = ev.getRawX();
+        float y = ev.getRawY();
+        View touchAbleView = findViewById(R.id.ll_right_center);
+        if(touchAbleView == null){
+            return false;
+        }
+        int[] location = new int[2];
+        touchAbleView.getLocationInWindow(location);
+
+        return x >= location[0] &&
+                x <= location[0] + touchAbleView.getWidth() &&
+                y >= location[1] &&
+                y <= location[1] + touchAbleView.getHeight();
+    }
+
+    public void setLock(boolean lock){
+        this.lock = lock;
+        HomeDishWasher.getInstance().lock = lock;
+        View iconView = findViewById(R.id.iv_right_center);
+        View tvView = findViewById(R.id.tv_right_center);
+        if(iconView == null || !(iconView instanceof ImageView) || tvView == null || !(tvView instanceof TextView)){
+            return;
+        }
+        ((ImageView) iconView).setImageResource(lock ? R.drawable.dishwasher_screen_lock : R.drawable.dishwasher_screen_unlock);
+        ((TextView) tvView).setTextColor(getResources().getColor(lock?R.color.dishwasher_lock:R.color.dishwasher_white));
+    }
+
+    /**
+     * 获取当前设备实体
+     * @return
+     */
+    protected DishWasher getCurDevice(){
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device instanceof DishWasher && device.guid.equals(HomeDishWasher.getInstance().guid)) {
+                DishWasher dishWasher = (DishWasher) device;
+                return dishWasher;
+            }
+        }
+        return null;
     }
 }

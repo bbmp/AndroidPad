@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.MqttDirective;
-import com.robam.common.mqtt.MqttManager;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.CircleProgressView;
@@ -24,12 +23,13 @@ import com.robam.dishwasher.base.DishWasherBaseActivity;
 import com.robam.dishwasher.bean.DishWasherModeBean;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.dishwasher.constant.DialogConstant;
+import com.robam.dishwasher.constant.DishWasherAuxEnum;
 import com.robam.dishwasher.constant.DishWasherConstant;
 import com.robam.dishwasher.constant.DishWasherState;
+import com.robam.dishwasher.constant.DishWasherWaringEnum;
 import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.factory.DishWasherDialogFactory;
 import com.robam.dishwasher.util.DishWasherCommonHelper;
-import com.robam.dishwasher.util.DishWasherModelUtil;
 import com.robam.dishwasher.util.TimeDisplayUtil;
 
 import java.util.Map;
@@ -79,6 +79,7 @@ public class WorkActivity extends DishWasherBaseActivity {
                 if (device.guid.equals(s) && device instanceof DishWasher && device.guid.equals(HomeDishWasher.getInstance().guid)) { //当前锅
                     DishWasher dishWasher = (DishWasher) device;
                     LogUtils.e("WorkActivity mqtt msg arrive isWorking "+dishWasher.powerStatus);
+                    setLock(dishWasher.StoveLock == 1);
                     switch (dishWasher.powerStatus){
                         case DishWasherState.WORKING:
                         case DishWasherState.PAUSE:
@@ -234,7 +235,17 @@ public class WorkActivity extends DishWasherBaseActivity {
         }else if(dishWasher.powerStatus == DishWasherState.PAUSE){
             tvDuration.setText(getSpan(dishWasher.DishWasherRemainingWorkingTime));
         }
-        tvAuxMode.setText(DishWasherModelUtil.autoMode(dishWasher));//附加模式
+        tvAuxMode.setText(DishWasherAuxEnum.match(dishWasher.auxMode));//附加模式
+        dealWaring(dishWasher);
+    }
+
+    private void dealWaring(DishWasher dishWasher){
+        if(dishWasher.abnormalAlarmStatus != DishWasherWaringEnum.E0.getCode()){
+            //跳转到告警页面
+            Intent intent = new Intent(this,WaringActivity.class);
+            intent.putExtra(DishWasherConstant.WARING_CODE,dishWasher.abnormalAlarmStatus);
+            startActivity(intent);
+        }
     }
 
     private void changeViewsState(int state){

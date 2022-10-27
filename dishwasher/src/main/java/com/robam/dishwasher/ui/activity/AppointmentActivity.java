@@ -1,33 +1,25 @@
 package com.robam.dishwasher.ui.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-
-import com.robam.common.bean.AccountInfo;
-import com.robam.common.bean.Device;
 import com.robam.common.bean.MqttDirective;
-import com.robam.common.mqtt.MqttManager;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.common.utils.DateUtil;
-import com.robam.common.utils.LogUtils;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.base.DishWasherBaseActivity;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.dishwasher.bean.DishWasherModeBean;
 import com.robam.dishwasher.constant.DishWasherConstant;
+import com.robam.dishwasher.constant.DishWasherState;
 import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.ui.adapter.RvStringAdapter;
 import com.robam.dishwasher.util.DishWasherCommonHelper;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Map;
 
 //工作预约
@@ -101,16 +93,15 @@ public class AppointmentActivity extends DishWasherBaseActivity {
 
         MqttDirective.getInstance().getDirective().observe(this, s -> {
             if(s.shortValue() == (MsgKeys.setDishWasherWorkMode + directive_offset)){
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Intent intent = new Intent();
-                        intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, modeBean);
-                        intent.setClass(AppointmentActivity.this, AppointingActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
+                runOnUiThread(() -> {
+                    Intent intent = new Intent();
+                    intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, modeBean);
+                    intent.setClass(AppointmentActivity.this, AppointingActivity.class);
+                    startActivity(intent);
+                    finish();
                 });
+            }else if(s == (MsgKeys.setDishWasherPower + directive_offset)){
+                sendAppointingCommand();
             }
         });
     }
@@ -148,13 +139,39 @@ public class AppointmentActivity extends DishWasherBaseActivity {
         if (id == R.id.btn_cancel)
             finish();
         else if (id == R.id.btn_ok) { //确认预约
-            Map params = DishWasherCommonHelper.getModelMap(MsgKeys.setDishWasherWorkMode, modeBean.code,(short) 1,DishWasherCommonHelper.getAppointingTimeMin(tvTime.getText().toString()));
-            HomeDishWasher.getInstance().workHours = modeBean.time;
-            HomeDishWasher.getInstance().orderWorkTime = DishWasherCommonHelper.getAppointingTimeMin(tvTime.getText().toString());
-            DishWasherCommonHelper.sendCommonMsgForLiveData(params,MsgKeys.setDishWasherWorkMode+directive_offset);
+            startAppointing();
         }else if(id == R.id.ll_left){
             finish();
         }
+    }
+
+    private void startAppointing(){
+        DishWasher curDevice = getCurDevice();
+        if(curDevice.powerStatus == DishWasherState.OFF){
+            sendSetPowerStateCommand();
+        }else {
+            sendAppointingCommand();
+        }
+    }
+
+    private void sendSetPowerStateCommand(){
+        Map map = DishWasherCommonHelper.getCommonMap(MsgKeys.setDishWasherPower);
+        map.put(DishWasherConstant.PowerMode,1);
+        DishWasherCommonHelper.sendCommonMsgForLiveData(map,MsgKeys.setDishWasherPower + directive_offset);
+    }
+
+    private void sendAppointingCommand(){
+        Map map = DishWasherCommonHelper.getModelMap(MsgKeys.setDishWasherWorkMode, modeBean.code,(short) 1,DishWasherCommonHelper.getAppointingTimeMin(tvTime.getText().toString()));
+        map.put(DishWasherConstant.AutoVentilation, 0);
+        map.put(DishWasherConstant.EnhancedDrySwitch, 0);
+        map.put(DishWasherConstant.AppointmentSwitch, 0);
+        map.put(DishWasherConstant.AppointmentTime, 0);
+        map.put(DishWasherConstant.ArgumentNumber, 1);
+        map.put(DishWasherConstant.ADD_AUX, modeBean.auxCode);
+        DishWasherCommonHelper.sendCommonMsgForLiveData(map,MsgKeys.setDishWasherWorkMode + directive_offset);
+
+        HomeDishWasher.getInstance().workHours = modeBean.time;
+        HomeDishWasher.getInstance().orderWorkTime = DishWasherCommonHelper.getAppointingTimeMin(tvTime.getText().toString());
     }
 
 

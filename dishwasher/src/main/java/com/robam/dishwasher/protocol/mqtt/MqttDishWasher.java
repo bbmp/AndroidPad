@@ -5,6 +5,7 @@ import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MqttPublic;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.ByteUtils;
+import com.robam.common.utils.MsgUtils;
 import com.robam.dishwasher.constant.DishWasherConstant;
 
 import java.nio.ByteBuffer;
@@ -16,6 +17,9 @@ public class MqttDishWasher extends MqttPublic {
     protected void onDecodeMsg(MqttMsg msg, byte[] payload, int offset) throws Exception{
         //解析需要的字段存放
         switch (msg.getID()) {
+            case MsgKeys.getDishWasherWorkMode:
+                msg.putOpt(DishWasherConstant.RC, ByteUtils.toShort(payload[offset++]));
+                break;
             case MsgKeys.getDishWasherStatus:
                 short powerStatus =  ByteUtils.toShort(payload[offset++]);
                 short stoveLock = ByteUtils.toShort(payload[offset++]);
@@ -31,24 +35,14 @@ public class MqttDishWasher extends MqttPublic {
                 int appointmentRemainingTime = ByteUtils.toInt32(payload, offset++, ByteUtils.BYTE_ORDER);
 
                 offset++;
-                short rinseAgentPositionKey =
-                        ByteUtils.toShort(payload[offset++]);
-                short saltFlushValue =
-                        ByteUtils.toShort(payload[offset++]);
-                short dishWasherFanSwitch =
-                        ByteUtils.toShort(payload[offset++]);
-                short doorOpenState =
-                        ByteUtils.toShort(payload[offset++]);
-                short lackRinseStatus =
-                        ByteUtils.toShort(payload[offset++]);
-                short lackSaltStatus =
-                        ByteUtils.toShort(payload[offset++]);
-                short abnormalAlarmStatus =
-                        ByteUtils.toShort(payload[offset++]);
-
-                short ADD_AUX =
-                        ByteUtils.toShort(payload[payload.length - 1]);
-
+                short rinseAgentPositionKey = ByteUtils.toShort(payload[offset++]);
+                short saltFlushValue = ByteUtils.toShort(payload[offset++]);
+                short dishWasherFanSwitch = ByteUtils.toShort(payload[offset++]);
+                short doorOpenState = ByteUtils.toShort(payload[offset++]);
+                short lackRinseStatus = ByteUtils.toShort(payload[offset++]);
+                short lackSaltStatus = ByteUtils.toShort(payload[offset++]);
+                short abnormalAlarmStatus = ByteUtils.toShort(payload[offset++]);
+                short ADD_AUX = ByteUtils.toShort(payload[payload.length - 1]);
                 short argument = ByteUtils.toShort(payload[offset++]);
 
                 msg.putOpt(DishWasherConstant.powerStatus, powerStatus);
@@ -59,6 +53,14 @@ public class MqttDishWasher extends MqttPublic {
                 msg.putOpt(DishWasherConstant.AutoVentilation, autoVentilation);
                 msg.putOpt(DishWasherConstant.AppointmentTime, appointmentTime);
                 msg.putOpt(DishWasherConstant.AppointmentRemainingTime, appointmentRemainingTime);
+                msg.putOpt(DishWasherConstant.SaltFlushValue, saltFlushValue);
+                msg.putOpt(DishWasherConstant.DishWasherFanSwitch, dishWasherFanSwitch);
+                msg.putOpt(DishWasherConstant.DoorOpenState, doorOpenState);
+                msg.putOpt(DishWasherConstant.LackRinseStatus, lackRinseStatus);
+                msg.putOpt(DishWasherConstant.LackSaltStatus, lackSaltStatus);
+                msg.putOpt(DishWasherConstant.AbnormalAlarmStatus, abnormalAlarmStatus);
+                msg.putOpt(DishWasherConstant.ADD_AUX, ADD_AUX);
+
                 break;
         }
     }
@@ -112,8 +114,6 @@ public class MqttDishWasher extends MqttPublic {
                     buf.put((byte) 1);
                     buf.put((byte) addAux);
                 }
-
-
                 break;
             case MsgKeys.setDishWasherStatus:
                 buf.put((byte) ITerminalType.PAD);

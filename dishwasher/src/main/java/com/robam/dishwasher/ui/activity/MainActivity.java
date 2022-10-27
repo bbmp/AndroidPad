@@ -15,14 +15,12 @@ import com.robam.dishwasher.base.DishWasherBaseActivity;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.dishwasher.bean.DishWasherModeBean;
 import com.robam.dishwasher.constant.DishWasherConstant;
-import com.robam.dishwasher.constant.DishWasherEnum;
 import com.robam.dishwasher.constant.DishWasherState;
 import com.robam.dishwasher.device.DishWasherAbstractControl;
 import com.robam.dishwasher.device.DishWasherMqttControl;
 import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.util.DishWasherCommonHelper;
 import com.robam.dishwasher.util.DishWasherModelUtil;
-
 import java.util.List;
 
 //远程入口，供烟机调用
@@ -47,13 +45,13 @@ public class MainActivity extends DishWasherBaseActivity {
         //开启远程控制
         DishWasherAbstractControl.getInstance().init(new DishWasherMqttControl());
         HomeDishWasher.getInstance().guid = getIntent().getStringExtra(ComnConstant.EXTRA_GUID);
-
         final List<DishWasherModeBean> modeBeanList = FunctionManager.getFuntionList(getContext(), DishWasherModeBean.class,R.raw.dishwahser);
         AccountInfo.getInstance().getGuid().observe(this, s -> {
             for (Device device: AccountInfo.getInstance().deviceList) {
-                if (device.guid.equals(s) && device instanceof DishWasher && device.guid.equals(HomeDishWasher.getInstance().guid)) { //当前锅
+                if (device.guid.equals(s) && device instanceof DishWasher && device.guid.equals(HomeDishWasher.getInstance().guid)) {
                     DishWasher dishWasher = (DishWasher) device;
                     LogUtils.e("ModeSelectActivity mqtt msg arrive isWorking "+dishWasher.powerStatus);
+                    setLock(dishWasher.StoveLock == 1);
                     //washer.AppointmentSwitchStatus 预约状态  开： DishWasherStatus.appointmentSwitchOn 关 ： DishWasherStatus.appointmentSwitchOff
                     switch (dishWasher.powerStatus){
                         case DishWasherState.WORKING:
@@ -66,6 +64,7 @@ public class MainActivity extends DishWasherBaseActivity {
                 }
             }
         });
+        setLock(HomeDishWasher.getInstance().lock);
     }
 
     private void dealWasherWorkingState(List<DishWasherModeBean> modeBeanList ,DishWasher dishWasher){
