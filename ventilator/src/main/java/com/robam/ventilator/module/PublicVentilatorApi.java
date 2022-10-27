@@ -32,7 +32,7 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
 
     @Override
     public int getFanLight() {
-        if (HomeVentilator.getInstance().lightOn == 0xA1)
+        if (HomeVentilator.getInstance().lightOn == (byte) 0xA1)
             return VentilatorConstant.FAN_LIGHT_OPEN;
         else
             return VentilatorConstant.FAN_LIGHT_CLOSE;

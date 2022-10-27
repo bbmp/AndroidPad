@@ -226,11 +226,12 @@ public class SerialVentilator {
      */
     public static byte[] setLight(byte light){
         byte lightOn = light;
+        byte beep = (byte) 0x04;
         byte[] payload = new byte[]{
                 HomeVentilator.getInstance().startup,
                 lightOn,
                 HomeVentilator.getInstance().gear,
-                HomeVentilator.getInstance().beep,
+                beep,
                 HomeVentilator.getInstance().baffle,
                 HomeVentilator.getInstance().param1,
                 HomeVentilator.getInstance().param2,

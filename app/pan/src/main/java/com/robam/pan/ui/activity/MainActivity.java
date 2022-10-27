@@ -1,5 +1,8 @@
 package com.robam.pan.ui.activity;
 
+import android.os.Bundle;
+
+import androidx.annotation.Nullable;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
@@ -9,8 +12,14 @@ import com.robam.common.ui.activity.BaseActivity;
 import com.robam.common.utils.LogUtils;
 import com.robam.pan.R;
 import com.robam.pan.device.HomePan;
+import com.robam.pan.manager.PanActivityManager;
 
 public class MainActivity extends BaseActivity {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        PanActivityManager.getInstance().addActivity(this);
+    }
 
     @Override
     protected int getLayoutId() {
@@ -31,5 +40,11 @@ public class MainActivity extends BaseActivity {
             AccountInfo.getInstance().getGuid().setValue(HomePan.getInstance().guid);
         }
         LogUtils.e("Home pan " + HomePan.getInstance().guid);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PanActivityManager.getInstance().removeActivity(this);
     }
 }

@@ -1,5 +1,8 @@
 package com.robam.stove.ui.activity;
 
+import android.os.Bundle;
+
+import androidx.annotation.Nullable;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
@@ -9,9 +12,16 @@ import com.robam.common.ui.activity.BaseActivity;
 import com.robam.common.utils.LogUtils;
 import com.robam.stove.R;
 import com.robam.stove.device.HomeStove;
+import com.robam.stove.manager.StoveActivityManager;
 
 //非主入口
 public class MainActivity extends BaseActivity {
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        StoveActivityManager.getInstance().addActivity(this);
+    }
 
     @Override
     protected int getLayoutId() {
@@ -33,5 +43,11 @@ public class MainActivity extends BaseActivity {
         }
         LogUtils.e("HomeStove guid " + HomeStove.getInstance().guid);
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        StoveActivityManager.getInstance().removeActivity(this);
     }
 }

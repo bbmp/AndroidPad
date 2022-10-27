@@ -3,7 +3,9 @@ package com.robam.common.bean;
 import androidx.lifecycle.MutableLiveData;
 
 import com.clj.fastble.data.BleDevice;
+import com.robam.common.IDeviceType;
 import com.robam.common.ble.BleDecoder;
+import com.robam.common.device.Plat;
 
 import org.eclipse.paho.client.mqttv3.util.Strings;
 
@@ -21,6 +23,7 @@ public class AccountInfo {
     private MutableLiveData<String> guid = new MutableLiveData<>(""); //设备状态变化
     private AccountInfo() {}
 
+    public String topGuid = Plat.getPlatform().getDeviceOnlySign();//当前设备
     //设备列表
     public List<Device> deviceList = new ArrayList<>();
 

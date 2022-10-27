@@ -180,6 +180,10 @@ public class CurveRestoreActivity extends StoveBaseActivity {
                     return;
                 }
                 if (pan.mode != 3 && null != iPublicPanApi) { //锅不是曲线还原模式
+
+                    if (curTime > 0) //已经开始,中途停止
+                        curTime++;
+
                     iPublicPanApi.queryAttribute(pan.guid); //查询锅状态
                     mHandler.postDelayed(runnable, 1000L);
                     return;
