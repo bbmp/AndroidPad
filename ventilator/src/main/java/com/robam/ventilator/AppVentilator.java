@@ -11,6 +11,7 @@ import com.robam.common.http.RetrofitClient;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.dishwasher.device.DishWasherAbstractControl;
 import com.robam.dishwasher.device.DishWasherMqttControl;
+import com.robam.dishwasher.util.DishWasherCommandHelper;
 import com.robam.pan.device.PanAbstractControl;
 import com.robam.pan.device.PanBluetoothControl;
 import com.robam.steamoven.device.SteamAbstractControl;
@@ -52,6 +53,7 @@ public class AppVentilator {
 
         //初始化
         MqttDirective.getInstance();
+        DishWasherCommandHelper.getInstance();
 
     }
 

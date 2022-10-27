@@ -1,12 +1,18 @@
 package com.robam.dishwasher.protocol.mqtt;
 
 import com.robam.common.ITerminalType;
+import com.robam.common.bean.RTopic;
+import com.robam.common.device.Plat;
+import com.robam.common.mqtt.MqttManager;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MqttPublic;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.ByteUtils;
+import com.robam.common.utils.DeviceUtils;
+import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MsgUtils;
 import com.robam.dishwasher.constant.DishWasherConstant;
+import com.robam.dishwasher.device.DishWasherFactory;
 
 import java.nio.ByteBuffer;
 
@@ -46,6 +52,7 @@ public class MqttDishWasher extends MqttPublic {
                 short argument = ByteUtils.toShort(payload[offset++]);
 
                 msg.putOpt(DishWasherConstant.powerStatus, powerStatus);
+                msg.putOpt(DishWasherConstant.StoveLock, stoveLock);
                 msg.putOpt(DishWasherConstant.DishWasherWorkMode, dishWasherWorkMode);
                 msg.putOpt(DishWasherConstant.DishWasherRemainingWorkingTime, dishWasherRemainingWorkingTime);
                 msg.putOpt(DishWasherConstant.LowerLayerWasher, lowerLayerWasher);
@@ -62,6 +69,31 @@ public class MqttDishWasher extends MqttPublic {
                 msg.putOpt(DishWasherConstant.ADD_AUX, ADD_AUX);
 
                 break;
+            case MsgKeys.getEventReport:
+                short aShort = ByteUtils.toShort(payload[offset++]);
+                msg.putOpt(DishWasherConstant.EventId,aShort);
+                if (aShort == 12) {
+                    msg.putOpt(DishWasherConstant.WATER_CONSUMPTION, ByteUtils.toShort(payload[offset++]));
+                    offset++;
+                    msg.putOpt(DishWasherConstant.POWER_CONSUMPTION, ByteUtils.toShort(payload[offset++]));
+                }
+                break;
+        }
+        decodeMsg(msg);
+    }
+
+    private void decodeMsg(MqttMsg msg){
+        LogUtils.e("decodeMsg id " + msg.getID() +" "+msg.getrTopic().getDeviceType() +msg.getrTopic().getSignNum());
+        switch (msg.getID()){
+            case MsgKeys.getDishWasherPower:
+                String curGuid = msg.getrTopic().getDeviceType() + msg.getrTopic().getSignNum(); //当前设备guid
+                MqttMsg newMsg = new MqttMsg.Builder()
+                        .setMsgId(MsgKeys.SetPotTemp_Rep)
+                        .setGuid(curGuid)
+                        .setDt(Plat.getPlatform().getDt())
+                        .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(msg.getGuid()), DeviceUtils.getDeviceNumber(msg.getGuid())))
+                        .build();
+                MqttManager.getInstance().publish(newMsg, DishWasherFactory.getProtocol());
         }
     }
 

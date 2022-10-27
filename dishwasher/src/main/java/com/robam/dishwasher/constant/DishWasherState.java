@@ -10,4 +10,8 @@ public class DishWasherState {
     public static final short APPOINTMENT_OFF=0;//预约关
     public static final short APPOINTMENT_ON=1; //预约开
 
+
+    public final static int LOCK = 1;
+    public final static int UNLOCK = 0;
+
 }

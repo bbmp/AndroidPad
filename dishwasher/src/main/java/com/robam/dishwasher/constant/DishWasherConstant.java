@@ -98,6 +98,14 @@ public class DishWasherConstant {
     public final static String RC = "RC";
     public final static String WARING_CODE = "RC";
 
+    public final static int TIME_DELAYED = 50;
+
+    public final static String EventId = "EventId";
+    public final static String POWER_CONSUMPTION = "powerConsumption";
+    public final static String WATER_CONSUMPTION = "waterConsumption";
+
+    public final static int ZERO = 0;//无
+
 
    /* public final static short OFF=0;//关机
     public final static short WAIT=1;//待机

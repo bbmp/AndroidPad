@@ -19,7 +19,7 @@ import com.robam.dishwasher.constant.DishWasherState;
 import com.robam.dishwasher.device.DishWasherAbstractControl;
 import com.robam.dishwasher.device.DishWasherMqttControl;
 import com.robam.dishwasher.device.HomeDishWasher;
-import com.robam.dishwasher.util.DishWasherCommonHelper;
+import com.robam.dishwasher.util.DishWasherCommandHelper;
 import com.robam.dishwasher.util.DishWasherModelUtil;
 import java.util.List;
 
@@ -37,6 +37,11 @@ public class MainActivity extends DishWasherBaseActivity {
     protected void initView() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_dishwasher_activity_main);
         Navigation.setViewNavController(findViewById(R.id.nav_host_dishwasher_activity_main), navController);
+        getContentView().postDelayed(()->{
+            showRightCenter();
+            setLock(HomeDishWasher.getInstance().lock);
+        },DishWasherConstant.TIME_DELAYED);
+
     }
 
     @Override
@@ -50,15 +55,20 @@ public class MainActivity extends DishWasherBaseActivity {
             for (Device device: AccountInfo.getInstance().deviceList) {
                 if (device.guid.equals(s) && device instanceof DishWasher && device.guid.equals(HomeDishWasher.getInstance().guid)) {
                     DishWasher dishWasher = (DishWasher) device;
-                    LogUtils.e("ModeSelectActivity mqtt msg arrive isWorking "+dishWasher.powerStatus);
-                    setLock(dishWasher.StoveLock == 1);
+                    LogUtils.e("MainActivity mqtt msg arrive isWorking "+dishWasher.powerStatus);
+                    if(toWaringPage(dishWasher.abnormalAlarmStatus)){
+                        return;
+                    }
+                    if(!DishWasherCommandHelper.getInstance().isSafe()){
+                        return;
+                    }
+                    setLock(dishWasher.StoveLock == DishWasherState.LOCK);
                     //washer.AppointmentSwitchStatus 预约状态  开： DishWasherStatus.appointmentSwitchOn 关 ： DishWasherStatus.appointmentSwitchOff
                     switch (dishWasher.powerStatus){
+                        //case DishWasherState.WAIT:
                         case DishWasherState.WORKING:
                         case DishWasherState.PAUSE:
-                            if(DishWasherCommonHelper.isSafe()){
-                                this.dealWasherWorkingState(modeBeanList,dishWasher);
-                            }
+                            dealWasherWorkingState(modeBeanList,dishWasher);
                     }
                     break;
                 }
@@ -66,6 +76,8 @@ public class MainActivity extends DishWasherBaseActivity {
         });
         setLock(HomeDishWasher.getInstance().lock);
     }
+
+
 
     private void dealWasherWorkingState(List<DishWasherModeBean> modeBeanList ,DishWasher dishWasher){
         switch (dishWasher.AppointmentSwitchStatus){

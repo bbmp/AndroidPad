@@ -10,7 +10,7 @@
     <string name="dishwasher_stop_work_hint">确认结束当前工作吗？</string>
     <string name="dishwasher_stop_ok">确认结束</string>
     <string name="dishwasher_cancel">取消</string>
-    <string name="dishwasher_work_stop_hint">清洁完成！</string>
+    <string name="dishwasher_work_stop_hint">清洁完成</string>
     <string name="dishwasher_complete">%s秒后返回主界面</string>
     <string name="dishwasher_E1_exception">进水异常</string>
     <string name="dishwasher_E1_hint">请检查进水阀是否开启。如果洗碗机还不能正常工作，请联系专业技术人员咨询或维修</string>
@@ -61,5 +61,9 @@
     <string name="dishwasher_waring_e10_content">电机故障，请联系专业技术人员咨询或维修</string>
     <string name="dishwasher_maintain_phone">维修电话：658889789</string>
     <string name="dishwasher_lock">童锁</string>
+    <string name="dishwasher_no_longer_remind">不再提醒</string>
+    <string name="dishwasher_offline">洗碗机已离线</string>
+    <string name="dishwasher_close_door_prompt">请检查洗碗机门是否关闭</string>
+    <string name="dishwasher_finish">完成</string>
 
 </resources>

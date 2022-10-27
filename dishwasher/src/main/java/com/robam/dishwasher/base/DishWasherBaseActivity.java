@@ -1,5 +1,6 @@
 package com.robam.dishwasher.base;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -12,13 +13,20 @@ import androidx.lifecycle.Observer;
 
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
+import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.activity.BaseActivity;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.bean.DishWasher;
+import com.robam.dishwasher.constant.DishWasherConstant;
+import com.robam.dishwasher.constant.DishWasherWaringEnum;
 import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.manager.AppManager;
+import com.robam.dishwasher.ui.activity.WaringActivity;
+import com.robam.dishwasher.util.DishWasherCommandHelper;
+
+import java.util.Map;
 
 public abstract class DishWasherBaseActivity extends BaseActivity {
 
@@ -28,6 +36,7 @@ public abstract class DishWasherBaseActivity extends BaseActivity {
     //是否启动童锁
     private boolean lock;
     private long lastTouchMil;
+    public static final int LOCK_FLAG = 9999;
 
     public void showLeft() {
         findViewById(R.id.ll_left).setVisibility(View.VISIBLE);
@@ -73,7 +82,19 @@ public abstract class DishWasherBaseActivity extends BaseActivity {
     }
 
     public void showRightCenter(){
-        findViewById(R.id.ll_right_center).setVisibility(View.VISIBLE);
+        View rightCenter = findViewById(R.id.ll_right_center);
+        if(rightCenter == null){
+            return;
+        }
+        rightCenter.setVisibility(View.VISIBLE);
+        rightCenter.setOnLongClickListener(v->{
+            Map map = DishWasherCommandHelper.getCommonMap(MsgKeys.setDishWasherChildLock);
+            map.put(DishWasherConstant.StoveLock,lock?0:1);
+            DishWasherCommandHelper.getInstance().sendCommonMsgForLiveData(map,LOCK_FLAG);
+
+            setLock(!lock);
+            return true;
+        });
     }
 
 
@@ -139,5 +160,16 @@ public abstract class DishWasherBaseActivity extends BaseActivity {
             }
         }
         return null;
+    }
+
+    protected boolean toWaringPage(int waringCode){
+        if(waringCode != DishWasherWaringEnum.E0.getCode()){
+            //跳转到告警页面
+            Intent intent = new Intent(this, WaringActivity.class);
+            intent.putExtra(DishWasherConstant.WARING_CODE,waringCode);
+            startActivity(intent);
+            return true;
+        }
+        return false;
     }
 }

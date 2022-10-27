@@ -3,6 +3,14 @@
     package="com.robam.dishwasher">
 
     <application>
+        <activity android:name=".ui.activity.CompleteActivity"
+            android:exported="false"
+            android:screenOrientation="landscape">
+        </activity>
+        <activity
+            android:name=".ui.activity.WaringActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
         <activity
             android:name=".ui.activity.ModeSelectActivity"
             android:exported="false"

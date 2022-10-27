@@ -42,4 +42,9 @@ public class DiashWasherCommonDialog extends BaseDialog {
     public void setOKText(int res) {
         mOkTv.setText(res);
     }
+
+    @Override
+    public void setContentText(CharSequence contentStr) {
+        mContent.setText(contentStr);
+    }
 }

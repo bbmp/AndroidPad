@@ -77,33 +77,25 @@ public class DishWasher extends Device{
                 this.SaltFlushValue = (short) msg.optInt(DishWasherConstant.SaltFlushValue);
                 this.DishWasherFanSwitch = (short) msg.optInt(DishWasherConstant.DishWasherFanSwitch);
                 this.DoorOpenState = (short) msg.optInt(DishWasherConstant.DoorOpenState);
-
                 this.LackRinseStatus = (short) msg.optInt(DishWasherConstant.LackRinseStatus);
-
                 this.LackSaltStatus = (short) msg.optInt(DishWasherConstant.LackSaltStatus);
-
                 this.abnormalAlarmStatus = (short) msg.optInt(DishWasherConstant.AbnormalAlarmStatus);
-
                 this.ArgumentNumber = (short) msg.optInt(DishWasherConstant.ArgumentNumber);
-
                 this.CurrentWaterTemperatureValue = (short) msg.optInt(DishWasherConstant.CurrentWaterTemperatureValue);
-
                 this.SetWorkTimeValue = (short) msg.optInt(DishWasherConstant.SetWorkTimeValue);
-
                 this.auxMode = (short) msg.optInt(DishWasherConstant.ADD_AUX);
-
-                //postEvent(new DisherWasherStatusChangeEvent(this));
-
-
                 break;
             case MsgKeys.getAlarmEventReport:
                 this.alarmId = (short) msg.optInt(DishWasherConstant.DishWasherAlarm);
-
                 //postEvent(new DishWasherAlarmEvent(this, alarmId));
                 break;
+            case MsgKeys.getEventReport:
+                parserEvent(msg);
+                break;
+
 
 //            case MsgKeys.getEventReport:
-//                short eventId = (short) msg.optInt(DishWasherConstant.EventId);
+//
 //
 //                switch (eventId) {
 //                    case Event_DishWasher_Power_Control_Reset:
@@ -130,6 +122,16 @@ public class DishWasher extends Device{
 //
 //                }
 //                break;
+        }
+    }
+
+    private void parserEvent(MqttMsg msg){
+        short eventId = (short) msg.optInt(DishWasherConstant.EventId);
+        switch (eventId){
+            case Event_DishWasher_Work_Complete_Reset:
+                this.powerConsumption = (short) msg.optInt(DishWasherConstant.POWER_CONSUMPTION);
+                this.waterConsumption = (short) msg.optInt(DishWasherConstant.WATER_CONSUMPTION);
+                break;
         }
     }
 

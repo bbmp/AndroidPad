@@ -12,6 +12,7 @@
         android:textSize="@dimen/sp_48"
         android:textColor="@color/dishwasher_mode"
         android:text="@string/dishwasher_stop_work_hint"
+        android:gravity="center"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"

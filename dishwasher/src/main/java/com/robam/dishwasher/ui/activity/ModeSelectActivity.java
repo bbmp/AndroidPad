@@ -8,13 +8,14 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MsgKeys;
-import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.TimeUtils;
+import com.robam.common.utils.ToastUtils;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.base.DishWasherBaseActivity;
 import com.robam.dishwasher.bean.DishWasher;
@@ -23,7 +24,7 @@ import com.robam.dishwasher.constant.DishWasherAuxEnum;
 import com.robam.dishwasher.constant.DishWasherConstant;
 import com.robam.dishwasher.constant.DishWasherState;
 import com.robam.dishwasher.device.HomeDishWasher;
-import com.robam.dishwasher.util.DishWasherCommonHelper;
+import com.robam.dishwasher.util.DishWasherCommandHelper;
 import java.util.Map;
 
 public class ModeSelectActivity extends DishWasherBaseActivity {
@@ -96,6 +97,7 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
                 if (device.guid.equals(s) && device instanceof DishWasher && device.guid.equals(HomeDishWasher.getInstance().guid)) {
                     DishWasher dishWasher = (DishWasher) device;
                     setLock(dishWasher.StoveLock == 1);
+                    toWaringPage(dishWasher.abnormalAlarmStatus);
                 }
             }
         });
@@ -219,6 +221,9 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
 
     private void startWork(){
         DishWasher curDevice = getCurDevice();
+        if(!DishWasherCommandHelper.checkDishWasherState(this,curDevice)){
+            return;
+        }
         if(curDevice.powerStatus == DishWasherState.OFF){
             sendSetPowerStateCommand();
         }else {
@@ -227,20 +232,20 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
     }
 
     private void sendSetPowerStateCommand(){
-        Map map = DishWasherCommonHelper.getCommonMap(MsgKeys.setDishWasherPower);
+        Map map = DishWasherCommandHelper.getCommonMap(MsgKeys.setDishWasherPower);
         map.put(DishWasherConstant.PowerMode,1);
-        DishWasherCommonHelper.sendCommonMsgForLiveData(map,MsgKeys.setDishWasherPower + directive_offset);
+        DishWasherCommandHelper.getInstance().sendCommonMsgForLiveData(map,MsgKeys.setDishWasherPower + directive_offset);
     }
 
     private void sendStartWorkCommand(){
-        Map map = DishWasherCommonHelper.getModelMap(MsgKeys.setDishWasherWorkMode, modeBean.code,(short) 0,0);
+        Map map = DishWasherCommandHelper.getModelMap(MsgKeys.setDishWasherWorkMode, modeBean.code,(short) 0,0);
         map.put(DishWasherConstant.AutoVentilation, 0);
         map.put(DishWasherConstant.EnhancedDrySwitch, 0);
         map.put(DishWasherConstant.AppointmentSwitch, 0);
         map.put(DishWasherConstant.AppointmentTime, 0);
         map.put(DishWasherConstant.ArgumentNumber, 1);
         map.put(DishWasherConstant.ADD_AUX, getAuxCode());
-        DishWasherCommonHelper.sendCommonMsgForLiveData(map,MsgKeys.setDishWasherWorkMode + directive_offset);
+        DishWasherCommandHelper.getInstance().sendCommonMsgForLiveData(map,MsgKeys.setDishWasherWorkMode + directive_offset);
 
     }
 

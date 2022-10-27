@@ -28,7 +28,10 @@ public class WaringActivity extends DishWasherBaseActivity {
             for (Device device: AccountInfo.getInstance().deviceList) {
                 if (device.guid.equals(s) && device instanceof DishWasher && device.guid.equals(HomeDishWasher.getInstance().guid)) {
                     DishWasher dishWasher = (DishWasher) device;
-                    //坚持状态是否正常；正常则
+                    if(dishWasher.abnormalAlarmStatus == DishWasherWaringEnum.E0.getCode()){
+                        startActivity(MainActivity.class);
+                        finish();
+                    }
                 }
             }
         });

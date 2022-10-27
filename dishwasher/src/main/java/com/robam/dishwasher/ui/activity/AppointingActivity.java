@@ -11,12 +11,10 @@ import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.MqttDirective;
 import com.robam.common.manager.FunctionManager;
-import com.robam.common.mqtt.MqttManager;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.MCountdownView;
 import com.robam.common.utils.DateUtil;
-import com.robam.common.utils.LogUtils;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.base.DishWasherBaseActivity;
 import com.robam.dishwasher.bean.DishWasher;
@@ -27,14 +25,12 @@ import com.robam.dishwasher.constant.DishWasherConstant;
 import com.robam.dishwasher.constant.DishWasherState;
 import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.factory.DishWasherDialogFactory;
-import com.robam.dishwasher.ui.dialog.DiashWasherCommonDialog;
-import com.robam.dishwasher.util.DishWasherCommonHelper;
+import com.robam.dishwasher.util.DishWasherCommandHelper;
 import com.robam.dishwasher.util.DishWasherModelUtil;
 import com.robam.dishwasher.util.TimeDisplayUtil;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -69,6 +65,8 @@ public class AppointingActivity extends DishWasherBaseActivity {
     protected void initView() {
         showLeft();
         showCenter();
+        showRightCenter();
+        setLock(HomeDishWasher.getInstance().lock);
         tvCountdown = findViewById(R.id.tv_countdown);
         tvAppointmentHint = findViewById(R.id.tv_start_work_hint);
         tvMode = findViewById(R.id.tv_mode);
@@ -81,16 +79,18 @@ public class AppointingActivity extends DishWasherBaseActivity {
             for (Device device: AccountInfo.getInstance().deviceList) {
                 if (device.guid.equals(s) && device instanceof DishWasher && device.guid.equals(HomeDishWasher.getInstance().guid)) { //当前锅
                     DishWasher dishWasher = (DishWasher) device;
-                    LogUtils.e("AppointingActivity mqtt msg arrive isWorking "+dishWasher.powerStatus);
+                    if(toWaringPage(dishWasher.abnormalAlarmStatus)){
+                        return;
+                    }
                     switch (dishWasher.powerStatus){
                         case DishWasherState.WORKING:
                         case DishWasherState.PAUSE:
-                            if(DishWasherCommonHelper.isSafe()){
+                            if(DishWasherCommandHelper.getInstance().isSafe()){
                                 dealWasherWorkingState(dishWasher);
                             }
                             break;
                         case DishWasherState.OFF:
-                            if(DishWasherCommonHelper.isSafe()){
+                            if(DishWasherCommandHelper.getInstance().isSafe()){
                                 finish();
                             }
                             break;
@@ -251,8 +251,8 @@ public class AppointingActivity extends DishWasherBaseActivity {
         } else if (id == R.id.iv_start) {
             //立即开始
             //tvCountdown.stop();
-            Map params = DishWasherCommonHelper.getModelMap(MsgKeys.setDishWasherWorkMode, modeBean.code,(short) 0,0);
-            DishWasherCommonHelper.sendCommonMsgForLiveData(params,directive_offset+MsgKeys.setDishWasherWorkMode);//立即开始
+            Map params = DishWasherCommandHelper.getModelMap(MsgKeys.setDishWasherWorkMode, modeBean.code,(short) 0,0);
+            DishWasherCommandHelper.getInstance().sendCommonMsgForLiveData(params,directive_offset+MsgKeys.setDishWasherWorkMode);//立即开始
         }
     }
     //取消预约
@@ -269,9 +269,9 @@ public class AppointingActivity extends DishWasherBaseActivity {
                     //结束倒计时
                     /*tvCountdown.stop();
                     finish();*/
-                    Map map = DishWasherCommonHelper.getCommonMap(MsgKeys.setDishWasherPower);
+                    Map map = DishWasherCommandHelper.getCommonMap(MsgKeys.setDishWasherPower);
                     map.put(DishWasherConstant.PowerMode,DishWasherState.OFF);
-                    DishWasherCommonHelper.sendCommonMsgForLiveData(map,MsgKeys.setDishWasherPower+directive_offset);                }
+                    DishWasherCommandHelper.getInstance().sendCommonMsgForLiveData(map,MsgKeys.setDishWasherPower+directive_offset);                }
             }
         }, R.id.tv_cancel, R.id.tv_ok);
         iDialog.show();

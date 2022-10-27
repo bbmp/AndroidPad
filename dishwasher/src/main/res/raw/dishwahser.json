@@ -5,7 +5,7 @@
     "name": "智能洗",
     "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
     "desc" : "自动识别匹配餐具脏污程度进行清洗",
-    "time": 6600,
+    "time": 6000,
     "temp": 70
   },
   {

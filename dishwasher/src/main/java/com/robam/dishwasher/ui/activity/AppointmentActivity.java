@@ -17,8 +17,7 @@ import com.robam.dishwasher.constant.DishWasherConstant;
 import com.robam.dishwasher.constant.DishWasherState;
 import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.ui.adapter.RvStringAdapter;
-import com.robam.dishwasher.util.DishWasherCommonHelper;
-
+import com.robam.dishwasher.util.DishWasherCommandHelper;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -67,6 +66,8 @@ public class AppointmentActivity extends DishWasherBaseActivity {
     protected void initView() {
         showLeft();
         showCenter();
+        showRightCenter();
+        setLock(HomeDishWasher.getInstance().lock);
         //设置时间选择器
         mHourView = findViewById(R.id.rv_time_hour);
         mMinuteView = findViewById(R.id.rv_time_minute);
@@ -147,6 +148,9 @@ public class AppointmentActivity extends DishWasherBaseActivity {
 
     private void startAppointing(){
         DishWasher curDevice = getCurDevice();
+        if(!DishWasherCommandHelper.checkDishWasherState(this,curDevice)){
+            return;
+        }
         if(curDevice.powerStatus == DishWasherState.OFF){
             sendSetPowerStateCommand();
         }else {
@@ -155,23 +159,23 @@ public class AppointmentActivity extends DishWasherBaseActivity {
     }
 
     private void sendSetPowerStateCommand(){
-        Map map = DishWasherCommonHelper.getCommonMap(MsgKeys.setDishWasherPower);
+        Map map = DishWasherCommandHelper.getCommonMap(MsgKeys.setDishWasherPower);
         map.put(DishWasherConstant.PowerMode,1);
-        DishWasherCommonHelper.sendCommonMsgForLiveData(map,MsgKeys.setDishWasherPower + directive_offset);
+        DishWasherCommandHelper.getInstance().sendCommonMsgForLiveData(map,MsgKeys.setDishWasherPower + directive_offset);
     }
 
     private void sendAppointingCommand(){
-        Map map = DishWasherCommonHelper.getModelMap(MsgKeys.setDishWasherWorkMode, modeBean.code,(short) 1,DishWasherCommonHelper.getAppointingTimeMin(tvTime.getText().toString()));
+        Map map = DishWasherCommandHelper.getModelMap(MsgKeys.setDishWasherWorkMode, modeBean.code,(short) 1, DishWasherCommandHelper.getAppointingTimeMin(tvTime.getText().toString()));
         map.put(DishWasherConstant.AutoVentilation, 0);
         map.put(DishWasherConstant.EnhancedDrySwitch, 0);
         map.put(DishWasherConstant.AppointmentSwitch, 0);
         map.put(DishWasherConstant.AppointmentTime, 0);
         map.put(DishWasherConstant.ArgumentNumber, 1);
         map.put(DishWasherConstant.ADD_AUX, modeBean.auxCode);
-        DishWasherCommonHelper.sendCommonMsgForLiveData(map,MsgKeys.setDishWasherWorkMode + directive_offset);
+        DishWasherCommandHelper.getInstance().sendCommonMsgForLiveData(map,MsgKeys.setDishWasherWorkMode + directive_offset);
 
         HomeDishWasher.getInstance().workHours = modeBean.time;
-        HomeDishWasher.getInstance().orderWorkTime = DishWasherCommonHelper.getAppointingTimeMin(tvTime.getText().toString());
+        HomeDishWasher.getInstance().orderWorkTime = DishWasherCommandHelper.getAppointingTimeMin(tvTime.getText().toString());
     }
 
 

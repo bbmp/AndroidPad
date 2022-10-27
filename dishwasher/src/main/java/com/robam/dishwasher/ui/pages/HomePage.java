@@ -1,5 +1,6 @@
 package com.robam.dishwasher.ui.pages;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -22,6 +23,7 @@ import com.robam.dishwasher.base.DishWasherBasePage;
 import com.robam.dishwasher.bean.DishWasherModeBean;
 import com.robam.dishwasher.constant.DishWasherConstant;
 import com.robam.dishwasher.device.HomeDishWasher;
+import com.robam.dishwasher.ui.activity.MainActivity;
 import com.robam.dishwasher.ui.adapter.RvMainModeAdapter;
 
 import java.util.List;
@@ -66,7 +68,6 @@ public class HomePage extends DishWasherBasePage {
         rvMainModeAdapter = new RvMainModeAdapter();
         rvMain.setAdapter(rvMainModeAdapter);
         showCenter();
-        showRightCenter();
         setOnClickListener(R.id.iv_float);
     }
     //模式参数设置
@@ -107,17 +108,14 @@ public class HomePage extends DishWasherBasePage {
 
         setData(rvMainModeAdapter.getItem(initPos));
 
-        rvMainModeAdapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                DishWasherModeBean dishWaherModeBean = (DishWasherModeBean) adapter.getItem(position);
+        rvMainModeAdapter.setOnItemClickListener((adapter, view, position) -> {
+            DishWasherModeBean dishWaherModeBean = (DishWasherModeBean) adapter.getItem(position);
 
-                HomeDishWasher.getInstance().workMode = dishWaherModeBean.code;
-                Intent intent = new Intent();
-                intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, dishWaherModeBean);
-                intent.setClassName(getContext(), dishWaherModeBean.into);
-                startActivity(intent);
-            }
+            HomeDishWasher.getInstance().workMode = dishWaherModeBean.code;
+            Intent intent = new Intent();
+            intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, dishWaherModeBean);
+            intent.setClassName(getContext(), dishWaherModeBean.into);
+            startActivity(intent);
         });
 
 
