@@ -97,6 +97,9 @@ public class HomePage extends PanBasePage {
                             llQuick.setSelected(false);
                             llStir.setSelected(false);
                         }
+                        if (pan.mode == 1) { //曲线创建中
+
+                        }
                         break;
                     }
                 }

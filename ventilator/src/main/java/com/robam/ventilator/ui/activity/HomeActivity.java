@@ -21,6 +21,7 @@ import com.robam.common.bean.Device;
 import com.robam.common.bean.UserInfo;
 import com.robam.common.device.Plat;
 import com.robam.common.http.RetrofitCallback;
+import com.robam.common.manager.AppActivityManager;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.ui.activity.BaseActivity;
 import com.robam.common.utils.LogUtils;
@@ -30,6 +31,7 @@ import com.robam.common.utils.PermissionUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.common.utils.WindowsUtils;
 import com.robam.ventilator.R;
+import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.device.HomeVentilator;
 import com.robam.ventilator.device.VentilatorFactory;
 import com.robam.ventilator.http.CloudHelper;
@@ -73,8 +75,11 @@ public class HomeActivity extends BaseActivity {
         WindowsUtils.initPopupWindow(this, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Activity activity = AppActivityManager.getInstance().getCurrentActivity();
                 //浮窗点击 快捷入口
-                startActivity(ShortcutActivity.class);
+                Intent intent = new Intent();
+                intent.setClass(activity, ShortcutActivity.class);
+                startActivity(intent);
             }
         });
     }

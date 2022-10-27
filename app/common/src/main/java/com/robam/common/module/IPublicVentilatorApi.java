@@ -6,6 +6,7 @@ import com.robam.common.mqtt.IProtocol;
 
 public interface IPublicVentilatorApi extends IPublicApi {
     String VENTILATOR_PUBLIC = "com.robam.ventilator.device.VentilatorFactory";
+    String VENTILATOR_HOME = "com.robam.ventilator.ui.activity.HomeActivity";
     //设置烟机挡位，对外接口
     void setFanGear(int gear);
     //获取烟机挡位

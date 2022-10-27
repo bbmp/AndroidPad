@@ -15,7 +15,14 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         flavorDimensions "versionCode"
     }
-
+    signingConfigs {
+        debug {
+            storeFile file('D:\\AndroidProjects\\AndroidPad\\app\\topband_system.keystore')
+            storePassword 'topband123'
+            keyAlias 'key'
+            keyPassword 'topband123'
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false

@@ -8,6 +8,7 @@ import android.widget.Button;
 
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.SwitchButton;
+import com.robam.common.utils.MMKVUtils;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
 import com.robam.ventilator.constant.DialogConstant;
@@ -33,19 +34,21 @@ public class SmartSettingActivity extends VentilatorBaseActivity {
         btnReset = findViewById(R.id.bt_reset);
         //自动换气
         sbAir = findViewById(R.id.sb_auto_air);
+        sbAir.setChecked(MMKVUtils.getAutoAir());
         //油网提醒
         sbOil = findViewById(R.id.sb_auto_oil);
         setOnClickListener(R.id.ll_left, R.id.bt_reset);
+        sbOil.setChecked(MMKVUtils.getOilClean());
         sbAir.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(SwitchButton button, boolean checked) {
-
+                MMKVUtils.setAutoAir(checked);
             }
         });
         sbOil.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(SwitchButton button, boolean checked) {
-
+                MMKVUtils.setOilClean(checked);
             }
         });
     }

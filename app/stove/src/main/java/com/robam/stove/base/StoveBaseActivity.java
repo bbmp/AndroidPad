@@ -26,6 +26,7 @@ import com.robam.common.constant.StoveConstant;
 import com.robam.stove.device.HomeStove;
 import com.robam.stove.device.StoveAbstractControl;
 import com.robam.stove.factory.StoveDialogFactory;
+import com.robam.stove.manager.StoveActivityManager;
 import com.robam.stove.ui.dialog.LockDialog;
 
 public abstract class StoveBaseActivity extends BaseActivity {
@@ -37,6 +38,7 @@ public abstract class StoveBaseActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        StoveActivityManager.getInstance().addActivity(this);
         setOnClickListener(R.id.ll_left, R.id.ll_right_center);
         tvRightCenter = findViewById(R.id.tv_right_center);
         ivRightCenter = findViewById(R.id.iv_right_center);
@@ -171,6 +173,7 @@ public abstract class StoveBaseActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        StoveActivityManager.getInstance().removeActivity(this);
         if (null != iDialogAffirm && iDialogAffirm.isShow())
             iDialogAffirm.dismiss();
         if (null != ilockDialog && ilockDialog.isShow())

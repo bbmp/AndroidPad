@@ -101,16 +101,16 @@ public abstract class BaseActivity extends AbsActivity implements ActivityAction
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        ToastUtils.showShort(this, "keycode=" + event.getKeyCode());
-        if (event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_UP && event.getAction() == KeyEvent.ACTION_UP) { //左键
+//        ToastUtils.showShort(this, "keycode=" + event.getKeyCode());
+        if (event.getKeyCode() == KeyEvent.KEYCODE_F2 && event.getAction() == KeyEvent.ACTION_UP) { //左键
 
             if (null != iPublicVentilatorApi) {
-                ToastUtils.showShort(this, "light " + iPublicVentilatorApi.getFanLight());
+//                ToastUtils.showShort(this, "light " + iPublicVentilatorApi.getFanLight());
                 if (iPublicVentilatorApi.getFanLight() == 0) {
-                    Plat.getPlatform().openPowerLamp();
+                    Plat.getPlatform().openWaterLamp();
                     iPublicVentilatorApi.setFanLight(1);
                 } else {
-                    Plat.getPlatform().closePowerLamp();
+                    Plat.getPlatform().closeWaterLamp();
                     iPublicVentilatorApi.setFanLight(0);
                 }
                 return true;
@@ -120,10 +120,12 @@ public abstract class BaseActivity extends AbsActivity implements ActivityAction
                 if (iPublicVentilatorApi.isStartUp()) {
                     Plat.getPlatform().screenOff(); //熄灭ping
                     Plat.getPlatform().closePowerLamp();//关灯
+                    Plat.getPlatform().closeWaterLamp();
                     iPublicVentilatorApi.shutDown();
                 } else {
                     Plat.getPlatform().screenOn();
                     Plat.getPlatform().openPowerLamp();
+                    Plat.getPlatform().openWaterLamp();
                     iPublicVentilatorApi.powerOn(); //开机
                 }
             }

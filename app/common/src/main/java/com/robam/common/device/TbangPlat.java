@@ -26,12 +26,14 @@ public class TbangPlat implements IPlat{
 
     @Override
     public void openWaterLamp() {
-
+        tbManager.setGpioDirection(6, 1, 0);
+        tbManager.setGpio(6, 1);
     }
 
     @Override
     public void closeWaterLamp() {
-
+        tbManager.setGpioDirection(6, 1, 0);
+        tbManager.setGpio(6, 0);
     }
 
     @Override

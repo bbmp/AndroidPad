@@ -78,8 +78,6 @@ public class CurveRestoreActivity extends PanBaseActivity {
     private int orderNo; //我的最爱序号
     private long recipeId;
 
-    private int retryNum = 0;//重试次数
-
     ArrayList<Entry> restoreList = new ArrayList<>();  //还原列表
 
     IPublicStoveApi iPublicStoveApi = ModulePubliclHelper.getModulePublic(IPublicStoveApi.class,
@@ -230,16 +228,14 @@ public class CurveRestoreActivity extends PanBaseActivity {
                 }
                 if (pan.mode != 2 && pan.mode != 3) { //锅未开始工作
 
-//                    retryNum++; //查询次数,中途停止
-//                    if (retryNum >= 10) {
-//                        restoreComplete(true);
-//                        return;
-//                    }
+                    if (curTime > 0) //已经开始,中途停止
+                        curTime++;
+
                     PanAbstractControl.getInstance().queryAttribute(pan.guid); //查询锅状态
                     mHandler.postDelayed(runnable, 1000L);
                     return;
                 }
-                retryNum = 0;
+
                 //判断是否结束
                 if (curStep >= rvStep2Adapter.getData().size()) {
                     //还原结束

@@ -18,6 +18,7 @@ import com.robam.common.ui.dialog.IDialog;
 import com.robam.pan.R;
 import com.robam.pan.constant.DialogConstant;
 import com.robam.pan.factory.PanDialogFactory;
+import com.robam.pan.manager.PanActivityManager;
 import com.robam.pan.ui.activity.CurveActivity;
 
 public abstract class PanBaseActivity extends BaseActivity {
@@ -25,6 +26,7 @@ public abstract class PanBaseActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        PanActivityManager.getInstance().addActivity(this);
         setOnClickListener(R.id.ll_left);
     }
 
@@ -74,6 +76,7 @@ public abstract class PanBaseActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        PanActivityManager.getInstance().removeActivity(this);
         if (null != panDialog && panDialog.isShow())
             panDialog.dismiss();
         if (null != stoveDialog && stoveDialog.isShow())

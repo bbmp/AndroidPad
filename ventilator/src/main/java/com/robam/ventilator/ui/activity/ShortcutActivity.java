@@ -12,6 +12,7 @@ import android.view.View;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.robam.cabinet.bean.Cabinet;
+import com.robam.cabinet.manager.CabinetActivityManager;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.UserInfo;
@@ -19,12 +20,20 @@ import com.robam.common.constant.ComnConstant;
 import com.robam.common.constant.StoveConstant;
 import com.robam.common.device.Plat;
 import com.robam.common.http.RetrofitCallback;
+import com.robam.common.module.IPublicCabinetApi;
+import com.robam.common.module.IPublicDishWasherApi;
+import com.robam.common.module.IPublicPanApi;
+import com.robam.common.module.IPublicSteamApi;
+import com.robam.common.module.IPublicStoveApi;
+import com.robam.common.module.IPublicVentilatorApi;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.common.utils.LogUtils;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.common.device.subdevice.Pan;
+import com.robam.pan.manager.PanActivityManager;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.common.device.subdevice.Stove;
+import com.robam.stove.manager.StoveActivityManager;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
 import com.robam.common.bean.Device;
@@ -136,6 +145,11 @@ public class ShortcutActivity extends VentilatorBaseActivity {
     //快捷入口跳转
     private void shortCutForward(@NonNull BaseQuickAdapter<?, ?> adapter, int position) {
         Device device = (Device) adapter.getItem(position);
+        if (device.guid.equals(AccountInfo.getInstance().topGuid)) { //当前设备跳转当前设备
+            finish();
+            return;
+        }
+        //设备间切换
         Intent intent = new Intent();
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         intent.putExtra(ComnConstant.EXTRA_GUID, device.guid); //传入启动设备
@@ -151,8 +165,15 @@ public class ShortcutActivity extends VentilatorBaseActivity {
             intent.setClassName(ShortcutActivity.this, "com.robam.cabinet.ui.activity.MainActivity");
         else
             intent.setClassName(ShortcutActivity.this, "com.robam.ventilator.ui.activity.HomeActivity");
+        //清空所有任务栈，除烟机
+        StoveActivityManager.getInstance().finishAllActivity();
+        PanActivityManager.getInstance().finishAllActivity();
+        CabinetActivityManager.getInstance().finishAllActivity();
+
         startActivity(intent);
-        finish();
+        AccountInfo.getInstance().topGuid = device.guid; //切换后的设备
+
+//        finish();
     }
 
     @Override
@@ -172,10 +193,12 @@ public class ShortcutActivity extends VentilatorBaseActivity {
     private void getDeviceInfo(UserInfo userInfo) {
         List<Device> workList = new ArrayList<>();
         List<Device> onlineList = new ArrayList<>();
+        Device ventilator = new Ventilator("油烟机", IDeviceType.RYYJ, "5068s");
+        ventilator.guid = Plat.getPlatform().getDeviceOnlySign();
         if (HomeVentilator.getInstance().gear == (byte) 0xA0)
-            onlineList.add(new Ventilator("油烟机", IDeviceType.RYYJ, "5068s"));
+            onlineList.add(ventilator);
         else
-            workList.add(new Ventilator("油烟机", IDeviceType.RYYJ, "5068s"));
+            workList.add(ventilator);
         for (Device device: AccountInfo.getInstance().deviceList) {
             if (IDeviceType.RZKY.equals(device.dc) && device.status == Device.ONLINE) {//一体机
                 SteamOven steamOven = (SteamOven) device;

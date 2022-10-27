@@ -296,22 +296,27 @@ public class    HomePage extends VentilatorBasePage {
                 intent.putExtra(ComnConstant.EXTRA_GUID, device.guid);
                 switch (device.dc) {
                     case IDeviceType.RRQZ:
+                        AccountInfo.getInstance().topGuid = device.guid;
                         intent.setClassName(getContext(), IPublicStoveApi.STOVE_HOME);
                         startActivity(intent);
                         break;
                     case IDeviceType.RZNG:
+                        AccountInfo.getInstance().topGuid = device.guid;
                         intent.setClassName(getContext(), IPublicPanApi.PAN_HOME);
                         startActivity(intent);
                         break;
                     case IDeviceType.RXWJ:
+                        AccountInfo.getInstance().topGuid = device.guid;
                         intent.setClassName(getContext(), IPublicDishWasherApi.DISHWASHER_HOME);
                         startActivity(intent);
                         break;
                     case IDeviceType.RXDG:
+                        AccountInfo.getInstance().topGuid = device.guid;
                         intent.setClassName(getContext(), IPublicCabinetApi.CABINET_HOME);
                         startActivity(intent);
                         break;
                     case IDeviceType.RZKY:
+                        AccountInfo.getInstance().topGuid = device.guid;
                         intent.setClassName(getContext(), IPublicSteamApi.STEAM_HOME);
                         startActivity(intent);
                         break;
