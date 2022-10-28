@@ -80,4 +80,9 @@ public class VentilatorLocalControl implements VentilatorFunction{
     public void queryAttribute() {
         SerialPortHelper.getInstance().addCommands(SerialVentilator.packQueryCmd()); //查询状态
     }
+
+    @Override
+    public void setColorLamp() {
+        SerialPortHelper.getInstance().addCommands(SerialVentilator.setColorLamp());
+    }
 }

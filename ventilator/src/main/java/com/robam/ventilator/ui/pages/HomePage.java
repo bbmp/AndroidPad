@@ -297,11 +297,13 @@ public class    HomePage extends VentilatorBasePage {
                 switch (device.dc) {
                     case IDeviceType.RRQZ:
                         AccountInfo.getInstance().topGuid = device.guid;
+                        intent.putExtra(ComnConstant.EXTRA_GUID, device.guid); //传入启动设备
                         intent.setClassName(getContext(), IPublicStoveApi.STOVE_HOME);
                         startActivity(intent);
                         break;
                     case IDeviceType.RZNG:
                         AccountInfo.getInstance().topGuid = device.guid;
+                        intent.putExtra(ComnConstant.EXTRA_GUID, device.guid); //传入启动设备
                         intent.setClassName(getContext(), IPublicPanApi.PAN_HOME);
                         startActivity(intent);
                         break;

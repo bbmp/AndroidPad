@@ -16,4 +16,6 @@ public interface VentilatorFunction {
     void setSmart(int smart);// 设置智感恒吸
 
     void queryAttribute(); //查询烟机状态
+
+    void setColorLamp();//冷暖光切换
 }

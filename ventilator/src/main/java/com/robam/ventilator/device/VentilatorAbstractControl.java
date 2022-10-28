@@ -53,4 +53,9 @@ public class VentilatorAbstractControl implements VentilatorFunction{
     public void queryAttribute() {
         function.queryAttribute();
     }
+
+    @Override
+    public void setColorLamp() {
+        function.setColorLamp();
+    }
 }

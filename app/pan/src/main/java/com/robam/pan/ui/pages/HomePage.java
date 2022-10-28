@@ -14,10 +14,15 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
+import com.robam.common.constant.StoveConstant;
 import com.robam.common.device.subdevice.Pan;
+import com.robam.common.http.RetrofitCallback;
 import com.robam.common.module.IPublicStoveApi;
 import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.constant.PanConstant;
+import com.robam.common.mqtt.MsgKeys;
+import com.robam.pan.bean.CurveStep;
+import com.robam.pan.bean.PanCurveDetail;
 import com.robam.pan.device.HomePan;
 import com.robam.common.ui.view.MCountdownView;
 import com.robam.common.utils.ToastUtils;
@@ -26,6 +31,10 @@ import com.robam.pan.R;
 import com.robam.pan.base.PanBasePage;
 import com.robam.pan.bean.PanFunBean;
 import com.robam.pan.device.PanAbstractControl;
+import com.robam.pan.http.CloudHelper;
+import com.robam.pan.response.GetCurveDetailRes;
+import com.robam.pan.ui.activity.CurveActivity;
+import com.robam.pan.ui.activity.CurveCreateActivity;
 import com.robam.pan.ui.adapter.RvMainFunctionAdapter;
 
 import java.util.ArrayList;
@@ -45,6 +54,8 @@ public class HomePage extends PanBasePage {
     private TextView tvQuick;
     //十秒翻炒
     private MCountdownView tvStir;
+
+    private boolean continueCreate;
 
     @Override
     protected int getLayoutId() {
@@ -97,8 +108,9 @@ public class HomePage extends PanBasePage {
                             llQuick.setSelected(false);
                             llStir.setSelected(false);
                         }
-                        if (pan.mode == 1) { //曲线创建中
-
+                        if (pan.mode == 1 && !continueCreate) { //曲线创建中
+                            continueCreate = true;
+                            getCurveDetail();
                         }
                         break;
                     }
@@ -114,9 +126,35 @@ public class HomePage extends PanBasePage {
         functionList.add(new PanFunBean(2, "我的最爱", "", "favorite", "com.robam.pan.ui.activity.FavoriteActivity"));
         functionList.add(new PanFunBean(3, "烹饪曲线", "", "curve", "com.robam.pan.ui.activity.CurveActivity"));
         rvMainFunctionAdapter.setList(functionList);
-        IPublicStoveApi iPublicStoveApi = ModulePubliclHelper.getModulePublic(IPublicStoveApi.class,
-                IPublicStoveApi.STOVE_PUBLIC);
 
+    }
+
+    //获取正在记录的曲线
+    private void getCurveDetail() {
+        CloudHelper.getCurvebookDetail(this, 0, HomePan.getInstance().guid, GetCurveDetailRes.class, new RetrofitCallback<GetCurveDetailRes>() {
+            @Override
+            public void onSuccess(GetCurveDetailRes getCurveDetailRes) {
+                if (null != getCurveDetailRes && null != getCurveDetailRes.payload) {
+                    PanCurveDetail panCurveDetail = getCurveDetailRes.payload;
+
+                    List<CurveStep> curveSteps = new ArrayList<>();
+                    if (null != panCurveDetail.stepList) {
+                        curveSteps.addAll(panCurveDetail.stepList);
+                    }
+                    //继续创建曲线
+                    Intent intent = new Intent();
+                    intent.setClass(getContext(), CurveCreateActivity.class);
+                    intent.putExtra(PanConstant.EXTRA_CURVE_DETAIL, panCurveDetail);
+                    startActivity(intent);
+                }
+                continueCreate = false;
+            }
+
+            @Override
+            public void onFaild(String err) {
+                continueCreate = false;
+            }
+        });
     }
 
     @Override

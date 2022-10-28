@@ -27,4 +27,6 @@ public interface IPublicVentilatorApi extends IPublicApi {
     void shutDown();
     //开机
     void powerOn();
+    //冷暖光切换
+    void setColorLamp();
 }
