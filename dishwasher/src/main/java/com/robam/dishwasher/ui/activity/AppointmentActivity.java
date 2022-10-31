@@ -134,10 +134,45 @@ public class AppointmentActivity extends DishWasherBaseActivity {
         mHourView.setAdapter(mHourAdapter);
         mMinuteView.setAdapter(mMinuteAdapter);
         modeBean = (DishWasherModeBean) getIntent().getSerializableExtra(DishWasherConstant.EXTRA_MODEBEAN);
+        initHourAndMinScroll(hourData,minuteData);
+
         //默认
-        setOrderDate();
+        //setOrderDate();
+
+
 
     }
+
+    /**
+     * 初始化小时与分钟 RecyclerView 组件显示位置
+     * @param hourData
+     * @param minuteData
+     */
+    private void initHourAndMinScroll(ArrayList<String> hourData, ArrayList<String> minuteData){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int min = calendar.get(Calendar.MINUTE);
+        int hourScrollP;
+        int minScrollP;
+        if(min >= 50){
+            hourScrollP = hour >= 23 ? 0 : hour + 1;
+            minScrollP = 0;
+        }else{
+            hourScrollP = hour;
+            minScrollP = (min / 10)+1;
+        }
+        mHourView.scrollToPosition(hourScrollP);
+        mMinuteView.scrollToPosition(minScrollP);
+
+        String curOrderTime = hourData.get(hourScrollP)+":"+minuteData.get(minScrollP);
+        if(hour >= 23 && min >= 50){
+            tvTime.setText(String.format(getString(R.string.dishwasher_work_order_hint2), curOrderTime ));
+        }{
+            tvTime.setText(String.format(getString(R.string.dishwasher_work_order_hint3), curOrderTime ));
+        }
+    }
+
 
     @Override
     public void onClick(View view) {

@@ -244,7 +244,11 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
             //预约
             Intent intent = new Intent();
             DishWasherModeBean newMode = modeBean.getNewMode();
-            newMode.auxCode = getAuxCode();
+            DishWasherAuxBean auxBean = getAuxBean(getAuxCode());
+            if(auxBean != null){
+                newMode.time = auxBean.time;
+                newMode.auxCode = auxBean.code;
+            }
             intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, newMode);
             intent.setClass(this, AppointmentActivity.class);
             startActivity(intent);

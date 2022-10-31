@@ -342,7 +342,7 @@ public class TimeUtils {
             if (min > 0)
                 return   min + "min";
             else
-                return "";
+                return "0min";
         }
     }
 

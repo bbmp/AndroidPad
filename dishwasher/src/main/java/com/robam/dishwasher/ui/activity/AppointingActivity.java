@@ -186,7 +186,7 @@ public class AppointingActivity extends DishWasherBaseActivity {
             //工作模式
             tvMode.setText(DishWasherEnum.match(modeBean.code));
 
-            tvWorkHours.setText(getSpan( modeBean.time/60));
+            tvWorkHours.setText(getSpan( modeBean.time));
             int totalTime =HomeDishWasher.getInstance().orderWorkTime * 60;
             tvCountdown.setTotalTime(totalTime);
             tvCountdown.setText(getTimeStr(HomeDishWasher.getInstance().orderWorkTime));
