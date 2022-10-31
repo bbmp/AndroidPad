@@ -6,9 +6,15 @@ import com.google.gson.Gson;
 public class GetCurveDetailReq {
     //曲线id
     public long id;
+    //设备id
+    public String deviceGuid;
 
     public GetCurveDetailReq(long id) {
         this.id = id;
+    }
+
+    public GetCurveDetailReq(String deviceGuid) {
+        this.deviceGuid = deviceGuid;
     }
 
     @Override

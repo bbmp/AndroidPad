@@ -15,10 +15,15 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
+import com.robam.common.constant.PanConstant;
+import com.robam.common.device.subdevice.Pan;
+import com.robam.common.http.RetrofitCallback;
 import com.robam.common.module.IPublicStoveApi;
 import com.robam.common.utils.TimeUtils;
 import com.robam.common.device.subdevice.Stove;
 import com.robam.common.utils.ToastUtils;
+import com.robam.stove.bean.CurveStep;
+import com.robam.stove.bean.StoveCurveDetail;
 import com.robam.stove.device.HomeStove;
 import com.robam.common.manager.FunctionManager;
 import com.robam.common.ui.dialog.IDialog;
@@ -32,9 +37,13 @@ import com.robam.stove.constant.DialogConstant;
 import com.robam.common.constant.StoveConstant;
 import com.robam.stove.device.StoveAbstractControl;
 import com.robam.stove.factory.StoveDialogFactory;
+import com.robam.stove.http.CloudHelper;
+import com.robam.stove.response.GetCurveDetailRes;
+import com.robam.stove.ui.activity.CurveCreateActivity;
 import com.robam.stove.ui.adapter.RvMainFunctionAdapter;
 import com.robam.stove.ui.dialog.HomeLockDialog;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HomePage extends StoveBasePage {
@@ -55,6 +64,7 @@ public class HomePage extends StoveBasePage {
     private IDialog iDialogStop, iDialogAffirm;
 
     private HomeLockDialog homeLockDialog;
+
 
     @Override
     protected int getLayoutId() {
@@ -140,6 +150,43 @@ public class HomePage extends StoveBasePage {
                         break;
                     }
                 }
+            }
+        });
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device instanceof Pan) {
+                Pan pan = (Pan) device;
+                if (pan.mode == 1) { //曲线创建中
+                    getCurveDetail(pan.guid);
+                }
+                break;
+            }
+        }
+    }
+
+    //获取正在记录的曲线
+    private void getCurveDetail(String panGuid) {
+        CloudHelper.getCurvebookDetail(this, 0, panGuid, GetCurveDetailRes.class, new RetrofitCallback<GetCurveDetailRes>() {
+            @Override
+            public void onSuccess(GetCurveDetailRes getCurveDetailRes) {
+                if (null != getCurveDetailRes && null != getCurveDetailRes.payload) {
+                    StoveCurveDetail stoveCurveDetail = getCurveDetailRes.payload;
+
+                    List<CurveStep> curveSteps = new ArrayList<>();
+                    if (null != stoveCurveDetail.stepList) {
+                        curveSteps.addAll(stoveCurveDetail.stepList);
+                    }
+                    //继续创建曲线
+                    if (null != stoveCurveDetail.temperatureCurveParams) {
+                        Intent intent = new Intent();
+                        intent.setClass(getContext(), CurveCreateActivity.class);
+                        intent.putExtra(StoveConstant.EXTRA_CURVE_DETAIL, stoveCurveDetail);
+                        startActivity(intent);
+                    }
+                }
+            }
+
+            @Override
+            public void onFaild(String err) {
             }
         });
     }

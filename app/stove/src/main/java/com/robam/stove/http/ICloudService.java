@@ -65,5 +65,5 @@ public interface ICloudService {
 
     @POST(cookingCurveMarkStep)
     @Headers("Content-Type: application/json")
-    Call<ResponseBody> curveMarkStep(@Body RequestBody body);
+    Call<ResponseBody> cookingCurveMarkStep(@Body RequestBody body);
 }
