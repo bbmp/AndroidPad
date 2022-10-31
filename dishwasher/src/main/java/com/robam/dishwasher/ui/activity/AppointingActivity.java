@@ -19,6 +19,7 @@ import com.robam.dishwasher.R;
 import com.robam.dishwasher.base.DishWasherBaseActivity;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.dishwasher.bean.DishWasherModeBean;
+import com.robam.dishwasher.constant.DishWasherAuxEnum;
 import com.robam.dishwasher.constant.DishWasherEnum;
 import com.robam.dishwasher.constant.DialogConstant;
 import com.robam.dishwasher.constant.DishWasherConstant;
@@ -83,6 +84,7 @@ public class AppointingActivity extends DishWasherBaseActivity {
                         return;
                     }
                     switch (dishWasher.powerStatus){
+                        case DishWasherState.WAIT:
                         case DishWasherState.WORKING:
                         case DishWasherState.PAUSE:
                             if(DishWasherCommandHelper.getInstance().isSafe()){
@@ -140,16 +142,11 @@ public class AppointingActivity extends DishWasherBaseActivity {
         //工作剩余时间 dishWasher.DishWasherRemainingWorkingTime
         //工作时长 dishWasher.SetWorkTimeValue
         //剩余预约时间 AppointmentRemainingTime
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                //tvWorkHours.setText(String.format("%s分钟", dishWasher.DishWasherRemainingWorkingTime));
-                int totalTime = dishWasher.AppointmentRemainingTime * 60;
-                tvCountdown.setTotalTime(totalTime);
-                tvCountdown.setText(getTimeStr(dishWasher.AppointmentRemainingTime));
-                tvAppointmentHint.setText(startTimePoint(dishWasher.AppointmentRemainingTime));
-            }
-        });
+        int totalTime = dishWasher.AppointmentRemainingTime * 60;
+        tvCountdown.setTotalTime(totalTime);
+        tvCountdown.setText(getTimeStr(dishWasher.AppointmentRemainingTime));
+        tvAppointmentHint.setText(startTimePoint(dishWasher.AppointmentRemainingTime));
+        tvModeAux.setText(DishWasherAuxEnum.match(dishWasher.auxMode));
 
 
     }

@@ -14,6 +14,7 @@ import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MsgKeys;
+import com.robam.common.ui.view.CancelRadioButton;
 import com.robam.common.utils.TimeUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.dishwasher.R;
@@ -130,9 +131,25 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
                 tvAuxPrompt.setText("");
             }
             tvTime.setTextColor(getResources().getColor(R.color.dishwasher_lock));
+            tvMode.setTextColor(getResources().getColor(R.color.dishwasher_white70));
+            tvTemp.setTextColor(getResources().getColor(R.color.dishwasher_white70));
+            tvTempUnit.setTextColor(getResources().getColor(R.color.dishwasher_white70));
+
+            for(int i = 0; i< group.getChildCount();i++){
+                CancelRadioButton child = (CancelRadioButton) group.getChildAt(i);
+                child.setTextColor(child.getId() == checkedId ? getResources().getColor(R.color.dishwasher_white) : getResources().getColor(R.color.dishwasher_white70));
+            }
         }else{
             tvAuxPrompt.setText("");
             tvTime.setTextColor(getResources().getColor(R.color.dishwasher_white));
+            tvMode.setTextColor(getResources().getColor(R.color.dishwasher_white));
+            tvTemp.setTextColor(getResources().getColor(R.color.dishwasher_white));
+            tvTempUnit.setTextColor(getResources().getColor(R.color.dishwasher_white));
+
+            for(int i = 0; i< group.getChildCount();i++){
+                CancelRadioButton child = (CancelRadioButton) group.getChildAt(i);
+                child.setTextColor(getResources().getColor(R.color.dishwasher_white));
+            }
         }
     }
 
@@ -222,6 +239,7 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
     private void startWork(){
         DishWasher curDevice = getCurDevice();
         if(!DishWasherCommandHelper.checkDishWasherState(this,curDevice)){
+            getLastState();
             return;
         }
         if(curDevice.powerStatus == DishWasherState.OFF){

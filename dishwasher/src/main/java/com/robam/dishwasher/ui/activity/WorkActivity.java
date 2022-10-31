@@ -25,6 +25,7 @@ import com.robam.dishwasher.bean.DishWasher;
 import com.robam.dishwasher.constant.DialogConstant;
 import com.robam.dishwasher.constant.DishWasherAuxEnum;
 import com.robam.dishwasher.constant.DishWasherConstant;
+import com.robam.dishwasher.constant.DishWasherEnum;
 import com.robam.dishwasher.constant.DishWasherState;
 import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.factory.DishWasherDialogFactory;
@@ -103,6 +104,7 @@ public class WorkActivity extends DishWasherBaseActivity {
                             setWorkingState(dishWasher);
                             break;
                         case DishWasherState.OFF:
+                        case DishWasherState.WAIT:
                             startActivity(MainActivity.class);
                             finish();
                             break;
@@ -231,6 +233,19 @@ public class WorkActivity extends DishWasherBaseActivity {
     //工作中 - 需更新时间
     private void setWorkingState(DishWasher dishWasher){
         changeViewsState(dishWasher.powerStatus);
+        if(DishWasherEnum.FLUSH.getCode() == dishWasher.workMode){//护婴净存
+            cpgBar.setVisibility(View.VISIBLE);
+            tvModeCur.setVisibility(View.VISIBLE);
+            tvModeCur.setText(R.string.dishwasher_aeration);
+        }else if(DishWasherEnum.AUTO_AERATION.getCode() == dishWasher.workMode){//自动换气
+            cpgBar.setVisibility(View.INVISIBLE);
+            tvModeCur.setVisibility(View.INVISIBLE);
+        }else{
+            cpgBar.setVisibility(View.VISIBLE);
+            tvModeCur.setVisibility(View.VISIBLE);
+            tvModeCur.setText(R.string.dishwasher_washer);
+        }
+        tvMode.setText(DishWasherEnum.match(dishWasher.workMode));
         if(dishWasher.powerStatus == DishWasherState.WORKING){
             //工作剩余时间 dishWasher.DishWasherRemainingWorkingTime
             //工作时长 dishWasher.SetWorkTimeValue
@@ -278,11 +293,14 @@ public class WorkActivity extends DishWasherBaseActivity {
      * 显示提醒弹窗（缺少洗涤剂与专用盐）
      */
     private void showRemindDialog(DishWasher dishWasher){
-        if((dishWasher.LackRinseStatus == 0 && dishWasher.LackSaltStatus == 0 ) || (isReminding || isNoLongerRemind)){
+        if(dishWasher.LackRinseStatus == 0 && dishWasher.LackSaltStatus == 0){
             if(commonDialog != null &&  commonDialog.isShow()){
                 commonDialog.dismiss();
                 commonDialog = null;
             }
+            return;
+        }
+        if((isReminding || isNoLongerRemind)){
             return;
         }
         isReminding = true;

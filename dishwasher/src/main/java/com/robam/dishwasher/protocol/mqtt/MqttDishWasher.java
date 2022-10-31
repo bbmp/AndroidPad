@@ -50,6 +50,41 @@ public class MqttDishWasher extends MqttPublic {
                 short abnormalAlarmStatus = ByteUtils.toShort(payload[offset++]);
                 short ADD_AUX = ByteUtils.toShort(payload[payload.length - 1]);
                 short argument = ByteUtils.toShort(payload[offset++]);
+                while (argument > 0) {
+                    short argument_key = ByteUtils.toShort(payload[offset++]);
+                    short arg_length = ByteUtils.toShort(payload[offset++]);
+                    switch (argument_key) {
+                        case 1:
+                            msg.putOpt(DishWasherConstant.CurrentWaterTemperatureKey, argument_key);
+                            msg.putOpt(DishWasherConstant.CurrentWaterTemperatureLength, arg_length);
+                            msg.putOpt(DishWasherConstant.CurrentWaterTemperatureValue, ByteUtils.toShort(payload[offset++]));
+                            offset++;
+                            break;
+                        case 2:
+                            msg.putOpt(DishWasherConstant.SetWorkTimeKey, argument_key);
+                            msg.putOpt(DishWasherConstant.SetWorkTimelength, arg_length);
+                            //msg.putOpt(MsgParams.SetWorkTimeValue,MsgUtils.getInt(payload, offset++));
+                            //offset++;
+                            byte[]  times = new byte[arg_length];
+                            for (int i = 0 ; i < arg_length ; i ++ ){
+                                short orderLeftMinute = ByteUtils.toShort(payload[offset]);
+                                times[i] = (byte) orderLeftMinute ;
+                                offset ++ ;
+                            }
+                            int SetWorkTimeValue = ByteUtils.byteToInt2(times);
+                            msg.putOpt(DishWasherConstant.SetWorkTimeValue, SetWorkTimeValue);
+                            //offset++;
+                            break;
+                        case 3:
+                            //offset++;
+                            msg.putOpt(DishWasherConstant.ADD_AUX,ByteUtils.toShort(payload[offset++]));
+                            break;
+                        default:
+                            offset += arg_length ;
+                            break;
+                    }
+                    argument--;
+                }
 
                 msg.putOpt(DishWasherConstant.powerStatus, powerStatus);
                 msg.putOpt(DishWasherConstant.StoveLock, stoveLock);

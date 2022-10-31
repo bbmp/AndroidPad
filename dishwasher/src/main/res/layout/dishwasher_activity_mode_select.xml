@@ -59,16 +59,18 @@
         android:layout_marginTop="@dimen/dp_6"
         app:layout_constraintLeft_toRightOf="@id/tv_temp"
         app:layout_constraintTop_toTopOf="@id/tv_temp"/>
+
     <TextView
-        android:layout_marginTop="@dimen/dp_25"
-        android:textSize="@dimen/sp_32"
-        android:textColor="@color/dishwasher_white25"
-        app:layout_constraintTop_toBottomOf="@id/tv_mode"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
         android:id="@+id/aux_prompt_tv"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_25"
+        android:textColor="@color/common_white65"
+        android:textSize="@dimen/sp_32"
+        android:gravity="center"
+        app:layout_constraintLeft_toLeftOf="@id/tv_time"
+        app:layout_constraintRight_toRightOf="@id/tv_time"
+        app:layout_constraintTop_toBottomOf="@id/tv_mode" />
     <View
         android:id="@+id/ll_foot"
         android:layout_width="match_parent"
@@ -106,8 +108,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="@dimen/sp_44"
-            android:textColor="@color/dishwasher_white"
+            android:textSize="@dimen/sp_34"
+            android:drawablePadding="@dimen/dp_8"
+            android:textColor="@color/common_white"
             android:text="@string/dishwasher_pan_powfull"
             android:button="@drawable/dishwasher_radiobutton_selector"/>
         <com.robam.common.ui.view.CancelRadioButton
@@ -115,26 +118,29 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="@dimen/sp_44"
-            android:textColor="@color/dishwasher_white"
+            android:textSize="@dimen/sp_34"
+            android:textColor="@color/common_white"
             android:text="@string/dishwasher_kill_powfull"
+            android:drawablePadding="@dimen/dp_8"
             android:button="@drawable/dishwasher_radiobutton_selector"/>
         <com.robam.common.ui.view.CancelRadioButton
             android:id="@+id/rb_button3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="@dimen/sp_44"
-            android:textColor="@color/dishwasher_white"
+            android:textSize="@dimen/sp_34"
+            android:textColor="@color/common_white"
             android:text="@string/dishwasher_flush"
+            android:drawablePadding="@dimen/dp_8"
             android:button="@drawable/dishwasher_radiobutton_selector"/>
         <com.robam.common.ui.view.CancelRadioButton
             android:id="@+id/rb_button4"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="@dimen/sp_44"
-            android:textColor="@color/dishwasher_white"
+            android:textSize="@dimen/sp_34"
+            android:drawablePadding="@dimen/dp_8"
+            android:textColor="@color/common_white"
             android:text="@string/dishwasher_down_wash"
             android:button="@drawable/dishwasher_radiobutton_selector"/>
     </RadioGroup>

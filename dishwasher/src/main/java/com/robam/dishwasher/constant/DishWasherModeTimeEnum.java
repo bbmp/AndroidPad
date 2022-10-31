@@ -1,7 +1,6 @@
 package com.robam.dishwasher.constant;
 
-public enum DishWasherEnum {
-    //主模式
+public enum DishWasherModeTimeEnum {
     SMART(DishWasherConstant.MODE_SMART,"智能洗"),
     POWFULL(DishWasherConstant.MODE_POWFULL,"强力洗"),
     QUICK(DishWasherConstant.MODE_QUICK,"快速洗"),
@@ -18,32 +17,8 @@ public enum DishWasherEnum {
     private int code;
     private String value;
 
-    DishWasherEnum(int code, String value) {
+    DishWasherModeTimeEnum(int code, String value) {
         this.code = code;
         this.value = value;
     }
-
-    public int getCode() {
-        return code;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public static String match(int key) {
-
-        String value = null;
-
-        for (DishWasherEnum s : values()) {
-            if (s.getCode() == key) {
-                value = s.getValue();
-                break;
-            }
-        }
-
-        return value;
-    }
-
-
 }

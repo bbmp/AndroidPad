@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_32"
             android:text="@string/dishwasher_back"
-            android:textColor="@color/dishwasher_white"/>
+            android:textColor="@color/dishwasher_white_85"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/ll_left_center"
@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_32"
             android:text="@string/dishwasher_back"
-            android:textColor="@color/dishwasher_white"/>
+            android:textColor="@color/dishwasher_white_85"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/ll_center"
@@ -84,7 +84,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_32"
-            android:textColor="@color/dishwasher_white"
+            android:textColor="@color/dishwasher_white_85"
             android:visibility="gone"/>
         <View
             android:id="@+id/view_center"
@@ -121,7 +121,7 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_32"
             android:text="@string/dishwasher_lock"
-            android:textColor="@color/dishwasher_white"/>
+            android:textColor="@color/dishwasher_white_85"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/ll_right"
@@ -149,7 +149,7 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_32"
             android:text=""
-            android:textColor="@color/dishwasher_white"/>
+            android:textColor="@color/dishwasher_white_85"/>
     </LinearLayout>
     <ImageView
         android:id="@+id/iv_float"

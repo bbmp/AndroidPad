@@ -1,6 +1,7 @@
 package com.robam.dishwasher.ui.activity;
 
 import android.content.Intent;
+import android.widget.Toast;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -16,6 +17,7 @@ import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.ToastUtils;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.base.DishWasherBaseActivity;
 import com.robam.dishwasher.bean.DishWasher;
@@ -57,6 +59,7 @@ public class MainActivity extends DishWasherBaseActivity {
         //开启远程控制
         DishWasherAbstractControl.getInstance().init(new DishWasherMqttControl());
         HomeDishWasher.getInstance().guid = getIntent().getStringExtra(ComnConstant.EXTRA_GUID);
+        ToastUtils.show(this,HomeDishWasher.getInstance().guid, Toast.LENGTH_LONG);
         final List<DishWasherModeBean> modeBeanList = FunctionManager.getFuntionList(getContext(), DishWasherModeBean.class,R.raw.dishwahser);
         AccountInfo.getInstance().getGuid().observe(this, s -> {
             for (Device device: AccountInfo.getInstance().deviceList) {
@@ -72,7 +75,7 @@ public class MainActivity extends DishWasherBaseActivity {
                     setLock(dishWasher.StoveLock == DishWasherState.LOCK);
                     //washer.AppointmentSwitchStatus 预约状态  开： DishWasherStatus.appointmentSwitchOn 关 ： DishWasherStatus.appointmentSwitchOff
                     switch (dishWasher.powerStatus){
-                        //case DishWasherState.WAIT:
+                        case DishWasherState.WAIT:
                         case DishWasherState.WORKING:
                         case DishWasherState.PAUSE:
                             dealWasherWorkingState(modeBeanList,dishWasher);
@@ -104,6 +107,8 @@ public class MainActivity extends DishWasherBaseActivity {
                 appointingIntent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, curWasherModel);
                 appointingIntent.setClass(this, AppointingActivity.class);
                 startActivity(appointingIntent);
+                HomeDishWasher.getInstance().workHours = curWasherModel.time;
+                HomeDishWasher.getInstance().orderWorkTime = (int) dishWasher.AppointmentRemainingTime;
                 break;
         }
     }

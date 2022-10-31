@@ -20,7 +20,7 @@ import java.util.Map;
 public class DishWasherCommandHelper {
 
     private  long perOrderTimeMin = System.currentTimeMillis() ;
-    private  final float COMMON_DELAY_DUR = 1.5f * 1000 ;
+    private  final float COMMON_DELAY_DUR = 2f * 1000 ;
 
     private DishWasherCommandHelper(){
 
@@ -69,13 +69,6 @@ public class DishWasherCommandHelper {
     }
 
 
-    /**
-     * 获取预约执行时间
-     * @return
-     */
-    public static int getAppointingTimeMin(String appointTimeStr){
-        return 40;
-    }
 
     public  boolean isSafe(){
         return System.currentTimeMillis()  - perOrderTimeMin >= COMMON_DELAY_DUR;

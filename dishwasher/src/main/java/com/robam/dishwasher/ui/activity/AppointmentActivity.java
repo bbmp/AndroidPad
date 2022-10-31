@@ -9,6 +9,7 @@ import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.common.utils.DateUtil;
+import com.robam.common.utils.TimeUtils;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.base.DishWasherBaseActivity;
 import com.robam.dishwasher.bean.DishWasher;
@@ -18,7 +19,12 @@ import com.robam.dishwasher.constant.DishWasherState;
 import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.ui.adapter.RvStringAdapter;
 import com.robam.dishwasher.util.DishWasherCommandHelper;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 
 //工作预约
@@ -165,17 +171,43 @@ public class AppointmentActivity extends DishWasherBaseActivity {
     }
 
     private void sendAppointingCommand(){
-        Map map = DishWasherCommandHelper.getModelMap(MsgKeys.setDishWasherWorkMode, modeBean.code,(short) 1, DishWasherCommandHelper.getAppointingTimeMin(tvTime.getText().toString()));
-        map.put(DishWasherConstant.AutoVentilation, 0);
-        map.put(DishWasherConstant.EnhancedDrySwitch, 0);
-        map.put(DishWasherConstant.AppointmentSwitch, 0);
-        map.put(DishWasherConstant.AppointmentTime, 0);
-        map.put(DishWasherConstant.ArgumentNumber, 1);
-        map.put(DishWasherConstant.ADD_AUX, modeBean.auxCode);
-        DishWasherCommandHelper.getInstance().sendCommonMsgForLiveData(map,MsgKeys.setDishWasherWorkMode + directive_offset);
+        try {
+            long appointingTime = getAppointingTimeMin(tvTime.getText().toString());
 
-        HomeDishWasher.getInstance().workHours = modeBean.time;
-        HomeDishWasher.getInstance().orderWorkTime = DishWasherCommandHelper.getAppointingTimeMin(tvTime.getText().toString());
+            Map map = DishWasherCommandHelper.getModelMap(MsgKeys.setDishWasherWorkMode, modeBean.code,(short) 1, (int)appointingTime);
+            map.put(DishWasherConstant.AutoVentilation, 0);
+            map.put(DishWasherConstant.EnhancedDrySwitch, 0);
+            map.put(DishWasherConstant.ArgumentNumber, 1);
+            map.put(DishWasherConstant.ADD_AUX, modeBean.auxCode);
+            DishWasherCommandHelper.getInstance().sendCommonMsgForLiveData(map,MsgKeys.setDishWasherWorkMode + directive_offset);
+
+            HomeDishWasher.getInstance().workHours = modeBean.time;
+            HomeDishWasher.getInstance().orderWorkTime = (int) appointingTime;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private long getAppointingTimeMin(String timeText) throws ParseException {
+        String time = timeText.substring("次日".length()).trim()+":00";
+        Date curTime = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  //HH:24小时制  hh:12小时制
+        String curTimeStr = dateFormat.format(curTime);
+        String curTimeText = curTimeStr.substring("yyyy-MM-dd".length()).trim();
+        if(time.compareTo(curTimeText) > 0){//今日
+            String orderTimeStr = curTimeStr.split(" ")[0].trim() + " " + time;
+            Date orderTime = dateFormat.parse(orderTimeStr);
+            return (orderTime.getTime() - curTime.getTime())/60/1000;
+        }else{//次日
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(curTime);
+            calendar.add(Calendar.DAY_OF_MONTH,1);
+            String destTime = dateFormat.format(calendar.getTime());
+            String orderTimeStr = destTime.split(" ")[0].trim() + " " + time;
+            Date orderTime = dateFormat.parse(orderTimeStr);
+            return (orderTime.getTime() - curTime.getTime())/60/1000;
+        }
     }
 
 

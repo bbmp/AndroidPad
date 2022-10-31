@@ -7,9 +7,12 @@ public class DishWasherConstant {
     public final static int MODE_DAILY = 2;//日常洗
     public final static int MODE_SAVING = 3;//节能洗
     public final static int MODE_BRIGHT = 6;//晶亮洗
+    public final static int MODE_DRAIN_WATER = 7;//排水
+    public final static int MODE_SELF_INSPECTION = 8;//自检测试
+    public final static int MODE_FLUSH = 9;//护婴净存/自动换气
+    public final static int MODE_AUTO_AERATION = 10;//自动换气等待
     public final static int MODE_BABYCARE = 14;// 护婴洗
     public final static int MODE_SELFCLEAN = 15;//自清洁
-    public final static int MODE_FLUSH = 9;//护婴净存/自动换气
 
     //附加模式
     public final static int AUX_NONE = 0;//无
@@ -79,6 +82,8 @@ public class DishWasherConstant {
     public final static  String EnhancedDryStatus = "EnhancedDryStatus";//将强干燥状态
 
     public final static  String SetWorkTimeValue = "SetWorkTimeValue";//设置工作时间
+    public final static String SetWorkTimeKey = "SetWorkTimeKey";//设置工作时间
+    public final static String SetWorkTimelength = "SetWorkTimelength";//设置工作时间
 
     public final static  String AbnormalAlarmStatus = "AbnormalAlarmStatus";//异常报警状态
     public final static String CurrentWaterTemperatureKey = "CurrentWaterTemperatureKey";//当前水温
@@ -105,6 +110,8 @@ public class DishWasherConstant {
     public final static String WATER_CONSUMPTION = "waterConsumption";
 
     public final static int ZERO = 0;//无
+
+
 
 
    /* public final static short OFF=0;//关机
