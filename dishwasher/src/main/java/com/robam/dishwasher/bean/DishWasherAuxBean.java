@@ -1,9 +1,8 @@
 package com.robam.dishwasher.bean;
 
 import java.io.Serializable;
-import java.util.List;
 
-public class DishWasherModeBean implements Serializable {
+public class DishWasherAuxBean implements Serializable {
     //模式id
     public short code ;
     //模式名称
@@ -19,15 +18,13 @@ public class DishWasherModeBean implements Serializable {
     //温度
     public int temp;
 
-    public List<DishWasherAuxBean> auxList;
-
     /**
      * 附加code（锅具强洗/加强除菌/长效净存/下层洗）
      */
     public int auxCode = -1;
 
-    public DishWasherModeBean getNewMode(){
-        DishWasherModeBean modeBean = new DishWasherModeBean();
+    public DishWasherAuxBean getNewMode(){
+        DishWasherAuxBean modeBean = new DishWasherAuxBean();
         modeBean.code = code;
         modeBean.name = name;
         modeBean.backgroundImg = backgroundImg;
@@ -36,7 +33,6 @@ public class DishWasherModeBean implements Serializable {
         modeBean.temp = temp;
         modeBean.time = time;
         modeBean.auxCode = auxCode;
-        modeBean.auxList = auxList;
         return modeBean;
     }
 

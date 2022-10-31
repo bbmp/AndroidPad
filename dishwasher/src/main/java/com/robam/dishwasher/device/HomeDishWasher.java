@@ -38,4 +38,12 @@ public class HomeDishWasher {
      * 是否启动童锁
      */
     public boolean lock;
+
+    /**
+     * 是否已经熄屏
+     */
+    public boolean isTurnOff = false;
+
+
+
 }

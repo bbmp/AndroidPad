@@ -15,6 +15,7 @@ import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.MCountdownView;
 import com.robam.common.utils.DateUtil;
+import com.robam.common.utils.TimeUtils;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.base.DishWasherBaseActivity;
 import com.robam.dishwasher.bean.DishWasher;
@@ -126,7 +127,7 @@ public class AppointingActivity extends DishWasherBaseActivity {
             case DishWasherState.APPOINTMENT_OFF:
                 List<DishWasherModeBean> modeBeanList = FunctionManager.getFuntionList(getContext(), DishWasherModeBean.class,R.raw.dishwahser);
                 Intent intent = new Intent();
-                DishWasherModeBean dishWasherModeBean = DishWasherModelUtil.getDishWasher(modeBeanList,dishWasher.DishWasherWorkMode);
+                DishWasherModeBean dishWasherModeBean = DishWasherModelUtil.getDishWasher(modeBeanList,dishWasher.workMode);
                 intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, dishWasherModeBean);
                 intent.setClass(this, WorkActivity.class);
                 startActivity(intent);
@@ -292,7 +293,7 @@ public class AppointingActivity extends DishWasherBaseActivity {
     }*/
 
     private SpannableString getSpan(int remainTime){
-        String time = TimeDisplayUtil.getHourAndMin(remainTime);
+        String time = TimeUtils.secToHourMinUp(remainTime);
         SpannableString spannableString = new SpannableString(time);
         int pos = time.indexOf("h");
         if (pos >= 0)

@@ -73,6 +73,7 @@ public class MainActivity extends DishWasherBaseActivity {
                         return;
                     }
                     setLock(dishWasher.StoveLock == DishWasherState.LOCK);
+                    HomeDishWasher.getInstance().isTurnOff = (dishWasher.powerStatus == DishWasherState.OFF);
                     //washer.AppointmentSwitchStatus 预约状态  开： DishWasherStatus.appointmentSwitchOn 关 ： DishWasherStatus.appointmentSwitchOff
                     switch (dishWasher.powerStatus){
                         case DishWasherState.WAIT:
@@ -96,14 +97,18 @@ public class MainActivity extends DishWasherBaseActivity {
         switch (dishWasher.AppointmentSwitchStatus){
             case DishWasherState.APPOINTMENT_OFF:
                 Intent intent = new Intent();
-                DishWasherModeBean dishWasherModeBean = DishWasherModelUtil.getDishWasher(modeBeanList,dishWasher.DishWasherWorkMode);
-                intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, dishWasherModeBean);
+                DishWasherModeBean dishWasherModeBean = DishWasherModelUtil.getDishWasher(modeBeanList,dishWasher.workMode);
+                DishWasherModeBean newMode = dishWasherModeBean.getNewMode();
+                newMode.auxCode = dishWasher.auxMode;
+                newMode.time =  dishWasher.DishWasherRemainingWorkingTime * 60;
+
+                intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, newMode);
                 intent.setClass(this, WorkActivity.class);
                 startActivity(intent);
                 break;
             case DishWasherState.APPOINTMENT_ON:
                 Intent appointingIntent = new Intent();
-                DishWasherModeBean curWasherModel = DishWasherModelUtil.getDishWasher(modeBeanList,dishWasher.DishWasherWorkMode);
+                DishWasherModeBean curWasherModel = DishWasherModelUtil.getDishWasher(modeBeanList,dishWasher.workMode);
                 appointingIntent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, curWasherModel);
                 appointingIntent.setClass(this, AppointingActivity.class);
                 startActivity(appointingIntent);

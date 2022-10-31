@@ -32,9 +32,7 @@ public enum DishWasherEnum {
     }
 
     public static String match(int key) {
-
-        String value = null;
-
+        String value = "";
         for (DishWasherEnum s : values()) {
             if (s.getCode() == key) {
                 value = s.getValue();

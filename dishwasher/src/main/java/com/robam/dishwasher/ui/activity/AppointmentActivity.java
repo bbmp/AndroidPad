@@ -157,7 +157,7 @@ public class AppointmentActivity extends DishWasherBaseActivity {
         if(!DishWasherCommandHelper.checkDishWasherState(this,curDevice)){
             return;
         }
-        if(curDevice.powerStatus == DishWasherState.OFF){
+        if((curDevice.powerStatus == DishWasherState.OFF) || HomeDishWasher.getInstance().isTurnOff){
             sendSetPowerStateCommand();
         }else {
             sendAppointingCommand();

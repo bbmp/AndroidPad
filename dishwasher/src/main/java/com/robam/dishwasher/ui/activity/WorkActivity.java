@@ -31,7 +31,6 @@ import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.factory.DishWasherDialogFactory;
 import com.robam.dishwasher.ui.dialog.DiashWasherCommonDialog;
 import com.robam.dishwasher.util.DishWasherCommandHelper;
-import com.robam.dishwasher.util.TimeDisplayUtil;
 
 import java.util.Map;
 
@@ -120,6 +119,7 @@ public class WorkActivity extends DishWasherBaseActivity {
                     //getLastState();
                     startActivity(MainActivity.class);
                     finish();
+                    HomeDishWasher.getInstance().isTurnOff = true;
                     break;
                 case DishWasherState.WORKING:
                     tvTime.setText(getSpan(preRemainingTime));
@@ -161,6 +161,7 @@ public class WorkActivity extends DishWasherBaseActivity {
     //模式参数设置
     private void setData(DishWasherModeBean modeBean) {
         tvMode.setText(modeBean.name);
+        tvAuxMode.setText(DishWasherAuxEnum.match(modeBean.auxCode));
         tvTime.setText(getSpan(modeBean.time));
     }
 
@@ -234,18 +235,21 @@ public class WorkActivity extends DishWasherBaseActivity {
     private void setWorkingState(DishWasher dishWasher){
         changeViewsState(dishWasher.powerStatus);
         if(DishWasherEnum.FLUSH.getCode() == dishWasher.workMode){//护婴净存
+            tvMode.setText(DishWasherEnum.match(dishWasher.workMode));
             cpgBar.setVisibility(View.VISIBLE);
             tvModeCur.setVisibility(View.VISIBLE);
             tvModeCur.setText(R.string.dishwasher_aeration);
         }else if(DishWasherEnum.AUTO_AERATION.getCode() == dishWasher.workMode){//自动换气
+            tvMode.setText(DishWasherEnum.match(dishWasher.workMode));
             cpgBar.setVisibility(View.INVISIBLE);
             tvModeCur.setVisibility(View.INVISIBLE);
         }else{
+            tvMode.setText(DishWasherEnum.match(dishWasher.workMode));
             cpgBar.setVisibility(View.VISIBLE);
             tvModeCur.setVisibility(View.VISIBLE);
             tvModeCur.setText(R.string.dishwasher_washer);
         }
-        tvMode.setText(DishWasherEnum.match(dishWasher.workMode));
+
         if(dishWasher.powerStatus == DishWasherState.WORKING){
             //工作剩余时间 dishWasher.DishWasherRemainingWorkingTime
             //工作时长 dishWasher.SetWorkTimeValue

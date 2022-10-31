@@ -20,6 +20,7 @@ import com.robam.common.utils.ToastUtils;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.base.DishWasherBaseActivity;
 import com.robam.dishwasher.bean.DishWasher;
+import com.robam.dishwasher.bean.DishWasherAuxBean;
 import com.robam.dishwasher.bean.DishWasherModeBean;
 import com.robam.dishwasher.constant.DishWasherAuxEnum;
 import com.robam.dishwasher.constant.DishWasherConstant;
@@ -107,13 +108,16 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
             if(s == (MsgKeys.setDishWasherWorkMode + directive_offset)){
                 runOnUiThread(() -> {
                     Intent intent = new Intent();
-                    if (null != modeBean){
-                        intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, modeBean);
+                    DishWasherModeBean newMode = modeBean.getNewMode();
+                    DishWasherAuxBean auxBean = getAuxBean(getAuxCode());
+                    if(auxBean != null){
+                        newMode.time = auxBean.time;
+                        newMode.auxCode = auxBean.code;
                     }
+                    intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, newMode);
                     intent.setClass(ModeSelectActivity.this, WorkActivity.class);
                     startActivity(intent);
                     finish();
-                    //LogUtils.e("sendCommonMsg success");
                 });
             }else if(s == (MsgKeys.setDishWasherPower + directive_offset)){
                 sendStartWorkCommand();
@@ -130,6 +134,10 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
             }else{
                 tvAuxPrompt.setText("");
             }
+            //设置显示时间
+            DishWasherAuxBean auxBean = getAuxBean(DishWasherAuxEnum.matchValue(((RadioButton) group.findViewById(checkedId)).getText().toString()));
+            tvTime.setText(getSpan(auxBean.time));
+
             tvTime.setTextColor(getResources().getColor(R.color.dishwasher_lock));
             tvMode.setTextColor(getResources().getColor(R.color.dishwasher_white70));
             tvTemp.setTextColor(getResources().getColor(R.color.dishwasher_white70));
@@ -141,6 +149,7 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
             }
         }else{
             tvAuxPrompt.setText("");
+            tvTime.setText(getSpan(modeBean.time));
             tvTime.setTextColor(getResources().getColor(R.color.dishwasher_white));
             tvMode.setTextColor(getResources().getColor(R.color.dishwasher_white));
             tvTemp.setTextColor(getResources().getColor(R.color.dishwasher_white));
@@ -152,6 +161,22 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
             }
         }
     }
+
+    /**
+     * 获取附加功能对应实体
+     */
+    private DishWasherAuxBean getAuxBean(int auxCode){
+        if(modeBean == null || modeBean.auxList == null){
+            return null;
+        }
+        for( DishWasherAuxBean auxBean : modeBean.auxList){
+            if(auxBean.code == auxCode){
+                return auxBean;
+            }
+        }
+        return null;
+    }
+
 
 
 
@@ -197,15 +222,10 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
     //模式参数设置
     private void setData(DishWasherModeBean modeBean) {
         tvMode.setText(modeBean.name);
-        String time = TimeUtils.secToHourMinH(modeBean.time);
-        SpannableString spannableString = new SpannableString(time);
-        int pos = time.indexOf("h");
-        if (pos >= 0)
-            spannableString.setSpan(new RelativeSizeSpan(0.5f), pos, pos + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        pos = time.indexOf("min");
-        if (pos >= 0)
-            spannableString.setSpan(new RelativeSizeSpan(0.5f), pos, pos + 3, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        tvTime.setText(spannableString);
+
+
+
+        tvTime.setText(getSpan(modeBean.time));
         int temp = modeBean.temp;
         if (temp > 0) {
             tvTemp.setText(temp + "");
@@ -242,7 +262,7 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
             getLastState();
             return;
         }
-        if(curDevice.powerStatus == DishWasherState.OFF){
+        if((curDevice.powerStatus == DishWasherState.OFF) || HomeDishWasher.getInstance().isTurnOff){
             sendSetPowerStateCommand();
         }else {
             sendStartWorkCommand();
@@ -286,6 +306,24 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
         }
         return DishWasherAuxEnum.AUX_NONE.getCode();
     }
+
+    /**
+     * 获取时间展示SpannableString
+     * @param seconds 工作时间（单位：秒）
+     * @return
+     */
+    private SpannableString getSpan(int seconds){
+        String time = TimeUtils.secToHourMinH(seconds);
+        SpannableString spannableString = new SpannableString(time);
+        int pos = time.indexOf("h");
+        if (pos >= 0)
+            spannableString.setSpan(new RelativeSizeSpan(0.5f), pos, pos + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        pos = time.indexOf("min");
+        if (pos >= 0)
+            spannableString.setSpan(new RelativeSizeSpan(0.5f), pos, pos + 3, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spannableString;
+    }
+
 
 
 

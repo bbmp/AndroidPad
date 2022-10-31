@@ -36,16 +36,13 @@ public enum DishWasherAuxEnum {
     }
 
     public static String match(int key) {
-
-        String value = null;
-
+        String value = "";
         for (DishWasherAuxEnum s : values()) {
             if (s.getCode() == key) {
                 value = s.getValue();
                 break;
             }
         }
-
         return value;
     }
 
