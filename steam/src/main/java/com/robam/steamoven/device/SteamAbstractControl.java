@@ -1,5 +1,9 @@
 package com.robam.steamoven.device;
 
+import com.robam.common.mqtt.MqttManager;
+
+import java.util.Map;
+
 //控制层切换，本地控制和远程被控制
 public class SteamAbstractControl implements SteamFunction {
 
@@ -52,5 +56,15 @@ public class SteamAbstractControl implements SteamFunction {
     @Override
     public void queryAttribute(String targetGuid) {
         function.queryAttribute(targetGuid);
+    }
+
+    @Override
+    public void sendCommonMsg(Map<String,Object> params, String targetGuid,short msg_id) {
+        function.sendCommonMsg(params,targetGuid,msg_id);
+    }
+
+    @Override
+    public void sendCommonMsg(Map<String, Object> params, String targetGuid, short msg_id, MqttManager.MqttSendMsgListener listening) {
+        function.sendCommonMsg(params,targetGuid,msg_id,listening);
     }
 }

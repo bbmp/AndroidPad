@@ -75,7 +75,7 @@ public class DishWasherCommandHelper {
     }
 
     /**
-     * 检测洗碗是否处于开门或者离线状态，若处于离线火开门状态，则提示并返回false，否则返回true
+     * 检测洗碗是否处于开门或者离线状态，若处于离线或开门状态，则提示并返回false，否则返回true
      * @param context
      * @param curDevice
      * @return

@@ -47,6 +47,7 @@
         app:layout_constraintRight_toLeftOf="@id/ll_center">
         <ImageView
             android:id="@+id/iv_left_center"
+            android:src="@drawable/steam_ic_roate_uncheck"
             android:layout_width="@dimen/dp_38"
             android:layout_height="@dimen/dp_38"/>
         <View
@@ -58,7 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_32"
-            android:text="@string/steam_back"
+            android:text="@string/steam_mode_rotate"
             android:textColor="@color/steam_white"/>
     </LinearLayout>
     <LinearLayout
@@ -109,6 +110,7 @@
         app:layout_constraintRight_toLeftOf="@id/ll_right">
         <ImageView
             android:id="@+id/iv_right_center"
+            android:src="@drawable/steam_ic_light_min"
             android:layout_width="@dimen/dp_38"
             android:layout_height="@dimen/dp_38"/>
         <View
@@ -120,7 +122,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_32"
-            android:text="@string/steam_back"
+            android:text="@string/steam_light"
             android:textColor="@color/steam_white"/>
     </LinearLayout>
     <LinearLayout
@@ -136,6 +138,7 @@
         app:layout_constraintRight_toRightOf="parent">
         <ImageView
             android:id="@+id/iv_right"
+            android:src="@drawable/steam_time"
             android:layout_width="@dimen/dp_38"
             android:layout_height="@dimen/dp_38"/>
         <View

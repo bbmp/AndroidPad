@@ -103,4 +103,6 @@ public interface Constant {
 
     String DESCALING_FLAG = "除垢";
 
+    int TIME_DELAYED = 50;
+
 }

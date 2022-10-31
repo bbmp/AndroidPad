@@ -9,7 +9,6 @@ import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.common.utils.DateUtil;
-import com.robam.common.utils.TimeUtils;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.base.DishWasherBaseActivity;
 import com.robam.dishwasher.bean.DishWasher;
@@ -19,7 +18,6 @@ import com.robam.dishwasher.constant.DishWasherState;
 import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.ui.adapter.RvStringAdapter;
 import com.robam.dishwasher.util.DishWasherCommandHelper;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -83,12 +81,7 @@ public class AppointmentActivity extends DishWasherBaseActivity {
         mHourManager = new PickerLayoutManager.Builder(this)
                 .setScale(0.5f)
                 .setMaxItem(3)
-                .setOnPickerListener(new PickerLayoutManager.OnPickerListener() {
-                    @Override
-                    public void onPicked(RecyclerView recyclerView, int position) {
-                        setOrderDate();
-                    }
-                }).build();
+                .setOnPickerListener((recyclerView, position) -> setOrderDate()).build();
         mMinuteManager = new PickerLayoutManager.Builder(this)
                 .setScale(0.5f)
                 .setOnPickerListener((recyclerView, position) -> setOrderDate())
@@ -187,6 +180,9 @@ public class AppointmentActivity extends DishWasherBaseActivity {
         }
     }
 
+    /**
+     * 开始预约
+     */
     private void startAppointing(){
         DishWasher curDevice = getCurDevice();
         if(!DishWasherCommandHelper.checkDishWasherState(this,curDevice)){
@@ -199,12 +195,18 @@ public class AppointmentActivity extends DishWasherBaseActivity {
         }
     }
 
+    /**
+     * 发送点亮屏幕命令
+     */
     private void sendSetPowerStateCommand(){
         Map map = DishWasherCommandHelper.getCommonMap(MsgKeys.setDishWasherPower);
         map.put(DishWasherConstant.PowerMode,1);
         DishWasherCommandHelper.getInstance().sendCommonMsgForLiveData(map,MsgKeys.setDishWasherPower + directive_offset);
     }
 
+    /**
+     * 发送预约命令
+     */
     private void sendAppointingCommand(){
         try {
             long appointingTime = getAppointingTimeMin(tvTime.getText().toString());
@@ -224,6 +226,12 @@ public class AppointmentActivity extends DishWasherBaseActivity {
 
     }
 
+    /**
+     * 获取预约执行时间
+     * @param timeText
+     * @return 预约执行时间（单位：分钟）
+     * @throws ParseException
+     */
     private long getAppointingTimeMin(String timeText) throws ParseException {
         String time = timeText.substring("次日".length()).trim()+":00";
         Date curTime = new Date();

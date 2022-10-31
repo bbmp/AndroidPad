@@ -24,6 +24,7 @@ import com.robam.steamoven.bean.ModeBean;
 import com.robam.steamoven.bean.MultiSegment;
 import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.SteamConstant;
+import com.robam.steamoven.constant.SteamModeEnum;
 import com.robam.steamoven.constant.SteamOvenSteamEnum;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.ui.pages.ModeSelectPage;
@@ -75,6 +76,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
     protected void initView() {
         showLeft();
         showCenter();
+        showLeftCenter();
         setRight(R.string.steam_makeAnAppointment);
 
         tabLayout = findViewById(R.id.tabLayout);
@@ -114,10 +116,10 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
 
     @Override
     protected void initData() {
-        if (null != getIntent())
+        if (null != getIntent()){
             modes = (ArrayList<ModeBean>) getIntent().getSerializableExtra(SteamConstant.EXTRA_MODE_LIST);
-            needSetResult =  getIntent().getBooleanExtra(Constant.NEED_SET_RESULT,false);
-
+        }
+        needSetResult =  getIntent().getBooleanExtra(Constant.NEED_SET_RESULT,false);
         //
         if (null != modes && modes.size() > 0) {
             //默认模式
@@ -295,16 +297,30 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
                         upTempSelectPage.updateTempTab(modeBean);
                         ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(4).setVisibility(View.VISIBLE); //时间
                         ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(3).setVisibility(View.GONE); //下温度
-                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.VISIBLE); //上温度
-                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(1).setVisibility(View.GONE); //蒸汽
+                        //((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.VISIBLE); //上温度
+                       if(curModeBean.code == SteamModeEnum.ZHIKONGZHENG.getMode()){
+                           ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.GONE); //上温度
+                           ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(1).setVisibility(View.VISIBLE); //蒸汽
+                       }else{
+                           ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.VISIBLE); //上温度
+                           ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(1).setVisibility(View.GONE); //蒸汽
+                       }
+
+                        //若是澎湃蒸 - 需要显示蒸汽大小与时间
+
                     } else if (mode == SteamConstant.FENGBEIKAO || mode == SteamConstant.FENGSHANKAO || mode == SteamConstant.QIANGSHAOKAO || mode == SteamConstant.EXP
                                 || mode == SteamConstant.KUAIRE || mode == SteamConstant.BEIKAO) {   //烤
 
                         timeSelectPage.updateTimeTab(modeBean);
                         upTempSelectPage.updateTempTab(modeBean);
                         ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(4).setVisibility(View.VISIBLE); //时间
-                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(3).setVisibility(View.GONE); //下温度
-                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.VISIBLE);  //上温度
+                        if(curModeBean.code == SteamModeEnum.EXP.getMode()){
+                            ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(3).setVisibility(View.VISIBLE); //下温度
+                            ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.VISIBLE);  //上温度
+                        }else{
+                            ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(3).setVisibility(View.GONE); //下温度
+                            ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.VISIBLE);  //上温度
+                        }
                         ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(1).setVisibility(View.GONE); //蒸汽
                     } else if (mode == SteamConstant.SHOUDONGJIASHIKAO || mode == SteamConstant.JIASHIBEIKAO || mode == SteamConstant.JIASHIFENGBEIKAO) {
                         timeSelectPage.updateTimeTab(modeBean);

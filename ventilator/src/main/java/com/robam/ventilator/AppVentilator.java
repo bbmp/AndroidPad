@@ -16,6 +16,7 @@ import com.robam.pan.device.PanAbstractControl;
 import com.robam.pan.device.PanBluetoothControl;
 import com.robam.steamoven.device.SteamAbstractControl;
 import com.robam.steamoven.device.SteamMqttControl;
+import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.stove.device.StoveAbstractControl;
 import com.robam.stove.device.StoveBluetoothControl;
 import com.robam.ventilator.device.VentilatorAbstractControl;
@@ -54,6 +55,7 @@ public class AppVentilator {
         //初始化
         MqttDirective.getInstance();
         DishWasherCommandHelper.getInstance();
+        SteamCommandHelper.getInstance();
 
     }
 

@@ -1,6 +1,5 @@
 package com.robam.steamoven.device;
 
-import androidx.core.util.Preconditions;
 
 import com.robam.common.bean.RTopic;
 import com.robam.common.device.Plat;
@@ -9,6 +8,8 @@ import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.steamoven.constant.QualityKeys;
+
+import org.json.JSONException;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -123,6 +124,43 @@ public class SteamMqttControl implements SteamFunction {
             MqttManager.getInstance().publish(msg, SteamFactory.getProtocol());
         } catch (Exception e) {}
 
+    }
+
+    @Override
+    public void sendCommonMsg(Map<String,Object> params, String targetGuid,short msg_id) {
+        try{
+            MqttMsg msg = new MqttMsg.Builder()
+                    .setMsgId(msg_id)
+                    .setGuid(Plat.getPlatform().getDeviceOnlySign())
+                    .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(targetGuid),
+                            DeviceUtils.getDeviceNumber(targetGuid)))
+                    .build();
+            for(String key: params.keySet()){
+                msg.putOpt(key,params.get(key));
+            }
+            MqttManager.getInstance().publish(msg, SteamFactory.getProtocol());
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void sendCommonMsg(Map<String, Object> params, String targetGuid, short msg_id, MqttManager.MqttSendMsgListener listening) {
+        try{
+            MqttMsg msg = new MqttMsg.Builder()
+                    .setMsgId(msg_id)
+                    .setGuid(Plat.getPlatform().getDeviceOnlySign())
+                    .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(targetGuid),
+                            DeviceUtils.getDeviceNumber(targetGuid)))
+                    .build();
+            for(String key: params.keySet()){
+                msg.putOpt(key,params.get(key));
+            }
+            MqttManager.getInstance().publish(msg, SteamFactory.getProtocol(),listening);
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
     }
 
 

@@ -4,14 +4,11 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.robam.common.constant.ComnConstant;
-import com.robam.common.ui.activity.BaseActivity;
 import com.robam.common.utils.LogUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
+import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.device.HomeSteamOven;
-import com.robam.steamoven.device.SteamAbstractControl;
-import com.robam.steamoven.device.SteamFactory;
-import com.robam.steamoven.device.SteamMqttControl;
 
 //非主入口调用入口
 public class MainActivity extends SteamBaseActivity {
@@ -25,7 +22,9 @@ public class MainActivity extends SteamBaseActivity {
     protected void initView() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_stream_activity_main);
         Navigation.setViewNavController(findViewById(R.id.nav_host_stream_activity_main), navController);
-
+        getContentView().postDelayed(()->{
+            showRightCenter();
+        }, Constant.TIME_DELAYED);
     }
 
     @Override
