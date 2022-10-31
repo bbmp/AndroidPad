@@ -352,7 +352,7 @@ public class RecipeSelectedActivity extends PanBaseActivity {
 
     //获取曲线详情
     private void getCurveDetail() {
-        CloudHelper.getCurvebookDetail(this, curveId, GetCurveDetailRes.class, new RetrofitCallback<GetCurveDetailRes>() {
+        CloudHelper.getCurvebookDetail(this, curveId, pan.guid, GetCurveDetailRes.class, new RetrofitCallback<GetCurveDetailRes>() {
             @Override
             public void onSuccess(GetCurveDetailRes getCurveDetailRes) {
                 if (null != getCurveDetailRes && null != getCurveDetailRes.payload) {

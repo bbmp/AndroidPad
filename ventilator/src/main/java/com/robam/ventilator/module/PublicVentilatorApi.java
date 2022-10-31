@@ -71,4 +71,9 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
     public void powerOn() {
         VentilatorAbstractControl.getInstance().powerOn();
     }
+
+    @Override
+    public void setColorLamp() {
+        VentilatorAbstractControl.getInstance().setColorLamp();
+    }
 }

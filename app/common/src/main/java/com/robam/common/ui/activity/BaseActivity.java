@@ -26,6 +26,8 @@ public abstract class BaseActivity extends AbsActivity implements ActivityAction
     private boolean isDestroyed;
     private IPublicVentilatorApi iPublicVentilatorApi = ModulePubliclHelper.getModulePublic(IPublicVentilatorApi.class, IPublicVentilatorApi.VENTILATOR_PUBLIC);
 
+    private boolean lockLongPressKey;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,10 +102,38 @@ public abstract class BaseActivity extends AbsActivity implements ActivityAction
     }
 
     @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-//        ToastUtils.showShort(this, "keycode=" + event.getKeyCode());
-        if (event.getKeyCode() == KeyEvent.KEYCODE_F2 && event.getAction() == KeyEvent.ACTION_UP) { //左键
+    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_F2) {
+            if (!iPublicVentilatorApi.isStartUp()) {//关机状态
+                lockLongPressKey = true;
+                iPublicVentilatorApi.setColorLamp();
+                Plat.getPlatform().openWaterLamp();
+            }
+            return true;
+        }
+        return super.onKeyLongPress(keyCode, event);
+    }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_F2) {
+            if (event.getRepeatCount() == 0) {
+                lockLongPressKey = false;
+                event.startTracking();
+            } else
+                lockLongPressKey = true;
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_F2) {
+            if (lockLongPressKey) {
+                lockLongPressKey = false;
+                return true;
+            }
             if (null != iPublicVentilatorApi) {
 //                ToastUtils.showShort(this, "light " + iPublicVentilatorApi.getFanLight());
                 if (iPublicVentilatorApi.getFanLight() == 0) {
@@ -115,7 +145,7 @@ public abstract class BaseActivity extends AbsActivity implements ActivityAction
                 }
                 return true;
             }
-        } else if (event.getKeyCode() == KeyEvent.KEYCODE_F1 && event.getAction() == KeyEvent.ACTION_UP) { //右键
+        } else if (keyCode == KeyEvent.KEYCODE_F1) {
             if (null != iPublicVentilatorApi) {
                 if (iPublicVentilatorApi.isStartUp()) {
                     Plat.getPlatform().screenOff(); //熄灭ping
@@ -125,14 +155,12 @@ public abstract class BaseActivity extends AbsActivity implements ActivityAction
                 } else {
                     Plat.getPlatform().screenOn();
                     Plat.getPlatform().openPowerLamp();
-                    Plat.getPlatform().openWaterLamp();
                     iPublicVentilatorApi.powerOn(); //开机
                 }
+                return true;
             }
-
-            return true;
         }
-        return super.dispatchKeyEvent(event);
+        return super.onKeyUp(keyCode, event);
     }
 
     @Override

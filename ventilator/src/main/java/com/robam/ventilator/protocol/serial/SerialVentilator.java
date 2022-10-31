@@ -308,13 +308,19 @@ public class SerialVentilator {
     /**
      * 设置可调色温灯
      */
-    public static byte[] setColorLamp(byte color) { //0-100 0全冷 100 全暖
-        byte param6 = color;
+    public static byte[] setColorLamp() { //0-100 0全冷 100 全暖
+        byte lightOn = (byte) 0xA1;
+        byte beep = (byte) 0x04;
+        byte param6 = 0;
+        if (HomeVentilator.getInstance().param6 == 0)
+            param6 = 100;
+        else
+            param6 = 0;
         byte[] payload = new byte[]{
                 HomeVentilator.getInstance().startup,
-                HomeVentilator.getInstance().lightOn,
+                lightOn,
                 HomeVentilator.getInstance().gear,
-                HomeVentilator.getInstance().beep,
+                beep,
                 HomeVentilator.getInstance().baffle,
                 HomeVentilator.getInstance().param1,
                 HomeVentilator.getInstance().param2,
