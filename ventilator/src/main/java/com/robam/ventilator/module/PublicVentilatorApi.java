@@ -59,7 +59,7 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
 
     @Override
     public boolean isStartUp() {
-        return (HomeVentilator.getInstance().startup == 0x01) ? true:false;
+        return (HomeVentilator.getInstance().startup == (byte) 0x01) ? true:false;
     }
 
     @Override

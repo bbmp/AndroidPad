@@ -195,6 +195,62 @@ public class SerialVentilator {
         LogUtils.i(StringUtils.bytes2Hex(data));
         return data ;
     }
+    //油网清洗
+    public static byte[] openOilClean() {
+        byte startup = (byte) 0x01;
+        byte lightOn = (byte) 0xA1; //开灯
+        byte gear = (byte) 0xA0;
+        byte beep = (byte) 0x04;     //蜂鸣
+        byte baffle = (byte) 0xA1; //打开风门挡板
+        byte[] payload = new byte[]{
+                startup,
+                lightOn,
+                gear,
+                beep,
+                baffle,
+                HomeVentilator.getInstance().param1,
+                HomeVentilator.getInstance().param2,
+                HomeVentilator.getInstance().param3,
+                HomeVentilator.getInstance().param4,
+                HomeVentilator.getInstance().param5,
+                HomeVentilator.getInstance().baffle2,
+                HomeVentilator.getInstance().param6,
+                HomeVentilator.getInstance().param7,
+                HomeVentilator.getInstance().param8,
+                HomeVentilator.getInstance().param9
+        };
+        byte[] data = packCtrlCmd(payload);
+        LogUtils.i(StringUtils.bytes2Hex(data));
+        return data ;
+    }
+    //关闭油网清洗
+    public static byte[] closeOilClean() {
+        byte startup = (byte) 0x01;
+        byte lightOn = (byte) 0xA0;
+        byte gear = (byte) 0xA0;
+        byte beep = (byte) 0x04;     //蜂鸣
+        byte baffle = (byte) 0xA1; //风门挡板
+        byte[] payload = new byte[]{
+                startup,
+                lightOn,
+                gear,
+                beep,
+                baffle,
+                HomeVentilator.getInstance().param1,
+                HomeVentilator.getInstance().param2,
+                HomeVentilator.getInstance().param3,
+                HomeVentilator.getInstance().param4,
+                HomeVentilator.getInstance().param5,
+                HomeVentilator.getInstance().baffle2,
+                HomeVentilator.getInstance().param6,
+                HomeVentilator.getInstance().param7,
+                HomeVentilator.getInstance().param8,
+                HomeVentilator.getInstance().param9
+        };
+        byte[] data = packCtrlCmd(payload);
+        LogUtils.i(StringUtils.bytes2Hex(data));
+        return data ;
+    }
 
     //设置烟机状态
     public static byte[] setFanStatus(byte status) {
@@ -224,7 +280,7 @@ public class SerialVentilator {
      * 灯控制
      * @return
      */
-    public static byte[] setLight(byte light){
+    public static byte[] setLight(byte light, byte baffle){
         byte lightOn = light;
         byte beep = (byte) 0x04;
         byte[] payload = new byte[]{
@@ -232,7 +288,7 @@ public class SerialVentilator {
                 lightOn,
                 HomeVentilator.getInstance().gear,
                 beep,
-                HomeVentilator.getInstance().baffle,
+                baffle,
                 HomeVentilator.getInstance().param1,
                 HomeVentilator.getInstance().param2,
                 HomeVentilator.getInstance().param3,
@@ -316,12 +372,13 @@ public class SerialVentilator {
             param6 = 100;
         else
             param6 = 0;
+        byte baffle = (byte) 0xA1; //打开风门挡板
         byte[] payload = new byte[]{
                 HomeVentilator.getInstance().startup,
                 lightOn,
                 HomeVentilator.getInstance().gear,
                 beep,
-                HomeVentilator.getInstance().baffle,
+                baffle,
                 HomeVentilator.getInstance().param1,
                 HomeVentilator.getInstance().param2,
                 HomeVentilator.getInstance().param3,
@@ -342,11 +399,12 @@ public class SerialVentilator {
      */
     public static byte[] setSmart(byte smart) {
         byte param7 = smart;
+        byte beep = (byte) 0x04;
         byte[] payload = new byte[]{
                 HomeVentilator.getInstance().startup,
                 HomeVentilator.getInstance().lightOn,
                 HomeVentilator.getInstance().gear,
-                HomeVentilator.getInstance().beep,
+                beep,
                 HomeVentilator.getInstance().baffle,
                 HomeVentilator.getInstance().param1,
                 HomeVentilator.getInstance().param2,

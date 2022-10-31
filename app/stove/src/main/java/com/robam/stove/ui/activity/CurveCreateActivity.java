@@ -15,7 +15,10 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.BaseResponse;
 import com.robam.common.bean.Device;
 import com.robam.common.constant.PanConstant;
 import com.robam.common.device.subdevice.Pan;
@@ -33,6 +36,8 @@ import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBaseActivity;
+import com.robam.stove.bean.CurveStep;
+import com.robam.stove.bean.StoveCurveDetail;
 import com.robam.stove.constant.DialogConstant;
 import com.robam.common.constant.StoveConstant;
 import com.robam.stove.device.HomeStove;
@@ -43,6 +48,7 @@ import com.robam.stove.response.CreateCurveStartRes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -70,6 +76,9 @@ public class CurveCreateActivity extends StoveBaseActivity {
     private int stoveId;
     private long curveId;
 
+    //曲线详情
+    private StoveCurveDetail stoveCurveDetail;
+
 
     private IPublicPanApi iPublicPanApi = ModulePubliclHelper.getModulePublic(IPublicPanApi.class, IPublicPanApi.PAN_PUBLIC);
     @Override
@@ -83,8 +92,10 @@ public class CurveCreateActivity extends StoveBaseActivity {
         showCenter();
         showRightCenter();
 
-        if (null != getIntent())
+        if (null != getIntent()) {
             stoveId = getIntent().getIntExtra(StoveConstant.stoveId, IPublicStoveApi.STOVE_LEFT);
+            stoveCurveDetail = (StoveCurveDetail) getIntent().getSerializableExtra(StoveConstant.EXTRA_CURVE_DETAIL);
+        }
         tvFire = findViewById(R.id.tv_fire);
         tvTemp = findViewById(R.id.tv_temp);
         tvTime = findViewById(R.id.tv_time);
@@ -108,7 +119,10 @@ public class CurveCreateActivity extends StoveBaseActivity {
             finish();
 
         //创建曲线
-        createCurveStart();
+        if (null == stoveCurveDetail)
+            createCurveStart();
+        else
+            continueCreateCurve();
         //监听开火状态
         AccountInfo.getInstance().getGuid().observe(this, new Observer<String>() {
             @Override
@@ -137,6 +151,153 @@ public class CurveCreateActivity extends StoveBaseActivity {
                 }
             }
         });
+    }
+
+    //继续创建曲线
+    private void continueCreateCurve() {
+        tvTimeUnit.setVisibility(View.VISIBLE);
+        ivStop.setVisibility(View.VISIBLE);
+        curveId = stoveCurveDetail.curveCookbookId;
+
+        runnable = new Runnable() {
+
+            @Override
+
+            public void run() {
+
+                if (pan.mode != 1) {
+                    iPublicPanApi.queryAttribute(pan.guid); //查询锅状态
+                    mHandler.postDelayed(runnable, 1000L);
+                    return;
+                }
+                iPublicPanApi.queryAttribute(pan.guid); //查询锅状态
+
+                StoveAbstractControl.getInstance().queryAttribute(stove.guid); //查询灶状态
+
+                curTime += 2;
+                tvTime.setText(DateUtil.secForMatTime3(curTime) + "min");
+                Entry entry = new Entry(curTime, (float) pan.panTemp);
+                dm.addEntry(entry, 0);
+                if (stoveId == IPublicStoveApi.STOVE_RIGHT)
+                    tvFire.setText("火力：" + stove.rightLevel + "档");
+                else
+                    tvFire.setText("火力：" + stove.leftLevel + "档");
+                tvTemp.setText("温度：" + (int) entry.getY() + "℃");
+//                cookChart.highlightValue(entry.getX(), entry.getY(), 0);
+                highlights.set(highlights.size() - 1, new Highlight(entry.getX(), entry.getY(), 0)); //标记highlight只能加最后，maskview中坐标会覆盖
+                cookChart.highlightValues(highlights.toArray(new Highlight[highlights.size()]));
+                mHandler.postDelayed(runnable, 2000L);
+
+            }
+
+        };
+
+        drawCurve();
+    }
+    //曲线绘制
+    private void drawCurve() {
+        Map<String, String> params = null;
+        try {
+            String[] data = new String[3];
+            params = new Gson().fromJson(stoveCurveDetail.temperatureCurveParams, new TypeToken<LinkedHashMap<String, String>>(){}.getType());
+
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                data = entry.getValue().split("-");
+                entryList.add(new Entry(Float.parseFloat(entry.getKey()), Float.parseFloat(data[0]))); //时间和温度
+                curTime = (int) Float.parseFloat(entry.getKey());
+            }
+
+            dm = new DynamicLineChartManager(cookChart, this);
+            dm.setLabelCount(5, 5);
+            dm.setAxisLine(true, false);
+            dm.setGridLine(false, true);
+            dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.stove_chart), entryList, true, false);
+            cookChart.notifyDataSetChanged();
+            if (stoveCurveDetail.headId == IPublicStoveApi.STOVE_RIGHT)
+                tvFire.setText("火力：" + stove.rightLevel + "档");
+            else
+                tvFire.setText("火力：" + stove.leftLevel + "档");
+            tvTemp.setText("温度：" + pan.panTemp + "℃");
+
+            MarkViewAdd mv = new MarkViewAdd(this, cookChart.getXAxis().getValueFormatter());
+            mv.setChartView(cookChart);
+            cookChart.setMarker(mv);
+
+            Entry lastEntry = entryList.get(entryList.size() - 1); //最后一个点
+            highlights.add(new Highlight(lastEntry.getX(), lastEntry.getY(), 0));  //标记步骤highlight
+            cookChart.highlightValues(highlights.toArray(new Highlight[highlights.size()]));
+            //第二条线
+            dm.initLineDataSet("", getResources().getColor(R.color.stove_chart), stepList, false);
+            cookChart.setOnChartGestureListener(new OnChartGestureListener() {
+                @Override
+                public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
+                }
+
+                @Override
+                public void onChartGestureMove(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
+
+                }
+
+                @Override
+                public void onChartGestureEnd(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
+
+                }
+
+                @Override
+                public void onChartLongPressed(MotionEvent me) {
+
+                }
+
+                @Override
+                public void onChartDoubleTapped(MotionEvent me) {
+
+                }
+
+                @Override
+                public void onChartSingleTapped(MotionEvent me) {
+                    if (null != mv) {
+                        Rect rect = new Rect((int) mv.drawingPosX, (int) mv.drawingPosY, (int) mv.drawingPosX + mv.getWidth(), (int) mv.drawingPosY + mv.getHeight());
+                        if (cookChart.isDrawMarkersEnabled() && cookChart.valuesToHighlight() && rect.contains((int) me.getX(), (int) me.getY())) {
+                            LogUtils.e("click" + Thread.currentThread().getName());
+                            addStep();
+
+                        }
+                    }
+                }
+
+                @Override
+                public void onChartFling(MotionEvent me1, MotionEvent me2, float velocityX, float velocityY) {
+
+                }
+
+                @Override
+                public void onChartScale(MotionEvent me, float scaleX, float scaleY) {
+
+                }
+
+                @Override
+                public void onChartTranslate(MotionEvent me, float dX, float dY) {
+
+                }
+            });
+            //绘制步骤标记
+            if (null != stoveCurveDetail.stepList) {
+
+                for (CurveStep step : stoveCurveDetail.stepList) {
+                    Entry entry = new Entry(Float.parseFloat(step.markTime), step.markTemp);
+                    stepList.add(entry);
+                    highlights.add(0, new Highlight(entry.getX(), entry.getY(), 1, highlights.size())); //第二条线highlight,加前面
+
+                    cookChart.highlightValues(highlights.toArray(new Highlight[highlights.size()]));
+                    dm.addEntry(entry, 1);
+                }
+            }
+            mHandler.post(runnable);
+
+        } catch (Exception e) {
+            LogUtils.e(e.getMessage());
+            params = null;
+        }
     }
 
     //153设置互动参数
@@ -310,6 +471,22 @@ public class CurveCreateActivity extends StoveBaseActivity {
 
         cookChart.highlightValues(highlights.toArray(new Highlight[highlights.size()]));
         dm.addEntry(entry, 1);
+        //转化成步骤
+        List<CurveStep> curveSteps = new ArrayList<>();
+        curveSteps.add(new CurveStep(stepList.size(), entry.getX() + "", entry.getY()));
+
+        //更新标记步骤
+        CloudHelper.cookingCurveMarkStep(this, curveId, curveSteps, BaseResponse.class, new RetrofitCallback<BaseResponse>() {
+            @Override
+            public void onSuccess(BaseResponse baseResponse) {
+
+            }
+
+            @Override
+            public void onFaild(String err) {
+
+            }
+        });
     }
 
     //创作结束提示

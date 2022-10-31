@@ -1,6 +1,9 @@
 package com.robam.stove.http;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.robam.common.bean.BaseResponse;
 import com.robam.common.http.ILife;
 import com.robam.common.http.RetrofitCallback;
@@ -8,6 +11,7 @@ import com.robam.common.http.RetrofitClient;
 import com.robam.common.utils.LogUtils;
 import com.robam.stove.bean.CurveStep;
 import com.robam.stove.constant.HostServer;
+import com.robam.stove.request.CookingCurveMarkStepReq;
 import com.robam.stove.request.CreateCurveStartReq;
 import com.robam.stove.request.CurveSaveReq;
 import com.robam.stove.request.GetCurveDetailReq;
@@ -63,8 +67,39 @@ public class CloudHelper {
         enqueue(iLife, entity, call, callback);
     }
     //获取曲线详情
-    public static <T extends BaseResponse> void getCurvebookDetail(ILife iLife, long curveid, Class<T> entity, final RetrofitCallback<T> callback) {
-        String json = new GetCurveDetailReq(curveid).toString();
+    public static <T extends BaseResponse> void getCurvebookDetail(ILife iLife, long curveid, String guid, Class<T> entity, final RetrofitCallback<T> callback) {
+        String json = null;
+        if (curveid != 0) {
+            Gson gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
+                @Override
+                public boolean shouldSkipField(FieldAttributes f) {
+                    // 忽略某些字段
+                    return f.getName().equals("deviceGuid");
+                }
+
+                @Override
+                public boolean shouldSkipClass(Class<?> clazz) {
+                    // 忽略某个class
+                    return false;
+                }
+            }).create();
+            json = gson.toJson(new GetCurveDetailReq(curveid));
+        } else {
+            Gson gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
+                @Override
+                public boolean shouldSkipField(FieldAttributes f) {
+                    // 忽略某些字段
+                    return f.getName().equals("id");
+                }
+
+                @Override
+                public boolean shouldSkipClass(Class<?> clazz) {
+                    // 忽略某个class
+                    return false;
+                }
+            }).create();
+            json = gson.toJson(new GetCurveDetailReq(guid));
+        }
         RequestBody requestBody =
                 RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
         Call<ResponseBody> call = svr.getCurveCookDetail(requestBody);
@@ -95,9 +130,13 @@ public class CloudHelper {
         Call<ResponseBody> call = svr.curveSave(requestBody);
         enqueue(iLife, entity, call, callback);
     }
-    //曲线标记步骤
-    public static <T extends BaseResponse> void curveMarkStep(ILife iLife, long curveId, List<CurveStep> stepList, Class<T> entity, final RetrofitCallback<T> callback) {
-
+    //更新曲线 步骤标记
+    public static <T extends BaseResponse> void cookingCurveMarkStep(ILife iLife, long curveId, List<CurveStep> stepList, Class<T> entity, final RetrofitCallback<T> callback) {
+        String json = new CookingCurveMarkStepReq(curveId, stepList).toString();
+        RequestBody requestBody =
+                RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
+        Call<ResponseBody> call = svr.cookingCurveMarkStep(requestBody);
+        enqueue(iLife, entity, call, callback);
     }
 
     //统一处理回调

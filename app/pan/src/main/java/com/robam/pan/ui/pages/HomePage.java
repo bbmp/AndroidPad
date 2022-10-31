@@ -55,7 +55,6 @@ public class HomePage extends PanBasePage {
     //十秒翻炒
     private MCountdownView tvStir;
 
-    private boolean continueCreate;
 
     @Override
     protected int getLayoutId() {
@@ -108,15 +107,20 @@ public class HomePage extends PanBasePage {
                             llQuick.setSelected(false);
                             llStir.setSelected(false);
                         }
-                        if (pan.mode == 1 && !continueCreate) { //曲线创建中
-                            continueCreate = true;
-                            getCurveDetail();
-                        }
                         break;
                     }
                 }
             }
         });
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device instanceof Pan) {
+                Pan pan = (Pan) device;
+                if (pan.mode == 1) { //曲线创建中
+                    getCurveDetail();
+                }
+                break;
+            }
+        }
     }
 
     @Override
@@ -142,17 +146,17 @@ public class HomePage extends PanBasePage {
                         curveSteps.addAll(panCurveDetail.stepList);
                     }
                     //继续创建曲线
-                    Intent intent = new Intent();
-                    intent.setClass(getContext(), CurveCreateActivity.class);
-                    intent.putExtra(PanConstant.EXTRA_CURVE_DETAIL, panCurveDetail);
-                    startActivity(intent);
+                    if (null != panCurveDetail.temperatureCurveParams) {
+                        Intent intent = new Intent();
+                        intent.setClass(getContext(), CurveCreateActivity.class);
+                        intent.putExtra(PanConstant.EXTRA_CURVE_DETAIL, panCurveDetail);
+                        startActivity(intent);
+                    }
                 }
-                continueCreate = false;
             }
 
             @Override
             public void onFaild(String err) {
-                continueCreate = false;
             }
         });
     }
