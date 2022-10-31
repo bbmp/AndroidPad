@@ -52,6 +52,10 @@
             android:exported="false"
             android:screenOrientation="landscape" />
         <activity
+            android:name=".ui.activity.HolidayDateSettingActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
             android:name=".ui.activity.SaleServiceActivity"
             android:exported="false"
             android:screenOrientation="landscape" />
