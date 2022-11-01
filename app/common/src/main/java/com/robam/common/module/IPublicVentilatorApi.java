@@ -25,8 +25,12 @@ public interface IPublicVentilatorApi extends IPublicApi {
     boolean isStartUp();
     //关机
     void shutDown();
+    //关闭定时任务
+    void closeService(Context context);
     //开机
     void powerOn();
+    //启动定时任务
+    void startService(Context context);
     //冷暖光切换
     void setColorLamp();
 }

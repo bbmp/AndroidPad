@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
@@ -55,6 +57,10 @@ public class ShortcutActivity extends VentilatorBaseActivity {
     /**
      * 主功能
      */
+    private TextView tvWork, tvOnline;
+
+    private ImageView ivWork, ivOnline;
+
     private RecyclerView recyclerView;
 
     private RvShortcutFunAdapter rvShortcutFunAdapter;
@@ -73,6 +79,10 @@ public class ShortcutActivity extends VentilatorBaseActivity {
         recyclerView = findViewById(R.id.rv_fun);
         rvDeviceWork = findViewById(R.id.rv_device_work);
         rvDevideOnline = findViewById(R.id.rv_device_online);
+        tvWork = findViewById(R.id.tv_work);
+        tvOnline = findViewById(R.id.tv_online);
+        ivWork = findViewById(R.id.iv_work);
+        ivOnline = findViewById(R.id.iv_online);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
         //获取px
@@ -229,8 +239,22 @@ public class ShortcutActivity extends VentilatorBaseActivity {
                 onlineList.add(pan);
             }
         }
+        if (workList.size() == 0) {
+            tvWork.setVisibility(View.GONE);
+            ivWork.setVisibility(View.GONE);
+        } else {
+            tvWork.setVisibility(View.VISIBLE);
+            ivWork.setVisibility(View.VISIBLE);
+        }
         if (null != rvShortcutWorkAdapter)
             rvShortcutWorkAdapter.setList(workList);
+        if (onlineList.size() == 0) {
+            tvOnline.setVisibility(View.GONE);
+            ivOnline.setVisibility(View.GONE);
+        } else {
+            tvOnline.setVisibility(View.VISIBLE);
+            ivOnline.setVisibility(View.VISIBLE);
+        }
         //在线设备
         if (null != rvShortcutOnlineAdapter)
             rvShortcutOnlineAdapter.setList(onlineList);

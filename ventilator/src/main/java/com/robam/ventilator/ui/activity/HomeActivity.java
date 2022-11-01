@@ -126,20 +126,7 @@ public class HomeActivity extends BaseActivity {
                     Plat.getPlatform().openPowerLamp();
                 }
                 //循环查询
-                new Thread() {
-                    @Override
-                    public void run() {
-                        byte data[] = SerialVentilator.packQueryCmd();
-                        while (true) {
-                            SerialPortHelper.getInstance().addCommands(data);
-                            try {
-                                Thread.sleep(3000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }.start();
+                HomeVentilator.getInstance().startSerialQuery();
 
             }
 

@@ -40,6 +40,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -158,11 +159,31 @@ public class CurveRestoreActivity extends PanBaseActivity {
             try {
                 //温度参数
                 params = new Gson().fromJson(panCurveDetail.temperatureCurveParams, new TypeToken<LinkedHashMap<String, String>>(){}.getType());
-                ArrayList<Entry> entryList = new ArrayList<>();
-                for (Map.Entry<String, String> entry : params.entrySet()) {
-                    String[] data = entry.getValue().split("-");
-                    entryList.add(new Entry(Float.parseFloat(entry.getKey()), Float.parseFloat(data[0]))); //时间和温度
+                Iterator<Map.Entry<String, String>> iterator = params.entrySet().iterator();
+                while (iterator.hasNext()) { //删除超出时间的点
+                    if (Integer.parseInt(iterator.next().getKey()) > panCurveDetail.needTime)
+                        iterator.remove();
                 }
+
+                iterator = params.entrySet().iterator();
+                int i = 0;
+                ArrayList<Entry> entryList = new ArrayList<>();
+                Map.Entry<String, String> entry = null;
+                while (iterator.hasNext()) {
+                    entry = iterator.next();
+                    while (Integer.parseInt(entry.getKey()) >= i) { //补点
+                        String[] data = entry.getValue().split("-");
+                        entryList.add(new Entry(i, Float.parseFloat(data[0]))); //时间和温度
+                        i += 2;
+                    }
+
+                }
+                while (i <= panCurveDetail.needTime && null != entry) { //最后少的点
+                    String[] data = entry.getValue().split("-");
+                    entryList.add(new Entry(i, Float.parseFloat(data[0]))); //时间和温度
+                    i += 2;
+                }
+
                 dm = new DynamicLineChartManager(cookChart, this);
                 dm.setLabelCount(1, 1);
                 dm.setAxisLine(true, false);
@@ -252,8 +273,8 @@ public class CurveRestoreActivity extends PanBaseActivity {
                 //曲线绘制
                 try {
                     curTime++; //总时间
-                    if (params.containsKey(curTime + "")) {
-                        String[] data = params.get(curTime + "").split("-");
+//                    if (params.containsKey(curTime + "")) {
+//                        String[] data = params.get(curTime + "").split("-");
                         restoreList.add(new Entry(curTime, pan.panTemp));//温度
                         cookChart.invalidate();
                         if (null != stove) {
@@ -264,7 +285,7 @@ public class CurveRestoreActivity extends PanBaseActivity {
                         }
                         if (null != pan)
                             tvTemp.setText("温度：" + pan.panTemp + "℃");
-                    }
+//                    }
                 } catch (Exception e) {}
 
                 if (curveStep.needTime > 0) {

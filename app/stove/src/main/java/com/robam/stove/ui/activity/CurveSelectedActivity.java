@@ -48,6 +48,7 @@ import com.robam.stove.ui.adapter.RvStep3Adapter;
 import com.robam.stove.ui.dialog.SelectStoveDialog;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -304,10 +305,30 @@ public class CurveSelectedActivity extends StoveBaseActivity {
         try {
             String[] data = new String[3];
             params = new Gson().fromJson(stoveCurveDetail.temperatureCurveParams, new TypeToken<LinkedHashMap<String, String>>(){}.getType());
+
+            Iterator<Map.Entry<String, String>> iterator = params.entrySet().iterator();
+            while (iterator.hasNext()) { //删除超出时间的点
+                if (Integer.parseInt(iterator.next().getKey()) > stoveCurveDetail.needTime)
+                    iterator.remove();
+            }
+
+            iterator = params.entrySet().iterator();
+            int i = 0;
             ArrayList<Entry> entryList = new ArrayList<>();
-            for (Map.Entry<String, String> entry : params.entrySet()) {
+            Map.Entry<String, String> entry = null;
+            while (iterator.hasNext()) {
+                entry = iterator.next();
+                while (Integer.parseInt(entry.getKey()) >= i) {  //补点
+                    data = entry.getValue().split("-");
+                    entryList.add(new Entry(i, Float.parseFloat(data[0]))); //时间和温度
+                    i += 2;
+                }
+
+            }
+            while (i <= stoveCurveDetail.needTime && null != entry) { //最后少的点
                 data = entry.getValue().split("-");
-                entryList.add(new Entry(Float.parseFloat(entry.getKey()), Float.parseFloat(data[0]))); //时间和温度
+                entryList.add(new Entry(i, Float.parseFloat(data[0]))); //时间和温度
+                i += 2;
             }
 
             dm = new DynamicLineChartManager(cookChart, this);

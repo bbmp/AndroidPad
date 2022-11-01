@@ -54,6 +54,7 @@ public class StoveConstant {
     public final static String attributeNum = "attribute_num";//参数个数
     public final static String control = "control";
     public final static String steps = "steps";
+    public final static String setTemp = "set_temp";// 设定温度
     public final static String stepTemp = "step_temp";//温度
     public final static String stepTime = "step_time";//时间
 

@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/ventilator_ic_bg"
+    android:paddingHorizontal="@dimen/dp_40"
     tools:context=".ui.activity.ShortcutActivity">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -76,22 +77,18 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_device_work"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_40"
         android:layout_marginTop="@dimen/dp_5"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/rv_device_online"
         app:layout_constraintTop_toBottomOf="@id/ventilator_guideline" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_device_online"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/dp_40"
         android:layout_marginTop="@dimen/dp_5"
         app:layout_constraintLeft_toRightOf="@id/rv_device_work"
-        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ventilator_guideline" />
 
     <androidx.constraintlayout.widget.Guideline
