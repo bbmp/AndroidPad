@@ -115,7 +115,7 @@ public class SerialToMqttHelper {
      * 蒸汽状态
      */
     public static byte getSteamState(SteamOven steamOven) {
-        return (byte) (steamOven.steamState ? 0 : 2);
+        return (byte) (steamOven.steamState > 0 ? 0 : 2);
     }
 
     /*

@@ -58,7 +58,31 @@
         app:layout_constraintTop_toTopOf="@id/guideline"
         app:layout_constraintBottom_toBottomOf="@id/guideline"
         app:layout_constraintLeft_toRightOf="@id/guideline2"
-        tools:text="22min"/>
+        tools:text="22"/>
+
+    <TextView
+        android:id="@+id/multi_work_total_temp_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_80"
+        android:textColor="@color/steam_white"
+        app:layout_constraintTop_toTopOf="@id/multi_work_total"
+        android:layout_marginTop="@dimen/dp_5"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toRightOf="@id/multi_work_total"
+        tools:text="°c"/>
+
+
+    <TextView
+        android:id="@+id/multi_work_total_time_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_60"
+        android:textColor="@color/steam_white"
+        app:layout_constraintBottom_toBottomOf="@id/multi_work_total"
+        app:layout_constraintLeft_toRightOf="@id/multi_work_total"
+        android:visibility="invisible"
+        tools:text="min"/>
 
     <TextView
         android:id="@+id/model_work_prompt"
@@ -84,6 +108,30 @@
         app:layout_constraintLeft_toRightOf="@id/model_work_prompt"
         app:layout_constraintRight_toRightOf="parent"
         android:text="22min"/>
+
+    <ImageView
+        android:id="@+id/multi_work_ic_steam"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
+        android:layout_marginTop="@dimen/dp_166"
+        android:src="@drawable/steam_ic_add_steam"
+        app:layout_constraintRight_toRightOf="@id/multi_work_pause"
+        app:layout_constraintLeft_toLeftOf="@id/multi_work_pause"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/multi_work_tv_steam"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_166"
+        android:textColor="@color/common_white"
+        android:textSize="@dimen/sp_40"
+        app:layout_constraintRight_toRightOf="@id/multi_work_pause"
+        app:layout_constraintLeft_toLeftOf="@id/multi_work_pause"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="@string/steam_mode_stream"
+        android:visibility="invisible"/>
 
 
     <ImageView
@@ -124,7 +172,18 @@
             android:layout_marginLeft="@dimen/sp_40"
             android:textSize="@dimen/sp_40"
             android:textColor="@color/steam_white_65"
-            tools:text="100C"/>
+            tools:text="100"/>
+
+        <TextView
+            android:id="@+id/multi_item_cur_temperature_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_m_8"
+            android:textSize="@dimen/sp_36"
+            android:textColor="@color/steam_white_65"
+            android:text="°c"/>
+
+
 
         <TextView
             android:id="@+id/multi_item_cur_duration"
@@ -133,7 +192,15 @@
             android:textSize="@dimen/sp_40"
             android:layout_marginLeft="@dimen/sp_40"
             android:textColor="@color/steam_white_65"
-            tools:text="20min"/>
+            tools:text="20"/>
+
+        <TextView
+            android:id="@+id/multi_item_cur_duration_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_28"
+            android:textColor="@color/steam_white_65"
+            tools:text="min"/>
     </LinearLayout>
 
     <EditText

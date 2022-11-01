@@ -294,7 +294,7 @@ public class MultiActivity extends SteamBaseActivity {
 
         TextView modelView = itemGroup.findViewById(R.id.multi_item_model);
         modelView.setTextColor(textColor);
-        String model = isInit ? "" : multiSegmentBean.model;
+        String model = isInit ? "" : multiSegmentBean.model+"";
         modelView.setText(model);
 
 
@@ -494,7 +494,7 @@ public class MultiActivity extends SteamBaseActivity {
     private void setTotalDuration(){
         int totalDuration = 0;
         for(int i = 0;i < multiSegments.size();i++){
-            totalDuration += Integer.parseInt(multiSegments.get(i).duration);
+            totalDuration += multiSegments.get(i).duration;
         }
         totalDurationView.setText(totalDuration+"min");
     }

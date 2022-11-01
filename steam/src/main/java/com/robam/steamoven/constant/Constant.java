@@ -105,4 +105,6 @@ public interface Constant {
 
     int TIME_DELAYED = 50;
 
+    String TEMP_UNIT = "°c";
+
 }

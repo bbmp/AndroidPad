@@ -1,13 +1,8 @@
 package com.robam.steamoven.bean;
 
-import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Range;
-
 import androidx.annotation.IntRange;
-
-import java.io.Serializable;
 
 /**
  * 多段
@@ -18,7 +13,7 @@ public class MultiSegment implements Parcelable {
     //模式
     public String model;
     //时长
-    public String duration;
+    public int duration;
     //温度
    // public String temperature;
 
@@ -29,9 +24,9 @@ public class MultiSegment implements Parcelable {
     //蒸汽量
     public String steam;
 
-    public String defTemp;//上温度
+    public int defTemp;//上温度
 
-    public String downTemp;//下温度
+    public int downTemp;//下温度
 
     private int cookState = 1;//1 默认 未开始;3(<<1) 开始烹饪; 4(<<2) 暂停烹饪;8(<<3) 烹饪结束
     public static final int COOK_STATE_START = 1 << 1;
@@ -57,11 +52,11 @@ public class MultiSegment implements Parcelable {
     public MultiSegment(Parcel in) {
         no = in.readInt();
         model = in.readString();
-        duration = in.readString();
+        duration = in.readInt();
         funCode = in.readInt();
         steam = in.readString();
-        defTemp = in.readString();
-        downTemp = in.readString();
+        defTemp = in.readInt();
+        downTemp = in.readInt();
         cookState = in.readInt();
         workModel = in.readInt();
         code = in.readInt();
@@ -132,11 +127,11 @@ public class MultiSegment implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeInt(no);
         parcel.writeString(model);
-        parcel.writeString(duration);
+        parcel.writeInt(duration);
         parcel.writeInt(funCode);
         parcel.writeString(steam);
-        parcel.writeString(defTemp);
-        parcel.writeString(downTemp);
+        parcel.writeInt(defTemp);
+        parcel.writeInt(downTemp);
         parcel.writeInt(cookState);
         parcel.writeInt(workModel);
         parcel.writeInt(code);

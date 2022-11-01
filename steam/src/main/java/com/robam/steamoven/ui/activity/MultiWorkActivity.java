@@ -171,7 +171,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
         TextView modelView = itemGroup.findViewById(R.id.multi_item_model);
         modelView.setTextColor(textColor);
         String model = multiSegmentBean.model;
-        modelView.setText(model);
+        modelView.setText(model+"");
 
         TextView durationView = itemGroup.findViewById(R.id.multi_item_duration);
         durationView.setTextColor(textColor);

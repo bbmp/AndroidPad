@@ -9,9 +9,14 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 
 import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.activity.BaseActivity;
 import com.robam.steamoven.R;
+import com.robam.steamoven.bean.SteamOven;
+import com.robam.steamoven.constant.SteamStateConstant;
+import com.robam.steamoven.device.HomeSteamOven;
+import com.robam.steamoven.protocol.SteamCommandHelper;
 
 import java.util.Map;
 
@@ -82,5 +87,14 @@ public abstract class SteamBaseActivity extends BaseActivity {
 
     public void hideRight() {
         findViewById(R.id.ll_right).setVisibility(View.INVISIBLE);
+    }
+
+    public SteamOven getSteamOven(){
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device instanceof SteamOven && device.guid.equals(HomeSteamOven.getInstance().guid)) {
+                return (SteamOven) device;
+            }
+        }
+        return null;
     }
 }

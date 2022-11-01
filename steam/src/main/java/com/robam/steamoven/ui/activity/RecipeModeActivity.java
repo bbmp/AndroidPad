@@ -231,13 +231,13 @@ public class RecipeModeActivity extends SteamBaseActivity implements IModeSelect
                         segment.steam = value;
                         break;
                     case 2:
-                        segment.defTemp = value;
+                        segment.defTemp = Integer.parseInt(value);
                         break;
                     case 3:
-                        segment.downTemp = value;
+                        segment.downTemp = Integer.parseInt(value);
                         break;
                     case 4:
-                        segment.duration = value;
+                        segment.duration = Integer.parseInt(value);
                         break;
                     default:
 

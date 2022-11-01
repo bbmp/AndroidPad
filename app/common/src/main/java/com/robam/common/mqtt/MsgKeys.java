@@ -609,4 +609,60 @@ public interface MsgKeys {
     short POT_FryMode_Req = 160;//设置搅拌参数
 
     short POT_FryMode_Res = 161; //设置搅拌参数回复
+
+    /**
+     * 工作事件上报
+     */
+    short SteameOven_Noti = 153;
+
+    /**
+     * 设置状态控制回应（应答）
+     */
+    short setSteameOvenStatusControl_Rep = 129;
+
+    /**
+     * 报警事件上报
+     */
+    short SteameOvenAlarm_Noti = 152;
+
+    /**
+     * 设置一体机基本模式(应答)
+     */
+    short setSteameOvenBasicMode_Rep = 155;
+
+    /**
+     * 菜谱设置(应答)
+     */
+    short setTheRecipe_Rep = 159;
+
+    /**
+     * 设置一体机照明灯(应答)
+     */
+    short setSteameOvenFloodlight_Rep = 163;
+
+    /**
+     * 设置一体机水箱(应答)
+     */
+    short setSteameOvenWater_Rep = 169;
+
+    /**
+     * 设置一体机加蒸汽(应答)
+     */
+    short setSteameOvensteam_Rep = 165;
+
+    /**
+     * 设置一体机多段烹饪(应答)
+     */
+    short setSteameOvenMultistageCooking_Rep = 167;
+
+    /**
+     * 设置一体机610多段
+     */
+    short setSteameOvenAutoRecipeMode610_Req = 175;
+    short setSteameOvenAutoRecipeMode610_Rep = 176;
+
+    /**
+     * 设置一体机自动菜谱模式回复
+     */
+    short setSteameOvenAutoRecipeMode_Rep = 171;
 }

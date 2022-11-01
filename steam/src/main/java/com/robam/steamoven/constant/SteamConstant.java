@@ -84,6 +84,17 @@ public class SteamConstant {
      * 4 : 控制烟机风量 开启 关闭
      */
     public final static String BS_TYPE = "bsType";
+    public final static int BS_TYPE_0 = 0;
+    public final static int BS_TYPE_1 = 1;
+    public final static int BS_TYPE_2 = 2;
+    public final static int BS_TYPE_3 = 3;
+    public final static int BS_TYPE_4 = 4;
+    public final static int BS_TYPE_5 = 5;
+    public final static int BS_TYPE_6 = 6;
+    public final static int BS_TYPE_7 = 7;
+    public final static int BS_TYPE_8 = 8;
+    public final static int BS_TYPE_9 = 9;
+    public final static int BS_TYPE_10 = 10;
 
     public final static String ARGUMENT_NUMBER = "ArgumentNumber";//参数个数
 
@@ -422,6 +433,247 @@ public class SteamConstant {
     public final static String fan_gearKey = "gearKey" ;
     public final static String fan_gearLength = "gearLength" ;
 
+    /**
+     * 工作控制 继续
+     */
+    public final static short WORK_CTRL_CONTINUE = 4 ;
+
+    /**
+     * 工作控制 暂停
+     */
+    public final static short WORK_CTRL_TIME_OUT = 2 ;
+
+
+    /**
+     * 工作控制 停止
+     */
+    public final static short WORK_CTRL_STOP = 0 ;
+
+    /**
+     * 电源状态
+     */
+    public final static String powerState = "powerState" ;
+
+    /**
+     * 回应码 1B 0-成功，1-失败
+     */
+    public final static String RC = "RC";
+    public final static String Key = "KEY";
+    public final static String Length = "LENGTH";
+
+    /**
+     * 一体机操作状态
+     */
+    public final static String SteameOvenPowerOnStatus = "SteameOvenPowerOnStatus";
+
+    //一体机状态查询回应参数
+    public final static String SteameOvenAlarm = "SteameOvenAlarm";//故障
+    public final static String SteameOvenLeftMin = "SteameOvenLeftMin";
+    public final static String SteameOvenLeftHours = "SteameOvenLeftHours";
+    public final static String SteameOvenWaterStatus = "SteameOvenWaterStatus";
+    public final static String SteameOvenCpStep = "SteameOvenCpStep";//自动模式介
+
+
+
+    /**
+     * 一体机温度和时间
+     */
+    public final static String SteameOvenTemp = "SteameOvenTemp";
+    public final static String SteameOvenTime = "SteameOvenTime";
+    public final static String SteameOvenTemp2 = "SteameOvenTemp2";
+    public final static String SteameOvenTime2 = "SteameOvenTime2";
+
+    /**
+     * 一体机照明灯
+     */
+    public final static String SteameOvenLight = "SteameOvenLight";
+    public final static String SteameOvenLight_Length = "SteameOvenLight_Length";
+    public final static String SteameOvenLight_Value = "SteameOvenLight_Value";
+
+    /**
+     * 一体机设置温度
+     */
+    public final static String SteameOvenSetTemp = "SteameOvenSetTemp";
+    public final static String SteameOvenSetTemp_Length = "SteameOvenSetTemp_Length";
+    public final static String SteameOvenSetTemp_Value = "SteameOvenSetTemp_Value";
+    public final static String SteameOvenSetTemp_Key = "SteameOvenSetTemp_Key";
+
+    /**
+     * 一体机设置时间
+     */
+    public final static String SteameOvenSetTime = "SteameOvenSetTime";
+    public final static String SteameOvenSetTime_Length = "SteameOvenSetTime_Length";
+    public final static String SteameOvenSetTime_Value = "SteameOvenSetTime_Value";
+    public final static String SteameOvenSetTime_Key = "SteameOvenSetTime_Key";
+
+    /**
+     * 一体机设置PreFlag
+     */
+    public final static String SteameOvenPreFlag = "SteameOvenPreFlag";
+
+    /**
+     * 一体机设置ModelType
+     */
+    public final static String SteameOvenModelType = "SteameOvenModelType";
+
+
+
+    /**
+     * 一体机预约时间
+     */
+    public final static String SteameOvenOrderTime_min = "SteameOvenOrderTime_min";
+    public final static String SteameOvenOrderTime_hour = "SteameOvenOrderTime_hour";
+
+
+    /**
+     * 一体机工作模式
+     */
+    public final static String SteameOvenMode_Key = "SteameOvenModeKey";
+    public final static String SteameOvenMode_Length = "SteameOvenModeLength";
+
+    /**
+     * 一体机设置菜谱ID
+     */
+    public final static String SteameOvenRecipeId = "SteameOvenRecipeId";
+    public final static String SteameOvenRecipeValue = "SteameOvenRecipeValue";
+    public final static String SteameOvenRecipeLength = "SteameOvenRecipeLength";
+
+    /**
+     * 一体机设置菜谱步骤
+     */
+    public final static String SteameOvenRecipesteps = "SteameOvenRecipesteps";
+    public final static String SteameOvenRecipestepsLength = "SteameOvenRecipeTotalstepsLength";
+    public final static String SteameOvenRecipestepsValue = "SteameOvenRecipeTotalstepsValue";
+
+    /**
+     * 一体机设置下温度
+     */
+    public final static  String SteameOvenSetDownTemp = "SteameOvenSetDownTemp";
+    public final static  String SteameOvenSetDownTemp_Lenght = "SteameOvenSetDownTemp_Lenght";
+    public final static String SteameOvenSetDownTemp_Vaue = "SteameOvenSetDownTemp_Vaue";
+
+    /**
+     * 一体机下温度
+     */
+    public final static  String SteameOvenDownTemp = "SteameOvenDownTemp";
+    public final static  String SteameOvenDownTemp_Lenght = "SteameOvenDownTemp_Lenght";
+    public final static  String SteameOvenDownTemp_Vaue = "SteameOvenDownTemp_Vaue";
+    /**
+     * 一体机蒸汽
+     */
+    public final static  String SteameOvenSteam = "SteameOvenSteam";
+    public final static  String SteameOvenSteam_Length = "SteameOvenSteamt_Length";
+    public final static  String SteameOvenSteam_Value = "SteameOvenSteam_Value";
+
+    /**
+     * 一体机自动模式
+     */
+    public final static  String SteameOvenCpMode = "SteameOvenPcMode";
+    public final static  String SteameOvenCpMode_Length = "SteameOvenCpMode_Length";
+    public final static  String SteameOvenCpMode_Value = "SteameOvenCpMode_Value";
+
+
+    /**
+     * 一体机多段烹饪
+     */
+    public final static String steameOvenTotalNumberOfSegments_Key = "steameOvenTotalNumberOfSegments_Key";//总段数
+    public final static String steameOvenTotalNumberOfSegments_Length = "steameOvenTotalNumberOfSegments_Length";
+    public final static String steameOvenTotalNumberOfSegments_Value = "steameOvenTotalNumberOfSegments_Value";
+
+    public final static String SteameOvenSectionOfTheStep_Key = "SteameOvenSectionOfTheStep_Key";//段步骤
+    public final static String SteameOvenSectionOfTheStep_Length = "SteameOvenSectionOfTheStep_Length";
+    public final static String SteameOvenSectionOfTheStep_Value = "SteameOvenSectionOfTheStep_Value";
+
+    //自动模式阶
+    public final static String CpStepKey = "CpStepKey";
+    public final static String CpStepLength = "CpStepLength";
+    public final static String CpStepValue = "CpStepValue";
+
+    //蒸汽Steam
+    public final static String SteamKey = "SteamKey";
+    public final static String SteamLength = "SteamLength";
+    public final static String SteamValue = "SteamValue";
+
+
+    //多段烹饪步骤
+    public final static String MultiStepCookingStepsKey = "MultiStepCookingStepsKey";
+    public final static String MultiStepCookingStepsLength = "MultiStepCookingStepsLength";
+    public final static String MultiStepCookingStepsValue = "MultiStepCookingStepsValue";
+
+    //多段当前步骤
+    public final static String MultiStepCurrentStepsKey = "MultiStepCurrentStepsKey";
+    public final static String MultiStepCurrentStepsLength = "MultiStepCurrentStepsLength";
+    public final static  String MultiStepCurrentStepsValue = "MultiStepCurrentStepsValue";
+
+
+    /**
+     * 一体机自动菜谱模式
+     */
+    public final static String SteamOvenAutoRecipeMode = "SteamOvenAutoRecipeMode";
+    public final static String SteamOvenAutoRecipeModeLength = "SteamOvenAutoRecipeModeLength";
+    public final static String AutoRecipeModeValue = "AutoRecipeModeValue";
+
+
+    public final static String SteamOvenAutoRecipeModeValue = "SteamOvenAutoRecipeModeValue";
+
+
+    public final static String SteameOvenPreFlagKey = "SteameOvenPreFlagKey";
+    public final static String SteameOvenPreFlagLength = "SteameOvenPreFlagLength";
+    public final static String SteameOvenPreFlagValue = "SteameOvenPreFlagValue";
+
+    public final static String weatherDescalingKey = "weatherDescalingKey";
+    public final static String weatherDescalingLength = "weatherDescalingLength";
+    public final static String weatherDescalingValue = "weatherDescalingValue";
+
+    public final static String doorStatusKey = "doorStatusKey";
+    public final static String doorStatusLength = "doorStatusLength";
+    public final static String doorStatusValue = "doorStatusValue";
+
+    public final static String time_H_key = "time_H_key";
+    public final static String time_H_length = "time_H_length";
+    public final static String time_H_Value = "time_H_Value";
+
+
+    /**
+     * 事件码[1Byte]
+     */
+    public final static String EventId = "EventId";
+
+
+    //一体机工作事件上报
+    public final static String setSteameOvenBasicMode_Key = "setSteameOvenBasicMode_Key";//设置基本模式
+    public final static String setSteameOvenBasicMode_Length = "setSteameOvenBasicMode_Length";
+    public final static String setSteameOvenBasicMode_value = "setSteameOvenBasicMode_value";
+
+    /**
+     * 一体机考叉旋转
+     */
+    public final static String SteameOvenRevolve = "SteameOvenRevolve";
+    public final static String SteameOvenRevolve_Length = "SteameOvenRevolve_Length";
+    public final static String SteameOvenRevolve_Value = "SteameOvenRevolve_Value";
+
+    /**
+     * 水箱更改
+     */
+    public final static String SteameOvenWaterChanges = "SteameOvenWaterChanges";
+    public final static String SteameOvenWaterChanges_Length = "SteameOvenWaterChanges_Length";
+    public final static String SteameOvenWaterChanges_Value = "SteameOvenWaterChanges_Value";
+
+
+    /**
+     * 一体机工作完成参数
+     */
+    public final static String SteameOvenWorkComplete = "SteameOvenWorkComplete";
+    public final static String SteameOvenWorkComplete_Length = "SteameOvenWorkComplete_Length";
+    public final static String SteameOvenWorkComplete_Value = "SteameOvenWorkComplete_Value";
+
+
+    /**
+     * 一体机开关事件参数
+     */
+    public final static String setSteameOvenSwitchControl = "setSteameOvenSwitchControl";
+    public final static String setSteameOvenSwitchControl_Length = "setSteameOvenSwitchControl_Length";
+    public final static String setSteameOvenSwitchControl_Value = "setSteameOvenSwitchControl_Value";
 
 
 }

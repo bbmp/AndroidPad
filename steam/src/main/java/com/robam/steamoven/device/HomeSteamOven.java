@@ -46,7 +46,7 @@ public class HomeSteamOven {
     /**
      * 预约开始时间
      */
-    public String orderTime;
+    public int orderTime;
     /**
      * 工作模式
      */

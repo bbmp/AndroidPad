@@ -241,7 +241,11 @@ public class AppointmentActivity extends DishWasherBaseActivity {
         if(time.compareTo(curTimeText) > 0){//今日
             String orderTimeStr = curTimeStr.split(" ")[0].trim() + " " + time;
             Date orderTime = dateFormat.parse(orderTimeStr);
-            return (orderTime.getTime() - curTime.getTime())/60/1000;
+            long timeDur = (orderTime.getTime() - curTime.getTime())/60/1000;
+            if((orderTime.getTime() - curTime.getTime())% 60 != 0){
+                return timeDur + 1;
+            }
+            return timeDur;
         }else{//次日
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(curTime);
@@ -249,7 +253,11 @@ public class AppointmentActivity extends DishWasherBaseActivity {
             String destTime = dateFormat.format(calendar.getTime());
             String orderTimeStr = destTime.split(" ")[0].trim() + " " + time;
             Date orderTime = dateFormat.parse(orderTimeStr);
-            return (orderTime.getTime() - curTime.getTime())/60/1000;
+            long timeDur = (orderTime.getTime() - curTime.getTime())/60/1000;
+            if((orderTime.getTime() - curTime.getTime())% 60 != 0){
+                return timeDur + 1;
+            }
+            return timeDur;
         }
     }
 

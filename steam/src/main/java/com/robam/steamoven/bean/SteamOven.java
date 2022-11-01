@@ -1,6 +1,7 @@
 package com.robam.steamoven.bean;
 
 import android.serialport.helper.SerialPortHelper;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
@@ -8,6 +9,7 @@ import com.robam.common.bean.Device;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.ByteUtils;
+import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MsgUtils;
 import com.robam.steamoven.constant.SteamConstant;
 import com.robam.steamoven.protocol.serial.ProtoParse;
@@ -128,7 +130,7 @@ public class SteamOven extends Device {
     /**
      * 手动加蒸汽工作状态
      */
-    public boolean steamState = false;
+    //public boolean steamState = false;
     /**
      * 菜谱编号
      */
@@ -454,10 +456,95 @@ public class SteamOven extends Device {
         if (null != msg && null != msg.opt(SteamConstant.SteameOvenStatus)) {
             queryNum = 0; //查询超过一次无响应离线
             status = Device.ONLINE;
-            workStatus = (int) msg.opt(SteamConstant.SteameOvenStatus);
-            totalRemainSeconds = (int) msg.opt(SteamConstant.SteameOvenLeftTime);
+            //workStatus = (int) msg.opt(SteamConstant.SteameOvenStatus);
+            //totalRemainSeconds = (int) msg.opt(SteamConstant.SteameOvenLeftTime);
+            parserMsg(msg);
             return true;
         }
         return super.onMsgReceived(msg);
     }
+
+
+    public short orderLeftMinutes;
+    public short orderMinutesLength;
+    public short orderRightMinutes;
+    public short orderLeftMinutes1;
+    public short orderRightMinutes1;
+
+    public short steamState;
+    public short curTemp;
+    public short curTemp2;
+
+    public short totalRemainSecondsH;
+    //剩余总时间和
+    public int totalRemain;
+    public int restTimeH;
+    public short descaleFlag;
+    public short sectionNumber;
+
+    public short setTimeH;
+
+
+    private void parserMsg(MqttMsg msg){
+        int key = msg.getID();
+        if (key==MsgKeys.getDeviceAttribute_Rep){
+            this.powerState = (short) msg.optInt(SteamConstant.powerState);
+            this.workState = (short) msg.optInt(SteamConstant.workState);
+            this.orderLeftMinutes = (short) msg.optInt(SteamConstant.orderLeftMinutes);
+            this.orderRightMinutes = (short) msg.optInt(SteamConstant.orderRightMinutes);
+            this.orderLeftMinutes1 = (short) msg.optInt(SteamConstant.orderLeftMinutes1);
+            this.orderRightMinutes1 = (short) msg.optInt(SteamConstant.orderRightMinutes1);
+            this.orderMinutesLength= (short) msg.optInt(SteamConstant.orderMinutesLength);
+            this.orderLeftTime= msg.optInt(SteamConstant.orderLeftTime);
+
+            this.faultCode = (short) msg.optInt(SteamConstant.faultCode);
+            this.rotateSwitch = (short) msg.optInt(SteamConstant.rotateSwitch);
+            this.waterBoxState = (short) msg.optInt(SteamConstant.waterBoxState);
+            this.waterLevelState = (short) msg.optInt(SteamConstant.waterLevelState);
+            this.doorState = (short) msg.optInt(SteamConstant.doorState);
+            this.steamState = (short) msg.optInt(SteamConstant.steamState);
+            this.recipeId = (short) msg.optInt(SteamConstant.recipeId);
+            this.recipeSetMinutes = (short) msg.optInt(SteamConstant.recipeSetMinutes);
+            this.curTemp = (short) msg.optInt(SteamConstant.curTemp);
+            this.curTemp2 = (short) msg.optInt(SteamConstant.curTemp2);
+            this.totalRemainSeconds = (short) msg.optInt(SteamConstant.totalRemainSeconds);
+            this.totalRemainSecondsH = (short) msg.optInt(SteamConstant.totalRemainSeconds2);
+            this.totalRemain = msg.optInt(SteamConstant.totalRemain);
+            this.descaleFlag = (short) msg.optInt(SteamConstant.descaleFlag);
+            this.curSteamTotalHours = (short) msg.optInt(SteamConstant.curSteamTotalHours);
+            this.curSteamTotalNeedHours = (short) msg.optInt(SteamConstant.curSteamTotalNeedHours);
+            this.cookedTime = (short) msg.optInt(SteamConstant.cookedTime);
+            this.chugouType = (short) msg.optInt(SteamConstant.chugouType);
+            this.curSectionNbr = (short) msg.optInt(SteamConstant.curSectionNbr);
+            this.sectionNumber = (short) msg.optInt(SteamConstant.sectionNumber);
+            Log.e("模式",msg.optInt(SteamConstant.mode)+"--");
+            if (curSectionNbr == 0 || curSectionNbr == 1 ) {
+                this.mode = (short) msg.optInt(SteamConstant.mode);
+                this.setUpTemp = (short) msg.optInt(SteamConstant.setUpTemp);
+                this.setDownTemp = (short) msg.optInt(SteamConstant.setDownTemp);
+                this.setTime = (short) msg.optInt(SteamConstant.setTime);
+                this.setTimeH = (short) msg.optInt(SteamConstant.setTimeH);
+                this.restTime = (short) msg.optInt(SteamConstant.restTime);
+                this.restTimeH = (short) msg.optInt(SteamConstant.restTimeH);
+                this.steam = (short) msg.optInt(SteamConstant.steam);
+            }else  {
+                this.mode = (short) msg.optInt(SteamConstant.mode + curSectionNbr);
+                this.setUpTemp = (short) msg.optInt(SteamConstant.setUpTemp + curSectionNbr );
+                this.setDownTemp = (short) msg.optInt(SteamConstant.setDownTemp + curSectionNbr );
+                this.setTime = (short) msg.optInt(SteamConstant.setTime + curSectionNbr );
+                this.setTimeH = (short) msg.optInt(SteamConstant.setTimeH + curSectionNbr );
+                this.restTime = (short) msg.optInt(SteamConstant.restTime + curSectionNbr);
+                this.restTimeH = (short) msg.optInt(SteamConstant.restTimeH +curSectionNbr);
+                this.steam = (short) msg.optInt(SteamConstant.steam + curSectionNbr);
+            }
+            //onStatusChanged();
+        }
+
+        else if (key==MsgKeys.getDeviceAlarmEventReport){
+            this.faultCode = (short) msg.optInt(SteamConstant.faultCode);
+            //postEvent(new NewSteamOvenOneAlarmEvent(AbsSteameOvenOneNew.this , faultCode));
+        }
+    }
+
+
 }

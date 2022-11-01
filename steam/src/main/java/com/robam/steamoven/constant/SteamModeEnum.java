@@ -9,31 +9,31 @@ public enum SteamModeEnum {
     /**
      *
      */
-    NO_MOEL(0,"无模式"),
-    XIANNENZHENG(1,"鲜嫩蒸"),
-    YIYANGZHENG(2,"营养蒸"),
-    GAOWENZHENG(3,"高温蒸 "),
-    WEIBOZHENG(4,"微波蒸 "),
-    ZHIKONGZHENG(5,"澎湃蒸"),
+    NO_MOEL(SteamConstant.NO_MOEL,"无模式"),
+    XIANNENZHENG(SteamConstant.XIANNENZHENG,"鲜嫩蒸"),
+    YIYANGZHENG(SteamConstant.YIYANGZHENG,"营养蒸"),
+    GAOWENZHENG(SteamConstant.GAOWENZHENG,"高温蒸 "),
+    WEIBOZHENG(SteamConstant.WEIBOZHENG,"微波蒸 "),
+    ZHIKONGZHENG(SteamConstant.ZHIKONGZHENG,"澎湃蒸"),
 
-    KUAIRE(6,"快热 "),
-    FENGBEIKAO(7,"风焙烤"),
-    BEIKAO(8,"焙烤"),
-    FENGSHANKAO(9,"风扇烤"),
-    QIANGSHAOKAO(10,"强烤烧"),
-    SHAOKAO(11,"烤烧 "),
-    KUAISUYURE(12,"快速预热"),
-    GUOSHUHONGGAN(13,"果蔬烘干 "),
-    EXP(14,"EXP"),
-    WEIBOKAO(15,"微波烤"),
+    KUAIRE(SteamConstant.KUAIRE,"快热"),
+    FENGBEIKAO(SteamConstant.FENGBEIKAO,"风焙烤"),
+    BEIKAO(SteamConstant.BEIKAO,"焙烤"),
+    FENGSHANKAO(SteamConstant.FENGSHANKAO,"风扇烤"),
+    QIANGSHAOKAO(SteamConstant.QIANGSHAOKAO,"强烤烧"),
+    SHAOKAO(SteamConstant.SHAOKAO,"烤烧 "),
+    KUAISUYURE(SteamConstant.KUAISUYURE,"快速预热"),
+    GUOSHUHONGGAN(SteamConstant.GUOSHUHONGGAN,"果蔬烘干 "),
+    EXP(SteamConstant.EXP,"EXP"),
+    WEIBOKAO(SteamConstant.WEIBOKAO,"微波烤"),
 
-    KONGQIZHA(18,"空气炸 "),
+    KONGQIZHA(SteamConstant.KONGQIZHA,"空气炸 "),
 //    WEIBO(24,"微波 "),
 //    CESHI(25,"节能测试模式 "),
 
-    SHOUDONGJIASHIKAO(22,"加湿烤焙烤"),
-    JIASHIBEIKAO(23,"加湿烤风焙烤"),
-    JIASHIFENGBEIKAO(24,"加湿烤强烤烧"),
+    SHOUDONGJIASHIKAO(SteamConstant.SHOUDONGJIASHIKAO,"加湿烤焙烤"),
+    JIASHIBEIKAO(SteamConstant.JIASHIBEIKAO,"加湿烤风焙烤"),
+    JIASHIFENGBEIKAO(SteamConstant.JIASHIFENGBEIKAO,"加湿烤强烤烧"),
 
 
 //    SHUIZHI1(29, "P1"),
@@ -42,14 +42,13 @@ public enum SteamModeEnum {
 //    SHUIZHI4(32, "P4"),
 //    SHUIZHI5(33, "P5"),
 
-    FAJIAO(32,"发酵"),
-    GANZAO(33,"干燥"),
-    SHAJUN(34,"杀菌"),
-    CHUGOU(35,"除垢"),
-    BAOWEN(36,"保温"),
-    JIEDONG(37,"解冻"),
-    QINGJIE(38,"清洁"),
-    ;
+    FAJIAO(SteamConstant.FAJIAO,"发酵"),
+    GANZAO(SteamConstant.GANZAO,"干燥"),
+    SHAJUN(SteamConstant.SHAJUN,"杀菌"),
+    CHUGOU(SteamConstant.CHUGOU,"除垢"),
+    BAOWEN(SteamConstant.BAOWEN,"保温"),
+    JIEDONG(SteamConstant.JIEDONG,"解冻"),
+    QINGJIE(SteamConstant.QINGJIE,"清洁");
 
     private int mode;
     private String name;

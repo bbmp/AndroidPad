@@ -1171,5 +1171,6 @@
     <string name="steam_appointment_time">预约启动时间</string>
     <string name="steam_ok_appointment">确认预约</string>
     <string name="steam_mode_rotate">旋转</string>
+    <string name="steam_mode_stream">加湿中</string>
 
 </resources>
