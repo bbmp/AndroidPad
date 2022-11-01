@@ -185,8 +185,8 @@ public class ModelWorkActivity extends SteamBaseActivity {
 
         curDuration.setVisibility((isPreHeat && isWorking)?View.INVISIBLE:View.VISIBLE);
         curModel.setText(segment.model);
-        curTemp.setText(segment.defTemp);
-        curDuration.setText(segment.duration);
+        curTemp.setText(segment.defTemp+"");
+        curDuration.setText(segment.duration+"");
     }
 
     private SpannableString getSpan(String value,String unit){
@@ -349,8 +349,8 @@ public class ModelWorkActivity extends SteamBaseActivity {
 
         curDuration.setVisibility((isPreHeat && isWorking)?View.INVISIBLE:View.VISIBLE);
         curModel.setText(segment.model);
-        curTemp.setText(segment.defTemp);
-        curDuration.setText(segment.duration);
+        curTemp.setText(segment.defTemp+"");
+        curDuration.setText(segment.duration+"");
 
 
     }

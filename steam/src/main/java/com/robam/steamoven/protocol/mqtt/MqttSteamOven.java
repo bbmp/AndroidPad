@@ -617,6 +617,7 @@ public class MqttSteamOven extends MqttPublic {
                         case 3:
                             short workState = ByteUtils.toShort(payload[offset]);
                             msg.putOpt(SteamConstant.workState, workState);
+                            msg.putOpt(SteamConstant.SteameOvenStatus, workState);
                             break;
                         case 6:
                             short orderLeftMinutes = ByteUtils.toShort(payload[offset]);
