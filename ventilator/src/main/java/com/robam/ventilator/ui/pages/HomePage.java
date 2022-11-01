@@ -626,8 +626,11 @@ public class    HomePage extends VentilatorBasePage {
                 if (v.getId() == R.id.tv_ok) {
                     screenLock();
 
-                    //关闭
-                    VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_CLOSE);
+                    //打开油网清洗
+                    VentilatorAbstractControl.getInstance().openOilClean();
+                    //开灯
+                    Plat.getPlatform().openWaterLamp();
+//                    VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_CLOSE);
                 }
             }
         }, R.id.tv_cancel, R.id.tv_ok);
@@ -644,8 +647,12 @@ public class    HomePage extends VentilatorBasePage {
                 @Override
                 public boolean onLongClick(View v) {
                     homeLock.dismiss();
-                    if (null != rvFunctionAdapter)
-                        rvFunctionAdapter.setPickPosition(-1);
+//                    if (null != rvFunctionAdapter)
+//                        rvFunctionAdapter.setPickPosition(-1);
+                    //关闭油网清洗
+                    VentilatorAbstractControl.getInstance().closeOilClean();
+                    //关灯
+                    Plat.getPlatform().closeWaterLamp();
                     return true;
                 }
             });

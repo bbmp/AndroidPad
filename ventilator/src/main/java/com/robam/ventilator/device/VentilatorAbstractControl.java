@@ -25,6 +25,16 @@ public class VentilatorAbstractControl implements VentilatorFunction{
     }
 
     @Override
+    public void openOilClean() {
+        function.openOilClean();
+    }
+
+    @Override
+    public void closeOilClean() {
+        function.closeOilClean();
+    }
+
+    @Override
     public void setFanStatus(int status) {
         function.setFanStatus(status);
     }

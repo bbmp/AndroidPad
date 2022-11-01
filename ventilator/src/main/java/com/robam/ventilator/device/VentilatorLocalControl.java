@@ -20,6 +20,18 @@ public class VentilatorLocalControl implements VentilatorFunction{
     }
 
     @Override
+    public void openOilClean() {
+        byte[] data = SerialVentilator.openOilClean();
+        SerialPortHelper.getInstance().addCommands(data);
+    }
+
+    @Override
+    public void closeOilClean() {
+        byte[] data = SerialVentilator.closeOilClean();
+        SerialPortHelper.getInstance().addCommands(data);
+    }
+
+    @Override
     public void setFanStatus(int status) {
         byte byteStatus;
         if (status == VentilatorConstant.FAN_POWERON)
@@ -52,11 +64,18 @@ public class VentilatorLocalControl implements VentilatorFunction{
     @Override
     public void setFanLight(int light) {
         byte byteLight;
-        if (light == VentilatorConstant.FAN_LIGHT_OPEN)
+        byte baffle;
+        if (light == VentilatorConstant.FAN_LIGHT_OPEN) {  //开灯打开风门挡板
             byteLight = (byte) 0xA1;
-        else
+            baffle = (byte) 0xA1;
+        } else {
             byteLight = (byte) 0xA0;
-        byte[] data = SerialVentilator.setLight(byteLight);
+            if (HomeVentilator.getInstance().startup == (byte) 0x00) //关机状态
+                baffle = (byte) 0xA0; //关门
+            else
+                baffle = (byte) 0xA1;
+        }
+        byte[] data = SerialVentilator.setLight(byteLight, baffle);
         SerialPortHelper.getInstance().addCommands(data);
     }
 

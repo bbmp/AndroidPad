@@ -5,6 +5,10 @@ public interface VentilatorFunction {
 
     void powerOn();
 
+    void openOilClean();
+
+    void closeOilClean();
+
     void setFanStatus(int status); //设置烟机工作状态
 
     void setFanGear(int gear); //设置烟机挡位
