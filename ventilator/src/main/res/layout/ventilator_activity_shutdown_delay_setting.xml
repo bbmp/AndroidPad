@@ -56,6 +56,7 @@
         android:gravity="center_vertical">
 
         <TextView
+            android:id="@+id/tv_shutdown_desc"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_20"

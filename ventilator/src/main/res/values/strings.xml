@@ -88,4 +88,8 @@
     <string name="ventilator_pause">暂停</string>
     <string name="ventilator_continue">继续</string>
     <string name="ventilator_low_battery">电量不足</string>
+    <string name="ventilator_holiday_desc_set">%s天未使用油烟机、自动开启换气（换气时间为14:00）\n每周固定 %s 开启油烟机3分钟自动换气</string>
+    <string name="ventilator_shutdown_delay_set">油烟机将延迟%s分钟关机</string>
+
+
 </resources>

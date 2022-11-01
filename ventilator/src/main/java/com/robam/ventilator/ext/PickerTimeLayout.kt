@@ -10,8 +10,9 @@ import com.robam.ventilator.R
 import com.robam.ventilator.ui.adapter.RvStringAdapter
 
 class PickerTimeLayout : LinearLayout {
+
     private var mHourManager: PickerLayoutManager? = null
-    private var timePosition: Int = 0
+
     private val mAdapter = RvStringAdapter()
 
     constructor(context: Context) : super(context) {
@@ -41,12 +42,10 @@ class PickerTimeLayout : LinearLayout {
 
     private fun init() {
         LayoutInflater.from(context).inflate(R.layout.time_layout, this)
-         mHourManager = PickerLayoutManager.Builder(context)
+        mHourManager = PickerLayoutManager.Builder(context)
             .setScale(0.5f)
             .setMaxItem(3)
-            .setOnPickerListener { recyclerView, position ->
-                timePosition = position
-            }.build()
+            .build()
         findViewById<RecyclerView>(R.id.rv_time).apply {
             layoutManager = mHourManager
             adapter = mAdapter
@@ -58,6 +57,30 @@ class PickerTimeLayout : LinearLayout {
      */
     fun setData(list: MutableList<String>) {
         mAdapter.setList(list)
+    }
+
+    /**
+     * 获取列表数据
+     */
+    fun getData(): MutableList<String> {
+        return mAdapter.data
+    }
+
+    /**
+     * 滚动到指定位置
+     */
+    fun scrollToPosition(position: Int) {
+        mHourManager?.scrollToPosition(position)
+    }
+
+    /**
+     * 根据文本内容滚动到指定位置
+     */
+    fun scrollToPosition(text: String) {
+        val index = getData().indexOfFirst { it == text }
+        if (index != -1) {
+            scrollToPosition(index)
+        }
     }
 
     /**
@@ -103,6 +126,8 @@ class PickerTimeLayout : LinearLayout {
      * 选中回调数据
      */
     fun setOnPickerListener(callback: (text: String, position: Int) -> Unit) {
-        callback.invoke(mAdapter.data[timePosition], timePosition)
+        mHourManager?.setOnPickerListener { recyclerView, position ->
+            callback.invoke(mAdapter.data[position], position)
+        }
     }
 }
