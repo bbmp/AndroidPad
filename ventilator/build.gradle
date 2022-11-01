@@ -1,5 +1,7 @@
 plugins {
     id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-android-extensions'
 }
 apply from: '../versions.gradle'
 android {
@@ -59,4 +61,9 @@ dependencies {
     api "com.github.Jasonchenlijian:FastBle:$versions.FastBle"
     // 腾讯 MMKV：https://github.com/Tencent/MMKV
     api "com.tencent:mmkv-static:$versions.mmkv"
+
+    api "androidx.core:core-ktx:$versions.ktx"
+    //工具类
+    implementation "com.blankj:utilcodex:$versions.utilcodex"
+
 }

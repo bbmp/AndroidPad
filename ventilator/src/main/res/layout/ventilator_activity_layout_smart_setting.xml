@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activity.SmartSettingActivity"
-    android:background="@drawable/ventilator_ic_bg">
+    android:background="@drawable/ventilator_ic_bg"
+    tools:context=".ui.activity.SmartSettingActivity">
 
     <include
         android:id="@+id/ll_title"
@@ -21,6 +21,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.075" />
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/ventilator_guideline5"
         android:layout_width="wrap_content"
@@ -32,104 +33,37 @@
         android:id="@+id/tv_device_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="@id/ventilator_guideline4"
-        app:layout_constraintTop_toTopOf="@id/bt_reset"
-        app:layout_constraintBottom_toBottomOf="@id/bt_reset"
-        android:textSize="@dimen/sp_28"
         android:text="5068s"
-        android:textColor="@color/ventilator_white"/>
+        android:textColor="@color/ventilator_white"
+        android:textSize="@dimen/sp_28"
+        app:layout_constraintBottom_toBottomOf="@id/bt_reset"
+        app:layout_constraintLeft_toLeftOf="@id/ventilator_guideline4"
+        app:layout_constraintTop_toTopOf="@id/bt_reset" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/bt_reset"
         android:layout_width="@dimen/dp_175"
         android:layout_height="@dimen/dp_56"
+        android:layout_marginTop="@dimen/dp_50"
+        android:background="@drawable/ventilator_shape_button_ok_bg"
+        android:gravity="center"
         android:text="@string/ventilator_reset_start"
         android:textColor="@color/ventilator_white"
         android:textSize="@dimen/sp_30"
-        android:gravity="center"
-        android:background="@drawable/ventilator_shape_button_ok_bg"
-        app:layout_constraintTop_toBottomOf="@id/ll_title"
-        app:layout_constraintBottom_toTopOf="@id/tv_auto_change_air"
         app:layout_constraintRight_toLeftOf="@id/ventilator_guideline5"
-        app:layout_constraintVertical_chainStyle="packed"/>
+        app:layout_constraintTop_toBottomOf="@id/ll_title"
+        app:layout_constraintVertical_chainStyle="packed" />
 
-    <View
-        android:id="@+id/ll_border1"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="0dp"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginBottom="@dimen/dp_10"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_height="0dp"
-        android:background="@drawable/ventilator_shape_border_bg"
-        app:layout_constraintLeft_toLeftOf="@id/ventilator_guideline4"
-        app:layout_constraintRight_toRightOf="@id/ventilator_guideline5"
-        app:layout_constraintTop_toTopOf="@id/tv_auto_change_air"
-        app:layout_constraintBottom_toBottomOf="@id/tv_auto_change_air">
-    </View>
-    <TextView
-        android:id="@+id/tv_auto_change_air"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_88"
-        android:layout_marginTop="@dimen/dp_18"
-        android:text="7天未使用油烟机,自动开启换气"
-        android:gravity="center_vertical"
-        android:textSize="@dimen/sp_34"
-        android:textColor="@color/ventilator_white"
-        android:layout_marginRight="@dimen/dp_10"
-        android:maxLines="1"
-        android:ellipsize="end"
-        app:layout_constraintTop_toBottomOf="@id/bt_reset"
-        app:layout_constraintBottom_toTopOf="@id/tv_wash"
-        app:layout_constraintLeft_toLeftOf="@id/ventilator_guideline4"
-        app:layout_constraintRight_toLeftOf="@id/sb_auto_air"
-        android:layout_marginLeft="@dimen/dp_64"/>
+        app:layout_constraintLeft_toRightOf="@+id/ventilator_guideline4"
+        app:layout_constraintRight_toLeftOf="@id/ventilator_guideline5"
+        app:layout_constraintTop_toBottomOf="@+id/bt_reset" />
 
-
-    <com.robam.common.ui.view.SwitchButton
-        android:id="@+id/sb_auto_air"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/dp_64"
-        android:checked="true"
-        app:layout_constraintRight_toRightOf="@id/ventilator_guideline5"
-        app:layout_constraintTop_toTopOf="@id/tv_auto_change_air"
-        app:layout_constraintBottom_toBottomOf="@id/tv_auto_change_air"/>
-
-    <View
-        android:id="@+id/ll_border2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@drawable/ventilator_shape_border_bg"
-        android:gravity="center_vertical"
-        app:layout_constraintLeft_toLeftOf="@id/ventilator_guideline4"
-        app:layout_constraintRight_toRightOf="@id/ventilator_guideline5"
-        app:layout_constraintTop_toTopOf="@id/tv_wash"
-        app:layout_constraintBottom_toBottomOf="@id/tv_wash">
-    </View>
-    <TextView
-        android:id="@+id/tv_wash"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_88"
-        android:text="油网清洗提醒功能"
-        android:layout_marginTop="@dimen/dp_25"
-        android:layout_marginLeft="@dimen/dp_64"
-        android:layout_marginRight="@dimen/dp_10"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:textSize="@dimen/sp_34"
-        android:gravity="center_vertical"
-        android:textColor="@color/ventilator_white"
-        app:layout_constraintLeft_toLeftOf="@id/ventilator_guideline4"
-        app:layout_constraintRight_toLeftOf="@id/sb_auto_oil"
-        app:layout_constraintTop_toBottomOf="@id/tv_auto_change_air"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
-
-    <com.robam.common.ui.view.SwitchButton
-        android:id="@+id/sb_auto_oil"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/dp_64"
-        android:checked="true"
-        app:layout_constraintTop_toTopOf="@id/tv_wash"
-        app:layout_constraintBottom_toBottomOf="@id/tv_wash"
-        app:layout_constraintRight_toLeftOf="@id/ventilator_guideline5"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

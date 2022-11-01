@@ -17,7 +17,7 @@ android {
     }
     signingConfigs {
         debug {
-            storeFile file('D:\\AndroidProjects\\AndroidPad\\app\\topband_system.keystore')
+            storeFile file('topband_system.keystore')
             storePassword 'topband123'
             keyAlias 'key'
             keyPassword 'topband123'
