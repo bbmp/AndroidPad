@@ -2,9 +2,15 @@ package com.robam.ventilator.ui.activity
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ActivityUtils
+import com.blankj.utilcode.util.LogUtils
+import com.robam.cabinet.bean.Cabinet
+import com.robam.common.bean.AccountInfo
+import com.robam.common.device.subdevice.Pan
+import com.robam.common.device.subdevice.Stove
 import com.robam.common.ui.dialog.IDialog
 import com.robam.common.ui.helper.VerticalSpaceItemDecoration
 import com.robam.common.utils.MMKVUtils
+import com.robam.steamoven.bean.SteamOven
 import com.robam.ventilator.BuildConfig
 import com.robam.ventilator.R
 import com.robam.ventilator.base.VentilatorBaseActivity
@@ -85,6 +91,31 @@ class SmartSettingActivity : VentilatorBaseActivity() {
      * 数据填充
      */
     private fun addListData() {
+        //灶
+        val stoveList =
+            AccountInfo.getInstance().deviceList.filter { it is Stove }.map { it.displayType }
+       val stoveListDevice = if (stoveList.isEmpty()) {
+           "暂无关联产品"
+        } else {
+           "关联产品:${stoveList.toString().substring(1,stoveList.toString().length-1)}"
+        }
+        //锅
+        val panList =
+            AccountInfo.getInstance().deviceList.filter { it is Pan }.map { it.displayType }
+        val panListDevice = if (panList.isEmpty()) {
+            "暂无关联产品"
+        } else {
+            "关联产品:${panList.toString().substring(1,panList.toString().length-1)}"
+        }
+        //一体机
+        val steamOvenList =
+            AccountInfo.getInstance().deviceList.filter { it is SteamOven }.map { it.displayType }
+        val steamOvenListDevice = if (steamOvenList.isEmpty()) {
+            "暂无关联产品"
+        } else {
+            "关联产品:${steamOvenList.toString().substring(1,steamOvenList.toString().length-1)}"
+        }
+
         mList.add(
             SmartSetBean(
                 "假日模式",
@@ -116,7 +147,7 @@ class SmartSettingActivity : VentilatorBaseActivity() {
         mList.add(
             SmartSetBean(
                 "烟灶联动",
-                "暂无关联产品 \n灶具小火工作时，烟机自动匹配风量",
+                "$stoveListDevice \n灶具小火工作时，烟机自动匹配风量",
                 modeSwitch = MMKVUtils.getFanStove(),
                 modeDescSwitchVisible = true
             )
@@ -124,7 +155,7 @@ class SmartSettingActivity : VentilatorBaseActivity() {
         mList.add(
             SmartSetBean(
                 "烟锅联动",
-                "暂无关联产品 \n明火自动翻炒锅工作时开着，烟机自动匹配风量",
+                "$panListDevice \n明火自动翻炒锅工作时开着，烟机自动匹配风量",
                 modeSwitch = MMKVUtils.getFanPan(),
                 modeDescSwitchVisible = true
             )
@@ -132,7 +163,7 @@ class SmartSettingActivity : VentilatorBaseActivity() {
         mList.add(
             SmartSetBean(
                 "烟蒸烤联动",
-                "暂无关联产品 \n一体机工作室开门，烟机自动匹配风量",
+                "$steamOvenListDevice \n一体机工作室开门，烟机自动匹配风量",
                 modeSwitch = MMKVUtils.getFanSteam(),
                 modeDescSwitchVisible = true
             )
@@ -147,6 +178,8 @@ class SmartSettingActivity : VentilatorBaseActivity() {
         bt_reset.setOnClickListener {
             //恢复初始提示
             resetDialog()
+            AccountInfo.getInstance().deviceList
+            LogUtils.e("aaa" + AccountInfo.getInstance().deviceList)
         }
     }
 
