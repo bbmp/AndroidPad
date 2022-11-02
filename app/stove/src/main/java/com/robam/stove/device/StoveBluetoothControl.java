@@ -251,6 +251,35 @@ public class StoveBluetoothControl implements StoveFunction{
     }
 
     @Override
+    public void setStoveTemp(String targetGuid, int stoveId, int temp, int timingTime) {
+        try {
+            for (Device device : AccountInfo.getInstance().deviceList) {
+                if (device instanceof Stove && null != device.guid && device.guid.equals(targetGuid)) {
+                    //模拟收发
+                    MqttMsg msg = new MqttMsg.Builder()
+                            .setMsgId(MsgKeys.setStoveTemp_Req)
+                            .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
+                            .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
+                            .build();
+                    //设置灶具id
+                    try {
+                        msg.putOpt(StoveConstant.stoveId, stoveId);
+                        msg.putOpt(StoveConstant.setTemp, temp); //设置温度
+                        msg.putOpt(StoveConstant.timingtime, timingTime);//预留时间
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    //打包payload
+                    byte[] mqtt_data = StoveFactory.getProtocol().encode(msg);
+
+                    write_no_response(targetGuid, ((Stove) device).bleDevice, ((Stove) device).characteristic, mqtt_data);
+                    break;
+                }
+            }
+        } catch (Exception e) {}
+    }
+
+    @Override
     public void setStoveParams(int cmd, byte[] payload) {
         try {
             for (Device device : AccountInfo.getInstance().deviceList) {

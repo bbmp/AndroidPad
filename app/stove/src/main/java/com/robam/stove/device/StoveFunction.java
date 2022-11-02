@@ -20,6 +20,8 @@ public interface StoveFunction {
     void setTiming(String targetGuid, int stoveId, int timingTime);
     //灶具菜谱设置
     void setRecipe(String targetGuid, int stoveId);
+    //设置灶具温度
+    void setStoveTemp(String targetGuid, int stoveId, int temp, int timingTime);
     //锅上报转发给灶
     void setStoveParams(int cmd, byte[] payload);
     //远程控制命令

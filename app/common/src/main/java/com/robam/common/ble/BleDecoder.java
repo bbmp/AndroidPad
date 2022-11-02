@@ -61,6 +61,8 @@ public class BleDecoder {
     public static final int CMD_COOKER_SET_RES = 131;//设置灶具返回
     public static final int CMD_COOKER_TIME_RES = 135; //定时设置返回
     public static final int CMD_COOKER_LOCK_RES = 137;//设置童锁返回
+    public static final int CMD_COOKER_TEMP_RES = 174; //设置灶具定温回复
+
     //CMD ID--无人锅外部指令
     public static final int CMD_POT_INTERACTION_RES = 154;//智能锅智能互动返回
 

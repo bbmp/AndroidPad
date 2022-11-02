@@ -12,6 +12,8 @@ import com.robam.ventilator.device.VentilatorAbstractControl;
 import com.robam.ventilator.protocol.serial.SerialVentilator;
 import com.robam.ventilator.ui.activity.LoginPhoneActivity;
 import com.robam.ventilator.ui.activity.MatchNetworkActivity;
+import com.robam.ventilator.ui.service.AlarmBleService;
+import com.robam.ventilator.ui.service.AlarmMqttService;
 
 public class PublicVentilatorApi implements IPublicVentilatorApi {
     //给外部模块调用
@@ -68,8 +70,31 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
     }
 
     @Override
+    public void closeService(Context context) {
+        //关闭定时任务
+        context.stopService(new Intent(context, AlarmMqttService.class));
+        context.stopService(new Intent(context, AlarmBleService.class));
+        //关闭串口查询
+        HomeVentilator.getInstance().stopSerialQuery();
+    }
+
+    @Override
     public void powerOn() {
         VentilatorAbstractControl.getInstance().powerOn();
+    }
+
+    @Override
+    public void startService(Context context) {
+        //启动定时服务
+        Intent intent = new Intent(context, AlarmMqttService.class);
+        intent.setPackage(context.getPackageName());
+        context.startService(intent);
+        //蓝牙查询
+        Intent bleIntent = new Intent(context, AlarmBleService.class);
+        bleIntent.setPackage(context.getPackageName());
+        context.startService(bleIntent);
+        //串口查询
+        HomeVentilator.getInstance().startSerialQuery();
     }
 
     @Override

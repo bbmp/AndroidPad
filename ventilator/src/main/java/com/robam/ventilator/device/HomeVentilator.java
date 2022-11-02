@@ -1,5 +1,7 @@
 package com.robam.ventilator.device;
 
+import android.serialport.helper.SerialPortHelper;
+
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.RTopic;
@@ -12,9 +14,18 @@ import com.robam.common.utils.DeviceUtils;
 import com.robam.common.device.subdevice.Pan;
 import com.robam.common.device.subdevice.Stove;
 import com.robam.ventilator.constant.VentilatorConstant;
+import com.robam.ventilator.protocol.serial.SerialVentilator;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class HomeVentilator {
     //当前进入的烟机
@@ -126,5 +137,36 @@ public class HomeVentilator {
             e.printStackTrace();
         }
     }
+    //串口查询
+    private Thread thread;
+    public void startSerialQuery() {
 
+        thread = new Thread() {
+            @Override
+            public void run() {
+                byte data[] = SerialVentilator.packQueryCmd();
+                try {
+                    while (!isInterrupted()) {
+                        SerialPortHelper.getInstance().addCommands(data);
+
+                        Thread.sleep(3000);
+
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        thread.start();
+
+    }
+    //停止查询
+    public void stopSerialQuery() {
+        try {
+            thread.interrupt();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
