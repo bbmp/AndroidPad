@@ -31,7 +31,7 @@ public class VentilatorConstant {
     //挡位
     public final static int FAN_GEAR_CLOSE = 0; //关档
     public final static int FAN_GEAR_WEAK = 1;
-    public final static int FAN_GEAR_MID = 2;
+    public final static int FAN_GEAR_MID = 3;
     public final static int FAN_GEAR_FRY = 6; //爆炒
     //灯开关
     public final static int FAN_LIGHT_CLOSE = 0;

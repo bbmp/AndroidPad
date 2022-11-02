@@ -1,5 +1,7 @@
 package com.robam.ventilator.device;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.serialport.helper.SerialPortHelper;
 
 import com.robam.common.bean.AccountInfo;
@@ -28,6 +30,23 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class HomeVentilator {
+    public static final String ALARM_ACTION = "action_alarm_ventilator";
+    //爆炒档倒计时
+    private int a6CountTime = 0;
+    private Handler mHandler = new Handler(Looper.getMainLooper());
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            a6CountTime++;
+            if (a6CountTime >= 180) {
+                //切换到高档
+                VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_MID);
+                return;
+            }
+            mHandler.postDelayed(runnable, 1000);
+        }
+    };
+
     //当前进入的烟机
     public static HomeVentilator getInstance() {
         return HomeVentilator.VentilatorHolder.instance;
@@ -137,36 +156,15 @@ public class HomeVentilator {
             e.printStackTrace();
         }
     }
-    //串口查询
-    private Thread thread;
-    public void startSerialQuery() {
-
-        thread = new Thread() {
-            @Override
-            public void run() {
-                byte data[] = SerialVentilator.packQueryCmd();
-                try {
-                    while (!isInterrupted()) {
-                        SerialPortHelper.getInstance().addCommands(data);
-
-                        Thread.sleep(3000);
-
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        thread.start();
-
+    //爆炒档开始倒计时
+    public void startA6CountDown() {
+        a6CountTime = 0;
+        mHandler.postDelayed(runnable, 1000);
     }
-    //停止查询
-    public void stopSerialQuery() {
-        try {
-            thread.interrupt();
+    //停止倒计时
+    public void stopA6CountDown() {
+        mHandler.removeCallbacks(runnable);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        mHandler.removeCallbacksAndMessages(null);
     }
 }

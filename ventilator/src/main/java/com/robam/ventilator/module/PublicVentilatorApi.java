@@ -14,6 +14,7 @@ import com.robam.ventilator.ui.activity.LoginPhoneActivity;
 import com.robam.ventilator.ui.activity.MatchNetworkActivity;
 import com.robam.ventilator.ui.service.AlarmBleService;
 import com.robam.ventilator.ui.service.AlarmMqttService;
+import com.robam.ventilator.ui.service.AlarmVentilatorService;
 
 public class PublicVentilatorApi implements IPublicVentilatorApi {
     //给外部模块调用
@@ -75,7 +76,8 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
         context.stopService(new Intent(context, AlarmMqttService.class));
         context.stopService(new Intent(context, AlarmBleService.class));
         //关闭串口查询
-        HomeVentilator.getInstance().stopSerialQuery();
+//        HomeVentilator.getInstance().stopSerialQuery();
+        context.stopService(new Intent(context, AlarmVentilatorService.class));
     }
 
     @Override
@@ -94,11 +96,18 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
         bleIntent.setPackage(context.getPackageName());
         context.startService(bleIntent);
         //串口查询
-        HomeVentilator.getInstance().startSerialQuery();
+        Intent seIntent = new Intent(context, AlarmVentilatorService.class);
+        seIntent.setPackage(context.getPackageName());
+        context.startService(seIntent);
     }
 
     @Override
     public void setColorLamp() {
         VentilatorAbstractControl.getInstance().setColorLamp();
+    }
+
+    @Override
+    public void stoveLevelChanged(int leftLevel, int rightLevel) {
+        //判断烟灶联动开关
     }
 }

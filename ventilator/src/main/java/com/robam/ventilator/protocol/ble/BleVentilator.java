@@ -455,7 +455,8 @@ public class BleVentilator {
                                     delay_disconnect_ble(bleDevice);
                                     //通知下线
                                     break;
-                                case BleDecoder.RESP_GET_POT_STATUS_INT:
+                                case BleDecoder.EVENT_IH_POWER_CHANGED_INT://灶具挡位变化
+                                case BleDecoder.RESP_GET_POT_STATUS_INT://烟机查询锅状态返回
                                 case BleDecoder.CMD_COOKER_STATUS_RES: //烟机查询灶状态返回
 
                                     for (Device device: AccountInfo.getInstance().deviceList) {

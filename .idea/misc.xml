@@ -405,6 +405,7 @@
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_activity_layout_smart_setting.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_activity_layout_wifi_connect.xml" value="0.17" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_activity_layout_wifi_setting.xml" value="0.12" />
+        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_activity_shutdown_delay_setting.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_dialog_layout_common.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_dialog_layout_delay_close.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_dialog_layout_lock.xml" value="0.1" />

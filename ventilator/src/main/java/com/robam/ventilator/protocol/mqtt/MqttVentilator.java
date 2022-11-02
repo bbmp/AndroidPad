@@ -40,14 +40,15 @@ public class MqttVentilator extends MqttPublic {
 //从payload中取值角标
         //内部命令
         switch (msg.getID()) {
-            case BleDecoder.EVENT_POT_TEMPERATURE_DROP: //锅温度骤降,烟机爆炒档
+            case BleDecoder.EVENT_POT_TEMPERATURE_DROP: //锅温度骤降且烟锅联动开启,烟机爆炒档
                 VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_FRY);
                 break;
-            case BleDecoder.EVENT_POT_TEMPERATURE_OV: //防干烧预警 锅温280以上
+            case BleDecoder.EVENT_POT_TEMPERATURE_OV: //防干烧预警 锅温280以上且烟锅联动开启
                 //关闭灶具
                 StoveAbstractControl.getInstance().setAttribute(HomeStove.getInstance().guid, IPublicStoveApi.STOVE_LEFT, 0x00, StoveConstant.STOVE_CLOSE);
+                StoveAbstractControl.getInstance().setAttribute(HomeStove.getInstance().guid, IPublicStoveApi.STOVE_RIGHT, 0x00, StoveConstant.STOVE_CLOSE);
                 break;
-            case BleDecoder.EVENT_POT_LINK_2_RH://烟锅联动锅温50以上，烟机未开
+            case BleDecoder.EVENT_POT_LINK_2_RH://烟锅联动锅温50以上，烟机未开且烟锅联动开启
                 //烟机开2挡
                 VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_MID);
                 break;

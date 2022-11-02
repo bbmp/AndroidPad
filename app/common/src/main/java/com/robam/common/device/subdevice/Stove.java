@@ -138,16 +138,23 @@ public class Stove extends Device {
         if (null != msg && null != msg.opt(StoveConstant.stoveNum)) {
             queryNum = 0; //查询超过一次无响应离线
             status = Device.ONLINE;
-            lockStatus = (int) msg.opt(StoveConstant.lockStatus);
-            leftStatus = (int) msg.opt(StoveConstant.leftStatus);
-            leftLevel = (int) msg.opt(StoveConstant.leftLevel);
-            leftTimeHours = (int) msg.opt(StoveConstant.leftTime);
+            if (msg.has(StoveConstant.lockStatus))
+                lockStatus = (int) msg.opt(StoveConstant.lockStatus);
+            if (msg.has(StoveConstant.leftStatus))
+                leftStatus = (int) msg.opt(StoveConstant.leftStatus);
+            if (msg.has(StoveConstant.leftLevel))
+                leftLevel = (int) msg.opt(StoveConstant.leftLevel);
+            if (msg.has(StoveConstant.leftTime))
+                leftTimeHours = (int) msg.opt(StoveConstant.leftTime);
             if (msg.has(StoveConstant.leftTemp))
                 leftWorkTemp = (float) msg.opt(StoveConstant.leftTemp);
 
-            rightStatus = (int) msg.opt(StoveConstant.rightStatus);
-            rightLevel = (int) msg.opt(StoveConstant.rightLevel);
-            rightTimeHours = (int) msg.opt(StoveConstant.rightTime);
+            if (msg.has(StoveConstant.rightStatus))
+                rightStatus = (int) msg.opt(StoveConstant.rightStatus);
+            if (msg.has(StoveConstant.rightLevel))
+                rightLevel = (int) msg.opt(StoveConstant.rightLevel);
+            if (msg.has(StoveConstant.rightTime))
+                rightTimeHours = (int) msg.opt(StoveConstant.rightTime);
             if (msg.has(StoveConstant.rightTemp))
                 rightWorkTemp = (float) msg.opt(StoveConstant.rightTemp);
             return true;

@@ -96,7 +96,7 @@ public class ShortcutActivity extends VentilatorBaseActivity {
         //烟机状态
         if (HomeVentilator.getInstance().gear == (byte) 0xA1)
             rvShortcutFunAdapter.setPickPosition(0);
-        else if (HomeVentilator.getInstance().gear == (byte) 0xA2)
+        else if (HomeVentilator.getInstance().gear == (byte) 0xA3)
             rvShortcutFunAdapter.setPickPosition(1);
         else if (HomeVentilator.getInstance().gear == (byte) 0xA6)
             rvShortcutFunAdapter.setPickPosition(2);

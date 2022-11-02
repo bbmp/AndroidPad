@@ -71,7 +71,7 @@ public class WifiSettingActivity extends VentilatorBaseActivity {
                     VenWifiManager.closeWifi(mWifiManager);
                 else
                     VenWifiManager.openWifi(mWifiManager);
-//                setWifiData();
+                setWifiData();
             }
         });
     }

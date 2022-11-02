@@ -75,7 +75,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public class    HomePage extends VentilatorBasePage {
+public class HomePage extends VentilatorBasePage {
     /**
      * 主功能
      */
@@ -386,7 +386,7 @@ public class    HomePage extends VentilatorBasePage {
                         rvFunctionAdapter.setPickPosition(0);
                     else if (HomeVentilator.getInstance().gear == (byte) 0xA1 && null != rvFunctionAdapter)
                         rvFunctionAdapter.setPickPosition(1);
-                    else if (HomeVentilator.getInstance().gear == (byte) 0xA2 && null != rvFunctionAdapter)
+                    else if (HomeVentilator.getInstance().gear == (byte) 0xA3 && null != rvFunctionAdapter)
                         rvFunctionAdapter.setPickPosition(2);
                     else if (HomeVentilator.getInstance().gear == (byte) 0xA6 && null != rvFunctionAdapter)
                         rvFunctionAdapter.setPickPosition(3);

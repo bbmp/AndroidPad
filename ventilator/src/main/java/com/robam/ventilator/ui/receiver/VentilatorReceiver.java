@@ -9,6 +9,8 @@ import android.net.wifi.WifiManager;
 
 import com.robam.common.utils.LogUtils;
 import com.robam.common.bean.AccountInfo;
+import com.robam.ventilator.device.HomeVentilator;
+import com.robam.ventilator.ui.service.AlarmVentilatorService;
 
 public class VentilatorReceiver extends BroadcastReceiver {
     @Override
@@ -48,7 +50,7 @@ public class VentilatorReceiver extends BroadcastReceiver {
                     break;
                 }
             }
-        }else if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(intent.getAction())) {
+        } else if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(intent.getAction())) {
             //监听wifi连接状态
             NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
             LogUtils.e( "--NetworkInfo--" + info.toString());
@@ -69,6 +71,8 @@ public class VentilatorReceiver extends BroadcastReceiver {
             }
         } else if (WifiManager.SCAN_RESULTS_AVAILABLE_ACTION.equals(intent.getAction())) {
             LogUtils.e("wifi列表发生变化");
+        } else if (HomeVentilator.getInstance().ALARM_ACTION.equals(intent.getAction())) { //自定义广播
+            context.startService(new Intent(context, AlarmVentilatorService.class));
         }
     }
 }
