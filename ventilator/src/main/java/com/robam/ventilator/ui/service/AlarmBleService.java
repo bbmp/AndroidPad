@@ -64,6 +64,7 @@ public class AlarmBleService extends Service {
             device.queryNum++;
             if (device instanceof Pan) { //查询锅
                 if (((Pan) device).bleDevice == null) {
+                    ((Pan) device).mode = 0;
                     continue;
                 }
                 //本机查询锅

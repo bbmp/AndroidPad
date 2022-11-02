@@ -28,5 +28,6 @@ public class CurveStep implements Serializable {
         this.no = no;
         this.markTime = markTime;
         this.markTemp = markTemp;
+        this.description = "第"+no+"步";
     }
 }

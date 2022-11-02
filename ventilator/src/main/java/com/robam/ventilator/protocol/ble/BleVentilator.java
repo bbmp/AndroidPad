@@ -479,6 +479,7 @@ public class BleVentilator {
                                         }
                                     }
                                     break;
+                                case BleDecoder.CMD_COOKER_TEMP_RES: //设置灶具定温回复
                                 case BleDecoder.CMD_COOKER_SET_RES: //设置灶状态返回
                                 case BleDecoder.CMD_COOKER_TIME_RES: //设置定时关火返回
                                 case BleDecoder.CMD_COOKER_LOCK_RES: { //设置童锁返回
