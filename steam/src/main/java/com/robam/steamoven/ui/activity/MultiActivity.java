@@ -17,8 +17,10 @@ import com.robam.common.utils.ToastUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.bean.FuntionBean;
+import com.robam.steamoven.bean.ModeBean;
 import com.robam.steamoven.bean.MultiSegment;
 import com.robam.steamoven.constant.Constant;
+import com.robam.steamoven.constant.MultiSegmentEnum;
 import com.robam.steamoven.constant.SteamConstant;
 import com.robam.steamoven.constant.SteamEnum;
 import com.robam.steamoven.ui.dialog.SteamCommonDialog;
@@ -46,7 +48,9 @@ public class MultiActivity extends SteamBaseActivity {
     public static final int  DATA_KEY = R.id.multi_opt;
     public static final int  START_WORK_CODE = 350;
     //跳转集合
-    private List<FuntionBean> funtionBeans;
+    //private List<FuntionBean> funtionBeans;
+    private FuntionBean funtionBean;
+    //private List<ModeBean> modeBeanList;
     //多段是否已启动
     private boolean isStart = false;
 
@@ -133,44 +137,38 @@ public class MultiActivity extends SteamBaseActivity {
     }
 
     private void toTagPageModel(View view){
+        this.toModelPage(funtionBean,Integer.parseInt(view.getTag()+""),getSelectCode(view));
+    }
+
+    private MultiSegment getSelectCode(View view){
         Object data = view.getTag(DATA_KEY);
         if(data == null){//去往默认规则页面
-            List<Integer> settedFunList= getSettedFunList();
-            List<Integer> allFunList = getModelFunList();
-            if(settedFunList != null){
-                for(int i = 0;i < settedFunList.size();i++){
-                    allFunList.remove(settedFunList.get(i));
+            int modeCode = MultiSegmentEnum.matchIndex(Integer.parseInt(view.getTag()+""));
+            if(modeCode == -1){
+                return null;
+            }
+            for(int i = 0;i < funtionBean.mode.size();i++){
+                if(modeCode == funtionBean.mode.get(i).code){
+                    MultiSegment emptySegment = new MultiSegment();
+                    emptySegment.code = funtionBean.mode.get(i).code;
+                    emptySegment.defTemp = funtionBean.mode.get(i).defTemp;
+                    emptySegment.downTemp = funtionBean.mode.get(i).defTemp;
+                    emptySegment.duration = funtionBean.mode.get(i).defTime;
+                    emptySegment.steam = funtionBean.mode.get(i).defSteam;
+                    return emptySegment;
                 }
             }
-            FuntionBean funtionBean = getFuntionBean(allFunList.get(0));
-            this.toModelPage(funtionBean,Integer.parseInt(view.getTag()+""));
+            return null;
         }else{//去往当前选择模式页面
-            //this.toCurModelPage((MultiSegment)data,Integer.parseInt(view.getTag()+""));
-            FuntionBean funtionBean = getFuntionBean(((MultiSegment)data).funCode);
-            this.toModelPage(funtionBean,Integer.parseInt(view.getTag()+""));
+            return (MultiSegment) data;
         }
     }
 
-    private void toDefaultModelPage(int index){
-        List<Integer> settedFunList= getSettedFunList();
-        List<Integer> allFunList = getModelFunList();
-        if(settedFunList != null){
-            for(int i = 0;i < settedFunList.size();i++){
-                allFunList.remove(settedFunList.get(i));
-            }
-        }
-
-        FuntionBean funtionBean = getFuntionBean(allFunList.get(0));
-        this.toModelPage(funtionBean,index);
-    }
 
 
-    private void toCurModelPage(MultiSegment multiSegment,int index){
-        FuntionBean funtionBean = getFuntionBean(multiSegment.funCode);
-        this.toModelPage(funtionBean,index);
-    }
 
-    private void toModelPage(FuntionBean funtionBean,int index){
+
+    private void toModelPage(FuntionBean funtionBean,int index,MultiSegment curSegment){
         if (funtionBean == null || funtionBean.into == null || funtionBean.into.length() == 0) {
             ToastUtils.showShort(getContext(), "功能还未实现，请等待版本更新");
             return;
@@ -179,28 +177,21 @@ public class MultiActivity extends SteamBaseActivity {
         intent.putExtra(SteamConstant.EXTRA_MODE_LIST, funtionBean.mode);
         intent.setClassName(getContext(), funtionBean.into);
         intent.putExtra(Constant.NEED_SET_RESULT,true);
+        intent.putExtra(Constant.SEGMENT_DATA_FLAG,curSegment);
         startActivityForResult(intent,index);
     }
 
 
 
-    /**
-     * 跳转到蒸设置页面
-     */
-    private void toSteamPage(){
-       if(funtionBeans == null){
-           throw new IllegalArgumentException("未在R.raw.steam中查询到设置页面，请检查R.raw.steam文件中内容是否有误");
-       }
 
-
-    }
 
     private FuntionBean getFuntionBean(int code){
-        for(int i = 0;i < funtionBeans.size() ;i++){
-            if(code == funtionBeans.get(i).funtionCode){
-                return funtionBeans.get(i);
-            }
-        }
+//        for(int i = 0;i < funtionBeans.size() ;i++){
+//            if(code == funtionBeans.get(i).funtionCode){
+//                return funtionBeans.get(i);
+//            }
+//        }
+//        return null;
         return null;
     }
 
@@ -325,7 +316,12 @@ public class MultiActivity extends SteamBaseActivity {
 
     @Override
     protected void initData() {
-        funtionBeans = FunctionManager.getFuntionList(getContext(), FuntionBean.class, R.raw.steam);
+        //funtionBeans = FunctionManager.getFuntionList(getContext(), FuntionBean.class, R.raw.steam);
+        //funtionBeans = FunctionManager.getFuntionList(getContext(), FuntionBean.class, R.raw.steam);
+        List<ModeBean> modeBeanList = FunctionManager.getFuntionList(getContext(),ModeBean.class,R.raw.steammode);
+        funtionBean = new FuntionBean();
+        funtionBean.mode = (ArrayList<ModeBean>) modeBeanList;
+        funtionBean.into = "com.robam.steamoven.ui.activity.ModeSelectActivity";
         isStart = getIntent().getBooleanExtra(Constant.SEGMENT_WORK_FLAG,false);
         if(isStart){
             multiSegments = getIntent().getParcelableArrayListExtra(Constant.SEGMENT_DATA_FLAG);

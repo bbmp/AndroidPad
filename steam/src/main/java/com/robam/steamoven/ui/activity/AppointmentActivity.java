@@ -7,19 +7,23 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.robam.common.bean.MqttDirective;
+import com.robam.common.mqtt.MsgKeys;
 import com.robam.steamoven.R;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.common.utils.DateUtil;
 import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.bean.MultiSegment;
 import com.robam.steamoven.constant.Constant;
+import com.robam.steamoven.constant.SteamConstant;
 import com.robam.steamoven.device.HomeSteamOven;
+import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.ui.adapter.RvStringAdapter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
 //工作预约
 public class AppointmentActivity extends SteamBaseActivity {
@@ -75,20 +79,10 @@ public class AppointmentActivity extends SteamBaseActivity {
         mHourManager = new PickerLayoutManager.Builder(this)
                 .setScale(0.5f)
                 .setMaxItem(3)
-                .setOnPickerListener(new PickerLayoutManager.OnPickerListener() {
-                    @Override
-                    public void onPicked(RecyclerView recyclerView, int position) {
-                        setOrderDate();
-                    }
-                }).build();
+                .setOnPickerListener((recyclerView, position) -> setOrderDate()).build();
         mMinuteManager = new PickerLayoutManager.Builder(this)
                 .setScale(0.5f)
-                .setOnPickerListener(new PickerLayoutManager.OnPickerListener() {
-                    @Override
-                    public void onPicked(RecyclerView recyclerView, int position) {
-                        setOrderDate();
-                    }
-                })
+                .setOnPickerListener((recyclerView, position) -> setOrderDate())
                 .build();
         mHourView.setLayoutManager(mHourManager);
         mMinuteView.setLayoutManager(mMinuteManager);
@@ -108,8 +102,11 @@ public class AppointmentActivity extends SteamBaseActivity {
         });
     }
 
+
     private void toAppointingPage() throws ParseException {
-        HomeSteamOven.getInstance().orderTime = (int) getAppointingTimeMin(tvTime.getText().toString());
+        //int appointTime = (int) getAppointingTimeMin(tvTime.getText().toString()) * 60;
+        //multiSegment.workRemaining = appointTime;
+        HomeSteamOven.getInstance().orderTime = multiSegment.workRemaining;
         HomeSteamOven.getInstance().workMode = (short) multiSegment.code;
         HomeSteamOven.getInstance().workHours = multiSegment.duration;
         Intent intent = new Intent(this,AppointingActivity.class);
@@ -149,8 +146,13 @@ public class AppointmentActivity extends SteamBaseActivity {
         if (id == R.id.btn_cancel) {
             finish();
         } else if (id == R.id.btn_ok) { //确认预约
+//            try {
+//                toAppointingPage();
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
             try {
-                toAppointingPage();
+                sendAppointCommand();
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -159,8 +161,114 @@ public class AppointmentActivity extends SteamBaseActivity {
         }
     }
 
-    private void sendAppointCommand(){
+    private void sendAppointCommand() throws ParseException {
+        multiSegment.workRemaining = (int) getAppointingTimeMin(tvTime.getText().toString()) * 60;
 
+        int steamFlow = multiSegment.steam;
+        int setTemp = multiSegment.defTemp;
+        int mode = multiSegment.code;
+        int setTime = multiSegment.duration;
+        int orderTime = multiSegment.workRemaining;
+
+        Map commonMap = SteamCommandHelper.getCommonMap(MsgKeys.setDeviceAttribute_Req);
+        if (steamFlow == 0){
+            if (setTemp == 0){
+                commonMap.put(SteamConstant.ARGUMENT_NUMBER, 7);
+            }else {
+                commonMap.put(SteamConstant.ARGUMENT_NUMBER, 8);
+            }
+        }else {
+            if (setTemp == 0){
+                commonMap.put(SteamConstant.ARGUMENT_NUMBER, 8);
+            }else {
+                commonMap.put(SteamConstant.ARGUMENT_NUMBER, 9);
+            }
+        }
+        commonMap.put(SteamConstant.BS_TYPE , SteamConstant.BS_TYPE_0) ;
+        //一体机电源控制
+        commonMap.put(SteamConstant.powerCtrlKey, 2);
+        commonMap.put(SteamConstant.powerCtrlLength, 1);
+        commonMap.put(SteamConstant.powerCtrl, 1);
+
+        //一体机工作控制
+        commonMap.put(SteamConstant.workCtrlKey, 4);
+        commonMap.put(SteamConstant.workCtrlLength, 1);
+        if (orderTime==0){
+            commonMap.put(SteamConstant.workCtrl, 1);
+        }else {
+            commonMap.put(SteamConstant.workCtrl, 3);
+        }
+
+        //预约时间
+        commonMap.put(SteamConstant.setOrderMinutesKey, 5);
+        commonMap.put(SteamConstant.setOrderMinutesLength, 1);
+        if (orderTime<=255){
+            commonMap.put(SteamConstant.setOrderMinutes01, orderTime);
+        }else{
+            if (orderTime<=(256*256)&&orderTime>255) {
+                commonMap.put(SteamConstant.setOrderMinutesKey, 5);
+                commonMap.put(SteamConstant.setOrderMinutesLength, 2);
+                short time = (short) (orderTime & 0xff);
+                commonMap.put(SteamConstant.setOrderMinutes01, time);
+                short highTime = (short) ((orderTime >> 8) & 0Xff);
+                commonMap.put(SteamConstant.setOrderMinutes02, highTime);
+            }else if (orderTime<=255*255*255&&orderTime>255*255){
+                commonMap.put(SteamConstant.setOrderMinutesKey, 5);
+                commonMap.put(SteamConstant.setOrderMinutesLength, 4);
+                short time = (short) (orderTime & 0xff);
+                commonMap.put(SteamConstant.setOrderMinutes01, time);
+                short highTime = (short) ((orderTime >> 8) & 0Xff);
+                commonMap.put(SteamConstant.setOrderMinutes02, highTime);
+                short time1 = (short) ((orderTime >> 16) & 0Xff);
+                commonMap.put(SteamConstant.setOrderMinutes03, time1);
+            }
+        }
+
+        //commonMap.put(SteamConstant.setOrderMinutes, orderTime);
+
+        //段数
+        commonMap.put(SteamConstant.sectionNumberKey, 100) ;
+        commonMap.put(SteamConstant.sectionNumberLength, 1) ;
+        commonMap.put(SteamConstant.sectionNumber, 1) ;
+
+        commonMap.put(SteamConstant.rotateSwitchKey, 9) ;
+        commonMap.put(SteamConstant.rotateSwitchLength, 1) ;
+        commonMap.put(SteamConstant.rotateSwitch, 0) ;
+        //模式
+        commonMap.put(SteamConstant.modeKey, 101) ;
+        commonMap.put(SteamConstant.modeLength, 1) ;
+        commonMap.put(SteamConstant.mode, mode) ;
+        //温度上温度
+
+        if (setTemp!=0) {
+            commonMap.put(SteamConstant.setUpTempKey, 102);
+            commonMap.put(SteamConstant.setUpTempLength, 1);
+            commonMap.put(SteamConstant.setUpTemp, setTemp);
+        }
+        //时间
+        setTime*=60;
+        commonMap.put(SteamConstant.setTimeKey, 104);
+        commonMap.put(SteamConstant.setTimeLength, 1);
+
+        final short lowTime = setTime > 255 ? (short) (setTime & 0Xff):(short)setTime;
+        if (setTime<=255){
+            commonMap.put(SteamConstant.setTime0b, lowTime);
+        }else{
+            commonMap.put(SteamConstant.setTimeKey, 104);
+            commonMap.put(SteamConstant.setTimeLength, 2);
+            short time = (short)(setTime & 0xff);
+            commonMap.put(SteamConstant.setTime0b, time);
+            short highTime = (short) ((setTime >> 8) & 0Xff);
+            commonMap.put(SteamConstant.setTime1b, highTime);
+        }
+
+        if (steamFlow!=0) {
+            //蒸汽量
+            commonMap.put(SteamConstant.steamKey, 106);
+            commonMap.put(SteamConstant.steamLength, 1);
+            commonMap.put(SteamConstant.steam, steamFlow);
+        }
+        SteamCommandHelper.getInstance().sendCommonMsgForLiveData(commonMap,MsgKeys.setDeviceAttribute_Req+directive_offset);
     }
 
     /**

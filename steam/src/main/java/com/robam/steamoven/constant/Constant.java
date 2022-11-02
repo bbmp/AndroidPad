@@ -95,6 +95,7 @@ public interface Constant {
 
     String NEED_SET_RESULT = "needSetResult";
 
+
     String SEGMENT_DATA_FLAG = "segmentData";
 
     String SEGMENT_WORK_FLAG = "isWork";
@@ -105,6 +106,8 @@ public interface Constant {
 
     int TIME_DELAYED = 50;
 
-    String TEMP_UNIT = "°c";
+    String UNIT_TEMP = "°c";
+    String UNIT_TIME_MIN = "min";
+    String UNIT_TIME_H = "h";
 
 }

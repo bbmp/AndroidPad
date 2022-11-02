@@ -39,6 +39,7 @@ public class ModeSelectPage extends SteamBasePage {
 
     //初始模式
     private List<ModeBean> selectList;
+    private int selectIndex = -1;
 
     public ModeSelectPage(TabLayout.Tab tab, List<ModeBean> selectList, IModeSelect iModeSelect) {
         this.tab = tab;
@@ -46,11 +47,18 @@ public class ModeSelectPage extends SteamBasePage {
         this.iModeSelect = iModeSelect;
     }
 
+    public ModeSelectPage(TabLayout.Tab tab, List<ModeBean> selectList, IModeSelect iModeSelect,int selectIndex) {
+        this.tab = tab;
+        this.selectList = selectList;
+        this.iModeSelect = iModeSelect;
+        this.selectIndex = selectIndex;
+    }
+
     public void setList(List<ModeBean> selectList) {
         rvModeAdapter.setList(selectList);
 
         //初始位置
-        int initPos = Integer.MAX_VALUE / 2 - (Integer.MAX_VALUE/2) % selectList.size();
+        int initPos = selectIndex != -1 ? selectIndex : (Integer.MAX_VALUE / 2 - (Integer.MAX_VALUE/2) % selectList.size());
         pickerLayoutManager.scrollToPosition(initPos);
         rvModeAdapter.setPickPosition(initPos);
 

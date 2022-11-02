@@ -106,8 +106,7 @@
         app:layout_constraintTop_toTopOf="@id/guideline"
         app:layout_constraintBottom_toBottomOf="@id/guideline"
         app:layout_constraintLeft_toRightOf="@id/model_work_prompt"
-        app:layout_constraintRight_toRightOf="parent"
-        android:text="22min"/>
+        app:layout_constraintRight_toRightOf="parent" />
 
     <ImageView
         android:id="@+id/multi_work_ic_steam"
@@ -174,14 +173,14 @@
             android:textColor="@color/steam_white_65"
             tools:text="100"/>
 
-        <TextView
-            android:id="@+id/multi_item_cur_temperature_unit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_m_8"
-            android:textSize="@dimen/sp_36"
-            android:textColor="@color/steam_white_65"
-            android:text="°c"/>
+<!--        <TextView-->
+<!--            android:id="@+id/multi_item_cur_temperature_unit"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="@dimen/dp_m_8"-->
+<!--            android:textSize="@dimen/sp_36"-->
+<!--            android:textColor="@color/steam_white_65"-->
+<!--            android:text="°c"/>-->
 
 
 
@@ -194,13 +193,13 @@
             android:textColor="@color/steam_white_65"
             tools:text="20"/>
 
-        <TextView
-            android:id="@+id/multi_item_cur_duration_unit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/sp_28"
-            android:textColor="@color/steam_white_65"
-            tools:text="min"/>
+<!--        <TextView-->
+<!--            android:id="@+id/multi_item_cur_duration_unit"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:textSize="@dimen/sp_28"-->
+<!--            android:textColor="@color/steam_white_65"-->
+<!--            tools:text="min"/>-->
     </LinearLayout>
 
     <EditText

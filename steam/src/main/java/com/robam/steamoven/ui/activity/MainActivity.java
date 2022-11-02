@@ -19,6 +19,7 @@ import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.bean.MultiSegment;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.Constant;
+import com.robam.steamoven.constant.SteamModeEnum;
 import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.protocol.SteamCommandHelper;
@@ -74,7 +75,14 @@ public class MainActivity extends SteamBaseActivity {
     private void toWorkPage(SteamOven steamOven){
         switch (steamOven.workState){
             case SteamStateConstant.WORK_STATE_LEISURE:
+                break;
             case SteamStateConstant.WORK_STATE_APPOINTMENT:
+                HomeSteamOven.getInstance().orderTime = steamOven.orderLeftTime;
+                Intent appointIntent = new Intent(this,AppointingActivity.class);
+                MultiSegment segment = getResult(steamOven);
+                segment.workRemaining = steamOven.orderLeftTime;
+                appointIntent.putExtra(Constant.SEGMENT_DATA_FLAG, segment);
+                startActivity(appointIntent);
                 break;
             case SteamStateConstant.WORK_STATE_PREHEAT:
             case SteamStateConstant.WORK_STATE_PREHEAT_PAUSE:
@@ -83,7 +91,6 @@ public class MainActivity extends SteamBaseActivity {
                 Intent intent = new Intent(this,ModelWorkActivity.class);
                 List<MultiSegment> list = new ArrayList<>();
                 list.add(getResult(steamOven));
-                list.get(0).setWorkModel(1);
                 intent.putParcelableArrayListExtra(Constant.SEGMENT_DATA_FLAG, (ArrayList<? extends Parcelable>) list);
                 startActivity(intent);
                 break;
@@ -91,15 +98,27 @@ public class MainActivity extends SteamBaseActivity {
     }
 
 
+
+
     private MultiSegment getResult(SteamOven steamOven){
         MultiSegment segment = new MultiSegment();
-        segment.code = steamOven.workMode;
+        segment.code = steamOven.mode;
         segment.model = "";
-        //segment.model = steamOven.workMode;
-        //segment.steam = value;
-        segment.defTemp = 55;
-        //segment.downTemp = value;
-        segment.duration = 3000;
+        segment.steam = steamOven.steam;
+        segment.defTemp = steamOven.curTemp;
+        segment.downTemp = steamOven.setDownTemp;
+        int setTime = steamOven.setTimeH * 256 + steamOven.setTime;
+        segment.duration = setTime;
+
+        int outTime = steamOven.restTimeH * 256 + steamOven.restTime;
+        int timeF = (int) Math.floor(((outTime + 59f) / 60f));//剩余工作时间
+        segment.workRemaining =timeF*60;
+
+        boolean isPreHeat = (steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT || steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT_PAUSE);
+        segment.setWorkModel(isPreHeat?MultiSegment.COOK_STATE_PREHEAT:MultiSegment.WORK_MODEL_);
+
+        boolean isWorking = steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT || steamOven.workState == SteamStateConstant.WORK_STATE_WORKING;
+        segment.setCookState(isWorking?MultiSegment.COOK_STATE_START:MultiSegment.COOK_STATE_PAUSE);
         return segment;
     }
 

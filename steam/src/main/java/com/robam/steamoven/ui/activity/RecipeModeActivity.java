@@ -228,7 +228,7 @@ public class RecipeModeActivity extends SteamBaseActivity implements IModeSelect
                         segment.model = value;
                         break;
                     case 1:
-                        segment.steam = value;
+                        segment.steam = SteamOvenSteamEnum.matchValue(value);
                         break;
                     case 2:
                         segment.defTemp = Integer.parseInt(value);

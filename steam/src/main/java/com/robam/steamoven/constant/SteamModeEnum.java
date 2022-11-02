@@ -107,16 +107,23 @@ public enum SteamModeEnum {
     }
 
     public static String match(int key) {
-
         String result = null;
-
         for (SteamModeEnum s : values()) {
             if (s.getMode() == key) {
                 result = s.getName();
                 break;
             }
         }
-
         return result;
+    }
+
+    public static int matchCode(String value) {
+        int code = SteamConstant.NO_MOEL;
+        for (SteamModeEnum s : values()) {
+            if (s.getName().equals(value)) {
+               return s.getMode();
+            }
+        }
+        return SteamConstant.NO_MOEL;
     }
 }

@@ -9,20 +9,31 @@ import android.text.style.SuperscriptSpan;
 import android.view.View;
 import android.widget.TextView;
 
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
+import com.robam.common.bean.MqttDirective;
+import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.view.MCountdownView;
 import com.robam.common.utils.DateUtil;
 import com.robam.common.utils.TimeUtils;
 import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.R;
 import com.robam.steamoven.bean.MultiSegment;
+import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.Constant;
+import com.robam.steamoven.constant.SteamConstant;
 import com.robam.steamoven.constant.SteamModeEnum;
+import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
+import com.robam.steamoven.protocol.SteamCommandHelper;
+import com.robam.steamoven.ui.dialog.SteamCommonDialog;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 预约中
@@ -43,6 +54,9 @@ public class AppointingActivity extends SteamBaseActivity {
 
     private TextView defTemp;
 
+    private int directive_offset = 15000000;
+    private int directive_offset_start = 20;
+    private final static int DIRECTIVE_OFFSET_END = 40;
 
     @Override
     protected int getLayoutId() {
@@ -60,29 +74,93 @@ public class AppointingActivity extends SteamBaseActivity {
         tvWorkHours = findViewById(R.id.tv_time);
         defTemp = findViewById(R.id.tv_temp);
         setOnClickListener(R.id.ll_left, R.id.iv_start);
+
+        AccountInfo.getInstance().getGuid().observe(this, s -> {
+            for (Device device: AccountInfo.getInstance().deviceList) {
+                if (device.guid.equals(s) && device instanceof SteamOven && device.guid.equals(HomeSteamOven.getInstance().guid)) {
+                    SteamOven steamOven = (SteamOven) device;
+                    if(!SteamCommandHelper.getInstance().isSafe()){
+                        return;
+                    }
+                    switch (steamOven.powerState){
+                        case SteamStateConstant.POWER_STATE_AWAIT:
+                        case SteamStateConstant.POWER_STATE_ON:
+                            if(steamOven.workState ==  SteamStateConstant.WORK_STATE_APPOINTMENT){
+                                updateViewInfo(steamOven);
+                            }else{
+                                finish();
+                            }
+                            break;
+                        case SteamStateConstant.POWER_STATE_OFF:
+                            finish();
+                            break;
+                    }
+
+
+                }
+            }
+        });
+
+        MqttDirective.getInstance().getDirective().observe(this, s -> {
+            switch (s - directive_offset){
+                case MsgKeys.setDeviceAttribute_Req:
+                    toWorkPage();
+                    break;
+                case DIRECTIVE_OFFSET_END:
+                    finish();
+                    break;
+            }
+        });
+    }
+
+    private void toWorkPage(){
+        //立即开始
+        Intent intent = new Intent(this,ModelWorkActivity.class);
+        List<MultiSegment> list = new ArrayList<>();
+        list.add(segment);
+        list.get(0).setWorkModel(MultiSegment.WORK_MODEL_);
+        list.get(0).setCookState(MultiSegment.COOK_STATE_START);
+        intent.putParcelableArrayListExtra(Constant.SEGMENT_DATA_FLAG, (ArrayList<? extends Parcelable>) list);
+        startActivity(intent);
+        finish();
+    }
+
+    private void updateViewInfo(SteamOven steamOven){
+        int outTime = steamOven.restTimeH * 256 + steamOven.restTime;
+        int timeF = (int) Math.floor(((outTime + 59f) / 60f));
+        int totalTime =timeF * 60;
+        tvCountdown.setTotalTime(totalTime);
+        tvCountdown.setText(getTimeStr(timeF));
+        tvAppointmentHint.setText(startTimePoint(timeF));
     }
 
     @Override
     protected void initData() {
         segment = getIntent().getParcelableExtra(Constant.SEGMENT_DATA_FLAG);
         //setCountDownTime();
-        //工作时长
-        tvWorkHours.setText(HomeSteamOven.getInstance().workHours + "min");
-        //工作模式
-        tvMode.setText(SteamModeEnum.match(HomeSteamOven.getInstance().workMode));
+        tvMode.setText(SteamModeEnum.match(segment.code));
         defTemp.setText(getSpanTemp(segment.defTemp+""));
-
         tvWorkHours.setText(getSpan(segment.duration*60));
-        int totalTime =HomeSteamOven.getInstance().orderTime * 60;
+        int totalTime =segment.workRemaining * 60;
         tvCountdown.setTotalTime(totalTime);
-        tvCountdown.setText(getTimeStr(HomeSteamOven.getInstance().orderTime));
-        tvAppointmentHint.setText(startTimePoint(HomeSteamOven.getInstance().orderTime));
+        tvCountdown.setText(getTimeStr(segment.workRemaining));
+        tvAppointmentHint.setText(startTimePoint(segment.workRemaining));
     }
 
-
-    private void initModelView(){
-
+    /**
+     * 结束工作
+     */
+    private void endWork(){
+        Map commonMap = SteamCommandHelper.getCommonMap(MsgKeys.setDeviceAttribute_Req);
+        commonMap.put(SteamConstant.BS_TYPE , SteamConstant.BS_TYPE_1) ;
+        commonMap.put(SteamConstant.ARGUMENT_NUMBER, 1);
+        //一体机工作控制
+        commonMap.put(SteamConstant.workCtrlKey, 4);
+        commonMap.put(SteamConstant.workCtrlLength, 1);
+        commonMap.put(SteamConstant.workCtrl, SteamConstant.WORK_CTRL_STOP);//结束工作
+        SteamCommandHelper.getInstance().sendCommonMsgForLiveData(commonMap,directive_offset + DIRECTIVE_OFFSET_END);
     }
+
 
     /**
      * 设置倒计时
@@ -98,7 +176,7 @@ public class AppointingActivity extends SteamBaseActivity {
         tvCountdown.setTotalTime(totalTime);
 
         tvCountdown.addOnCountDownListener(currentSecond -> {
-//                SteamOven.getInstance().orderLeftTime = currentSecond;
+            //SteamOven.getInstance().orderLeftTime = currentSecond;
             String time = DateUtil.secForMatTime2(currentSecond);
 
             runOnUiThread(new Runnable() {
@@ -125,45 +203,145 @@ public class AppointingActivity extends SteamBaseActivity {
         int id = view.getId();
         if (id == R.id.ll_left) {
             //结束倒计时
-            tvCountdown.stop();
-            finish();
+            showFinishAppointDialog();
         } else if (id == R.id.iv_start) {
-            //立即开始
-            tvCountdown.stop();
-            finish();
-            Intent intent = new Intent(this,ModelWorkActivity.class);
-            List<MultiSegment> list = new ArrayList<>();
-            list.add(segment);
-            list.get(0).setWorkModel(1);
-            intent.putParcelableArrayListExtra(Constant.SEGMENT_DATA_FLAG, (ArrayList<? extends Parcelable>) list);
-            startActivity(intent);
+            startWork(segment.code,segment.defTemp,segment.duration,segment.steam);
         }
     }
 
-    private String  getTimeStr(int remainingTime){
-        int aHour = remainingTime / 60;
-        int aHour_surplus = remainingTime % 60;
-        return (aHour <= 9 ? ("0"+aHour) : aHour) + ":" + (aHour_surplus <= 9 ? ("0"+aHour_surplus) : aHour_surplus);
+    /**
+     * 显示结束预约Dialog
+     */
+    private void showFinishAppointDialog(){
+        SteamCommonDialog steamCommonDialog = new SteamCommonDialog(this);
+        steamCommonDialog.setContentText(R.string.steam_work_multi_back_message);
+        steamCommonDialog.setOKText(R.string.steam_finish_now);
+        steamCommonDialog.setListeners(v -> {
+            steamCommonDialog.dismiss();
+            if(v.getId() == R.id.tv_ok){
+                endWork();
+            }
+        },R.id.tv_cancel,R.id.tv_ok);
+        steamCommonDialog.show();
     }
 
-    private String startTimePoint(int remainingTime){
+    /**
+     *
+     * @param mode  模式code
+     * @param setTemp 运行温度
+     * @param setTime  运行时间
+     * @param steamFlow 蒸汽量code
+     */
+    private void startWork(int mode,int setTemp,int setTime,int steamFlow){
+        Map commonMap = SteamCommandHelper.getCommonMap(MsgKeys.setDeviceAttribute_Req);
+        if (steamFlow == 0){
+            if (setTemp == 0){
+                commonMap.put(SteamConstant.ARGUMENT_NUMBER, 7);
+            }else {
+                commonMap.put(SteamConstant.ARGUMENT_NUMBER, 8);
+            }
+        }else {
+            if (setTemp == 0){
+                commonMap.put(SteamConstant.ARGUMENT_NUMBER, 8);
+            }else {
+                commonMap.put(SteamConstant.ARGUMENT_NUMBER, 9);
+            }
+        }
+        commonMap.put(SteamConstant.BS_TYPE , SteamConstant.BS_TYPE_0) ;
+        //一体机电源控制
+        commonMap.put(SteamConstant.powerCtrlKey, 2);
+        commonMap.put(SteamConstant.powerCtrlLength, 1);
+        commonMap.put(SteamConstant.powerCtrl, 1);
+
+        //一体机工作控制
+        commonMap.put(SteamConstant.workCtrlKey, 4);
+        commonMap.put(SteamConstant.workCtrlLength, 1);
+        commonMap.put(SteamConstant.workCtrl, 1);
+
+        //预约时间
+        commonMap.put(SteamConstant.setOrderMinutesKey, 5);
+        commonMap.put(SteamConstant.setOrderMinutesLength, 1);
+        commonMap.put(SteamConstant.setOrderMinutes01, 0);
+
+
+        //commonMap.put(SteamConstant.setOrderMinutes, orderTime);
+
+        //段数
+        commonMap.put(SteamConstant.sectionNumberKey, 100) ;
+        commonMap.put(SteamConstant.sectionNumberLength, 1) ;
+        commonMap.put(SteamConstant.sectionNumber, 1) ;
+
+        commonMap.put(SteamConstant.rotateSwitchKey, 9) ;
+        commonMap.put(SteamConstant.rotateSwitchLength, 1) ;
+        commonMap.put(SteamConstant.rotateSwitch, 0) ;
+        //模式
+        commonMap.put(SteamConstant.modeKey, 101) ;
+        commonMap.put(SteamConstant.modeLength, 1) ;
+        commonMap.put(SteamConstant.mode, mode) ;
+        //温度上温度
+
+        if (setTemp!=0) {
+            commonMap.put(SteamConstant.setUpTempKey, 102);
+            commonMap.put(SteamConstant.setUpTempLength, 1);
+            commonMap.put(SteamConstant.setUpTemp, setTemp);
+        }
+        //时间
+        setTime*=60;
+        commonMap.put(SteamConstant.setTimeKey, 104);
+        commonMap.put(SteamConstant.setTimeLength, 1);
+
+        final short lowTime = setTime > 255 ? (short) (setTime & 0Xff):(short)setTime;
+        if (setTime<=255){
+            commonMap.put(SteamConstant.setTime0b, lowTime);
+        }else{
+            commonMap.put(SteamConstant.setTimeKey, 104);
+            commonMap.put(SteamConstant.setTimeLength, 2);
+            short time = (short)(setTime & 0xff);
+            commonMap.put(SteamConstant.setTime0b, time);
+            short highTime = (short) ((setTime >> 8) & 0Xff);
+            commonMap.put(SteamConstant.setTime1b, highTime);
+        }
+
+        if (steamFlow!=0) {
+            //蒸汽量
+            commonMap.put(SteamConstant.steamKey, 106);
+            commonMap.put(SteamConstant.steamLength, 1);
+            commonMap.put(SteamConstant.steam, steamFlow);
+        }
+        SteamCommandHelper.getInstance().sendCommonMsgForLiveData(commonMap,MsgKeys.setDeviceAttribute_Req+directive_offset);
+    }
+
+    /**
+     *
+     * @param remainingTime 剩余预约时间，单位 - 秒
+     * @return
+     */
+    private String  getTimeStr(int remainingTime){
+        int hour = remainingTime / 3600;
+        int min = (remainingTime - hour * 3600)/60;
+        int second = remainingTime%60;
+        if(second != 0){
+            min += 1;
+        }
+        return (hour <= 9 ? ("0"+hour) : hour) + ":" + (min <= 9 ? ("0"+min) : min);
+    }
+
+    /**
+     *
+     * @param remainingAppointTime  剩余预约时间，单位 - 秒
+     * @return
+     */
+    private String startTimePoint(int remainingAppointTime){
         Calendar calendar = GregorianCalendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int min = calendar.get(Calendar.MINUTE);
-
-        int aHour = remainingTime / 60;
-        int aHour_surplus = remainingTime % 60;
-        int addHour = (min + aHour_surplus) / 60;
-        int addHour_surplus = (min + aHour_surplus) % 60;
-
-        int totalHour = hour + aHour + addHour;
-        int totalMin = addHour_surplus;
-
+        calendar.setTime(new Date());
+        calendar.add(Calendar.SECOND,remainingAppointTime);
+        int totalHour = calendar.get(Calendar.HOUR_OF_DAY);
+        int totalMin = calendar.get(Calendar.MINUTE);
         return "将在" + (totalHour <= 9 ? ("0"+totalHour) : totalHour) + ":" + (totalMin <= 9 ? ("0"+totalMin) : totalMin) +"启动工作";
     }
 
     private SpannableString getSpanTemp(String temp){
-        SpannableString spannableString = new SpannableString(temp+Constant.TEMP_UNIT);
+        SpannableString spannableString = new SpannableString(temp+Constant.UNIT_TEMP);
         SuperscriptSpan superscriptSpan = new SuperscriptSpan();
         spannableString.setSpan(new RelativeSizeSpan(0.5f), temp.length(), spannableString.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         spannableString.setSpan(superscriptSpan, temp.length(), spannableString.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);

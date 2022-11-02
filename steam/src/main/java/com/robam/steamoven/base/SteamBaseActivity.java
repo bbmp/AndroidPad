@@ -97,4 +97,20 @@ public abstract class SteamBaseActivity extends BaseActivity {
         }
         return null;
     }
+
+    /**
+     * 获取设备状态
+     * @param steamOven
+     * @return
+     */
+    public boolean checkDeviceState(SteamOven steamOven){
+        if(steamOven.doorState == 1){//关闭门
+            return false;
+        }
+        if(steamOven.waterBoxState == 0){//关闭水箱
+
+        }
+        return true;
+    }
+
 }
