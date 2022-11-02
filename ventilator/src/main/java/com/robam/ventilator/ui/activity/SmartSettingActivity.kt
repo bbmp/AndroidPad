@@ -178,8 +178,6 @@ class SmartSettingActivity : VentilatorBaseActivity() {
         bt_reset.setOnClickListener {
             //恢复初始提示
             resetDialog()
-            AccountInfo.getInstance().deviceList
-            LogUtils.e("aaa" + AccountInfo.getInstance().deviceList)
         }
     }
 
