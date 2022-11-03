@@ -219,7 +219,7 @@ public class MqttSteamOven extends MqttPublic {
                                 buf.put(steamLength2);
                                 byte steam2 = (byte) msg.optInt(SteamConstant.steam + i);
                                 buf.put(steam2);
-                                Log.e("结果蒸汽",steam2+"----");
+                                //Log.e("结果蒸汽",steam2+"----");
 
 
                             }

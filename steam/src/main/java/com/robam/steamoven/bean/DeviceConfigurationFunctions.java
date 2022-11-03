@@ -14,10 +14,13 @@ public class DeviceConfigurationFunctions implements Parcelable {
 
     public long id;
 
+    public String functionParams;
+
     protected DeviceConfigurationFunctions(Parcel in) {
         functionCode = in.readString();
         functionName = in.readString();
         backgroundImg = in.readString();
+        functionParams = in.readString();
         id = in.readLong();
     }
 
@@ -26,6 +29,7 @@ public class DeviceConfigurationFunctions implements Parcelable {
         dest.writeString(functionCode);
         dest.writeString(functionName);
         dest.writeString(backgroundImg);
+        dest.writeString(functionParams);
         dest.writeLong(id);
     }
 

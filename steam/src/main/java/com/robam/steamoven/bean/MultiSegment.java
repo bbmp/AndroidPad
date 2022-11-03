@@ -31,7 +31,7 @@ public class MultiSegment implements Parcelable {
     /**
      * 剩余工作时间,单位秒
      */
-    public int workRemaining;//
+    public int workRemaining;
 
     private int cookState = 1;//1 默认 未开始;3(<<1) 开始烹饪; 4(<<2) 暂停烹饪;8(<<3) 烹饪结束
     public static final int COOK_STATE_START = 1 << 1;

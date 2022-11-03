@@ -11,7 +11,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.robam.common.bean.MqttDirective;
 import com.robam.common.manager.FunctionManager;
+import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.steamoven.R;
@@ -23,11 +26,14 @@ import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.MultiSegmentEnum;
 import com.robam.steamoven.constant.SteamConstant;
 import com.robam.steamoven.constant.SteamEnum;
+import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.ui.dialog.SteamCommonDialog;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 //一体机多段
 public class MultiActivity extends SteamBaseActivity {
@@ -54,6 +60,8 @@ public class MultiActivity extends SteamBaseActivity {
     //多段是否已启动
     private boolean isStart = false;
 
+    private int directive_offset = 16000000;
+
 
     @Override
     protected int getLayoutId() {
@@ -73,6 +81,24 @@ public class MultiActivity extends SteamBaseActivity {
         initOptContent();
         initDelBtnView();
         setOnClickListener(R.id.btn_start);
+        MqttDirective.getInstance().getDirective().observe(this, s -> {
+            switch (s - directive_offset){
+                case MsgKeys.setDeviceAttribute_Req:
+                    toMultiWorkPage();
+                    break;
+            }
+        });
+    }
+
+    private void toMultiWorkPage(){
+        if(!isStart){
+            isStart = true;
+            multiSegments.get(0).setCookState(MultiSegment.COOK_STATE_START);
+        }
+        Intent intent = new Intent(this,MultiWorkActivity.class);
+        intent.putParcelableArrayListExtra(Constant.SEGMENT_DATA_FLAG, (ArrayList<? extends Parcelable>) multiSegments);
+        startActivityForResult(intent,START_WORK_CODE);
+        finish();
     }
 
     private void showLight(){
@@ -347,6 +373,7 @@ public class MultiActivity extends SteamBaseActivity {
             showDealDialog(view);
         }else if(id == R.id.btn_start){
             toWorkAc();
+            //startWork();
         }
     }
 
@@ -359,6 +386,9 @@ public class MultiActivity extends SteamBaseActivity {
         if(!isStart){
             isStart = true;
             multiSegments.get(0).setCookState(MultiSegment.COOK_STATE_START);
+        }
+        for(int i = 0;i < multiSegments.size();i++){
+            multiSegments.get(i).workRemaining = multiSegments.get(i).duration * 60;
         }
         Intent intent = new Intent(this,MultiWorkActivity.class);
         intent.putParcelableArrayListExtra(Constant.SEGMENT_DATA_FLAG, (ArrayList<? extends Parcelable>) multiSegments);
@@ -514,6 +544,80 @@ public class MultiActivity extends SteamBaseActivity {
                 startCookBtn.setTextColor(getResources().getColor(R.color.steam_white));
                 startCookBtn.setBackgroundResource(R.drawable.steam_shape_button_selected);
             }
+        }
+    }
+
+    private void startWork(){
+        if(!multiSegments.get(0).isStart() && multiSegments.size() < 2){
+            Toast.makeText(this, R.string.steam_cook_start_prompt,Toast.LENGTH_LONG).show();
+            return;
+        }
+        Map commonMap = SteamCommandHelper.getCommonMap(MsgKeys.setDeviceAttribute_Req);
+
+        commonMap.put(SteamConstant.ARGUMENT_NUMBER, multiSegments.size()*5+3);
+        commonMap.put(SteamConstant.BS_TYPE , SteamConstant.BS_TYPE_2) ;
+        //一体机电源控制
+        commonMap.put(SteamConstant.powerCtrlKey, 2);
+        commonMap.put(SteamConstant.powerCtrlLength, 1);
+        commonMap.put(SteamConstant.powerCtrl, 1);
+        //一体机工作控制
+        commonMap.put(SteamConstant.workCtrlKey, 4);
+        commonMap.put(SteamConstant.workCtrlLength, 1);
+        commonMap.put(SteamConstant.workCtrl, 1);
+        //预约时间
+//                commonMap.put(SteamConstant.setOrderMinutesKey, 5);
+//                commonMap.put(SteamConstant.setOrderMinutesLength, 1);
+//                commonMap.put(SteamConstant.setOrderMinutes, 0);
+        //段数
+        commonMap.put(SteamConstant.sectionNumberKey, 100) ;
+        commonMap.put(SteamConstant.sectionNumberLength, 1) ;
+        commonMap.put(SteamConstant.sectionNumber, multiSegments.size() ) ;
+//                commonMap.put(SteamConstant.sectionNumber, recipeStepList.size() ) ;
+        for (int i = 0; i < multiSegments.size(); i++) {
+            MultiSegment bean = multiSegments.get(i);
+
+            //TODO(需要安全检测)
+//            if (!Util.workBeforeCheck(Integer.parseInt(bean.modelCode),steameOvenOne,true,false)){
+//                return;
+//            }
+            //模式
+            commonMap.put(SteamConstant.modeKey + i, 101 + i *10  ) ;
+            commonMap.put(SteamConstant.modeLength + i, 1) ;
+            commonMap.put(SteamConstant.mode + i,bean.code) ;
+            //温度上温度
+            commonMap.put(SteamConstant.setUpTempKey + i  , 102 + i *10 );
+            commonMap.put(SteamConstant.setUpTempLength + i, 1);
+            commonMap.put(SteamConstant.setUpTemp + i ,bean.defTemp);
+
+            commonMap.put(SteamConstant.setDownTempKey + i  , 103 + i *10 );
+            commonMap.put(SteamConstant.setDownTempLength + i, 1);
+            commonMap.put(SteamConstant.setDownTemp + i ,bean.downTemp);
+
+            //时间
+//                    int time =Integer.parseInt(bean.time)*60;
+            //TODO(检查时间传递是否正确)
+            int time = bean.duration;//(秒)
+            commonMap.put(SteamConstant.setTimeKey + i , 104 + i *10 );
+            commonMap.put(SteamConstant.setTimeLength + i, 1);
+            short lowTime = time > 255 ? (short) (time & 0Xff):(short)time;
+//                    final short lowTime = time > 255 ? (short) (time & 0Xff):(short)time;
+            if (time<=255){
+                commonMap.put(SteamConstant.setTime0b+i, lowTime);
+            }else{
+                commonMap.put(SteamConstant.setTimeKey+i, 104 + i *10);
+                commonMap.put(SteamConstant.setTimeLength+i, 2);
+                short ltime = (short)(time & 0xff);
+                commonMap.put(SteamConstant.setTime0b+i, ltime);
+                short htime = (short) ((time >> 8) & 0Xff);
+                commonMap.put(SteamConstant.setTime1b+i, htime);
+            }
+//                    commonMap.put(SteamConstant.setTime + i, bean.getTime()*60);
+            //TODO(检测蒸汽量传递是否正确)
+            commonMap.put(SteamConstant.steamKey + i, 106 + i *10 );
+            commonMap.put(SteamConstant.steamLength + i , 1);
+            commonMap.put(SteamConstant.steam + i, bean.steam);
+
+            SteamCommandHelper.getInstance().sendCommonMsgForLiveData(commonMap,directive_offset+MsgKeys.setDeviceAttribute_Req);
         }
     }
 

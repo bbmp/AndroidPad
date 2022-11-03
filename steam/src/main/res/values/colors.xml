@@ -58,6 +58,7 @@
     <color name="steam_mode">#fff6f6f6</color>
     <color name="steam_mode70">#B3f6f6f6</color>
     <color name="steam_mode_d9">#D9D9D9</color>
+    <color name="steam_mode_b0">#b0b0b0</color>
     <color name="steam_white_72">#72FFFFFF</color>
     <color name="steam_white_65">#A5FFFFFF</color>
 </resources>

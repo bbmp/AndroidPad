@@ -66,7 +66,7 @@ public class RecipeModeActivity extends SteamBaseActivity implements IModeSelect
 
     @Override
     protected int getLayoutId() {
-        return R.layout.steam_activity_layout_mode_select;
+        return R.layout.steam_activity_layout_recipe_mode;
     }
 
     @Override
@@ -112,8 +112,10 @@ public class RecipeModeActivity extends SteamBaseActivity implements IModeSelect
 
     @Override
     protected void initData() {
-        if (null != getIntent())
+        if (null != getIntent()){
             modes = (ArrayList<ModeBean>) getIntent().getSerializableExtra(SteamConstant.EXTRA_MODE_LIST);
+        }
+
             needSetResult =  getIntent().getBooleanExtra(Constant.NEED_SET_RESULT,false);
 
         //

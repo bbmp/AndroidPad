@@ -5,6 +5,10 @@
 
     <application>
         <activity
+            android:name=".ui.activity.RecipeModeActivityNew"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
+        <activity
             android:name=".ui.activity.AppointingActivity"
             android:exported="false"
             android:screenOrientation="landscape"/>

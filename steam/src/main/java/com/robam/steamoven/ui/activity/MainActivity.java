@@ -111,8 +111,8 @@ public class MainActivity extends SteamBaseActivity {
         segment.duration = setTime;
 
         int outTime = steamOven.restTimeH * 256 + steamOven.restTime;
-        int timeF = (int) Math.floor(((outTime + 59f) / 60f));//剩余工作时间
-        segment.workRemaining =timeF*60;
+        int restTimeF = (int) Math.floor(((outTime + 59f) / 60f));//剩余工作时间
+        segment.workRemaining =restTimeF*60;
 
         boolean isPreHeat = (steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT || steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT_PAUSE);
         segment.setWorkModel(isPreHeat?MultiSegment.COOK_STATE_PREHEAT:MultiSegment.WORK_MODEL_);

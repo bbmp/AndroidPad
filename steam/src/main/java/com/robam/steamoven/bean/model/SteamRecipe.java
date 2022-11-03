@@ -6,11 +6,13 @@ public class SteamRecipe {
     //菜谱名称
     private String name;
     public long id;
+    public String functionParams;
 
-    public SteamRecipe(long id,String name, String imgUrl) {
+    public SteamRecipe(long id,String name, String imgUrl,String functionParams) {
         this.id = id;
         this.name = name;
         this.imgUrl = imgUrl;
+        this.functionParams = functionParams;
     }
 
     public String getImgUrl() {

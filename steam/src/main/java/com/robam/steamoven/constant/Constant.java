@@ -110,4 +110,6 @@ public interface Constant {
     String UNIT_TIME_MIN = "min";
     String UNIT_TIME_H = "h";
 
+    String RECIPE_MODEL_RULE = "recipe_model_rule";
+
 }
