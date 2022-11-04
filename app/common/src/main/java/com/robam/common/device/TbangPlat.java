@@ -60,7 +60,7 @@ public class TbangPlat implements IPlat{
 
     @Override
     public String getMac() {
-        LogUtils.e("mac = " + tbManager.getWiFiMac().replace(":" , ""));
+//        LogUtils.e("mac = " + tbManager.getWiFiMac().replace(":" , ""));
         return "121212121212";
     }
 

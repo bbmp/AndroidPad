@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
+import com.robam.common.device.Plat;
 import com.robam.common.module.IPublicVentilatorApi;
 import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.ui.activity.BaseActivity;
@@ -46,8 +47,10 @@ public abstract class StoveBaseActivity extends BaseActivity {
         AccountInfo.getInstance().getGuid().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
+                if (Plat.getPlatform().getDeviceOnlySign().equals(s)) //烟机
+                    return;
                 for (Device device: AccountInfo.getInstance().deviceList) {
-                    if (device.guid.equals(s) && device.guid.equals(HomeStove.getInstance().guid) && device instanceof Stove) {
+                    if (null != device.guid && device.guid.equals(s) && device.guid.equals(HomeStove.getInstance().guid) && device instanceof Stove) {
                         Stove stove = (Stove) device;
                         if (stove.lockStatus == StoveConstant.LOCK) {
                             screenLock();

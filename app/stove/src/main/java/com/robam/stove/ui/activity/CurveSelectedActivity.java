@@ -119,13 +119,6 @@ public class CurveSelectedActivity extends StoveBaseActivity {
 
     @Override
     protected void initData() {
-        //查找锅和灶
-        for (Device device: AccountInfo.getInstance().deviceList) {
-            if (device instanceof Pan)
-                pan = (Pan) device;
-            else if (device instanceof Stove)
-                stove = (Stove) device;
-        }
 
         getCurveDetail();
     }
@@ -163,6 +156,15 @@ public class CurveSelectedActivity extends StoveBaseActivity {
             return;
         //检查灶是否连接
         if (isStoveOffline())
+            return;
+        //查找锅和灶
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device instanceof Pan)
+                pan = (Pan) device;
+            else if (device instanceof Stove)
+                stove = (Stove) device;
+        }
+        if (null == pan || null == stove)
             return;
         //炉头选择提示
         if (null == selectStoveDialog) {

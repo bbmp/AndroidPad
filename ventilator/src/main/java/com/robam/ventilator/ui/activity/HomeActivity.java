@@ -40,7 +40,6 @@ import com.robam.ventilator.response.GetTokenRes;
 import com.robam.ventilator.response.GetUserInfoRes;
 import com.robam.ventilator.ui.service.AlarmBleService;
 import com.robam.ventilator.ui.service.AlarmMqttService;
-import com.robam.ventilator.ui.service.AlarmVentilatorService;
 
 //主页
 public class HomeActivity extends BaseActivity {
@@ -127,10 +126,8 @@ public class HomeActivity extends BaseActivity {
                     Plat.getPlatform().openPowerLamp();
                 }
                 //循环查询
-//                HomeVentilator.getInstance().startSerialQuery();
-                Intent seIntent = new Intent(getApplicationContext(), AlarmVentilatorService.class);
-                seIntent.setPackage(getPackageName());
-                startService(seIntent);
+                HomeVentilator.getInstance().startSerialQuery();
+
             }
 
             @Override
@@ -224,7 +221,7 @@ public class HomeActivity extends BaseActivity {
         //关闭定时任务
         stopService(new Intent(this.getApplicationContext(), AlarmMqttService.class));
         stopService(new Intent(this.getApplicationContext(), AlarmBleService.class));
-        stopService(new Intent(this.getApplicationContext(), AlarmVentilatorService.class));
+        HomeVentilator.getInstance().stopSerialQuery(); //停止串口查询
     }
 
     //获取token

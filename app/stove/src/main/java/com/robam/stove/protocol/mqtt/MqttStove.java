@@ -71,7 +71,7 @@ public class MqttStove extends MqttPublic {
                     //通知烟机挡位变化
                     IPublicVentilatorApi iPublicVentilatorApi = ModulePubliclHelper.getModulePublic(IPublicVentilatorApi.class, IPublicVentilatorApi.VENTILATOR_PUBLIC);
                     if (null != iPublicVentilatorApi) {
-                        iPublicVentilatorApi.stoveLevelChanged(leftLevel, rightLevel);
+                        iPublicVentilatorApi.stoveLevelChanged(msg.getrTopic().getDeviceType()+msg.getrTopic().getSignNum(), leftLevel, rightLevel);
                     }
                 }
             }
@@ -83,8 +83,8 @@ public class MqttStove extends MqttPublic {
                 msg.putOpt(StoveConstant.lockStatus, lockStatus);
                 int workStatus = MsgUtils.getByte(payload[offset++]);
                 msg.putOpt(StoveConstant.leftStatus, workStatus);
-                int level = MsgUtils.getByte(payload[offset++]);
-                msg.putOpt(StoveConstant.leftLevel, level);
+                int leftLevel = MsgUtils.getByte(payload[offset++]);
+                msg.putOpt(StoveConstant.leftLevel, leftLevel);
                 int time = MsgUtils.bytes2ShortLittle(payload, offset);
                 msg.putOpt(StoveConstant.leftTime, time);
                 offset += 2;
@@ -93,8 +93,8 @@ public class MqttStove extends MqttPublic {
                 //右灶
                 workStatus = MsgUtils.getByte(payload[offset++]);
                 msg.putOpt(StoveConstant.rightStatus, workStatus);
-                level = MsgUtils.getByte(payload[offset++]);
-                msg.putOpt(StoveConstant.rightLevel, level);
+                int rightLevel = MsgUtils.getByte(payload[offset++]);
+                msg.putOpt(StoveConstant.rightLevel, rightLevel);
                 time = MsgUtils.bytes2ShortLittle(payload, offset);
                 msg.putOpt(StoveConstant.rightTime, time);
                 offset += 2;
@@ -127,6 +127,11 @@ public class MqttStove extends MqttPublic {
                             offset += 4;
                             break;
                     }
+                }
+                //通知烟机挡位变化
+                IPublicVentilatorApi iPublicVentilatorApi = ModulePubliclHelper.getModulePublic(IPublicVentilatorApi.class, IPublicVentilatorApi.VENTILATOR_PUBLIC);
+                if (null != iPublicVentilatorApi) {
+                    iPublicVentilatorApi.stoveLevelChanged(msg.getrTopic().getDeviceType()+msg.getrTopic().getSignNum(), leftLevel, rightLevel);
                 }
             }
                 break;

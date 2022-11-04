@@ -56,7 +56,7 @@
         android:gravity="center"
         android:textColor="@color/ventilator_white"
         android:textSize="@dimen/sp_30"
-        android:text="@string/ventilator_ok"
+        android:text="@string/ventilator_shutdown_now"
         android:background="@drawable/ventilator_shape_button_bg_ok"
         app:layout_constraintLeft_toRightOf="@id/tv_cancel"
         app:layout_constraintRight_toRightOf="parent"

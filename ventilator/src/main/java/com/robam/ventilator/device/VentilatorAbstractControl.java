@@ -25,6 +25,11 @@ public class VentilatorAbstractControl implements VentilatorFunction{
     }
 
     @Override
+    public void powerOnGear(int gear) {
+        function.powerOnGear(gear);
+    }
+
+    @Override
     public void openOilClean() {
         function.openOilClean();
     }

@@ -15,6 +15,7 @@ import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.ByteUtils;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.MsgUtils;
 import com.robam.stove.device.HomeStove;
 import com.robam.stove.device.StoveAbstractControl;
 import com.robam.ventilator.constant.VentilatorConstant;
@@ -40,8 +41,15 @@ public class MqttVentilator extends MqttPublic {
 //从payload中取值角标
         //内部命令
         switch (msg.getID()) {
-            case BleDecoder.EVENT_POT_TEMPERATURE_DROP: //锅温度骤降且烟锅联动开启,烟机爆炒档
-                VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_FRY);
+            case BleDecoder.EVENT_POT_TEMPERATURE_DROP: //锅温度骤降且烟锅联动开启,且烟机不工作烟机爆炒档
+                if (HomeVentilator.getInstance().gear == (byte) 0xA0) { //不工作
+                    if (HomeVentilator.getInstance().startup == (byte) 0x00) { //先开机
+                        VentilatorAbstractControl.getInstance().powerOnGear(VentilatorConstant.FAN_GEAR_FRY);
+                        Plat.getPlatform().screenOn();
+                        Plat.getPlatform().openPowerLamp();
+                    } else
+                        VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_FRY);
+                }
                 break;
             case BleDecoder.EVENT_POT_TEMPERATURE_OV: //防干烧预警 锅温280以上且烟锅联动开启
                 //关闭灶具
@@ -50,7 +58,31 @@ public class MqttVentilator extends MqttPublic {
                 break;
             case BleDecoder.EVENT_POT_LINK_2_RH://烟锅联动锅温50以上，烟机未开且烟锅联动开启
                 //烟机开2挡
-                VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_MID);
+                if (HomeVentilator.getInstance().gear == (byte) 0xA0) { //不工作
+                    if (HomeVentilator.getInstance().startup == (byte) 0x00) { //先开机
+                        VentilatorAbstractControl.getInstance().powerOnGear(VentilatorConstant.FAN_GEAR_MID);
+                        Plat.getPlatform().screenOn();
+                        Plat.getPlatform().openPowerLamp();
+                    } else
+                        VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_MID);
+                }
+                break;
+            case BleDecoder.CMD_RH_SET_INT: //内部远程烟机交互
+                short type = ByteUtils.toShort(payload[offset++]); //蓝牙品类
+                //属性个数
+                short attributeNum = ByteUtils.toShort(payload[offset]);
+                while (attributeNum > 0) {
+                    attributeNum--;
+                    int key = MsgUtils.getByte(payload[offset++]);
+                    int length = MsgUtils.getByte(payload[offset++]);
+                    switch (key) {
+                        case 1:
+                            int level = MsgUtils.getByte(payload[offset++]);
+                            break;
+                        case 2:
+                            break;
+                    }
+                }
                 break;
 
             default:
