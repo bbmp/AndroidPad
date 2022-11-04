@@ -1,20 +1,35 @@
 package com.robam.ventilator.device;
 
+import android.app.Activity;
+import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.serialport.helper.SerialPortHelper;
+import android.view.View;
 
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.RTopic;
 import com.robam.common.constant.ComnConstant;
 import com.robam.common.device.Plat;
+import com.robam.common.manager.AppActivityManager;
+import com.robam.common.module.IPublicVentilatorApi;
+import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MsgKeys;
+import com.robam.common.ui.dialog.IDialog;
+import com.robam.common.ui.view.MCountdownView;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.device.subdevice.Pan;
 import com.robam.common.device.subdevice.Stove;
+import com.robam.common.utils.LogUtils;
+import com.robam.ventilator.R;
+import com.robam.ventilator.constant.DialogConstant;
 import com.robam.ventilator.constant.VentilatorConstant;
+import com.robam.ventilator.factory.VentilatorDialogFactory;
 import com.robam.ventilator.protocol.serial.SerialVentilator;
+import com.robam.ventilator.ui.dialog.DelayCloseDialog;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -28,6 +43,88 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class HomeVentilator {
+
+    private ThreadPoolExecutor A6CountDown = new ThreadPoolExecutor(1, 1, 0, TimeUnit.SECONDS, new SynchronousQueue<>(),
+            new ThreadPoolExecutor.DiscardPolicy());//无法重复提交
+
+    //爆炒档倒计时
+    private Runnable runA6CountDown = new Runnable() {
+        @Override
+        public void run() {
+            //爆炒档倒计时
+            int a6CountTime = 0;
+            isStopA6CountDown = false;
+
+            while (!isStopA6CountDown) {
+
+                try {
+                    Thread.sleep(100);
+                } catch (Exception e) {}
+                a6CountTime++;
+                LogUtils.e("a6CountTime = " + a6CountTime);
+                if (a6CountTime >= 1800) {
+                    //切换到高档
+                    VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_MID);
+                    return;
+                }
+            }
+        }
+    };
+
+    //灶具最小火力倒计时
+    private ThreadPoolExecutor levelCountDown = new ThreadPoolExecutor(1, 1, 0, TimeUnit.SECONDS, new SynchronousQueue<>(),
+            new ThreadPoolExecutor.DiscardPolicy());//无法重复提交
+
+    private Runnable runLevelCountDown = new Runnable() {
+        @Override
+        public void run() {
+            //最小档计时计时
+            int levelCountTime = 0;
+            isLevelCountDown = false;
+
+            while (!isLevelCountDown) {
+
+                try {
+                    Thread.sleep(100);
+                } catch (Exception e) {}
+                levelCountTime++;
+                LogUtils.e("levelCountTime = " + levelCountTime);
+                if (levelCountTime >= 3000) { //5分钟
+                    //切换到弱档
+
+                    if (startup == (byte)0x00) { //先开机
+                        VentilatorAbstractControl.getInstance().powerOnGear(VentilatorConstant.FAN_GEAR_WEAK);
+                        Plat.getPlatform().screenOn();
+                        Plat.getPlatform().openPowerLamp();
+                    } else {
+                        VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_WEAK); //弱档
+
+                    }
+                    return;
+                }
+            }
+        }
+    };
+
+    //串口查询
+    private ThreadPoolExecutor serialThread = new ThreadPoolExecutor(1, 1, 0, TimeUnit.SECONDS, new SynchronousQueue<>(),
+            new ThreadPoolExecutor.DiscardPolicy());//无法重复提交
+    private Runnable runSerial = new Runnable() {
+        @Override
+        public void run() {
+            //
+            isStopSerial = false;
+
+            while (!isStopSerial) {
+                try {
+                    Thread.sleep(3000);
+                } catch (Exception e) {}
+                byte data[] = SerialVentilator.packQueryCmd();
+                SerialPortHelper.getInstance().addCommands(data);
+            }
+        }
+    };
+
     //当前进入的烟机
     public static HomeVentilator getInstance() {
         return HomeVentilator.VentilatorHolder.instance;
@@ -137,36 +234,97 @@ public class HomeVentilator {
             e.printStackTrace();
         }
     }
-    //串口查询
-    private Thread thread;
+    //开始串口查询
     public void startSerialQuery() {
+        serialThread.execute(runSerial);
+    }
+    //停止串口查询
+    private boolean isStopSerial;
+    public void stopSerialQuery() {
+        isStopSerial = true;
+    }
 
-        thread = new Thread() {
+    //爆炒档开始倒计时
+    private boolean isStopA6CountDown;
+    public void startA6CountDown() {
+
+        A6CountDown.execute(runA6CountDown);
+    }
+    //停止倒计时
+    public void stopA6CountDown() {
+        isStopA6CountDown = true;
+    }
+    //延时关机提示
+    public void delayShutDown() {
+        new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                byte data[] = SerialVentilator.packQueryCmd();
-                try {
-                    while (!isInterrupted()) {
-                        SerialPortHelper.getInstance().addCommands(data);
-
-                        Thread.sleep(3000);
-
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                shutDownHint();
             }
-        };
-        thread.start();
-
+        }, 1000); //延时，防止自动跳转时覆盖
     }
-    //停止查询
-    public void stopSerialQuery() {
-        try {
-            thread.interrupt();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+    private DelayCloseDialog delayCloseDialog;
+    public void shutDownHint() {
+        Activity activity = AppActivityManager.getInstance().getCurrentActivity();
+        if (null == delayCloseDialog && null != activity) {
+            delayCloseDialog = new DelayCloseDialog(activity);
+            delayCloseDialog.setCancelable(false);
+            delayCloseDialog.setListeners(new IDialog.DialogOnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (v.getId() == R.id.tv_ok) { //立即关机
+                        //关机
+                        Plat.getPlatform().screenOff(); //熄灭ping
+                        Plat.getPlatform().closePowerLamp();//关灯
+                        Plat.getPlatform().closeWaterLamp(); //关左灯
+                        VentilatorAbstractControl.getInstance().shutDown();
+                    }
+                    cancleDelayShutDown();
+                }
+            }, R.id.tv_cancel, R.id.tv_ok);
+
+            delayCloseDialog.tvCountdown.setTotalTime(60);
+
+            delayCloseDialog.tvCountdown.addOnCountDownListener(new MCountdownView.OnCountDownListener() {
+                @Override
+                public void onCountDown(int currentSecond) {
+
+                    delayCloseDialog.tvCountdown.setText(currentSecond + "s");
+                    delayCloseDialog.setContentText(currentSecond + "s");
+                    if (currentSecond <= 0) {
+                        cancleDelayShutDown();
+                        //关机
+                        Plat.getPlatform().screenOff(); //熄灭ping
+                        Plat.getPlatform().closePowerLamp();//关灯
+                        Plat.getPlatform().closeWaterLamp(); //关左灯
+                        VentilatorAbstractControl.getInstance().shutDown();
+                    }
+                }
+            });
+            delayCloseDialog.tvCountdown.start();
+
+            delayCloseDialog.show();
         }
+    }
+    //关闭延时关机
+    public void cancleDelayShutDown() {
+        if (null != delayCloseDialog && delayCloseDialog.isShow()) {
+            delayCloseDialog.tvCountdown.stop();
+            delayCloseDialog.dismiss();
+            delayCloseDialog = null;
+        }
+    }
+
+    //灶具火力最小档计时
+    private boolean isLevelCountDown;
+    public void startLevelCountDown() {
+        if (gear == (byte) 0xA1) //已经是弱档
+            return;
+        levelCountDown.execute(runLevelCountDown);
+    }
+    //停止计时
+    public void stopLevelCountDown() {
+        isLevelCountDown = true;
     }
 }

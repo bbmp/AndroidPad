@@ -17,7 +17,7 @@ public class DelayCloseDialog extends BaseDialog {
     private TextView mCancelTv;
     private TextView mOkTv;
     protected TextView mContent;
-    private MCountdownView tvCountdown;
+    public MCountdownView tvCountdown;
 
     public DelayCloseDialog(Context context) {
         super(context);
@@ -35,6 +35,11 @@ public class DelayCloseDialog extends BaseDialog {
         }
     }
 
+    @Override
+    public void setContentText(CharSequence contentStr) {
+        String str = String.format(mContext.getString(R.string.ventilator_delay_close_hint), contentStr);
+        mContent.setText(str);
+    }
 
     /**
      * 设置倒计时

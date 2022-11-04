@@ -20,6 +20,25 @@ public class VentilatorLocalControl implements VentilatorFunction{
     }
 
     @Override
+    public void powerOnGear(int gear) {
+        byte byteGear;
+        if (gear == VentilatorConstant.FAN_GEAR_WEAK)
+            byteGear = (byte) 0xA1;
+        else if (gear == VentilatorConstant.FAN_GEAR_MID)
+            byteGear = (byte) 0xA3;
+        else if (gear == VentilatorConstant.FAN_GEAR_FRY)
+            byteGear = (byte) 0xA6;
+        else
+            byteGear = (byte) 0xA0;
+        byte[] data = SerialVentilator.powerOnGear(byteGear);
+        SerialPortHelper.getInstance().addCommands(data);
+        if (gear == VentilatorConstant.FAN_GEAR_FRY) //爆炒档启动定时
+            HomeVentilator.getInstance().startA6CountDown();
+        else
+            HomeVentilator.getInstance().stopA6CountDown();
+    }
+
+    @Override
     public void openOilClean() {
         byte[] data = SerialVentilator.openOilClean();
         SerialPortHelper.getInstance().addCommands(data);
@@ -48,7 +67,7 @@ public class VentilatorLocalControl implements VentilatorFunction{
         if (gear == VentilatorConstant.FAN_GEAR_WEAK)
             byteGear = (byte) 0xA1;
         else if (gear == VentilatorConstant.FAN_GEAR_MID)
-            byteGear = (byte) 0xA2;
+            byteGear = (byte) 0xA3;
         else if (gear == VentilatorConstant.FAN_GEAR_FRY)
             byteGear = (byte) 0xA6;
         else
@@ -59,6 +78,10 @@ public class VentilatorLocalControl implements VentilatorFunction{
 
         byte[] data = SerialVentilator.setGear(byteGear);
         SerialPortHelper.getInstance().addCommands(data);
+        if (gear == VentilatorConstant.FAN_GEAR_FRY) //爆炒档启动定时
+            HomeVentilator.getInstance().startA6CountDown();
+        else
+            HomeVentilator.getInstance().stopA6CountDown();
     }
 
     @Override

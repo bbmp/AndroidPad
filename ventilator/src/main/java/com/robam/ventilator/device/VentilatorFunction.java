@@ -5,6 +5,8 @@ public interface VentilatorFunction {
 
     void powerOn();
 
+    void powerOnGear(int gear); //开机并设置挡位
+
     void openOilClean();
 
     void closeOilClean();

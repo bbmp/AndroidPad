@@ -5,7 +5,12 @@ import android.content.Intent;
 import android.os.PowerManager;
 import android.serialport.helper.SerialPortHelper;
 
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
+import com.robam.common.device.Plat;
+import com.robam.common.device.subdevice.Stove;
 import com.robam.common.module.IPublicVentilatorApi;
+import com.robam.common.utils.LogUtils;
 import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.device.HomeVentilator;
 import com.robam.ventilator.device.VentilatorAbstractControl;
@@ -75,7 +80,7 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
         context.stopService(new Intent(context, AlarmMqttService.class));
         context.stopService(new Intent(context, AlarmBleService.class));
         //关闭串口查询
-        HomeVentilator.getInstance().stopSerialQuery();
+//        HomeVentilator.getInstance().stopSerialQuery();
     }
 
     @Override
@@ -100,5 +105,35 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
     @Override
     public void setColorLamp() {
         VentilatorAbstractControl.getInstance().setColorLamp();
+    }
+
+    @Override
+    public void stoveLevelChanged(String stoveGuid, int leftLevel, int rightLevel) {
+        //这里要判断烟灶联动开关
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (null != stoveGuid && stoveGuid.equals(device.guid) && device instanceof Stove) {
+                Stove stove = (Stove) device; //当前灶具
+                LogUtils.e("stove.leftLevel= " + stove.leftLevel + " stove.rightLevel=" + stove.rightLevel);
+                LogUtils.e("leftLevel= " + leftLevel + " rightLevel=" + rightLevel);
+                if (stove.leftLevel == 0 && stove.rightLevel == 0 && (leftLevel != 0 || rightLevel != 0)) { //刚开火
+                    HomeVentilator.getInstance().cancleDelayShutDown();
+                    //烟机没有启动打开烟机
+                    if (!isStartUp()) {
+                        VentilatorAbstractControl.getInstance().powerOnGear(VentilatorConstant.FAN_GEAR_MID); //开机并设置挡位
+                        Plat.getPlatform().screenOn();
+                        Plat.getPlatform().openPowerLamp();
+                    } else if (HomeVentilator.getInstance().gear != (byte) 0x06) //非爆操档
+                        VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_MID);
+                } else if ((stove.leftLevel != 0 || stove.rightLevel != 0) && (leftLevel == 0 && rightLevel == 0)) {//刚关火
+                    HomeVentilator.getInstance().delayShutDown(); //延迟关机提示
+                }
+                //火力最小档计时
+                if ((leftLevel == 1 && rightLevel <= 1) || (rightLevel == 1 && leftLevel <= 1)) {
+                    HomeVentilator.getInstance().startLevelCountDown();
+                } else
+                    HomeVentilator.getInstance().stopLevelCountDown();
+                break;
+            }
+        }
     }
 }

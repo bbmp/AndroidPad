@@ -33,4 +33,6 @@ public interface IPublicVentilatorApi extends IPublicApi {
     void startService(Context context);
     //冷暖光切换
     void setColorLamp();
+    //灶具挡位变化
+    void stoveLevelChanged(String stoveGuid, int leftLevel, int rightLevel);
 }

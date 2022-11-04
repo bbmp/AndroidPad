@@ -306,8 +306,8 @@ public class CurveRestoreActivity extends PanBaseActivity {
         };
         //第一个点
         try {
-            if (params.containsKey("0")) {
-                String[] data = params.get(curTime + "").split("-");
+//            if (params.containsKey("0")) {
+//                String[] data = params.get(curTime + "").split("-");
                 if (null != stove) {
                     if (stoveId == IPublicStoveApi.STOVE_LEFT) //左灶
                         tvFire.setText("火力：" + stove.leftLevel + "档");
@@ -316,7 +316,7 @@ public class CurveRestoreActivity extends PanBaseActivity {
                 }
                 if (null != pan)
                     tvTemp.setText("温度：" + pan.panTemp + "℃");
-            }
+//            }
         } catch (Exception e) {}
         mHandler.postDelayed(runnable, 1000L);
     }

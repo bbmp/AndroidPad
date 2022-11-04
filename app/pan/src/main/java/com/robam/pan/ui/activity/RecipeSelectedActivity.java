@@ -142,13 +142,6 @@ public class RecipeSelectedActivity extends PanBaseActivity {
 
     @Override
     protected void initData() {
-        //查找锅和灶
-        for (Device device: AccountInfo.getInstance().deviceList) {
-            if (device instanceof Pan)
-                pan = (Pan) device;
-            else if (device instanceof Stove)
-                stove = (Stove) device;
-        }
 
         if (curveId != 0)  //获取曲线详情
             getCurveDetail();
@@ -190,6 +183,15 @@ public class RecipeSelectedActivity extends PanBaseActivity {
             return;
         //检查锅是否连接
         if (isPanOffline())
+            return;
+        //查找锅和灶
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device instanceof Pan)
+                pan = (Pan) device;
+            else if (device instanceof Stove)
+                stove = (Stove) device;
+        }
+        if (null == pan || null == stove)
             return;
         //炉头选择提示
         if (null == selectStoveDialog) {
@@ -353,7 +355,7 @@ public class RecipeSelectedActivity extends PanBaseActivity {
 
     //获取曲线详情
     private void getCurveDetail() {
-        CloudHelper.getCurvebookDetail(this, curveId, pan.guid, GetCurveDetailRes.class, new RetrofitCallback<GetCurveDetailRes>() {
+        CloudHelper.getCurvebookDetail(this, curveId, "", GetCurveDetailRes.class, new RetrofitCallback<GetCurveDetailRes>() {
             @Override
             public void onSuccess(GetCurveDetailRes getCurveDetailRes) {
                 if (null != getCurveDetailRes && null != getCurveDetailRes.payload) {

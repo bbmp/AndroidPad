@@ -152,12 +152,12 @@ public abstract class BaseActivity extends AbsActivity implements ActivityAction
                     Plat.getPlatform().closePowerLamp();//关灯
                     Plat.getPlatform().closeWaterLamp();
                     iPublicVentilatorApi.shutDown();
-                    iPublicVentilatorApi.closeService(this); //关闭服务
+//                    iPublicVentilatorApi.closeService(this); //关闭服务
                 } else {
+                    iPublicVentilatorApi.powerOn(); //开机
                     Plat.getPlatform().screenOn();
                     Plat.getPlatform().openPowerLamp();
-                    iPublicVentilatorApi.powerOn(); //开机
-                    iPublicVentilatorApi.startService(this);
+//                    iPublicVentilatorApi.startService(this);
                 }
                 return true;
             }

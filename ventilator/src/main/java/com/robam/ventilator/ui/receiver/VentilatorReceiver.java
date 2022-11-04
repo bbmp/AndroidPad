@@ -48,7 +48,7 @@ public class VentilatorReceiver extends BroadcastReceiver {
                     break;
                 }
             }
-        }else if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(intent.getAction())) {
+        } else if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(intent.getAction())) {
             //监听wifi连接状态
             NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
             LogUtils.e( "--NetworkInfo--" + info.toString());

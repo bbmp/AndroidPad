@@ -166,6 +166,32 @@ public class SerialVentilator {
         LogUtils.i(StringUtils.bytes2Hex(data));
         return data ;
     }
+    //开机并设置挡位
+    public static byte[] powerOnGear(byte curgear) {
+        byte startup = (byte) 0x01;  //开机
+        byte beep = (byte) 0x02;     //蜂鸣
+        byte baffle = (byte) 0xA1; //风门挡板
+        byte[] payload = new byte[]{
+                startup,
+                HomeVentilator.getInstance().lightOn,
+                curgear,
+                beep,
+                baffle,
+                HomeVentilator.getInstance().param1,
+                HomeVentilator.getInstance().param2,
+                HomeVentilator.getInstance().param3,
+                HomeVentilator.getInstance().param4,
+                HomeVentilator.getInstance().param5,
+                HomeVentilator.getInstance().baffle2,
+                HomeVentilator.getInstance().param6,
+                HomeVentilator.getInstance().param7,
+                HomeVentilator.getInstance().param8,
+                HomeVentilator.getInstance().param9
+        };
+        byte[] data = packCtrlCmd(payload);
+        LogUtils.i(StringUtils.bytes2Hex(data));
+        return data ;
+    }
 
     //关机
     public static byte[] shutDown(){

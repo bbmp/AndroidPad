@@ -56,7 +56,7 @@
     <string name="ventilator_offline">离线</string>
     <string name="ventilator_online">在线</string>
     <string name="ventilator_clean_oil_hint">油烟机挡风板将锁定在打开状\n态，可放心拆卸、清洗油网并安装</string>
-    <string name="ventilator_delay_close_hint">系统将延迟关机，为您处理残留油烟</string>
+    <string name="ventilator_delay_close_hint">系统检测到燃气灶已关闭\n油烟机将在%s后自动关机</string>
     <string name="ventilator_match_hint1">1.长按面板上[ ]2秒至滴声响，屏幕内智能符号\" \"闪烁。\n2.在ROKI APP中，添加XG858，输入WiFi密码，连接网络。</string>
     <string name="ventilator_match_hint3">1.长按明火自动翻炒锅锅柄上[ ]2秒至滴声响，屏幕内智能符号\" \"闪烁。\n完成上述操作后点击下一步。</string>
     <string name="ventilator_match_hint4">1.燃气灶点火。 \n2.长按燃气灶面板上[ ]2秒至滴声响，屏幕内智能符号\" \"闪烁。\n完成上述操作后点击下一步。</string>
@@ -90,6 +90,7 @@
     <string name="ventilator_low_battery">电量不足</string>
     <string name="ventilator_holiday_desc_set">%s天未使用油烟机、自动开启换气（换气时间为14:00）\n每周固定 %s 开启油烟机3分钟自动换气</string>
     <string name="ventilator_shutdown_delay_set">油烟机将延迟%s分钟关机</string>
+    <string name="ventilator_shutdown_now">立即关机</string>
 
 
 </resources>

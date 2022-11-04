@@ -221,7 +221,7 @@ public class HomeActivity extends BaseActivity {
         //关闭定时任务
         stopService(new Intent(this.getApplicationContext(), AlarmMqttService.class));
         stopService(new Intent(this.getApplicationContext(), AlarmBleService.class));
-
+        HomeVentilator.getInstance().stopSerialQuery(); //停止串口查询
     }
 
     //获取token

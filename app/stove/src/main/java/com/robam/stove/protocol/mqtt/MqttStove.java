@@ -4,7 +4,10 @@ import com.robam.common.ITerminalType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.RTopic;
+import com.robam.common.ble.BleDecoder;
 import com.robam.common.device.Plat;
+import com.robam.common.module.IPublicVentilatorApi;
+import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MqttPublic;
@@ -53,6 +56,26 @@ public class MqttStove extends MqttPublic {
     @Override
     protected void onDecodeMsg(MqttMsg msg, byte[] payload, int offset) throws Exception {
         switch (msg.getID()) {
+            case BleDecoder.EVENT_IH_POWER_CHANGED_INT: { //灶具挡位变化
+                int maxLevel = MsgUtils.getByte(payload[offset++]); //最大挡位值
+                msg.putOpt(StoveConstant.stoveNum, 2); //固定写死
+                short attributeNum = ByteUtils.toShort(payload[offset++]);
+                while (attributeNum > 0) {
+                    attributeNum--;
+                    int key = MsgUtils.getByte(payload[offset++]);
+                    int length = MsgUtils.getByte(payload[offset++]);
+                    int leftLevel = MsgUtils.getByte(payload[offset++]);
+                    msg.putOpt(StoveConstant.leftLevel, leftLevel); //左炉头
+                    int rightLevel = MsgUtils.getByte(payload[offset++]);
+                    msg.putOpt(StoveConstant.rightLevel, rightLevel); //右炉头
+                    //通知烟机挡位变化
+                    IPublicVentilatorApi iPublicVentilatorApi = ModulePubliclHelper.getModulePublic(IPublicVentilatorApi.class, IPublicVentilatorApi.VENTILATOR_PUBLIC);
+                    if (null != iPublicVentilatorApi) {
+                        iPublicVentilatorApi.stoveLevelChanged(msg.getrTopic().getDeviceType()+msg.getrTopic().getSignNum(), leftLevel, rightLevel);
+                    }
+                }
+            }
+            break;
             case MsgKeys.GetStoveStatus_Rep: {//查询灶状态返回
                 int stoveNum = MsgUtils.getByte(payload[offset++]);
                 msg.putOpt(StoveConstant.stoveNum, stoveNum);
@@ -60,8 +83,8 @@ public class MqttStove extends MqttPublic {
                 msg.putOpt(StoveConstant.lockStatus, lockStatus);
                 int workStatus = MsgUtils.getByte(payload[offset++]);
                 msg.putOpt(StoveConstant.leftStatus, workStatus);
-                int level = MsgUtils.getByte(payload[offset++]);
-                msg.putOpt(StoveConstant.leftLevel, level);
+                int leftLevel = MsgUtils.getByte(payload[offset++]);
+                msg.putOpt(StoveConstant.leftLevel, leftLevel);
                 int time = MsgUtils.bytes2ShortLittle(payload, offset);
                 msg.putOpt(StoveConstant.leftTime, time);
                 offset += 2;
@@ -70,8 +93,8 @@ public class MqttStove extends MqttPublic {
                 //右灶
                 workStatus = MsgUtils.getByte(payload[offset++]);
                 msg.putOpt(StoveConstant.rightStatus, workStatus);
-                level = MsgUtils.getByte(payload[offset++]);
-                msg.putOpt(StoveConstant.rightLevel, level);
+                int rightLevel = MsgUtils.getByte(payload[offset++]);
+                msg.putOpt(StoveConstant.rightLevel, rightLevel);
                 time = MsgUtils.bytes2ShortLittle(payload, offset);
                 msg.putOpt(StoveConstant.rightTime, time);
                 offset += 2;
@@ -104,6 +127,11 @@ public class MqttStove extends MqttPublic {
                             offset += 4;
                             break;
                     }
+                }
+                //通知烟机挡位变化
+                IPublicVentilatorApi iPublicVentilatorApi = ModulePubliclHelper.getModulePublic(IPublicVentilatorApi.class, IPublicVentilatorApi.VENTILATOR_PUBLIC);
+                if (null != iPublicVentilatorApi) {
+                    iPublicVentilatorApi.stoveLevelChanged(msg.getrTopic().getDeviceType()+msg.getrTopic().getSignNum(), leftLevel, rightLevel);
                 }
             }
                 break;

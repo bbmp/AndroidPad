@@ -114,7 +114,7 @@ public class SphThreads {
 //                        if (mReceived) {
 //                            LogUtils.e("received");
 //                        } else {
-                            LogUtils.e("received time out");
+//                            LogUtils.e("received time out");
 //                        }
                     } catch (Exception e) {
                         e.printStackTrace();

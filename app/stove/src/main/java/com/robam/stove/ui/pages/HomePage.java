@@ -157,6 +157,8 @@ public class HomePage extends StoveBasePage {
                 Pan pan = (Pan) device;
                 if (pan.mode == 1) { //曲线创建中
                     getCurveDetail(pan.guid);
+                } else if (pan.mode == 3 && pan.recipeId == 0) { //曲线还原模式
+
                 }
                 break;
             }

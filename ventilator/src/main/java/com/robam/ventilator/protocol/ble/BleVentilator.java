@@ -455,7 +455,8 @@ public class BleVentilator {
                                     delay_disconnect_ble(bleDevice);
                                     //通知下线
                                     break;
-                                case BleDecoder.RESP_GET_POT_STATUS_INT:
+                                case BleDecoder.EVENT_IH_POWER_CHANGED_INT://灶具挡位变化
+                                case BleDecoder.RESP_GET_POT_STATUS_INT://烟机查询锅状态返回
                                 case BleDecoder.CMD_COOKER_STATUS_RES: //烟机查询灶状态返回
 
                                     for (Device device: AccountInfo.getInstance().deviceList) {
@@ -499,18 +500,12 @@ public class BleVentilator {
                                     break;
                                 case BleDecoder.EVENT_POT_TEMPERATURE_DROP://锅温度骤变
                                 case BleDecoder.EVENT_POT_TEMPERATURE_OV: //干烧预警
-                                case BleDecoder.EVENT_POT_LINK_2_RH: {  //烟锅联动
-                                    String target_guid = Plat.getPlatform().getDeviceOnlySign();
-                                    String topic = "/u/" + target_guid.substring(0, 5) + "/" + target_guid.substring(5);
-                                    byte payload[] = ble_make_external_mqtt(target_guid, ret2);
-                                    MqttMsg msg = VentilatorFactory.getProtocol().decode(topic, payload);
-                                }
-                                    break;
+                                case BleDecoder.EVENT_POT_LINK_2_RH:   //烟锅联动
                                 case BleDecoder.CMD_RH_SET_INT: {//内部远程烟机交互
                                     String target_guid = Plat.getPlatform().getDeviceOnlySign();
                                     String topic = "/u/" + target_guid.substring(0, 5) + "/" + target_guid.substring(5);
                                     byte payload[] = ble_make_external_mqtt(target_guid, ret2);
-//                                    MqttMsg msg = VentilatorFactory.getProtocol().decode(topic, paylaod);
+                                    MqttMsg msg = VentilatorFactory.getProtocol().decode(topic, payload);
                                 }
                                     break;
                                 case BleDecoder.CMD_COOKER_SET_INT: {//锅上报转发给灶
