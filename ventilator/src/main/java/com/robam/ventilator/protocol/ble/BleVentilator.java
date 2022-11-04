@@ -22,6 +22,7 @@ import com.google.gson.GsonBuilder;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
+import com.robam.common.bean.RTopic;
 import com.robam.common.ble.BleDecoder;
 import com.robam.common.device.Plat;
 import com.robam.common.manager.BlueToothManager;
@@ -38,6 +39,7 @@ import com.robam.pan.device.PanFactory;
 import com.robam.common.device.subdevice.Stove;
 import com.robam.stove.device.StoveAbstractControl;
 import com.robam.stove.device.StoveFactory;
+import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.device.HomeVentilator;
 import com.robam.ventilator.device.VentilatorFactory;
 
@@ -500,14 +502,27 @@ public class BleVentilator {
                                     break;
                                 case BleDecoder.EVENT_POT_TEMPERATURE_DROP://锅温度骤变
                                 case BleDecoder.EVENT_POT_TEMPERATURE_OV: //干烧预警
-                                case BleDecoder.EVENT_POT_LINK_2_RH:   //烟锅联动
-                                case BleDecoder.CMD_RH_SET_INT: {//内部远程烟机交互
+                                case BleDecoder.EVENT_POT_LINK_2_RH:  { //烟锅联动
                                     String target_guid = Plat.getPlatform().getDeviceOnlySign();
                                     String topic = "/u/" + target_guid.substring(0, 5) + "/" + target_guid.substring(5);
                                     byte payload[] = ble_make_external_mqtt(target_guid, ret2);
                                     MqttMsg msg = VentilatorFactory.getProtocol().decode(topic, payload);
                                 }
                                     break;
+                                case BleDecoder.CMD_RH_SET_INT: { //内部远程烟机交互
+                                    for (Device device : AccountInfo.getInstance().deviceList) {
+                                        if (bleDevice.getMac().equals(device.mac)) {
+                                            String device_guid = device.guid;  //发过来的设备
+                                            String target_guid = Plat.getPlatform().getDeviceOnlySign();
+                                            String topic = "/u/" + target_guid.substring(0, 5) + "/" + target_guid.substring(5); //目标设备
+                                            byte payload[] = ble_make_external_mqtt(device_guid, ret2);
+                                            MqttMsg msg = VentilatorFactory.getProtocol().decode(topic, payload);
+                                            break;
+                                        }
+                                    }
+
+                                }
+                                break;
                                 case BleDecoder.CMD_COOKER_SET_INT: {//锅上报转发给灶
                                     for (Device device : AccountInfo.getInstance().deviceList) {
                                         if (bleDevice.getMac().equals(device.mac)) {

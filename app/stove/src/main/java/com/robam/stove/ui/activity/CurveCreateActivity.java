@@ -27,6 +27,7 @@ import com.robam.common.http.RetrofitCallback;
 import com.robam.common.manager.DynamicLineChartManager;
 import com.robam.common.module.IPublicPanApi;
 import com.robam.common.module.IPublicStoveApi;
+import com.robam.common.module.IPublicVentilatorApi;
 import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.dialog.IDialog;
@@ -130,6 +131,9 @@ public class CurveCreateActivity extends StoveBaseActivity {
                 for (Device device: AccountInfo.getInstance().deviceList) {
                     if (device.guid.equals(s) && device.guid.equals(HomeStove.getInstance().guid) && device instanceof Stove && curTime > 0) { //当前灶且创建已开始
                         Stove stove = (Stove) device;
+                        LogUtils.e("stove.leftStatus " + stove.leftStatus);
+                        LogUtils.e("stove.leftLevel " + stove.leftLevel);
+                        LogUtils.e("curTime " + curTime);
                         //开火提示状态
                         if (stoveId == IPublicStoveApi.STOVE_LEFT && stove.leftStatus == StoveConstant.WORK_CLOSE) { //左灶已关火
                             //跳转保存
@@ -519,7 +523,6 @@ public class CurveCreateActivity extends StoveBaseActivity {
         params.put(PanConstant.KEY2, new byte[] {(byte) stoveId, (byte) PanConstant.stop});
         params.put(PanConstant.KEY6, new byte[] {(byte) PanConstant.MODE_CLOSE_FRY}); //停止搅拌
         iPublicPanApi.setInteractionParams(pan.guid, params);
-
         if (entryList.size() == 0) {
             finish();   //没有曲线数据
             return;
@@ -541,12 +544,15 @@ public class CurveCreateActivity extends StoveBaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         mHandler.removeCallbacks(runnable);
 
         mHandler.removeCallbacksAndMessages(null);
 
         if (null != stopDialog && stopDialog.isShow())
             stopDialog.dismiss();
+        //关闭延时关机
+        IPublicVentilatorApi iPublicVentilatorApi = ModulePubliclHelper.getModulePublic(IPublicVentilatorApi.class, IPublicVentilatorApi.VENTILATOR_PUBLIC);
+        if (null != iPublicVentilatorApi)
+            iPublicVentilatorApi.closeDelayDialog();
     }
 }

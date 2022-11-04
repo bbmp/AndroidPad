@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 
@@ -24,7 +25,6 @@ import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.device.SteamAbstractControl;
 import com.robam.ventilator.bean.Ventilator;
 import com.robam.ventilator.device.VentilatorFactory;
-import com.robam.ventilator.ui.receiver.AlarmMqttReceiver;
 
 //定时任务,mqtt查询设备
 public class AlarmMqttService extends Service {
@@ -33,6 +33,16 @@ public class AlarmMqttService extends Service {
     private static final int INTERVAL = 15000;
     private AlarmManager alarmManager;
     private PendingIntent pIntent;
+
+    private Handler mHandler = new Handler();
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            startService(new Intent(AlarmMqttService.this, AlarmMqttService.class));
+
+            mHandler.postDelayed(runnable, INTERVAL);
+        }
+    };
 
     @Nullable
     @Override
@@ -43,22 +53,23 @@ public class AlarmMqttService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        Intent i = new Intent(this, AlarmMqttReceiver.class);
-        pIntent = PendingIntent.getBroadcast(this, PENDING_REQUEST, i, PendingIntent.FLAG_UPDATE_CURRENT);
+//        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+//        Intent i = new Intent(this, AlarmMqttReceiver.class);
+//        pIntent = PendingIntent.getBroadcast(this, PENDING_REQUEST, i, PendingIntent.FLAG_UPDATE_CURRENT);
+        mHandler.postDelayed(runnable, INTERVAL);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         //通过AlarmManager定时启动广播
 
-        if (null != alarmManager) {
-            long triggerAtTime = SystemClock.elapsedRealtime() + INTERVAL;//从开机到现在的毫秒（手机睡眠(sleep)的时间也包括在内
-            try {
-                alarmManager.cancel(pIntent);
-            } catch (Exception e) {}
-            alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAtTime, pIntent);
-        }
+//        if (null != alarmManager) {
+//            long triggerAtTime = SystemClock.elapsedRealtime() + INTERVAL;//从开机到现在的毫秒（手机睡眠(sleep)的时间也包括在内
+//            try {
+//                alarmManager.cancel(pIntent);
+//            } catch (Exception e) {}
+//            alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAtTime, pIntent);
+//        }
 
         if (!MqttManager.getInstance().isConnected()) {
             //全部离线 除锅和灶
@@ -119,9 +130,12 @@ public class AlarmMqttService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (null != alarmManager) {
-            alarmManager.cancel(pIntent);
-            alarmManager = null;
-        }
+//        if (null != alarmManager) {
+//            alarmManager.cancel(pIntent);
+//            alarmManager = null;
+//        }
+        mHandler.removeCallbacks(runnable);
+
+        mHandler.removeCallbacksAndMessages(null);
     }
 }

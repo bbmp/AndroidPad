@@ -584,7 +584,7 @@ public class SerialVentilator {
 
     //包解析,解析串口收到的数据
     public static void parseSerial(byte[] data, int recLen) {
-        LogUtils.e(StringUtils.bytes2Hex(data));
+        LogUtils.i(StringUtils.bytes2Hex(data));
         //数据为空
         if (null == data)
             return ;

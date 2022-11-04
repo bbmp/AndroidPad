@@ -7,6 +7,7 @@ import android.serialport.helper.SerialPortHelper;
 
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
+import com.robam.common.constant.StoveConstant;
 import com.robam.common.device.Plat;
 import com.robam.common.device.subdevice.Stove;
 import com.robam.common.module.IPublicVentilatorApi;
@@ -124,8 +125,14 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
                         Plat.getPlatform().openPowerLamp();
                     } else if (HomeVentilator.getInstance().gear != (byte) 0x06) //非爆操档
                         VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_MID);
+                    if (stove.leftStatus == 0 && leftLevel != 0) //如果不是工作状态，改成工作状态
+                        stove.leftStatus = 2;
+                    if (stove.rightStatus == 0 && rightLevel != 0)
+                        stove.rightStatus = 2;
                 } else if ((stove.leftLevel != 0 || stove.rightLevel != 0) && (leftLevel == 0 && rightLevel == 0)) {//刚关火
                     HomeVentilator.getInstance().delayShutDown(); //延迟关机提示
+                    stove.leftStatus = 0;
+                    stove.rightStatus = 0;
                 }
                 //火力最小档计时
                 if ((leftLevel == 1 && rightLevel <= 1) || (rightLevel == 1 && leftLevel <= 1)) {
@@ -135,5 +142,10 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
                 break;
             }
         }
+    }
+
+    @Override
+    public void closeDelayDialog() {
+        HomeVentilator.getInstance().cancleDelayShutDown();
     }
 }
