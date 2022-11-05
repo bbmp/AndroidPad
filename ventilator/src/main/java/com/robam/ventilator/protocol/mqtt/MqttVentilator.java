@@ -118,9 +118,25 @@ public class MqttVentilator extends MqttPublic {
                     }
                 }
                 if (msg.has(VentilatorConstant.FanGear) || msg.has(VentilatorConstant.DelayTime)) { //烟机回设备
-
-                } else { //转发
-
+                    if (type != 0xff) {
+                        MqttMsg newMsg = new MqttMsg.Builder()
+                                .setMsgId((short) BleDecoder.RSP_RH_SET_INT)
+                                .setGuid(Plat.getPlatform().getDeviceOnlySign())
+                                .setDt(Plat.getPlatform().getDt())
+                                .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(msg.getGuid()), DeviceUtils.getDeviceNumber(msg.getGuid())))
+                                .build();
+                        newMsg.putOpt(VentilatorConstant.BleType, type);
+                        MqttManager.getInstance().publish(newMsg, VentilatorFactory.getProtocol());
+                    }
+                }
+                if (msg.has(VentilatorConstant.PRecipe1) || msg.has(VentilatorConstant.PRecipe2) || msg.has(VentilatorConstant.PRecipe3) ||
+                        msg.has(VentilatorConstant.PRecipe4) || msg.has(VentilatorConstant.PRecipe5)) { //无人锅上报转发到云端
+                    MqttMsg newMsg = new MqttMsg.Builder()
+                            .setMsgId(MsgKeys.PanReportStatistics_Req)
+                            .setGuid(msg.getGuid())
+                            .setTopic(new RTopic(RTopic.TOPIC_BROADCAST, DeviceUtils.getDeviceTypeId(msg.getGuid()), DeviceUtils.getDeviceNumber(msg.getGuid())))
+                            .build();
+                    MqttManager.getInstance().publish(newMsg, VentilatorFactory.getProtocol());
                 }
                 break;
 
@@ -196,6 +212,9 @@ public class MqttVentilator extends MqttPublic {
             case MsgKeys.RestFanCleanTime_Rep: //重置烟机清洗计时回复
                 buf.put((byte) 0);
                 break;
+            case MsgKeys.SetFanTimeWork_Rep: //设置定时工作响应
+                buf.put((byte) 0);
+                break;
         }
     }
 
@@ -261,6 +280,14 @@ public class MqttVentilator extends MqttPublic {
                     short gear = ByteUtils.toShort(payload[offset++]);
 
                     VentilatorAbstractControl.getInstance().setFanGear(gear);
+                    //设置烟机挡位回复
+                    MqttMsg newMsg = new MqttMsg.Builder()
+                            .setMsgId(MsgKeys.SetFanLevel_Rep)
+                            .setGuid(Plat.getPlatform().getDeviceOnlySign())
+                            .setDt(Plat.getPlatform().getDt())
+                            .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(msg.getGuid()), DeviceUtils.getDeviceNumber(msg.getGuid())))
+                            .build();
+                    MqttManager.getInstance().publish(newMsg, VentilatorFactory.getProtocol());
                 }
                 break;
                 case MsgKeys.SetFanLight_Req: { //设置烟机灯
@@ -274,6 +301,14 @@ public class MqttVentilator extends MqttPublic {
                     short light = ByteUtils.toShort(payload[offset++]);
 
                     VentilatorAbstractControl.getInstance().setFanLight(light);
+                    //设置烟机灯回复
+                    MqttMsg newMsg = new MqttMsg.Builder()
+                            .setMsgId(MsgKeys.SetFanLight_Rep)
+                            .setGuid(Plat.getPlatform().getDeviceOnlySign())
+                            .setDt(Plat.getPlatform().getDt())
+                            .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(msg.getGuid()), DeviceUtils.getDeviceNumber(msg.getGuid())))
+                            .build();
+                    MqttManager.getInstance().publish(newMsg, VentilatorFactory.getProtocol());
                 }
                 break;
                 case MsgKeys.SetFanAllParams_Req: { //设置烟机整体状态
@@ -288,9 +323,17 @@ public class MqttVentilator extends MqttPublic {
                     short light = ByteUtils.toShort(payload[offset++]);
 
                     VentilatorAbstractControl.getInstance().setFanAll(gear, light);
+                    //设置整体状态回复
+                    MqttMsg newMsg = new MqttMsg.Builder()
+                            .setMsgId(MsgKeys.SetFanAllParams_Rep)
+                            .setGuid(Plat.getPlatform().getDeviceOnlySign())
+                            .setDt(Plat.getPlatform().getDt())
+                            .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(msg.getGuid()), DeviceUtils.getDeviceNumber(msg.getGuid())))
+                            .build();
+                    MqttManager.getInstance().publish(newMsg, VentilatorFactory.getProtocol());
                 }
                 break;
-                case MsgKeys.RestFanCleanTime_Req: {
+                case MsgKeys.RestFanCleanTime_Req: { //重置烟机清洗
                     //控制端类型
                     short terminalType = ByteUtils.toShort(payload[offset++]);
                     //userid
@@ -298,10 +341,37 @@ public class MqttVentilator extends MqttPublic {
                     offset += 10;
                     //参数个数
                     short num = ByteUtils.toShort(payload[offset++]);
+                    //重置烟机清洗响应
+                    MqttMsg newMsg = new MqttMsg.Builder()
+                            .setMsgId(MsgKeys.RestFanCleanTime_Rep)
+                            .setGuid(Plat.getPlatform().getDeviceOnlySign())
+                            .setDt(Plat.getPlatform().getDt())
+                            .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(msg.getGuid()), DeviceUtils.getDeviceNumber(msg.getGuid())))
+                            .build();
+                    MqttManager.getInstance().publish(newMsg, VentilatorFactory.getProtocol());
                 }
                 break;
                 case MsgKeys.DeviceConnected_Noti: { //子设备更新
 
+                }
+                break;
+                case MsgKeys.SetFanTimeWork_Req: { //设置烟机定时工作
+                    //控制端类型
+                    short terminalType = ByteUtils.toShort(payload[offset++]);
+                    //挡位
+                    short gear = ByteUtils.toShort(payload[offset++]);
+                    //定时时间
+                    short time = ByteUtils.toShort(payload[offset++]);
+                    //参数个数
+                    short attributeNum = ByteUtils.toShort(payload[offset++]);
+                    //定时工作响应
+                    MqttMsg newMsg = new MqttMsg.Builder()
+                            .setMsgId(MsgKeys.SetFanTimeWork_Rep)
+                            .setGuid(Plat.getPlatform().getDeviceOnlySign())
+                            .setDt(Plat.getPlatform().getDt())
+                            .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(msg.getGuid()), DeviceUtils.getDeviceNumber(msg.getGuid())))
+                            .build();
+                    MqttManager.getInstance().publish(newMsg, VentilatorFactory.getProtocol());
                 }
                 break;
             }
@@ -312,6 +382,15 @@ public class MqttVentilator extends MqttPublic {
 
     @Override
     protected void onEncodeMsg(ByteBuffer buf, MqttMsg msg) {
+        //内部命令
+        switch (msg.getID()) {
+            case BleDecoder.RSP_RH_SET_INT: //内部交互回复
+                buf.put((byte) msg.optInt(VentilatorConstant.BleType)); //蓝牙品类
+                buf.put((byte) 0x00);//rc
+                buf.put(HomeVentilator.getInstance().gear);//烟机挡位
+                buf.put((byte) (AccountInfo.getInstance().getConnect().getValue() ? 1: 0));//联网状态
+                break;
+        }
         encodeMsg(buf, msg);
     }
 }

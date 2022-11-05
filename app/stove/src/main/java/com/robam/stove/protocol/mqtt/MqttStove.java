@@ -222,14 +222,17 @@ public class MqttStove extends MqttPublic {
                     }
                 }
                 break;
-            case MsgKeys.setStoveTemp_Req: //设置灶具定温
+            case MsgKeys.setStoveMode_Req: //设置灶具模式
                 //控制端类型
                 buf.put((byte) ITerminalType.PAD);
                 buf.put((byte) msg.optInt(StoveConstant.stoveId)); //炉头id
-                buf.put((byte) 0x01); //参数个数
+                buf.put((byte) 0x02); //参数个数
                 buf.put((byte) 0x01); //key
-                buf.put((byte) 2);// len
-                buf.putShort((short) msg.optInt(StoveConstant.setTemp));//设置温度
+                buf.put((byte) 1);// len
+                buf.put((byte) msg.optInt(StoveConstant.setMode));//设置模式
+                buf.put((byte) 0x02); //key
+                buf.put((byte) 2);
+                buf.putShort((short) msg.optInt(StoveConstant.timingtime)); //定时时间
                 break;
         }
         encodeMsg(buf, msg);

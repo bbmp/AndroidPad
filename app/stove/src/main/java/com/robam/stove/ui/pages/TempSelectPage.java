@@ -9,6 +9,7 @@ import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBasePage;
 import com.robam.stove.bean.ModeBean;
+import com.robam.stove.ui.adapter.RvTempAdapter;
 import com.robam.stove.ui.adapter.RvTimeAdapter;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ public class TempSelectPage extends StoveBasePage {
      * 重写选择器
      */
     private PickerLayoutManager pickerLayoutManager;
-    private RvTimeAdapter rvTempAdapter;
+    private RvTempAdapter rvTempAdapter;
     private TabLayout.Tab tab;
 
 //    private IModeSelect iModeSelect;
@@ -62,12 +63,12 @@ public class TempSelectPage extends StoveBasePage {
         rvSelect = findViewById(R.id.rv_select);
 
         //设置选择recycleView的layoutManage
-        setLayoutManage(5, 0.44f);
+        setLayoutManage(3, 0.44f);
     }
 
     @Override
     protected void initData() {
-        rvTempAdapter = new RvTimeAdapter(0);
+        rvTempAdapter = new RvTempAdapter();
 
         updateTempTab(curMode);
 //        if (null != iModeSelect)
@@ -80,9 +81,10 @@ public class TempSelectPage extends StoveBasePage {
         rvSelect.setAdapter(rvTempAdapter);
         //煎炸温度
         ArrayList<String> tempList = new ArrayList<>();
-        for (int i = modeBean.minTemp; i <= modeBean.maxTemp; i=i+10) {
-            tempList.add(i + "");
-        }
+        tempList.add("低温");
+        tempList.add("中温");
+        tempList.add("高温");
+
         rvTempAdapter.setList(tempList);
         int offset = modeBean.defTemp - modeBean.minTemp;
 

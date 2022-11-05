@@ -111,7 +111,7 @@ public class TimeSelectActivity extends StoveBaseActivity {
             for (int i = modeBean.minTime; i <= modeBean.maxTime; i++)
                 lists.add(i + "");
         }
-        rvTimeAdapter = new RvTimeAdapter(1);
+        rvTimeAdapter = new RvTimeAdapter();
         rvTime.setAdapter(rvTimeAdapter);
         rvTimeAdapter.setList(lists);
         //初始位置

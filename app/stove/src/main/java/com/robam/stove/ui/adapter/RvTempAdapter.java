@@ -10,15 +10,17 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.robam.common.utils.LogUtils;
 import com.robam.stove.R;
 
-public class RvTimeAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
+public class RvTempAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
     private int pickPosition;
+
+    public RvTempAdapter() {
+        super(R.layout.stove_item_mode_select);
+    }
 
     public void setPickPosition(int pickPosition) {
         this.pickPosition = pickPosition % getData().size();
         notifyDataSetChanged();
     }
-
-
     @Override
     public int getItemCount() {
         if (getData().size() <= 1)
@@ -46,22 +48,9 @@ public class RvTimeAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
         return super.getItemViewType(newPosition);
     }
 
-    public RvTimeAdapter() {
-        super(R.layout.stove_item_time_select);
-    }
-
     @Override
     protected void convert(@NonNull BaseViewHolder baseViewHolder, String s) {
         baseViewHolder.setText(R.id.tv_select, s);
 
-        TextView tvMin = baseViewHolder.getView(R.id.tv_min);
-        if (getItemPosition(s) == pickPosition) {
-
-            tvMin.setVisibility(View.VISIBLE);
-
-        } else {
-
-            tvMin.setVisibility(View.INVISIBLE);
-        }
     }
 }

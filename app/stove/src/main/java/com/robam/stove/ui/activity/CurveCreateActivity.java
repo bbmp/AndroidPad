@@ -364,6 +364,11 @@ public class CurveCreateActivity extends StoveBaseActivity {
                     return;
                 }
                 if (pan.mode != 1 && null != iPublicPanApi) {
+                    if (curTime > 0) { //锅停止工作
+                        //跳转保存
+                        saveCurve(true);
+                        return;
+                    }
                     iPublicPanApi.queryAttribute(pan.guid); //查询锅状态
                     mHandler.postDelayed(runnable, 1000L);
                     return;
@@ -550,9 +555,5 @@ public class CurveCreateActivity extends StoveBaseActivity {
 
         if (null != stopDialog && stopDialog.isShow())
             stopDialog.dismiss();
-        //关闭延时关机
-        IPublicVentilatorApi iPublicVentilatorApi = ModulePubliclHelper.getModulePublic(IPublicVentilatorApi.class, IPublicVentilatorApi.VENTILATOR_PUBLIC);
-        if (null != iPublicVentilatorApi)
-            iPublicVentilatorApi.closeDelayDialog();
     }
 }

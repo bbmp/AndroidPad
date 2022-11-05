@@ -166,6 +166,11 @@ public class CurveCreateActivity extends PanBaseActivity {
             public void run() {
 
                 if (pan.mode != 1) {
+                    if (curTime > 0) { //锅停止工作
+                        //跳转保存
+                        saveCurve(true);
+                        return;
+                    }
                     PanAbstractControl.getInstance().queryAttribute(pan.guid); //查询锅状态
                     mHandler.postDelayed(runnable, 1000L);
                     return;
@@ -356,6 +361,11 @@ public class CurveCreateActivity extends PanBaseActivity {
                     return;
                 }
                 if (pan.mode != 1) {
+                    if (curTime > 0) { //锅停止工作
+                        //跳转保存
+                        saveCurve(true);
+                        return;
+                    }
                     PanAbstractControl.getInstance().queryAttribute(pan.guid); //查询锅状态
                     mHandler.postDelayed(runnable, 1000L);
                     return;
@@ -542,9 +552,5 @@ public class CurveCreateActivity extends PanBaseActivity {
 
         if (null != stopDialog && stopDialog.isShow())
             stopDialog.dismiss();
-        //关闭延时关机
-        IPublicVentilatorApi iPublicVentilatorApi = ModulePubliclHelper.getModulePublic(IPublicVentilatorApi.class, IPublicVentilatorApi.VENTILATOR_PUBLIC);
-        if (null != iPublicVentilatorApi)
-            iPublicVentilatorApi.closeDelayDialog();
     }
 }

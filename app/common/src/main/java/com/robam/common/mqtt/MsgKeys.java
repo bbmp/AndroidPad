@@ -180,7 +180,7 @@ public interface MsgKeys {
 
     short setStoveStep_Req = 169; //灶自动控温步骤设置
 
-    short setStoveTemp_Req = 173; //设置灶具定温烹饪
+    short setStoveMode_Req = 173; //设置灶具定温烹饪
 
     /**
      * 一体机状态查询
@@ -362,6 +362,8 @@ public interface MsgKeys {
 
     short SetFanTimingRemind_Req = 169;
 
+    //无人锅上报请求
+    short PanReportStatistics_Req = 170;
     /**
      * 设置油烟机重置油杯定时工作（应答）
      */

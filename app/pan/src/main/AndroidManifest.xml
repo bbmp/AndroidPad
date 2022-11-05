@@ -6,6 +6,7 @@
         <activity
             android:name=".ui.activity.RestoreCompleteActivity"
             android:exported="false"
+            android:launchMode="singleTop"
             android:screenOrientation="landscape"/>
         <activity
             android:name=".ui.activity.CurveSaveActivity"

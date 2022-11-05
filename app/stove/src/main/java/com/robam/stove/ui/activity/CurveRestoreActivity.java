@@ -201,8 +201,10 @@ public class CurveRestoreActivity extends StoveBaseActivity {
                 }
                 if (pan.mode != 3 && null != iPublicPanApi) { //锅不是曲线还原模式
 
-                    if (curTime > 0) //已经开始,中途停止
-                        curTime++;
+                    if (curTime > 0) {//已经开始,中途停止
+                        workComplete(true);
+                        return;
+                    }
 
                     iPublicPanApi.queryAttribute(pan.guid); //查询锅状态
                     mHandler.postDelayed(runnable, 1000L);
@@ -215,18 +217,16 @@ public class CurveRestoreActivity extends StoveBaseActivity {
                     workComplete(true);
                     return;
                 }
-                if ((curTime % 2) == 0) {
-                    if (null != iPublicPanApi)
-                        iPublicPanApi.queryAttribute(pan.guid); //查询锅状态
 
-                    StoveAbstractControl.getInstance().queryAttribute(stove.guid); //查询灶状态
-                }
                 //曲线绘制
                 try {
                     curTime++;
                     tvTime.setText(DateUtil.secForMatTime3(curTime) + "min");
-//                    if (params.containsKey(curTime + "")) {
-//                        String[] data = params.get(curTime + "").split("-");
+                    if ((curTime % 2) == 0) { //每隔2s查询
+                        if (null != iPublicPanApi)
+                            iPublicPanApi.queryAttribute(pan.guid); //查询锅状态
+
+                        StoveAbstractControl.getInstance().queryAttribute(stove.guid); //查询灶状态
                         restoreList.add(new Entry(curTime, pan.panTemp));//温度
                         cookChart.invalidate();
                         if (null != stove) {
@@ -237,7 +237,7 @@ public class CurveRestoreActivity extends StoveBaseActivity {
                         }
                         if (null != pan)
                             tvTemp.setText("温度：" + pan.panTemp + "℃");
-//                    }
+                    }
                 } catch (Exception e) {}
 
 
@@ -336,9 +336,5 @@ public class CurveRestoreActivity extends StoveBaseActivity {
             stopDialog.dismiss();
         if (null != completeDialog && completeDialog.isShow())
             completeDialog.dismiss();
-        //关闭延时关机
-        IPublicVentilatorApi iPublicVentilatorApi = ModulePubliclHelper.getModulePublic(IPublicVentilatorApi.class, IPublicVentilatorApi.VENTILATOR_PUBLIC);
-        if (null != iPublicVentilatorApi)
-            iPublicVentilatorApi.closeDelayDialog();
     }
 }
