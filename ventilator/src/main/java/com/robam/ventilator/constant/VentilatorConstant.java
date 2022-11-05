@@ -23,6 +23,14 @@ public class VentilatorConstant {
      * 工作状态[1Byte]（0关机，1开机）
      */
     public final static String FanStatus = "FanStatus";
+    public final static String FanGear = "fan_gear";//烟机挡位
+    public final static String DelayTime = "delay_time";//定时关机时间
+    public final static String PRecipe1 = "p_recipe1";//无人锅p档菜谱1
+    public final static String PRecipe2 = "p_recipe2";//无人锅p档菜谱2
+    public final static String PRecipe3 = "p_recipe3";//无人锅p档菜谱3
+    public final static String PRecipe4 = "p_recipe4";//无人锅p档菜谱4
+    public final static String PRecipe5 = "p_recipe5";//无人锅p档菜谱5
+
 
     //开关机
     public final static int FAN_POWERON = 0;

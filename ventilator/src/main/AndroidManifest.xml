@@ -110,12 +110,6 @@
             android:enabled="true"
             android:exported="true" />
         <receiver
-            android:name=".ui.receiver.AlarmMqttReceiver"
-            android:exported="false" />
-        <receiver
-            android:name=".ui.receiver.AlarmBleReceiver"
-            android:exported="false" />
-        <receiver
             android:name=".ui.receiver.VentilatorReceiver"
             android:exported="false">
             <intent-filter>

@@ -22,6 +22,7 @@ import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.device.HomeVentilator;
 import com.robam.ventilator.device.VentilatorAbstractControl;
 import com.robam.ventilator.device.VentilatorFactory;
+import com.robam.ventilator.protocol.ble.BleVentilator;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -77,11 +78,49 @@ public class MqttVentilator extends MqttPublic {
                     int length = MsgUtils.getByte(payload[offset++]);
                     switch (key) {
                         case 1:
-                            int level = MsgUtils.getByte(payload[offset++]);
+                            int gear = MsgUtils.getByte(payload[offset++]); //请求联动挡位
+                            msg.putOpt(VentilatorConstant.FanGear, gear);
                             break;
-                        case 2:
+                        case 2: {
+                            int min = 0;
+                            if (length == 1)
+                                min = MsgUtils.getByte(payload[offset++]); //请求定时关机时间
+                            else if (length == 2) {
+                                min = MsgUtils.bytes2ShortLittle(payload, offset);
+                                offset += 2;
+                            } else if (length == 4) {
+                                min = MsgUtils.bytes2IntLittle(payload, offset);
+                                offset += 4;
+                            }
+                            msg.putOpt(VentilatorConstant.DelayTime, min);
+                        }
+                            break;
+                        case 101:
+                            int num101 = MsgUtils.getByte(payload[offset++]);
+                            msg.putOpt(VentilatorConstant.PRecipe1, num101);
+                            break;
+                        case 102:
+                            int num102 = MsgUtils.getByte(payload[offset++]);
+                            msg.putOpt(VentilatorConstant.PRecipe2, num102);
+                            break;
+                        case 103:
+                            int num103 = MsgUtils.getByte(payload[offset++]);
+                            msg.putOpt(VentilatorConstant.PRecipe3, num103);
+                            break;
+                        case 104:
+                            int num104 = MsgUtils.getByte(payload[offset++]);
+                            msg.putOpt(VentilatorConstant.PRecipe4, num104);
+                            break;
+                        case 105:
+                            int num105 = MsgUtils.getByte(payload[offset++]);
+                            msg.putOpt(VentilatorConstant.PRecipe5, num105);
                             break;
                     }
+                }
+                if (msg.has(VentilatorConstant.FanGear) || msg.has(VentilatorConstant.DelayTime)) { //烟机回设备
+
+                } else { //转发
+
                 }
                 break;
 

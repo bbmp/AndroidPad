@@ -35,4 +35,6 @@ public interface IPublicVentilatorApi extends IPublicApi {
     void setColorLamp();
     //灶具挡位变化
     void stoveLevelChanged(String stoveGuid, int leftLevel, int rightLevel);
+    //关闭延时关机
+    void closeDelayDialog();
 }

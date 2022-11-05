@@ -21,6 +21,7 @@ import com.robam.common.device.subdevice.Pan;
 import com.robam.common.device.subdevice.Stove;
 import com.robam.common.manager.DynamicLineChartManager;
 import com.robam.common.module.IPublicStoveApi;
+import com.robam.common.module.IPublicVentilatorApi;
 import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.dialog.IDialog;
@@ -412,6 +413,10 @@ public class CurveRestoreActivity extends PanBaseActivity {
         closeCountDown();
         if (null != stopDialog && stopDialog.isShow())
             stopDialog.dismiss();
+        //关闭延时关机
+        IPublicVentilatorApi iPublicVentilatorApi = ModulePubliclHelper.getModulePublic(IPublicVentilatorApi.class, IPublicVentilatorApi.VENTILATOR_PUBLIC);
+        if (null != iPublicVentilatorApi)
+            iPublicVentilatorApi.closeDelayDialog();
     }
 
     private void closeCountDown() {

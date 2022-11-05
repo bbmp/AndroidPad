@@ -316,12 +316,12 @@ public class PanBluetoothControl implements PanFunction{
 
                         @Override
                         public void onWriteSuccess(final int current, final int total, final byte[] justWrite) {
-                            LogUtils.e("pan onWriteSuccess");
+                            LogUtils.i("pan onWriteSuccess");
                         }
 
                         @Override
                         public void onWriteFailure(final BleException exception) {
-                            LogUtils.e("pan onWriteFailure");
+                            LogUtils.i("pan onWriteFailure");
                         }
                     });
                     break;
