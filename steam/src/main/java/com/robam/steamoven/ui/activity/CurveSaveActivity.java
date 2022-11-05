@@ -8,7 +8,6 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.SuperscriptSpan;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -16,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
@@ -58,8 +58,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-//蒸、炸、烤模式工作页面
-public class ModelWorkActivity extends SteamBaseActivity {
+/**
+ * 曲线保存页面
+ */
+public class CurveSaveActivity extends SteamBaseActivity {
 
 
     //设置段数据
@@ -162,7 +164,7 @@ public class ModelWorkActivity extends SteamBaseActivity {
         dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.steam_chart), entryList, true, false);
         cookChart.notifyDataSetChanged();
         continueCreateCurve();
-
+        mHandler.post(runnable);
     }
 
     private Runnable runnable;
@@ -210,7 +212,6 @@ public class ModelWorkActivity extends SteamBaseActivity {
             //cookChart.highlightValues(highlights.toArray(new Highlight[highlights.size()]));
             mHandler.postDelayed(runnable, 2000L);
         };
-        mHandler.post(runnable);
     }
 
     protected void query(String guid) {
@@ -290,8 +291,7 @@ public class ModelWorkActivity extends SteamBaseActivity {
                 updateViewsPreheat(steamOven,false,false);
                 break;
             case SteamStateConstant.WORK_STATE_WORKING_FINISH:
-                //showOverTimeDialog();
-                showWorkFinishDialog();
+                showOverTimeDialog();
                 mHandler.removeCallbacks(runnable);
                 mHandler.removeCallbacksAndMessages(null);
                 autoFinishHandler.postDelayed(autoFinishRun,1000*60*5);
@@ -459,31 +459,16 @@ public class ModelWorkActivity extends SteamBaseActivity {
         steamCommonDialog.setListeners(v -> {
             steamCommonDialog.dismiss();
             if(v.getId() == R.id.tv_ok){
-                sendEndWorkCommand();
+                endWork();
             }
         },R.id.tv_cancel,R.id.tv_ok);
         steamCommonDialog.show();
     }
 
-
     /**
-     * 工作结束，发送命令
+     * 结束工作
      */
-    private void sendWorkFinishCommand(){
-        Map commonMap = SteamCommandHelper.getCommonMap(MsgKeys.setDeviceAttribute_Req);
-        commonMap.put(SteamConstant.BS_TYPE , SteamConstant.BS_TYPE_1) ;
-        commonMap.put(SteamConstant.ARGUMENT_NUMBER, 1);
-        //一体机工作控制
-        commonMap.put(SteamConstant.workCtrlKey, 2);
-        commonMap.put(SteamConstant.workCtrlLength, 1);
-        commonMap.put(SteamConstant.workCtrl, SteamConstant.WORK_CTRL_STOP);//结束工作
-        SteamCommandHelper.getInstance().sendCommonMsgForLiveData(commonMap,directive_offset + DIRECTIVE_OFFSET_END);
-    }
-
-    /**
-     * 结束工作，发送命令
-     */
-    private void sendEndWorkCommand(){
+    private void endWork(){
         Map commonMap = SteamCommandHelper.getCommonMap(MsgKeys.setDeviceAttribute_Req);
         commonMap.put(SteamConstant.BS_TYPE , SteamConstant.BS_TYPE_1) ;
         commonMap.put(SteamConstant.ARGUMENT_NUMBER, 1);
@@ -513,7 +498,7 @@ public class ModelWorkActivity extends SteamBaseActivity {
         if(timeDialog != null && timeDialog.isShow()){
             timeDialog.dismiss();
         }
-        Intent intent = new Intent(ModelWorkActivity.this,MainActivity.class);
+        Intent intent = new Intent(CurveSaveActivity.this,MainActivity.class);
         startActivity(intent);
         finish();
     }
@@ -710,67 +695,44 @@ public class ModelWorkActivity extends SteamBaseActivity {
         }
     }
 
-    SteamCommonDialog finishDialog;
-    private boolean showOverTime = false;
     private void showWorkFinishDialog(){
-        if(showOverTime || (finishDialog != null && finishDialog.isShow())){
-            return;
-        }
-        finishDialog = new SteamCommonDialog(this);
-        finishDialog.setCancelText(R.string.steam_work_complete_add_time);
-        finishDialog.setContentText(R.string.steam_work_complete);
-        finishDialog.setOKText(R.string.steam_common_step_complete);
-        finishDialog.setListeners(v -> {
-            finishDialog.dismiss();
+        SteamCommonDialog steamCommonDialog = new SteamCommonDialog(this);
+        steamCommonDialog.setCancelText(R.string.steam_work_complete_add_time);
+        steamCommonDialog.setContentText(R.string.steam_work_complete);
+        steamCommonDialog.setOKText(R.string.steam_common_step_complete);
+        steamCommonDialog.setListeners(v -> {
+            steamCommonDialog.dismiss();
             if(v.getId() == R.id.tv_ok){//完成
                 //切换到烹饪结束状态
-                //setFinishState();
-                sendWorkFinishCommand();
-                toCurveSavePage();
+                setFinishState();
             }else if(v.getId() == R.id.tv_cancel) {//加时
-                showOverTime = true;
                 showOverTimeDialog();
             }
         },R.id.tv_cancel,R.id.tv_ok);
-        finishDialog.show();
+        steamCommonDialog.show();
     }
-
-
-
 
     /**
      * 展示加时弹窗
      */
     private void showOverTimeDialog(){
         if(timeDialog != null && timeDialog.isShow()){
-            return;
+            timeDialog.dismiss();
         }
         timeDialog = new SteamOverTimeDialog(this);
-        timeDialog.setContentText(R.string.steam_work_complete_add_time);
-        timeDialog.setOKText(R.string.steam_work_complete_complete);
+        timeDialog.setContentText(R.string.steam_cancel);
+        timeDialog.setOKText(R.string.steam_confirm);
         timeDialog.setData();
         timeDialog.setListeners(v -> {
             timeDialog.dismiss();
-            if(v.getId() == R.id.tv_ok){//确认加时
-                //发送结束请求并跳转到保存曲线界面
-                showOverTime = false;
-                sendOverTimeCommand(2*60);//TODO(先固定传递两分钟)
-                continueCreateCurve();
+            if(v.getId() == R.id.tv_ok){//确认
+                //切换到烹饪结束页面
+
             }else if(v.getId() == R.id.tv_cancel) {//取消
-                sendWorkFinishCommand();
-                toCurveSavePage();
+                goHome();
             }
         },R.id.tv_cancel,R.id.tv_ok);
         timeDialog.show();
-    }
-
-    /**
-     * 跳转到工作结束页面
-     */
-    private void toCurveSavePage(){
-        //TODO(传递参数待定)
-        Intent intent = new Intent(this,CurveSaveActivity.class);
-        startActivity(intent);
     }
 
     private void setFinishState(){

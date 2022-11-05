@@ -18,6 +18,7 @@ public class SteamStateConstant {
     public static final int WORK_STATE_PREHEAT_PAUSE = 3;//预热暂停
     public static final int WORK_STATE_WORKING = 4;//工作中
     public static final int WORK_STATE_WORKING_PAUSE = 5;//工作中暂停
+    public static final int WORK_STATE_WORKING_FINISH = 6;//工作中暂停
 
 
 

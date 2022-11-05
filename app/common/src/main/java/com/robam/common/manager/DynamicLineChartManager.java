@@ -183,6 +183,9 @@ public class DynamicLineChartManager {
         xAxis.setAvoidFirstLastClipping(true);
     }
 
+    public void setAxisMaximum(float maxYValue){
+        yAxis.setAxisMaximum(maxYValue);
+    }
 
     /**
      *  初始化折线(一条线)

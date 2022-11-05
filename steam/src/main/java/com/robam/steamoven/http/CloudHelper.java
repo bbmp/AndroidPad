@@ -8,6 +8,7 @@ import com.robam.common.http.RetrofitClient;
 import com.robam.common.utils.LogUtils;
 import com.robam.steamoven.constant.HostServer;
 import com.robam.steamoven.request.GetCurveDetailReq;
+import com.robam.steamoven.request.GetCurveReq;
 import com.robam.steamoven.request.GetDeviceParamsReq;
 import com.robam.steamoven.request.GetRecipeDetailReq;
 import com.robam.steamoven.request.GetUserReq;
@@ -47,6 +48,14 @@ public class CloudHelper {
     //获取曲线详情
     public static <T extends BaseResponse> void getCurvebookDetail(ILife iLife, long curveid, Class<T> entity, final RetrofitCallback<T> callback) {
         String json = new GetCurveDetailReq(curveid).toString();
+        RequestBody requestBody =
+                RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
+        Call<ResponseBody> call = svr.getCurveCookDetail(requestBody);
+        enqueue(iLife, entity, call, callback);
+    }
+
+    public static <T extends BaseResponse> void getCurveBookForDevice(ILife iLife, String guid, Class<T> entity, final RetrofitCallback<T> callback) {
+        String json = new GetCurveReq(guid).toString();
         RequestBody requestBody =
                 RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
         Call<ResponseBody> call = svr.getCurveCookDetail(requestBody);
