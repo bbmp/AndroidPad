@@ -57,10 +57,10 @@ public class MMKVUtils {
         MMKV mmkv = MMKV.defaultMMKV();
         mmkv.encode(HOLIDAY, holiday);
     }
-
+    //假日模式，默认打开
     public static boolean getHoliday() {
         MMKV mmkv = MMKV.defaultMMKV();
-        return mmkv.decodeBool(HOLIDAY, false);
+        return mmkv.decodeBool(HOLIDAY, true);
     }
 
     //假日模式天数 默认7天
@@ -101,10 +101,10 @@ public class MMKVUtils {
         MMKV mmkv = MMKV.defaultMMKV();
         mmkv.encode(OIL_CLEAN, oilClean);
     }
-
+    //油网清洗，默认打开
     public static boolean getOilClean() {
         MMKV mmkv = MMKV.defaultMMKV();
-        return mmkv.decodeBool(OIL_CLEAN, false);
+        return mmkv.decodeBool(OIL_CLEAN, true);
     }
 
     //自动换气
@@ -170,10 +170,10 @@ public class MMKVUtils {
         mmkv.encode(DELAY_SHUTDOWN, delayTime);
     }
 
-    //获取延时关机时间
+    //获取延时关机,默认开
     public static boolean getDelayShutdown() {
         MMKV mmkv = MMKV.defaultMMKV();
-        return mmkv.decodeBool(DELAY_SHUTDOWN);
+        return mmkv.decodeBool(DELAY_SHUTDOWN, true);
     }
 
     //设置烟灶联动

@@ -12,6 +12,9 @@ public class StoveConstant {
     public final static int MODE_STEAM = 2; //清蒸
     public final static int MODE_FRY = 3;  //煎炸
     public final static int MODE_TIMING = 4;   //定时
+    public final static int SUBMODE_HIGH = 3; //高温
+    public final static int SUBMODE_MID = 4; //中温
+    public final static int SUBMODE_LOW = 5; //低温
 
     //工作状态
     public final static int WORK_CLOSE = 0; //关机
@@ -39,11 +42,13 @@ public class StoveConstant {
     public final static String level = "level";   //挡位
     public final static String stoveNum = "stove_num";
     public final static String leftStatus = "left_status";
+    public final static String leftMode = "left_mode";
     public final static String leftLevel = "left_level";
     public final static String leftTemp = "left_temp";
     public final static String leftTime = "left_time";//剩余秒数
     public final static String leftAlarm = "left_alarm";//报警状态
     public final static String rightStatus = "right_status";
+    public final static String rightMode = "right_mode"; //工作模式
     public final static String rightLevel = "right_level";
     public final static String rightTemp = "right_temp";
     public final static String rightTime = "right_time";//剩余秒数

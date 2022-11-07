@@ -224,6 +224,9 @@ public class CurveActivity extends StoveBaseActivity {
         //检查灶是否连接
         if (isStoveOffline())
             return;
+        //检查锅是否工作中
+        if (isPanWorking())
+            return;
         //炉头选择提示
         if (null == selectStoveDialog) {
             selectStoveDialog = new SelectStoveDialog(this);

@@ -91,30 +91,6 @@ class SmartSettingActivity : VentilatorBaseActivity() {
      * 数据填充
      */
     private fun addListData() {
-        //灶
-        val stoveList =
-            AccountInfo.getInstance().deviceList.filter { it is Stove }.map { it.displayType }
-       val stoveListDevice = if (stoveList.isEmpty()) {
-           "暂无关联产品"
-        } else {
-           "关联产品:${stoveList.toString().substring(1,stoveList.toString().length-1)}"
-        }
-        //锅
-        val panList =
-            AccountInfo.getInstance().deviceList.filter { it is Pan }.map { it.displayType }
-        val panListDevice = if (panList.isEmpty()) {
-            "暂无关联产品"
-        } else {
-            "关联产品:${panList.toString().substring(1,panList.toString().length-1)}"
-        }
-        //一体机
-        val steamOvenList =
-            AccountInfo.getInstance().deviceList.filter { it is SteamOven }.map { it.displayType }
-        val steamOvenListDevice = if (steamOvenList.isEmpty()) {
-            "暂无关联产品"
-        } else {
-            "关联产品:${steamOvenList.toString().substring(1,steamOvenList.toString().length-1)}"
-        }
 
         mList.add(
             SmartSetBean(
@@ -144,31 +120,53 @@ class SmartSettingActivity : VentilatorBaseActivity() {
                 modeSwitch = MMKVUtils.getDelayShutdown()
             )
         )
-        mList.add(
-            SmartSetBean(
-                "烟灶联动",
-                "$stoveListDevice \n灶具小火工作时，烟机自动匹配风量",
-                modeSwitch = MMKVUtils.getFanStove(),
-                modeDescSwitchVisible = true
+        //灶
+        val stoveList =
+            AccountInfo.getInstance().deviceList.filter { it is Stove }.map { it.displayType }
+        if (stoveList.isNotEmpty()) {
+            val stoveListDevice =
+                "关联产品:${stoveList.toString().substring(1,stoveList.toString().length-1)}"
+            mList.add(
+                SmartSetBean(
+                    "烟灶联动",
+                    "$stoveListDevice \n灶具小火工作时，烟机自动匹配风量",
+                    modeSwitch = MMKVUtils.getFanStove(),
+                    modeDescSwitchVisible = true
+                )
             )
-        )
-        mList.add(
-            SmartSetBean(
-                "烟锅联动",
-                "$panListDevice \n明火自动翻炒锅工作时开着，烟机自动匹配风量",
-                modeSwitch = MMKVUtils.getFanPan(),
-                modeDescSwitchVisible = true
-            )
-        )
-        mList.add(
-            SmartSetBean(
-                "烟蒸烤联动",
-                "$steamOvenListDevice \n一体机工作室开门，烟机自动匹配风量",
-                modeSwitch = MMKVUtils.getFanSteam(),
-                modeDescSwitchVisible = true
-            )
-        )
+        }
 
+        //锅
+        val panList =
+            AccountInfo.getInstance().deviceList.filter { it is Pan }.map { it.displayType }
+        if (panList.isNotEmpty()) {
+
+            val panListDevice = "关联产品:${panList.toString().substring(1,panList.toString().length-1)}"
+            mList.add(
+                SmartSetBean(
+                    "烟锅联动",
+                    "$panListDevice \n明火自动翻炒锅工作时开着，烟机自动匹配风量",
+                    modeSwitch = MMKVUtils.getFanPan(),
+                    modeDescSwitchVisible = true
+                )
+            )
+        }
+
+        //一体机
+        val steamOvenList =
+            AccountInfo.getInstance().deviceList.filter { it is SteamOven }.map { it.displayType }
+        if (steamOvenList.isNotEmpty()) {
+
+            val steamOvenListDevice = "关联产品:${steamOvenList.toString().substring(1,steamOvenList.toString().length-1)}"
+            mList.add(
+                SmartSetBean(
+                    "烟蒸烤联动",
+                    "$steamOvenListDevice \n一体机工作室开门，烟机自动匹配风量",
+                    modeSwitch = MMKVUtils.getFanSteam(),
+                    modeDescSwitchVisible = true
+                )
+            )
+        }
     }
 
     override fun initData() {

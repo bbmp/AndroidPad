@@ -39,7 +39,7 @@ class ShutdownDelaySettingActivity : VentilatorBaseActivity() {
         textChange(delayShutdownTime)
         //分钟选择器
         mPickerMinuteLayout.apply {
-            setNum(60, false, false)
+            setNum(5, false, false)
             setOnPickerListener { text, position ->
                 minute = text
                 textChange(text)

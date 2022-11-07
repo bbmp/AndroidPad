@@ -131,12 +131,11 @@ public class MqttVentilator extends MqttPublic {
                 }
                 if (msg.has(VentilatorConstant.PRecipe1) || msg.has(VentilatorConstant.PRecipe2) || msg.has(VentilatorConstant.PRecipe3) ||
                         msg.has(VentilatorConstant.PRecipe4) || msg.has(VentilatorConstant.PRecipe5)) { //无人锅上报转发到云端
-                    MqttMsg newMsg = new MqttMsg.Builder()
-                            .setMsgId(MsgKeys.PanReportStatistics_Req)
-                            .setGuid(msg.getGuid())
-                            .setTopic(new RTopic(RTopic.TOPIC_BROADCAST, DeviceUtils.getDeviceTypeId(msg.getGuid()), DeviceUtils.getDeviceNumber(msg.getGuid())))
-                            .build();
-                    MqttManager.getInstance().publish(newMsg, VentilatorFactory.getProtocol());
+
+                    String topic = "/b/" + msg.getGuid().substring(0, 5) + "/" + msg.getGuid().substring(5);
+                    byte[] mqtt_data = payload;
+                    mqtt_data[BleDecoder.GUID_LEN] = (byte) MsgKeys.PanReportStatistics_Req; //修改命令号
+                    MqttManager.getInstance().publish(topic, mqtt_data);
                 }
                 break;
 
