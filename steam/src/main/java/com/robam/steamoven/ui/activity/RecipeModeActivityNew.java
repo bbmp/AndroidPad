@@ -3,10 +3,9 @@ package com.robam.steamoven.ui.activity;
 import android.content.Intent;
 import android.os.Parcelable;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.recyclerview.widget.RecyclerView;
+import com.robam.common.bean.MqttDirective;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
@@ -14,7 +13,7 @@ import com.robam.steamoven.bean.ModeBean;
 import com.robam.steamoven.bean.MultiSegment;
 import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.SteamConstant;
-import com.robam.steamoven.constant.SteamOvenSteamEnum;
+import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.ui.adapter.RvTimeAdapter;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +40,16 @@ public class RecipeModeActivityNew extends SteamBaseActivity {
 
     private TextView tvTime;
 
+    private long recipeId;
+
+    public static final int SEND_START_WORK = 111;
+
+    private int directive_offset = 11000000;
+    private static final int DIRECTIVE_OFFSET_END = 10;
+    private static final int DIRECTIVE_OFFSET_PAUSE_CONTINUE = 20;
+    private static final int DIRECTIVE_OFFSET_OVER_TIME = 40;
+    private static final int DIRECTIVE_OFFSET_WORK_FINISH = 60;
+
 
     @Override
     protected int getLayoutId() {
@@ -56,11 +65,22 @@ public class RecipeModeActivityNew extends SteamBaseActivity {
         tvTime = findViewById(R.id.tv_mode);
         findViewById(R.id.iv_select).setVisibility(View.VISIBLE);
         setLayoutManage(5, 0.44f);
+        setOnClickListener(R.id.btn_start);
+        MqttDirective.getInstance().getDirective().observe(this, s -> {
+            switch (s){
+                case SEND_START_WORK:
+                    toWorkPage();
+                    break;
+
+            }
+        });
+
     }
 
     @Override
     protected void initData() {
         modes = (ArrayList<ModeBean>) getIntent().getSerializableExtra(SteamConstant.EXTRA_MODE_LIST);
+        recipeId = getIntent().getLongExtra(SteamConstant.EXTRA_RECIPE_ID,0);
         curMode = modes.get(0);
         rvTimeAdapter = new RvTimeAdapter(1);
         rvSelect.setAdapter(rvTimeAdapter);
@@ -112,13 +132,17 @@ public class RecipeModeActivityNew extends SteamBaseActivity {
         if (view.getId() == R.id.ll_left) {
             finish();
         }else if(view.getId() == R.id.btn_start){
-            toWorkPage();
+            sendStartWorkCommand();
         }
     }
 
     /**
      * 跳转到工作页面
      */
+    private void sendStartWorkCommand(){
+        SteamCommandHelper.sendRecipeWork(recipeId,Integer.parseInt(tvTime.getText().toString()),SEND_START_WORK);
+    }
+
     private void toWorkPage(){
         Intent intent = new Intent(this,ModelWorkActivity.class);
         List<MultiSegment> list = new ArrayList<>();
@@ -126,13 +150,15 @@ public class RecipeModeActivityNew extends SteamBaseActivity {
         list.get(0).setWorkModel(MultiSegment.COOK_STATE_PREHEAT);
         list.get(0).setCookState(MultiSegment.COOK_STATE_START);
         intent.putParcelableArrayListExtra(Constant.SEGMENT_DATA_FLAG, (ArrayList<? extends Parcelable>) list);
+        intent.putExtra(Constant.RECIPE_ID, recipeId);
         startActivity(intent);
     }
 
     private MultiSegment getResult(){
         //获取真实数据
         MultiSegment segment = new MultiSegment();
-
+        segment.defTemp = Integer.parseInt(tvTime.getText().toString());
+        segment.workRemaining = Integer.parseInt(tvTime.getText().toString()) * 60;
         return segment;
     }
 }

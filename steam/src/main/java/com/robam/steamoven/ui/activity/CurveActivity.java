@@ -6,12 +6,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
-import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.BaseResponse;
@@ -61,20 +61,17 @@ public class CurveActivity extends SteamBaseActivity {
         rvCurveAdapter = new RvCurveAdapter();
         rvRecipe.setAdapter(rvCurveAdapter);
 
-        rvCurveAdapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                //删除状态不响应
-                if (rvCurveAdapter.getStatus() != RvCurveAdapter.STATUS_BACK)
-                    return;
-                //曲线选中页
-                SteamCurveDetail steamCurveDetail = (SteamCurveDetail) adapter.getItem(position);
-                Intent intent = new Intent();
-                intent.putExtra(SteamConstant.EXTRA_CURVE_ID, steamCurveDetail.curveCookbookId);
-                intent.setClass(CurveActivity.this, CurveSelectedActivity.class);
-                startActivity(intent);
+        rvCurveAdapter.setOnItemClickListener((adapter, view, position) -> {
+            //删除状态不响应
+            if (rvCurveAdapter.getStatus() != RvCurveAdapter.STATUS_BACK)
+                return;
+            //曲线选中页
+            SteamCurveDetail steamCurveDetail = (SteamCurveDetail) adapter.getItem(position);
+            Intent intent = new Intent();
+            intent.putExtra(SteamConstant.EXTRA_CURVE_ID, steamCurveDetail.curveCookbookId);
+            intent.setClass(CurveActivity.this, CurveSelectedActivity.class);
+            startActivity(intent);
 
-            }
         });
         rvCurveAdapter.setOnItemChildClickListener(new OnItemChildClickListener() {
             @Override
@@ -106,18 +103,23 @@ public class CurveActivity extends SteamBaseActivity {
 
     @Override
     protected void initData() {
-        getCurveList();
+        AccountInfo.getInstance().getUser().observe(this, new Observer<UserInfo>() {
+            @Override
+            public void onChanged(UserInfo userInfo) {
+                if (null != userInfo)
+                    getCurveList(userInfo);
+                else
+                    setData(null);
+            }
+        });
     }
 
     //获取烹饪曲线列表
-    private void getCurveList() {
-        UserInfo info = AccountInfo.getInstance().getUser().getValue();
-
+    private void getCurveList(UserInfo info) {
         CloudHelper.queryCurveCookbooks(this, (info != null) ? info.id:0, GetCurveCookbooksRes.class,
                 new RetrofitCallback<GetCurveCookbooksRes>() {
                     @Override
                     public void onSuccess(GetCurveCookbooksRes getCurveCookbooksRes) {
-
                         setData(getCurveCookbooksRes);
                     }
 

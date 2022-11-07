@@ -5,7 +5,7 @@ public class SteamStateConstant {
     public static final int POWER_STATE_OFF = 0;//关机
     public static final int POWER_STATE_AWAIT = 1;//待机
     public static final int POWER_STATE_ON = 2;//开机
-    public static final int POWER_STATE_TROUBLE = 3;//故障
+    public static final int POWER_STATE_TROUBLE = 3;//故障(故障一定引起工作终止,若故障仍然 可以工作，则不应为故障)
     public static final int POWER_STATE_TEST = 10;//测试
 
 

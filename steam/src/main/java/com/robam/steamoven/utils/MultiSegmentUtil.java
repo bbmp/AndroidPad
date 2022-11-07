@@ -21,7 +21,7 @@ public class MultiSegmentUtil {
                 int time = steamOven.setTimeH * 256 + steamOven.setTime;//设置的工作时间 (秒)
                 segment.duration = time/60 + (time%60 == 0 ? 0 : 1);
                 segment.steam = steamOven.steam;
-                int restTime = steamOven.restTime * 256 + steamOven.restTimeH;//设置的工作时间 (秒)
+                int restTime = steamOven.restTimeH*256 + steamOven.restTime;//设置的工作时间 (秒)
                 segment.workRemaining = restTime;
                 break;
             case 2:
@@ -32,7 +32,7 @@ public class MultiSegmentUtil {
                 int time2 = steamOven.setTimeH2 * 256 + steamOven.setTime2;//设置的工作时间 (秒)
                 segment.duration = time2/60 + (time2%60 == 0 ? 0 : 1);
                 segment.steam = steamOven.steam2;
-                int restTime2 = steamOven.restTime2 * 256 + steamOven.restTimeH2;//设置的工作时间 (秒)
+                int restTime2 = steamOven.restTimeH2 * 256 + steamOven.restTime2;//设置的工作时间 (秒)
                 segment.workRemaining = restTime2;
                 break;
             case 3:
@@ -43,7 +43,7 @@ public class MultiSegmentUtil {
                 int time3 = steamOven.setTimeH3 * 256 + steamOven.setTime3;//设置的工作时间 (秒)
                 segment.duration = time3/60 + (time3%60 == 0 ? 0 : 1);
                 segment.steam = steamOven.steam3;
-                int restTime3 = steamOven.restTime3 * 256 + steamOven.restTimeH3;//设置的工作时间 (秒)
+                int restTime3 = steamOven.restTimeH3 * 256 + steamOven.restTime3;//设置的工作时间 (秒)
                 segment.workRemaining = restTime3;
                 break;
         }

@@ -2,30 +2,21 @@ package com.robam.steamoven.ui.activity;
 
 import android.content.Intent;
 import android.os.Parcelable;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.constant.ComnConstant;
-import com.robam.common.device.subdevice.Pan;
 import com.robam.common.utils.LogUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.bean.MultiSegment;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.Constant;
-import com.robam.steamoven.constant.SteamModeEnum;
-import com.robam.steamoven.constant.SteamOvenSteamEnum;
 import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.utils.MultiSegmentUtil;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +45,7 @@ public class MainActivity extends SteamBaseActivity {
                     switch (steamOven.powerState){
                         case SteamStateConstant.POWER_STATE_AWAIT:
                         case SteamStateConstant.POWER_STATE_ON:
+                        case SteamStateConstant.POWER_STATE_TROUBLE:
                             toWorkPage(steamOven);
                             break;
                         case SteamStateConstant.POWER_STATE_OFF:

@@ -1173,5 +1173,10 @@
     <string name="steam_mode_rotate">旋转</string>
     <string name="steam_mode_stream">加湿中</string>
     <string name="steam_input_name">请填写曲线名称</string>
+    <string name="steam_go_home">回到主页</string>
+    <string name="steam_curve_exception_data">烹饪数据异常</string>
+    <string name="steam_offline">洗碗机已离线</string>
+    <string name="steam_close_door_prompt">请检查洗碗机门是否关闭</string>
+    <string name="steam_water_deficient">水箱缺水</string>
 
 </resources>

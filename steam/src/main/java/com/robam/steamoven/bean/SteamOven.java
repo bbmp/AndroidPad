@@ -521,7 +521,7 @@ public class SteamOven extends Device {
             this.chugouType = (short) msg.optInt(SteamConstant.chugouType);
             this.curSectionNbr = (short) msg.optInt(SteamConstant.curSectionNbr);
             this.sectionNumber = (short) msg.optInt(SteamConstant.sectionNumber);
-            Log.e("模式",msg.optInt(SteamConstant.mode)+"--");
+            //Log.e("模式",msg.optInt(SteamConstant.mode)+"--");
 //            if (curSectionNbr == 0 || curSectionNbr == 1 ) {
 //                this.mode = (short) msg.optInt(SteamConstant.mode);
 //                this.setUpTemp = (short) msg.optInt(SteamConstant.setUpTemp);
@@ -561,10 +561,10 @@ public class SteamOven extends Device {
             this.steam2 = (short) msg.optInt(SteamConstant.steam2);
 
             this.mode3 = (short) msg.optInt(SteamConstant.mode3);
-            this.setUpTemp3 = (short) msg.optInt(SteamConstant.setUpTemp3 );
-            this.setDownTemp3 = (short) msg.optInt(SteamConstant.setDownTemp3 );
-            this.setTime3 = (short) msg.optInt(SteamConstant.setTime3 );
-            this.setTimeH3 = (short) msg.optInt(SteamConstant.setTimeH3 );
+            this.setUpTemp3 = (short) msg.optInt(SteamConstant.setUpTemp3);
+            this.setDownTemp3 = (short) msg.optInt(SteamConstant.setDownTemp3);
+            this.setTime3 = (short) msg.optInt(SteamConstant.setTime3);
+            this.setTimeH3 = (short) msg.optInt(SteamConstant.setTimeH3);
             this.restTime3 = (short) msg.optInt(SteamConstant.restTime3);
             this.restTimeH3 = (short) msg.optInt(SteamConstant.restTimeH3);
             this.steam3 = (short) msg.optInt(SteamConstant.steam3);

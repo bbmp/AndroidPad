@@ -14,22 +14,29 @@ import android.widget.RelativeLayout;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.clj.fastble.BleManager;
+import com.google.gson.Gson;
 import com.robam.common.manager.FunctionManager;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.common.utils.ImageUtils;
 import com.robam.common.utils.MMKVUtils;
+import com.robam.common.utils.StringUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBasePage;
+import com.robam.steamoven.bean.DeviceConfigurationFunctions;
 import com.robam.steamoven.bean.FuntionBean;
+import com.robam.steamoven.bean.ModeBean;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.SteamConstant;
+import com.robam.steamoven.constant.SteamEnum;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.manager.DataInitManage;
 import com.robam.steamoven.manager.FuntionModeManage;
+import com.robam.steamoven.response.GetDeviceParamsRes;
 import com.robam.steamoven.ui.adapter.RvDotAdapter;
 import com.robam.steamoven.ui.adapter.RvMainFuntionAdapter;
+import com.robam.steamoven.utils.SteamDataUtil;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -165,4 +172,36 @@ public class HomePage extends SteamBasePage {
     public void onDestroy() {
         super.onDestroy();
     }
+
+    private void getModeBeanList(ArrayList<ModeBean> mode, SteamEnum steamEnum){
+        String steamContent = SteamDataUtil.getSteamContent();
+        if(StringUtils.isNotBlank(steamContent)){
+            GetDeviceParamsRes getDeviceParamsRes = new Gson().fromJson(steamContent, GetDeviceParamsRes.class);
+            List<DeviceConfigurationFunctions> functions = getDeviceParamsRes.modelMap.otherFunc.deviceConfigurationFunctions;
+            if(steamEnum.fun == SteamEnum.STEAM.fun ||
+                    steamEnum.fun == SteamEnum.OVEN.fun||
+                    steamEnum.fun == SteamEnum.FRY.fun){//蒸模式
+                List<DeviceConfigurationFunctions> dcFunctions = getDCFunctions(functions, steamEnum.funFlag);
+
+            }
+
+                    //steamingMode
+        }
+    }
+
+    private List<DeviceConfigurationFunctions> getDCFunctions(List<DeviceConfigurationFunctions> functions,String modeFlag){
+        for(int i = 0; i < functions.size();i++){
+            if(modeFlag.equals(functions.get(i).functionCode)){
+                return functions.get(i).subView.modelMap.subView.deviceConfigurationFunctions;
+            }
+        }
+        return null;
+    }
+
+//    private List<ModeBean> initModeBean(ArrayList<ModeBean> mode,List<DeviceConfigurationFunctions> dcFunctions){
+//
+//    }
+//
+//    private DeviceConfigurationFunctions getDeviceConfigurationFunctions(){}
+
 }

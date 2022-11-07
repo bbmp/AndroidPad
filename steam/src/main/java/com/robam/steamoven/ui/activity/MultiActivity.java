@@ -548,78 +548,7 @@ public class MultiActivity extends SteamBaseActivity {
     }
 
     private void startWork(){
-        if(!multiSegments.get(0).isStart() && multiSegments.size() < 2){
-            Toast.makeText(this, R.string.steam_cook_start_prompt,Toast.LENGTH_LONG).show();
-            return;
-        }
-        Map commonMap = SteamCommandHelper.getCommonMap(MsgKeys.setDeviceAttribute_Req);
-
-        commonMap.put(SteamConstant.ARGUMENT_NUMBER, multiSegments.size()*5+3);
-        commonMap.put(SteamConstant.BS_TYPE , SteamConstant.BS_TYPE_2) ;
-        //一体机电源控制
-        commonMap.put(SteamConstant.powerCtrlKey, 2);
-        commonMap.put(SteamConstant.powerCtrlLength, 1);
-        commonMap.put(SteamConstant.powerCtrl, 1);
-        //一体机工作控制
-        commonMap.put(SteamConstant.workCtrlKey, 4);
-        commonMap.put(SteamConstant.workCtrlLength, 1);
-        commonMap.put(SteamConstant.workCtrl, 1);
-        //预约时间
-        // commonMap.put(SteamConstant.setOrderMinutesKey, 5);
-        //commonMap.put(SteamConstant.setOrderMinutesLength, 1);
-        //commonMap.put(SteamConstant.setOrderMinutes, 0);
-
-        //段数
-        commonMap.put(SteamConstant.sectionNumberKey, 100) ;
-        commonMap.put(SteamConstant.sectionNumberLength, 1) ;
-        commonMap.put(SteamConstant.sectionNumber, multiSegments.size() ) ;
-        // commonMap.put(SteamConstant.sectionNumber, recipeStepList.size() ) ;
-        for (int i = 0; i < multiSegments.size(); i++) {
-            MultiSegment bean = multiSegments.get(i);
-
-            //TODO(需要安全检测)
-//            if (!Util.workBeforeCheck(Integer.parseInt(bean.modelCode),steameOvenOne,true,false)){
-//                return;
-//            }
-            //模式
-            commonMap.put(SteamConstant.modeKey + i, 101 + i *10  ) ;
-            commonMap.put(SteamConstant.modeLength + i, 1) ;
-            commonMap.put(SteamConstant.mode + i,bean.code) ;
-            //温度上温度
-            commonMap.put(SteamConstant.setUpTempKey + i  , 102 + i *10 );
-            commonMap.put(SteamConstant.setUpTempLength + i, 1);
-            commonMap.put(SteamConstant.setUpTemp + i ,bean.defTemp);
-
-            commonMap.put(SteamConstant.setDownTempKey + i  , 103 + i *10 );
-            commonMap.put(SteamConstant.setDownTempLength + i, 1);
-            commonMap.put(SteamConstant.setDownTemp + i ,bean.downTemp);
-
-            //时间
-            // int time =Integer.parseInt(bean.time)*60;
-            //TODO(检查时间传递是否正确)
-            int time = bean.duration * 60;//(秒)
-            commonMap.put(SteamConstant.setTimeKey + i , 104 + i *10 );
-            commonMap.put(SteamConstant.setTimeLength + i, 1);
-            short lowTime = time > 255 ? (short) (time & 0Xff):(short)time;
-            //final short lowTime = time > 255 ? (short) (time & 0Xff):(short)time;
-            if (time<=255){
-                commonMap.put(SteamConstant.setTime0b+i, lowTime);
-            }else{
-                commonMap.put(SteamConstant.setTimeKey+i, 104 + i *10);
-                commonMap.put(SteamConstant.setTimeLength+i, 2);
-                short ltime = (short)(time & 0xff);
-                commonMap.put(SteamConstant.setTime0b+i, ltime);
-                short htime = (short) ((time >> 8) & 0Xff);
-                commonMap.put(SteamConstant.setTime1b+i, htime);
-            }
-            //commonMap.put(SteamConstant.setTime + i, bean.getTime()*60);
-            //TODO(检测蒸汽量传递是否正确,暂时传递0)
-            commonMap.put(SteamConstant.steamKey + i, 106 + i *10 );
-            commonMap.put(SteamConstant.steamLength + i , 1);
-            //commonMap.put(SteamConstant.steam + i, bean.steam);
-            commonMap.put(SteamConstant.steam + i, 0);
-        }
-        SteamCommandHelper.getInstance().sendCommonMsgForLiveData(commonMap,directive_offset+MsgKeys.setDeviceAttribute_Req);
+        SteamCommandHelper.sendMultiWork(this,multiSegments,directive_offset+MsgKeys.setDeviceAttribute_Req);
     }
 
 

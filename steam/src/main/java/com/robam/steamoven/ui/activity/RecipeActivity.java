@@ -18,10 +18,12 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.gson.Gson;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.UserInfo;
 import com.robam.common.http.RetrofitCallback;
+import com.robam.common.utils.StringUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
@@ -32,8 +34,12 @@ import com.robam.steamoven.bean.SubViewModelMapSubView;
 import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.http.CloudHelper;
+import com.robam.steamoven.request.GetCurveDetailReq;
 import com.robam.steamoven.response.GetDeviceParamsRes;
 import com.robam.steamoven.ui.pages.RecipeClassifyPage;
+import com.robam.steamoven.utils.SteamDataUtil;
+
+import org.json.JSONArray;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -138,13 +144,24 @@ public class RecipeActivity extends SteamBaseActivity {
 
     //本地菜谱
     private void getLocalRecipe() {
+        String steamContent = SteamDataUtil.getSteamContent();
+        if(StringUtils.isNotBlank(steamContent)){
+            GetDeviceParamsRes getDeviceParamsRes = new Gson().fromJson(steamContent, GetDeviceParamsRes.class);
+            if (null != getDeviceParamsRes && null != getDeviceParamsRes.modelMap){
+                setRecipeData(getDeviceParamsRes);
+            }
+        }
         UserInfo info = AccountInfo.getInstance().getUser().getValue();
-        CloudHelper.getDeviceParams(this, (info != null) ? info.id:0, "CQ926", IDeviceType.RZKY, GetDeviceParamsRes.class,
+        CloudHelper.getDeviceParams(this, (info != null) ? info.id:0, "CQ928", IDeviceType.RZKY, GetDeviceParamsRes.class,
                 new RetrofitCallback<GetDeviceParamsRes>() {
                     @Override
                     public void onSuccess(GetDeviceParamsRes getDeviceParamsRes) {
-                        if (null != getDeviceParamsRes && null != getDeviceParamsRes.modelMap)
-                            setRecipeData(getDeviceParamsRes);
+                        if (null != getDeviceParamsRes && null != getDeviceParamsRes.modelMap){
+                            if(StringUtils.isBlank(steamContent)){
+                                setRecipeData(getDeviceParamsRes);
+                            }
+                            SteamDataUtil.saveSteam(new Gson().toJson(getDeviceParamsRes, GetDeviceParamsRes.class));
+                        }
                     }
 
                     @Override
@@ -152,7 +169,6 @@ public class RecipeActivity extends SteamBaseActivity {
 
                     }
                 });
-
     }
     //菜谱数据
     private void setRecipeData(GetDeviceParamsRes getDeviceParamsRes) {

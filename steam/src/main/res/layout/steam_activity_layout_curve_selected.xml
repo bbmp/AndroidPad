@@ -90,7 +90,6 @@
         android:text="@string/steam_start_working"
         android:textColor="@color/steam_white"
         android:textSize="@dimen/sp_30"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 

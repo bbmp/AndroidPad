@@ -27,7 +27,7 @@ public class SteamSelectPage extends SteamBasePage {
     private String curSteam;
     private ArrayList<String> steamList = new ArrayList<String>() {
         {
-            add("小");
+            //add("小");
             add("中");
             add("大");
         }

@@ -45,6 +45,7 @@ import com.robam.steamoven.http.CloudHelper;
 import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.response.GetCurveDetailRes;
 import com.robam.steamoven.ui.dialog.SteamCommonDialog;
+import com.robam.steamoven.ui.dialog.SteamErrorDialog;
 import com.robam.steamoven.ui.dialog.SteamOverTimeDialog;
 
 import org.json.JSONException;
@@ -92,6 +93,7 @@ public class ModelWorkActivity extends SteamBaseActivity {
     private SteamOverTimeDialog timeDialog;
     private float maxYValue = 100;
     private long curveId;
+    private long recipeId = 0;//菜谱ID ； 若菜谱ID非 0 ； 则当前工作模式来源与菜谱
 
 
     @Override
@@ -141,6 +143,7 @@ public class ModelWorkActivity extends SteamBaseActivity {
                     switch (steamOven.powerState){
                         case SteamStateConstant.POWER_STATE_AWAIT:
                         case SteamStateConstant.POWER_STATE_ON:
+                        case SteamStateConstant.POWER_STATE_TROUBLE:
                             updateViews(steamOven);
                             break;
                         case SteamStateConstant.POWER_STATE_OFF:
@@ -151,6 +154,14 @@ public class ModelWorkActivity extends SteamBaseActivity {
                 }
             }
         });
+    }
+
+    /**
+     * 是否菜谱烹饪
+     * @return
+     */
+    private boolean isRecipeCooking(){
+        return recipeId != 0;
     }
 
 
@@ -172,6 +183,7 @@ public class ModelWorkActivity extends SteamBaseActivity {
     private Handler mHandler = new Handler();
     private Handler autoFinishHandler = new Handler();
     private Runnable autoFinishRun = () -> {
+        sendWorkFinishCommand(-100);
         goHome();
     };
     //从0开始
@@ -253,13 +265,14 @@ public class ModelWorkActivity extends SteamBaseActivity {
         }
         if(getDeviceParamsRes == null || getDeviceParamsRes.payload == null || getDeviceParamsRes.payload.temperatureCurveParams == null){
             //initLineChart();
+            continueCreateCurve();
             return;
         }
 
         JSONObject jsonObject = new JSONObject(getDeviceParamsRes.payload.temperatureCurveParams);
         Iterator<String> keys = jsonObject.keys();
         if(keys == null || !keys.hasNext()){
-            //initLineChart();
+            continueCreateCurve();
             return;
         }
         while (keys.hasNext()){
@@ -307,7 +320,11 @@ public class ModelWorkActivity extends SteamBaseActivity {
                 break;
             case SteamStateConstant.WORK_STATE_WORKING_FINISH:
                 //showOverTimeDialog();
-                showWorkFinishDialog();
+                if(steamOven.recipeId != 0){
+                    showRecipeWorkFinishDialog();
+                }else{
+                    showWorkFinishDialog();
+                }
                 mHandler.removeCallbacks(runnable);
                 mHandler.removeCallbacksAndMessages(null);
                 autoFinishHandler.postDelayed(autoFinishRun,1000*60*5);
@@ -357,7 +374,9 @@ public class ModelWorkActivity extends SteamBaseActivity {
         TextView  curDuration = curCookInfoViewGroup.findViewById(R.id.multi_item_cur_duration);
 
         //工作模式
-        curModel.setText(SteamModeEnum.match(steamOven.mode));
+        if(!isRecipeCooking()){//非菜谱模式设置，节省查询性能
+            curModel.setText(SteamModeEnum.match(steamOven.mode));
+        }
         //设置温度
         int setUpTemp = steamOven.setUpTemp;
         int setDownTemp = steamOven.setDownTemp;
@@ -413,6 +432,7 @@ public class ModelWorkActivity extends SteamBaseActivity {
     protected void initData() {
         //获取上一个页面传递过来的参数
         multiSegments = getIntent().getParcelableArrayListExtra(Constant.SEGMENT_DATA_FLAG);
+        recipeId = getIntent().getLongExtra(Constant.RECIPE_ID,0);
         SteamOven steamOven = getSteamOven();
         if(steamOven == null){
             Toast.makeText(this,"缺少模式数据",Toast.LENGTH_LONG).show();
@@ -485,7 +505,7 @@ public class ModelWorkActivity extends SteamBaseActivity {
     /**
      * 工作结束，发送命令
      */
-    private void sendWorkFinishCommand(){
+    private void sendWorkFinishCommand(int code){
         Map commonMap = SteamCommandHelper.getCommonMap(MsgKeys.setDeviceAttribute_Req);
         commonMap.put(SteamConstant.BS_TYPE , SteamConstant.BS_TYPE_1) ;
         commonMap.put(SteamConstant.ARGUMENT_NUMBER, 1);
@@ -493,7 +513,7 @@ public class ModelWorkActivity extends SteamBaseActivity {
         commonMap.put(SteamConstant.workCtrlKey, 2);
         commonMap.put(SteamConstant.workCtrlLength, 1);
         commonMap.put(SteamConstant.workCtrl, SteamConstant.WORK_CTRL_STOP);//结束工作
-        SteamCommandHelper.getInstance().sendCommonMsgForLiveData(commonMap,directive_offset + DIRECTIVE_OFFSET_WORK_FINISH);
+        SteamCommandHelper.getInstance().sendCommonMsgForLiveData(commonMap,directive_offset + code);
     }
 
     /**
@@ -526,12 +546,22 @@ public class ModelWorkActivity extends SteamBaseActivity {
     }
 
     private void goHome(){
-        if(timeDialog != null && timeDialog.isShow()){
-            timeDialog.dismiss();
-        }
+        dismissAllDialog();
         Intent intent = new Intent(ModelWorkActivity.this,MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    private void dismissAllDialog(){
+        if(timeDialog != null && timeDialog.isShow()){
+            timeDialog.dismiss();
+        }
+        if(finishDialog != null && finishDialog.isShow()){
+            finishDialog.dismiss();
+        }
+        if(recipeWorkFinishDialog != null && recipeWorkFinishDialog.isShow()){
+            recipeWorkFinishDialog.dismiss();
+        }
     }
 
 
@@ -576,7 +606,11 @@ public class ModelWorkActivity extends SteamBaseActivity {
 
         curDuration.setVisibility((isPreHeat && isWorking)?View.INVISIBLE:View.VISIBLE);
         //工作模式
-        curModel.setText(SteamModeEnum.match(segment.code));
+        if(isRecipeCooking()){
+            curModel.setText("清蒸鱼...");
+        }else{
+            curModel.setText(SteamModeEnum.match(segment.code));
+        }
         //设置温度
         curTemp.setText(getSpan(segment.defTemp,Constant.UNIT_TEMP));
         //设置的工作时间 (秒)
@@ -732,20 +766,44 @@ public class ModelWorkActivity extends SteamBaseActivity {
             return;
         }
         finishDialog = new SteamCommonDialog(this);
-        finishDialog.setCancelText(R.string.steam_work_complete_add_time);
         finishDialog.setContentText(R.string.steam_work_complete);
+        finishDialog.setCancelText(R.string.steam_work_complete_add_time);
         finishDialog.setOKText(R.string.steam_common_step_complete);
         finishDialog.setListeners(v -> {
             finishDialog.dismiss();
             if(v.getId() == R.id.tv_ok){//完成
                 //切换到烹饪结束状态
                 //setFinishState();
-                sendWorkFinishCommand();
+                sendWorkFinishCommand(DIRECTIVE_OFFSET_WORK_FINISH);
             }else if(v.getId() == R.id.tv_cancel) {//加时
                 showOverTime = true;
                 showOverTimeDialog();
             }
         },R.id.tv_cancel,R.id.tv_ok);
+        finishDialog.show();
+    }
+
+    SteamErrorDialog recipeWorkFinishDialog;
+
+    /**
+     * 菜谱工作结束弹窗
+     */
+    private void showRecipeWorkFinishDialog(){
+        if(showOverTime || (recipeWorkFinishDialog != null && recipeWorkFinishDialog.isShow())){
+            return;
+        }
+        recipeWorkFinishDialog = new SteamErrorDialog(this);
+        recipeWorkFinishDialog.setContentText(R.string.steam_work_complete);
+       // recipeWorkFinishDialog.setCancelText(R.string.steam_work_complete_add_time);
+        recipeWorkFinishDialog.setOKText(R.string.steam_common_step_complete);
+        recipeWorkFinishDialog.setListeners(v -> {
+            recipeWorkFinishDialog.dismiss();
+            if(v.getId() == R.id.tv_ok){//完成
+                //切换到烹饪结束状态
+                //setFinishState();
+                sendWorkFinishCommand(DIRECTIVE_OFFSET_WORK_FINISH);
+            }
+        },R.id.tv_ok);
         finishDialog.show();
     }
 
@@ -771,7 +829,7 @@ public class ModelWorkActivity extends SteamBaseActivity {
                 sendOverTimeCommand(2*60);//TODO(先固定传递两分钟)
                 continueCreateCurve();
             }else if(v.getId() == R.id.tv_cancel) {//取消
-                sendWorkFinishCommand();
+                sendWorkFinishCommand(DIRECTIVE_OFFSET_WORK_FINISH);
                 //toCurveSavePage();
             }
         },R.id.tv_cancel,R.id.tv_ok);
@@ -782,6 +840,7 @@ public class ModelWorkActivity extends SteamBaseActivity {
      * 跳转到曲线保存界面
      */
     private void toCurveSavePage(){
+        dismissAllDialog();
         Intent intent = new Intent(this,CurveSaveActivity.class);
         intent.putExtra(Constant.CURVE_ID,curveId);
         startActivity(intent);

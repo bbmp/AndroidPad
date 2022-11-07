@@ -64,7 +64,7 @@ public class RecipeClassifyPage extends SteamBasePage {
                 SteamRecipe stoveRecipe = (SteamRecipe) adapter.getItem(position);
                 //Intent intent = new Intent(getContext(), RecipeDetailActivity.class);
                 Intent intent = new Intent(getContext(), RecipeModeActivityNew.class);
-                //intent.putExtra(StoveConstant.EXTRA_RECIPE_ID, stoveRecipe.id);
+                intent.putExtra(StoveConstant.EXTRA_RECIPE_ID, stoveRecipe.id);
                 intent.putExtra(SteamConstant.EXTRA_MODE_LIST,getModeBeans(stoveRecipe));
                 startActivity(intent);
             } catch (JSONException e) {

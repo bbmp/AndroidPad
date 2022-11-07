@@ -114,4 +114,7 @@ public interface Constant {
 
     String CURVE_ID = "curve_id";
 
+    String WORK_FROM = "work_from";
+
+
 }

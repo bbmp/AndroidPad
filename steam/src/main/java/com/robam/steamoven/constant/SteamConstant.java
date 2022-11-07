@@ -676,4 +676,9 @@ public class SteamConstant {
     public final static String setSteameOvenSwitchControl_Value = "setSteameOvenSwitchControl_Value";
 
 
+    public final static String STEAM_FLAG_STEAM = "steamingMode";//蒸模式
+    public final static String STEAM_FLAG_OVEN = "roastModel";//烤模式
+    public final static String STEAM_FLAG_FRY = "airfryFunction";//炸模式
+
+
 }

@@ -18,7 +18,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
-import com.robam.common.constant.ComnConstant;
+import com.robam.common.bean.MqttDirective;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.manager.DynamicLineChartManager;
 import com.robam.common.mqtt.MsgKeys;
@@ -33,7 +33,6 @@ import com.robam.steamoven.bean.SteamCurveDetail;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.SteamConstant;
-import com.robam.steamoven.constant.SteamModeEnum;
 import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.device.SteamAbstractControl;
@@ -42,10 +41,8 @@ import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.response.GetCurveDetailRes;
 import com.robam.steamoven.ui.dialog.SteamCommonDialog;
 import com.robam.steamoven.utils.MultiSegmentUtil;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -80,8 +77,16 @@ public class MultiWorkActivity extends SteamBaseActivity {
     private int directive_offset = 19000000;
     private static final int DIRECTIVE_OFFSET_END = 10;
     private static final int DIRECTIVE_OFFSET_PAUSE_CONTINUE = 20;
-    private static final int DIRECTIVE_OFFSET_OVER_TIME = 40;
     private static final int DIRECTIVE_OFFSET_WORK_FINISH = 60;
+    private static final int DIRECTIVE_OFFSET_GO_HOME = 80;
+
+    private int sourceId = 0;//0 - 多段设置 ； 1 - 曲线
+
+    private Handler autoFinishHandler = new Handler();
+    private Runnable autoFinishRun = () -> {
+        sendWorkFinishCommand(DIRECTIVE_OFFSET_GO_HOME);
+        goHome();
+    };
 
     @Override
     protected int getLayoutId() {
@@ -122,6 +127,22 @@ public class MultiWorkActivity extends SteamBaseActivity {
                 }
             }
         });
+
+        MqttDirective.getInstance().getDirective().observe(this, s -> {
+            switch (s - directive_offset){
+                case DIRECTIVE_OFFSET_END:
+                case DIRECTIVE_OFFSET_GO_HOME:
+                    goHome();
+                    break;
+                case DIRECTIVE_OFFSET_WORK_FINISH:
+                    toCurveSavePage();
+                    break;
+            }
+        });
+    }
+
+    private boolean isFromCurve(){
+        return sourceId == 1;
     }
 
     /**
@@ -146,11 +167,14 @@ public class MultiWorkActivity extends SteamBaseActivity {
                 updateSegmentInfo(steamOven);
                 break;
             case SteamStateConstant.WORK_STATE_WORKING_FINISH:
+                showWorkFinishDialog();
+                mHandler.removeCallbacks(runnable);
+                mHandler.removeCallbacksAndMessages(null);
+                autoFinishHandler.postDelayed(autoFinishRun,1000*60*5);
+                break;
+
 
         }
-        //cookDurationView.setText(getSpan(getTotalTime(steamOven),Constant.UNIT_TIME_MIN));
-        //更改开始/暂停按钮显示状态
-        //绘制曲线
     }
 
 
@@ -190,11 +214,11 @@ public class MultiWorkActivity extends SteamBaseActivity {
         }
         for(int i = startIndex ; i <= CUR_ITEM_VIEW_COUNT;i++){
             if(i == 1){
-                totalTime += steamOven.setTimeH * 256 + steamOven.setTime;//设置的工作时间 (秒)
+                totalTime += steamOven.restTimeH * 256 + steamOven.restTime;//设置的工作时间 (秒)
             }else if(i == 2){
-                totalTime += steamOven.setTimeH2 * 256 + steamOven.setTime2;//设置的工作时间 (秒)
+                totalTime += steamOven.restTimeH2 * 256 + steamOven.restTime2;//设置的工作时间 (秒)
             }else if(i == 3){
-                totalTime += steamOven.setTimeH3 * 256 + steamOven.setTime3;//设置的工作时间 (秒)
+                totalTime += steamOven.restTimeH3 * 256 + steamOven.restTime3;//设置的工作时间 (秒)
             }
         }
         return totalTime;
@@ -312,11 +336,22 @@ public class MultiWorkActivity extends SteamBaseActivity {
     protected void initData() {
         //获取上一个页面传递过来的参数
         multiSegments = getIntent().getParcelableArrayListExtra(Constant.SEGMENT_DATA_FLAG);
+        sourceId = getIntent().getIntExtra(Constant.WORK_FROM,0);
         setOptContent(multiSegments);
-        cookChart.setNoDataText(getResources().getString(R.string.steam_no_curve_data));
+        //cookChart.setNoDataText(getResources().getString(R.string.steam_no_curve_data));
         //setOptViewsState()
         preTotalTime = getTotalTime();
-        cookDurationView.setText(getSpan(preTotalTime,Constant.UNIT_TIME_MIN));
+        SteamOven steamOven = getSteamOven();
+        if(steamOven != null){
+            boolean isPreHeat = (steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT || steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT_PAUSE);
+            if(isPreHeat){
+                cookDurationView.setText(R.string.steam_preheating);
+            }else{
+                cookDurationView.setText(getSpan(preTotalTime,Constant.UNIT_TIME_MIN));
+            }
+        }else{
+            cookDurationView.setText(getSpan(preTotalTime,Constant.UNIT_TIME_MIN));
+        }
         getCookingData(getSteamOven().guid);
         initLineChart();
     }
@@ -393,7 +428,8 @@ public class MultiWorkActivity extends SteamBaseActivity {
         steamCommonDialog.setListeners(v -> {
             steamCommonDialog.dismiss();
             if(v.getId() == R.id.tv_ok){
-               goHome();
+               //goHome();
+                sendEndWorkCommand();
             }
         },R.id.tv_cancel,R.id.tv_ok);
         steamCommonDialog.show();
@@ -405,6 +441,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
     private void goHome() {
         Intent intent = new Intent(MultiWorkActivity.this,MainActivity.class);
         startActivity(intent);
+        finish();
     }
 
 
@@ -475,36 +512,36 @@ public class MultiWorkActivity extends SteamBaseActivity {
         setOptContent(multiSegments);
     }
 
-    private long curveId = 3432;
+    private long curveId = 0;
     //曲线详情
     private SteamCurveDetail panCurveDetail;
     //获取曲线详情
-    private void getCurveDetail() {
-        CloudHelper.getCurvebookDetail(this, curveId, GetCurveDetailRes.class, new RetrofitCallback<GetCurveDetailRes>() {
-            @Override
-            public void onSuccess(GetCurveDetailRes getCurveDetailRes) {
-                if (null != getCurveDetailRes && null != getCurveDetailRes.payload) {
-                    panCurveDetail = getCurveDetailRes.payload;
-                    //这里用了曲线名
-                    //tvRecipeName.setText(panCurveDetail.name);
-
-                    List<CurveStep> curveSteps = new ArrayList<>();
-                    if (null != panCurveDetail.stepList) {
-                        curveSteps.addAll(panCurveDetail.stepList);
-                        //tvStartCook.setVisibility(View.VISIBLE);
-                    }
-                    //rvStep3Adapter.setList(curveSteps);
-                    //画曲线
-                    drawCurve(panCurveDetail);
-                }
-            }
-
-            @Override
-            public void onFaild(String err) {
-
-            }
-        });
-    }
+//    private void getCurveDetail() {
+//        CloudHelper.getCurvebookDetail(this, curveId, GetCurveDetailRes.class, new RetrofitCallback<GetCurveDetailRes>() {
+//            @Override
+//            public void onSuccess(GetCurveDetailRes getCurveDetailRes) {
+//                if (null != getCurveDetailRes && null != getCurveDetailRes.payload) {
+//                    panCurveDetail = getCurveDetailRes.payload;
+//                    //这里用了曲线名
+//                    //tvRecipeName.setText(panCurveDetail.name);
+//
+//                    List<CurveStep> curveSteps = new ArrayList<>();
+//                    if (null != panCurveDetail.stepList) {
+//                        curveSteps.addAll(panCurveDetail.stepList);
+//                        //tvStartCook.setVisibility(View.VISIBLE);
+//                    }
+//                    //rvStep3Adapter.setList(curveSteps);
+//                    //画曲线
+//                    drawCurve(panCurveDetail);
+//                }
+//            }
+//
+//            @Override
+//            public void onFaild(String err) {
+//
+//            }
+//        });
+//    }
 
     //曲线绘制
     private void drawCurve(SteamCurveDetail panCurveDetail) {
@@ -687,6 +724,8 @@ public class MultiWorkActivity extends SteamBaseActivity {
         }
         if(getDeviceParamsRes == null || getDeviceParamsRes.payload == null || getDeviceParamsRes.payload.temperatureCurveParams == null){
             //initLineChart();
+            dm.setAxisMaximum(maxYValue);
+            continueCreateCurve();
             return;
         }
 
@@ -694,6 +733,8 @@ public class MultiWorkActivity extends SteamBaseActivity {
         Iterator<String> keys = jsonObject.keys();
         if(keys == null || !keys.hasNext()){
             //initLineChart();
+            dm.setAxisMaximum(maxYValue);
+            continueCreateCurve();
             return;
         }
         while (keys.hasNext()){
@@ -724,6 +765,67 @@ public class MultiWorkActivity extends SteamBaseActivity {
         //initLineChart();
         dm.setAxisMaximum(maxYValue);
         continueCreateCurve();
+    }
+
+    SteamCommonDialog finishDialog;
+    private boolean showOverTime = false;
+    private void showWorkFinishDialog(){
+        if(showOverTime || (finishDialog != null && finishDialog.isShow())){
+            return;
+        }
+        finishDialog = new SteamCommonDialog(this);
+        finishDialog.setContentText(R.string.steam_work_complete);
+        finishDialog.setOKText(R.string.steam_common_step_complete);
+        finishDialog.setCancelText(R.string.steam_go_home);
+        finishDialog.setListeners(v -> {
+            finishDialog.dismiss();
+            if(v.getId() == R.id.tv_ok){//完成
+                //去往烹饪结束页面
+                sendWorkFinishCommand(DIRECTIVE_OFFSET_WORK_FINISH);
+            }else if(v.getId() == R.id.tv_cancel) {//回到主页
+                sendWorkFinishCommand(DIRECTIVE_OFFSET_GO_HOME);
+                showOverTime = true;
+            }
+        },R.id.tv_cancel,R.id.tv_ok);
+        finishDialog.show();
+    }
+
+    /**
+     * 工作结束，发送命令
+     */
+    private void sendWorkFinishCommand(int code){
+        Map commonMap = SteamCommandHelper.getCommonMap(MsgKeys.setDeviceAttribute_Req);
+        commonMap.put(SteamConstant.BS_TYPE , SteamConstant.BS_TYPE_1) ;
+        commonMap.put(SteamConstant.ARGUMENT_NUMBER, 1);
+        //一体机工作控制
+        commonMap.put(SteamConstant.workCtrlKey, 2);
+        commonMap.put(SteamConstant.workCtrlLength, 1);
+        commonMap.put(SteamConstant.workCtrl, SteamConstant.WORK_CTRL_STOP);//结束工作
+        SteamCommandHelper.getInstance().sendCommonMsgForLiveData(commonMap,directive_offset + code);
+    }
+
+    /**
+     * 跳转到曲线保存界面
+     */
+    private void toCurveSavePage(){
+        Intent intent = new Intent(this,CurveSaveActivity.class);
+        intent.putExtra(Constant.CURVE_ID,curveId);
+        startActivity(intent);
+        finish();
+    }
+
+    /**
+     * 结束工作，发送命令
+     */
+    private void sendEndWorkCommand(){
+        Map commonMap = SteamCommandHelper.getCommonMap(MsgKeys.setDeviceAttribute_Req);
+        commonMap.put(SteamConstant.BS_TYPE , SteamConstant.BS_TYPE_1) ;
+        commonMap.put(SteamConstant.ARGUMENT_NUMBER, 1);
+        //一体机工作控制
+        commonMap.put(SteamConstant.workCtrlKey, 4);
+        commonMap.put(SteamConstant.workCtrlLength, 1);
+        commonMap.put(SteamConstant.workCtrl, SteamConstant.WORK_CTRL_STOP);//结束工作
+        SteamCommandHelper.getInstance().sendCommonMsgForLiveData(commonMap,directive_offset + DIRECTIVE_OFFSET_END);
     }
 
 
