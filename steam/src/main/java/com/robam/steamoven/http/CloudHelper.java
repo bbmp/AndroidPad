@@ -6,12 +6,16 @@ import com.robam.common.http.ILife;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.http.RetrofitClient;
 import com.robam.common.utils.LogUtils;
+import com.robam.steamoven.bean.SteamCurveDetail;
 import com.robam.steamoven.constant.HostServer;
 import com.robam.steamoven.request.GetCurveDetailReq;
 import com.robam.steamoven.request.GetCurveReq;
 import com.robam.steamoven.request.GetDeviceParamsReq;
 import com.robam.steamoven.request.GetRecipeDetailReq;
 import com.robam.steamoven.request.GetUserReq;
+import com.robam.steamoven.request.SaveCurveDetailReq;
+
+import java.io.Serializable;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -69,6 +73,22 @@ public class CloudHelper {
         RequestBody requestBody =
                 RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
         Call<ResponseBody> call = svr.getRecipeDetail(requestBody);
+        enqueue(iLife, entity, call, callback);
+    }
+
+    public static <T extends BaseResponse> void saveCurveData(ILife iLife, SteamCurveDetail payLoad, Class<T> entity, final RetrofitCallback<T> callback) {
+        String json = new SaveCurveDetailReq(payLoad).toString();
+        RequestBody requestBody =
+                RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
+        Call<ResponseBody> call = svr.saveCurveData(requestBody);
+        enqueue(iLife, entity, call, callback);
+    }
+
+    public static <T extends BaseResponse> void saveCurveStepData(ILife iLife, SteamCurveDetail payLoad, Class<T> entity, final RetrofitCallback<T> callback) {
+        String json = new SaveCurveDetailReq(payLoad).toString();
+        RequestBody requestBody =
+                RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
+        Call<ResponseBody> call = svr.saveCurveStepData(requestBody);
         enqueue(iLife, entity, call, callback);
     }
 

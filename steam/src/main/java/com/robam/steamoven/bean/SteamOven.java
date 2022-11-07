@@ -551,23 +551,23 @@ public class SteamOven extends Device {
             this.restTimeH = (short) msg.optInt(SteamConstant.restTimeH);
             this.steam = (short) msg.optInt(SteamConstant.steam);
 
-            this.mode2 = (short) msg.optInt(SteamConstant.mode + curSectionNbr);
-            this.setUpTemp2 = (short) msg.optInt(SteamConstant.setUpTemp + curSectionNbr );
-            this.setDownTemp2 = (short) msg.optInt(SteamConstant.setDownTemp + curSectionNbr );
-            this.setTime2 = (short) msg.optInt(SteamConstant.setTime + curSectionNbr );
-            this.setTimeH2 = (short) msg.optInt(SteamConstant.setTimeH + curSectionNbr );
-            this.restTime2 = (short) msg.optInt(SteamConstant.restTime + curSectionNbr);
-            this.restTimeH2 = (short) msg.optInt(SteamConstant.restTimeH +curSectionNbr);
-            this.steam2 = (short) msg.optInt(SteamConstant.steam + curSectionNbr);
+            this.mode2 = (short) msg.optInt(SteamConstant.mode2);
+            this.setUpTemp2 = (short) msg.optInt(SteamConstant.setUpTemp2 );
+            this.setDownTemp2 = (short) msg.optInt(SteamConstant.setDownTemp2 );
+            this.setTime2 = (short) msg.optInt(SteamConstant.setTime2);
+            this.setTimeH2 = (short) msg.optInt(SteamConstant.setTime2 );
+            this.restTime2 = (short) msg.optInt(SteamConstant.restTime2);
+            this.restTimeH2 = (short) msg.optInt(SteamConstant.restTimeH2);
+            this.steam2 = (short) msg.optInt(SteamConstant.steam2);
 
-            this.mode3 = (short) msg.optInt(SteamConstant.mode + curSectionNbr);
-            this.setUpTemp3 = (short) msg.optInt(SteamConstant.setUpTemp + curSectionNbr );
-            this.setDownTemp3 = (short) msg.optInt(SteamConstant.setDownTemp + curSectionNbr );
-            this.setTime3 = (short) msg.optInt(SteamConstant.setTime + curSectionNbr );
-            this.setTimeH3 = (short) msg.optInt(SteamConstant.setTimeH + curSectionNbr );
-            this.restTime3 = (short) msg.optInt(SteamConstant.restTime + curSectionNbr);
-            this.restTimeH3 = (short) msg.optInt(SteamConstant.restTimeH +curSectionNbr);
-            this.steam3 = (short) msg.optInt(SteamConstant.steam + curSectionNbr);
+            this.mode3 = (short) msg.optInt(SteamConstant.mode3);
+            this.setUpTemp3 = (short) msg.optInt(SteamConstant.setUpTemp3 );
+            this.setDownTemp3 = (short) msg.optInt(SteamConstant.setDownTemp3 );
+            this.setTime3 = (short) msg.optInt(SteamConstant.setTime3 );
+            this.setTimeH3 = (short) msg.optInt(SteamConstant.setTimeH3 );
+            this.restTime3 = (short) msg.optInt(SteamConstant.restTime3);
+            this.restTimeH3 = (short) msg.optInt(SteamConstant.restTimeH3);
+            this.steam3 = (short) msg.optInt(SteamConstant.steam3);
             //onStatusChanged();
         }else if (key==MsgKeys.getDeviceAlarmEventReport){
             this.faultCode = (short) msg.optInt(SteamConstant.faultCode);

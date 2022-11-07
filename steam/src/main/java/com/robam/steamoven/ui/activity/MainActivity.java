@@ -20,9 +20,11 @@ import com.robam.steamoven.bean.MultiSegment;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.SteamModeEnum;
+import com.robam.steamoven.constant.SteamOvenSteamEnum;
 import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.protocol.SteamCommandHelper;
+import com.robam.steamoven.utils.MultiSegmentUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,18 +90,41 @@ public class MainActivity extends SteamBaseActivity {
             case SteamStateConstant.WORK_STATE_PREHEAT_PAUSE:
             case SteamStateConstant.WORK_STATE_WORKING:
             case SteamStateConstant.WORK_STATE_WORKING_PAUSE:
-                Intent intent = new Intent(this,ModelWorkActivity.class);
-                List<MultiSegment> list = new ArrayList<>();
-                list.add(getResult(steamOven));
-                intent.putParcelableArrayListExtra(Constant.SEGMENT_DATA_FLAG, (ArrayList<? extends Parcelable>) list);
-                startActivity(intent);
+                if(steamOven.sectionNumber >= 2){
+                    Intent intent = new Intent(this,MultiWorkActivity.class);
+                    List<MultiSegment> list = getMultiWorkResult(steamOven);
+                    intent.putParcelableArrayListExtra(Constant.SEGMENT_DATA_FLAG, (ArrayList<? extends Parcelable>) list);
+                    startActivity(intent);
+                }else{
+                    Intent intent = new Intent(this,ModelWorkActivity.class);
+                    List<MultiSegment> list = new ArrayList<>();
+                    list.add(getResult(steamOven));
+                    intent.putParcelableArrayListExtra(Constant.SEGMENT_DATA_FLAG, (ArrayList<? extends Parcelable>) list);
+                    startActivity(intent);
+                }
+
                 break;
         }
     }
 
+    /**
+     * 获取多段数据集合
+     * @return
+     */
+    private List<MultiSegment> getMultiWorkResult(SteamOven steamOven){
+        List<MultiSegment> multiSegments = new ArrayList<>();
+        for(int i = 0;i < steamOven.sectionNumber;i++){
+            multiSegments.add(MultiSegmentUtil.getCurSegment(steamOven,i+1));
+        }
+        return multiSegments;
+    }
 
 
-
+    /**
+     * 获取当前运行模式数据对象
+     * @param steamOven
+     * @return
+     */
     private MultiSegment getResult(SteamOven steamOven){
         MultiSegment segment = new MultiSegment();
         segment.code = steamOven.mode;

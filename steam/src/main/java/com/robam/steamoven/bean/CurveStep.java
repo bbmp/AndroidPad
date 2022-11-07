@@ -18,4 +18,11 @@ public class CurveStep implements Serializable {
     public int needTime;
     //已经过去的时间 用于显示
     public int elapsedTime;
+
+    public int status;
+
+    public int time = 0;
+    public int playTime = 0;
+    public boolean isPlayed = false;
+    public boolean isShow = false;
 }

@@ -13,13 +13,21 @@ public class SteamCurveDetail implements Serializable {
     //温度
     public String temperatureCurveParams;
     //
-    public int needTime;
+    public String needTime;
     //步骤
     public List<CurveStep> stepList;
     //设备参数
     public String deviceParams;
     //是否选中,用于显示
     private boolean selected;
+
+    public String  userId;
+
+    public String deviceGuid;
+
+    public String curveSettingParams;
+
+    public long gmtCreate;
 
     public SteamCurveDetail(String name) {
         this.name = name;

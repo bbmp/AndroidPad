@@ -8,7 +8,6 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.SuperscriptSpan;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -85,11 +84,14 @@ public class ModelWorkActivity extends SteamBaseActivity {
     private static final int DIRECTIVE_OFFSET_END = 10;
     private static final int DIRECTIVE_OFFSET_PAUSE_CONTINUE = 20;
     private static final int DIRECTIVE_OFFSET_OVER_TIME = 40;
+    private static final int DIRECTIVE_OFFSET_WORK_FINISH = 60;
+
 
     //数据集合
     private List entryList = new ArrayList<Entry>();
     private SteamOverTimeDialog timeDialog;
-    private float maxYValue = 0;
+    private float maxYValue = 100;
+    private long curveId;
 
 
     @Override
@@ -122,6 +124,9 @@ public class ModelWorkActivity extends SteamBaseActivity {
                     break;
                 case DIRECTIVE_OFFSET_OVER_TIME:
                     //TODO(加时命令发送成功，开启加时状态)
+                    break;
+                case DIRECTIVE_OFFSET_WORK_FINISH:
+                    toCurveSavePage();
                     break;
             }
         });
@@ -158,11 +163,9 @@ public class ModelWorkActivity extends SteamBaseActivity {
         dm.setLabelCount(5, 5);
         dm.setAxisLine(true, false);
         dm.setGridLine(false, false);
-        dm.setAxisMaximum(maxYValue+50);
+        dm.setAxisMaximum(maxYValue);
         dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.steam_chart), entryList, true, false);
         cookChart.notifyDataSetChanged();
-        continueCreateCurve();
-
     }
 
     private Runnable runnable;
@@ -213,12 +216,18 @@ public class ModelWorkActivity extends SteamBaseActivity {
         mHandler.post(runnable);
     }
 
-    protected void query(String guid) {
+    private Handler dataHandler = new Handler();
+    protected void getCookingData(final String guid) {
         //mGuid 暂时写死241
         CloudHelper.getCurveBookForDevice(this, guid, GetCurveDetailRes.class,
                 new RetrofitCallback<GetCurveDetailRes>() {
                     @Override
                     public void onSuccess(GetCurveDetailRes getDeviceParamsRes) {
+                        dataHandler.removeCallbacksAndMessages(null);
+                        if(!isDestroyed() && (getDeviceParamsRes == null || getDeviceParamsRes.payload == null)){
+                            dataHandler.postDelayed(()->{getCookingData(guid);},3000);
+                            return;
+                        }
                         try {
                             parserCureData(getDeviceParamsRes);
                         } catch (JSONException e) {
@@ -228,7 +237,7 @@ public class ModelWorkActivity extends SteamBaseActivity {
 
                     @Override
                     public void onFaild(String err) {
-                        initLineChart();
+                        //initLineChart();
                     }
         });
     }
@@ -239,14 +248,18 @@ public class ModelWorkActivity extends SteamBaseActivity {
      * @throws JSONException
      */
     private void parserCureData(GetCurveDetailRes getDeviceParamsRes) throws JSONException {
+        if(getDeviceParamsRes != null && getDeviceParamsRes.payload != null){
+            curveId = getDeviceParamsRes.payload.curveCookbookId;
+        }
         if(getDeviceParamsRes == null || getDeviceParamsRes.payload == null || getDeviceParamsRes.payload.temperatureCurveParams == null){
-            initLineChart();
+            //initLineChart();
             return;
         }
+
         JSONObject jsonObject = new JSONObject(getDeviceParamsRes.payload.temperatureCurveParams);
         Iterator<String> keys = jsonObject.keys();
         if(keys == null || !keys.hasNext()){
-            initLineChart();
+            //initLineChart();
             return;
         }
         while (keys.hasNext()){
@@ -274,13 +287,16 @@ public class ModelWorkActivity extends SteamBaseActivity {
         if(entryList.size() > 0){
             curTime = (int) ((Entry)entryList.get(entryList.size() -1)).getX();
         }
-        initLineChart();
+        //initLineChart();
+        dm.setAxisMaximum(maxYValue);
+        continueCreateCurve();
     }
 
 
     private void updateViews(SteamOven steamOven){
         switch (steamOven.workState){
-            case SteamStateConstant.WORK_STATE_LEISURE:
+            case SteamStateConstant.WORK_STATE_LEISURE://空闲
+                break;
             case SteamStateConstant.WORK_STATE_APPOINTMENT:
                 break;
             case SteamStateConstant.WORK_STATE_PREHEAT:
@@ -410,8 +426,8 @@ public class ModelWorkActivity extends SteamBaseActivity {
             cookChart.setNoDataText(getResources().getString(R.string.steam_no_curve_data));
             initViewInfo(multiSegments.get(0));
         }
-        query(getSteamOven().guid);
-
+        getCookingData(getSteamOven().guid);
+        initLineChart();
     }
 
     @Override
@@ -477,7 +493,7 @@ public class ModelWorkActivity extends SteamBaseActivity {
         commonMap.put(SteamConstant.workCtrlKey, 2);
         commonMap.put(SteamConstant.workCtrlLength, 1);
         commonMap.put(SteamConstant.workCtrl, SteamConstant.WORK_CTRL_STOP);//结束工作
-        SteamCommandHelper.getInstance().sendCommonMsgForLiveData(commonMap,directive_offset + DIRECTIVE_OFFSET_END);
+        SteamCommandHelper.getInstance().sendCommonMsgForLiveData(commonMap,directive_offset + DIRECTIVE_OFFSET_WORK_FINISH);
     }
 
     /**
@@ -637,7 +653,6 @@ public class ModelWorkActivity extends SteamBaseActivity {
         multiSegments = data.getParcelableExtra(Constant.SEGMENT_DATA_FLAG);
     }
 
-    private long curveId = 3432;
     //曲线详情
     private SteamCurveDetail panCurveDetail;
     //获取曲线详情
@@ -726,7 +741,6 @@ public class ModelWorkActivity extends SteamBaseActivity {
                 //切换到烹饪结束状态
                 //setFinishState();
                 sendWorkFinishCommand();
-                toCurveSavePage();
             }else if(v.getId() == R.id.tv_cancel) {//加时
                 showOverTime = true;
                 showOverTimeDialog();
@@ -758,19 +772,20 @@ public class ModelWorkActivity extends SteamBaseActivity {
                 continueCreateCurve();
             }else if(v.getId() == R.id.tv_cancel) {//取消
                 sendWorkFinishCommand();
-                toCurveSavePage();
+                //toCurveSavePage();
             }
         },R.id.tv_cancel,R.id.tv_ok);
         timeDialog.show();
     }
 
     /**
-     * 跳转到工作结束页面
+     * 跳转到曲线保存界面
      */
     private void toCurveSavePage(){
-        //TODO(传递参数待定)
         Intent intent = new Intent(this,CurveSaveActivity.class);
+        intent.putExtra(Constant.CURVE_ID,curveId);
         startActivity(intent);
+        finish();
     }
 
     private void setFinishState(){
@@ -825,6 +840,8 @@ public class ModelWorkActivity extends SteamBaseActivity {
         }
         SteamCommandHelper.getInstance().sendCommonMsgForLiveData(commonMap,DIRECTIVE_OFFSET_OVER_TIME+directive_offset);
     }
+
+
 
     @Override
     protected void onDestroy() {

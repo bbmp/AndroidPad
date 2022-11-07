@@ -112,4 +112,6 @@ public interface Constant {
 
     String RECIPE_MODEL_RULE = "recipe_model_rule";
 
+    String CURVE_ID = "curve_id";
+
 }

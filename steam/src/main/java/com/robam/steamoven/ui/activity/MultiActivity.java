@@ -372,8 +372,8 @@ public class MultiActivity extends SteamBaseActivity {
         }else if(id == R.id.multi_item_del){//删除按钮被点击
             showDealDialog(view);
         }else if(id == R.id.btn_start){
-            toWorkAc();
-            //startWork();
+            //toWorkAc();
+            startWork();
         }
     }
 
@@ -565,14 +565,15 @@ public class MultiActivity extends SteamBaseActivity {
         commonMap.put(SteamConstant.workCtrlLength, 1);
         commonMap.put(SteamConstant.workCtrl, 1);
         //预约时间
-//                commonMap.put(SteamConstant.setOrderMinutesKey, 5);
-//                commonMap.put(SteamConstant.setOrderMinutesLength, 1);
-//                commonMap.put(SteamConstant.setOrderMinutes, 0);
+        // commonMap.put(SteamConstant.setOrderMinutesKey, 5);
+        //commonMap.put(SteamConstant.setOrderMinutesLength, 1);
+        //commonMap.put(SteamConstant.setOrderMinutes, 0);
+
         //段数
         commonMap.put(SteamConstant.sectionNumberKey, 100) ;
         commonMap.put(SteamConstant.sectionNumberLength, 1) ;
         commonMap.put(SteamConstant.sectionNumber, multiSegments.size() ) ;
-//                commonMap.put(SteamConstant.sectionNumber, recipeStepList.size() ) ;
+        // commonMap.put(SteamConstant.sectionNumber, recipeStepList.size() ) ;
         for (int i = 0; i < multiSegments.size(); i++) {
             MultiSegment bean = multiSegments.get(i);
 
@@ -594,13 +595,13 @@ public class MultiActivity extends SteamBaseActivity {
             commonMap.put(SteamConstant.setDownTemp + i ,bean.downTemp);
 
             //时间
-//                    int time =Integer.parseInt(bean.time)*60;
+            // int time =Integer.parseInt(bean.time)*60;
             //TODO(检查时间传递是否正确)
-            int time = bean.duration;//(秒)
+            int time = bean.duration * 60;//(秒)
             commonMap.put(SteamConstant.setTimeKey + i , 104 + i *10 );
             commonMap.put(SteamConstant.setTimeLength + i, 1);
             short lowTime = time > 255 ? (short) (time & 0Xff):(short)time;
-//                    final short lowTime = time > 255 ? (short) (time & 0Xff):(short)time;
+            //final short lowTime = time > 255 ? (short) (time & 0Xff):(short)time;
             if (time<=255){
                 commonMap.put(SteamConstant.setTime0b+i, lowTime);
             }else{
@@ -611,14 +612,14 @@ public class MultiActivity extends SteamBaseActivity {
                 short htime = (short) ((time >> 8) & 0Xff);
                 commonMap.put(SteamConstant.setTime1b+i, htime);
             }
-//                    commonMap.put(SteamConstant.setTime + i, bean.getTime()*60);
-            //TODO(检测蒸汽量传递是否正确)
+            //commonMap.put(SteamConstant.setTime + i, bean.getTime()*60);
+            //TODO(检测蒸汽量传递是否正确,暂时传递0)
             commonMap.put(SteamConstant.steamKey + i, 106 + i *10 );
             commonMap.put(SteamConstant.steamLength + i , 1);
-            commonMap.put(SteamConstant.steam + i, bean.steam);
-
-            SteamCommandHelper.getInstance().sendCommonMsgForLiveData(commonMap,directive_offset+MsgKeys.setDeviceAttribute_Req);
+            //commonMap.put(SteamConstant.steam + i, bean.steam);
+            commonMap.put(SteamConstant.steam + i, 0);
         }
+        SteamCommandHelper.getInstance().sendCommonMsgForLiveData(commonMap,directive_offset+MsgKeys.setDeviceAttribute_Req);
     }
 
 
