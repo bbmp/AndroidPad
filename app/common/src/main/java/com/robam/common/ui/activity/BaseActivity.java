@@ -99,6 +99,10 @@ public abstract class BaseActivity extends AbsActivity implements ActivityAction
     protected void onDestroy() {
         super.onDestroy();
         isDestroyed = true;
+        //关闭延时关机
+        IPublicVentilatorApi iPublicVentilatorApi = ModulePubliclHelper.getModulePublic(IPublicVentilatorApi.class, IPublicVentilatorApi.VENTILATOR_PUBLIC);
+        if (null != iPublicVentilatorApi)
+            iPublicVentilatorApi.closeDelayDialog();
     }
 
     @Override

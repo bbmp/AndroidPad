@@ -261,7 +261,7 @@ public class HomeVentilator {
             public void run() {
                 shutDownHint();
             }
-        }, 1000); //延时，防止自动跳转时覆盖
+        }, 2000); //延时，防止自动跳转时覆盖
     }
 
     private DelayCloseDialog delayCloseDialog;

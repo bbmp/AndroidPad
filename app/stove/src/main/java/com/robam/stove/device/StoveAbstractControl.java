@@ -56,8 +56,8 @@ public class StoveAbstractControl implements StoveFunction{
     }
 
     @Override
-    public void setStoveTemp(String targetGuid, int stoveId, int temp, int timingTime) {
-        function.setStoveTemp(targetGuid, stoveId, temp, timingTime);
+    public void setStoveMode(String targetGuid, int stoveId, int mode, int timingTime) {
+        function.setStoveMode(targetGuid, stoveId, mode, timingTime);
     }
 
     @Override

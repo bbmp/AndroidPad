@@ -76,7 +76,7 @@ public class TimeSelectPage extends StoveBasePage {
 
     @Override
     protected void initData() {
-        rvTimeAdapter = new RvTimeAdapter(1);
+        rvTimeAdapter = new RvTimeAdapter();
 //        rvTempAdapter = new RvTimeAdapter(0);
 
         updateTimeTab(curMode);

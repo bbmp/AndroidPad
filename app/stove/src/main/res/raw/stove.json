@@ -22,9 +22,9 @@
       {
         "code": 3,
         "name": "煎炸",
-        "defTemp": 150,
-        "minTemp": 100,
-        "maxTemp" : 200
+        "defTemp": 2,
+        "minTemp": 1,
+        "maxTemp" : 3
       }
     ]
   },

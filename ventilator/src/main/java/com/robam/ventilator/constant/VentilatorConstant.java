@@ -30,6 +30,7 @@ public class VentilatorConstant {
     public final static String PRecipe3 = "p_recipe3";//无人锅p档菜谱3
     public final static String PRecipe4 = "p_recipe4";//无人锅p档菜谱4
     public final static String PRecipe5 = "p_recipe5";//无人锅p档菜谱5
+    public final static String BleType = "ble_type";//蓝牙品类
 
 
     //开关机

@@ -63,8 +63,6 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
     private int curMode;
     //炉头id
     private int stoveId;
-    //定时时间
-    private int timeTime;
 
     @Override
     protected int getLayoutId() {
@@ -121,11 +119,11 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
                         if (null != openDialog && openDialog.isShow()) {
                             if (stoveId == IPublicStoveApi.STOVE_LEFT && stove.leftStatus == StoveConstant.WORK_WORKING) { //左灶已点火
                                 openDialog.dismiss();
-                                StoveAbstractControl.getInstance().setTiming(stove.guid, (byte) IPublicStoveApi.STOVE_LEFT, (short) timeTime); //定时时间
+                                StoveAbstractControl.getInstance().setStoveMode(stove.guid, (byte) IPublicStoveApi.STOVE_LEFT, stove.leftWorkMode, stove.leftTimeHours); //定时时间
                                 startActivity(MainActivity.class); //回到首页
                             } else if (stoveId == IPublicStoveApi.STOVE_RIGHT && stove.rightStatus == StoveConstant.WORK_WORKING) { //右灶已点火
                                 openDialog.dismiss();
-                                StoveAbstractControl.getInstance().setTiming(stove.guid, (byte) IPublicStoveApi.STOVE_RIGHT, (short) timeTime); //定时时间
+                                StoveAbstractControl.getInstance().setStoveMode(stove.guid, (byte) IPublicStoveApi.STOVE_RIGHT, stove.rightWorkMode, stove.rightTimeHours); //定时时间
                                 startActivity(MainActivity.class);
                             }
                         }
@@ -242,17 +240,15 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
                     //进入工作状态
                     //选择左灶
                     stoveId = IPublicStoveApi.STOVE_LEFT;
-                    timeTime = Integer.parseInt(timeSelectPage.getCurTime()) * 60;
-//                    stove1.leftWorkMode = curMode;
-//                    stove1.leftWorkHours = timeSelectPage.getCurTime();
+                    stove1.leftWorkMode = curMode;
+                    stove1.leftTimeHours = Integer.parseInt(timeSelectPage.getCurTime()) * 60; //定时时长
 //                    stove1.leftWorkTemp = tempSelectPage.getCurTemp();
                 } else {
                     openDialog.setContentText(R.string.stove_open_right_hint);
                     //选择右灶
                     stoveId = IPublicStoveApi.STOVE_RIGHT;
-                    timeTime = Integer.parseInt(timeSelectPage.getCurTime()) * 60;
-//                    stove1.rightWorkMode = curMode;
-//                    stove1.rightWorkHours = timeSelectPage.getCurTime();
+                    stove1.rightWorkMode = curMode;
+                    stove1.rightTimeHours = Integer.parseInt(timeSelectPage.getCurTime()) * 60;
 //                    stove1.rightWorkTemp = tempSelectPage.getCurTemp();
                 }
                 openDialog.show();

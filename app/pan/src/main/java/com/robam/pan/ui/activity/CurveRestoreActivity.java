@@ -250,8 +250,10 @@ public class CurveRestoreActivity extends PanBaseActivity {
                 }
                 if (pan.mode != 2 && pan.mode != 3) { //锅未开始工作
 
-                    if (curTime > 0) //已经开始,中途停止
-                        curTime++;
+                    if (curTime > 0) {//已经开始,中途停止
+                        restoreComplete(true);
+                        return;
+                    }
 
                     PanAbstractControl.getInstance().queryAttribute(pan.guid); //查询锅状态
                     mHandler.postDelayed(runnable, 1000L);
@@ -265,17 +267,15 @@ public class CurveRestoreActivity extends PanBaseActivity {
                     restoreComplete(true);
                     return;
                 }
-                if ((curTime % 2) == 0) {
-                    PanAbstractControl.getInstance().queryAttribute(pan.guid); //查询锅状态
-                    if (null != iPublicStoveApi)
-                        iPublicStoveApi.queryAttribute(stove.guid); //查询灶状态
-                }
+
                 CurveStep curveStep = rvStep2Adapter.getData().get(curStep);
                 //曲线绘制
                 try {
                     curTime++; //总时间
-//                    if (params.containsKey(curTime + "")) {
-//                        String[] data = params.get(curTime + "").split("-");
+                    if ((curTime % 2) == 0) { //每隔2s刷新
+                        PanAbstractControl.getInstance().queryAttribute(pan.guid); //查询锅状态
+                        if (null != iPublicStoveApi)
+                            iPublicStoveApi.queryAttribute(stove.guid); //查询灶状态
                         restoreList.add(new Entry(curTime, pan.panTemp));//温度
                         cookChart.invalidate();
                         if (null != stove) {
@@ -286,7 +286,7 @@ public class CurveRestoreActivity extends PanBaseActivity {
                         }
                         if (null != pan)
                             tvTemp.setText("温度：" + pan.panTemp + "℃");
-//                    }
+                    }
                 } catch (Exception e) {}
 
                 if (curveStep.needTime > 0) {
@@ -413,10 +413,6 @@ public class CurveRestoreActivity extends PanBaseActivity {
         closeCountDown();
         if (null != stopDialog && stopDialog.isShow())
             stopDialog.dismiss();
-        //关闭延时关机
-        IPublicVentilatorApi iPublicVentilatorApi = ModulePubliclHelper.getModulePublic(IPublicVentilatorApi.class, IPublicVentilatorApi.VENTILATOR_PUBLIC);
-        if (null != iPublicVentilatorApi)
-            iPublicVentilatorApi.closeDelayDialog();
     }
 
     private void closeCountDown() {
