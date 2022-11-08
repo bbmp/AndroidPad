@@ -7,12 +7,14 @@ import androidx.navigation.Navigation;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.constant.ComnConstant;
-import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.StringUtils;
+import com.robam.common.utils.ToastUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.bean.MultiSegment;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.Constant;
+import com.robam.steamoven.constant.SteamModeEnum;
 import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.protocol.SteamCommandHelper;
@@ -32,9 +34,7 @@ public class MainActivity extends SteamBaseActivity {
     protected void initView() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_stream_activity_main);
         Navigation.setViewNavController(findViewById(R.id.nav_host_stream_activity_main), navController);
-        getContentView().postDelayed(()->{
-            showRightCenter();
-        }, Constant.TIME_DELAYED);
+        getContentView().postDelayed(()-> showRightCenter(), Constant.TIME_DELAYED);
         AccountInfo.getInstance().getGuid().observe(this, s -> {
             for (Device device: AccountInfo.getInstance().deviceList) {
                 if (device.guid.equals(s) && device instanceof SteamOven && device.guid.equals(HomeSteamOven.getInstance().guid)) {
@@ -60,20 +60,29 @@ public class MainActivity extends SteamBaseActivity {
 
     @Override
     protected void initData() {
-        if (null != getIntent())
+        if (null != getIntent()){
             HomeSteamOven.getInstance().guid = getIntent().getStringExtra(ComnConstant.EXTRA_GUID);
-        LogUtils.e("HomeSteamOven guid " + HomeSteamOven.getInstance().guid);
+        }
+        //状态检查
+        if(StringUtils.isBlank(HomeSteamOven.getInstance().guid)){
+            ToastUtils.showLong(this,R.string.steam_guid_prompt);
+            finish();
+        }
 
     }
 
+    /**
+     * 跳转到指定业务页面
+     * @param steamOven
+     */
     private void toWorkPage(SteamOven steamOven){
         switch (steamOven.workState){
             case SteamStateConstant.WORK_STATE_LEISURE:
                 break;
-            case SteamStateConstant.WORK_STATE_APPOINTMENT:
+            case SteamStateConstant.WORK_STATE_APPOINTMENT://预约页面
                 HomeSteamOven.getInstance().orderTime = steamOven.orderLeftTime;
                 Intent appointIntent = new Intent(this,AppointingActivity.class);
-                MultiSegment segment = getResult(steamOven);
+                MultiSegment segment = MultiSegmentUtil.getSkipResult(steamOven);
                 segment.workRemaining = steamOven.orderLeftTime;
                 appointIntent.putExtra(Constant.SEGMENT_DATA_FLAG, segment);
                 startActivity(appointIntent);
@@ -82,22 +91,32 @@ public class MainActivity extends SteamBaseActivity {
             case SteamStateConstant.WORK_STATE_PREHEAT_PAUSE:
             case SteamStateConstant.WORK_STATE_WORKING:
             case SteamStateConstant.WORK_STATE_WORKING_PAUSE:
-                if(steamOven.sectionNumber >= 2){
-                    Intent intent = new Intent(this,MultiWorkActivity.class);
-                    List<MultiSegment> list = getMultiWorkResult(steamOven);
-                    intent.putParcelableArrayListExtra(Constant.SEGMENT_DATA_FLAG, (ArrayList<? extends Parcelable>) list);
+                //辅助模式工作页面
+                if(SteamModeEnum.isAuxModel(steamOven.mode)){
+                    Intent intent = new Intent(this,AuxModelWorkActivity.class);
+                    intent.putExtra(Constant.SEGMENT_DATA_FLAG,MultiSegmentUtil.getSkipResult(steamOven));
                     startActivity(intent);
-                }else{
-                    Intent intent = new Intent(this,ModelWorkActivity.class);
-                    List<MultiSegment> list = new ArrayList<>();
-                    list.add(getResult(steamOven));
-                    intent.putParcelableArrayListExtra(Constant.SEGMENT_DATA_FLAG, (ArrayList<? extends Parcelable>) list);
-                    startActivity(intent);
+                    return;
                 }
 
+                Intent intent;
+                List<MultiSegment> list;
+                if(steamOven.sectionNumber >= 2){
+                    //多段工作页面
+                    intent = new Intent(this, MultiWorkActivity.class);
+                    list = getMultiWorkResult(steamOven);
+                }else{
+                    //基础模式工作页面
+                    intent = new Intent(this, ModelWorkActivity.class);
+                    list = new ArrayList<>();
+                    list.add(MultiSegmentUtil.getSkipResult(steamOven));
+                }
+                intent.putParcelableArrayListExtra(Constant.SEGMENT_DATA_FLAG, (ArrayList<? extends Parcelable>) list);
+                startActivity(intent);
                 break;
         }
     }
+
 
     /**
      * 获取多段数据集合
@@ -110,35 +129,4 @@ public class MainActivity extends SteamBaseActivity {
         }
         return multiSegments;
     }
-
-
-    /**
-     * 获取当前运行模式数据对象
-     * @param steamOven
-     * @return
-     */
-    private MultiSegment getResult(SteamOven steamOven){
-        MultiSegment segment = new MultiSegment();
-        segment.code = steamOven.mode;
-        segment.model = "";
-        segment.steam = steamOven.steam;
-        segment.defTemp = steamOven.curTemp;
-        segment.downTemp = steamOven.setDownTemp;
-        int setTime = steamOven.setTimeH * 256 + steamOven.setTime;
-        segment.duration = setTime;
-
-        int outTime = steamOven.restTimeH * 256 + steamOven.restTime;
-        int restTimeF = (int) Math.floor(((outTime + 59f) / 60f));//剩余工作时间
-        segment.workRemaining =restTimeF*60;
-
-        boolean isPreHeat = (steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT || steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT_PAUSE);
-        segment.setWorkModel(isPreHeat?MultiSegment.COOK_STATE_PREHEAT:MultiSegment.WORK_MODEL_);
-
-        boolean isWorking = steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT || steamOven.workState == SteamStateConstant.WORK_STATE_WORKING;
-        segment.setCookState(isWorking?MultiSegment.COOK_STATE_START:MultiSegment.COOK_STATE_PAUSE);
-        return segment;
-    }
-
-
-
 }

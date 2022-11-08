@@ -1,24 +1,22 @@
 package com.robam.steamoven.base;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
-
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
-import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.activity.BaseActivity;
 import com.robam.steamoven.R;
 import com.robam.steamoven.bean.SteamOven;
-import com.robam.steamoven.constant.SteamStateConstant;
+import com.robam.steamoven.constant.QualityKeys;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.protocol.SteamCommandHelper;
+import com.robam.steamoven.ui.activity.MainActivity;
 
-import java.util.Map;
 
 public abstract class SteamBaseActivity extends BaseActivity {
 //    public void showFloat() {
@@ -65,6 +63,7 @@ public abstract class SteamBaseActivity extends BaseActivity {
         //setOnClickListener(R.id.ll_right_center);
         rightCenter.setOnClickListener(v->{
             //照明样式切换
+            SteamCommandHelper.sendCommand(QualityKeys.lightSwitch,-100);
         });
 //        rightCenter.setOnLongClickListener(v->{
 //            Map map = DishWasherCommandHelper.getCommonMap(MsgKeys.setDishWasherChildLock);
@@ -112,5 +111,15 @@ public abstract class SteamBaseActivity extends BaseActivity {
         }
         return true;
     }
+
+    /**
+     * 回到主页
+     */
+    public void goHome(){
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
 
 }

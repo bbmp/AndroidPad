@@ -289,11 +289,6 @@ public class CurveSaveActivity extends SteamBaseActivity {
         SteamCommandHelper.getInstance().sendCommonMsgForLiveData(commonMap,directive_offset + DIRECTIVE_OFFSET_PAUSE_CONTINUE);
     }
 
-    private void goHome(){
-        Intent intent = new Intent(CurveSaveActivity.this,MainActivity.class);
-        startActivity(intent);
-        finish();
-    }
 
     //获取曲线详情
     private void getCurveById() {

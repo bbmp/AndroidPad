@@ -467,6 +467,9 @@ public class SteamOven extends Device {
     public short orderLeftMinutes1;
     public short orderRightMinutes1;
 
+    /**
+     * 手动加蒸汽工作状态
+     */
     public short steamState;
     public short curTemp;
     public short curTemp2;

@@ -5,18 +5,12 @@ import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MqttPublic;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.ByteUtils;
-import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MsgUtils;
-import com.robam.steamoven.constant.QualityKeys;
 import com.robam.steamoven.constant.SteamConstant;
-import com.robam.steamoven.device.SteamAbstractControl;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 public class MqttSteamOven extends MqttPublic {
-    private final int BufferSize = 1024 * 2;
-    private static final int GUID_SIZE = 17;
-    private final int CMD_CODE_SIZE = 1;
     public static final ByteOrder BYTE_ORDER = ByteOrder.LITTLE_ENDIAN;
 
     @Override
@@ -24,7 +18,6 @@ public class MqttSteamOven extends MqttPublic {
         int msgId = msg.getID();
         switch (msgId) {
             case MsgKeys.DeviceConnected_Noti:
-
                 break;
             case MsgKeys.setDeviceAttribute_Req: //属性设置
 //                if (null != msg.getBytes())
@@ -436,45 +429,14 @@ public class MqttSteamOven extends MqttPublic {
 
                         break;
 
-                    //加蒸汽 或者旋转
+                    //加蒸汽 或者 旋转
                     case SteamConstant.BS_TYPE_7:
                         byte argumentNumber7 = (byte) msg.optInt(SteamConstant.ARGUMENT_NUMBER);
                         buf.put(argumentNumber7);
-//                        byte powerCtrlKey7 = (byte) msg.optInt(SteamConstant.powerCtrlKey);
-//                        buf.put(powerCtrlKey7);
-//                        byte powerCtrlLength7 = (byte) msg.optInt(SteamConstant.powerCtrlLength);
-//                        buf.put(powerCtrlLength7);
-//                        byte powerCtrlKeyValue7 = (byte) msg.optInt(SteamConstant.powerCtrl);
-//                        buf.put(powerCtrlKeyValue7);
-
-                        //一体机工作控制
-//                        byte SteameOvenStatus_Key7 = (byte) msg.optInt(SteamConstant.workCtrlKey);
-//                        buf.put(SteameOvenStatus_Key7);
-//                        byte SteameOvenStatus_Length7 = (byte) msg.optInt(SteamConstant.workCtrlLength);
-//                        buf.put(SteameOvenStatus_Length7);
-//                        byte SteameOvenStatus7 = (byte) msg.optInt(SteamConstant.workCtrl);
-//                        buf.put(SteameOvenStatus7);
-                        //蒸汽
-
-//                        if (msg.has(SteamConstant.steamKey)) {
-                        byte steamKey7 = (byte) msg.optInt(SteamConstant.steamKey);
-                        buf.put(steamKey7);
-                        byte steamLength7 = (byte) msg.optInt(SteamConstant.steamLength);
-                        buf.put(steamLength7);
-                        byte steam7 = (byte) msg.optInt(SteamConstant.steam);
-                        buf.put(steam7);
-//                        }
-//                            byte rotateSwitchKey1 = (byte) msg.optInt(SteamConstant.rotateSwitchKey);
-//                            buf.put(rotateSwitchKey1);
-//                            byte rotateSwitchLength1 = (byte) msg.optInt(SteamConstant.rotateSwitchLength);
-//                            buf.put(rotateSwitchLength1);
-//                            byte rotateSwitch1 = (byte) msg.optInt(SteamConstant.rotateSwitch);
-//                            buf.put(rotateSwitch1);
-
-
-
+                        buf.put( (byte) msg.optInt(SteamConstant.steamKey));
+                        buf.put((byte) msg.optInt(SteamConstant.steamLength));
+                        buf.put((byte) msg.optInt(SteamConstant.steam));
                         break;
-
                     case SteamConstant.BS_TYPE_8:
                         byte number8 = (byte) msg.optInt(SteamConstant.ARGUMENT_NUMBER);
                         buf.put(number8);
@@ -586,25 +548,12 @@ public class MqttSteamOven extends MqttPublic {
             /**
              * 属性查询响应
              */
-
             case MsgKeys.getDeviceAttribute_Rep:
-//                short numberOfCategory = ByteUtils.toShort(payload[offset++]);
-//                msg.putOpt(SteamConstant.numberOfCategory, numberOfCategory);
-//
-//                short categoryCode = ByteUtils.toShort(payload[offset++]);
-//                msg.putOpt(SteamConstant.categoryCode, categoryCode);
-
-                String mu="";
-                for (byte b : payload) {
-                    mu+=b+" ";
-                }
-                Log.e("接收",mu);
                 short arg = ByteUtils.toShort(payload[offset++]);
                 msg.putOpt(SteamConstant.ArgumentNumber, arg);
                 while (arg > 0) {
                     short key620 = ByteUtils.toShort(payload[offset++]);
                     short steamOvenHeader_Length = ByteUtils.toShort(payload[offset++]);
-//                    Log.e("结果",key620+"------"+steamOvenHeader_Length+"---");
                     switch (key620){
                         case 1:
                             short powerState = ByteUtils.toShort(payload[offset]);
@@ -1108,23 +1057,17 @@ public class MqttSteamOven extends MqttPublic {
                             break;
                         //照明灯开关
                         case 8:
-                            msg.putOpt(SteamConstant.SteameOvenLight,
-                                    arg_key);
-                            msg.putOpt(SteamConstant.SteameOvenLight_Length,
-                                    ByteUtils.toShort(payload[offset++]));
-                            msg.putOpt(SteamConstant.SteameOvenLight_Value,
-                                    ByteUtils.toShort(payload[offset++]));
+                            msg.putOpt(SteamConstant.SteameOvenLight, arg_key);
+                            msg.putOpt(SteamConstant.SteameOvenLight_Length, ByteUtils.toShort(payload[offset++]));
+                            msg.putOpt(SteamConstant.SteameOvenLight_Value, ByteUtils.toShort(payload[offset++]));
                             break;
                         //工作完成参数
                         case 9:
 
-                            msg.putOpt(SteamConstant.SteameOvenWorkComplete,
-                                    arg_key);
-                            msg.putOpt(SteamConstant.SteameOvenWorkComplete_Length,
-                                    ByteUtils.toShort(payload[offset++]));
+                            msg.putOpt(SteamConstant.SteameOvenWorkComplete, arg_key);
+                            msg.putOpt(SteamConstant.SteameOvenWorkComplete_Length, ByteUtils.toShort(payload[offset++]));
                             short s = ByteUtils.toShort(payload[offset++]);
-                            msg.putOpt(SteamConstant.SteameOvenWorkComplete_Value,
-                                    s);
+                            msg.putOpt(SteamConstant.SteameOvenWorkComplete_Value, s);
                             break;
                         //加蒸汽
                         case 10:

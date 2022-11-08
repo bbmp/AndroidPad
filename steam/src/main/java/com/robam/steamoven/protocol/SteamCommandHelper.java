@@ -330,12 +330,8 @@ public class SteamCommandHelper {
             msg.put(SteamConstant.setDownTempLength, 1);
             msg.put(SteamConstant.setDownTemp, setDownTemp);
 
-
-
-            //一体机工作控制
             msg.put(SteamConstant.workCtrlKey, 4);
             msg.put(SteamConstant.workCtrlLength, 1);
-
             if (orderTime==0){
                 msg.put(SteamConstant.workCtrl, 1);
             }else {
@@ -345,8 +341,6 @@ public class SteamCommandHelper {
             //预约时间
             msg.put(SteamConstant.setOrderMinutesKey, 5);
             msg.put(SteamConstant.setOrderMinutesLength, 1);
-
-//
 //            final short lowOrderTime = orderTime > 255 ? (short) (orderTime & 0Xff):(short)orderTime;
             if (orderTime<=255){
                 msg.put(SteamConstant.setOrderMinutes01, orderTime);
@@ -422,7 +416,6 @@ public class SteamCommandHelper {
         int mode = multiSegment.code;
         int setTime = multiSegment.duration;
         int orderTime = appointTime;
-
         Map commonMap = SteamCommandHelper.getCommonMap(MsgKeys.setDeviceAttribute_Req);
         if (steamFlow == 0){
             if (setTemp == 0){
@@ -523,6 +516,23 @@ public class SteamCommandHelper {
         }
         getInstance().sendCommonMsgForLiveData(commonMap,flag);
     }
+
+
+    /**
+     * 发送手动加湿/旋转/照明指令
+     * @param commandCode 8 - 照明、9 - 旋转、16 - 加湿
+     * @param flag
+     */
+    public static void sendCommand(int commandCode,int flag){
+        Map commonMap = getCommonMap(MsgKeys.setDeviceAttribute_Req);
+        commonMap.put(SteamConstant.ARGUMENT_NUMBER, 1);
+        commonMap.put(SteamConstant.BS_TYPE, SteamConstant.BS_TYPE_7) ;
+        commonMap.put(SteamConstant.steamCtrlKey, commandCode);
+        commonMap.put(SteamConstant.steamCtrlLength, 1);
+        commonMap.put(SteamConstant.steam, 1);
+        getInstance().sendCommonMsgForLiveData(commonMap,flag);
+    }
+
     /**
      * 检测洗碗是否处于开门或者离线状态，若处于离线或开门状态，则提示并返回false，否则返回true
      * @param context
@@ -531,7 +541,15 @@ public class SteamCommandHelper {
      */
     public static boolean checkSteamState(Context context, SteamOven curDevice,int modeCode){
         if(curDevice.status != Device.ONLINE){
-            ToastUtils.show(context, R.string.steam_offline, Toast.LENGTH_LONG);
+            ToastUtils.showLong(context, R.string.steam_offline);
+            return false;
+        }
+        if(curDevice.mode != 0){
+            ToastUtils.showLong(context, R.string.steam_working_prompt);
+            return false;
+        }
+        if(curDevice.doorState != 0){//门状态检测
+            ToastUtils.showLong(context,R.string.steam_close_door_prompt);
             return false;
         }
         if(curDevice.descaleFlag == 1 || curDevice.waterLevelState == 1){
@@ -545,17 +563,77 @@ public class SteamCommandHelper {
                     || modeCode == SteamConstant.JIEDONG
                     || modeCode == SteamConstant.FAJIAO
             ){
-                ToastUtils.show(context, R.string.steam_water_deficient, Toast.LENGTH_LONG);
-                return false;
+                if(curDevice.waterBoxState == 0){
+                    ToastUtils.show(context,R.string.steam_water_box_prompt,Toast.LENGTH_LONG);
+                    return false;
+                }
+
+                if(curDevice.waterLevelState == 1){
+                    ToastUtils.showLong(context, R.string.steam_water_deficient);
+                    return false;
+                }
+
+                if(curDevice.descaleFlag == 1){//除垢
+                    ToastUtils.showLong(context, R.string.steam_descaling_prompt);
+                    return false;
+                }
             }
         }
-//        if(curDevice.DoorOpenState == 1){
-//            ToastUtils.show(context,R.string.steam_close_door_prompt,Toast.LENGTH_LONG);
-//            return false;
-//
-//        }
         return true;
     }
+
+    public static void sendWorkCtrCommand(boolean isWork,int flag){
+        Map commonMap = getCommonMap(MsgKeys.setDeviceAttribute_Req);
+        commonMap.put(SteamConstant.BS_TYPE , SteamConstant.BS_TYPE_1) ;
+        commonMap.put(SteamConstant.ARGUMENT_NUMBER, 1);
+        //一体机工作控制
+        commonMap.put(SteamConstant.workCtrlKey, 4);
+        commonMap.put(SteamConstant.workCtrlLength, 1);
+        if(isWork){
+            commonMap.put(SteamConstant.workCtrl, SteamConstant.WORK_CTRL_CONTINUE);//继续工作
+        }else{
+            commonMap.put(SteamConstant.workCtrl, SteamConstant.WORK_CTRL_TIME_OUT);//暂停工作
+        }
+        getInstance().sendCommonMsgForLiveData(commonMap,flag);
+    }
+
+
+    /**
+     *  发送主动结束工作指令
+      * @param flag
+     */
+    public static void sendEndWorkCommand(int flag){
+        Map commonMap = SteamCommandHelper.getCommonMap(MsgKeys.setDeviceAttribute_Req);
+        commonMap.put(SteamConstant.BS_TYPE , SteamConstant.BS_TYPE_1) ;
+        commonMap.put(SteamConstant.ARGUMENT_NUMBER, 1);
+        //一体机工作控制
+        commonMap.put(SteamConstant.workCtrlKey, 4);
+        commonMap.put(SteamConstant.workCtrlLength, 1);
+        commonMap.put(SteamConstant.workCtrl, SteamConstant.WORK_CTRL_STOP);//结束工作
+        SteamCommandHelper.getInstance().sendCommonMsgForLiveData(commonMap,flag);
+    }
+
+    /**
+     * 工作正常完成，发送结束指令
+     * @param flag
+     */
+    public static void sendWorkFinishCommand(int flag){
+        Map commonMap = SteamCommandHelper.getCommonMap(MsgKeys.setDeviceAttribute_Req);
+        commonMap.put(SteamConstant.BS_TYPE , SteamConstant.BS_TYPE_1) ;
+        commonMap.put(SteamConstant.ARGUMENT_NUMBER, 1);
+        //一体机工作控制
+        commonMap.put(SteamConstant.workCtrlKey, 2);
+        commonMap.put(SteamConstant.workCtrlLength, 1);
+        commonMap.put(SteamConstant.workCtrl, SteamConstant.WORK_CTRL_STOP);//结束工作
+        SteamCommandHelper.getInstance().sendCommonMsgForLiveData(commonMap,flag);
+    }
+
+
+
+
+
+
+
 
 
 }

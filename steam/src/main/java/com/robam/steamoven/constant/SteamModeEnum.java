@@ -4,11 +4,8 @@ package com.robam.steamoven.constant;
  * @author r210190
  *  工作模式对应枚举
  */
-
 public enum SteamModeEnum {
-    /**
-     *
-     */
+
     NO_MOEL(SteamConstant.NO_MOEL,"无模式"),
     XIANNENZHENG(SteamConstant.XIANNENZHENG,"鲜嫩蒸"),
     YIYANGZHENG(SteamConstant.YIYANGZHENG,"营养蒸"),
@@ -35,12 +32,6 @@ public enum SteamModeEnum {
     JIASHIBEIKAO(SteamConstant.JIASHIBEIKAO,"加湿烤风焙烤"),
     JIASHIFENGBEIKAO(SteamConstant.JIASHIFENGBEIKAO,"加湿烤强烤烧"),
 
-
-//    SHUIZHI1(29, "P1"),
-//    SHUIZHI2(30, "P2"),
-//    SHUIZHI3(31, "P3"),
-//    SHUIZHI4(32, "P4"),
-//    SHUIZHI5(33, "P5"),
 
     FAJIAO(SteamConstant.FAJIAO,"发酵"),
     GANZAO(SteamConstant.GANZAO,"干燥"),
@@ -125,5 +116,22 @@ public enum SteamModeEnum {
             }
         }
         return SteamConstant.NO_MOEL;
+    }
+
+    /**
+     * 是否辅助工作模式
+     * @return
+     */
+    public static boolean isAuxModel(int modeCode){
+        if(modeCode == SteamModeEnum.FAJIAO.getMode() ||
+                modeCode == SteamModeEnum.GANZAO.getMode() ||
+                modeCode == SteamModeEnum.SHAJUN.getMode() ||
+                modeCode == SteamModeEnum.CHUGOU.getMode() ||
+                modeCode == SteamModeEnum.JIEDONG.getMode() ||
+                modeCode == SteamModeEnum.BAOWEN.getMode() ||
+                modeCode == SteamModeEnum.QINGJIE.getMode()){
+            return true;
+        }
+        return false;
     }
 }

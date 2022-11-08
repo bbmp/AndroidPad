@@ -1,17 +1,12 @@
 package com.robam.steamoven.ui.activity;
 
-import android.app.Activity;
-import android.app.Application;
-import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.robam.common.bean.MqttDirective;
 import com.robam.common.manager.FunctionManager;
 import com.robam.common.mqtt.MsgKeys;
@@ -28,12 +23,9 @@ import com.robam.steamoven.constant.SteamConstant;
 import com.robam.steamoven.constant.SteamEnum;
 import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.ui.dialog.SteamCommonDialog;
-
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 //一体机多段
 public class MultiActivity extends SteamBaseActivity {
@@ -548,6 +540,11 @@ public class MultiActivity extends SteamBaseActivity {
     }
 
     private void startWork(){
+        for(int i = 0;i < multiSegments.size();i++){
+            if(!SteamCommandHelper.checkSteamState(this,getSteamOven(),multiSegments.get(i).code)){
+                return;
+            }
+        }
         SteamCommandHelper.sendMultiWork(this,multiSegments,directive_offset+MsgKeys.setDeviceAttribute_Req);
     }
 

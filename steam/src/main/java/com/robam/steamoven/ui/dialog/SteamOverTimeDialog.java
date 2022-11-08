@@ -2,10 +2,7 @@ package com.robam.steamoven.ui.dialog;
 
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.TextView;
-
 import androidx.recyclerview.widget.RecyclerView;
 import com.robam.common.ui.dialog.BaseDialog;
 import com.robam.common.ui.dialog.FullDialog;
@@ -29,6 +26,8 @@ public class SteamOverTimeDialog extends BaseDialog {
      * 重写选择器
      */
     private PickerLayoutManager pickerLayoutManager;
+
+    private String value;
 
     public SteamOverTimeDialog(Context context) {
         super(context);
@@ -83,7 +82,7 @@ public class SteamOverTimeDialog extends BaseDialog {
 
         //初始位置
         int initPos = Integer.MAX_VALUE / 2 - (Integer.MAX_VALUE/2) % selectList.size();
-        //int initPos = Integer.MAX_VALUE / 2 - (Integer.MAX_VALUE/2) % selectList.size();
+        value = selectList.get(initPos).name;
         pickerLayoutManager.scrollToPosition(initPos);
         rvModeAdapter.setPickPosition(initPos);
     }
@@ -93,24 +92,17 @@ public class SteamOverTimeDialog extends BaseDialog {
                 .setOrientation(RecyclerView.HORIZONTAL)
                 .setMaxItem(maxItem)
                 .setScale(scale)
-                .setOnPickerListener(new PickerLayoutManager.OnPickerListener() {
-                    @Override
-                    public void onPicked(RecyclerView recyclerView, int position) {
+                .setOnPickerListener((recyclerView, position) -> {
 
-                        rvModeAdapter.setPickPosition(position);
-
-//                        if (null != tab) {
-//                            //切换模式
-//                            TextView textView = tab.getCustomView().findViewById(R.id.tv_mode);
-//                            textView.setText(rvModeAdapter.getItem(position).name);
-//                        }
-//                        if (null != iModeSelect) {
-//                            iModeSelect.updateTab( rvModeAdapter.getItem(position).code);
-//                        }
-                    }
+                    rvModeAdapter.setPickPosition(position);
+                    value = rvModeAdapter.getItem(position).name;
                 })
                 .build();
         rvSelect.setLayoutManager(pickerLayoutManager);
+    }
+
+    public String getCurValue(){
+        return value;
     }
 
 

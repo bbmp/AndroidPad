@@ -41,6 +41,8 @@ import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.response.GetCurveDetailRes;
 import com.robam.steamoven.ui.dialog.SteamCommonDialog;
 import com.robam.steamoven.utils.MultiSegmentUtil;
+import com.robam.steamoven.utils.TextSpanUtil;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
@@ -159,6 +161,10 @@ public class MultiWorkActivity extends SteamBaseActivity {
             case SteamStateConstant.WORK_STATE_PREHEAT_PAUSE:
             case SteamStateConstant.WORK_STATE_WORKING:
             case SteamStateConstant.WORK_STATE_WORKING_PAUSE:
+                if(steamOven.mode != multiSegments.get(0).code){//工作模式已切换
+                    goHome();
+                    return;
+                }
                 boolean cookState = ((steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT) || (steamOven.workState ==  SteamStateConstant.WORK_STATE_WORKING));
                 boolean isPreHeat = (steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT || steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT_PAUSE);
                 preTotalTime = getTotalTime(steamOven);
@@ -172,8 +178,6 @@ public class MultiWorkActivity extends SteamBaseActivity {
                 mHandler.removeCallbacksAndMessages(null);
                 autoFinishHandler.postDelayed(autoFinishRun,1000*60*5);
                 break;
-
-
         }
     }
 
@@ -317,7 +321,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
         TextView temperatureView = itemGroup.findViewById(R.id.multi_item_temperature);
         temperatureView.setTextColor(textColor);
         //String temperature =  multiSegmentBean.defTemp +"°c";
-        temperatureView.setText(getSpan(multiSegmentBean.defTemp,Constant.UNIT_TEMP));
+        temperatureView.setText(TextSpanUtil.getSpan(multiSegmentBean.defTemp,Constant.UNIT_TEMP));
 
         TextView modelView = itemGroup.findViewById(R.id.multi_item_model);
         modelView.setTextColor(textColor);
@@ -327,7 +331,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
         TextView durationView = itemGroup.findViewById(R.id.multi_item_duration);
         durationView.setTextColor(textColor);
         //String duration = multiSegmentBean.duration +"min";
-        durationView.setText(getSpan(multiSegmentBean.duration*60,Constant.UNIT_TIME_MIN));
+        durationView.setText(TextSpanUtil.getSpan(multiSegmentBean.duration*60,Constant.UNIT_TIME_MIN));
     }
 
 
@@ -347,10 +351,10 @@ public class MultiWorkActivity extends SteamBaseActivity {
             if(isPreHeat){
                 cookDurationView.setText(R.string.steam_preheating);
             }else{
-                cookDurationView.setText(getSpan(preTotalTime,Constant.UNIT_TIME_MIN));
+                cookDurationView.setText( TextSpanUtil.getSpan(preTotalTime,Constant.UNIT_TIME_MIN));
             }
         }else{
-            cookDurationView.setText(getSpan(preTotalTime,Constant.UNIT_TIME_MIN));
+            cookDurationView.setText(TextSpanUtil.getSpan(preTotalTime,Constant.UNIT_TIME_MIN));
         }
         getCookingData(getSteamOven().guid);
         initLineChart();
@@ -435,14 +439,6 @@ public class MultiWorkActivity extends SteamBaseActivity {
         steamCommonDialog.show();
     }
 
-    /**
-     * 跳转到主页
-     */
-    private void goHome() {
-        Intent intent = new Intent(MultiWorkActivity.this,MainActivity.class);
-        startActivity(intent);
-        finish();
-    }
 
 
     /**
@@ -466,7 +462,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
             if(isPre){
                 cookDurationView.setText(R.string.steam_preheating);
             }else{
-                cookDurationView.setText(getSpan(preTotalTime, Constant.UNIT_TIME_MIN));
+                cookDurationView.setText(TextSpanUtil.getSpan(preTotalTime, Constant.UNIT_TIME_MIN));
             }
         }else{
             cookDurationView.setText(R.string.steam_cook_in_pause);
@@ -480,8 +476,8 @@ public class MultiWorkActivity extends SteamBaseActivity {
             TextView  curTemp = curCookInfoViewGroup.findViewById(R.id.multi_item_cur_temperature);
             TextView  curDuration = curCookInfoViewGroup.findViewById(R.id.multi_item_cur_duration);
             curModel.setText(curSegment.model);
-            curTemp.setText(getSpan(curSegment.defTemp,Constant.UNIT_TEMP));
-            curDuration.setText(getSpan(curSegment.workRemaining,Constant.UNIT_TIME_MIN));
+            curTemp.setText(TextSpanUtil.getSpan(curSegment.defTemp,Constant.UNIT_TEMP));
+            curDuration.setText(TextSpanUtil.getSpan(curSegment.workRemaining,Constant.UNIT_TIME_MIN));
         }
     }
 
@@ -598,33 +594,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
         steamCommonDialog.show();
     }
 
-    /**
-     * 获取温度/时间样式
-     * @param value 当 unit 是 Constant.UNIT_TEMP 时 ，value 时温度值；
-     *              当 unit 是 Constant.UNIT_TIME_MIN，value 是时间值，单位秒
-     * @param unit  Constant.UNIT_TIME_MIN 或 Constant.UNIT_TEMP
-     * @return
-     */
-    private SpannableString getSpan(int value, String unit){
-        if(unit.equals(Constant.UNIT_TIME_MIN)){
-            String time = TimeUtils.secToHourMinUp(value);
-            SpannableString spannableString = new SpannableString(time);
-            int pos = time.indexOf(Constant.UNIT_TIME_H);
-            if (pos >= 0)
-                spannableString.setSpan(new RelativeSizeSpan(0.8f), pos, pos + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            pos = time.indexOf(Constant.UNIT_TIME_MIN);
-            if (pos >= 0)
-                spannableString.setSpan(new RelativeSizeSpan(0.8f), pos, pos + 3, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            return spannableString;
-        }else{
-            SpannableString spannableString = new SpannableString(value+unit);
-            SuperscriptSpan superscriptSpan = new SuperscriptSpan();
-            spannableString.setSpan(new RelativeSizeSpan(0.8f), (value+"").length(), spannableString.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-            spannableString.setSpan(superscriptSpan,  (value+"").length(), spannableString.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-            return spannableString;
-        }
 
-    }
 
     //数据集合
     private List entryList = new ArrayList<Entry>();

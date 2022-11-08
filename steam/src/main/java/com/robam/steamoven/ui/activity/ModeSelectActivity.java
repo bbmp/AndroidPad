@@ -7,27 +7,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-
 import com.google.android.material.tabs.TabLayout;
 import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.IModeSelect;
+import com.robam.common.utils.ToastUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.bean.ModeBean;
 import com.robam.steamoven.bean.MultiSegment;
+import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.SteamConstant;
+import com.robam.steamoven.constant.SteamEnum;
 import com.robam.steamoven.constant.SteamModeEnum;
 import com.robam.steamoven.constant.SteamOvenSteamEnum;
 import com.robam.steamoven.device.HomeSteamOven;
+import com.robam.steamoven.device.SteamAbstractControl;
 import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.ui.pages.ModeSelectPage;
 import com.robam.steamoven.ui.pages.SteamSelectPage;
@@ -36,7 +38,6 @@ import com.robam.steamoven.ui.pages.TimeSelectPage;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect {
     private TabLayout tabLayout;
@@ -70,10 +71,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
     private ModeBean curModeBean;
 
     private int directive_offset = 10000000;
-
-    //private ModeBean curSendBean;
-
-    private boolean test = false;
+    private static final int DIRECTIVE_OFFSET_AUX_MODEL = 800;
 
     private TabLayout.Tab preSelectTab = null;
 
@@ -86,9 +84,8 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
     protected void initView() {
         showLeft();
         showCenter();
-        showLeftCenter();
         showRightCenter();
-        setRight(R.string.steam_makeAnAppointment);
+
 
         tabLayout = findViewById(R.id.tabLayout);
         noScrollViewPager = findViewById(R.id.pager);
@@ -128,14 +125,17 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
 
             }
         });
-
         MqttDirective.getInstance().getDirective().observe(this, s -> {
             switch (s - directive_offset){
                 case MsgKeys.setDeviceAttribute_Req:
                     toWorkPage();
                     break;
+                case DIRECTIVE_OFFSET_AUX_MODEL:
+                    toAxuWorkPage();
+                    break;
             }
         });
+
 
     }
 
@@ -149,6 +149,16 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
     }
 
     /**
+     * 跳转到辅助工作页面
+     */
+    private void toAxuWorkPage(){
+        Intent intent = new Intent(this,AuxModelWorkActivity.class);
+        intent.putExtra(Constant.SEGMENT_DATA_FLAG,getResult());
+        startActivity(intent);
+        finish();
+    }
+
+    /**
      * 跳转到工作页面
      */
     private void toWorkPage(){
@@ -159,6 +169,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
         list.get(0).setCookState(MultiSegment.COOK_STATE_START);
         intent.putParcelableArrayListExtra(Constant.SEGMENT_DATA_FLAG, (ArrayList<? extends Parcelable>) list);
         startActivity(intent);
+        finish();
     }
 
 
@@ -190,7 +201,17 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
     protected void initData() {
         if (null != getIntent()){
             modes = (ArrayList<ModeBean>) getIntent().getSerializableExtra(SteamConstant.EXTRA_MODE_LIST);
+        }else{
+            ToastUtils.showLong(this,R.string.steam_model_select_data_prompt);
+            finish();
+            return;
         }
+
+        if(modes.get(0).funCode != SteamEnum.AUX.fun){
+            showLeftCenter();
+            setRight(R.string.steam_makeAnAppointment);
+        }
+
         needSetResult =  getIntent().getBooleanExtra(Constant.NEED_SET_RESULT,false);
         preSegment =  getIntent().getParcelableExtra(Constant.SEGMENT_DATA_FLAG);
 
@@ -271,6 +292,10 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
         if(needSetResult){
             ((TextView)findViewById(R.id.btn_start)).setText(R.string.steam_sure);
         }
+        SteamOven steamOven = getSteamOven();
+        if(steamOven != null){
+            SteamAbstractControl.getInstance().queryAttribute(steamOven.guid);
+        }
 
     }
 
@@ -284,24 +309,28 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             if(needSetResult){
                 this.startSetResult();
             }else{
-                ViewGroup childGroup = (ViewGroup) tabLayout.getTabAt(0).getCustomView();
-                TextView valueTv = childGroup.findViewById(R.id.tv_mode); //模式
-                if(Constant.DESCALING_FLAG.equals(valueTv.getText().toString())){
-                    Intent intent = new Intent(this,DescalingActivity.class);
-                    startActivity(intent);
-                }else{
-                    MultiSegment result = getResult();
-                    if(SteamModeEnum.EXP.getMode() == result.code){
-                        SteamCommandHelper.sendCommandForExp(result,0,MsgKeys.setDeviceAttribute_Req+directive_offset);
-                    }else{
-                        SteamCommandHelper.startModelWork(result,MsgKeys.setDeviceAttribute_Req+directive_offset);
-                    }
-                }
+                startWork();
             }
         }else if(R.id.ll_right == view.getId()){
             Intent intent = new Intent(this,AppointmentActivity.class);
             intent.putExtra(Constant.SEGMENT_DATA_FLAG,getResult());
             startActivity(intent);
+        }
+    }
+
+    private void startWork(){
+        MultiSegment result = getResult();
+        if(!SteamCommandHelper.checkSteamState(this,getSteamOven(),result.code)){
+            return;
+        }
+        if(SteamModeEnum.EXP.getMode() == result.code){
+            SteamCommandHelper.sendCommandForExp(result,0,MsgKeys.setDeviceAttribute_Req+directive_offset);
+        }else{
+            if(SteamModeEnum.isAuxModel(result.code)){
+                SteamCommandHelper.startModelWork(result,DIRECTIVE_OFFSET_AUX_MODEL+directive_offset);
+            }else{
+                SteamCommandHelper.startModelWork(result,MsgKeys.setDeviceAttribute_Req+directive_offset);
+            }
         }
     }
 
@@ -349,15 +378,6 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
        setResult(RESULT_OK,result);
        finish();
     }
-
-
-    private Map<String,Object> getResultData(){
-
-        return null;
-    }
-
-
-
 
 
     /**

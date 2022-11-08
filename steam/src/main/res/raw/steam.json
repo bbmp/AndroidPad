@@ -7,20 +7,6 @@
     "mode": [
       {
         "funCode":1,
-        "code": 1,
-        "name": "鲜嫩蒸",
-        "defTemp": 100,
-        "defTime": 15,
-        "minTemp": 30,
-        "maxTemp": 100,
-        "minTime": 1,
-        "maxTime": 180,
-        "openDoorWork": 0,
-        "needWater": 1,
-        "addSteam": 0
-      },
-      {
-        "funCode":1,
         "code": 2,
         "name": "营养蒸",
         "defTemp": 100,
@@ -295,19 +281,6 @@
         "minTime": 1,
         "maxTime": 180,
         "openDoorWork": 0,
-        "needWater": 1
-      },
-      {
-        "funCode": 7,
-        "code": 35,
-        "name": "除垢",
-        "defTemp": 0,
-        "defTime": 0,
-        "minTemp": 0,
-        "maxTemp": 0,
-        "minTime": 0,
-        "maxTime": 0,
-        "openDoorWork": 1,
         "needWater": 1
       },
       {

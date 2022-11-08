@@ -5,6 +5,10 @@
 
     <application>
         <activity
+            android:name=".ui.activity.AuxModelWorkActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
+        <activity
             android:name=".ui.activity.CurveSaveActivity"
             android:exported="false"
             android:screenOrientation="landscape"/>

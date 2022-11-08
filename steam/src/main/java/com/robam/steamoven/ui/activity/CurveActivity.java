@@ -49,6 +49,7 @@ public class CurveActivity extends SteamBaseActivity {
         showLeft();
         showCenter();
         showRightCenter();
+        showRight();
         tvRight = findViewById(R.id.tv_right);
         //
         tvRight.setText(R.string.steam_delete);

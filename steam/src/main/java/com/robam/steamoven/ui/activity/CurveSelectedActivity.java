@@ -115,7 +115,7 @@ public class CurveSelectedActivity extends SteamBaseActivity {
 
     @Override
     protected void initData() {
-        getCurveDetail();
+        //getCurveDetail();
     }
 
     //曲线详情
@@ -126,13 +126,6 @@ public class CurveSelectedActivity extends SteamBaseActivity {
                 if (null != getCurveDetailRes && null != getCurveDetailRes.payload) {
                     steamCurveDetail = getCurveDetailRes.payload;
                     tvCurveName.setText(steamCurveDetail.name);
-
-//                    List<CurveStep> curveSteps = new ArrayList<>();
-//                    if (null != steamCurveDetail.stepList) {
-//                        curveSteps.addAll(steamCurveDetail.stepList);
-//                        tvStartCook.setVisibility(View.VISIBLE);
-//                    }
-//                    rvStep3Adapter.setList(curveSteps);
                     //绘制曲线
                     drawCurve(steamCurveDetail);
                 }
@@ -177,6 +170,11 @@ public class CurveSelectedActivity extends SteamBaseActivity {
         if(multiSegment == null || multiSegment.size() == 0){
             Toast.makeText(this,R.string.steam_curve_exception_data,Toast.LENGTH_LONG).show();
             finish();
+        }
+        for(int i = 0;i < multiSegment.size();i++){
+            if(!SteamCommandHelper.checkSteamState(this,getSteamOven(),multiSegment.get(i).code)){
+                return;
+            }
         }
         if(multiSegment.size() >= 2){
             SteamCommandHelper.sendMultiWork(this,multiSegment,directive_offset+ MsgKeys.setDeviceAttribute_Req);

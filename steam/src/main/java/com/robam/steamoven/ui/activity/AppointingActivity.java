@@ -205,6 +205,9 @@ public class AppointingActivity extends SteamBaseActivity {
             //结束倒计时
             showFinishAppointDialog();
         } else if (id == R.id.iv_start) {
+            if(!SteamCommandHelper.checkSteamState(this,getSteamOven(),segment.code)){
+                return;
+            }
             startWork(segment.code,segment.defTemp,segment.duration,segment.steam);
         }
     }

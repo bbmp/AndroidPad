@@ -3,9 +3,16 @@ package com.robam.steamoven.utils;
 import com.robam.steamoven.bean.MultiSegment;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.SteamModeEnum;
+import com.robam.steamoven.constant.SteamStateConstant;
 
 public class MultiSegmentUtil {
 
+    /**
+     * 获取多段数据
+     * @param steamOven
+     * @param index
+     * @return
+     */
     public static MultiSegment getCurSegment(SteamOven steamOven, int index){
         MultiSegment segment = new MultiSegment();
         if(steamOven.curSectionNbr == index){
@@ -47,6 +54,33 @@ public class MultiSegmentUtil {
                 segment.workRemaining = restTime3;
                 break;
         }
+        return segment;
+    }
+
+    /**
+     * 获取当前运行模式数据对象
+     * @param steamOven
+     * @return
+     */
+    public static MultiSegment getSkipResult(SteamOven steamOven){
+        MultiSegment segment = new MultiSegment();
+        segment.code = steamOven.mode;
+        segment.model = "";
+        segment.steam = steamOven.steam;
+        segment.defTemp = steamOven.curTemp;
+        segment.downTemp = steamOven.setDownTemp;
+        int setTime = steamOven.setTimeH * 256 + steamOven.setTime;
+        segment.duration = setTime/60 + (setTime%60 == 0 ? 0 : 1);
+
+        int outTime = steamOven.restTimeH * 256 + steamOven.restTime;
+        int restTimeF = (int) Math.floor(((outTime + 59f) / 60f));//剩余工作时间
+        segment.workRemaining =restTimeF*60;
+
+        boolean isPreHeat = (steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT || steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT_PAUSE);
+        segment.setWorkModel(isPreHeat?MultiSegment.COOK_STATE_PREHEAT:MultiSegment.WORK_MODEL_);
+
+        boolean isWorking = steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT || steamOven.workState == SteamStateConstant.WORK_STATE_WORKING;
+        segment.setCookState(isWorking?MultiSegment.COOK_STATE_START:MultiSegment.COOK_STATE_PAUSE);
         return segment;
     }
 }
