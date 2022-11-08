@@ -36,6 +36,8 @@ public class VentilatorLocalControl implements VentilatorFunction{
             HomeVentilator.getInstance().startA6CountDown();
         else
             HomeVentilator.getInstance().stopA6CountDown();
+        //记录时间
+        HomeVentilator.getInstance().fanRunTime(gear);
     }
 
     @Override
@@ -82,6 +84,8 @@ public class VentilatorLocalControl implements VentilatorFunction{
             HomeVentilator.getInstance().startA6CountDown();
         else
             HomeVentilator.getInstance().stopA6CountDown();
+        //记录时间
+        HomeVentilator.getInstance().fanRunTime(gear);
     }
 
     @Override

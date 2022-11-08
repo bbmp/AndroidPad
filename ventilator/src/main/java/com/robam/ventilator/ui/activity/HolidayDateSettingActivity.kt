@@ -3,6 +3,7 @@ package com.robam.ventilator.ui.activity
 import com.robam.common.utils.MMKVUtils
 import com.robam.ventilator.R
 import com.robam.ventilator.base.VentilatorBaseActivity
+import com.robam.ventilator.device.HomeVentilator
 import com.robam.ventilator.ext.TextColorHelp
 import kotlinx.android.synthetic.main.ventilator_activity_holiday_date_setting.*
 
@@ -42,6 +43,7 @@ class HolidayDateSettingActivity : VentilatorBaseActivity() {
         btn_sure.setOnClickListener {
             MMKVUtils.setHolidayDay(day)
             MMKVUtils.setHolidayWeekTime("$week$hour:$minute")
+            HomeVentilator.getInstance().holiday.value = true
             finish()
         }
     }

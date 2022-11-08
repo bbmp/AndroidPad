@@ -81,6 +81,7 @@ public class MqttStove extends MqttPublic {
                 msg.putOpt(StoveConstant.stoveNum, stoveNum);
                 int lockStatus = MsgUtils.getByte(payload[offset++]);
                 msg.putOpt(StoveConstant.lockStatus, lockStatus);
+                //左灶
                 int workStatus = MsgUtils.getByte(payload[offset++]);
                 msg.putOpt(StoveConstant.leftStatus, workStatus);
                 int leftLevel = MsgUtils.getByte(payload[offset++]);

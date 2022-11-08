@@ -52,8 +52,12 @@ public class HomeLockDialog extends BaseDialog {
                         tvLeftStove.setText("左灶 " + "煎炸 " + StoveEnum.match(stove.leftWorkMode));
                     else if (stove.leftWorkMode == StoveConstant.MODE_STEW || stove.leftWorkMode == StoveConstant.MODE_STEAM)
                         tvLeftStove.setText("左灶 " + StoveEnum.match(stove.leftWorkMode) + " " + TimeUtils.secToMin(stove.leftTimeHours));
-                    else
-                        tvLeftStove.setText("左灶 " + stove.leftLevel + "档");
+                    else { //无模式
+                        if (stove.leftTimeHours > 0)
+                            tvLeftStove.setText("左灶 " + "定时 " + TimeUtils.secToMin(stove.leftTimeHours));
+                        else
+                            tvLeftStove.setText("左灶 " + stove.leftLevel + "档");
+                    }
                 }
                 //右灶工作中
                 if (stove.rightStatus == StoveConstant.STOVE_CLOSE || stove.rightLevel == 0) {
@@ -64,8 +68,12 @@ public class HomeLockDialog extends BaseDialog {
                         tvRightStove.setText("右灶 " + "煎炸" + StoveEnum.match(stove.rightWorkMode));
                     else if (stove.rightWorkMode == StoveConstant.MODE_STEW || stove.rightWorkMode == StoveConstant.MODE_STEAM)
                         tvRightStove.setText("右灶 " + StoveEnum.match(stove.rightWorkMode) + " " + TimeUtils.secToMin(stove.rightTimeHours));
-                    else
-                        tvRightStove.setText("右灶 " + stove.rightLevel + "档");
+                    else { //无模式
+                        if (stove.rightTimeHours > 0)
+                            tvRightStove.setText("右灶 " + "定时 " + TimeUtils.secToMin(stove.rightTimeHours));
+                        else
+                            tvRightStove.setText("右灶 " + stove.rightLevel + "档");
+                    }
                 }
                 break;
             }
