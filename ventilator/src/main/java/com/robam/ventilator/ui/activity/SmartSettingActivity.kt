@@ -78,35 +78,12 @@ class SmartSettingActivity : VentilatorBaseActivity() {
             (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         }
         //假日模式设置
-        HomeVentilator.getInstance().holiday.observe(this) {
+        HomeVentilator.getInstance().smartSet.observe(this) {
             if (it) {
                 //选择时间后确认返回页面刷新
-                mAdapter.setData(
-                    0, SmartSetBean(
-                        "假日模式",
-                        String.format(
-                            context.getString(R.string.ventilator_holiday_desc_set),
-                            MMKVUtils.getHolidayDay(),
-                            MMKVUtils.getHolidayWeekTime()
-                        ),
-                        modeSwitch = MMKVUtils.getHoliday()
-                    )
-                )
-            }
-        }
-        //延时关机设置
-        HomeVentilator.getInstance().shutdown.observe(this) {
-            if (it) {
-                mAdapter.setData(
-                    2, SmartSetBean(
-                        "延时关机",
-                        String.format(
-                            context.getString(R.string.ventilator_shutdown_delay_set),
-                            MMKVUtils.getDelayShutdownTime()
-                        ),
-                        modeSwitch = MMKVUtils.getDelayShutdown()
-                    )
-                )
+                mList.clear()
+                addListData()
+                mAdapter.setList(mList)
             }
         }
     }
@@ -209,11 +186,20 @@ class SmartSettingActivity : VentilatorBaseActivity() {
         }
 
         //一体机
-        val steamOvenList =
-            AccountInfo.getInstance().deviceList.filter { it is SteamOven }.map { it.displayType }
-        if (steamOvenList.isNotEmpty()) {
+        var steamOvenListDevice: String? = null
 
-            val steamOvenListDevice = "关联产品:${steamOvenList.toString().substring(1,steamOvenList.toString().length-1)}"
+        for (device in AccountInfo.getInstance().deviceList) {
+            if (device is SteamOven) {
+                if (MMKVUtils.getFanSteamDevice() == device.guid) { //已关联
+                    steamOvenListDevice = "关联产品:${device.displayType}"
+                    break
+                } else
+                    steamOvenListDevice = "暂无关联产品"
+            }
+        }
+
+         steamOvenListDevice?.apply {
+
             mList.add(
                 SmartSetBean(
                     "烟蒸烤联动",

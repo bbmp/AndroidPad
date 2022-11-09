@@ -40,6 +40,7 @@ import com.robam.ventilator.response.GetTokenRes;
 import com.robam.ventilator.response.GetUserInfoRes;
 import com.robam.ventilator.ui.service.AlarmBleService;
 import com.robam.ventilator.ui.service.AlarmMqttService;
+import com.robam.ventilator.ui.service.AlarmVentilatorService;
 
 //主页
 public class HomeActivity extends BaseActivity {
@@ -126,7 +127,7 @@ public class HomeActivity extends BaseActivity {
                     Plat.getPlatform().openPowerLamp();
                 }
                 //循环查询
-                HomeVentilator.getInstance().startSerialQuery();
+//                HomeVentilator.getInstance().startSerialQuery();
 
             }
 
@@ -146,6 +147,9 @@ public class HomeActivity extends BaseActivity {
         Intent bleIntent = new Intent(this.getApplicationContext(), AlarmBleService.class);
         bleIntent.setPackage(getPackageName());
         startService(bleIntent);
+        Intent venIntent = new Intent(this.getApplicationContext(), AlarmVentilatorService.class);
+        venIntent.setPackage(getPackageName());
+        startService(venIntent);
 //初始化主设备mqtt收发 烟机端只要网络连接上就需要启动mqtt服务，锅和灶不用登录
         //初始网络状态
         if (NetworkUtils.isConnect(this) && !AccountInfo.getInstance().getConnect().getValue())
@@ -221,7 +225,7 @@ public class HomeActivity extends BaseActivity {
         //关闭定时任务
         stopService(new Intent(this.getApplicationContext(), AlarmMqttService.class));
         stopService(new Intent(this.getApplicationContext(), AlarmBleService.class));
-        HomeVentilator.getInstance().stopSerialQuery(); //停止串口查询
+        stopService(new Intent(this.getApplicationContext(), AlarmVentilatorService.class)); //停止串口查询
     }
 
     //获取token

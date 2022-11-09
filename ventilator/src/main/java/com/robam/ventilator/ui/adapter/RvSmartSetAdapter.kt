@@ -22,7 +22,7 @@ class RvSmartSetAdapter(@LayoutRes layoutResId: Int, data: MutableList<SmartSetB
         //设置时间字体颜色蓝色
         when (item.modeName) {
             "假日模式" -> {
-               TextColorHelp.setHolidayTextColor(item.modeDescName,holder.getView(R.id.tv_mode_desc))
+                TextColorHelp.setHolidayTextColor(item.modeDescName,holder.getView(R.id.tv_mode_desc))
             }
             "延时关机" -> {
                 TextColorHelp.setShutdownTextColor(item.modeDescName,holder.getView(R.id.tv_mode_desc))

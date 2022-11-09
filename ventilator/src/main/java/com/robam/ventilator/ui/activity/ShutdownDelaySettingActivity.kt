@@ -28,7 +28,7 @@ class ShutdownDelaySettingActivity : VentilatorBaseActivity() {
         btn_sure.setOnClickListener {
             minute?.let {
                 MMKVUtils.setDelayShutdownTime(minute)
-                HomeVentilator.getInstance().shutdown.value = true
+                HomeVentilator.getInstance().smartSet.value = true
             }
             finish()
         }

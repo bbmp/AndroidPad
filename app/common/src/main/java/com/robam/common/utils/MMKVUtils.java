@@ -10,6 +10,7 @@ public class MMKVUtils {
     public static String USER_INFO = "user_info";
     public static String INIT_DATA = "init_data";
     public static String SUBDEVICE_INFO = "subdevice_info";
+    public static String FAN_OFFTIME = "fan_offtime";//烟机风机最后运行时间
     public static String FAN_RUNTIME = "fan_runtime"; //风机运行时间
     public static String HOLIDAY = "holiday";//假日模式
     public static String HOLIDAY_DAY = "HOLIDAY_DAY";//假日模式天数
@@ -23,6 +24,7 @@ public class MMKVUtils {
     public static String FAN_STOVE_GEAR = "fan_stove_gear";//烟灶联动匹配风量
     public static String FAN_PAN_GEAR = "fan_pan_gear";//烟锅联动匹配风量
     public static String FAN_STEAM_GEAR = "fan_steam_gear";//烟蒸烤联动匹配风量
+    public static String FAN_RELATION_STEAM = "fan_relation_steam";//烟蒸烤关联设备
 
     /**
      * 获取是否登录账号
@@ -93,9 +95,9 @@ public class MMKVUtils {
         return mmkv.decodeString(DELAY_SHUTDOWN_TIME,"1");
     }
 
-    public static void setDelayShutdownTime(String holiday) {
+    public static void setDelayShutdownTime(String minute) {
         MMKV mmkv = MMKV.defaultMMKV();
-        mmkv.encode(DELAY_SHUTDOWN_TIME, holiday);
+        mmkv.encode(DELAY_SHUTDOWN_TIME, minute);
     }
 
     //油网清洗
@@ -146,6 +148,11 @@ public class MMKVUtils {
     public static boolean isInitData() {
         MMKV mmkv = MMKV.defaultMMKV();
         return mmkv.decodeBool(INIT_DATA, false);
+    }
+    //设置烟机风机最后运行时间
+    public static void setFanOffTime(long time) {
+        MMKV mmkv = MMKV.defaultMMKV();
+        mmkv.encode(FAN_OFFTIME, time);
     }
 
     //设置风机运行时间
@@ -241,6 +248,16 @@ public class MMKVUtils {
         MMKV mmkv = MMKV.defaultMMKV();
         return mmkv.decodeBool(FAN_STEAM_GEAR);
     }
+    //设置烟蒸烤关联设备
+    public static void setFanSteamDevice(String guid) {
+        MMKV mmkv = MMKV.defaultMMKV();
+        mmkv.encode(FAN_RELATION_STEAM, guid);
+    }
+    //获取烟蒸烤关联设备
+    public static String getFanSteamDevice() {
+        MMKV mmkv = MMKV.defaultMMKV();
+        return mmkv.decodeString(FAN_RELATION_STEAM, "");
+    }
     //恢复初始，智能设置部分
     public static void resetSmartSet() {
         MMKV mmkv = MMKV.defaultMMKV();
@@ -258,5 +275,6 @@ public class MMKVUtils {
         mmkv.remove(FAN_STOVE_GEAR);
         mmkv.remove(FAN_PAN_GEAR);
         mmkv.remove(FAN_STEAM_GEAR);
+        mmkv.remove(FAN_RELATION_STEAM);
     }
 }

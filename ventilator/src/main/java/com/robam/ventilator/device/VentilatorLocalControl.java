@@ -2,6 +2,7 @@ package com.robam.ventilator.device;
 
 import android.serialport.helper.SerialPortHelper;
 
+import com.robam.common.utils.MMKVUtils;
 import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.protocol.serial.SerialVentilator;
 
@@ -11,6 +12,8 @@ public class VentilatorLocalControl implements VentilatorFunction{
     public void shutDown() {
         byte[] data = SerialVentilator.shutDown();
         SerialPortHelper.getInstance().addCommands(data);
+        if (HomeVentilator.getInstance().gear != (byte) 0xA0)            //风机运行中，记录风机最后运行时间
+            MMKVUtils.setFanOffTime(System.currentTimeMillis());
     }
 
     @Override

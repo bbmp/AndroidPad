@@ -43,7 +43,7 @@ class HolidayDateSettingActivity : VentilatorBaseActivity() {
         btn_sure.setOnClickListener {
             MMKVUtils.setHolidayDay(day)
             MMKVUtils.setHolidayWeekTime("$week$hour:$minute")
-            HomeVentilator.getInstance().holiday.value = true
+            HomeVentilator.getInstance().smartSet.value = true
             finish()
         }
     }
