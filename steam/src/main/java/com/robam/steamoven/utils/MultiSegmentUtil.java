@@ -18,6 +18,7 @@ public class MultiSegmentUtil {
         if(steamOven.curSectionNbr == index){
             segment.setCookState(MultiSegment.COOK_STATE_START);
         }
+        segment.recipeId = steamOven.recipeId;
         switch (index){
             case 0:
             case 1:
@@ -75,6 +76,8 @@ public class MultiSegmentUtil {
         int outTime = steamOven.restTimeH * 256 + steamOven.restTime;
         int restTimeF = (int) Math.floor(((outTime + 59f) / 60f));//剩余工作时间
         segment.workRemaining =restTimeF*60;
+
+        segment.recipeId = steamOven.recipeId;
 
         boolean isPreHeat = (steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT || steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT_PAUSE);
         segment.setWorkModel(isPreHeat?MultiSegment.COOK_STATE_PREHEAT:MultiSegment.WORK_MODEL_);

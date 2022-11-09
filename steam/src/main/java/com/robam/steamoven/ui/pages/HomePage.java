@@ -174,19 +174,17 @@ public class HomePage extends SteamBasePage {
     }
 
     private void getModeBeanList(ArrayList<ModeBean> mode, SteamEnum steamEnum){
-        String steamContent = SteamDataUtil.getSteamContent();
-        if(StringUtils.isNotBlank(steamContent)){
-            GetDeviceParamsRes getDeviceParamsRes = new Gson().fromJson(steamContent, GetDeviceParamsRes.class);
-            List<DeviceConfigurationFunctions> functions = getDeviceParamsRes.modelMap.otherFunc.deviceConfigurationFunctions;
-            if(steamEnum.fun == SteamEnum.STEAM.fun ||
-                    steamEnum.fun == SteamEnum.OVEN.fun||
-                    steamEnum.fun == SteamEnum.FRY.fun){//蒸模式
-                List<DeviceConfigurationFunctions> dcFunctions = getDCFunctions(functions, steamEnum.funFlag);
-
-            }
-
-                    //steamingMode
-        }
+//        String steamContent = SteamDataUtil.getSteamContent();
+//        if(StringUtils.isNotBlank(steamContent)){
+//            GetDeviceParamsRes getDeviceParamsRes = new Gson().fromJson(steamContent, GetDeviceParamsRes.class);
+//            List<DeviceConfigurationFunctions> functions = getDeviceParamsRes.modelMap.otherFunc.deviceConfigurationFunctions;
+//            if(steamEnum.fun == SteamEnum.STEAM.fun ||
+//                    steamEnum.fun == SteamEnum.OVEN.fun||
+//                    steamEnum.fun == SteamEnum.FRY.fun){//蒸模式
+//                List<DeviceConfigurationFunctions> dcFunctions = getDCFunctions(functions, steamEnum.funFlag);
+//
+//            }
+//        }
     }
 
     private List<DeviceConfigurationFunctions> getDCFunctions(List<DeviceConfigurationFunctions> functions,String modeFlag){

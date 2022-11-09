@@ -125,17 +125,11 @@ public class MqttSteamOven extends MqttPublic {
                         break;
                     //单属性设置
                     case SteamConstant.BS_TYPE_1:
-//                           byte categoryCode = (byte) msg.optInt(SteamConstant.categoryCode);
-//                           buf.put(categoryCode);
-                        byte argumentNumber = (byte) msg.optInt(SteamConstant.ARGUMENT_NUMBER);
-                        buf.put(argumentNumber);
+                        buf.put((byte) msg.optInt(SteamConstant.ARGUMENT_NUMBER));
                         //一体机工作控制
-                        byte workCtrlKey = (byte) msg.optInt(SteamConstant.workCtrlKey);
-                        buf.put(workCtrlKey);
-                        byte workCtrlLength = (byte) msg.optInt(SteamConstant.workCtrlLength);
-                        buf.put(workCtrlLength);
-                        byte workCtrl = (byte) msg.optInt(SteamConstant.workCtrl);
-                        buf.put(workCtrl);
+                        buf.put((byte) msg.optInt(SteamConstant.workCtrlKey));
+                        buf.put((byte) msg.optInt(SteamConstant.workCtrlLength));
+                        buf.put((byte) msg.optInt(SteamConstant.workCtrl));
                         break;
                     //多段模式设置
                     case SteamConstant.BS_TYPE_2:
@@ -797,7 +791,6 @@ public class MqttSteamOven extends MqttPublic {
                     offset += steamOvenHeader_Length;
                     arg--;
                 }
-
                 break;
             case MsgKeys.setDeviceAttribute_Rep:
                 short arg1 = ByteUtils.toShort(payload[offset++]);

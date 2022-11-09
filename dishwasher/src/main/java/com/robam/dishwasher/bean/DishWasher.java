@@ -54,8 +54,6 @@ public class DishWasher extends Device{
             status = Device.ONLINE;
             parserMsg(msg.getID(),msg);
             return true;
-        }else{
-            status = Device.OFFLINE;
         }
         return true;
     }

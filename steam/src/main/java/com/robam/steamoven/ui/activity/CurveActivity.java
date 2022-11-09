@@ -48,8 +48,8 @@ public class CurveActivity extends SteamBaseActivity {
     protected void initView() {
         showLeft();
         showCenter();
-        showRightCenter();
         showRight();
+        //showRightCenter();
         tvRight = findViewById(R.id.tv_right);
         //
         tvRight.setText(R.string.steam_delete);
@@ -245,5 +245,6 @@ public class CurveActivity extends SteamBaseActivity {
                         });
             }
         }
+        rvCurveAdapter.notifyDataSetChanged();
     }
 }

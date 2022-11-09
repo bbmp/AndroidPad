@@ -12,9 +12,7 @@ import com.robam.common.bean.Device;
 import com.robam.common.ui.activity.BaseActivity;
 import com.robam.steamoven.R;
 import com.robam.steamoven.bean.SteamOven;
-import com.robam.steamoven.constant.QualityKeys;
 import com.robam.steamoven.device.HomeSteamOven;
-import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.ui.activity.MainActivity;
 
 
@@ -31,10 +29,17 @@ public abstract class SteamBaseActivity extends BaseActivity {
 
     public void showLeft() {
         findViewById(R.id.ll_left).setVisibility(View.VISIBLE);
+        setOnClickListener(R.id.ll_left);
     }
     public void showLeftCenter() {
         findViewById(R.id.ll_left_center).setVisibility(View.VISIBLE);
+        setOnClickListener(R.id.ll_left_center);
     }
+
+    public void hideLeftCenter(){
+        findViewById(R.id.ll_left_center).setVisibility(View.INVISIBLE);
+    }
+
     public void showCenter() {
         findViewById(R.id.ll_center).setVisibility(View.VISIBLE);
         ImageView ivWifi = findViewById(R.id.iv_center);
@@ -50,9 +55,6 @@ public abstract class SteamBaseActivity extends BaseActivity {
         });
     }
 
-//    public void showRightCenter() {
-//        findViewById(R.id.ll_right_center).setVisibility(View.VISIBLE);
-//    }
 
     public void showRightCenter(){
         View rightCenter = findViewById(R.id.ll_right_center);
@@ -60,19 +62,7 @@ public abstract class SteamBaseActivity extends BaseActivity {
             return;
         }
         rightCenter.setVisibility(View.VISIBLE);
-        //setOnClickListener(R.id.ll_right_center);
-        rightCenter.setOnClickListener(v->{
-            //照明样式切换
-            SteamCommandHelper.sendCommand(QualityKeys.lightSwitch,-100);
-        });
-//        rightCenter.setOnLongClickListener(v->{
-//            Map map = DishWasherCommandHelper.getCommonMap(MsgKeys.setDishWasherChildLock);
-//            map.put(DishWasherConstant.StoveLock,lock?0:1);
-//            DishWasherCommandHelper.getInstance().sendCommonMsgForLiveData(map,LOCK_FLAG);
-//
-//            setLock(!lock);
-//            return true;
-//        });
+        setOnClickListener(R.id.ll_right_center);
     }
 
     public void setRight(int res) {
@@ -97,20 +87,6 @@ public abstract class SteamBaseActivity extends BaseActivity {
         return null;
     }
 
-    /**
-     * 获取设备状态
-     * @param steamOven
-     * @return
-     */
-    public boolean checkDeviceState(SteamOven steamOven){
-        if(steamOven.doorState == 1){//关闭门
-            return false;
-        }
-        if(steamOven.waterBoxState == 0){//关闭水箱
-
-        }
-        return true;
-    }
 
     /**
      * 回到主页

@@ -14,6 +14,7 @@ import com.robam.common.bean.BaseResponse;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.manager.DynamicLineChartManager;
 import com.robam.common.mqtt.MsgKeys;
+import com.robam.common.utils.ToastUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.bean.CurveStep;
@@ -107,12 +108,14 @@ public class CurveSaveActivity extends SteamBaseActivity {
     private void parserCureData(GetCurveDetailRes getDeviceParamsRes) throws JSONException {
         this.curveDetailRes = getDeviceParamsRes;
         if(getDeviceParamsRes == null || getDeviceParamsRes.payload == null || getDeviceParamsRes.payload.temperatureCurveParams == null){
+            ToastUtils.showLong(this,R.string.steam_curve_no_data);
             goHome();
             return;
         }
         JSONObject jsonObject = new JSONObject(getDeviceParamsRes.payload.temperatureCurveParams);
         Iterator<String> keys = jsonObject.keys();
         if(keys == null || !keys.hasNext()){
+            ToastUtils.showLong(this,R.string.steam_curve_no_data);
             goHome();
             return;
         }

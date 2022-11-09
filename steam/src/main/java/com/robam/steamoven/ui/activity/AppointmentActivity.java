@@ -59,6 +59,7 @@ public class AppointmentActivity extends SteamBaseActivity {
     private TextView tvTime;
 
     private int directive_offset = 12000000;
+    private static final int START = 11;
 
     @Override
     protected int getLayoutId() {
@@ -90,7 +91,7 @@ public class AppointmentActivity extends SteamBaseActivity {
 
         MqttDirective.getInstance().getDirective().observe(this, s -> {
             switch (s - directive_offset){
-                case 0:
+                case START:
                     try {
                         toAppointingPage();
                     } catch (ParseException e) {
@@ -148,9 +149,9 @@ public class AppointmentActivity extends SteamBaseActivity {
             try {
                 multiSegment.workRemaining = (int) getAppointingTimeMin(tvTime.getText().toString()) * 60;
                 if(SteamModeEnum.EXP.getMode() == multiSegment.code){
-                    SteamCommandHelper.sendCommandForExp(multiSegment, multiSegment.workRemaining,MsgKeys.setDeviceAttribute_Req+directive_offset);
+                    SteamCommandHelper.sendCommandForExp(multiSegment, multiSegment.workRemaining,directive_offset + START);
                 }else{
-                    SteamCommandHelper.sendAppointCommand(multiSegment,multiSegment.workRemaining,MsgKeys.setDeviceAttribute_Req+directive_offset);
+                    SteamCommandHelper.sendAppointCommand(multiSegment,multiSegment.workRemaining,directive_offset + START);
                 }
             } catch (ParseException e) {
                 e.printStackTrace();

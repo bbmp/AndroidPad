@@ -134,4 +134,23 @@ public enum SteamModeEnum {
         }
         return false;
     }
+
+    /**
+     * 是否是烤模式
+     * @param modeCode
+     * @return
+     */
+    public static boolean isOvenModel(int modeCode){
+        if(modeCode == SteamModeEnum.KUAIRE.getMode() ||
+                modeCode == SteamModeEnum.FENGBEIKAO.getMode() ||
+                modeCode == SteamModeEnum.BEIKAO.getMode() ||
+                modeCode == SteamModeEnum.FENGSHANKAO.getMode() ||
+                modeCode == SteamModeEnum.QIANGSHAOKAO.getMode() ||
+                modeCode == SteamModeEnum.SHAOKAO.getMode() ||
+                modeCode == SteamModeEnum.EXP.getMode()){
+            return true;
+        }
+        return false;
+    }
+
 }

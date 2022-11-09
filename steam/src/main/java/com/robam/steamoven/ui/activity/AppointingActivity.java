@@ -55,7 +55,6 @@ public class AppointingActivity extends SteamBaseActivity {
     private TextView defTemp;
 
     private int directive_offset = 15000000;
-    private int directive_offset_start = 20;
     private final static int DIRECTIVE_OFFSET_END = 40;
 
     @Override
@@ -67,7 +66,7 @@ public class AppointingActivity extends SteamBaseActivity {
     protected void initView() {
         showLeft();
         showCenter();
-        showRightCenter();
+        //showRightCenter();
         tvCountdown = findViewById(R.id.tv_countdown);
         tvAppointmentHint = findViewById(R.id.tv_appointment_hint);
         tvMode = findViewById(R.id.tv_mode);
@@ -107,7 +106,7 @@ public class AppointingActivity extends SteamBaseActivity {
                     toWorkPage();
                     break;
                 case DIRECTIVE_OFFSET_END:
-                    finish();
+                    goHome();
                     break;
             }
         });
@@ -126,12 +125,10 @@ public class AppointingActivity extends SteamBaseActivity {
     }
 
     private void updateViewInfo(SteamOven steamOven){
-        int outTime = steamOven.restTimeH * 256 + steamOven.restTime;
-        int timeF = (int) Math.floor(((outTime + 59f) / 60f));
-        int totalTime =timeF * 60;
-        tvCountdown.setTotalTime(totalTime);
-        tvCountdown.setText(getTimeStr(timeF));
-        tvAppointmentHint.setText(startTimePoint(timeF));
+        int outTime = steamOven.orderLeftTime;
+        tvCountdown.setTotalTime(outTime);
+        tvCountdown.setText(getTimeStr(outTime));
+        tvAppointmentHint.setText(startTimePoint(outTime));
     }
 
     @Override

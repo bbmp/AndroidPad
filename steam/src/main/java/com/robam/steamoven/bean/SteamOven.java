@@ -457,7 +457,7 @@ public class SteamOven extends Device {
             parserMsg(msg);
             return true;
         }
-        return super.onMsgReceived(msg);
+        return true;
     }
 
 

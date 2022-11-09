@@ -17,6 +17,7 @@ import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.SteamModeEnum;
 import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
+import com.robam.steamoven.device.SteamAbstractControl;
 import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.utils.MultiSegmentUtil;
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class MainActivity extends SteamBaseActivity {
     protected void initView() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_stream_activity_main);
         Navigation.setViewNavController(findViewById(R.id.nav_host_stream_activity_main), navController);
-        getContentView().postDelayed(()-> showRightCenter(), Constant.TIME_DELAYED);
+        //getContentView().postDelayed(()-> showRightCenter(), Constant.TIME_DELAYED);
         AccountInfo.getInstance().getGuid().observe(this, s -> {
             for (Device device: AccountInfo.getInstance().deviceList) {
                 if (device.guid.equals(s) && device instanceof SteamOven && device.guid.equals(HomeSteamOven.getInstance().guid)) {
@@ -62,6 +63,7 @@ public class MainActivity extends SteamBaseActivity {
     protected void initData() {
         if (null != getIntent()){
             HomeSteamOven.getInstance().guid = getIntent().getStringExtra(ComnConstant.EXTRA_GUID);
+            SteamAbstractControl.getInstance().queryAttribute(HomeSteamOven.getInstance().guid);
         }
         //状态检查
         if(StringUtils.isBlank(HomeSteamOven.getInstance().guid)){

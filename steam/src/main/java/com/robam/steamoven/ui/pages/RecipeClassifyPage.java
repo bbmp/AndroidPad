@@ -3,14 +3,10 @@ package com.robam.steamoven.ui.pages;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.view.View;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.robam.common.constant.StoveConstant;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.steamoven.R;
@@ -20,9 +16,7 @@ import com.robam.steamoven.bean.ModeBean;
 import com.robam.steamoven.bean.model.SteamRecipe;
 import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.SteamConstant;
-import com.robam.steamoven.ui.activity.RecipeDetailActivity;
 import com.robam.steamoven.ui.activity.RecipeModeActivity;
-import com.robam.steamoven.ui.activity.RecipeModeActivityNew;
 import com.robam.steamoven.ui.adapter.RvRecipeAdapter;
 
 import org.json.JSONArray;
@@ -63,9 +57,11 @@ public class RecipeClassifyPage extends SteamBasePage {
                 //startActivity(RecipeSelectedActivity.class);
                 SteamRecipe stoveRecipe = (SteamRecipe) adapter.getItem(position);
                 //Intent intent = new Intent(getContext(), RecipeDetailActivity.class);
-                Intent intent = new Intent(getContext(), RecipeModeActivityNew.class);
-                intent.putExtra(StoveConstant.EXTRA_RECIPE_ID, stoveRecipe.id);
-                intent.putExtra(SteamConstant.EXTRA_MODE_LIST,getModeBeans(stoveRecipe));
+                Intent intent = new Intent(getContext(), RecipeModeActivity.class);
+                Bundle dataBundle = new Bundle();
+                dataBundle.putLong(SteamConstant.EXTRA_RECIPE_ID,stoveRecipe.id);
+                dataBundle.putSerializable(SteamConstant.EXTRA_MODE_LIST, getModeBeans(stoveRecipe));
+                intent.putExtras(dataBundle);
                 startActivity(intent);
             } catch (JSONException e) {
                 e.printStackTrace();

@@ -44,8 +44,6 @@ public class Cabinet extends Device{
             queryNum = 0;
             status = Device.ONLINE;
             parserDeviceInfo(msg);
-        }else{
-            status = Device.OFFLINE;
         }
         return true;
         //return super.onMsgReceived(msg);

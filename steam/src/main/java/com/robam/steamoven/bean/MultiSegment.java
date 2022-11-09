@@ -28,6 +28,8 @@ public class MultiSegment implements Parcelable {
 
     public int downTemp;//下温度
 
+    public long recipeId;//菜谱ID
+
     /**
      * 剩余工作时间,单位秒
      */
@@ -66,6 +68,7 @@ public class MultiSegment implements Parcelable {
         workModel = in.readInt();
         code = in.readInt();
         workRemaining = in.readInt();
+        recipeId = in.readLong();
     }
 
     public static final Creator<MultiSegment> CREATOR = new Creator<MultiSegment>() {
@@ -142,5 +145,6 @@ public class MultiSegment implements Parcelable {
         parcel.writeInt(workModel);
         parcel.writeInt(code);
         parcel.writeInt(workRemaining);
+        parcel.writeLong(recipeId);
     }
 }

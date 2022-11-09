@@ -1,45 +1,40 @@
 package com.robam.steamoven.ui.activity;
 
 import android.content.Intent;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+
 import com.google.android.material.tabs.TabLayout;
-import com.robam.common.bean.MqttDirective;
-import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.IModeSelect;
-import com.robam.common.utils.ToastUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.bean.ModeBean;
 import com.robam.steamoven.bean.MultiSegment;
-import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.SteamConstant;
-import com.robam.steamoven.constant.SteamEnum;
-import com.robam.steamoven.constant.SteamModeEnum;
 import com.robam.steamoven.constant.SteamOvenSteamEnum;
 import com.robam.steamoven.device.HomeSteamOven;
-import com.robam.steamoven.device.SteamAbstractControl;
-import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.ui.pages.ModeSelectPage;
 import com.robam.steamoven.ui.pages.SteamSelectPage;
 import com.robam.steamoven.ui.pages.TempSelectPage;
 import com.robam.steamoven.ui.pages.TimeSelectPage;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect {
+public class RecipeModeActivityOld extends SteamBaseActivity implements IModeSelect {
     private TabLayout tabLayout;
     private ViewPager noScrollViewPager;
     //弱引用，防止内存泄漏
@@ -67,25 +62,18 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
 
     //是否需要设置result
     private boolean needSetResult = false;
-    private MultiSegment preSegment = null;
     private ModeBean curModeBean;
-
-    private int directive_offset = 10000000;
-    private static final int DIRECTIVE_OFFSET_AUX_MODEL = 800;
-
-    private TabLayout.Tab preSelectTab = null;
 
     @Override
     protected int getLayoutId() {
-        return R.layout.steam_activity_layout_mode_select;
+        return R.layout.steam_activity_layout_recipe_mode;
     }
 
     @Override
     protected void initView() {
         showLeft();
         showCenter();
-        //showRightCenter();
-
+        setRight(R.string.steam_makeAnAppointment);
 
         tabLayout = findViewById(R.id.tabLayout);
         noScrollViewPager = findViewById(R.id.pager);
@@ -93,13 +81,6 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                if(!isClickAble(tab)){
-                    if(preSelectTab.getId() != tab.getId()){
-                        tabLayout.selectTab(preSelectTab);
-                    }
-                    return;
-                }
-                preSelectTab = tab;
                 //tab选中放大
                 View view = tab.getCustomView();
                 TextView textView = view.findViewById(R.id.tv_mode);
@@ -125,101 +106,22 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
 
             }
         });
-        MqttDirective.getInstance().getDirective().observe(this, s -> {
-            switch (s - directive_offset){
-                case MsgKeys.setDeviceAttribute_Req:
-                    toWorkPage();
-                    break;
-                case DIRECTIVE_OFFSET_AUX_MODEL:
-                    toAxuWorkPage();
-                    break;
-            }
-        });
-
 
     }
 
-    private boolean isClickAble(TabLayout.Tab tab){
-        TabLayout.Tab tabAt = tabLayout.getTabAt(0);
-        TextView tv = tabAt.getCustomView().findViewById(R.id.tv_mode);
-        if(SteamModeEnum.matchCode(tv.getText().toString()) == SteamConstant.ZHIKONGZHENG){//澎湃蒸
-            return tab.getId() != 2;
-        }
-        return true;
-    }
-
-    /**
-     * 跳转到辅助工作页面
-     */
-    private void toAxuWorkPage(){
-        Intent intent = new Intent(this,AuxModelWorkActivity.class);
-        intent.putExtra(Constant.SEGMENT_DATA_FLAG,getResult());
-        startActivity(intent);
-        finish();
-    }
-
-    /**
-     * 跳转到工作页面
-     */
-    private void toWorkPage(){
-        Intent intent = new Intent(this,ModelWorkActivity.class);
-        List<MultiSegment> list = new ArrayList<>();
-        list.add(getResult());
-        list.get(0).setWorkModel(MultiSegment.COOK_STATE_PREHEAT);
-        list.get(0).setCookState(MultiSegment.COOK_STATE_START);
-        intent.putParcelableArrayListExtra(Constant.SEGMENT_DATA_FLAG, (ArrayList<? extends Parcelable>) list);
-        startActivity(intent);
-        finish();
-    }
-
-
-    private int getPreCheckIndex(){
-        if(modes == null || preSegment == null){
-            return -1;
-        }
-        for(int i = 0;i < modes.size();i++){
-            if(modes.get(i).code == preSegment.code){
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    private ModeBean getCurModeBean(int selectIndex){
-        if(selectIndex == -1){
-            return modes.get(0);
-        }
-        ModeBean defaultBean = modes.get(selectIndex);
-        defaultBean.defTemp = preSegment.defTemp;
-        //defaultBean.d = preSegment.defTemp;
-        defaultBean.defTime = preSegment.duration;
-        defaultBean.defSteam = preSegment.steam;
-        return defaultBean;
-    }
 
     @Override
     protected void initData() {
         if (null != getIntent()){
             modes = (ArrayList<ModeBean>) getIntent().getSerializableExtra(SteamConstant.EXTRA_MODE_LIST);
-        }else{
-            ToastUtils.showLong(this,R.string.steam_model_select_data_prompt);
-            finish();
-            return;
         }
 
-        if(modes.get(0).funCode != SteamEnum.AUX.fun){
-           //showLeftCenter();
-            setRight(R.string.steam_makeAnAppointment);
-        }
+            needSetResult =  getIntent().getBooleanExtra(Constant.NEED_SET_RESULT,false);
 
-        needSetResult =  getIntent().getBooleanExtra(Constant.NEED_SET_RESULT,false);
-        preSegment =  getIntent().getParcelableExtra(Constant.SEGMENT_DATA_FLAG);
-
-        int checkIndex = getPreCheckIndex();
+        //
         if (null != modes && modes.size() > 0) {
             //默认模式
-            ModeBean defaultBean = getCurModeBean(checkIndex);//modes.get(checkIndex != -1 ? checkIndex:0);
-            curModeBean = defaultBean;
+            ModeBean defaultBean = modes.get(0);
             //当前模式
             HomeSteamOven.getInstance().workMode = (short) defaultBean.code;
             //模式
@@ -230,7 +132,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             tvMode.setText(defaultBean.name);
             modeTab.setCustomView(modeView);
             tabLayout.addTab(modeTab);
-            modeSelectPage = new ModeSelectPage(modeTab, modes, this,checkIndex);
+            modeSelectPage = new ModeSelectPage(modeTab, modes, this);
             fragments.add(new WeakReference<>(modeSelectPage));
 
 
@@ -258,17 +160,14 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             fragments.add(new WeakReference<>(upTempSelectPage));
 
             //下温度
-            ModeBean downTempMode = getDownTempMode();
             downTempTab = tabLayout.newTab();
             downTempTab.setId(3);
             View downView = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab_temp, null);
             TextView downTemp = downView.findViewById(R.id.tv_mode);
-            //downTemp.setText(defaultBean.defTemp + "");
-            downTemp.setText(downTempMode.defTemp);
+            downTemp.setText(defaultBean.defTemp + "");
             downTempTab.setCustomView(downView);
             tabLayout.addTab(downTempTab);
-            //downTempSelectPage = new TempSelectPage(downTempTab, defaultBean);
-            downTempSelectPage = new TempSelectPage(downTempTab, downTempMode);
+            downTempSelectPage = new TempSelectPage(downTempTab, defaultBean);
             fragments.add(new WeakReference<>(downTempSelectPage));
             //时间
             timeTab = tabLayout.newTab();
@@ -280,12 +179,10 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             tabLayout.addTab(timeTab);
             timeSelectPage = new TimeSelectPage(timeTab, defaultBean);
             fragments.add(new WeakReference<>(timeSelectPage));
-            //添加设置适配器
+//添加设置适配器
             selectPagerAdapter = new SelectPagerAdapter(getSupportFragmentManager());
             noScrollViewPager.setAdapter(selectPagerAdapter);
             noScrollViewPager.setOffscreenPageLimit(fragments.size());
-
-            preSelectTab = modeTab;
 
         }
 
@@ -295,20 +192,9 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
         if(needSetResult){
             ((TextView)findViewById(R.id.btn_start)).setText(R.string.steam_sure);
         }
-        SteamOven steamOven = getSteamOven();
-        if(steamOven != null){
-            SteamAbstractControl.getInstance().queryAttribute(steamOven.guid);
-        }
 
     }
 
-    private ModeBean getDownTempMode(){
-        ModeBean modeBean =new ModeBean();
-        modeBean.defTemp = 160;
-        modeBean.minTemp = 160;
-        modeBean.maxTemp = 200;
-        return modeBean;
-    }
 
 
 
@@ -320,36 +206,15 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
         }else if(R.id.btn_start == view.getId()){
             if(needSetResult){
                 this.startSetResult();
-            }else{
-                startWork();
-            }
-        }else if(R.id.ll_right == view.getId()){
-            Intent intent = new Intent(this,AppointmentActivity.class);
-            intent.putExtra(Constant.SEGMENT_DATA_FLAG,getResult());
-            startActivity(intent);
-        }
-    }
-
-    private void startWork(){
-        MultiSegment result = getResult();
-        if(!SteamCommandHelper.checkSteamState(this,getSteamOven(),result.code)){
-            return;
-        }
-        if(SteamModeEnum.EXP.getMode() == result.code){
-            SteamCommandHelper.sendCommandForExp(result,0,MsgKeys.setDeviceAttribute_Req+directive_offset);
-        }else{
-            if(SteamModeEnum.isAuxModel(result.code)){
-                SteamCommandHelper.startModelWork(result,DIRECTIVE_OFFSET_AUX_MODEL+directive_offset);
-            }else{
-                SteamCommandHelper.startModelWork(result,MsgKeys.setDeviceAttribute_Req+directive_offset);
             }
         }
     }
 
-    private MultiSegment getResult(){
+    private void startSetResult(){
+        //tv_mode tv_temp  tv_mode
+        Intent result = new Intent();
         MultiSegment segment = new MultiSegment();
         segment.funCode = curModeBean.funCode;
-        segment.code = curModeBean.code;
         for(int i = 0;i < tabLayout.getTabCount();i++){
             if(((ViewGroup)tabLayout.getChildAt(0)).getChildAt(i).getVisibility() != View.VISIBLE){
                 continue;
@@ -359,7 +224,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             TextView valueTv = childGroup.findViewById(R.id.tv_mode); //模式
             if(valueTv != null){
                 String value = valueTv.getText().toString();
-                //i = 0 模式名称; i = 1 蒸汽量  ;i = 2 上温度; i = 3 下温度 ; i = 4 时长
+                //i = 0 模式 ; i = 1 蒸汽量  ;i = 2 上温度; i = 3 下温度 ; i = 4 时长
                 switch (i){
                     case 0:
                         segment.model = value;
@@ -381,15 +246,20 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
                 }
             }
         }
-        return segment;
-    }
 
-    private void startSetResult(){
-       Intent result = new Intent();
-       result.putExtra(Constant.SEGMENT_DATA_FLAG,getResult());
+       result.putExtra(Constant.SEGMENT_DATA_FLAG,segment);
        setResult(RESULT_OK,result);
        finish();
     }
+
+
+    private Map<String,Object> getResultData(){
+
+        return null;
+    }
+
+
+
 
 
     /**
@@ -406,31 +276,16 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
                         upTempSelectPage.updateTempTab(modeBean);
                         ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(4).setVisibility(View.VISIBLE); //时间
                         ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(3).setVisibility(View.GONE); //下温度
-                        //((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.VISIBLE); //上温度
-                       if(curModeBean.code == SteamModeEnum.ZHIKONGZHENG.getMode()){
-                           //上温度不可点击
-                           ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.VISIBLE); //上温度
-                           ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(1).setVisibility(View.VISIBLE); //蒸汽
-                       }else{
-                           ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.VISIBLE); //上温度
-                           ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(1).setVisibility(View.GONE); //蒸汽
-                       }
-
-                        //若是澎湃蒸 - 需要显示蒸汽大小与时间
-
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.VISIBLE); //上温度
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(1).setVisibility(View.GONE); //蒸汽
                     } else if (mode == SteamConstant.FENGBEIKAO || mode == SteamConstant.FENGSHANKAO || mode == SteamConstant.QIANGSHAOKAO || mode == SteamConstant.EXP
                                 || mode == SteamConstant.KUAIRE || mode == SteamConstant.BEIKAO) {   //烤
 
                         timeSelectPage.updateTimeTab(modeBean);
                         upTempSelectPage.updateTempTab(modeBean);
                         ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(4).setVisibility(View.VISIBLE); //时间
-                        if(curModeBean.code == SteamModeEnum.EXP.getMode()){
-                            ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(3).setVisibility(View.VISIBLE); //下温度
-                            ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.VISIBLE);  //上温度
-                        }else{
-                            ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(3).setVisibility(View.GONE); //下温度
-                            ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.VISIBLE);  //上温度
-                        }
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(3).setVisibility(View.GONE); //下温度
+                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.VISIBLE);  //上温度
                         ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(1).setVisibility(View.GONE); //蒸汽
                     } else if (mode == SteamConstant.SHOUDONGJIASHIKAO || mode == SteamConstant.JIASHIBEIKAO || mode == SteamConstant.JIASHIFENGBEIKAO) {
                         timeSelectPage.updateTimeTab(modeBean);
@@ -511,8 +366,6 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             return super.getPageTitle(position);
         }
     }
-
-
 
 
 }

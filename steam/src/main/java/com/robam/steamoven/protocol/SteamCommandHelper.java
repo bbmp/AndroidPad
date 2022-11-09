@@ -12,17 +12,16 @@ import com.robam.common.utils.ToastUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.bean.MultiSegment;
 import com.robam.steamoven.bean.SteamOven;
-import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.SteamConstant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.device.SteamAbstractControl;
-
-
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 发送指令辅助工具类
+ */
 public class SteamCommandHelper {
 
     private  long perOrderTimeMin = System.currentTimeMillis() ;
@@ -40,6 +39,11 @@ public class SteamCommandHelper {
         return SteamCommandHelper.Holder.instance;
     }
 
+    /**
+     *
+     * @param map 指令数据集合
+     * @param bsCode 业务编码
+     */
     public void sendCommonMsgForLiveData(Map map,final int bsCode){
         perOrderTimeMin = System.currentTimeMillis();
         SteamAbstractControl.getInstance().sendCommonMsg(map, (String) map.get(SteamConstant.TARGET_GUID), (Short) map.get(SteamConstant.MSG_ID), new MqttManager.MqttSendMsgListener() {
@@ -65,6 +69,10 @@ public class SteamCommandHelper {
     }
 
 
+    /**
+     * 检查当前时间与上次发送指令时间是否大于 COMMON_DELAY_DUR 对应的值,大于等于返回true；否则返回false
+     * @return
+     */
     public  boolean isSafe(){
         return System.currentTimeMillis()  - perOrderTimeMin >= COMMON_DELAY_DUR;
     }
@@ -105,10 +113,6 @@ public class SteamCommandHelper {
         for (int i = 0; i < multiSegments.size(); i++) {
             MultiSegment bean = multiSegments.get(i);
 
-            //TODO(需要安全检测)
-//            if (!Util.workBeforeCheck(Integer.parseInt(bean.modelCode),steameOvenOne,true,false)){
-//                return;
-//            }
             //模式
             commonMap.put(SteamConstant.modeKey + i, 101 + i *10  ) ;
             commonMap.put(SteamConstant.modeLength + i, 1) ;
@@ -141,11 +145,10 @@ public class SteamCommandHelper {
                 commonMap.put(SteamConstant.setTime1b+i, htime);
             }
             //commonMap.put(SteamConstant.setTime + i, bean.getTime()*60);
-            //TODO(检测蒸汽量传递是否正确,暂时传递0)
+            //TODO(检测蒸汽量传递是否正确)
             commonMap.put(SteamConstant.steamKey + i, 106 + i *10 );
             commonMap.put(SteamConstant.steamLength + i , 1);
-            //commonMap.put(SteamConstant.steam + i, bean.steam);
-            commonMap.put(SteamConstant.steam + i, 0);
+            commonMap.put(SteamConstant.steam + i, bean.steam);
         }
         SteamCommandHelper.getInstance().sendCommonMsgForLiveData(commonMap,flag);
     }
@@ -236,7 +239,6 @@ public class SteamCommandHelper {
             commonMap.put(SteamConstant.steamLength, 1);
             commonMap.put(SteamConstant.steam, steamFlow);
         }
-        //SteamCommandHelper.getInstance().sendCommonMsgForLiveData(commonMap,MsgKeys.setDeviceAttribute_Req+directive_offset);
         SteamCommandHelper.getInstance().sendCommonMsgForLiveData(commonMap,flag);
     }
 
@@ -519,17 +521,17 @@ public class SteamCommandHelper {
 
 
     /**
-     * 发送手动加湿/旋转/照明指令
-     * @param commandCode 8 - 照明、9 - 旋转、16 - 加湿
+     * 发送手动加湿/旋转指令
+     * @param commandCode 9 - 旋转、16 - 加湿
      * @param flag
      */
-    public static void sendCommand(int commandCode,int flag){
+    public static void sendCommand(short commandCode,int flag){
         Map commonMap = getCommonMap(MsgKeys.setDeviceAttribute_Req);
         commonMap.put(SteamConstant.ARGUMENT_NUMBER, 1);
-        commonMap.put(SteamConstant.BS_TYPE, SteamConstant.BS_TYPE_7) ;
-        commonMap.put(SteamConstant.steamCtrlKey, commandCode);
-        commonMap.put(SteamConstant.steamCtrlLength, 1);
-        commonMap.put(SteamConstant.steam, 1);
+        commonMap.put(SteamConstant.BS_TYPE, SteamConstant.BS_TYPE_1) ;
+        commonMap.put(SteamConstant.workCtrlKey, commandCode);
+        commonMap.put(SteamConstant.workCtrlLength, 1);
+        commonMap.put(SteamConstant.workCtrl, (short)1);
         getInstance().sendCommonMsgForLiveData(commonMap,flag);
     }
 

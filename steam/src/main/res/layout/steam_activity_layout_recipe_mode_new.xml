@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/steam_ic_bg_xingkong"
-    tools:context=".ui.activity.RecipeModeActivity">
+    tools:context=".ui.activity.RecipeModeActivityOld">
 
     <ImageView
         android:id="@+id/iv_bg"
@@ -44,10 +44,9 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_select"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/dp_42"
-        app:layout_constraintTop_toTopOf="@id/ll_title"
+        app:layout_constraintTop_toBottomOf="@id/ll_title"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>

@@ -3,10 +3,6 @@ package com.robam.steamoven.ui.activity;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Parcelable;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.RelativeSizeSpan;
-import android.text.style.SuperscriptSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -24,7 +20,6 @@ import com.robam.common.manager.DynamicLineChartManager;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.view.MarkViewStep;
 import com.robam.common.utils.LogUtils;
-import com.robam.common.utils.TimeUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.bean.CurveStep;
@@ -42,7 +37,6 @@ import com.robam.steamoven.response.GetCurveDetailRes;
 import com.robam.steamoven.ui.dialog.SteamCommonDialog;
 import com.robam.steamoven.utils.MultiSegmentUtil;
 import com.robam.steamoven.utils.TextSpanUtil;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
@@ -54,6 +48,8 @@ import java.util.Map;
 
 //一体机多段
 public class MultiWorkActivity extends SteamBaseActivity {
+
+    public static final String TAG = "MultiWorkActivity";
 
     //段数父容器
     private ViewGroup optContentParentView;
@@ -68,27 +64,20 @@ public class MultiWorkActivity extends SteamBaseActivity {
     private ImageView continueCookView;
     private TextView cookDurationView;
     private ViewGroup curCookInfoViewGroup;
-
-
-
     private LineChart cookChart;
     private DynamicLineChartManager dm;
-
     private int preTotalTime;
-
     private int directive_offset = 19000000;
     private static final int DIRECTIVE_OFFSET_END = 10;
     private static final int DIRECTIVE_OFFSET_PAUSE_CONTINUE = 20;
     private static final int DIRECTIVE_OFFSET_WORK_FINISH = 60;
     private static final int DIRECTIVE_OFFSET_GO_HOME = 80;
 
+    private static final int DEVICE_IDLE_DUR = 1000 * 60 * 10;//页面空闲最大时长
+    private static final int DEVICE_IDLE_SHOW = (int) (1000 * 60 * 0.1f);//页面空闲最大时长
     private int sourceId = 0;//0 - 多段设置 ； 1 - 曲线
 
-    private Handler autoFinishHandler = new Handler();
-    private Runnable autoFinishRun = () -> {
-        sendWorkFinishCommand(DIRECTIVE_OFFSET_GO_HOME);
-        goHome();
-    };
+    private long workTimeMS = System.currentTimeMillis();
 
     @Override
     protected int getLayoutId() {
@@ -99,7 +88,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
     protected void initView() {
         showLeft();
         showCenter();
-        showRightCenter();
+        //showRightCenter();
         optContentParentView = findViewById(R.id.multi_work_model_list);
         pauseCookView = findViewById(R.id.multi_work_pause);
         continueCookView = findViewById(R.id.multi_work_start);
@@ -119,10 +108,13 @@ public class MultiWorkActivity extends SteamBaseActivity {
                     switch (steamOven.powerState){
                         case SteamStateConstant.POWER_STATE_AWAIT:
                         case SteamStateConstant.POWER_STATE_ON:
+                        case SteamStateConstant.POWER_STATE_TROUBLE:
                             updateViewInfo(steamOven);
                             break;
                         case SteamStateConstant.POWER_STATE_OFF:
-                            goHome();
+                            if(System.currentTimeMillis() - workTimeMS >= DEVICE_IDLE_DUR){
+                                goHome();
+                            }
                             break;
                     }
 
@@ -143,10 +135,6 @@ public class MultiWorkActivity extends SteamBaseActivity {
         });
     }
 
-    private boolean isFromCurve(){
-        return sourceId == 1;
-    }
-
     /**
      * 更新页面展示 (?多段模式下 - 返回的是所有段落数据，还是当前工作段落数据)
      * @param steamOven
@@ -154,8 +142,16 @@ public class MultiWorkActivity extends SteamBaseActivity {
     private void updateViewInfo(SteamOven steamOven){
         switch (steamOven.workState){
             case SteamStateConstant.WORK_STATE_LEISURE://空闲
-                break;
             case SteamStateConstant.WORK_STATE_APPOINTMENT:
+                if(System.currentTimeMillis() - workTimeMS >= DEVICE_IDLE_DUR){
+                    LogUtils.e(TAG+" updateViews 空闲超过  "+DEVICE_IDLE_DUR+"秒，回到主页");
+                    goHome();
+                    return;
+                }
+                if(System.currentTimeMillis() - workTimeMS >= DEVICE_IDLE_SHOW){
+                    //容易多次弹出
+                    dealWorkFinish(steamOven);
+                }
                 break;
             case SteamStateConstant.WORK_STATE_PREHEAT:
             case SteamStateConstant.WORK_STATE_PREHEAT_PAUSE:
@@ -165,6 +161,8 @@ public class MultiWorkActivity extends SteamBaseActivity {
                     goHome();
                     return;
                 }
+                dismissAllDialog();
+                showDialog = false;
                 boolean cookState = ((steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT) || (steamOven.workState ==  SteamStateConstant.WORK_STATE_WORKING));
                 boolean isPreHeat = (steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT || steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT_PAUSE);
                 preTotalTime = getTotalTime(steamOven);
@@ -173,10 +171,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
                 updateSegmentInfo(steamOven);
                 break;
             case SteamStateConstant.WORK_STATE_WORKING_FINISH:
-                showWorkFinishDialog();
-                mHandler.removeCallbacks(runnable);
-                mHandler.removeCallbacksAndMessages(null);
-                autoFinishHandler.postDelayed(autoFinishRun,1000*60*5);
+                dealWorkFinish(steamOven);
                 break;
         }
     }
@@ -422,11 +417,13 @@ public class MultiWorkActivity extends SteamBaseActivity {
         finish();
     }
 
+    SteamCommonDialog steamCommonDialog;
+
     /**
      * 展示结束弹窗
      */
     private void showStopWorkDialog(){
-        SteamCommonDialog steamCommonDialog = new SteamCommonDialog(this);
+        steamCommonDialog = new SteamCommonDialog(this);
         steamCommonDialog.setContentText(R.string.steam_work_multi_back_message);
         steamCommonDialog.setOKText(R.string.steam_finish_now);
         steamCommonDialog.setListeners(v -> {
@@ -658,15 +655,16 @@ public class MultiWorkActivity extends SteamBaseActivity {
     }
 
     private Handler dataHandler = new Handler();
+    private int errorCount = 0;
     protected void getCookingData(final String guid) {
-        //mGuid 暂时写死241
         CloudHelper.getCurveBookForDevice(this, guid, GetCurveDetailRes.class,
                 new RetrofitCallback<GetCurveDetailRes>() {
                     @Override
                     public void onSuccess(GetCurveDetailRes getDeviceParamsRes) {
                         dataHandler.removeCallbacksAndMessages(null);
-                        if(!isDestroyed() && (getDeviceParamsRes == null || getDeviceParamsRes.payload == null)){
-                            dataHandler.postDelayed(()->{getCookingData(guid);},3000);
+                        if(errorCount <= 2 && !isDestroyed() && (getDeviceParamsRes == null || getDeviceParamsRes.payload == null)){
+                            errorCount++;
+                            dataHandler.postDelayed(()->{getCookingData(guid);},1000);
                             return;
                         }
                         try {
@@ -739,11 +737,12 @@ public class MultiWorkActivity extends SteamBaseActivity {
     }
 
     SteamCommonDialog finishDialog;
-    private boolean showOverTime = false;
+    private boolean showDialog = false;
     private void showWorkFinishDialog(){
-        if(showOverTime || (finishDialog != null && finishDialog.isShow())){
+        if(showDialog || (finishDialog != null && finishDialog.isShow())){
             return;
         }
+        showDialog = true;
         finishDialog = new SteamCommonDialog(this);
         finishDialog.setContentText(R.string.steam_work_complete);
         finishDialog.setOKText(R.string.steam_common_step_complete);
@@ -755,7 +754,6 @@ public class MultiWorkActivity extends SteamBaseActivity {
                 sendWorkFinishCommand(DIRECTIVE_OFFSET_WORK_FINISH);
             }else if(v.getId() == R.id.tv_cancel) {//回到主页
                 sendWorkFinishCommand(DIRECTIVE_OFFSET_GO_HOME);
-                showOverTime = true;
             }
         },R.id.tv_cancel,R.id.tv_ok);
         finishDialog.show();
@@ -799,9 +797,27 @@ public class MultiWorkActivity extends SteamBaseActivity {
         SteamCommandHelper.getInstance().sendCommonMsgForLiveData(commonMap,directive_offset + DIRECTIVE_OFFSET_END);
     }
 
+    private void dismissAllDialog(){
+        if(finishDialog != null && finishDialog.isShow()){
+            finishDialog.dismiss();
+        }
+        if(steamCommonDialog != null && steamCommonDialog.isShow()){
+            steamCommonDialog.dismiss();
+        }
+    }
 
+    @Override
+    public void goHome() {
+        dismissAllDialog();
+        super.goHome();
+    }
 
-
-
-
+    private void dealWorkFinish(SteamOven steamOven){
+        if(showDialog){
+            return;
+        }
+        showWorkFinishDialog();
+        mHandler.removeCallbacks(runnable);
+        mHandler.removeCallbacksAndMessages(null);
+    }
 }

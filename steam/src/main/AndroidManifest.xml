@@ -7,22 +7,25 @@
         <activity
             android:name=".ui.activity.AuxModelWorkActivity"
             android:exported="false"
+            android:launchMode="singleTop"
             android:screenOrientation="landscape"/>
         <activity
             android:name=".ui.activity.CurveSaveActivity"
             android:exported="false"
             android:screenOrientation="landscape"/>
         <activity
-            android:name=".ui.activity.RecipeModeActivityNew"
+            android:name=".ui.activity.RecipeModeActivity"
             android:exported="false"
             android:screenOrientation="landscape"/>
         <activity
             android:name=".ui.activity.AppointingActivity"
             android:exported="false"
+            android:launchMode="singleTop"
             android:screenOrientation="landscape"/>
         <activity
             android:name=".ui.activity.ModelWorkActivity"
             android:exported="false"
+            android:launchMode="singleTop"
             android:screenOrientation="landscape"/>
         <activity
             android:name=".ui.activity.AppointmentActivity"
@@ -33,12 +36,13 @@
             android:exported="false"
             android:screenOrientation="landscape"/>
         <activity
-            android:name=".ui.activity.RecipeModeActivity"
+            android:name=".ui.activity.RecipeModeActivityOld"
             android:exported="false"
             android:screenOrientation="landscape"/>
         <activity
             android:name=".ui.activity.MultiWorkActivity"
             android:exported="false"
+            android:launchMode="singleTop"
             android:screenOrientation="landscape"/>
         <activity
             android:name=".ui.activity.MultiActivity"
