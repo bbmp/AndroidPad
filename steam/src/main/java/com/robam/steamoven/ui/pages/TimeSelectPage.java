@@ -105,16 +105,13 @@ public class TimeSelectPage extends SteamBasePage {
                 .setOrientation(RecyclerView.HORIZONTAL)
                 .setMaxItem(maxItem)
                 .setScale(scale)
-                .setOnPickerListener(new PickerLayoutManager.OnPickerListener() {
-                    @Override
-                    public void onPicked(RecyclerView recyclerView, int position) {
-                        //指示器更新
-                        rvTimeAdapter.setPickPosition(position);
-                        curTime = rvTimeAdapter.getItem(position);
-                        if (null != tab) {
-                            TextView textView = tab.getCustomView().findViewById(R.id.tv_mode);
-                            textView.setText(rvTimeAdapter.getItem(position));
-                        }
+                .setOnPickerListener((recyclerView, position) -> {
+                    //指示器更新
+                    rvTimeAdapter.setPickPosition(position);
+                    curTime = rvTimeAdapter.getItem(position);
+                    if (null != tab) {
+                        TextView textView = tab.getCustomView().findViewById(R.id.tv_mode);
+                        textView.setText(rvTimeAdapter.getItem(position));
                     }
                 })
                 .build();

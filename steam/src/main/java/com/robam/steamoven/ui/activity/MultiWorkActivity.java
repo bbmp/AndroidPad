@@ -644,9 +644,9 @@ public class MultiWorkActivity extends SteamBaseActivity {
             curTime += 2;
             //tvTime.setText(DateUtil.secForMatTime3(curTime) + "min");
             Entry entry = new Entry(curTime, (float) steamOven.curTemp);
-            if(maxYValue < steamOven.curTemp){
-                maxYValue = steamOven.curTemp;
-                dm.setAxisMaximum(maxYValue+50);
+            if(maxYValue < steamOven.curTemp + 50){
+                maxYValue = steamOven.curTemp + 50;
+                dm.setAxisMaximum(maxYValue);
             }
             //Entry entry = new Entry(curTime, (float) Math.random()*250);
             dm.addEntry(entry, 0);
@@ -734,6 +734,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
         }
         //initLineChart();
         dm.setAxisMaximum(maxYValue);
+        dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.steam_chart), entryList, true, false);
         continueCreateCurve();
     }
 

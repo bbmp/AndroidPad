@@ -14,7 +14,6 @@ import com.robam.common.utils.DateUtil;
 import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.bean.MultiSegment;
 import com.robam.steamoven.constant.Constant;
-import com.robam.steamoven.constant.SteamConstant;
 import com.robam.steamoven.constant.SteamModeEnum;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.protocol.SteamCommandHelper;
@@ -24,7 +23,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Map;
 
 //工作预约
 public class AppointmentActivity extends SteamBaseActivity {

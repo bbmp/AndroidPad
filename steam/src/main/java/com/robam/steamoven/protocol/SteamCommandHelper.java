@@ -546,7 +546,7 @@ public class SteamCommandHelper {
         }
         if(curDevice.mode != 0){
             ToastUtils.showLong(context, R.string.steam_working_prompt);
-            return false;
+            //return false;
         }
         if(curDevice.doorState != 0){//门状态检测
             ToastUtils.showLong(context,R.string.steam_close_door_prompt);
@@ -563,7 +563,7 @@ public class SteamCommandHelper {
                     || modeCode == SteamConstant.JIEDONG
                     || modeCode == SteamConstant.FAJIAO
             ){
-                if(curDevice.waterBoxState == 0){
+                if(curDevice.waterBoxState != 0){
                     ToastUtils.show(context,R.string.steam_water_box_prompt,Toast.LENGTH_LONG);
                     return false;
                 }

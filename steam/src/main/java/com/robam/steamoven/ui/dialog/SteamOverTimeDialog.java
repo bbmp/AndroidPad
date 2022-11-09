@@ -82,7 +82,7 @@ public class SteamOverTimeDialog extends BaseDialog {
 
         //初始位置
         int initPos = Integer.MAX_VALUE / 2 - (Integer.MAX_VALUE/2) % selectList.size();
-        value = selectList.get(initPos).name;
+        value = selectList.get(initPos%selectList.size()).name;
         pickerLayoutManager.scrollToPosition(initPos);
         rvModeAdapter.setPickPosition(initPos);
     }

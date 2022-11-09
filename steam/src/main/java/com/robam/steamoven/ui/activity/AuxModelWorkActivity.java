@@ -48,6 +48,8 @@ public class AuxModelWorkActivity extends SteamBaseActivity {
 
     private MultiSegment segment;
 
+    private long workTimeMS;
+
     @Override
     protected int getLayoutId() {
         return R.layout.steam_activity_layout_aux_model_work;
