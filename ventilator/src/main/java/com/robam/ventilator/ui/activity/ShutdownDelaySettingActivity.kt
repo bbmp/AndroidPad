@@ -3,6 +3,7 @@ package com.robam.ventilator.ui.activity
 import com.robam.common.utils.MMKVUtils
 import com.robam.ventilator.R
 import com.robam.ventilator.base.VentilatorBaseActivity
+import com.robam.ventilator.device.HomeVentilator
 import com.robam.ventilator.ext.TextColorHelp
 import kotlinx.android.synthetic.main.ventilator_activity_holiday_date_setting.btn_cancel
 import kotlinx.android.synthetic.main.ventilator_activity_holiday_date_setting.btn_sure
@@ -27,6 +28,7 @@ class ShutdownDelaySettingActivity : VentilatorBaseActivity() {
         btn_sure.setOnClickListener {
             minute?.let {
                 MMKVUtils.setDelayShutdownTime(minute)
+                HomeVentilator.getInstance().shutdown.value = true
             }
             finish()
         }
@@ -39,7 +41,7 @@ class ShutdownDelaySettingActivity : VentilatorBaseActivity() {
         textChange(delayShutdownTime)
         //分钟选择器
         mPickerMinuteLayout.apply {
-            setNum(60, false, false)
+            setNum(5, false, false)
             setOnPickerListener { text, position ->
                 minute = text
                 textChange(text)

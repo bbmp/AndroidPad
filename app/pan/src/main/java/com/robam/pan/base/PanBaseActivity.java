@@ -11,10 +11,12 @@ import androidx.lifecycle.Observer;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
+import com.robam.common.device.subdevice.Pan;
 import com.robam.common.module.IPublicVentilatorApi;
 import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.ui.activity.BaseActivity;
 import com.robam.common.ui.dialog.IDialog;
+import com.robam.common.utils.ToastUtils;
 import com.robam.pan.R;
 import com.robam.pan.constant.DialogConstant;
 import com.robam.pan.factory.PanDialogFactory;
@@ -81,6 +83,19 @@ public abstract class PanBaseActivity extends BaseActivity {
             panDialog.dismiss();
         if (null != stoveDialog && stoveDialog.isShow())
             stoveDialog.dismiss();
+    }
+    //检查锅是否工作中
+    protected boolean isPanWorking() {
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device.dc.equals(IDeviceType.RZNG) && device instanceof Pan) {
+                Pan pan = (Pan) device;
+                if (pan.mode != 0) {//工作中
+                    ToastUtils.showShort(this, R.string.pan_pan_working);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     //检查锅是否离线

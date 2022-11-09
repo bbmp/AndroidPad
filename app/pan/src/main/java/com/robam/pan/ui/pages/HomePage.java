@@ -54,6 +54,8 @@ public class HomePage extends PanBasePage {
     private TextView tvQuick;
     //十秒翻炒
     private MCountdownView tvStir;
+    //油温提示
+    private TextView tvTempHint;
 
 
     @Override
@@ -69,6 +71,7 @@ public class HomePage extends PanBasePage {
         llStir = findViewById(R.id.ll_stir_fry);
         tvQuick = findViewById(R.id.tv_quick);
         tvStir = findViewById(R.id.tv_stir);
+        tvTempHint = findViewById(R.id.tv_temp);
         rvMain.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
         rvMainFunctionAdapter = new RvMainFunctionAdapter();
         rvMainFunctionAdapter.setOnItemClickListener(new OnItemClickListener() {
@@ -107,6 +110,18 @@ public class HomePage extends PanBasePage {
                             llQuick.setSelected(false);
                             llStir.setSelected(false);
                         }
+                        if (pan.panTemp < 60)
+                            tvTempHint.setText(R.string.pan_standby_ing);
+                        else if (pan.panTemp < 130)
+                            tvTempHint.setText("油温" + pan.panTemp + "℃");
+                        else if (pan.panTemp >= 130 && pan.panTemp <= 180)
+                            tvTempHint.setText("油温" + pan.panTemp + getString(R.string.pan_oil_temp_hint1));
+                        else if (pan.panTemp > 180 && pan.panTemp <= 240)
+                            tvTempHint.setText("油温" + pan.panTemp + getString(R.string.pan_oil_temp_hint2));
+                        else if (pan.panTemp > 240 && pan.panTemp <= 280)
+                            tvTempHint.setText("油温" + pan.panTemp + getString(R.string.pan_oil_temp_hint3));
+                        else
+                            tvTempHint.setText(R.string.pan_oil_temp_hint4);
                         break;
                     }
                 }

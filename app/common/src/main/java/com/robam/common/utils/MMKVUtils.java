@@ -10,7 +10,6 @@ public class MMKVUtils {
     public static String USER_INFO = "user_info";
     public static String INIT_DATA = "init_data";
     public static String SUBDEVICE_INFO = "subdevice_info";
-    public static String AUTO_AIR = "auto_air";
     public static String FAN_RUNTIME = "fan_runtime"; //风机运行时间
     public static String HOLIDAY = "holiday";//假日模式
     public static String HOLIDAY_DAY = "HOLIDAY_DAY";//假日模式天数
@@ -21,6 +20,9 @@ public class MMKVUtils {
     public static String FAN_STOVE = "fan_stove";//烟灶联动
     public static String FAN_PAN = "fan_pan";//烟锅联动
     public static String FAN_STEAM = "fan_steam";//烟蒸烤联动
+    public static String FAN_STOVE_GEAR = "fan_stove_gear";//烟灶联动匹配风量
+    public static String FAN_PAN_GEAR = "fan_pan_gear";//烟锅联动匹配风量
+    public static String FAN_STEAM_GEAR = "fan_steam_gear";//烟蒸烤联动匹配风量
 
     /**
      * 获取是否登录账号
@@ -57,10 +59,10 @@ public class MMKVUtils {
         MMKV mmkv = MMKV.defaultMMKV();
         mmkv.encode(HOLIDAY, holiday);
     }
-
+    //假日模式，默认打开
     public static boolean getHoliday() {
         MMKV mmkv = MMKV.defaultMMKV();
-        return mmkv.decodeBool(HOLIDAY, false);
+        return mmkv.decodeBool(HOLIDAY, true);
     }
 
     //假日模式天数 默认7天
@@ -101,21 +103,10 @@ public class MMKVUtils {
         MMKV mmkv = MMKV.defaultMMKV();
         mmkv.encode(OIL_CLEAN, oilClean);
     }
-
+    //油网清洗，默认打开
     public static boolean getOilClean() {
         MMKV mmkv = MMKV.defaultMMKV();
-        return mmkv.decodeBool(OIL_CLEAN, false);
-    }
-
-    //自动换气
-    public static void setAutoAir(boolean autoAir) {
-        MMKV mmkv = MMKV.defaultMMKV();
-        mmkv.encode(AUTO_AIR, autoAir);
-    }
-
-    public static boolean getAutoAir() {
-        MMKV mmkv = MMKV.defaultMMKV();
-        return mmkv.decodeBool(AUTO_AIR, false);
+        return mmkv.decodeBool(OIL_CLEAN, true);
     }
 
     /**
@@ -158,10 +149,14 @@ public class MMKVUtils {
     }
 
     //设置风机运行时间
-    public static void setFanRuntime(int addTime) {
+    public static void setFanRuntime(long runTime) {
         MMKV mmkv = MMKV.defaultMMKV();
-        int runTime = mmkv.decodeInt(FAN_RUNTIME, 0);
-        mmkv.encode(FAN_RUNTIME, runTime + addTime);
+        mmkv.encode(FAN_RUNTIME, runTime);
+    }
+    //获取风机运行时间
+    public static long getFanRuntime() {
+        MMKV mmkv = MMKV.defaultMMKV();
+        return mmkv.decodeLong(FAN_RUNTIME, 0);
     }
 
     //设置延时关机时间
@@ -170,43 +165,98 @@ public class MMKVUtils {
         mmkv.encode(DELAY_SHUTDOWN, delayTime);
     }
 
-    //获取延时关机时间
+    //获取延时关机,默认开
     public static boolean getDelayShutdown() {
         MMKV mmkv = MMKV.defaultMMKV();
-        return mmkv.decodeBool(DELAY_SHUTDOWN);
+        return mmkv.decodeBool(DELAY_SHUTDOWN, true);
     }
 
     //设置烟灶联动
     public static void setFanStove(boolean fanStove) {
         MMKV mmkv = MMKV.defaultMMKV();
         mmkv.encode(FAN_STOVE, fanStove);
+        if (!fanStove) //烟灶联动关闭，自动匹配风量关闭
+            mmkv.encode(FAN_STOVE_GEAR, false);
+    }
+    //设置烟灶联动自动匹配风量
+    public static void setFanStoveGear(boolean onOff) {
+        MMKV mmkv = MMKV.defaultMMKV();
+        mmkv.encode(FAN_STOVE_GEAR, onOff);
     }
 
     //获取烟灶联动
     public static boolean getFanStove() {
         MMKV mmkv = MMKV.defaultMMKV();
-        return mmkv.decodeBool(FAN_STOVE);
+        return mmkv.decodeBool(FAN_STOVE, true);
+    }
+    //烟灶联动匹配风量
+    public static boolean getFanStoveGear() {
+        MMKV mmkv = MMKV.defaultMMKV();
+        return mmkv.decodeBool(FAN_STOVE_GEAR);
     }
 
     //烟锅联动
-    public static void setFanPan(boolean fanStove) {
+    public static void setFanPan(boolean fanPan) {
         MMKV mmkv = MMKV.defaultMMKV();
-        mmkv.encode(FAN_PAN, fanStove);
+        mmkv.encode(FAN_PAN, fanPan);
+        if (!fanPan)
+            mmkv.encode(FAN_PAN_GEAR, false);
     }
 
+    //烟锅联动匹配风量
+    public static void setFanPanGear(boolean onOff) {
+        MMKV mmkv = MMKV.defaultMMKV();
+        mmkv.encode(FAN_PAN_GEAR, onOff);
+    }
+    //获取烟锅联动
     public static boolean getFanPan() {
         MMKV mmkv = MMKV.defaultMMKV();
-        return mmkv.decodeBool(FAN_PAN);
+        return mmkv.decodeBool(FAN_PAN, true);
+    }
+    //烟锅联动匹配风量
+    public static boolean getFanPanGear() {
+        MMKV mmkv = MMKV.defaultMMKV();
+        return mmkv.decodeBool(FAN_PAN_GEAR);
     }
 
     //烟蒸烤联动
-    public static void setFanSteam(boolean fanStove) {
+    public static void setFanSteam(boolean fanSteam) {
         MMKV mmkv = MMKV.defaultMMKV();
-        mmkv.encode(FAN_STEAM, fanStove);
+        mmkv.encode(FAN_STEAM, fanSteam);
+        if (!fanSteam)
+            mmkv.encode(FAN_STEAM_GEAR, false);
     }
-
+    //烟蒸烤联动匹配风量
+    public static void setFanSteamGear(boolean onOff) {
+        MMKV mmkv = MMKV.defaultMMKV();
+        mmkv.encode(FAN_STEAM_GEAR, onOff);
+    }
+    //获取烟蒸烤联动
     public static boolean getFanSteam() {
         MMKV mmkv = MMKV.defaultMMKV();
-        return mmkv.decodeBool(FAN_STEAM);
+        return mmkv.decodeBool(FAN_STEAM, true);
+    }
+    //烟蒸烤联动匹配风量
+    public static boolean getFanSteamGear() {
+        MMKV mmkv = MMKV.defaultMMKV();
+        return mmkv.decodeBool(FAN_STEAM_GEAR);
+    }
+    //恢复初始，智能设置部分
+    public static void resetSmartSet() {
+        MMKV mmkv = MMKV.defaultMMKV();
+
+        mmkv.remove(FAN_RUNTIME);
+        mmkv.remove(HOLIDAY);
+        mmkv.remove(HOLIDAY_DAY);
+        mmkv.remove(HOLIDAY_WEEK_TIME);
+        mmkv.remove(OIL_CLEAN);
+        mmkv.remove(DELAY_SHUTDOWN);
+        mmkv.remove(DELAY_SHUTDOWN_TIME);
+        mmkv.remove(FAN_STOVE);
+        mmkv.remove(FAN_PAN);
+        mmkv.remove(FAN_STEAM);
+        mmkv.remove(FAN_STOVE_GEAR);
+        mmkv.remove(FAN_PAN_GEAR);
+        mmkv.remove(FAN_STEAM_GEAR);
     }
 }

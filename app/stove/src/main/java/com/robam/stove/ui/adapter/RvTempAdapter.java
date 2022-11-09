@@ -21,6 +21,11 @@ public class RvTempAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
         this.pickPosition = pickPosition % getData().size();
         notifyDataSetChanged();
     }
+
+    public int getPickPosition() {
+        return pickPosition;
+    }
+
     @Override
     public int getItemCount() {
         if (getData().size() <= 1)

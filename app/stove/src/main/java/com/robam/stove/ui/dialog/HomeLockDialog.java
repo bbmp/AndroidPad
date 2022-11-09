@@ -10,6 +10,7 @@ import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.utils.TimeUtils;
 import com.robam.common.device.subdevice.Stove;
+import com.robam.stove.constant.StoveEnum;
 import com.robam.stove.device.HomeStove;
 import com.robam.common.ui.dialog.BaseDialog;
 import com.robam.common.ui.dialog.FullDialog;
@@ -47,20 +48,32 @@ public class HomeLockDialog extends BaseDialog {
                     closeLeftStove();
                 } else {
                     llLeftStove.setVisibility(View.VISIBLE);
-                    if (stove.leftWorkMode == StoveConstant.MODE_FRY)
-                        tvLeftStove.setText("左灶 " + stove.leftWorkTemp + "℃");
-                    else
-                        tvLeftStove.setText("左灶 " + stove.leftLevel + "档 " + TimeUtils.secToMin(stove.leftTimeHours));
+                    if (stove.leftWorkMode == StoveConstant.SUBMODE_HIGH || stove.leftWorkMode == StoveConstant.SUBMODE_MID || stove.leftWorkMode == StoveConstant.SUBMODE_LOW)
+                        tvLeftStove.setText("左灶 " + "煎炸 " + StoveEnum.match(stove.leftWorkMode));
+                    else if (stove.leftWorkMode == StoveConstant.MODE_STEW || stove.leftWorkMode == StoveConstant.MODE_STEAM)
+                        tvLeftStove.setText("左灶 " + StoveEnum.match(stove.leftWorkMode) + " " + TimeUtils.secToMin(stove.leftTimeHours));
+                    else { //无模式
+                        if (stove.leftTimeHours > 0)
+                            tvLeftStove.setText("左灶 " + "定时 " + TimeUtils.secToMin(stove.leftTimeHours));
+                        else
+                            tvLeftStove.setText("左灶 " + stove.leftLevel + "档");
+                    }
                 }
                 //右灶工作中
                 if (stove.rightStatus == StoveConstant.STOVE_CLOSE || stove.rightLevel == 0) {
                     closeRightStove();
                 } else {
                     llRightStove.setVisibility(View.VISIBLE);
-                    if (stove.rightWorkMode == StoveConstant.MODE_FRY)
-                        tvRightStove.setText("右灶 " + stove.rightWorkTemp + "℃");
-                    else
-                        tvRightStove.setText("右灶 " + stove.rightLevel + "档 " + TimeUtils.secToMin(stove.rightTimeHours));
+                    if (stove.rightWorkMode == StoveConstant.SUBMODE_HIGH || stove.rightWorkMode == StoveConstant.SUBMODE_MID || stove.rightWorkMode == StoveConstant.SUBMODE_LOW)
+                        tvRightStove.setText("右灶 " + "煎炸" + StoveEnum.match(stove.rightWorkMode));
+                    else if (stove.rightWorkMode == StoveConstant.MODE_STEW || stove.rightWorkMode == StoveConstant.MODE_STEAM)
+                        tvRightStove.setText("右灶 " + StoveEnum.match(stove.rightWorkMode) + " " + TimeUtils.secToMin(stove.rightTimeHours));
+                    else { //无模式
+                        if (stove.rightTimeHours > 0)
+                            tvRightStove.setText("右灶 " + "定时 " + TimeUtils.secToMin(stove.rightTimeHours));
+                        else
+                            tvRightStove.setText("右灶 " + stove.rightLevel + "档");
+                    }
                 }
                 break;
             }

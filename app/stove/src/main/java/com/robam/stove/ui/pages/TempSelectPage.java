@@ -5,6 +5,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.tabs.TabLayout;
+import com.robam.common.constant.StoveConstant;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.stove.R;
 import com.robam.stove.base.StoveBasePage;
@@ -101,6 +102,17 @@ public class TempSelectPage extends StoveBasePage {
     //获取当前温度
     public String getCurTemp() {
         return curTemp;
+    }
+    //获取子模式
+    public int getSubMode() {
+        int position = 0;
+        if (null != rvTempAdapter)
+            position = rvTempAdapter.getPickPosition();
+        if (position == 1) //中温
+            return StoveConstant.SUBMODE_MID;
+        if (position == 2) //高温
+            return StoveConstant.SUBMODE_HIGH;
+        return StoveConstant.SUBMODE_LOW;    //低温
     }
 
     /**

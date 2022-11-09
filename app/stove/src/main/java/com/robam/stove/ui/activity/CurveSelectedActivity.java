@@ -157,6 +157,9 @@ public class CurveSelectedActivity extends StoveBaseActivity {
         //检查灶是否连接
         if (isStoveOffline())
             return;
+        //检查锅是否工作中
+        if (isPanWorking())
+            return;
         //查找锅和灶
         for (Device device: AccountInfo.getInstance().deviceList) {
             if (device instanceof Pan)

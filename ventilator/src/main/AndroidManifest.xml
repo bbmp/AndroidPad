@@ -54,10 +54,17 @@
         <activity
             android:name=".ui.activity.HolidayDateSettingActivity"
             android:exported="false"
+            android:launchMode="singleTop"
             android:screenOrientation="landscape" />
         <activity
             android:name=".ui.activity.ShutdownDelaySettingActivity"
             android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.RelationDeviceActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
             android:screenOrientation="landscape" />
         <activity
             android:name=".ui.activity.SaleServiceActivity"

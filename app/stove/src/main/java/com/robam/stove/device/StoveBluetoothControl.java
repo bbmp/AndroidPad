@@ -264,8 +264,12 @@ public class StoveBluetoothControl implements StoveFunction{
                     //设置灶具id
                     try {
                         msg.putOpt(StoveConstant.stoveId, stoveId);
-                        msg.putOpt(StoveConstant.setMode, mode); //设置模式
-                        msg.putOpt(StoveConstant.timingtime, timingTime);//定时时间
+                        if (mode == StoveConstant.MODE_STEW || mode == StoveConstant.MODE_STEAM) {
+                            msg.putOpt(StoveConstant.setMode, mode); //设置模式
+                            msg.putOpt(StoveConstant.timingtime, timingTime);//定时时间
+                        } else {
+                            msg.putOpt(StoveConstant.setMode, mode); //设置模式
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

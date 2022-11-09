@@ -14,6 +14,7 @@ import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.device.Plat;
+import com.robam.common.device.subdevice.Pan;
 import com.robam.common.module.IPublicVentilatorApi;
 import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.ui.activity.BaseActivity;
@@ -191,6 +192,19 @@ public abstract class StoveBaseActivity extends BaseActivity {
     public boolean isLock() {
         if (null != ilockDialog && ilockDialog.isShow())
             return true;
+        return false;
+    }
+    //检查锅是否工作中
+    protected boolean isPanWorking() {
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device.dc.equals(IDeviceType.RZNG) && device instanceof Pan) {
+                Pan pan = (Pan) device;
+                if (pan.mode != 0) {//工作中
+                    ToastUtils.showShort(this, R.string.stove_pan_working);
+                    return true;
+                }
+            }
+        }
         return false;
     }
     //检查锅是否离线

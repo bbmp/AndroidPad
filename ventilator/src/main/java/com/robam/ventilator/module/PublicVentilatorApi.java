@@ -12,6 +12,7 @@ import com.robam.common.device.Plat;
 import com.robam.common.device.subdevice.Stove;
 import com.robam.common.module.IPublicVentilatorApi;
 import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.MMKVUtils;
 import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.device.HomeVentilator;
 import com.robam.ventilator.device.VentilatorAbstractControl;
@@ -117,14 +118,17 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
                 LogUtils.e("stove.leftLevel= " + stove.leftLevel + " stove.rightLevel=" + stove.rightLevel);
                 LogUtils.e("leftLevel= " + leftLevel + " rightLevel=" + rightLevel);
                 if (stove.leftLevel == 0 && stove.rightLevel == 0 && (leftLevel != 0 || rightLevel != 0)) { //刚开火
+                    //关闭延时关机
                     HomeVentilator.getInstance().cancleDelayShutDown();
                     //烟机没有启动打开烟机
-                    if (!isStartUp()) {
-                        VentilatorAbstractControl.getInstance().powerOnGear(VentilatorConstant.FAN_GEAR_MID); //开机并设置挡位
-                        Plat.getPlatform().screenOn();
-                        Plat.getPlatform().openPowerLamp();
-                    } else if (HomeVentilator.getInstance().gear != (byte) 0x06) //非爆操档
-                        VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_MID);
+                    if (MMKVUtils.getFanStove()) {//烟灶联动
+                        if (!isStartUp()) {
+                            VentilatorAbstractControl.getInstance().powerOnGear(VentilatorConstant.FAN_GEAR_MID); //开机并设置挡位
+                            Plat.getPlatform().screenOn();
+                            Plat.getPlatform().openPowerLamp();
+                        } else if (HomeVentilator.getInstance().gear != (byte) 0x06) //非爆操档
+                            VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_MID);
+                    }
                     if (stove.leftStatus == 0 && leftLevel != 0) //如果不是工作状态，改成工作状态
                         stove.leftStatus = 2;
                     if (stove.rightStatus == 0 && rightLevel != 0)
@@ -135,10 +139,12 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
                     stove.rightStatus = 0;
                 }
                 //火力最小档计时
-                if ((leftLevel == 1 && rightLevel <= 1) || (rightLevel == 1 && leftLevel <= 1)) {
-                    HomeVentilator.getInstance().startLevelCountDown();
-                } else
-                    HomeVentilator.getInstance().stopLevelCountDown();
+                if (MMKVUtils.getFanStove()) {//烟灶联动
+                    if ((leftLevel == 1 && rightLevel <= 1) || (rightLevel == 1 && leftLevel <= 1)) {
+                        HomeVentilator.getInstance().startLevelCountDown();
+                    } else
+                        HomeVentilator.getInstance().stopLevelCountDown();
+                }
                 break;
             }
         }

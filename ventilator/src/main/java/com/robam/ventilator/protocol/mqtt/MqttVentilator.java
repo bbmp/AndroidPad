@@ -15,6 +15,7 @@ import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.ByteUtils;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.MMKVUtils;
 import com.robam.common.utils.MsgUtils;
 import com.robam.stove.device.HomeStove;
 import com.robam.stove.device.StoveAbstractControl;
@@ -43,6 +44,8 @@ public class MqttVentilator extends MqttPublic {
         //内部命令
         switch (msg.getID()) {
             case BleDecoder.EVENT_POT_TEMPERATURE_DROP: //锅温度骤降且烟锅联动开启,且烟机不工作烟机爆炒档
+                if (!MMKVUtils.getFanPan()) //烟锅联动未开
+                    return;
                 if (HomeVentilator.getInstance().gear == (byte) 0xA0) { //不工作
                     if (HomeVentilator.getInstance().startup == (byte) 0x00) { //先开机
                         VentilatorAbstractControl.getInstance().powerOnGear(VentilatorConstant.FAN_GEAR_FRY);
@@ -53,11 +56,15 @@ public class MqttVentilator extends MqttPublic {
                 }
                 break;
             case BleDecoder.EVENT_POT_TEMPERATURE_OV: //防干烧预警 锅温280以上且烟锅联动开启
+                if (!MMKVUtils.getFanPan()) //烟锅联动未开
+                    return;
                 //关闭灶具
                 StoveAbstractControl.getInstance().setAttribute(HomeStove.getInstance().guid, IPublicStoveApi.STOVE_LEFT, 0x00, StoveConstant.STOVE_CLOSE);
                 StoveAbstractControl.getInstance().setAttribute(HomeStove.getInstance().guid, IPublicStoveApi.STOVE_RIGHT, 0x00, StoveConstant.STOVE_CLOSE);
                 break;
             case BleDecoder.EVENT_POT_LINK_2_RH://烟锅联动锅温50以上，烟机未开且烟锅联动开启
+                if (!MMKVUtils.getFanPan()) //烟锅联动未开
+                    return;
                 //烟机开2挡
                 if (HomeVentilator.getInstance().gear == (byte) 0xA0) { //不工作
                     if (HomeVentilator.getInstance().startup == (byte) 0x00) { //先开机
@@ -131,12 +138,11 @@ public class MqttVentilator extends MqttPublic {
                 }
                 if (msg.has(VentilatorConstant.PRecipe1) || msg.has(VentilatorConstant.PRecipe2) || msg.has(VentilatorConstant.PRecipe3) ||
                         msg.has(VentilatorConstant.PRecipe4) || msg.has(VentilatorConstant.PRecipe5)) { //无人锅上报转发到云端
-                    MqttMsg newMsg = new MqttMsg.Builder()
-                            .setMsgId(MsgKeys.PanReportStatistics_Req)
-                            .setGuid(msg.getGuid())
-                            .setTopic(new RTopic(RTopic.TOPIC_BROADCAST, DeviceUtils.getDeviceTypeId(msg.getGuid()), DeviceUtils.getDeviceNumber(msg.getGuid())))
-                            .build();
-                    MqttManager.getInstance().publish(newMsg, VentilatorFactory.getProtocol());
+
+                    String topic = "/b/" + msg.getGuid().substring(0, 5) + "/" + msg.getGuid().substring(5);
+                    byte[] mqtt_data = payload;
+                    mqtt_data[BleDecoder.GUID_LEN] = (byte) MsgKeys.PanReportStatistics_Req; //修改命令号
+                    MqttManager.getInstance().publish(topic, mqtt_data);
                 }
                 break;
 

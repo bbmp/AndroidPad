@@ -7,6 +7,8 @@ import android.os.Looper;
 import android.serialport.helper.SerialPortHelper;
 import android.view.View;
 
+import androidx.lifecycle.MutableLiveData;
+
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.RTopic;
@@ -24,6 +26,7 @@ import com.robam.common.utils.DeviceUtils;
 import com.robam.common.device.subdevice.Pan;
 import com.robam.common.device.subdevice.Stove;
 import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.MMKVUtils;
 import com.robam.ventilator.R;
 import com.robam.ventilator.constant.DialogConstant;
 import com.robam.ventilator.constant.VentilatorConstant;
@@ -43,6 +46,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class HomeVentilator {
+    //风机启动时间
+    public long fanStartTime = 0;
 
     private ThreadPoolExecutor A6CountDown = new ThreadPoolExecutor(1, 1, 0, TimeUnit.SECONDS, new SynchronousQueue<>(),
             new ThreadPoolExecutor.DiscardPolicy());//无法重复提交
@@ -256,6 +261,8 @@ public class HomeVentilator {
     }
     //延时关机提示
     public void delayShutDown() {
+        if (!MMKVUtils.getDelayShutdown()) //延时关机关闭
+            return;
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -284,7 +291,8 @@ public class HomeVentilator {
                 }
             }, R.id.tv_cancel, R.id.tv_ok);
 
-            delayCloseDialog.tvCountdown.setTotalTime(60);
+            int delayTime = Integer.parseInt(MMKVUtils.getDelayShutdownTime()); //延时时间
+            delayCloseDialog.tvCountdown.setTotalTime(delayTime * 60);
 
             delayCloseDialog.tvCountdown.addOnCountDownListener(new MCountdownView.OnCountDownListener() {
                 @Override
@@ -326,5 +334,24 @@ public class HomeVentilator {
     //停止计时
     public void stopLevelCountDown() {
         isLevelCountDown = true;
+    }
+
+    //假日模式设置
+    public MutableLiveData<Boolean> holiday = new MutableLiveData<>(false);
+    //延时关机设置
+    public MutableLiveData<Boolean> shutdown = new MutableLiveData<>(false);
+    //记录风机运行时间
+    public void fanRunTime(int gear) {
+        if (gear == VentilatorConstant.FAN_GEAR_CLOSE) {//关挡位
+            if (fanStartTime != 0) {
+                long runtime = MMKVUtils.getFanRuntime();
+                runtime = runtime + Math.abs(System.currentTimeMillis() - fanStartTime); //增加时间
+                MMKVUtils.setFanRuntime(runtime);
+                fanStartTime = 0;
+            }
+        } else {
+            if (fanStartTime == 0)
+                fanStartTime = System.currentTimeMillis();
+        }
     }
 }

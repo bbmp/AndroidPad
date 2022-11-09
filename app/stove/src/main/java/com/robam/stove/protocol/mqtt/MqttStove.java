@@ -81,6 +81,7 @@ public class MqttStove extends MqttPublic {
                 msg.putOpt(StoveConstant.stoveNum, stoveNum);
                 int lockStatus = MsgUtils.getByte(payload[offset++]);
                 msg.putOpt(StoveConstant.lockStatus, lockStatus);
+                //左灶
                 int workStatus = MsgUtils.getByte(payload[offset++]);
                 msg.putOpt(StoveConstant.leftStatus, workStatus);
                 int leftLevel = MsgUtils.getByte(payload[offset++]);
@@ -126,6 +127,28 @@ public class MqttStove extends MqttPublic {
                             msg.putOpt(StoveConstant.rightTemp, rightTemp);
                             offset += 4;
                             break;
+                        case 'I': { //左灶秒数
+                            short leftTime = MsgUtils.bytes2ShortLittle(payload, offset);
+                            msg.putOpt(StoveConstant.leftTime, leftTime);
+                            offset += 2;
+                        }
+                        break;
+                        case 'J': {//右灶秒数
+                            short rightTime = MsgUtils.bytes2ShortLittle(payload, offset);
+                            msg.putOpt(StoveConstant.rightTime, rightTime);
+                            offset += 2;
+                        }
+                        break;
+                        case 'K': { //左灶模式
+                            int leftMode = MsgUtils.getByte(payload[offset++]);
+                            msg.putOpt(StoveConstant.leftMode, leftMode);
+                        }
+                        break;
+                        case 'L': { //右灶模式
+                            int rightMode = MsgUtils.getByte(payload[offset++]);
+                            msg.putOpt(StoveConstant.rightMode, rightMode);
+                        }
+                        break;
                     }
                 }
                 //通知烟机挡位变化
@@ -226,13 +249,20 @@ public class MqttStove extends MqttPublic {
                 //控制端类型
                 buf.put((byte) ITerminalType.PAD);
                 buf.put((byte) msg.optInt(StoveConstant.stoveId)); //炉头id
-                buf.put((byte) 0x02); //参数个数
-                buf.put((byte) 0x01); //key
-                buf.put((byte) 1);// len
-                buf.put((byte) msg.optInt(StoveConstant.setMode));//设置模式
-                buf.put((byte) 0x02); //key
-                buf.put((byte) 2);
-                buf.putShort((short) msg.optInt(StoveConstant.timingtime)); //定时时间
+                if (msg.has(StoveConstant.timingtime)) {
+                    buf.put((byte) 0x02); //参数个数
+                    buf.put((byte) 0x01); //key
+                    buf.put((byte) 1);// len
+                    buf.put((byte) msg.optInt(StoveConstant.setMode));//设置模式
+                    buf.put((byte) 0x02); //key
+                    buf.put((byte) 2);
+                    buf.putShort((short) msg.optInt(StoveConstant.timingtime)); //定时时间
+                } else {
+                    buf.put((byte) 0x01); //参数个数
+                    buf.put((byte) 0x01); //key
+                    buf.put((byte) 1);// len
+                    buf.put((byte) msg.optInt(StoveConstant.setMode));//设置模式
+                }
                 break;
         }
         encodeMsg(buf, msg);

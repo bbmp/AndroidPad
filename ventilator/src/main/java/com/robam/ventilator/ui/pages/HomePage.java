@@ -212,7 +212,7 @@ public class HomePage extends VentilatorBasePage {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 if (position == 0) { //锁屏清洗提示
-                    lockClean();
+                    lockClean(R.string.ventilator_clean_oil_hint);
                 } else { //挡位选择
                     if (position == rvFunctionAdapter.getPickPosition()) {//已经选中了
                         position = -1;
@@ -419,6 +419,14 @@ public class HomePage extends VentilatorBasePage {
                 rvProductsAdapter.setList(AccountInfo.getInstance().deviceList);
             }
         });
+        //检查油网清洗时间,油网清洗打开
+        if (MMKVUtils.getOilClean()) {
+            long runTime = MMKVUtils.getFanRuntime();
+            if (runTime >= 60* 60 * 60*1000) { //超过60小时
+
+                lockClean(R.string.ventilator_clean_oil_auto_hint);
+            }
+        }
     }
 
     /**
@@ -616,10 +624,10 @@ public class HomePage extends VentilatorBasePage {
             homeLock.dismiss();
     }
     //锁屏清洗提示
-    private void lockClean() {
+    private void lockClean(int contentStrId) {
         IDialog iDialog = VentilatorDialogFactory.createDialogByType(getContext(), DialogConstant.DIALOG_TYPE_VENTILATOR_COMMON);
         iDialog.setCancelable(false);
-        iDialog.setContentText(R.string.ventilator_clean_oil_hint);
+        iDialog.setContentText(contentStrId);
         iDialog.setListeners(new IDialog.DialogOnClickListener() {
             @Override
             public void onClick(View v) {
@@ -630,7 +638,8 @@ public class HomePage extends VentilatorBasePage {
                     VentilatorAbstractControl.getInstance().openOilClean();
                     //开灯
                     Plat.getPlatform().openWaterLamp();
-//                    VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_CLOSE);
+                    //
+                    MMKVUtils.setFanRuntime(0);
                 }
             }
         }, R.id.tv_cancel, R.id.tv_ok);
