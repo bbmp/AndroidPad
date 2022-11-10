@@ -116,6 +116,10 @@
             android:name=".ui.service.AlarmBleService"
             android:enabled="true"
             android:exported="true" />
+        <service
+            android:name=".ui.service.AlarmVentilatorService"
+            android:enabled="true"
+            android:exported="true" />
         <receiver
             android:name=".ui.receiver.VentilatorReceiver"
             android:exported="false">

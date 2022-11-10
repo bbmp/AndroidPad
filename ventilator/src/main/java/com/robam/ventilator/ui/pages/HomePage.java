@@ -104,7 +104,7 @@ public class HomePage extends VentilatorBasePage {
     private DrawerLayout drawerLayout;
     private LinearLayout llSetting, llProducts;
 
-    private IDialog homeLock;
+    private IDialog homeLock, oilClean;
 
     public static HomePage newInstance() {
         return new HomePage();
@@ -419,14 +419,14 @@ public class HomePage extends VentilatorBasePage {
                 rvProductsAdapter.setList(AccountInfo.getInstance().deviceList);
             }
         });
-        //检查油网清洗时间,油网清洗打开
-        if (MMKVUtils.getOilClean()) {
-            long runTime = MMKVUtils.getFanRuntime();
-            if (runTime >= 60* 60 * 60*1000) { //超过60小时
-
-                lockClean(R.string.ventilator_clean_oil_auto_hint);
+        //油网清洗检查
+        HomeVentilator.getInstance().oilClean.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean)
+                    lockClean(R.string.ventilator_clean_oil_auto_hint);
             }
-        }
+        });
     }
 
     /**
@@ -622,28 +622,33 @@ public class HomePage extends VentilatorBasePage {
         super.onDestroy();
         if (null != homeLock && homeLock.isShow())
             homeLock.dismiss();
+        if (null != oilClean && oilClean.isShow())
+            oilClean.dismiss();
     }
     //锁屏清洗提示
     private void lockClean(int contentStrId) {
-        IDialog iDialog = VentilatorDialogFactory.createDialogByType(getContext(), DialogConstant.DIALOG_TYPE_VENTILATOR_COMMON);
-        iDialog.setCancelable(false);
-        iDialog.setContentText(contentStrId);
-        iDialog.setListeners(new IDialog.DialogOnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (v.getId() == R.id.tv_ok) {
-                    screenLock();
+        if (null == oilClean) {
+            oilClean = VentilatorDialogFactory.createDialogByType(getContext(), DialogConstant.DIALOG_TYPE_VENTILATOR_COMMON);
+            oilClean.setCancelable(false);
+            oilClean.setContentText(contentStrId);
+            oilClean.setListeners(new IDialog.DialogOnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (v.getId() == R.id.tv_ok) {
+                        screenLock();
 
-                    //打开油网清洗
-                    VentilatorAbstractControl.getInstance().openOilClean();
-                    //开灯
-                    Plat.getPlatform().openWaterLamp();
-                    //
+                        //打开油网清洗
+                        VentilatorAbstractControl.getInstance().openOilClean();
+                        //开灯
+                        Plat.getPlatform().openWaterLamp();
+
+                    }
+                    //重新计算
                     MMKVUtils.setFanRuntime(0);
                 }
-            }
-        }, R.id.tv_cancel, R.id.tv_ok);
-        iDialog.show();
+            }, R.id.tv_cancel, R.id.tv_ok);
+        }
+        oilClean.show();
     }
     //锁屏
     private void screenLock() {

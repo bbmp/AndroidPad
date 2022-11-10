@@ -111,25 +111,6 @@ public class HomeVentilator {
         }
     };
 
-    //串口查询
-    private ThreadPoolExecutor serialThread = new ThreadPoolExecutor(1, 1, 0, TimeUnit.SECONDS, new SynchronousQueue<>(),
-            new ThreadPoolExecutor.DiscardPolicy());//无法重复提交
-    private Runnable runSerial = new Runnable() {
-        @Override
-        public void run() {
-            //
-            isStopSerial = false;
-
-            while (!isStopSerial) {
-                try {
-                    Thread.sleep(3000);
-                } catch (Exception e) {}
-                byte data[] = SerialVentilator.packQueryCmd();
-                SerialPortHelper.getInstance().addCommands(data);
-            }
-        }
-    };
-
     //当前进入的烟机
     public static HomeVentilator getInstance() {
         return HomeVentilator.VentilatorHolder.instance;
@@ -239,15 +220,6 @@ public class HomeVentilator {
             e.printStackTrace();
         }
     }
-    //开始串口查询
-    public void startSerialQuery() {
-        serialThread.execute(runSerial);
-    }
-    //停止串口查询
-    private boolean isStopSerial;
-    public void stopSerialQuery() {
-        isStopSerial = true;
-    }
 
     //爆炒档开始倒计时
     private boolean isStopA6CountDown;
@@ -336,10 +308,11 @@ public class HomeVentilator {
         isLevelCountDown = true;
     }
 
-    //假日模式设置
-    public MutableLiveData<Boolean> holiday = new MutableLiveData<>(false);
-    //延时关机设置
-    public MutableLiveData<Boolean> shutdown = new MutableLiveData<>(false);
+    //智能设置
+    public MutableLiveData<Boolean> smartSet = new MutableLiveData<>(false);
+    //油网清洗自动提示
+    public MutableLiveData<Boolean> oilClean = new MutableLiveData<>(false);
+
     //记录风机运行时间
     public void fanRunTime(int gear) {
         if (gear == VentilatorConstant.FAN_GEAR_CLOSE) {//关挡位
@@ -353,5 +326,7 @@ public class HomeVentilator {
             if (fanStartTime == 0)
                 fanStartTime = System.currentTimeMillis();
         }
+        //记录风机最后运行时间
+        MMKVUtils.setFanOffTime(System.currentTimeMillis());
     }
 }

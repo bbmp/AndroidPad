@@ -92,6 +92,8 @@
     <string name="ventilator_holiday_desc_set">%s天未使用油烟机、自动开启换气（换气时间为14:00）\n每周固定 %s 开启油烟机3分钟自动换气</string>
     <string name="ventilator_shutdown_delay_set">油烟机将延迟%s分钟关机</string>
     <string name="ventilator_shutdown_now">立即关机</string>
+    <string name="ventilator_relation">关联</string>
+    <string name="ventilator_relationed">已关联</string>
 
 
 </resources>

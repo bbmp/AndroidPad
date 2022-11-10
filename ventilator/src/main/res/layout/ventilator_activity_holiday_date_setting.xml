@@ -20,13 +20,12 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="@dimen/dp_40"
-        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginTop="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_40"
-        android:layout_marginBottom="@dimen/dp_30"
+        android:layout_marginBottom="@dimen/dp_20"
         android:layout_weight="1"
         android:background="@drawable/ventilator_shape_border_bg"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/dp_50"
         android:paddingEnd="@dimen/dp_80">
 
 

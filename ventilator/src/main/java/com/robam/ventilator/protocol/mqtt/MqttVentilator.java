@@ -2,11 +2,14 @@ package com.robam.ventilator.protocol.mqtt;
 
 import com.robam.common.ITerminalType;
 import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
 import com.robam.common.bean.RTopic;
 import com.robam.common.ble.BleDecoder;
 import com.robam.common.constant.ComnConstant;
 import com.robam.common.constant.StoveConstant;
 import com.robam.common.device.Plat;
+import com.robam.common.device.subdevice.Pan;
+import com.robam.common.device.subdevice.Stove;
 import com.robam.common.module.IPublicStoveApi;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.mqtt.MqttMsg;
@@ -87,6 +90,27 @@ public class MqttVentilator extends MqttPublic {
                         case 1:
                             int gear = MsgUtils.getByte(payload[offset++]); //请求联动挡位
                             msg.putOpt(VentilatorConstant.FanGear, gear);
+                            for (Device device: AccountInfo.getInstance().deviceList) {
+                                if (msg.getGuid().equals(device.guid) && device instanceof Pan) {
+                                    if (MMKVUtils.getFanPan() && MMKVUtils.getFanPanGear()) {//烟锅联动打开和自动匹配风量打开
+                                        if (HomeVentilator.getInstance().startup == (byte) 0x00) { //先开机
+                                            VentilatorAbstractControl.getInstance().powerOnGear(gear);
+                                            Plat.getPlatform().screenOn();
+                                            Plat.getPlatform().openPowerLamp();
+                                        } else
+                                            VentilatorAbstractControl.getInstance().setFanGear(gear);
+                                    }
+                                } else if (msg.getGuid().equals(device.guid) && device instanceof Stove) {
+                                    if (MMKVUtils.getFanStove() && MMKVUtils.getFanStoveGear()) { //烟灶联动打开
+                                        if (HomeVentilator.getInstance().startup == (byte) 0x00) { //先开机
+                                            VentilatorAbstractControl.getInstance().powerOnGear(gear);
+                                            Plat.getPlatform().screenOn();
+                                            Plat.getPlatform().openPowerLamp();
+                                        } else
+                                            VentilatorAbstractControl.getInstance().setFanGear(gear);
+                                    }
+                                }
+                            }
                             break;
                         case 2: {
                             int min = 0;
@@ -100,6 +124,8 @@ public class MqttVentilator extends MqttPublic {
                                 offset += 4;
                             }
                             msg.putOpt(VentilatorConstant.DelayTime, min);
+                            if (min >=1 || min <= 5) //设置延时关机时间
+                                MMKVUtils.setDelayShutdownTime(min + "");
                         }
                             break;
                         case 101:

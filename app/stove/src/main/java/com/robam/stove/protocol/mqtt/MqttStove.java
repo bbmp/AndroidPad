@@ -129,13 +129,13 @@ public class MqttStove extends MqttPublic {
                             break;
                         case 'I': { //左灶秒数
                             short leftTime = MsgUtils.bytes2ShortLittle(payload, offset);
-                            msg.putOpt(StoveConstant.leftTime, leftTime);
+                            msg.putOpt(StoveConstant.leftSetTime, leftTime);
                             offset += 2;
                         }
                         break;
                         case 'J': {//右灶秒数
                             short rightTime = MsgUtils.bytes2ShortLittle(payload, offset);
-                            msg.putOpt(StoveConstant.rightTime, rightTime);
+                            msg.putOpt(StoveConstant.rightSetTime, rightTime);
                             offset += 2;
                         }
                         break;

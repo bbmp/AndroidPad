@@ -41,7 +41,7 @@ class PickerTimeLayout : LinearLayout {
     }
 
     private fun init() {
-        LayoutInflater.from(context).inflate(R.layout.time_layout, this)
+        LayoutInflater.from(context).inflate(R.layout.ventilator_time_layout, this)
         mHourManager = PickerLayoutManager.Builder(context)
             .setScale(0.5f)
             .setMaxItem(3)

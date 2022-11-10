@@ -46,12 +46,14 @@ public class StoveConstant {
     public final static String leftLevel = "left_level";
     public final static String leftTemp = "left_temp";
     public final static String leftTime = "left_time";//剩余秒数
+    public final static String leftSetTime = "left_set_time";//左灶设置时间
     public final static String leftAlarm = "left_alarm";//报警状态
     public final static String rightStatus = "right_status";
     public final static String rightMode = "right_mode"; //工作模式
     public final static String rightLevel = "right_level";
     public final static String rightTemp = "right_temp";
     public final static String rightTime = "right_time";//剩余秒数
+    public final static String rightSetTime = "right_set_time";//右灶设置时间
     public final static String rightAlarm = "right_alarm";//
     public final static String workStatus = "work_status";
     public final static String timingtime = "timing_time"; //定时时间
