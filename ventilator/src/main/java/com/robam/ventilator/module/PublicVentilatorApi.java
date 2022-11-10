@@ -92,6 +92,11 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
     }
 
     @Override
+    public void beep() {
+        VentilatorAbstractControl.getInstance().beep();
+    }
+
+    @Override
     public void startService(Context context) {
         //启动定时服务
         Intent intent = new Intent(context, AlarmMqttService.class);
@@ -124,7 +129,7 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
                     //关闭延时关机
                     HomeVentilator.getInstance().cancleDelayShutDown();
                     //烟机没有启动打开烟机
-                    if (MMKVUtils.getFanStove()) {//烟灶联动
+                    if (MMKVUtils.getFanStove() && !HomeVentilator.getInstance().isLock()) {//烟灶联动开启且不锁屏
                         if (!isStartUp()) {
                             VentilatorAbstractControl.getInstance().powerOnGear(VentilatorConstant.FAN_GEAR_MID); //开机并设置挡位
                             Plat.getPlatform().screenOn();
@@ -137,12 +142,13 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
                     if (stove.rightStatus == 0 && rightLevel != 0)
                         stove.rightStatus = 2;
                 } else if ((stove.leftLevel != 0 || stove.rightLevel != 0) && (leftLevel == 0 && rightLevel == 0)) {//刚关火
-                    HomeVentilator.getInstance().delayShutDown(); //延迟关机提示
+                    if (MMKVUtils.getFanStove() && !HomeVentilator.getInstance().isLock()) //烟灶联动开启非锁屏状态
+                        HomeVentilator.getInstance().delayShutDown(true); //延迟关机提示
                     stove.leftStatus = 0;
                     stove.rightStatus = 0;
                 }
                 //火力最小档计时
-                if (MMKVUtils.getFanStove()) {//烟灶联动
+                if (MMKVUtils.getFanStove() && MMKVUtils.getFanStoveGear() && !HomeVentilator.getInstance().isLock()) {//烟灶联动开启 自动匹配风量开启 且非锁屏状态
                     if ((leftLevel == 1 && rightLevel <= 1) || (rightLevel == 1 && leftLevel <= 1)) {
                         HomeVentilator.getInstance().startLevelCountDown();
                     } else
@@ -151,6 +157,11 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
                 break;
             }
         }
+    }
+
+    @Override
+    public void delayShutDown() {
+        HomeVentilator.getInstance().delayShutDown(false); //主动关机
     }
 
     @Override

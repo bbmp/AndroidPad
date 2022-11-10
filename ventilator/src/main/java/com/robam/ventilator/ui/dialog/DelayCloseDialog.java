@@ -41,6 +41,10 @@ public class DelayCloseDialog extends BaseDialog {
         mContent.setText(str);
     }
 
+    public void setmContentVisible(int visibility) {
+        mContent.setVisibility(visibility);
+    }
+
     /**
      * 设置倒计时
      */

@@ -41,11 +41,12 @@ public class FullDialog extends Dialog {
         setContentView(mView);
         //全屏
         WindowManager.LayoutParams layoutParams = mWindow.getAttributes();
-//        layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+        layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE; //编辑框输入
         layoutParams.gravity = Gravity.CENTER;
         layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
         layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
         mWindow.getDecorView().setPadding(0, 0, 0, 0);
         mWindow.setAttributes(layoutParams);
+//        mWindow.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
     }
 }

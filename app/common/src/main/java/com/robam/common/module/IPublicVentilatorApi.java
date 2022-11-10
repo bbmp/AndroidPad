@@ -29,12 +29,16 @@ public interface IPublicVentilatorApi extends IPublicApi {
     void closeService(Context context);
     //开机
     void powerOn();
+    //蜂鸣声
+    void beep();
     //启动定时任务
     void startService(Context context);
     //冷暖光切换
     void setColorLamp();
     //灶具挡位变化
     void stoveLevelChanged(String stoveGuid, int leftLevel, int rightLevel);
+    //延时关机
+    void delayShutDown();
     //关闭延时关机
     void closeDelayDialog();
 }

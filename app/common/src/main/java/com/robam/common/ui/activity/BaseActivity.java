@@ -2,6 +2,7 @@ package com.robam.common.ui.activity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -133,7 +134,7 @@ public abstract class BaseActivity extends AbsActivity implements ActivityAction
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_F2) {
+        if (keyCode == KeyEvent.KEYCODE_MEDIA_PREVIOUS) {
             if (lockLongPressKey) {
                 lockLongPressKey = false;
                 return true;
@@ -149,14 +150,12 @@ public abstract class BaseActivity extends AbsActivity implements ActivityAction
                 }
                 return true;
             }
-        } else if (keyCode == KeyEvent.KEYCODE_F1) {
+        } else if (keyCode == KeyEvent.KEYCODE_MEDIA_NEXT) {
             if (null != iPublicVentilatorApi) {
                 if (iPublicVentilatorApi.isStartUp()) {
-                    Plat.getPlatform().screenOff(); //熄灭ping
-                    Plat.getPlatform().closePowerLamp();//关灯
-                    Plat.getPlatform().closeWaterLamp();
-                    iPublicVentilatorApi.shutDown();
-//                    iPublicVentilatorApi.closeService(this); //关闭服务
+                    iPublicVentilatorApi.beep();
+                    //延时关机
+                   iPublicVentilatorApi.delayShutDown();
                 } else {
                     iPublicVentilatorApi.powerOn(); //开机
                     Plat.getPlatform().screenOn();

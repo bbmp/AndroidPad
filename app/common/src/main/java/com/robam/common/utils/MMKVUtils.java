@@ -5,26 +5,27 @@ import com.tencent.mmkv.MMKV;
 import java.util.Set;
 
 public class MMKVUtils {
-    public static String MMKV_NAME = "STEAM_OVEN";
-    public static String LOGIN = "login";
-    public static String USER_INFO = "user_info";
-    public static String INIT_DATA = "init_data";
-    public static String SUBDEVICE_INFO = "subdevice_info";
-    public static String FAN_OFFTIME = "fan_offtime";//烟机风机最后运行时间
-    public static String FAN_RUNTIME = "fan_runtime"; //风机运行时间
-    public static String HOLIDAY = "holiday";//假日模式
-    public static String HOLIDAY_DAY = "HOLIDAY_DAY";//假日模式天数
-    public static String HOLIDAY_WEEK_TIME = "holiday_week_time";//假日模式每周固定时间
-    public static String OIL_CLEAN = "oil_clean";//油网清洗提醒功能
-    public static String DELAY_SHUTDOWN = "delay_shutdown";//延时关机
-    public static String DELAY_SHUTDOWN_TIME = "delay_shutdown_time";//延时关机时间
-    public static String FAN_STOVE = "fan_stove";//烟灶联动
-    public static String FAN_PAN = "fan_pan";//烟锅联动
-    public static String FAN_STEAM = "fan_steam";//烟蒸烤联动
-    public static String FAN_STOVE_GEAR = "fan_stove_gear";//烟灶联动匹配风量
-    public static String FAN_PAN_GEAR = "fan_pan_gear";//烟锅联动匹配风量
-    public static String FAN_STEAM_GEAR = "fan_steam_gear";//烟蒸烤联动匹配风量
-    public static String FAN_RELATION_STEAM = "fan_relation_steam";//烟蒸烤关联设备
+    private static final String SMART_SET = "智感恒吸设置";
+    private static final String MMKV_NAME = "STEAM_OVEN";
+    private static final String LOGIN = "login";
+    private static final String USER_INFO = "user_info";
+    private static final String INIT_DATA = "init_data";
+    private static final String SUBDEVICE_INFO = "subdevice_info";
+    private static final String FAN_OFFTIME = "fan_offtime";//烟机风机最后运行时间
+    private static final String FAN_RUNTIME = "fan_runtime"; //风机运行时间
+    private static final String HOLIDAY = "holiday";//假日模式
+    private static final String HOLIDAY_DAY = "HOLIDAY_DAY";//假日模式天数
+    private static final String HOLIDAY_WEEK_TIME = "holiday_week_time";//假日模式每周固定时间
+    private static final String OIL_CLEAN = "oil_clean";//油网清洗提醒功能
+    private static final String DELAY_SHUTDOWN = "delay_shutdown";//延时关机
+    private static final String DELAY_SHUTDOWN_TIME = "delay_shutdown_time";//延时关机时间
+    private static final String FAN_STOVE = "fan_stove";//烟灶联动
+    private static final String FAN_PAN = "fan_pan";//烟锅联动
+    private static final String FAN_STEAM = "fan_steam";//烟蒸烤联动
+    private static final String FAN_STOVE_GEAR = "fan_stove_gear";//烟灶联动匹配风量
+    private static final String FAN_PAN_GEAR = "fan_pan_gear";//烟锅联动匹配风量
+    private static final String FAN_STEAM_GEAR = "fan_steam_gear";//烟蒸烤联动匹配风量
+    private static final String FAN_RELATION_STEAM = "fan_relation_steam";//烟蒸烤关联设备
 
     /**
      * 获取是否登录账号
@@ -276,5 +277,15 @@ public class MMKVUtils {
         mmkv.remove(FAN_PAN_GEAR);
         mmkv.remove(FAN_STEAM_GEAR);
         mmkv.remove(FAN_RELATION_STEAM);
+    }
+    //智感恒吸设置
+    public static void setSmartSet(boolean status) {
+        MMKV mmkv = MMKV.defaultMMKV();
+        mmkv.encode(SMART_SET, status);
+    }
+    //获取智感恒吸状态
+    public static boolean getSmartSet() {
+        MMKV mmkv = MMKV.defaultMMKV();
+        return mmkv.decodeBool(SMART_SET, false);
     }
 }

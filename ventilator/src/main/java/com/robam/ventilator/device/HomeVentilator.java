@@ -2,10 +2,12 @@ package com.robam.ventilator.device;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.serialport.helper.SerialPortHelper;
 import android.view.View;
+import android.widget.ImageView;
 
 import androidx.lifecycle.MutableLiveData;
 
@@ -22,6 +24,7 @@ import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.MCountdownView;
+import com.robam.common.utils.ClickUtils;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.device.subdevice.Pan;
 import com.robam.common.device.subdevice.Stove;
@@ -32,6 +35,7 @@ import com.robam.ventilator.constant.DialogConstant;
 import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.factory.VentilatorDialogFactory;
 import com.robam.ventilator.protocol.serial.SerialVentilator;
+import com.robam.ventilator.ui.activity.HomeActivity;
 import com.robam.ventilator.ui.dialog.DelayCloseDialog;
 
 import org.json.JSONArray;
@@ -46,6 +50,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class HomeVentilator {
+    //锁屏框
+    public IDialog homeLock;
     //风机启动时间
     public long fanStartTime = 0;
 
@@ -174,7 +180,7 @@ public class HomeVentilator {
     /**
      * byte18  参数7 设置智感恒吸模式
      */
-    public byte param7 = (byte) 0x00;
+    public byte param7 = (byte) (MMKVUtils.getSmartSet() ? 0x01:0x00);
     /**
      * byte19  参数8 智感恒吸阻力值
      */
@@ -232,19 +238,28 @@ public class HomeVentilator {
         isStopA6CountDown = true;
     }
     //延时关机提示
-    public void delayShutDown() {
-        if (!MMKVUtils.getDelayShutdown()) //延时关机关闭
+    public void delayShutDown(boolean isLink) {  //是否联动关机
+        if (gear == (byte) 0xA0 && isLink) //联动关机 挡位未开
+            return; //不响应
+        if (gear == (byte) 0xA0 || !MMKVUtils.getDelayShutdown()) { //挡位没开或者延时关机关闭 立即关机
+            //关机
+            closeVentilator();
             return;
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                shutDownHint();
-            }
-        }, 2000); //延时，防止自动跳转时覆盖
+        }
+
+        if (isLink) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    shutDownHint(isLink);
+                }
+            }, 2000); //延时，防止自动跳转时覆盖
+        } else
+            shutDownHint(false);
     }
 
     private DelayCloseDialog delayCloseDialog;
-    public void shutDownHint() {
+    public void shutDownHint(boolean isLink) { //是否联动关机
         Activity activity = AppActivityManager.getInstance().getCurrentActivity();
         if (null == delayCloseDialog && null != activity) {
             delayCloseDialog = new DelayCloseDialog(activity);
@@ -253,11 +268,7 @@ public class HomeVentilator {
                 @Override
                 public void onClick(View v) {
                     if (v.getId() == R.id.tv_ok) { //立即关机
-                        //关机
-                        Plat.getPlatform().screenOff(); //熄灭ping
-                        Plat.getPlatform().closePowerLamp();//关灯
-                        Plat.getPlatform().closeWaterLamp(); //关左灯
-                        VentilatorAbstractControl.getInstance().shutDown();
+                        closeVentilator();
                     }
                     cancleDelayShutDown();
                 }
@@ -266,11 +277,13 @@ public class HomeVentilator {
             int delayTime = Integer.parseInt(MMKVUtils.getDelayShutdownTime()); //延时时间
             delayCloseDialog.tvCountdown.setTotalTime(delayTime * 60);
 
+            if (!isLink) //主动关机
+                delayCloseDialog.setmContentVisible(View.GONE);
             delayCloseDialog.tvCountdown.addOnCountDownListener(new MCountdownView.OnCountDownListener() {
                 @Override
                 public void onCountDown(int currentSecond) {
 
-                    delayCloseDialog.tvCountdown.setText(currentSecond + "s");
+                    delayCloseDialog.tvCountdown.setText(currentSecond + "s后关机");
                     delayCloseDialog.setContentText(currentSecond + "s");
                     if (currentSecond <= 0) {
                         cancleDelayShutDown();
@@ -287,6 +300,29 @@ public class HomeVentilator {
             delayCloseDialog.show();
         }
     }
+    //打开烟机
+    public void openVentilator() {
+        VentilatorAbstractControl.getInstance().powerOn();
+        Plat.getPlatform().screenOn();
+        Plat.getPlatform().openPowerLamp();
+    }
+    //关闭烟机
+    public void closeVentilator() {
+        //关机
+        Plat.getPlatform().screenOff(); //熄灭ping
+        Plat.getPlatform().closePowerLamp();//关灯
+        Plat.getPlatform().closeWaterLamp(); //关左灯
+        VentilatorAbstractControl.getInstance().shutDown();
+
+        Activity activity = AppActivityManager.getInstance().getCurrentActivity();
+        if (null != activity) {
+            Intent intent = new Intent();
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            intent.setClass(activity, HomeActivity.class); //回首页
+            activity.startActivity(intent);
+        }
+    }
+
     //关闭延时关机
     public void cancleDelayShutDown() {
         if (null != delayCloseDialog && delayCloseDialog.isShow()) {
@@ -299,7 +335,9 @@ public class HomeVentilator {
     //灶具火力最小档计时
     private boolean isLevelCountDown;
     public void startLevelCountDown() {
-        if (gear == (byte) 0xA1) //已经是弱档
+        if (gear == (byte) 0xA1 || gear == (byte) 0xA0) //已经是弱档 或未开风量
+            return;
+        if (startup == (byte) 0x00) //关机状态
             return;
         levelCountDown.execute(runLevelCountDown);
     }
@@ -328,5 +366,42 @@ public class HomeVentilator {
         }
         //记录风机最后运行时间
         MMKVUtils.setFanOffTime(System.currentTimeMillis());
+    }
+    //锁屏
+    public void screenLock() {
+        if (null == homeLock) {
+            Activity activity = AppActivityManager.getInstance().getCurrentActivity();
+            if (null != activity) {
+                homeLock = VentilatorDialogFactory.createDialogByType(activity, DialogConstant.DIALOG_TYPE_LOCK);
+                homeLock.setCancelable(false);
+                //长按解锁
+                ImageView imageView = homeLock.getRootView().findViewById(R.id.iv_lock);
+                ClickUtils.setLongClick(new Handler(), imageView, 2000, new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        homeLock.dismiss();
+//                    if (null != rvFunctionAdapter)
+//                        rvFunctionAdapter.setPickPosition(-1);
+                        //关闭油网清洗
+                        VentilatorAbstractControl.getInstance().closeOilClean();
+                        //关灯
+                        Plat.getPlatform().closeWaterLamp();
+                        return true;
+                    }
+                });
+            }
+        }
+        homeLock.show();
+    }
+    //是否油网清洗状态
+    public boolean isLock() {
+        if (null != homeLock && homeLock.isShow())
+            return true;
+        return false;
+    }
+    //关闭油网清洗
+    public void closeLock() {
+        if (isLock())
+            homeLock.dismiss();
     }
 }
