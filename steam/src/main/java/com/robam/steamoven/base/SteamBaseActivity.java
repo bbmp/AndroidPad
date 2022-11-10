@@ -12,8 +12,10 @@ import com.robam.common.bean.Device;
 import com.robam.common.ui.activity.BaseActivity;
 import com.robam.steamoven.R;
 import com.robam.steamoven.bean.SteamOven;
+import com.robam.steamoven.constant.SteamConstant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.ui.activity.MainActivity;
+import com.robam.steamoven.ui.activity.WaringActivity;
 
 
 public abstract class SteamBaseActivity extends BaseActivity {
@@ -95,6 +97,21 @@ public abstract class SteamBaseActivity extends BaseActivity {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    /**
+     * 跳转到告警页面
+     * @param steamOven
+     * @return
+     */
+    public boolean toWaringPage(SteamOven steamOven){
+        if(steamOven.faultCode != 0){
+            Intent intent = new Intent(this, WaringActivity.class);
+            intent.putExtra(SteamConstant.WARING_CODE,steamOven.faultCode);
+            startActivity(intent);
+            return true;
+        }
+        return false;
     }
 
 

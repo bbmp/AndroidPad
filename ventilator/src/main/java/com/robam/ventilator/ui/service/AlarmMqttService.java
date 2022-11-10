@@ -23,6 +23,7 @@ import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.dishwasher.bean.DishWasher;
+import com.robam.dishwasher.device.DishWasherAbstractControl;
 import com.robam.dishwasher.device.DishWasherFactory;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.device.SteamAbstractControl;
@@ -120,13 +121,7 @@ public class AlarmMqttService extends Service {
                        .build();
                 MqttManager.getInstance().publish(msg, CabinetFactory.getProtocol());
             } else if (device instanceof DishWasher) {
-                MqttMsg msg = new MqttMsg.Builder()
-                        .setMsgId(MsgKeys.setDishWasherStatus)
-                        .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
-                        .setDt(device.dt)
-                        .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
-                        .build();
-               MqttManager.getInstance().publish(msg, DishWasherFactory.getProtocol());
+               DishWasherAbstractControl.getInstance().queryAttribute(device.guid);
             } else if (device instanceof SteamOven) {
                 //查询一体机
                 SteamAbstractControl.getInstance().queryAttribute(device.guid);

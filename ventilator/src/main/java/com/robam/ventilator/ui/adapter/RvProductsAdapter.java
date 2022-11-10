@@ -13,9 +13,16 @@ import com.robam.common.IDeviceType;
 import com.robam.common.bean.Device;
 import com.robam.common.device.subdevice.Pan;
 import com.robam.common.utils.DateUtil;
+import com.robam.common.utils.TimeUtils;
+import com.robam.dishwasher.bean.DishWasher;
+import com.robam.dishwasher.constant.DishWasherEnum;
+import com.robam.dishwasher.constant.DishWasherModeEnum;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.common.device.subdevice.Stove;
+import com.robam.steamoven.utils.SteamDataUtil;
 import com.robam.ventilator.R;
+
+import java.util.stream.Stream;
 
 public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> {
     private LifecycleOwner mOwner;
@@ -124,7 +131,8 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
                         baseViewHolder.setVisible(R.id.layout_work, true);
                         baseViewHolder.setGone(R.id.ventilator_group7, true);
                         baseViewHolder.setVisible(R.id.ventilator_group6, true);
-                        baseViewHolder.setText(R.id.tv_mode, device.getWorkStatus() + "");
+
+                        baseViewHolder.setText(R.id.tv_mode, SteamDataUtil.getModelName(device));
                         baseViewHolder.setText(R.id.tv_time, DateUtil.secForMatTime3(steamOven.totalRemainSeconds) + "min");
 
                         if (steamOven.getWorkStatus() == 2 || steamOven.getWorkStatus() == 4) //预热中和工作中
@@ -149,14 +157,30 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
                     //在线
                     baseViewHolder.setText(R.id.tv_online, R.string.ventilator_online);
                     baseViewHolder.setImageResource(R.id.iv_online, R.drawable.ventilator_shape_online_bg);
-                    if (device.getWorkStatus() == 0) {
+                    if (device.getWorkStatus() == 0 || device.getWorkStatus() ==  1 || device.getWorkStatus() == 4) {
                         baseViewHolder.setVisible(R.id.layout_offline, true);
                         baseViewHolder.setGone(R.id.layout_work, true);
                         baseViewHolder.setGone(R.id.btn_detail, true);
                         baseViewHolder.setText(R.id.tv_hint, "会洗锅的\n洗碗机");
                     } else if (device.getWorkStatus() != 0) {
+                        //baseViewHolder.setGone(R.id.layout_offline, true);
+                        //baseViewHolder.setVisible(R.id.layout_work, true);
+                        DishWasher dishWasher = (DishWasher) device;
                         baseViewHolder.setGone(R.id.layout_offline, true);
                         baseViewHolder.setVisible(R.id.layout_work, true);
+                        baseViewHolder.setGone(R.id.ventilator_group7, true);
+                        baseViewHolder.setVisible(R.id.ventilator_group6, true);
+
+                        baseViewHolder.setText(R.id.tv_mode, DishWasherEnum.match(dishWasher.workMode));
+
+                        baseViewHolder.setText(R.id.tv_time, TimeUtils.secToHourMinUp(dishWasher.remainingWorkingTime * 60));
+
+                        if (dishWasher.getWorkStatus() == 2) //工作中
+                            baseViewHolder.setText(R.id.btn_work, R.string.ventilator_pause);
+                        else if (dishWasher.getWorkStatus() == 3) //暂停中
+                            baseViewHolder.setText(R.id.btn_work, R.string.ventilator_continue);
+                        else
+                            baseViewHolder.setGone(R.id.btn_work, true);
                     } else {
                         //故障
                     }
@@ -262,5 +286,6 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
 //            });
 //        }
     }
+
 
 }

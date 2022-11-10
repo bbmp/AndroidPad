@@ -253,10 +253,10 @@ public class WorkActivity extends DishWasherBaseActivity {
         if(dishWasher.powerStatus == DishWasherState.WORKING){
             //工作剩余时间 dishWasher.DishWasherRemainingWorkingTime
             //工作时长 dishWasher.SetWorkTimeValue
-            preRemainingTime = dishWasher.DishWasherRemainingWorkingTime *60;
-            tvTime.setText(getSpan(dishWasher.DishWasherRemainingWorkingTime*60));
+            preRemainingTime = dishWasher.remainingWorkingTime *60;
+            tvTime.setText(getSpan(preRemainingTime));
         }else if(dishWasher.powerStatus == DishWasherState.PAUSE){
-            tvDuration.setText(getSpan(dishWasher.DishWasherRemainingWorkingTime*60));
+            tvDuration.setText(getSpan(dishWasher.remainingWorkingTime*60));
         }
         tvAuxMode.setText(DishWasherAuxEnum.match(dishWasher.auxMode));//附加模式
         showRemindDialog(dishWasher);

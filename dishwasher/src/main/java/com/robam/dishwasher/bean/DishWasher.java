@@ -61,9 +61,10 @@ public class DishWasher extends Device{
         switch (key) {
             case MsgKeys.getDishWasherStatus:
                 this.powerStatus = (short) msg.optInt(DishWasherConstant.powerStatus);
+                this.workStatus = powerStatus;
                 this.StoveLock = (short) msg.optInt(DishWasherConstant.StoveLock);
                 this.workMode = (short) msg.optInt(DishWasherConstant.DishWasherWorkMode);//模式名称 washer.DishWasherWorkMode
-                this.DishWasherRemainingWorkingTime = (short) msg.optInt(DishWasherConstant.DishWasherRemainingWorkingTime);
+                this.remainingWorkingTime = (short) msg.optInt(DishWasherConstant.REMAINING_WORKING_TIME);
 
                 this.LowerLayerWasher = (short) msg.optInt(DishWasherConstant.LowerLayerWasher);//下层洗
                 this.EnhancedDryStatus = (short) msg.optInt(DishWasherConstant.EnhancedDryStatus);
@@ -148,7 +149,7 @@ public class DishWasher extends Device{
     /**
      * 剩余工作时间
      */
-    public short DishWasherRemainingWorkingTime;
+    public short remainingWorkingTime;
     /**
      * 下层洗
      */

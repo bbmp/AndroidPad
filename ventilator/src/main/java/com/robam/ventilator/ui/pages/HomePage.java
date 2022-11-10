@@ -32,6 +32,7 @@ import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.MMKVUtils;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.common.device.subdevice.Pan;
+import com.robam.dishwasher.device.DishWasherAbstractControl;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.common.module.IPublicSteamApi;
 import com.robam.steamoven.device.SteamAbstractControl;
@@ -47,6 +48,7 @@ import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.common.utils.ClickUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ScreenUtils;
+import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.stove.device.StoveAbstractControl;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBasePage;
@@ -288,8 +290,8 @@ public class HomePage extends VentilatorBasePage {
                     drawerLayout.closeDrawer(Gravity.RIGHT);
                 }
                 Device device = (Device) adapter.getItem(position);
-                if (device.status != Device.ONLINE)
-                    return;
+//                if (device.status != Device.ONLINE)
+//                    return;
                 //跳转设备首页
                 Intent intent = new Intent();
                 intent.putExtra(ComnConstant.EXTRA_GUID, device.guid);
@@ -361,6 +363,12 @@ public class HomePage extends VentilatorBasePage {
                         Pan pan = (Pan) device;
                         if (pan.workStatus == 3 && null != iPublicPanApi) //电量不足
                             iPublicPanApi.lowBatteryHint(getContext());
+                    }else if(device instanceof DishWasher){
+                        DishWasher dishWasher = (DishWasher) device;
+                        if (dishWasher.workStatus == 2)   //工作中和预热中
+                            DishWasherAbstractControl.getInstance().pauseWork(device.guid);
+                        else if (dishWasher.workStatus == 3)  //暂停中
+                            DishWasherAbstractControl.getInstance().continueWork(device.guid);
                     }
                 }
                 //close products menu

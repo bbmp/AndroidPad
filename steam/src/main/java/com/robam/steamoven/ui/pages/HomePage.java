@@ -85,23 +85,19 @@ public class HomePage extends SteamBasePage {
         rvMain.setLayoutManager(pickerLayoutManager);
         rvDot.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
         rvMainFuntionAdapter = new RvMainFuntionAdapter();
-        rvMainFuntionAdapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+        rvMainFuntionAdapter.setOnItemClickListener((adapter, view, position) -> {
 //                keyTone();
-                scollToPosition(position);
-                Intent intent = new Intent();
-                FuntionBean funtionBean = (FuntionBean) adapter.getItem(position);
-                intent.putExtra(SteamConstant.EXTRA_MODE_LIST, funtionBean.mode);
-                if (funtionBean.into == null || funtionBean.into.length() == 0) {
-                    ToastUtils.showShort(getContext(), "功能还未实现，请等待版本更新");
-                    return;
-                }
-                intent.setClassName(getContext(), funtionBean.into);
-                HomeSteamOven.getInstance().funCode = (short) funtionBean.funtionCode;
-                startActivity(intent);
+            scollToPosition(position);
+            Intent intent = new Intent();
+            FuntionBean funtionBean = (FuntionBean) adapter.getItem(position);
+            intent.putExtra(SteamConstant.EXTRA_MODE_LIST, funtionBean.mode);
+            if (funtionBean.into == null || funtionBean.into.length() == 0) {
+                ToastUtils.showShort(getContext(), "功能还未实现，请等待版本更新");
+                return;
             }
-
+            intent.setClassName(getContext(), funtionBean.into);
+            HomeSteamOven.getInstance().funCode = (short) funtionBean.funtionCode;
+            startActivity(intent);
         });
         rvMain.setAdapter(rvMainFuntionAdapter);
         rvDotAdapter = new RvDotAdapter();
@@ -119,11 +115,11 @@ public class HomePage extends SteamBasePage {
         for (FuntionBean funtionBean: funtionBeans) {
             dotList.add(funtionBean.funtionName);
         }
-
+        int selectIndex = Integer.MAX_VALUE / dotList.size() / 2 * dotList.size() + 1;
         rvDotAdapter.setList(dotList);
-        rvDotAdapter.setPickPosition(Integer.MAX_VALUE / 2);
-        pickerLayoutManager.scrollToPosition(Integer.MAX_VALUE / 2);
-        setBackground(Integer.MAX_VALUE / 2);
+        rvDotAdapter.setPickPosition(selectIndex);
+        pickerLayoutManager.scrollToPosition(selectIndex);
+        setBackground(selectIndex);
         if (!MMKVUtils.isInitData()) {
             DataInitManage.savaRecipe(getContext());
         }

@@ -210,11 +210,22 @@
         tools:text="20C"/>
 
     <ImageView
-        android:id="@+id/aux_work_model_end"
+        android:id="@+id/aux_work_model_pause"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
+        android:visibility="visible"
+        android:src="@drawable/steam_ic_pause"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/aux_work_model_temp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <ImageView
+        android:id="@+id/aux_work_model_restart"
         android:layout_width="@dimen/dp_60"
         android:layout_height="@dimen/dp_60"
         android:visibility="invisible"
-        android:src="@drawable/steam_ic_pause"
+        android:src="@drawable/steam_ic_start_blue"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toRightOf="@id/aux_work_model_temp"
         app:layout_constraintTop_toTopOf="parent"

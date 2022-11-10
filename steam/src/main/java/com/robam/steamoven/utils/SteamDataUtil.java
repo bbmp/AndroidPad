@@ -1,14 +1,20 @@
 package com.robam.steamoven.utils;
 
 import com.google.gson.Gson;
+import com.robam.common.bean.Device;
+import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.StringUtils;
 import com.robam.steamoven.bean.DeviceConfigurationFunctions;
 import com.robam.steamoven.bean.OtherFunc;
+import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.bean.SubViewModelMapSubView;
+import com.robam.steamoven.constant.SteamEnum;
+import com.robam.steamoven.constant.SteamModeEnum;
 import com.robam.steamoven.response.GetDeviceParamsRes;
 import com.tencent.mmkv.MMKV;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 public class SteamDataUtil {
 
@@ -65,6 +71,17 @@ public class SteamDataUtil {
             }
         }
         return "";
+    }
+
+    public static String getModelName(Device device){
+        if(device == null || !(device instanceof SteamOven)){
+            return "";
+        }
+        SteamOven steamOven  = (SteamOven) device;
+        if(steamOven.recipeId != 0){
+            return getRecipeData(DeviceUtils.getDeviceTypeId(device.guid),steamOven.recipeId);
+        }
+        return SteamModeEnum.match(steamOven.mode);
     }
 
 

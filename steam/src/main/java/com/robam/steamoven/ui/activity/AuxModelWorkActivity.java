@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
+import com.robam.common.bean.MqttDirective;
+import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.TimeUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
@@ -50,6 +52,10 @@ public class AuxModelWorkActivity extends SteamBaseActivity {
 
     private long workTimeMS;
 
+    private ImageView pauseIv,reStartIv;
+
+    public static final int EDN_FLAG = 33;
+
     @Override
     protected int getLayoutId() {
         return R.layout.steam_activity_layout_aux_model_work;
@@ -77,7 +83,10 @@ public class AuxModelWorkActivity extends SteamBaseActivity {
         modelTimeTv = findViewById(R.id.aux_work_model_time);
         modelTempTv = findViewById(R.id.aux_work_model_temp);
 
-        setOnClickListener(R.id.btn_start,R.id.aux_work_model_end);
+        pauseIv = findViewById(R.id.aux_work_model_pause);
+        reStartIv = findViewById(R.id.aux_work_model_restart);
+
+        setOnClickListener(R.id.btn_start,R.id.aux_work_model_pause,R.id.aux_work_model_restart);
 
         AccountInfo.getInstance().getGuid().observe(this, s -> {
             for (Device device: AccountInfo.getInstance().deviceList) {
@@ -98,6 +107,13 @@ public class AuxModelWorkActivity extends SteamBaseActivity {
                     }
 
                 }
+            }
+        });
+        MqttDirective.getInstance().getDirective().observe(this, s -> {
+            switch (s){
+                case EDN_FLAG:
+                    goHome();
+                    break;
             }
         });
     }
@@ -125,6 +141,9 @@ public class AuxModelWorkActivity extends SteamBaseActivity {
                     modelTimeTv.setText(TextSpanUtil.getSpan(restTime,Constant.UNIT_TIME_MIN));
                     return;
                 }
+                //boolean isPause = (steamOven.workState == SteamStateConstant.WORK_STATE_WORKING_PAUSE)
+                //pauseIv.setVisibility(isPause?View.INVISIBLE:View.VISIBLE);
+                //reStartIv.setVisibility(isPause?View.VISIBLE:View.INVISIBLE);
                 progressPromptTv.setText(getProgressTitle(steamOven.chugouType));
                 setProgressIndex(steamOven.chugouType,true);
                 modelNameTv.setVisibility(View.INVISIBLE);
@@ -200,6 +219,11 @@ public class AuxModelWorkActivity extends SteamBaseActivity {
         modelNameTv.setText(SteamModeEnum.match(segment.code));
         modelTimeTv.setText(TextSpanUtil.getSpan(segment.duration*60,Constant.UNIT_TIME_MIN));
         modelTempTv.setText(TextSpanUtil.getSpan(segment.defTemp,Constant.UNIT_TEMP));
+
+        if(segment.code == SteamModeEnum.CHUGOU.getMode()){
+            pauseIv.setVisibility(View.INVISIBLE);
+            reStartIv.setVisibility(View.INVISIBLE);
+        }
     }
 
 
@@ -217,8 +241,11 @@ public class AuxModelWorkActivity extends SteamBaseActivity {
             curTemp += 1;
             isProgress = true;
             setProgressIndex(curTemp,isProgress);
-        }else if(id == R.id.aux_work_model_end){
-
+        }else if(id == R.id.aux_work_model_pause){
+            //SteamCommandHelper.sendWorkCtrCommand(true,0);
+            showEndDialog();
+        }else if(id == R.id.aux_work_model_pause){
+            //SteamCommandHelper.sendWorkCtrCommand(false,0);
         }
     }
 
@@ -231,6 +258,7 @@ public class AuxModelWorkActivity extends SteamBaseActivity {
             endDialog.dismiss();
             if(v.getId() == R.id.tv_ok){
                //TODO(发送结束指令)
+                SteamCommandHelper.sendEndWorkCommand(EDN_FLAG);
             }
         },R.id.tv_ok);
         endDialog.show();

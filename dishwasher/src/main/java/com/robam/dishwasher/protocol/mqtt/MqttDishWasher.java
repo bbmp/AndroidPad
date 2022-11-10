@@ -1,19 +1,14 @@
 package com.robam.dishwasher.protocol.mqtt;
 
 import com.robam.common.ITerminalType;
-import com.robam.common.bean.RTopic;
-import com.robam.common.device.Plat;
-import com.robam.common.mqtt.MqttManager;
+import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MqttPublic;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.ByteUtils;
-import com.robam.common.utils.DeviceUtils;
-import com.robam.common.utils.LogUtils;
-import com.robam.common.utils.MsgUtils;
+import com.robam.dishwasher.constant.DishWasherBsCode;
 import com.robam.dishwasher.constant.DishWasherConstant;
-import com.robam.dishwasher.device.DishWasherFactory;
-
+import com.robam.dishwasher.device.DishWasherAbstractControl;
 import java.nio.ByteBuffer;
 
 //mqtt洗碗机
@@ -24,7 +19,10 @@ public class MqttDishWasher extends MqttPublic {
         //解析需要的字段存放
         switch (msg.getID()) {
             case MsgKeys.getDishWasherWorkMode:
+            case MsgKeys.getDishWasherPower:
                 msg.putOpt(DishWasherConstant.RC, ByteUtils.toShort(payload[offset++]));
+                MqttDirective.getInstance().getDirective().setValue(msg.getID());
+                DishWasherAbstractControl.getInstance().queryAttribute(msg.getGuid());
                 break;
             case MsgKeys.getDishWasherStatus:
                 short powerStatus =  ByteUtils.toShort(payload[offset++]);
@@ -89,7 +87,7 @@ public class MqttDishWasher extends MqttPublic {
                 msg.putOpt(DishWasherConstant.powerStatus, powerStatus);
                 msg.putOpt(DishWasherConstant.StoveLock, stoveLock);
                 msg.putOpt(DishWasherConstant.DishWasherWorkMode, dishWasherWorkMode);
-                msg.putOpt(DishWasherConstant.DishWasherRemainingWorkingTime, dishWasherRemainingWorkingTime);
+                msg.putOpt(DishWasherConstant.REMAINING_WORKING_TIME, dishWasherRemainingWorkingTime);
                 msg.putOpt(DishWasherConstant.LowerLayerWasher, lowerLayerWasher);
                 msg.putOpt(DishWasherConstant.AppointmentSwitchStatus, appointmentSwitchStatus);
                 msg.putOpt(DishWasherConstant.AutoVentilation, autoVentilation);
@@ -114,60 +112,27 @@ public class MqttDishWasher extends MqttPublic {
                 }
                 break;
         }
-        decodeMsg(msg);
     }
 
-    private void decodeMsg(MqttMsg msg){
-        LogUtils.e("decodeMsg id " + msg.getID() +" "+msg.getrTopic().getDeviceType() +msg.getrTopic().getSignNum());
-        switch (msg.getID()){
-            case MsgKeys.getDishWasherPower:
-                String curGuid = msg.getrTopic().getDeviceType() + msg.getrTopic().getSignNum(); //当前设备guid
-                MqttMsg newMsg = new MqttMsg.Builder()
-                        .setMsgId(MsgKeys.SetPotTemp_Rep)
-                        .setGuid(curGuid)
-                        //.setDt(Plat.getPlatform().getDt())
-                        .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(msg.getGuid()), DeviceUtils.getDeviceNumber(msg.getGuid())))
-                        .build();
-                MqttManager.getInstance().publish(newMsg, DishWasherFactory.getProtocol());
-        }
-    }
 
     @Override
     protected void onEncodeMsg(ByteBuffer buf, MqttMsg msg) {
-//        switch (msg.getID()) {
-//            case MsgKeys.setDishWasherStatus: //洗碗机状态查询
-//                buf.put((byte) ITerminalType.PAD);
-//                break;
-//        }
-        //ByteBuffer buf = ByteBuffer.allocate(BufferSize).order(BYTE_ORDER);
-        byte b;
-        String str;
         switch (msg.getID()) {
             case MsgKeys.setDishWasherPower:
-                str = msg.optString(DishWasherConstant.UserId);
-                buf.put(str.getBytes());
-                b = (byte) msg.optInt(DishWasherConstant.PowerMode);
-                buf.put(b);
+                buf.put(msg.optString(DishWasherConstant.UserId).getBytes());
+                buf.put((byte) msg.optInt(DishWasherConstant.PowerMode));
                 break;
             case MsgKeys.setDishWasherChildLock:
-                str = msg.optString(DishWasherConstant.UserId);
-                buf.put(str.getBytes());
-                b = (byte) msg.optInt(DishWasherConstant.StoveLock);
-                buf.put(b);
+                buf.put(msg.optString(DishWasherConstant.UserId).getBytes());
+                buf.put((byte) msg.optInt(DishWasherConstant.StoveLock));
                 break;
             case MsgKeys.setDishWasherWorkMode:
-                str = msg.optString(DishWasherConstant.UserId);
-                buf.put(str.getBytes());
-                b = (byte) msg.optInt(DishWasherConstant.DishWasherWorkMode);
-                buf.put(b);
-                b = (byte) msg.optInt(DishWasherConstant.LowerLayerWasher);
-                buf.put(b);
-                b = (byte) msg.optInt(DishWasherConstant.AutoVentilation);
-                buf.put(b);
-                b = (byte) msg.optInt(DishWasherConstant.EnhancedDrySwitch);
-                buf.put(b);
-                b = (byte) msg.optInt(DishWasherConstant.AppointmentSwitch);
-                buf.put(b);
+                buf.put(msg.optString(DishWasherConstant.UserId).getBytes());
+                buf.put((byte) msg.optInt(DishWasherConstant.DishWasherWorkMode));
+                buf.put((byte) msg.optInt(DishWasherConstant.LowerLayerWasher));
+                buf.put((byte) msg.optInt(DishWasherConstant.AutoVentilation));
+                buf.put((byte) msg.optInt(DishWasherConstant.EnhancedDrySwitch));
+                buf.put((byte) msg.optInt(DishWasherConstant.AppointmentSwitch));
                 int appointTime = msg.optInt(DishWasherConstant.AppointmentTime);
                 buf.put((byte) (appointTime & 0Xff));
                 buf.put((byte) ((appointTime >> 8) & 0Xff));
@@ -188,28 +153,18 @@ public class MqttDishWasher extends MqttPublic {
                 //buf.put(str.getBytes());
                 break;
             case MsgKeys.setDishWasherUserOperate:
-                str = msg.optString(DishWasherConstant.UserId);
-                buf.put(str.getBytes());
-                str = msg.optString(DishWasherConstant.ArgumentNumber);
-                buf.put(str.getBytes());
+                buf.put(msg.optString(DishWasherConstant.UserId).getBytes());
+                buf.put(msg.optString(DishWasherConstant.ArgumentNumber).getBytes());
                 if (msg.optInt(DishWasherConstant.ArgumentNumber) > 0) {
                     if (msg.optInt(DishWasherConstant.SaltFlushKey) == 1) {
-                        b = (byte) msg.optInt(DishWasherConstant.SaltFlushKey);
-                        buf.put(b);
-                        b = (byte) msg.optInt(DishWasherConstant.SaltFlushLength);
-                        buf.put(b);
-                        b = (byte) msg.optInt(DishWasherConstant.SaltFlushValue);
-                        buf.put(b);
-
+                        buf.put((byte) msg.optInt(DishWasherConstant.SaltFlushKey));
+                        buf.put((byte) msg.optInt(DishWasherConstant.SaltFlushLength));
+                        buf.put((byte) msg.optInt(DishWasherConstant.SaltFlushValue));
                     }
                     if (msg.optInt(DishWasherConstant.RinseAgentPositionKey) == 2) {
-                        b = (byte) msg.optInt(DishWasherConstant.RinseAgentPositionKey);
-                        buf.put(b);
-                        b = (byte) msg.optInt(DishWasherConstant.RinseAgentPositionLength);
-                        buf.put(b);
-                        b = (byte) msg.optInt(DishWasherConstant.RinseAgentPositionValue);
-                        buf.put(b);
-
+                        buf.put((byte) msg.optInt(DishWasherConstant.RinseAgentPositionKey));
+                        buf.put((byte) msg.optInt(DishWasherConstant.RinseAgentPositionLength));
+                        buf.put((byte) msg.optInt(DishWasherConstant.RinseAgentPositionValue));
                     }
                 }
                 break;
@@ -217,10 +172,6 @@ public class MqttDishWasher extends MqttPublic {
                     buf.put((byte) 0x00);
                     break;
         }
-        /*byte[] data = new byte[buf.position()];
-        System.arraycopy(buf.array(), 0, data, 0, data.length);
-        bufT.put(data);*/
-        //将所有数据放入 新创建的byte[] 最后设置给buf？
     }
 
 

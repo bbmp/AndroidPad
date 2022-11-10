@@ -84,6 +84,7 @@ public class AppointingActivity extends SteamBaseActivity {
                     switch (steamOven.powerState){
                         case SteamStateConstant.POWER_STATE_AWAIT:
                         case SteamStateConstant.POWER_STATE_ON:
+                        case SteamStateConstant.POWER_STATE_TROUBLE:
                             if(steamOven.workState ==  SteamStateConstant.WORK_STATE_APPOINTMENT){
                                 updateViewInfo(steamOven);
                             }else{

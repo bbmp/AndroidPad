@@ -1,6 +1,7 @@
 package com.robam.steamoven.device;
 
 
+import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.RTopic;
 import com.robam.common.device.Plat;
 import com.robam.common.mqtt.MqttManager;
@@ -8,11 +9,13 @@ import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.steamoven.constant.QualityKeys;
+import com.robam.steamoven.constant.SteamConstant;
 
 import org.json.JSONException;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.HashMap;
 import java.util.Map;
 
 //远程控制一体机,mqtt协议打包，从烟机到一体机界面,应该只有烟机会有,供烟机端调用
@@ -56,48 +59,85 @@ public class SteamMqttControl implements SteamFunction {
     @Override
     public void pauseWork(String targetGuid) { //暂停工作
         //mqtt指令打包
-        try {
-            ByteBuffer buf = ByteBuffer.allocate(BufferSize).order(BYTE_ORDER);
-            buf.put((byte) 1); //参数个数
-            buf.put((byte) QualityKeys.workCtrl);
-            buf.put((byte) 0x01);
-            buf.put((byte) 0x02); //工作中暂停
-            // buf to byte[]
-            byte[] data = new byte[buf.position()];
-            System.arraycopy(buf.array(), 0, data, 0, data.length);
-            buf.clear();
+        try{
             MqttMsg msg = new MqttMsg.Builder()
                     .setMsgId(MsgKeys.setDeviceAttribute_Req)
                     .setGuid(Plat.getPlatform().getDeviceOnlySign())
-                    .setPayload(data)
                     .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(targetGuid),
                             DeviceUtils.getDeviceNumber(targetGuid)))
                     .build();
+            msg.putOpt(SteamConstant.UserId, AccountInfo.getInstance().getUserString());
+            msg.putOpt(SteamConstant.BS_TYPE , SteamConstant.BS_TYPE_1) ;
+            msg.putOpt(SteamConstant.ARGUMENT_NUMBER, 1);
+            //一体机工作控制
+            msg.putOpt(SteamConstant.workCtrlKey, QualityKeys.workCtrl);
+            msg.putOpt(SteamConstant.workCtrlLength, 1);
+            msg.putOpt(SteamConstant.workCtrl, SteamConstant.WORK_CTRL_TIME_OUT);//暂停工作
             MqttManager.getInstance().publish(msg, SteamFactory.getProtocol());
-        } catch (Exception e) {}
+        }catch (JSONException e){
+
+        }
+
+//        try {
+//            ByteBuffer buf = ByteBuffer.allocate(BufferSize).order(BYTE_ORDER);
+//            buf.put((byte) 1); //参数个数
+//            buf.put((byte) QualityKeys.workCtrl);
+//            buf.put((byte) 0x01);
+//            buf.put((byte) 0x02); //工作中暂停
+//            // buf to byte[]
+//            byte[] data = new byte[buf.position()];
+//            System.arraycopy(buf.array(), 0, data, 0, data.length);
+//            buf.clear();
+//            MqttMsg msg = new MqttMsg.Builder()
+//                    .setMsgId(MsgKeys.setDeviceAttribute_Req)
+//                    .setGuid(Plat.getPlatform().getDeviceOnlySign())
+//                    .setPayload(data)
+//                    .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(targetGuid),
+//                            DeviceUtils.getDeviceNumber(targetGuid)))
+//                    .build();
+//            MqttManager.getInstance().publish(msg, SteamFactory.getProtocol());
+//        } catch (Exception e) {}
     }
 
     @Override
     public void continueWork(String targetGuid) { //继续工作
-        try {
-            ByteBuffer buf = ByteBuffer.allocate(BufferSize).order(BYTE_ORDER);
-            buf.put((byte) 1); //参数个数
-            buf.put((byte) QualityKeys.workCtrl);
-            buf.put((byte) 0x01);
-            buf.put((byte) 0x04); //继续工作
-            // buf to byte[]
-            byte[] data = new byte[buf.position()];
-            System.arraycopy(buf.array(), 0, data, 0, data.length);
-            buf.clear();
+        try{
             MqttMsg msg = new MqttMsg.Builder()
                     .setMsgId(MsgKeys.setDeviceAttribute_Req)
                     .setGuid(Plat.getPlatform().getDeviceOnlySign())
-                    .setPayload(data)
                     .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(targetGuid),
                             DeviceUtils.getDeviceNumber(targetGuid)))
                     .build();
+            msg.putOpt(SteamConstant.UserId, AccountInfo.getInstance().getUserString());
+            msg.putOpt(SteamConstant.BS_TYPE , SteamConstant.BS_TYPE_1) ;
+            msg.putOpt(SteamConstant.ARGUMENT_NUMBER, 1);
+            //一体机工作控制
+            msg.putOpt(SteamConstant.workCtrlKey, QualityKeys.workCtrl);
+            msg.putOpt(SteamConstant.workCtrlLength, 1);
+            msg.putOpt(SteamConstant.workCtrl, SteamConstant.WORK_CTRL_CONTINUE);//暂停工作
             MqttManager.getInstance().publish(msg, SteamFactory.getProtocol());
-        } catch (Exception e) {}
+        }catch (JSONException e){
+
+        }
+//        try {
+//            ByteBuffer buf = ByteBuffer.allocate(BufferSize).order(BYTE_ORDER);
+//            buf.put((byte) 1); //参数个数
+//            buf.put((byte) QualityKeys.workCtrl);
+//            buf.put((byte) 0x01);
+//            buf.put((byte) 0x04); //继续工作
+//            // buf to byte[]
+//            byte[] data = new byte[buf.position()];
+//            System.arraycopy(buf.array(), 0, data, 0, data.length);
+//            buf.clear();
+//            MqttMsg msg = new MqttMsg.Builder()
+//                    .setMsgId(MsgKeys.setDeviceAttribute_Req)
+//                    .setGuid(Plat.getPlatform().getDeviceOnlySign())
+//                    .setPayload(data)
+//                    .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(targetGuid),
+//                            DeviceUtils.getDeviceNumber(targetGuid)))
+//                    .build();
+//            MqttManager.getInstance().publish(msg, SteamFactory.getProtocol());
+//        } catch (Exception e) {}
     }
 
     @Override

@@ -274,6 +274,9 @@ public class ModelWorkActivity extends SteamBaseActivity {
                 return -1;
             }
         });
+        /*if(entryList.size() > 500){
+            entryList = entryList.subList(entryList.size() - 100,entryList.size());
+        }*/
         if(entryList.size() > 0){
             curTime = (int) ((Entry)entryList.get(entryList.size() -1)).getX();
         }

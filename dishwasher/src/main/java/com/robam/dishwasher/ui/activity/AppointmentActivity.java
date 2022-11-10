@@ -14,7 +14,6 @@ import com.robam.dishwasher.base.DishWasherBaseActivity;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.dishwasher.bean.DishWasherModeBean;
 import com.robam.dishwasher.constant.DishWasherConstant;
-import com.robam.dishwasher.constant.DishWasherState;
 import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.ui.adapter.RvStringAdapter;
 import com.robam.dishwasher.util.DishWasherCommandHelper;
@@ -92,16 +91,17 @@ public class AppointmentActivity extends DishWasherBaseActivity {
         setOnClickListener(R.id.btn_cancel, R.id.btn_ok,R.id.ll_left);
 
         MqttDirective.getInstance().getDirective().observe(this, s -> {
-            if(s.shortValue() == (MsgKeys.setDishWasherWorkMode + directive_offset)){
-                runOnUiThread(() -> {
+            switch (s.shortValue()){
+                case MsgKeys.getDishWasherWorkMode:
                     Intent intent = new Intent();
                     intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, modeBean);
                     intent.setClass(AppointmentActivity.this, AppointingActivity.class);
                     startActivity(intent);
                     finish();
-                });
-            }else if(s == (MsgKeys.setDishWasherPower + directive_offset)){
-                sendAppointingCommand();
+                    break;
+                case MsgKeys.getDishWasherPower:
+                    sendAppointingCommand();
+                    break;
             }
         });
     }
@@ -188,11 +188,12 @@ public class AppointmentActivity extends DishWasherBaseActivity {
         if(!DishWasherCommandHelper.checkDishWasherState(this,curDevice)){
             return;
         }
-        if((curDevice.powerStatus == DishWasherState.OFF) || HomeDishWasher.getInstance().isTurnOff){
-            sendSetPowerStateCommand();
-        }else {
-            sendAppointingCommand();
-        }
+        sendSetPowerStateCommand();
+//        if((curDevice.powerStatus == DishWasherState.OFF) || HomeDishWasher.getInstance().isTurnOff){
+//            sendSetPowerStateCommand();
+//        }else {
+//            sendAppointingCommand();
+//        }
     }
 
     /**
@@ -201,7 +202,7 @@ public class AppointmentActivity extends DishWasherBaseActivity {
     private void sendSetPowerStateCommand(){
         Map map = DishWasherCommandHelper.getCommonMap(MsgKeys.setDishWasherPower);
         map.put(DishWasherConstant.PowerMode,1);
-        DishWasherCommandHelper.getInstance().sendCommonMsgForLiveData(map,MsgKeys.setDishWasherPower + directive_offset);
+        DishWasherCommandHelper.getInstance().sendCommonMsg(map,MsgKeys.setDishWasherPower + directive_offset);
     }
 
     /**
@@ -216,7 +217,7 @@ public class AppointmentActivity extends DishWasherBaseActivity {
             map.put(DishWasherConstant.EnhancedDrySwitch, 0);
             map.put(DishWasherConstant.ArgumentNumber, 1);
             map.put(DishWasherConstant.ADD_AUX, modeBean.auxCode);
-            DishWasherCommandHelper.getInstance().sendCommonMsgForLiveData(map,MsgKeys.setDishWasherWorkMode + directive_offset);
+            DishWasherCommandHelper.getInstance().sendCommonMsg(map,MsgKeys.setDishWasherWorkMode + directive_offset);
 
             HomeDishWasher.getInstance().workHours = modeBean.time;
             HomeDishWasher.getInstance().orderWorkTime = (int) appointingTime;

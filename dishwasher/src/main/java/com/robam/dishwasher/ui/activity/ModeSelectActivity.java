@@ -23,6 +23,7 @@ import com.robam.dishwasher.bean.DishWasher;
 import com.robam.dishwasher.bean.DishWasherAuxBean;
 import com.robam.dishwasher.bean.DishWasherModeBean;
 import com.robam.dishwasher.constant.DishWasherAuxEnum;
+import com.robam.dishwasher.constant.DishWasherBsCode;
 import com.robam.dishwasher.constant.DishWasherConstant;
 import com.robam.dishwasher.constant.DishWasherState;
 import com.robam.dishwasher.device.HomeDishWasher;
@@ -55,6 +56,7 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
 
 
     public int directive_offset = 10000;
+    public static final int START_P = 22;
 
     @Override
     protected int getLayoutId() {
@@ -100,30 +102,38 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
                     DishWasher dishWasher = (DishWasher) device;
                     setLock(dishWasher.StoveLock == 1);
                     toWaringPage(dishWasher.abnormalAlarmStatus);
+//                    if(dishWasher.workMode != 0){
+//                        toWorkPage();
+//                    }
                 }
             }
         });
 
         MqttDirective.getInstance().getDirective().observe(this, s -> {
-            if(s == (MsgKeys.setDishWasherWorkMode + directive_offset)){
-                runOnUiThread(() -> {
-                    Intent intent = new Intent();
-                    DishWasherModeBean newMode = modeBean.getNewMode();
-                    DishWasherAuxBean auxBean = getAuxBean(getAuxCode());
-                    if(auxBean != null){
-                        newMode.time = auxBean.time;
-                        newMode.auxCode = auxBean.code;
-                    }
-                    intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, newMode);
-                    intent.setClass(ModeSelectActivity.this, WorkActivity.class);
-                    startActivity(intent);
-                    finish();
-                });
-            }else if(s == (MsgKeys.setDishWasherPower + directive_offset)){
-                sendStartWorkCommand();
+            switch (s.shortValue()){
+                case MsgKeys.getDishWasherPower:
+                    sendStartWorkCommand();
+                    break;
+                case MsgKeys.getDishWasherWorkMode:
+                    toWorkPage();
+                    break;
             }
         });
 
+    }
+
+    private void toWorkPage(){
+        Intent intent = new Intent();
+        DishWasherModeBean newMode = modeBean.getNewMode();
+        DishWasherAuxBean auxBean = getAuxBean(getAuxCode());
+        if(auxBean != null){
+            newMode.time = auxBean.time;
+            newMode.auxCode = auxBean.code;
+        }
+        intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, newMode);
+        intent.setClass(ModeSelectActivity.this, WorkActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     private void setTvAuxPrompt(RadioGroup group, int checkedId){
@@ -266,17 +276,18 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
             getLastState();
             return;
         }
-        if((curDevice.powerStatus == DishWasherState.OFF) || HomeDishWasher.getInstance().isTurnOff){
-            sendSetPowerStateCommand();
-        }else {
-            sendStartWorkCommand();
-        }
+        sendSetPowerStateCommand(); //|| HomeDishWasher.getInstance().isTurnOff
+//        if((curDevice.powerStatus == DishWasherState.OFF)){
+//            sendSetPowerStateCommand();
+//        }else {
+//            sendStartWorkCommand();
+//        }
     }
 
     private void sendSetPowerStateCommand(){
         Map map = DishWasherCommandHelper.getCommonMap(MsgKeys.setDishWasherPower);
         map.put(DishWasherConstant.PowerMode,1);
-        DishWasherCommandHelper.getInstance().sendCommonMsgForLiveData(map,MsgKeys.setDishWasherPower + directive_offset);
+        DishWasherCommandHelper.getInstance().sendCommonMsg(map, directive_offset + MsgKeys.setDishWasherPower);
     }
 
     private void sendStartWorkCommand(){
@@ -287,7 +298,7 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
         map.put(DishWasherConstant.AppointmentTime, 0);
         map.put(DishWasherConstant.ArgumentNumber, 1);
         map.put(DishWasherConstant.ADD_AUX, getAuxCode());
-        DishWasherCommandHelper.getInstance().sendCommonMsgForLiveData(map,MsgKeys.setDishWasherWorkMode + directive_offset);
+        DishWasherCommandHelper.getInstance().sendCommonMsg(map,directive_offset + MsgKeys.setDishWasherWorkMode);
 
     }
 

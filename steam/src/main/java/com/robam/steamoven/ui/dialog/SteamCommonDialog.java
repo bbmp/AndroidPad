@@ -33,6 +33,11 @@ public class SteamCommonDialog extends BaseDialog {
     }
 
     @Override
+    public void setContentText(CharSequence contentStr) {
+        mContent.setText(contentStr);
+    }
+
+    @Override
     public void setCancelText(int res) {
         mCancelTv.setText(res);
     }

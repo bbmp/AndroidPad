@@ -115,7 +115,7 @@ public class CurveSelectedActivity extends SteamBaseActivity {
 
     @Override
     protected void initData() {
-        //getCurveDetail();
+        getCurveDetail();
     }
 
     //曲线详情

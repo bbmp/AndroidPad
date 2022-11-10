@@ -417,23 +417,23 @@ public class MultiWorkActivity extends SteamBaseActivity {
         finish();
     }
 
-    SteamCommonDialog steamCommonDialog;
+    SteamCommonDialog endDialog;
 
     /**
      * 展示结束弹窗
      */
     private void showStopWorkDialog(){
-        steamCommonDialog = new SteamCommonDialog(this);
-        steamCommonDialog.setContentText(R.string.steam_work_multi_back_message);
-        steamCommonDialog.setOKText(R.string.steam_finish_now);
-        steamCommonDialog.setListeners(v -> {
-            steamCommonDialog.dismiss();
+        endDialog = new SteamCommonDialog(this);
+        endDialog.setContentText(R.string.steam_work_multi_back_message);
+        endDialog.setOKText(R.string.steam_finish_now);
+        endDialog.setListeners(v -> {
+            endDialog.dismiss();
             if(v.getId() == R.id.tv_ok){
                //goHome();
                 sendEndWorkCommand();
             }
         },R.id.tv_cancel,R.id.tv_ok);
-        steamCommonDialog.show();
+        endDialog.show();
     }
 
 
@@ -801,9 +801,9 @@ public class MultiWorkActivity extends SteamBaseActivity {
         if(finishDialog != null && finishDialog.isShow()){
             finishDialog.dismiss();
         }
-        if(steamCommonDialog != null && steamCommonDialog.isShow()){
-            steamCommonDialog.dismiss();
-        }
+//        if(steamCommonDialog != null && steamCommonDialog.isShow()){
+//            steamCommonDialog.dismiss();
+//        }
     }
 
     @Override

@@ -37,7 +37,7 @@ public class DishWasherConstant {
 
     public final static String powerStatus = "powerStatus";//电源状态
     public final static String DishWasherWorkMode = "DishWasherWorkMode";//洗碗机工作模式
-    public final static String DishWasherRemainingWorkingTime = "DishWasherRemainingWorkingTime";//剩余工作时间
+    public final static String REMAINING_WORKING_TIME = "remainingWorkingTime";//剩余工作时间
 
 
     public final static String LowerLayerWasher = "LowerLayerWasher";//下层洗开关

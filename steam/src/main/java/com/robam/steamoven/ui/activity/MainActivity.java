@@ -4,9 +4,15 @@ import android.content.Intent;
 import android.os.Parcelable;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+
+import com.google.gson.Gson;
+import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
+import com.robam.common.bean.UserInfo;
 import com.robam.common.constant.ComnConstant;
+import com.robam.common.http.RetrofitCallback;
+import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.StringUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.steamoven.R;
@@ -18,8 +24,12 @@ import com.robam.steamoven.constant.SteamModeEnum;
 import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.device.SteamAbstractControl;
+import com.robam.steamoven.http.CloudHelper;
 import com.robam.steamoven.protocol.SteamCommandHelper;
+import com.robam.steamoven.response.GetDeviceParamsRes;
 import com.robam.steamoven.utils.MultiSegmentUtil;
+import com.robam.steamoven.utils.SteamDataUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,8 +79,9 @@ public class MainActivity extends SteamBaseActivity {
         if(StringUtils.isBlank(HomeSteamOven.getInstance().guid)){
             ToastUtils.showLong(this,R.string.steam_guid_prompt);
             finish();
+            return;
         }
-
+        getSteamData();
     }
 
     /**
@@ -130,5 +141,32 @@ public class MainActivity extends SteamBaseActivity {
             multiSegments.add(MultiSegmentUtil.getCurSegment(steamOven,i+1));
         }
         return multiSegments;
+    }
+
+    /**
+     * 获取一体机数据
+     */
+    private void getSteamData() {
+        SteamOven steamOven = getSteamOven();
+        if(steamOven == null){
+            return;
+        }
+        String deviceTypeId = DeviceUtils.getDeviceTypeId(steamOven.guid);
+        String steamContent = SteamDataUtil.getSteamContent(deviceTypeId);
+        UserInfo info = AccountInfo.getInstance().getUser().getValue();
+        CloudHelper.getDeviceParams(this, (info != null) ? info.id:0, deviceTypeId, IDeviceType.RZKY, GetDeviceParamsRes.class,
+                new RetrofitCallback<GetDeviceParamsRes>() {
+                    @Override
+                    public void onSuccess(GetDeviceParamsRes getDeviceParamsRes) {
+                        if (null != getDeviceParamsRes && null != getDeviceParamsRes.modelMap){
+                            SteamDataUtil.saveSteam(deviceTypeId,new Gson().toJson(getDeviceParamsRes, GetDeviceParamsRes.class));
+                        }
+                    }
+
+                    @Override
+                    public void onFaild(String err) {
+
+                    }
+                });
     }
 }

@@ -38,6 +38,46 @@ public class DishWasherAbstractControl implements DishWasherFunction{
     }
 
     @Override
+    public void shutDown(String targetGuid) {
+        function.shutDown(targetGuid);
+    }
+
+    @Override
+    public void powerOn(String targetGuid) {
+        function.powerOn(targetGuid);
+    }
+
+    @Override
+    public void orderWork() {
+        function.orderWork();
+    }
+
+    @Override
+    public void stopWork() {
+        function.stopWork();
+    }
+
+    @Override
+    public void startWork() {
+        function.startWork();
+    }
+
+    @Override
+    public void pauseWork(String targetGuid) {
+        function.pauseWork(targetGuid);
+    }
+
+    @Override
+    public void continueWork(String targetGuid) {
+        function.continueWork(targetGuid);
+    }
+
+    @Override
+    public void queryAttribute(String targetGuid) {
+        function.queryAttribute(targetGuid);
+    }
+
+    @Override
     public void sendCommonMsg(Map<String,Object> params, String targetGuid,short msg_id) {
         function.sendCommonMsg(params,targetGuid,msg_id);
     }

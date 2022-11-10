@@ -264,7 +264,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             View downView = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab_temp, null);
             TextView downTemp = downView.findViewById(R.id.tv_mode);
             //downTemp.setText(defaultBean.defTemp + "");
-            downTemp.setText(downTempMode.defTemp);
+            downTemp.setText(downTempMode.defTemp+"");
             downTempTab.setCustomView(downView);
             tabLayout.addTab(downTempTab);
             //downTempSelectPage = new TempSelectPage(downTempTab, defaultBean);

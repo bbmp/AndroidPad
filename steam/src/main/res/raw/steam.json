@@ -285,6 +285,19 @@
       },
       {
         "funCode": 7,
+        "code": 35,
+        "name": "除垢",
+        "defTemp": 0,
+        "defTime": 0,
+        "minTemp": 0,
+        "maxTemp": 0,
+        "minTime": 0,
+        "maxTime": 0,
+        "openDoorWork": 1,
+        "needWater": 1
+      },
+      {
+        "funCode": 7,
         "code": 36,
         "name": "保温",
         "defTemp": 60,

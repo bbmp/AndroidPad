@@ -681,4 +681,9 @@ public class SteamConstant {
     public final static String STEAM_FLAG_FRY = "airfryFunction";//炸模式
 
 
+    public final static String WARING_CODE = "waring_code";//告警code
+
+
+
+
 }

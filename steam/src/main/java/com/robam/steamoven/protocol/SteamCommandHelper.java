@@ -542,7 +542,7 @@ public class SteamCommandHelper {
      * @return
      */
     public static boolean checkSteamState(Context context, SteamOven curDevice,int modeCode){
-        if(curDevice.status != Device.ONLINE){
+        if(curDevice == null || curDevice.status != Device.ONLINE){
             ToastUtils.showLong(context, R.string.steam_offline);
             return false;
         }

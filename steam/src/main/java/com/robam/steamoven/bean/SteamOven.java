@@ -452,8 +452,7 @@ public class SteamOven extends Device {
         if (null != msg && null != msg.opt(SteamConstant.SteameOvenStatus)) {
             queryNum = 0; //查询超过一次无响应离线
             status = Device.ONLINE;
-            //workStatus = (int) msg.opt(SteamConstant.SteameOvenStatus);
-            //totalRemainSeconds = (int) msg.opt(SteamConstant.SteameOvenLeftTime);
+
             parserMsg(msg);
             return true;
         }
@@ -504,6 +503,8 @@ public class SteamOven extends Device {
             this.orderMinutesLength= (short) msg.optInt(SteamConstant.orderMinutesLength);
             this.orderLeftTime= msg.optInt(SteamConstant.orderLeftTime);
 
+
+
             this.faultCode = (short) msg.optInt(SteamConstant.faultCode);
             this.rotateSwitch = (short) msg.optInt(SteamConstant.rotateSwitch);
             this.waterBoxState = (short) msg.optInt(SteamConstant.waterBoxState);
@@ -524,6 +525,9 @@ public class SteamOven extends Device {
             this.chugouType = (short) msg.optInt(SteamConstant.chugouType);
             this.curSectionNbr = (short) msg.optInt(SteamConstant.curSectionNbr);
             this.sectionNumber = (short) msg.optInt(SteamConstant.sectionNumber);
+
+
+            workStatus = workState;
             //Log.e("模式",msg.optInt(SteamConstant.mode)+"--");
 //            if (curSectionNbr == 0 || curSectionNbr == 1 ) {
 //                this.mode = (short) msg.optInt(SteamConstant.mode);
@@ -549,16 +553,16 @@ public class SteamOven extends Device {
             this.setUpTemp = (short) msg.optInt(SteamConstant.setUpTemp);
             this.setDownTemp = (short) msg.optInt(SteamConstant.setDownTemp);
             this.setTime = (short) msg.optInt(SteamConstant.setTime);
-            this.setTimeH = (short) msg.optInt(SteamConstant.setTimeH);
+            //this.setTimeH = (short) msg.optInt(SteamConstant.setTimeH);
             this.restTime = (short) msg.optInt(SteamConstant.restTime);
-            this.restTimeH = (short) msg.optInt(SteamConstant.restTimeH);
+            //this.restTimeH = (short) msg.optInt(SteamConstant.restTimeH);
             this.steam = (short) msg.optInt(SteamConstant.steam);
 
             this.mode2 = (short) msg.optInt(SteamConstant.mode2);
             this.setUpTemp2 = (short) msg.optInt(SteamConstant.setUpTemp2 );
             this.setDownTemp2 = (short) msg.optInt(SteamConstant.setDownTemp2 );
             this.setTime2 = (short) msg.optInt(SteamConstant.setTime2);
-            this.setTimeH2 = (short) msg.optInt(SteamConstant.setTime2 );
+            //this.setTimeH2 = (short) msg.optInt(SteamConstant.setTimeH2 );
             this.restTime2 = (short) msg.optInt(SteamConstant.restTime2);
             this.restTimeH2 = (short) msg.optInt(SteamConstant.restTimeH2);
             this.steam2 = (short) msg.optInt(SteamConstant.steam2);
@@ -567,9 +571,9 @@ public class SteamOven extends Device {
             this.setUpTemp3 = (short) msg.optInt(SteamConstant.setUpTemp3);
             this.setDownTemp3 = (short) msg.optInt(SteamConstant.setDownTemp3);
             this.setTime3 = (short) msg.optInt(SteamConstant.setTime3);
-            this.setTimeH3 = (short) msg.optInt(SteamConstant.setTimeH3);
+            //this.setTimeH3 = (short) msg.optInt(SteamConstant.setTimeH3);
             this.restTime3 = (short) msg.optInt(SteamConstant.restTime3);
-            this.restTimeH3 = (short) msg.optInt(SteamConstant.restTimeH3);
+            //this.restTimeH3 = (short) msg.optInt(SteamConstant.restTimeH3);
             this.steam3 = (short) msg.optInt(SteamConstant.steam3);
             //onStatusChanged();
         }else if (key==MsgKeys.getDeviceAlarmEventReport){

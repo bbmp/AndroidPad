@@ -18,6 +18,46 @@ public class DishWasherLocalControl implements DishWasherFunction{
     }
 
     @Override
+    public void shutDown(String targetGuid) {
+
+    }
+
+    @Override
+    public void powerOn(String targetGuid) {
+
+    }
+
+    @Override
+    public void orderWork() {
+
+    }
+
+    @Override
+    public void stopWork() {
+
+    }
+
+    @Override
+    public void startWork() {
+
+    }
+
+    @Override
+    public void pauseWork(String targetGuid) {
+
+    }
+
+    @Override
+    public void continueWork(String targetGuid) {
+
+    }
+
+    @Override
+    public void queryAttribute(String targetGuid) {
+
+    }
+
+    @Override
     public void sendCommonMsg(Map<String,Object> params, String targetGuid,short msg_id) {
 
     }

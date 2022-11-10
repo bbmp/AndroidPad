@@ -245,6 +245,7 @@ public class CurveActivity extends SteamBaseActivity {
                         });
             }
         }
+        rvCurveAdapter.setList(steamCurveDetails);
         rvCurveAdapter.notifyDataSetChanged();
     }
 }

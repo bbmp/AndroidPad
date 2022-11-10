@@ -1184,5 +1184,6 @@
     <string name="steam_guid_prompt">未获取到设备信息，请稍后在试</string>
     <string name="steam_working_prompt">设备工作中</string>
     <string name="steam_curve_no_data">无曲线数据</string>
+    <string name="steam_maintain_phone">维修电话：658889789</string>
 
 </resources>

@@ -103,12 +103,12 @@ public class AppointingActivity extends DishWasherBaseActivity {
             }
         });
         MqttDirective.getInstance().getDirective().observe(this,s->{
-            switch (s.intValue() - directive_offset){
-                case MsgKeys.setDishWasherPower:
+            switch (s.intValue()){
+                case MsgKeys.getDishWasherPower:
                     startActivity(MainActivity.class);
                     finish();
                     break;
-                case MsgKeys.setDishWasherWorkMode:
+                case MsgKeys.getDishWasherWorkMode:
                     List<DishWasherModeBean> modeBeanList = FunctionManager.getFuntionList(getContext(), DishWasherModeBean.class,R.raw.dishwahser);
                     Intent intent = new Intent();
                     DishWasherModeBean dishWasherModeBean = DishWasherModelUtil.getDishWasher(modeBeanList,modeBean.code);
@@ -269,7 +269,7 @@ public class AppointingActivity extends DishWasherBaseActivity {
                     finish();*/
                     Map map = DishWasherCommandHelper.getCommonMap(MsgKeys.setDishWasherPower);
                     map.put(DishWasherConstant.PowerMode,DishWasherState.OFF);
-                    DishWasherCommandHelper.getInstance().sendCommonMsgForLiveData(map,MsgKeys.setDishWasherPower+directive_offset);                }
+                    DishWasherCommandHelper.getInstance().sendCommonMsg(map,MsgKeys.setDishWasherPower+directive_offset);                }
             }
         }, R.id.tv_cancel, R.id.tv_ok);
         iDialog.show();

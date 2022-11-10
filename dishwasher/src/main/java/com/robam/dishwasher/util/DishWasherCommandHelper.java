@@ -34,6 +34,11 @@ public class DishWasherCommandHelper {
         return DishWasherCommandHelper.Holder.instance;
     }
 
+    public void sendCommonMsg(Map map,final int bsCode){
+        perOrderTimeMin = System.currentTimeMillis();
+        DishWasherAbstractControl.getInstance().sendCommonMsg(map, (String) map.get(DishWasherConstant.TARGET_GUID),(Short) map.get(DishWasherConstant.MSG_ID));
+    }
+
     public void sendCommonMsgForLiveData(Map map,final int bsCode){
         perOrderTimeMin = System.currentTimeMillis();
         DishWasherAbstractControl.getInstance().sendCommonMsg(map, (String) map.get(DishWasherConstant.TARGET_GUID), (Short) map.get(DishWasherConstant.MSG_ID), new MqttManager.MqttSendMsgListener() {
@@ -81,7 +86,7 @@ public class DishWasherCommandHelper {
      * @return
      */
     public static boolean checkDishWasherState(Context context, DishWasher curDevice){
-        if(curDevice.status != Device.ONLINE){
+        if(curDevice == null || curDevice.status != Device.ONLINE){
             ToastUtils.show(context, R.string.dishwasher_offline, Toast.LENGTH_LONG);
             return false;
         }

@@ -93,7 +93,7 @@ public class MainActivity extends DishWasherBaseActivity {
                 DishWasherModeBean dishWasherModeBean = DishWasherModelUtil.getDishWasher(modeBeanList,dishWasher.workMode);
                 DishWasherModeBean newMode = dishWasherModeBean.getNewMode();
                 newMode.auxCode = dishWasher.auxMode;
-                newMode.time =  dishWasher.DishWasherRemainingWorkingTime * 60;
+                newMode.time =  dishWasher.remainingWorkingTime * 60;
 
                 intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, newMode);
                 intent.setClass(this, WorkActivity.class);

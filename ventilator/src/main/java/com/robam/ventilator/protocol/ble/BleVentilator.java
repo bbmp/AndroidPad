@@ -81,7 +81,7 @@ public class BleVentilator {
             @Override
             public void onLeScan(BleDevice bleDevice) {
                 super.onLeScan(bleDevice);
-                LogUtils.e("onLeScan " + bleDevice.getName());
+                //LogUtils.e("onLeScan " + bleDevice.getName());
             }
 
             @Override
@@ -91,7 +91,7 @@ public class BleVentilator {
 
             @Override
             public void onScanFinished(List<BleDevice> scanResultList) {
-                LogUtils.e("onScanFinished ");
+                //LogUtils.e("onScanFinished ");
 
                 if (null != scanResultList && scanResultList.size() > 0) {
                     for (BleDevice bleDevice: scanResultList) {
