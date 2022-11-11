@@ -25,6 +25,11 @@ public class VentilatorAbstractControl implements VentilatorFunction{
     }
 
     @Override
+    public void beep() {
+        function.beep();
+    }
+
+    @Override
     public void powerOnGear(int gear) {
         function.powerOnGear(gear);
     }

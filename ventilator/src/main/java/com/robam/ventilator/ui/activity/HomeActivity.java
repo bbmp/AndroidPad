@@ -122,12 +122,9 @@ public class HomeActivity extends BaseActivity {
 
                 //开机
                 if (HomeVentilator.getInstance().startup == 0x00) {
-                    SerialPortHelper.getInstance().addCommands(SerialVentilator.powerOn());
-                    Plat.getPlatform().screenOn();
-                    Plat.getPlatform().openPowerLamp();
+
+                    HomeVentilator.getInstance().openVentilator();
                 }
-                //循环查询
-//                HomeVentilator.getInstance().startSerialQuery();
 
             }
 

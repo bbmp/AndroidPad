@@ -330,6 +330,30 @@ public class SerialVentilator {
         LogUtils.i(StringUtils.bytes2Hex(data));
         return data ;
     }
+    //蜂鸣声
+    public static byte[] beep() {
+        byte beep = (byte) 0x02;     //蜂鸣
+        byte[] payload = new byte[]{
+                HomeVentilator.getInstance().startup,
+                HomeVentilator.getInstance().lightOn,
+                HomeVentilator.getInstance().gear,
+                beep,
+                HomeVentilator.getInstance().baffle,
+                HomeVentilator.getInstance().param1,
+                HomeVentilator.getInstance().param2,
+                HomeVentilator.getInstance().param3,
+                HomeVentilator.getInstance().param4,
+                HomeVentilator.getInstance().param5,
+                HomeVentilator.getInstance().baffle2,
+                HomeVentilator.getInstance().param6,
+                HomeVentilator.getInstance().param7,
+                HomeVentilator.getInstance().param8,
+                HomeVentilator.getInstance().param9
+        };
+        byte[] data = packCtrlCmd(payload);
+        LogUtils.i(StringUtils.bytes2Hex(data));
+        return data ;
+    }
 
     /**
      * 风机挡位

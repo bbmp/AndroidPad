@@ -2,6 +2,7 @@ package com.robam.common.utils;
 
 import android.annotation.SuppressLint;
 import android.text.TextUtils;
+import android.text.format.DateFormat;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -971,5 +972,9 @@ public class DateUtil {
             return orderMin - currentMin ;
         }
 
+    }
+    //获取周几 和时间
+    public static String getWeek() {
+        return (String) DateFormat.format("EEEE HH:mm:ss", System.currentTimeMillis());
     }
 }

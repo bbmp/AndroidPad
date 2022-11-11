@@ -106,7 +106,7 @@ public class HomePage extends VentilatorBasePage {
     private DrawerLayout drawerLayout;
     private LinearLayout llSetting, llProducts;
 
-    private IDialog homeLock, oilClean;
+    private IDialog oilClean;
 
     public static HomePage newInstance() {
         return new HomePage();
@@ -134,7 +134,6 @@ public class HomePage extends VentilatorBasePage {
         rvLeft = findViewById(R.id.rv_left);
         rvRight = findViewById(R.id.rv_right);
 
-        tvPerformance.setSelected(true);
 
         rvLeft.setLayoutManager(new LinearLayoutManager(getContext()));
         rvRight.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -197,6 +196,16 @@ public class HomePage extends VentilatorBasePage {
                 LogUtils.i("---onDrawerStateChanged---");
             }
         });
+        //初始化
+        if (HomeVentilator.getInstance().param7 == 0x00) { //性能模式
+            tvPerformance.setSelected(true);
+            tvComfort.setSelected(false);
+            group.setVisibility(View.GONE);
+        } else {  //舒适模式
+            tvPerformance.setSelected(false);
+            tvComfort.setSelected(true);
+            group.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -389,7 +398,7 @@ public class HomePage extends VentilatorBasePage {
             @Override
             public void onChanged(String s) {
                 if (Plat.getPlatform().getDeviceOnlySign().equals(s)) { //烟机更新
-                    if (null != rvFunctionAdapter && null != homeLock && homeLock.isShow()) //锁定
+                    if (null != rvFunctionAdapter && HomeVentilator.getInstance().isLock()) //锁定
                         rvFunctionAdapter.setPickPosition(0);
                     else if (HomeVentilator.getInstance().gear == (byte) 0xA1 && null != rvFunctionAdapter)
                         rvFunctionAdapter.setPickPosition(1);
@@ -598,11 +607,13 @@ public class HomePage extends VentilatorBasePage {
             if (!tvPerformance.isSelected()) {
 
                 VentilatorAbstractControl.getInstance().setSmart(VentilatorConstant.FAN_SMART_CLOSE); //智感恒吸关闭
+                MMKVUtils.setSmartSet(false);
             }
         } else if (id == R.id.tv_comfort) {
             if (!tvComfort.isSelected()) {
 
                 VentilatorAbstractControl.getInstance().setSmart(VentilatorConstant.FAN_SMART_OPEN);  //打开智感恒吸
+                MMKVUtils.setSmartSet(true);
             }
         } else if (id == R.id.ll_drawer_left) {
             open(Gravity.LEFT);
@@ -628,8 +639,8 @@ public class HomePage extends VentilatorBasePage {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (null != homeLock && homeLock.isShow())
-            homeLock.dismiss();
+        HomeVentilator.getInstance().closeLock();
+
         if (null != oilClean && oilClean.isShow())
             oilClean.dismiss();
     }
@@ -643,7 +654,7 @@ public class HomePage extends VentilatorBasePage {
                 @Override
                 public void onClick(View v) {
                     if (v.getId() == R.id.tv_ok) {
-                        screenLock();
+                        HomeVentilator.getInstance().screenLock();
 
                         //打开油网清洗
                         VentilatorAbstractControl.getInstance().openOilClean();
@@ -657,29 +668,6 @@ public class HomePage extends VentilatorBasePage {
             }, R.id.tv_cancel, R.id.tv_ok);
         }
         oilClean.show();
-    }
-    //锁屏
-    private void screenLock() {
-        if (null == homeLock) {
-            homeLock = VentilatorDialogFactory.createDialogByType(getContext(), DialogConstant.DIALOG_TYPE_LOCK);
-            homeLock.setCancelable(false);
-            //长按解锁
-            ImageView imageView = homeLock.getRootView().findViewById(R.id.iv_lock);
-            ClickUtils.setLongClick(new Handler(), imageView, 2000, new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    homeLock.dismiss();
-//                    if (null != rvFunctionAdapter)
-//                        rvFunctionAdapter.setPickPosition(-1);
-                    //关闭油网清洗
-                    VentilatorAbstractControl.getInstance().closeOilClean();
-                    //关灯
-                    Plat.getPlatform().closeWaterLamp();
-                    return true;
-                }
-            });
-        }
-        homeLock.show();
     }
 
     //切换至极简模式

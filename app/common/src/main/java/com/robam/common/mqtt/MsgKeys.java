@@ -364,6 +364,8 @@ public interface MsgKeys {
 
     //无人锅上报请求
     short PanReportStatistics_Req = 170;
+    //外部命令烟机互动
+    short setFanInteraction_Req = 171;
     /**
      * 设置油烟机重置油杯定时工作（应答）
      */

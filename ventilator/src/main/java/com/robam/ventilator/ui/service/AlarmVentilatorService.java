@@ -8,9 +8,13 @@ import android.serialport.helper.SerialPortHelper;
 
 import androidx.annotation.Nullable;
 
+import com.robam.common.utils.DateUtil;
+import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MMKVUtils;
 import com.robam.ventilator.device.HomeVentilator;
 import com.robam.ventilator.protocol.serial.SerialVentilator;
+
+import java.util.Calendar;
 
 
 public class AlarmVentilatorService extends Service {
@@ -54,7 +58,10 @@ public class AlarmVentilatorService extends Service {
         }
         //检查假日模式打开
         if (MMKVUtils.getHoliday()) {
-
+            int dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+            String weekTime = MMKVUtils.getHolidayWeekTime();
+            String week = weekTime.substring(0, 2);
+            LogUtils.e("weekTime " + weekTime);
         }
         return super.onStartCommand(intent, flags, startId);
     }
