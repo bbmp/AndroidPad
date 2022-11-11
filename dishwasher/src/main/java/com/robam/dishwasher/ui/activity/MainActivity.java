@@ -11,6 +11,7 @@ import com.robam.common.bean.Device;
 import com.robam.common.constant.ComnConstant;
 import com.robam.common.manager.FunctionManager;
 import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.StringUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.base.DishWasherBaseActivity;
@@ -26,7 +27,8 @@ import com.robam.dishwasher.util.DishWasherModelUtil;
 import java.util.List;
 
 //远程入口，供烟机调用
-public class MainActivity extends DishWasherBaseActivity {
+public class
+MainActivity extends DishWasherBaseActivity {
 
 
 
@@ -50,8 +52,12 @@ public class MainActivity extends DishWasherBaseActivity {
     protected void initData() {
 
         //开启远程控制
-        DishWasherAbstractControl.getInstance().init(new DishWasherMqttControl());
+        //DishWasherAbstractControl.getInstance().init(new DishWasherMqttControl());
         HomeDishWasher.getInstance().guid = getIntent().getStringExtra(ComnConstant.EXTRA_GUID);
+        if(StringUtils.isBlank(HomeDishWasher.getInstance().guid)){
+            ToastUtils.showLong(this,R.string.dishwasher_no_guid);
+            finish();
+        }
         ToastUtils.show(this,HomeDishWasher.getInstance().guid, Toast.LENGTH_LONG);
         final List<DishWasherModeBean> modeBeanList = FunctionManager.getFuntionList(getContext(), DishWasherModeBean.class,R.raw.dishwahser);
         AccountInfo.getInstance().getGuid().observe(this, s -> {
@@ -79,7 +85,7 @@ public class MainActivity extends DishWasherBaseActivity {
             }
         });
         setLock(HomeDishWasher.getInstance().lock);
-        getLastState();
+        DishWasherAbstractControl.getInstance().queryAttribute(HomeDishWasher.getInstance().guid);
     }
 
 

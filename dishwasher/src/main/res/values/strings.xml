@@ -67,5 +67,6 @@
     <string name="dishwasher_finish">完成</string>
     <string name="dishwasher_washer">洗涤</string>
     <string name="dishwasher_aeration">换气</string>
+    <string name="dishwasher_no_guid">缺失数据</string>
 
 </resources>
