@@ -12,6 +12,7 @@ import com.robam.common.bean.Device;
 import com.robam.common.bean.UserInfo;
 import com.robam.common.constant.ComnConstant;
 import com.robam.common.http.RetrofitCallback;
+import com.robam.common.manager.DeviceWarnInfoManager;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.StringUtils;
 import com.robam.common.utils.ToastUtils;
@@ -26,10 +27,10 @@ import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.device.SteamAbstractControl;
 import com.robam.steamoven.http.CloudHelper;
 import com.robam.steamoven.protocol.SteamCommandHelper;
+import com.robam.steamoven.response.GetDeviceErrorRes;
 import com.robam.steamoven.response.GetDeviceParamsRes;
 import com.robam.steamoven.utils.MultiSegmentUtil;
 import com.robam.steamoven.utils.SteamDataUtil;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +52,9 @@ public class MainActivity extends SteamBaseActivity {
                 if (device.guid.equals(s) && device instanceof SteamOven && device.guid.equals(HomeSteamOven.getInstance().guid)) {
                     SteamOven steamOven = (SteamOven) device;
                     if(!SteamCommandHelper.getInstance().isSafe()){
+                        return;
+                    }
+                    if(toWaringPage(steamOven)){
                         return;
                     }
                     switch (steamOven.powerState){
@@ -82,6 +86,7 @@ public class MainActivity extends SteamBaseActivity {
             return;
         }
         getSteamData();
+        getDeviceErrorInfo();
     }
 
     /**
@@ -169,4 +174,22 @@ public class MainActivity extends SteamBaseActivity {
                     }
                 });
     }
+
+    private void getDeviceErrorInfo(){
+        CloudHelper.getDeviceErrorInfo(this,  GetDeviceErrorRes.class,
+                new RetrofitCallback<GetDeviceErrorRes>() {
+                    @Override
+                    public void onSuccess(GetDeviceErrorRes deviceErrorRes) {
+                        if(StringUtils.isNotBlank(deviceErrorRes.url)){//设备告警文件链接
+                            DeviceWarnInfoManager.getInstance().downFile(deviceErrorRes.url);
+                        }
+                    }
+
+                    @Override
+                    public void onFaild(String err) {
+
+                    }
+                });
+    }
+
 }

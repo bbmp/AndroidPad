@@ -23,6 +23,9 @@ public interface ICloudService {
 
     String curveCookStepUpdateUrl="/rest/cks/api/curve_cookbook/v2/cooking_curve_step/update";
 
+    //获取设备错误告警连接
+    String getAllDeviceErrorInfo = "/rest/ops/api/error/config/get";
+
     //获取菜谱详情
     String getRecipeDetail ="/rest/cks/api/cookbook/details/get-by-id";
 
@@ -52,5 +55,9 @@ public interface ICloudService {
     @POST(curveCookStepUpdateUrl)
     @Headers("Content-Type: application/json")
     Call<ResponseBody> saveCurveStepData(@Body RequestBody body);
+
+    @POST(getAllDeviceErrorInfo)
+    @Headers("Content-Type: application/json")
+    Call<ResponseBody> getAllDeviceErrorInfo(@Body RequestBody body);
 
 }

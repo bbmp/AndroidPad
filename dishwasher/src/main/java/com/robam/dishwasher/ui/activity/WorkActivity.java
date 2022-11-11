@@ -1,10 +1,6 @@
 package com.robam.dishwasher.ui.activity;
 
-import androidx.annotation.NonNull;
-
 import android.content.Intent;
-import android.os.Handler;
-import android.os.Message;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.RelativeSizeSpan;
@@ -26,12 +22,12 @@ import com.robam.dishwasher.constant.DialogConstant;
 import com.robam.dishwasher.constant.DishWasherAuxEnum;
 import com.robam.dishwasher.constant.DishWasherConstant;
 import com.robam.dishwasher.constant.DishWasherEnum;
+import com.robam.dishwasher.constant.DishWasherEvent;
 import com.robam.dishwasher.constant.DishWasherState;
 import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.factory.DishWasherDialogFactory;
 import com.robam.dishwasher.ui.dialog.DiashWasherCommonDialog;
 import com.robam.dishwasher.util.DishWasherCommandHelper;
-
 import java.util.Map;
 
 public class WorkActivity extends DishWasherBaseActivity {
@@ -47,7 +43,7 @@ public class WorkActivity extends DishWasherBaseActivity {
     private TextView tvAuxMode;//附加模式 - 锅具强洗、加强除菌、长效净存、下层洗
 
     private View startIcon,pauseIcon;
-    //当前模式 - 注意该对象可能未空（比如APP异常退出，在进入，比如在洗碗机中直接直接进行操作）
+    //当前模式 - 注意该对象可能未空
     private DishWasherModeBean modeBean = null;
 
     private int preRemainingTime;
@@ -56,6 +52,8 @@ public class WorkActivity extends DishWasherBaseActivity {
     private boolean isReminding = false;
     //是否不再提醒
     private boolean isNoLongerRemind = false;
+
+    public static final int MAX_PROGRESS = 97;
 
     @Override
     protected int getLayoutId() {
@@ -77,24 +75,23 @@ public class WorkActivity extends DishWasherBaseActivity {
         startIcon = findViewById(R.id.iv_start);
         pauseIcon = findViewById(R.id.iv_pause);
 
-        cpgBar.setProgress(85);
+        cpgBar.setProgress(MAX_PROGRESS);
         setOnClickListener(R.id.ll_left, R.id.iv_float,R.id.iv_start,R.id.iv_pause);
 
         AccountInfo.getInstance().getGuid().observe(this, s -> {
             for (Device device: AccountInfo.getInstance().deviceList) {
                 if (device.guid.equals(s) && device instanceof DishWasher && device.guid.equals(HomeDishWasher.getInstance().guid)) { //当前锅
                     DishWasher dishWasher = (DishWasher) device;
-                    LogUtils.e("WorkActivity mqtt msg arrive isWorking "+dishWasher.powerStatus + " " +dishWasher.abnormalAlarmStatus);
                     if(toWaringPage(dishWasher.abnormalAlarmStatus)){
                         return;
                     }
                     if(!DishWasherCommandHelper.getInstance().isSafe()){
                         return;
                     }
-                    if(isWorkingFinish(dishWasher)){
-                        toComplete();
-                        return;
-                    }
+//                    if(isWorkingFinish(dishWasher)){
+//                        finish();
+//                        return;
+//                    }
                     setLock(dishWasher.StoveLock == 1);
                     switch (dishWasher.powerStatus){
                         case DishWasherState.WORKING:
@@ -104,8 +101,7 @@ public class WorkActivity extends DishWasherBaseActivity {
                             break;
                         case DishWasherState.OFF:
                         case DishWasherState.WAIT:
-                            startActivity(MainActivity.class);
-                            finish();
+                            goHome();
                             break;
                     }
                     break;
@@ -115,36 +111,26 @@ public class WorkActivity extends DishWasherBaseActivity {
 
         MqttDirective.getInstance().getDirective().observe(this, s -> {
             switch (s.shortValue()){
-                case  DishWasherState.OFF:
-                    //getLastState();
-                    startActivity(MainActivity.class);
-                    finish();
-                    HomeDishWasher.getInstance().isTurnOff = true;
+//                case  MsgKeys.getDishWasherPower:
+//                    goHome();
+//                    HomeDishWasher.getInstance().isTurnOff = true;
+//                    break;
+                case DishWasherEvent.EVENT_WORK_COMPLETE_RESET:
+                    toComplete();
                     break;
-                case DishWasherState.WORKING:
-                    tvTime.setText(getSpan(preRemainingTime));
-                    changeViewsState(DishWasherState.WORKING);
-                    break;
-                case DishWasherState.PAUSE:
-                    changeViewsState(DishWasherState.PAUSE);
-                    tvDuration.setText(getSpan(preRemainingTime));
-                    break;
+//                case DishWasherState.WORKING:
+//                    tvTime.setText(getSpan(preRemainingTime));
+//                    changeViewsState(DishWasherState.WORKING);
+//                    break;
+//                case DishWasherState.PAUSE:
+//                    changeViewsState(DishWasherState.PAUSE);
+//                    tvDuration.setText(getSpan(preRemainingTime));
+//                    break;
                 case DishWasherState.END:
                     break;
             }
         });
     }
-
-    private int sum = 0;
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(@NonNull Message msg) {
-            sum += 1;
-            float progress = sum * 100f / 60;
-            cpgBar.setProgress(progress);
-            handler.sendEmptyMessageDelayed(1, 1000);
-        }
-    };
 
     @Override
     protected void initData() {
@@ -155,6 +141,12 @@ public class WorkActivity extends DishWasherBaseActivity {
         if (null != modeBean) {
             setData(modeBean);
             preRemainingTime = modeBean.time;
+
+            float progress = modeBean.restTime / modeBean.time * 100;
+            if(progress > MAX_PROGRESS){
+                progress = MAX_PROGRESS;
+            }
+            cpgBar.setProgress(progress);
         }
     }
 
@@ -181,22 +173,15 @@ public class WorkActivity extends DishWasherBaseActivity {
     }
 
     private void stateViewWasClick(boolean isStart){
-        sendCommand(isStart);
-        //changeViewsState(isStart?DishWasherConstant.WORKING:DishWasherConstant.PAUSE);
-    }
-
-    private void sendCommand(boolean isStart){
-        Map map = DishWasherCommandHelper.getCommonMap(MsgKeys.setDishWasherPower);
-        if(isStart){//回复运行
-            map.put(DishWasherConstant.PowerMode,DishWasherState.WORKING);
-            DishWasherCommandHelper.getInstance().sendCommonMsgForLiveData(map,DishWasherState.WORKING);
-        }else{//暂停
-            map.put(DishWasherConstant.PowerMode,DishWasherState.PAUSE);
-            DishWasherCommandHelper.getInstance().sendCommonMsgForLiveData(map,DishWasherState.PAUSE);
+        DishWasher curDevice = getCurDevice();
+        if(!DishWasherCommandHelper.checkDishWasherState(this,curDevice)){
+            getLastState();
+            return;
         }
-        //setWorkingState(dishWasher);
-
+        DishWasherCommandHelper.sendCtrlWorkCommand(isStart);
+        //changeViewsState(isStart?DishWasherState.WORKING:DishWasherState.PAUSE);
     }
+
 
 
     //停止工作提示
@@ -217,19 +202,7 @@ public class WorkActivity extends DishWasherBaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //handler.removeCallbacksAndMessages(null);
     }
-
-    private void work() {
-        //1、检测洗碗机门 是否关闭 absDishWasher.DoorOpenState == (short) 1 若门没有关闭，则提示
-
-        //2、先切换洗碗机状态至开机
-
-        //3、切换成功后，在设置洗碗机工作模式
-        //DishWasherAbstractControl.getInstance().sendCommonMsg(getModelWorkParamMsg(), HomeDishWasher.getInstance().guid);
-
-    }
-
 
     //工作中 - 需更新时间
     private void setWorkingState(DishWasher dishWasher){
@@ -258,6 +231,11 @@ public class WorkActivity extends DishWasherBaseActivity {
         }else if(dishWasher.powerStatus == DishWasherState.PAUSE){
             tvDuration.setText(getSpan(dishWasher.remainingWorkingTime*60));
         }
+        float progress =  (dishWasher.remainingWorkingTime*60f/modeBean.time) * 100;
+        if(progress > MAX_PROGRESS){
+            progress = MAX_PROGRESS;
+        }
+        cpgBar.setProgress(progress);
         tvAuxMode.setText(DishWasherAuxEnum.match(dishWasher.auxMode));//附加模式
         showRemindDialog(dishWasher);
     }
@@ -340,6 +318,7 @@ public class WorkActivity extends DishWasherBaseActivity {
         Intent intent = new Intent(this,CompleteActivity.class);
         intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN,modeBean);
         startActivity(intent);
+        finish();
     }
 
 

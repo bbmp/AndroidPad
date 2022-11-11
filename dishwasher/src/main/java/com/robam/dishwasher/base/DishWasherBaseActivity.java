@@ -26,9 +26,12 @@ import com.robam.dishwasher.R;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.dishwasher.constant.DishWasherConstant;
 import com.robam.dishwasher.constant.DishWasherWaringEnum;
+import com.robam.dishwasher.device.DishWasherAbstractControl;
 import com.robam.dishwasher.device.DishWasherFactory;
+import com.robam.dishwasher.device.DishWasherMqttControl;
 import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.manager.AppManager;
+import com.robam.dishwasher.ui.activity.MainActivity;
 import com.robam.dishwasher.ui.activity.WaringActivity;
 import com.robam.dishwasher.util.DishWasherCommandHelper;
 
@@ -93,12 +96,17 @@ public abstract class DishWasherBaseActivity extends BaseActivity {
             return;
         }
         rightCenter.setVisibility(View.VISIBLE);
+        rightCenter.setOnClickListener(v -> {
+            DishWasherCommandHelper.sendCtrlLockCommand(true,LOCK_FLAG);
+            setLock(true);
+        });
         rightCenter.setOnLongClickListener(v->{
-            Map map = DishWasherCommandHelper.getCommonMap(MsgKeys.setDishWasherChildLock);
-            map.put(DishWasherConstant.StoveLock,lock?0:1);
-            DishWasherCommandHelper.getInstance().sendCommonMsgForLiveData(map,LOCK_FLAG);
-
-            setLock(!lock);
+            DishWasher curDevice = getCurDevice();
+            if(curDevice == null){
+                return true;
+            }
+            DishWasherCommandHelper.sendCtrlLockCommand(false,LOCK_FLAG);
+            setLock(false);
             return true;
         });
     }
@@ -183,11 +191,14 @@ public abstract class DishWasherBaseActivity extends BaseActivity {
      * 主动获取查询最新状态
      */
     public void getLastState(){
-        MqttMsg msg = new MqttMsg.Builder()
-                .setMsgId(MsgKeys.setDishWasherStatus)
-                .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
-                .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(HomeDishWasher.getInstance().guid), DeviceUtils.getDeviceNumber(HomeDishWasher.getInstance().guid)))
-                .build();
-        MqttManager.getInstance().publish(msg, DishWasherFactory.getProtocol());
+        DishWasher curDevice = getCurDevice();
+        if(curDevice != null){
+            DishWasherAbstractControl.getInstance().queryAttribute(curDevice.guid);
+        }
+    }
+
+    public void goHome(){
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 }

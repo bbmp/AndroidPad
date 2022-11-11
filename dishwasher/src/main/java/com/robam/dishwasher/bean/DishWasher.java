@@ -1,11 +1,11 @@
 package com.robam.dishwasher.bean;
 
 import com.robam.common.bean.Device;
+import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.dishwasher.constant.DishWasherConstant;
-
-import java.util.List;
+import com.robam.dishwasher.constant.DishWasherEvent;
 
 //洗碗机
 public class DishWasher extends Device{
@@ -25,8 +25,6 @@ public class DishWasher extends Device{
     public DishWasher(String name, String dc, String displayType) {
         super(name, dc, displayType);
     }
-
-    private List<DishWasherModeBean> dishWaherModeBeans;
 
 
     /**
@@ -84,50 +82,25 @@ public class DishWasher extends Device{
                 this.SetWorkTimeValue = (short) msg.optInt(DishWasherConstant.SetWorkTimeValue);
                 this.auxMode = (short) msg.optInt(DishWasherConstant.ADD_AUX);
                 break;
-            case MsgKeys.getAlarmEventReport:
-                this.alarmId = (short) msg.optInt(DishWasherConstant.DishWasherAlarm);
-                //postEvent(new DishWasherAlarmEvent(this, alarmId));
-                break;
+//            case MsgKeys.getAlarmEventReport:
+//                this.alarmId = (short) msg.optInt(DishWasherConstant.DishWasherAlarm);
+//                MqttDirective.getInstance().getDirective().setValue((int)this.alarmId);
+//                break;
             case MsgKeys.getEventReport:
                 parserEvent(msg);
+                //MqttDirective.getInstance().getDirective().setValue(msg.optInt(DishWasherConstant.EventId));
                 break;
-
-
-//            case MsgKeys.getEventReport:
-//
-//
-//                switch (eventId) {
-//                    case Event_DishWasher_Power_Control_Reset:
-//
-//                        postEvent(new DishWasherSwitchControlResetEvent(this, (short) msg.optInt(DishWasherConstant.EventParam)));
-//                        break;
-//                    case Event_DishWasher_Work_Mode_Reset:
-//                        postEvent(new DishWasherWorkModeResetEvent(this, (short) msg.optInt(DishWasherConstant.EventParam)));
-//                        break;
-//                    case Event_DishWasher_Work_Complete_Reset:
-//                        this.powerConsumption = (short) msg.optInt(DishWasherConstant.powerConsumption);
-//                        this.waterConsumption = (short) msg.optInt(DishWasherConstant.waterConsumption);
-//                        postEvent(new DishWasherWorkCompleteResetEvent(this, powerConsumption,waterConsumption));
-//                        break;
-//                    case Event_DishWasher_Lack_Rinse_Reset:
-//                        postEvent(new DishWasherLackRinseResetEvent(this, (short) msg.optInt(DishWasherConstant.EventParam)));
-//                        break;
-//                    case Event_DishWasher_Lack_Salt_Reset:
-//                        postEvent(new DishWasherLackSaltResetEvent(this, (short) msg.optInt(DishWasherConstant.EventParam)));
-//                        break;
-//                    case Event_DishWasher_Open_Door_Reset:
-//                        postEvent(new DishWasherOpenDoorResetEvent(this, (short) msg.optInt(DishWasherConstant.EventParam)));
-//                        break;
-//
-//                }
-//                break;
+            case MsgKeys.getDishWasherWorkMode:
+            case MsgKeys.getDishWasherPower:
+                //MqttDirective.getInstance().getDirective().setValue(msg.getID());
+                break;
         }
     }
 
     private void parserEvent(MqttMsg msg){
         short eventId = (short) msg.optInt(DishWasherConstant.EventId);
         switch (eventId){
-            case Event_DishWasher_Work_Complete_Reset:
+            case DishWasherEvent.EVENT_WORK_COMPLETE_RESET:
                 this.powerConsumption = (short) msg.optInt(DishWasherConstant.POWER_CONSUMPTION);
                 this.waterConsumption = (short) msg.optInt(DishWasherConstant.WATER_CONSUMPTION);
                 break;
@@ -205,13 +178,7 @@ public class DishWasher extends Device{
     public short waterConsumption;
     public short alarmId;
     //protected short terminalType = TerminalType.getType();
-    //事件
-    static final public short Event_DishWasher_Power_Control_Reset = 10;//电源状态控制事件
-    static final public short Event_DishWasher_Work_Mode_Reset = 11;//工作模式调整事件
-    static final public short Event_DishWasher_Work_Complete_Reset = 12;//工作完成事件
-    static final public short Event_DishWasher_Lack_Rinse_Reset = 13;//却漂洗剂事件
-    static final public short Event_DishWasher_Lack_Salt_Reset = 14;//缺盐事件
-    static final public short Event_DishWasher_Open_Door_Reset = 15;//开门事件
+
     /**
      * 漂洗剂通知
      */

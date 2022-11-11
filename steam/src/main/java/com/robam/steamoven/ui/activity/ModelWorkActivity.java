@@ -44,7 +44,8 @@ import java.util.List;
 import java.util.Map;
 
 //蒸、炸、烤模式工作页面
-public class ModelWorkActivity extends SteamBaseActivity {
+public class
+ModelWorkActivity extends SteamBaseActivity {
 
     public static final String TAG = "ModelWorkActivity";
     private List<MultiSegment> multiSegments = new ArrayList<>();//设置段数据
@@ -119,6 +120,9 @@ public class ModelWorkActivity extends SteamBaseActivity {
                 if (device.guid.equals(s) && device instanceof SteamOven && device.guid.equals(HomeSteamOven.getInstance().guid)) {
                     SteamOven steamOven = (SteamOven) device;
                     if(!SteamCommandHelper.getInstance().isSafe()){
+                        return;
+                    }
+                    if(toWaringPage(steamOven)){
                         return;
                     }
                     switch (steamOven.powerState){

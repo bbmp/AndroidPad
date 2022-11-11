@@ -10,6 +10,7 @@ import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Shader;
+import android.graphics.SweepGradient;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
@@ -52,7 +53,7 @@ public class CircleProgressView extends View {
         // 初始化进度圆环画笔
         mProgPaint = new Paint();
         mProgPaint.setStyle(Paint.Style.STROKE);    // 只描边，不填充
-//        mProgPaint.setStrokeCap(Paint.Cap.ROUND);   // 设置圆角
+        mProgPaint.setStrokeCap(Paint.Cap.ROUND);   // 设置圆角
         mProgPaint.setAntiAlias(true);              // 设置抗锯齿
         mProgPaint.setDither(true);                 // 设置抖动
         mProgPaint.setStrokeWidth(typedArray.getDimension(R.styleable.common_CircleProgressView_common_progWidth, 10));
@@ -91,30 +92,32 @@ public class CircleProgressView extends View {
         // 设置进度圆环渐变色
         if (mColorArray != null && mColorArray.length > 1)
             mProgPaint.setShader(new LinearGradient(0, 0, 0, getMeasuredWidth(), mColorArray, null, Shader.TileMode.MIRROR));
+            //mProgPaint.setShader(new SweepGradient(getMeasuredWidth()/2, getMeasuredWidth()/2, mColorArray, null));
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawArc(mRectF, 0, 360, false, mBackPaint);
-        if (mProgress <= 24.75) {
-            canvas.drawArc(mRectF, 270, 360 * mProgress / 100, false, mProgPaint);
-        } else if (mProgress > 24.75 && mProgress < 25.25) {
-            canvas.drawArc(mRectF, 270, (float) (360 * 24.75 / 100), false, mProgPaint);
-        } else if (mProgress >= 25.25 && mProgress <= 49.75) {
-            canvas.drawArc(mRectF, 270, (float) (360 * 24.75 / 100), false, mProgPaint);
-            canvas.drawArc(mRectF, (float) (360 * 0.25 / 100), (float) (360 * (mProgress-25.25) / 100), false, mProgPaint);
-        } else if (mProgress > 49.75 && mProgress < 50.25) {
-            canvas.drawArc(mRectF, 270, (float) (360 * 24.75 / 100), false, mProgPaint);
-            canvas.drawArc(mRectF, (float) (360 * 0.25 / 100), (float) (360 * (24.5) / 100), false, mProgPaint);
-        } else {
-            canvas.drawArc(mRectF, 270, (float) (360 * 24.75 / 100), false, mProgPaint);
-            canvas.drawArc(mRectF, (float) (360 * 0.25 / 100), (float) (360 * (24.5) / 100), false, mProgPaint);
-            canvas.drawArc(mRectF, 90 + (float) (360 * 0.25 / 100), (float) (360 * (mProgress-50.25) / 100), false, mProgPaint);
-        }
+        canvas.drawArc(mRectF, 270, 360 * mProgress / 100, false, mProgPaint);
+//        if (mProgress <= 24.75) {
+//            canvas.drawArc(mRectF, 270, 360 * mProgress / 100, false, mProgPaint);
+//        } else if (mProgress > 24.75 && mProgress < 25.25) {
+//            canvas.drawArc(mRectF, 270, (float) (360 * 24.75 / 100), false, mProgPaint);
+//        } else if (mProgress >= 25.25 && mProgress <= 49.75) {
+//            canvas.drawArc(mRectF, 270, (float) (360 * 24.75 / 100), false, mProgPaint);
+//            canvas.drawArc(mRectF, (float) (360 * 0.25 / 100), (float) (360 * (mProgress-25.25) / 100), false, mProgPaint);
+//        } else if (mProgress > 49.75 && mProgress < 50.25) {
+//            canvas.drawArc(mRectF, 270, (float) (360 * 24.75 / 100), false, mProgPaint);
+//            canvas.drawArc(mRectF, (float) (360 * 0.25 / 100), (float) (360 * (24.5) / 100), false, mProgPaint);
+//        } else {
+//            canvas.drawArc(mRectF, 270, (float) (360 * 24.75 / 100), false, mProgPaint);
+//            canvas.drawArc(mRectF, (float) (360 * 0.25 / 100), (float) (360 * (24.5) / 100), false, mProgPaint);
+//            canvas.drawArc(mRectF, 90 + (float) (360 * 0.25 / 100), (float) (360 * (mProgress-50.25) / 100), false, mProgPaint);
+//        }
 
-        canvas.drawArc(mRectF, 270, 360 * 0.05f / 100, false, mRoundPaint);//开始圆角
-        canvas.drawArc(mRectF, 270 + 360 * mProgress / 100, 360 * 0.05f / 100, false, mRoundPaint);//结束圆角
+//        canvas.drawArc(mRectF, 270, 360 * 0.05f / 100, false, mRoundPaint);//开始圆角
+//        canvas.drawArc(mRectF, 270 + 360 * mProgress / 100, 360 * 0.05f / 100, false, mRoundPaint);//结束圆角
     }
 
     // ---------------------------------------------------------------------------------------------

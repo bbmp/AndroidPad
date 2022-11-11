@@ -102,7 +102,7 @@ public class DishWasherMqttControl implements DishWasherFunction{
     public void queryAttribute(String targetGuid) {
         try {
             MqttMsg msg = new MqttMsg.Builder()
-                    .setMsgId(MsgKeys.getDeviceAttribute_Req) //查询一体机
+                    .setMsgId(MsgKeys.setDishWasherStatus) //洗碗机状态查询
                     .setGuid(Plat.getPlatform().getDeviceOnlySign())
                     .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(targetGuid),
                             DeviceUtils.getDeviceNumber(targetGuid)))

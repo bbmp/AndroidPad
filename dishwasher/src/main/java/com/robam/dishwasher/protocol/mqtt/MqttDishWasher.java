@@ -6,8 +6,8 @@ import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MqttPublic;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.ByteUtils;
-import com.robam.dishwasher.constant.DishWasherBsCode;
 import com.robam.dishwasher.constant.DishWasherConstant;
+import com.robam.dishwasher.constant.DishWasherEvent;
 import com.robam.dishwasher.device.DishWasherAbstractControl;
 import java.nio.ByteBuffer;
 
@@ -28,7 +28,7 @@ public class MqttDishWasher extends MqttPublic {
                 short powerStatus =  ByteUtils.toShort(payload[offset++]);
                 short stoveLock = ByteUtils.toShort(payload[offset++]);
                 short dishWasherWorkMode = ByteUtils.toShort(payload[offset++]);
-                int dishWasherRemainingWorkingTime = ByteUtils.toInt32(payload, offset++, ByteUtils.BYTE_ORDER);
+                int remainingWorkingTime = ByteUtils.toInt32(payload, offset++, ByteUtils.BYTE_ORDER);
                 offset++;
                 short lowerLayerWasher = ByteUtils.toShort(payload[offset++]);
                 short enhancedDryStatus = ByteUtils.toShort(payload[offset++]);
@@ -87,7 +87,7 @@ public class MqttDishWasher extends MqttPublic {
                 msg.putOpt(DishWasherConstant.powerStatus, powerStatus);
                 msg.putOpt(DishWasherConstant.StoveLock, stoveLock);
                 msg.putOpt(DishWasherConstant.DishWasherWorkMode, dishWasherWorkMode);
-                msg.putOpt(DishWasherConstant.REMAINING_WORKING_TIME, dishWasherRemainingWorkingTime);
+                msg.putOpt(DishWasherConstant.REMAINING_WORKING_TIME, remainingWorkingTime);
                 msg.putOpt(DishWasherConstant.LowerLayerWasher, lowerLayerWasher);
                 msg.putOpt(DishWasherConstant.AppointmentSwitchStatus, appointmentSwitchStatus);
                 msg.putOpt(DishWasherConstant.AutoVentilation, autoVentilation);
@@ -105,11 +105,12 @@ public class MqttDishWasher extends MqttPublic {
             case MsgKeys.getEventReport:
                 short aShort = ByteUtils.toShort(payload[offset++]);
                 msg.putOpt(DishWasherConstant.EventId,aShort);
-                if (aShort == 12) {
+                if (aShort == DishWasherEvent.EVENT_WORK_COMPLETE_RESET) {
                     msg.putOpt(DishWasherConstant.WATER_CONSUMPTION, ByteUtils.toShort(payload[offset++]));
                     offset++;
                     msg.putOpt(DishWasherConstant.POWER_CONSUMPTION, ByteUtils.toShort(payload[offset++]));
                 }
+                MqttDirective.getInstance().getDirective().setValue((int)aShort);
                 break;
         }
     }

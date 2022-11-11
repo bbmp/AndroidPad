@@ -22,9 +22,9 @@
         android:layout_marginRight="@dimen/dp_100"
         app:common_backColor="#99333333"
         app:common_backWidth="@dimen/dp_8"
-        app:common_progStartColor="#0000ff"
+        app:common_progStartColor="#1461FF "
         app:common_progWidth="@dimen/dp_20"
-        app:common_progFirstColor="#00ffff"
+        app:common_progFirstColor="#C7DDFF "
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="@id/dishwasher_guideline2"/>

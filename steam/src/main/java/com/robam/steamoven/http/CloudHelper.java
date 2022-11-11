@@ -66,6 +66,15 @@ public class CloudHelper {
         enqueue(iLife, entity, call, callback);
     }
 
+    //获取设备告警配置
+    public static <T extends BaseResponse> void getDeviceErrorInfo(ILife iLife, Class<T> entity, final RetrofitCallback<T> callback) {
+        //String json = new GetDeviceParamsReq(userid, deviceType, category).toString();
+        RequestBody requestBody =
+                RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), "");
+        Call<ResponseBody> call = svr.getAllDeviceErrorInfo(requestBody);
+        enqueue(iLife, entity, call, callback);
+    }
+
     //获取菜谱详情
     public static <T extends BaseResponse> void getRecipeDetail(ILife iLife, long cookid, String entranceCode, String needStepsInfo,
                                                                 Class<T> entity, final RetrofitCallback<T> callback) {
@@ -91,6 +100,17 @@ public class CloudHelper {
         Call<ResponseBody> call = svr.saveCurveStepData(requestBody);
         enqueue(iLife, entity, call, callback);
     }
+
+    public static <T extends BaseResponse> void downDeviceErrorInfoData(ILife iLife, SteamCurveDetail payLoad, Class<T> entity, final RetrofitCallback<T> callback) {
+        String json = new SaveCurveDetailReq(payLoad).toString();
+        RequestBody requestBody =
+                RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
+
+        Call<ResponseBody> call = svr.saveCurveStepData(requestBody);
+        enqueue(iLife, entity, call, callback);
+    }
+
+
 
     //统一处理回调
     private static <T extends BaseResponse> void enqueue(ILife iLife, final Class<T> entity, Call<ResponseBody> call, final RetrofitCallback<T> callback) {

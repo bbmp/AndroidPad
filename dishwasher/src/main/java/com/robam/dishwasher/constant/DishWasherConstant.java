@@ -1,6 +1,7 @@
 package com.robam.dishwasher.constant;
 
 public class DishWasherConstant {
+
     public final static int MODE_SMART = 5;//智能洗
     public final static int MODE_POWFULL = 1;//强力洗
     public final static int MODE_QUICK = 4;//快速洗
@@ -94,7 +95,7 @@ public class DishWasherConstant {
     public final static String LackSaltStatus = "LackSaltStatus";//缺盐状态
     public final static String DishWasherFanSwitch = "DishWasherFanSwitch";//风机开关
     public final static String LackRinseStatus = "LackRinseStatus";//缺漂洗剂状态
-    public final static String DishWasherAlarm = "DishWasherAlarm";//洗碗机报警
+    //public final static String DishWasherAlarm = "DishWasherAlarm";//洗碗机报警
 
 
     public final static String MSG_ID = "MSG_ID";//预约时间targetGuid
@@ -112,12 +113,5 @@ public class DishWasherConstant {
     public final static int ZERO = 0;//无
 
 
-
-
-   /* public final static short OFF=0;//关机
-    public final static short WAIT=1;//待机
-    public final static short WORKING=2;//工作中
-    public final static short PAUSE=3;//暂停
-    public final static short END=4;//结束*/
 
 }

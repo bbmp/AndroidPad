@@ -7,9 +7,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
+
+import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
+import com.robam.common.bean.DeviceErrorInfo;
+import com.robam.common.manager.DeviceWarnInfoManager;
 import com.robam.common.ui.activity.BaseActivity;
+import com.robam.common.utils.DeviceUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.SteamConstant;
@@ -106,8 +111,12 @@ public abstract class SteamBaseActivity extends BaseActivity {
      */
     public boolean toWaringPage(SteamOven steamOven){
         if(steamOven.faultCode != 0){
+            DeviceErrorInfo deviceErrorInfo = DeviceWarnInfoManager.getInstance().getDeviceErrorInfo(IDeviceType.RZKY, DeviceUtils.getDeviceTypeId(steamOven.guid), steamOven.faultCode);
+            if(deviceErrorInfo == null){
+                return false;
+            }
             Intent intent = new Intent(this, WaringActivity.class);
-            intent.putExtra(SteamConstant.WARING_CODE,steamOven.faultCode);
+            intent.putExtra(SteamConstant.WARING_CODE,(int)steamOven.faultCode);
             startActivity(intent);
             return true;
         }

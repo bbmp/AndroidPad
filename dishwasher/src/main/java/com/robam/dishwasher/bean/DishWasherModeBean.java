@@ -21,6 +21,9 @@ public class DishWasherModeBean implements Serializable {
 
     public List<DishWasherAuxBean> auxList;
 
+    //剩余工作时间
+    public int restTime;
+
     /**
      * 附加code（锅具强洗/加强除菌/长效净存/下层洗）
      */

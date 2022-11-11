@@ -8,27 +8,21 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.view.CancelRadioButton;
 import com.robam.common.utils.TimeUtils;
-import com.robam.common.utils.ToastUtils;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.base.DishWasherBaseActivity;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.dishwasher.bean.DishWasherAuxBean;
 import com.robam.dishwasher.bean.DishWasherModeBean;
 import com.robam.dishwasher.constant.DishWasherAuxEnum;
-import com.robam.dishwasher.constant.DishWasherBsCode;
 import com.robam.dishwasher.constant.DishWasherConstant;
-import com.robam.dishwasher.constant.DishWasherState;
 import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.util.DishWasherCommandHelper;
-import java.util.Map;
 
 public class ModeSelectActivity extends DishWasherBaseActivity {
     private RadioGroup radioGroup;
@@ -40,20 +34,6 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
     private TextView tvAuxPrompt;
     //当前模式
     private DishWasherModeBean modeBean = null;
-
-
-    private short lowerWash = 1;//下层洗
-    private short autoVentilation; //自动换气
-    private short autoVentilationTime; //自动换气时间
-    private short appointment; //预约
-    private short appointmentTime; //预约时间
-
-    //todo(一些模式暂无 - 需寻求正在ROKI　APP相关人员支持)
-    private short enhancedDry;//加强干燥 - 暂无
-    private short panSWash; //锅具强洗  - 暂无
-    private short intensifyDegerming; //加强除菌   -暂无
-    private short cxjc;  //长效净存   - 暂无
-
 
     public int directive_offset = 10000;
     public static final int START_P = 22;
@@ -130,6 +110,7 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
             newMode.time = auxBean.time;
             newMode.auxCode = auxBean.code;
         }
+        newMode.restTime = newMode.time;
         intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, newMode);
         intent.setClass(ModeSelectActivity.this, WorkActivity.class);
         startActivity(intent);
@@ -285,21 +266,12 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
     }
 
     private void sendSetPowerStateCommand(){
-        Map map = DishWasherCommandHelper.getCommonMap(MsgKeys.setDishWasherPower);
-        map.put(DishWasherConstant.PowerMode,1);
-        DishWasherCommandHelper.getInstance().sendCommonMsg(map, directive_offset + MsgKeys.setDishWasherPower);
+        DishWasherCommandHelper.sendPowerOff(directive_offset + MsgKeys.setDishWasherPower);
+
     }
 
     private void sendStartWorkCommand(){
-        Map map = DishWasherCommandHelper.getModelMap(MsgKeys.setDishWasherWorkMode, modeBean.code,(short) 0,0);
-        map.put(DishWasherConstant.AutoVentilation, 0);
-        map.put(DishWasherConstant.EnhancedDrySwitch, 0);
-        map.put(DishWasherConstant.AppointmentSwitch, 0);
-        map.put(DishWasherConstant.AppointmentTime, 0);
-        map.put(DishWasherConstant.ArgumentNumber, 1);
-        map.put(DishWasherConstant.ADD_AUX, getAuxCode());
-        DishWasherCommandHelper.getInstance().sendCommonMsg(map,directive_offset + MsgKeys.setDishWasherWorkMode);
-
+        DishWasherCommandHelper.sendStartWork(modeBean.code,(short) getAuxCode(),directive_offset + MsgKeys.setDishWasherWorkMode);
     }
 
 
