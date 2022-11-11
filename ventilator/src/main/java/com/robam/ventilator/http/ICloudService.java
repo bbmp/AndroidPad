@@ -35,6 +35,8 @@ public interface ICloudService {
     String getDeviceUsers = "/rest/dms/api/device/user/get";
     //删除绑定的用户
     String unbindDevice = "/rest/dms/api/device/unbind";
+    //检查版本
+    String checkAppVersion = "/rest/dms/api/app/version/check";
 
     @POST(getVerifyCode)
     @Headers("Content-Type: application/json")
@@ -80,4 +82,8 @@ public interface ICloudService {
     @POST(getDeviceByParams)
     @Headers("Content-Type: application/json")
     Call<ResponseBody> getDeviceParams(@Body RequestBody body);
+
+    @POST(checkAppVersion)
+    @Headers("Content-Type: application/json")
+    Call<ResponseBody> checkAppVersion(@Body RequestBody body);
 }

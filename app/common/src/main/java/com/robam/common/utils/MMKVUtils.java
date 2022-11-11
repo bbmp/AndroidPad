@@ -155,6 +155,14 @@ public class MMKVUtils {
         MMKV mmkv = MMKV.defaultMMKV();
         mmkv.encode(FAN_OFFTIME, time);
     }
+    //获取风机最后运行时间
+    public static long getFanOffTime() {
+        MMKV mmkv = MMKV.defaultMMKV();
+        long offTime = mmkv.decodeLong(FAN_OFFTIME, 0);
+        if (offTime == 0) //首次
+            mmkv.encode(FAN_OFFTIME, System.currentTimeMillis());
+        return mmkv.decodeLong(FAN_OFFTIME);
+    }
 
     //设置风机运行时间
     public static void setFanRuntime(long runTime) {

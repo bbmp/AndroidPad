@@ -70,6 +70,19 @@
         android:text=""
         android:textSize="@dimen/sp_34"
         android:textColor="@color/ventilator_white"/>
+
+    <TextView
+        android:id="@+id/tv_newVersion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_50"
+        android:text="@string/ventilator_new_version"
+        android:textSize="@dimen/sp_24"
+        android:textColor="@color/ventilator_blue"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@id/ventilator_guideline2"
+        app:layout_constraintBottom_toBottomOf="parent"/>
     <View
         android:id="@+id/ventilator_guideline2"
         android:layout_width="@dimen/dp_2"

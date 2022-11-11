@@ -97,9 +97,16 @@ public class HomeActivity extends BaseActivity {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        LogUtils.e("onStop");
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         WindowsUtils.showPopupWindow();
+        LogUtils.e("onPause");
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.robam.common.http.RetrofitCallback;
 import com.robam.common.http.RetrofitClient;
 import com.robam.common.utils.LogUtils;
 import com.robam.ventilator.constant.HostServer;
+import com.robam.ventilator.request.AppTypeReq;
 import com.robam.ventilator.request.BindDeviceReq;
 import com.robam.ventilator.request.GetDeviceParamsReq;
 import com.robam.ventilator.request.GetDeviceUserReq;
@@ -121,6 +122,14 @@ public class CloudHelper {
         RequestBody requestBody =
                 RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
         Call<ResponseBody> call = svr.getDeviceParams(requestBody);
+        enqueue(iLife, entity, call, callback);
+    }
+    //检查版本
+    public static <T extends BaseResponse> void checkAppVersion(ILife iLife, String appType, String deviceType, Class<T> entity, final RetrofitCallback<T> callback) {
+        String json = new AppTypeReq(appType, deviceType).toString();
+        RequestBody requestBody =
+                RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
+        Call<ResponseBody> call = svr.checkAppVersion(requestBody);
         enqueue(iLife, entity, call, callback);
     }
 

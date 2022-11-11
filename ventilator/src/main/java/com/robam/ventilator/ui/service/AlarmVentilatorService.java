@@ -1,26 +1,42 @@
 package com.robam.ventilator.ui.service;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.serialport.helper.SerialPortHelper;
 
 import androidx.annotation.Nullable;
 
+import com.robam.common.device.Plat;
 import com.robam.common.utils.DateUtil;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MMKVUtils;
+import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.device.HomeVentilator;
+import com.robam.ventilator.device.VentilatorAbstractControl;
 import com.robam.ventilator.protocol.serial.SerialVentilator;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Calendar;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 
 public class AlarmVentilatorService extends Service {
     private static final int INTERVAL = 3000;
     private byte data[] = SerialVentilator.packQueryCmd();
-
+    private long autoTime;
+    //用于熄屏时读取按键
+    private ThreadPoolExecutor keyMonitor = new ThreadPoolExecutor(1, 1, 0, TimeUnit.SECONDS, new SynchronousQueue<>(),
+            new ThreadPoolExecutor.DiscardPolicy());//无法重复提交
 
     private Handler mHandler = new Handler();
     private Runnable runnable = new Runnable() {
@@ -42,6 +58,62 @@ public class AlarmVentilatorService extends Service {
     public void onCreate() {
         super.onCreate();
         mHandler.postDelayed(runnable, INTERVAL);
+        keyMonitor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Process process = Runtime.getRuntime().exec("getevent /dev/input/event6");
+                    if (null != process) {
+                        BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream(), "utf-8"));
+                        String line = null;
+                        long downTime = 0;
+                        while (true) {
+                            line = br.readLine();
+                            PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+                            boolean isScreenOn = pm.isInteractive();
+                            if (!isScreenOn && null != line) { //熄屏状态
+                                if (line.contains("00a5")) { //左键
+                                    if (line.contains("00000001")) {//down事件
+                                        downTime = System.currentTimeMillis();
+                                    } else if (line.contains("00000000")) { //up事件
+                                        if (System.currentTimeMillis() - downTime > 2000) { //长按
+
+                                            VentilatorAbstractControl.getInstance().setColorLamp();
+                                            Plat.getPlatform().openWaterLamp();
+
+                                        } else {
+                                            if (HomeVentilator.getInstance().lightOn == (byte) 0xA0) {
+                                                Plat.getPlatform().openWaterLamp();
+                                                VentilatorAbstractControl.getInstance().setFanLight(VentilatorConstant.FAN_LIGHT_OPEN);
+                                            } else {
+                                                Plat.getPlatform().closeWaterLamp();
+                                                VentilatorAbstractControl.getInstance().setFanLight(VentilatorConstant.FAN_LIGHT_CLOSE);
+                                            }
+                                        }
+                                    }
+                                } else if (line.contains("00a3")) { //右键
+                                    if (line.contains("00000001")) {//down事件
+
+                                    } else if (line.contains("00000000")) { //up事件
+                                        if (HomeVentilator.getInstance().startup == (byte) 0x01) { //开机状态
+                                            VentilatorAbstractControl.getInstance().beep();
+                                            //延时关机
+                                            HomeVentilator.getInstance().delayShutDown(false); //主动关机
+                                        } else {
+                                            //开机
+                                            HomeVentilator.getInstance().openVentilator();
+                                        }
+                                    }
+                                }
+                                LogUtils.e("line = " + line);
+                            }
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override
@@ -57,12 +129,34 @@ public class AlarmVentilatorService extends Service {
             }
         }
         //检查假日模式打开
-        if (MMKVUtils.getHoliday()) {
-            int dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
-            String weekTime = MMKVUtils.getHolidayWeekTime();
+        if (HomeVentilator.getInstance().holiday && (Math.abs(System.currentTimeMillis() - autoTime) <= 59 * 1000)) { //一分钟内不重复通风
+            String curWeek = DateUtil.getWeek();
+            String weekTime = HomeVentilator.getInstance().weekTime; //为了效率，不每次io
             String week = weekTime.substring(0, 2);
-            LogUtils.e("weekTime " + weekTime);
+
+            if (curWeek.equals(week) && DateUtil.isNowTime(weekTime)) {
+                //自动通风
+                if (HomeVentilator.getInstance().startup == (byte) 0x00) { //关机状态下
+                    autoTime = System.currentTimeMillis(); //通风时间
+                    HomeVentilator.getInstance().startAutoCountDown(); //自动通风
+
+                    return super.onStartCommand(intent, flags, startId);
+                }
+            }
         }
+        //超过天数未使用
+        int holidayDay = Integer.parseInt(HomeVentilator.getInstance().holidayDay);
+        if (HomeVentilator.getInstance().holiday
+                && (Math.abs(System.currentTimeMillis() - HomeVentilator.getInstance().fanOffTime) > holidayDay * 86400 * 1000)) {
+            //自动通风
+            if (HomeVentilator.getInstance().startup == (byte) 0x00) { //关机状态下
+                autoTime = System.currentTimeMillis(); //通风时间
+                HomeVentilator.getInstance().startAutoCountDown(); //自动通风
+
+                return super.onStartCommand(intent, flags, startId);
+            }
+        }
+
         return super.onStartCommand(intent, flags, startId);
     }
 

@@ -94,6 +94,7 @@
     <string name="ventilator_shutdown_now">立即关机</string>
     <string name="ventilator_relation">关联</string>
     <string name="ventilator_relationed">已关联</string>
+    <string name="ventilator_new_version">更新到最新版本V%s</string>
 
 
 </resources>
