@@ -54,6 +54,14 @@ public class HomeVentilator {
     public IDialog homeLock;
     //风机启动时间
     public long fanStartTime = 0;
+    //假日模式
+    public boolean holiday = MMKVUtils.getHoliday(); //假日模式开关
+    //假日模式每周通风时间
+    public String weekTime = MMKVUtils.getHolidayWeekTime(); //每周通风时间
+    //假日模式天数
+    public String holidayDay = MMKVUtils.getHolidayDay(); //假日模式每隔几天通风
+    //风机最后运行时间
+    public long fanOffTime = MMKVUtils.getFanOffTime();
 
     private ThreadPoolExecutor A6CountDown = new ThreadPoolExecutor(1, 1, 0, TimeUnit.SECONDS, new SynchronousQueue<>(),
             new ThreadPoolExecutor.DiscardPolicy());//无法重复提交
@@ -111,6 +119,38 @@ public class HomeVentilator {
                         VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_WEAK); //弱档
 
                     }
+                    return;
+                }
+            }
+        }
+    };
+
+    //自动通风
+    private ThreadPoolExecutor autoCountDown = new ThreadPoolExecutor(1, 1, 0, TimeUnit.SECONDS, new SynchronousQueue<>(),
+            new ThreadPoolExecutor.DiscardPolicy());//无法重复提交
+
+    private Runnable runAutoCountDown = new Runnable() {
+        @Override
+        public void run() {
+            //自动换气倒计时
+            int autoCountTime = 0;
+            isAutoCountDown = false;
+
+            //切换到弱档
+            VentilatorAbstractControl.getInstance().powerOnGear(VentilatorConstant.FAN_GEAR_WEAK);
+            Plat.getPlatform().screenOn();
+            Plat.getPlatform().openPowerLamp();
+
+            while (!isAutoCountDown) {
+
+                try {
+                    Thread.sleep(100);
+                } catch (Exception e) {}
+                autoCountTime++;
+
+                if (autoCountTime >= 1800) { //3分钟
+                    //关闭烟机
+                    closeVentilator();
                     return;
                 }
             }
@@ -345,6 +385,15 @@ public class HomeVentilator {
     public void stopLevelCountDown() {
         isLevelCountDown = true;
     }
+    //自动通风倒计时
+    private boolean isAutoCountDown;
+    public void startAutoCountDown() {
+        autoCountDown.execute(runAutoCountDown);
+    }
+    //停止自动同分
+    public void stopAutoCountDown() {
+        isLevelCountDown = true;
+    }
 
     //智能设置
     public MutableLiveData<Boolean> smartSet = new MutableLiveData<>(false);
@@ -353,19 +402,22 @@ public class HomeVentilator {
 
     //记录风机运行时间
     public void fanRunTime(int gear) {
+        long curTime = System.currentTimeMillis();
         if (gear == VentilatorConstant.FAN_GEAR_CLOSE) {//关挡位
             if (fanStartTime != 0) {
                 long runtime = MMKVUtils.getFanRuntime();
-                runtime = runtime + Math.abs(System.currentTimeMillis() - fanStartTime); //增加时间
+                runtime = runtime + Math.abs(curTime - fanStartTime); //增加时间
                 MMKVUtils.setFanRuntime(runtime);
                 fanStartTime = 0;
             }
+            //记录风机最后运行时间
+            MMKVUtils.setFanOffTime(curTime);
+            HomeVentilator.getInstance().fanOffTime = curTime;
         } else {
             if (fanStartTime == 0)
-                fanStartTime = System.currentTimeMillis();
+                fanStartTime = curTime;
         }
-        //记录风机最后运行时间
-        MMKVUtils.setFanOffTime(System.currentTimeMillis());
+
     }
     //锁屏
     public void screenLock() {

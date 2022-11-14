@@ -134,7 +134,7 @@ public abstract class BaseActivity extends AbsActivity implements ActivityAction
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_MEDIA_PREVIOUS) {
+        if (keyCode == KeyEvent.KEYCODE_F2) {
             if (lockLongPressKey) {
                 lockLongPressKey = false;
                 return true;
@@ -150,7 +150,7 @@ public abstract class BaseActivity extends AbsActivity implements ActivityAction
                 }
                 return true;
             }
-        } else if (keyCode == KeyEvent.KEYCODE_MEDIA_NEXT) {
+        } else if (keyCode == KeyEvent.KEYCODE_F1) {
             if (null != iPublicVentilatorApi) {
                 if (iPublicVentilatorApi.isStartUp()) {
                     iPublicVentilatorApi.beep();

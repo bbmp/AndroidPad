@@ -93,7 +93,10 @@ class SmartSettingActivity : VentilatorBaseActivity() {
      */
     private fun saveModeValue(position: Int, onOff: Boolean) {
         when (position) {
-            0 -> MMKVUtils.setHoliday(onOff)
+            0 -> {
+                MMKVUtils.setHoliday(onOff)
+                HomeVentilator.getInstance().holiday = onOff
+            }
             1 -> MMKVUtils.setOilClean(onOff)
             2 -> MMKVUtils.setDelayShutdown(onOff)
             3 -> {

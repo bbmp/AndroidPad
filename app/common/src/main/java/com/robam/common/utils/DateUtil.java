@@ -975,6 +975,43 @@ public class DateUtil {
     }
     //获取周几 和时间
     public static String getWeek() {
-        return (String) DateFormat.format("EEEE HH:mm:ss", System.currentTimeMillis());
+        String curWeek = "周日";
+        int dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+        switch (dayOfWeek) {
+            case 1:
+                curWeek = "周日";
+                break;
+            case 2:
+                curWeek = "周一";
+                break;
+            case 3:
+                curWeek = "周二";
+                break;
+            case 4:
+                curWeek = "周三";
+                break;
+            case 5:
+                curWeek = "周四";
+                break;
+            case 6:
+                curWeek = "周五";
+                break;
+            case 7:
+                curWeek = "周六";
+                break;
+        }
+        return curWeek;
+    }
+    //比较小时和分钟
+    public static boolean isNowTime(String setTime) {
+        String curTime = (String) DateFormat.format("HH:mm", System.currentTimeMillis());
+        String curHour = curTime.substring(0, 2);
+        String curMin = curTime.substring(3, 5);
+        String hour = setTime.substring(2, 4);
+        String minute = setTime.substring(5, 7);
+        if (curHour == hour && curMin == minute) { //
+            return true;
+        }
+        return false;
     }
 }
