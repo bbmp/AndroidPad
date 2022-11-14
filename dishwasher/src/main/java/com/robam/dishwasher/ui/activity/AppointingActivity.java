@@ -125,10 +125,12 @@ public class AppointingActivity extends DishWasherBaseActivity {
     private void dealWasherWorkingState(DishWasher dishWasher){
         switch (dishWasher.AppointmentSwitchStatus){
             case DishWasherState.APPOINTMENT_OFF:
-                List<DishWasherModeBean> modeBeanList = FunctionManager.getFuntionList(getContext(), DishWasherModeBean.class,R.raw.dishwahser);
+                //List<DishWasherModeBean> modeBeanList = FunctionManager.getFuntionList(getContext(), DishWasherModeBean.class,R.raw.dishwahser);
+                //DishWasherModeBean dishWasherModeBean = DishWasherModelUtil.getDishWasher(modeBeanList,dishWasher.workMode);
                 Intent intent = new Intent();
-                DishWasherModeBean dishWasherModeBean = DishWasherModelUtil.getDishWasher(modeBeanList,dishWasher.workMode);
-                intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, dishWasherModeBean);
+                DishWasherModeBean newMode = modeBean.getNewMode();
+                DishWasherModelUtil.initWorkingInfo(newMode,dishWasher);
+                intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, newMode);
                 intent.setClass(this, WorkActivity.class);
                 startActivity(intent);
                 finish();
@@ -249,8 +251,9 @@ public class AppointingActivity extends DishWasherBaseActivity {
         } else if (id == R.id.iv_start) {
             //立即开始
             //tvCountdown.stop();
-            Map params = DishWasherCommandHelper.getModelMap(MsgKeys.setDishWasherWorkMode, modeBean.code,(short) 0,0);
-            DishWasherCommandHelper.getInstance().sendCommonMsgForLiveData(params,directive_offset+MsgKeys.setDishWasherWorkMode);//立即开始
+            DishWasherCommandHelper.sendPowerOff(0);
+            //Map params = DishWasherCommandHelper.getModelMap(MsgKeys.setDishWasherWorkMode, modeBean.code,(short) 0,0);
+            //DishWasherCommandHelper.getInstance().sendCommonMsgForLiveData(params,directive_offset+MsgKeys.setDishWasherWorkMode);//立即开始
         }
     }
     //取消预约
