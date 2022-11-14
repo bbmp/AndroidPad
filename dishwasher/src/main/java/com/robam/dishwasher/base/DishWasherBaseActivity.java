@@ -13,29 +13,19 @@ import androidx.lifecycle.Observer;
 
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
-import com.robam.common.bean.RTopic;
-import com.robam.common.device.Plat;
-import com.robam.common.mqtt.MqttManager;
-import com.robam.common.mqtt.MqttMsg;
-import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.activity.BaseActivity;
-import com.robam.common.utils.DeviceUtils;
-import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.dishwasher.constant.DishWasherConstant;
 import com.robam.dishwasher.constant.DishWasherWaringEnum;
 import com.robam.dishwasher.device.DishWasherAbstractControl;
-import com.robam.dishwasher.device.DishWasherFactory;
-import com.robam.dishwasher.device.DishWasherMqttControl;
 import com.robam.dishwasher.device.HomeDishWasher;
-import com.robam.dishwasher.manager.AppManager;
+import com.robam.dishwasher.manager.DishwasherActivityManager;
 import com.robam.dishwasher.ui.activity.MainActivity;
 import com.robam.dishwasher.ui.activity.WaringActivity;
 import com.robam.dishwasher.util.DishWasherCommandHelper;
 
-import java.util.Map;
 
 public abstract class DishWasherBaseActivity extends BaseActivity {
 
@@ -70,24 +60,30 @@ public abstract class DishWasherBaseActivity extends BaseActivity {
         findViewById(R.id.ll_right).setVisibility(View.VISIBLE);
     }
 
+
+
     public void setRight(int res) {
         findViewById(R.id.ll_right).setVisibility(View.VISIBLE);
         TextView textView = findViewById(R.id.tv_right);
         textView.setText(res);
     }
 
+    public void hideRight(){
+        findViewById(R.id.ll_right).setVisibility(View.INVISIBLE);
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        AppManager.getInstance().addActivity(this);
-        LogUtils.i("washer onCreate stack size = " + AppManager.getInstance().getActivityStackSize());
+        DishwasherActivityManager.getInstance().addActivity(this);
+        //LogUtils.i("washer onCreate stack size = " + AppManager.getInstance().getActivityStackSize());
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        AppManager.getInstance().removeActivity(this);
-        LogUtils.i("washer onDestroy stack size = " + AppManager.getInstance().getActivityStackSize());
+        DishwasherActivityManager.getInstance().removeActivity(this);
+        //LogUtils.i("washer onDestroy stack size = " + AppManager.getInstance().getActivityStackSize());
     }
 
     public void showRightCenter(){
@@ -98,7 +94,7 @@ public abstract class DishWasherBaseActivity extends BaseActivity {
         rightCenter.setVisibility(View.VISIBLE);
         rightCenter.setOnClickListener(v -> {
             DishWasherCommandHelper.sendCtrlLockCommand(true,LOCK_FLAG);
-            setLock(true);
+            //setLock(true);
         });
         rightCenter.setOnLongClickListener(v->{
             DishWasher curDevice = getCurDevice();
@@ -106,9 +102,11 @@ public abstract class DishWasherBaseActivity extends BaseActivity {
                 return true;
             }
             DishWasherCommandHelper.sendCtrlLockCommand(false,LOCK_FLAG);
-            setLock(false);
+            //setLock(false);
             return true;
         });
+        View iconView = findViewById(R.id.iv_right_center);
+        ((ImageView) iconView).setImageResource(HomeDishWasher.getInstance().lock ? R.drawable.dishwasher_screen_lock : R.drawable.dishwasher_screen_unlock);
     }
 
 
@@ -159,7 +157,7 @@ public abstract class DishWasherBaseActivity extends BaseActivity {
             return;
         }
         ((ImageView) iconView).setImageResource(lock ? R.drawable.dishwasher_screen_lock : R.drawable.dishwasher_screen_unlock);
-        ((TextView) tvView).setTextColor(getResources().getColor(lock?R.color.dishwasher_lock:R.color.dishwasher_white));
+        ((TextView) tvView).setTextColor(getResources().getColor(lock?R.color.dishwasher_lock:R.color.dishwasher_white70));
     }
 
     /**
@@ -177,7 +175,7 @@ public abstract class DishWasherBaseActivity extends BaseActivity {
     }
 
     protected boolean toWaringPage(int waringCode){
-        if(waringCode != DishWasherWaringEnum.E0.getCode()){
+        if(waringCode != DishWasherWaringEnum.E0.getCode() && DishWasherWaringEnum.match(waringCode).getCode() != DishWasherWaringEnum.E0.getCode()){
             //跳转到告警页面
             Intent intent = new Intent(this, WaringActivity.class);
             intent.putExtra(DishWasherConstant.WARING_CODE,waringCode);
@@ -201,4 +199,6 @@ public abstract class DishWasherBaseActivity extends BaseActivity {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
+
+
 }

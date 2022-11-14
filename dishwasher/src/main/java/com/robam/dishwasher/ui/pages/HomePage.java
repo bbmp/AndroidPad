@@ -1,6 +1,5 @@
 package com.robam.dishwasher.ui.pages;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -9,11 +8,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.robam.common.manager.FunctionManager;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.common.utils.ImageUtils;
@@ -23,7 +19,6 @@ import com.robam.dishwasher.base.DishWasherBasePage;
 import com.robam.dishwasher.bean.DishWasherModeBean;
 import com.robam.dishwasher.constant.DishWasherConstant;
 import com.robam.dishwasher.device.HomeDishWasher;
-import com.robam.dishwasher.ui.activity.MainActivity;
 import com.robam.dishwasher.ui.adapter.RvMainModeAdapter;
 
 import java.util.List;
@@ -54,15 +49,12 @@ public class HomePage extends DishWasherBasePage {
                 .setOrientation(RecyclerView.HORIZONTAL)
                 .setMaxItem(3)
                 .setScale(0.66f)
-                .setOnPickerListener(new PickerLayoutManager.OnPickerListener() {
-                    @Override
-                    public void onPicked(RecyclerView recyclerView, int position) {
-                        setBackground(position);
-                        //指示器更新
-                        rvMainModeAdapter.setPickPosition(position);
-                        //设置参数
-                        setData(rvMainModeAdapter.getItem(position));
-                    }
+                .setOnPickerListener((recyclerView, position) -> {
+                    setBackground(position);
+                    //指示器更新
+                    rvMainModeAdapter.setPickPosition(position);
+                    //设置参数
+                    setData(rvMainModeAdapter.getItem(position));
                 }).build();
         rvMain.setLayoutManager(pickerLayoutManager);
         rvMainModeAdapter = new RvMainModeAdapter();
@@ -101,7 +93,7 @@ public class HomePage extends DishWasherBasePage {
         rvMainModeAdapter.setList(modeBeanList);
 
         //初始位置
-        int initPos = Integer.MAX_VALUE / 2 - (Integer.MAX_VALUE / 2) % modeBeanList.size();
+        int initPos = Integer.MAX_VALUE / modeBeanList.size() / 2 * modeBeanList.size() + 1;
         rvMainModeAdapter.setPickPosition(initPos);
         pickerLayoutManager.scrollToPosition(initPos);
         setBackground(initPos);

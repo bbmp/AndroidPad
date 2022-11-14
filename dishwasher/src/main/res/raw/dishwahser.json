@@ -1,6 +1,6 @@
 [
   {
-    "backgroundImg": "",
+    "backgroundImg": "dishwasher_background_znx",
     "code": 5,
     "name": "智能洗",
     "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
@@ -23,7 +23,7 @@
     ]
   },
   {
-    "backgroundImg": "",
+    "backgroundImg": "dishwasher_background_qlx",
     "code": 1,
     "name": "强力洗",
     "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
@@ -55,7 +55,7 @@
     ]
   },
   {
-    "backgroundImg": "",
+    "backgroundImg": "dishwasher_background_ksx",
     "code": 4,
     "name": "快速洗",
     "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
@@ -77,7 +77,7 @@
     ]
   },
   {
-    "backgroundImg": "",
+    "backgroundImg": "dishwasher_background_rcx",
     "code": 2,
     "name": "日常洗",
     "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
@@ -109,7 +109,7 @@
     ]
   },
   {
-    "backgroundImg": "",
+    "backgroundImg": "dishwasher_background_jnx",
     "code": 3,
     "name": "节能洗",
     "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
@@ -141,7 +141,7 @@
     ]
   },
   {
-    "backgroundImg": "",
+    "backgroundImg": "dishwasher_background_jlx",
     "code": 6,
     "name": "晶亮洗",
     "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
@@ -163,7 +163,7 @@
     ]
   },
   {
-    "backgroundImg": "",
+    "backgroundImg": "dishwasher_background_hyx",
     "code": 14,
     "name": "护婴洗",
     "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
@@ -195,17 +195,17 @@
     ]
   },
   {
-    "backgroundImg": "",
+    "backgroundImg": "dishwasher_background_zqj",
     "code": 15,
     "name": "自清洁",
     "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
     "desc" : "洗碗机内腔的清洁",
     "time": 5040,
-    "temp": 60,
+    "temp": 65,
     "auxCode": 0
   },
   {
-    "backgroundImg": "",
+    "backgroundImg": "dishwasher_background_hyjc",
     "code": 9,
     "name": "护婴\n净存",
     "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",

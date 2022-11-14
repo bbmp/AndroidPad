@@ -102,7 +102,7 @@ public class DishWasherConstant {
     public final static String TARGET_GUID = "target_guid";
 
     public final static String RC = "RC";
-    public final static String WARING_CODE = "RC";
+    public final static String WARING_CODE = "waring_code";
 
     public final static int TIME_DELAYED = 50;
 

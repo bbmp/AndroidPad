@@ -10,7 +10,9 @@ import com.robam.common.utils.LogUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 设备指令快速接收
@@ -20,6 +22,7 @@ public class MqttDirective {
     public static final String DATE_SPLIT_FLAG = "&!&";
 
     private BusMutableLiveData<Integer> directive = new BusMutableLiveData<>(-100); //设备状态变化
+    private Map<String,WorkState> workModelState = new ConcurrentHashMap<>();
 
     private MqttDirective(){
 
@@ -84,13 +87,44 @@ public class MqttDirective {
         }
     }
 
-   /* public void setDirectiveData(String top,short msgId){
-        directive.setValue(top+DATE_SPLIT_FLAG+msgId);
-    }*/
+    /**
+     *
+     * @param guid
+     * @param workModel
+     */
+   public void updateModelWorkState(String guid,int workModel){
+       WorkState workState = workModelState.get(guid);
+       if(workState == null){
+           workState = new WorkState();
+           workState.finishTimeL = System.currentTimeMillis();
+           workState.workModel = workModel;
+           workState.flag = 0;
+           workModelState.put(guid,workState);
+       }
+       workState.finishTimeL = System.currentTimeMillis();
+       workState.workModel = workModel;
+       workState.flag = 0;//0 - 查询更新 ； 1 - 结束事件更新
+   }
 
-    /*public static short getMsgId(String content){
-        return Short.parseShort(content.split(DATE_SPLIT_FLAG)[1]);
-    }*/
+   public void finishWorkModelState(String guid){
+       WorkState workState = workModelState.get(guid);
+       if(workState == null){
+           return;
+       }
+       workState.finishTimeL = System.currentTimeMillis();
+       workState.flag = 1;//0 - 查询更新 ； 1 - 结束事件更新
+   }
+
+    public static class WorkState {
+       public long finishTimeL;//完成结束时间
+        public int workModel;//完成工作模式
+        public int flag;
+    }
+
+    public WorkState getWorkState(String guid){
+       return workModelState.get(guid);
+    }
+
 
 
 

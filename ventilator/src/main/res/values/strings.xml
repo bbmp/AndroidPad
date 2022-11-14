@@ -95,6 +95,7 @@
     <string name="ventilator_relation">关联</string>
     <string name="ventilator_relationed">已关联</string>
     <string name="ventilator_new_version">更新到最新版本V%s</string>
+    <string name="ventilator_product_failure">产品故障</string>
 
 
 </resources>

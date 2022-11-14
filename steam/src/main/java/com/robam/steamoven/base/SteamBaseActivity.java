@@ -19,6 +19,7 @@ import com.robam.steamoven.R;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.SteamConstant;
 import com.robam.steamoven.device.HomeSteamOven;
+import com.robam.steamoven.manager.SteamActivityManager;
 import com.robam.steamoven.ui.activity.MainActivity;
 import com.robam.steamoven.ui.activity.WaringActivity;
 
@@ -32,6 +33,7 @@ public abstract class SteamBaseActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setOnClickListener(R.id.ll_left);
+        SteamActivityManager.getInstance().addActivity(this);
     }
 
     public void showLeft() {
@@ -123,5 +125,9 @@ public abstract class SteamBaseActivity extends BaseActivity {
         return false;
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SteamActivityManager.getInstance().removeActivity(this);
+    }
 }

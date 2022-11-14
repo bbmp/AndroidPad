@@ -32,9 +32,11 @@ import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.common.utils.LogUtils;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.common.device.subdevice.Pan;
+import com.robam.dishwasher.manager.DishwasherActivityManager;
 import com.robam.pan.manager.PanActivityManager;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.common.device.subdevice.Stove;
+import com.robam.steamoven.manager.SteamActivityManager;
 import com.robam.stove.manager.StoveActivityManager;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
@@ -179,6 +181,8 @@ public class ShortcutActivity extends VentilatorBaseActivity {
         StoveActivityManager.getInstance().finishAllActivity();
         PanActivityManager.getInstance().finishAllActivity();
         CabinetActivityManager.getInstance().finishAllActivity();
+        SteamActivityManager.getInstance().finishAllActivity();
+        DishwasherActivityManager.getInstance().finishAllActivity();
 
         startActivity(intent);
         AccountInfo.getInstance().topGuid = device.guid; //切换后的设备

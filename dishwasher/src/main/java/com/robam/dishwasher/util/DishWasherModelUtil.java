@@ -2,11 +2,15 @@ package com.robam.dishwasher.util;
 
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.dishwasher.bean.DishWasherModeBean;
+import com.robam.dishwasher.constant.DishWasherEnum;
 
 import java.util.List;
 
 public class DishWasherModelUtil {
     public static DishWasherModeBean getDishWasher(List<DishWasherModeBean> allModelBean, int key){
+        if(key == DishWasherEnum.AUTO_AERATION.getCode()){
+            key = DishWasherEnum.FLUSH.getCode();
+        }
         if(allModelBean == null || allModelBean.size() == 0){
             return null;
         }

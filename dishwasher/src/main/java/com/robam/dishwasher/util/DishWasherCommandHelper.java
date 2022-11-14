@@ -22,7 +22,7 @@ import java.util.Map;
 public class DishWasherCommandHelper {
 
     private  long perOrderTimeMin = System.currentTimeMillis() ;
-    private  final float COMMON_DELAY_DUR = 0.5f * 1000 ;
+    private  final float COMMON_DELAY_DUR = 0.3f * 1000 ;
 
     private DishWasherCommandHelper(){
 

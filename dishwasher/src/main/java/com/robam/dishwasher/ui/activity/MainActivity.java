@@ -15,6 +15,7 @@ import com.robam.dishwasher.base.DishWasherBaseActivity;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.dishwasher.bean.DishWasherModeBean;
 import com.robam.dishwasher.constant.DishWasherConstant;
+import com.robam.dishwasher.constant.DishWasherEnum;
 import com.robam.dishwasher.constant.DishWasherState;
 import com.robam.dishwasher.device.DishWasherAbstractControl;
 import com.robam.dishwasher.device.HomeDishWasher;
@@ -49,7 +50,7 @@ public class MainActivity extends DishWasherBaseActivity {
                     if(toWaringPage(dishWasher.abnormalAlarmStatus)){
                         return;
                     }
-                    if(!DishWasherCommandHelper.getInstance().isSafe()){
+                    if(!DishWasherCommandHelper.getInstance().isSafe()){//防止历史消息扰乱逻辑
                         return;
                     }
                     setLock(dishWasher.StoveLock == DishWasherState.LOCK);
@@ -80,8 +81,14 @@ public class MainActivity extends DishWasherBaseActivity {
     }
 
     private void dealWasherWorkingState(List<DishWasherModeBean> modeBeanList ,DishWasher dishWasher){
+        if(dishWasher.workMode == 0){
+            return;
+        }
         switch (dishWasher.AppointmentSwitchStatus){
             case DishWasherState.APPOINTMENT_OFF:
+                if(dishWasher.powerStatus == DishWasherState.WAIT){//待机状态下，无工作模式
+                    return;
+                }
                 Intent intent = new Intent();
                 DishWasherModeBean dishWasherModeBean = DishWasherModelUtil.getDishWasher(modeBeanList,dishWasher.workMode);
                 if(dishWasherModeBean == null){

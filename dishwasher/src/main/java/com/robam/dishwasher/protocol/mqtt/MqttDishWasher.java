@@ -20,6 +20,7 @@ public class MqttDishWasher extends MqttPublic {
         switch (msg.getID()) {
             case MsgKeys.getDishWasherWorkMode:
             case MsgKeys.getDishWasherPower:
+            case MsgKeys.getDishWasherChildLock:
                 msg.putOpt(DishWasherConstant.RC, ByteUtils.toShort(payload[offset++]));
                 MqttDirective.getInstance().getDirective().setValue(msg.getID());
                 DishWasherAbstractControl.getInstance().queryAttribute(msg.getGuid());
@@ -28,6 +29,7 @@ public class MqttDishWasher extends MqttPublic {
                 short powerStatus =  ByteUtils.toShort(payload[offset++]);
                 short stoveLock = ByteUtils.toShort(payload[offset++]);
                 short dishWasherWorkMode = ByteUtils.toShort(payload[offset++]);
+
                 int remainingWorkingTime = ByteUtils.toInt32(payload, offset++, ByteUtils.BYTE_ORDER);
                 offset++;
                 short lowerLayerWasher = ByteUtils.toShort(payload[offset++]);
@@ -101,6 +103,10 @@ public class MqttDishWasher extends MqttPublic {
                 msg.putOpt(DishWasherConstant.AbnormalAlarmStatus, abnormalAlarmStatus);
                 msg.putOpt(DishWasherConstant.ADD_AUX, ADD_AUX);
 
+                if(dishWasherWorkMode != 0){//记录最新工作模式
+                    MqttDirective.getInstance().updateModelWorkState(msg.getGuid(),dishWasherWorkMode);
+                }
+
                 break;
             case MsgKeys.getEventReport:
                 short aShort = ByteUtils.toShort(payload[offset++]);
@@ -109,6 +115,8 @@ public class MqttDishWasher extends MqttPublic {
                     msg.putOpt(DishWasherConstant.WATER_CONSUMPTION, ByteUtils.toShort(payload[offset++]));
                     offset++;
                     msg.putOpt(DishWasherConstant.POWER_CONSUMPTION, ByteUtils.toShort(payload[offset++]));
+                    //记录工作完成结束事件
+                    MqttDirective.getInstance().finishWorkModelState(msg.getGuid());
                 }
                 MqttDirective.getInstance().getDirective().setValue((int)aShort);
                 break;
@@ -174,6 +182,4 @@ public class MqttDishWasher extends MqttPublic {
                     break;
         }
     }
-
-
 }

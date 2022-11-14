@@ -99,7 +99,7 @@ public class CircleProgressView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawArc(mRectF, 0, 360, false, mBackPaint);
-        canvas.drawArc(mRectF, 270, 360 * mProgress / 100, false, mProgPaint);
+        canvas.drawArc(mRectF, -90, 360 * mProgress / 100, false, mProgPaint);
 //        if (mProgress <= 24.75) {
 //            canvas.drawArc(mRectF, 270, 360 * mProgress / 100, false, mProgPaint);
 //        } else if (mProgress > 24.75 && mProgress < 25.25) {

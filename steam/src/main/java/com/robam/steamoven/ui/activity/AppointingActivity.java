@@ -335,10 +335,16 @@ public class AppointingActivity extends SteamBaseActivity {
     private String startTimePoint(int remainingAppointTime){
         Calendar calendar = GregorianCalendar.getInstance();
         calendar.setTime(new Date());
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
         calendar.add(Calendar.SECOND,remainingAppointTime);
         int totalHour = calendar.get(Calendar.HOUR_OF_DAY);
         int totalMin = calendar.get(Calendar.MINUTE);
-        return "将在" + (totalHour <= 9 ? ("0"+totalHour) : totalHour) + ":" + (totalMin <= 9 ? ("0"+totalMin) : totalMin) +"启动工作";
+        int totalDay = calendar.get(Calendar.DAY_OF_MONTH);
+        if (day != totalDay) {
+            return "将在次日" + (totalHour <= 9 ? ("0" + totalHour) : totalHour) + ":" + (totalMin <= 9 ? ("0" + totalMin) : totalMin) + "启动工作";
+        } else {
+            return "将在" + (totalHour <= 9 ? ("0" + totalHour) : totalHour) + ":" + (totalMin <= 9 ? ("0" + totalMin) : totalMin) + "启动工作";
+        }
     }
 
     private SpannableString getSpanTemp(String temp){

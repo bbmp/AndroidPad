@@ -32,6 +32,7 @@ import com.robam.dishwasher.util.DishWasherModelUtil;
 import com.robam.dishwasher.util.TimeDisplayUtil;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
@@ -84,6 +85,7 @@ public class AppointingActivity extends DishWasherBaseActivity {
                     if(toWaringPage(dishWasher.abnormalAlarmStatus)){
                         return;
                     }
+                    setLock(dishWasher.StoveLock == DishWasherState.LOCK);
                     switch (dishWasher.powerStatus){
                         case DishWasherState.WAIT:
                         case DishWasherState.WORKING:
@@ -160,20 +162,19 @@ public class AppointingActivity extends DishWasherBaseActivity {
         return (aHour <= 9 ? ("0"+aHour) : aHour) + ":" + (aHour_surplus <= 9 ? ("0"+aHour_surplus) : aHour_surplus);
     }
 
-    private String startTimePoint(int remainingTime){
+    private String startTimePoint(int remainingTime) {
         Calendar calendar = GregorianCalendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int min = calendar.get(Calendar.MINUTE);
-
-        int aHour = remainingTime / 60;
-        int aHour_surplus = remainingTime % 60;
-        int addHour = (min + aHour_surplus) / 60;
-        int addHour_surplus = (min + aHour_surplus) % 60;
-
-        int totalHour = hour + aHour + addHour;
-        int totalMin = addHour_surplus;
-
-        return "将在" + (totalHour <= 9 ? ("0"+totalHour) : totalHour) + ":" + (totalMin <= 9 ? ("0"+totalMin) : totalMin) +"启动工作";
+        calendar.setTime(new Date());
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        calendar.add(Calendar.SECOND,remainingTime*60);
+        int totalHour = calendar.get(Calendar.HOUR_OF_DAY);
+        int totalMin = calendar.get(Calendar.MINUTE);
+        int totalDay = calendar.get(Calendar.DAY_OF_MONTH);
+        if (day != totalDay) {
+            return "将在次日" + (totalHour <= 9 ? ("0" + totalHour) : totalHour) + ":" + (totalMin <= 9 ? ("0" + totalMin) : totalMin) + "启动工作";
+        } else {
+            return "将在" + (totalHour <= 9 ? ("0" + totalHour) : totalHour) + ":" + (totalMin <= 9 ? ("0" + totalMin) : totalMin) + "启动工作";
+        }
     }
 
 

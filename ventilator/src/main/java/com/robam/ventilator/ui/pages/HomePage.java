@@ -32,6 +32,7 @@ import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.MMKVUtils;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.common.device.subdevice.Pan;
+import com.robam.dishwasher.constant.DishWasherWaringEnum;
 import com.robam.dishwasher.device.DishWasherAbstractControl;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.common.module.IPublicSteamApi;
@@ -354,11 +355,14 @@ public class HomePage extends VentilatorBasePage {
                     }
                 } else if (view.getId() == R.id.btn_detail) {
                     //查看详情
+
                     Device device = (Device) adapter.getItem(position);
-                    Intent intent = new Intent();
-                    intent.putExtra(VentilatorConstant.EXTRA_MODEL, device.dc);
-                    intent.setClass(getContext(), MatchNetworkActivity.class);
-                    startActivity(intent);
+                    if(!toWaringPage(device)){
+                        Intent intent = new Intent();
+                        intent.putExtra(VentilatorConstant.EXTRA_MODEL, device.dc);
+                        intent.setClass(getContext(), MatchNetworkActivity.class);
+                        startActivity(intent);
+                    }
                 } else if (view.getId() == R.id.btn_work) {
                     //工作控制
                     Device device = (Device) adapter.getItem(position);
@@ -694,5 +698,20 @@ public class HomePage extends VentilatorBasePage {
                 continue;
             iterator.remove();
         }
+    }
+
+    private boolean toWaringPage(Device device){
+        if(device.faultId != 0){
+            if(device instanceof DishWasher){
+                if(DishWasherWaringEnum.match(device.faultId).getCode() != DishWasherWaringEnum.E0.getCode()){
+                    Intent intent = new Intent(getContext(), com.robam.dishwasher.ui.activity.WaringActivity.class);
+                    intent.putExtra(ComnConstant.WARING_FROM,1);
+                    intent.putExtra(ComnConstant.WARING_CODE,device.faultId);
+                    startActivity(intent);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

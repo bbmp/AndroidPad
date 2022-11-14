@@ -59,11 +59,10 @@ public class DishWasher extends Device{
         switch (key) {
             case MsgKeys.getDishWasherStatus:
                 this.powerStatus = (short) msg.optInt(DishWasherConstant.powerStatus);
-                this.workStatus = powerStatus;
+
                 this.StoveLock = (short) msg.optInt(DishWasherConstant.StoveLock);
                 this.workMode = (short) msg.optInt(DishWasherConstant.DishWasherWorkMode);//模式名称 washer.DishWasherWorkMode
                 this.remainingWorkingTime = (short) msg.optInt(DishWasherConstant.REMAINING_WORKING_TIME);
-
                 this.LowerLayerWasher = (short) msg.optInt(DishWasherConstant.LowerLayerWasher);//下层洗
                 this.EnhancedDryStatus = (short) msg.optInt(DishWasherConstant.EnhancedDryStatus);
                 this.AppointmentSwitchStatus = (short) msg.optInt(DishWasherConstant.AppointmentSwitchStatus);
@@ -81,6 +80,9 @@ public class DishWasher extends Device{
                 this.CurrentWaterTemperatureValue = (short) msg.optInt(DishWasherConstant.CurrentWaterTemperatureValue);
                 this.SetWorkTimeValue = (short) msg.optInt(DishWasherConstant.SetWorkTimeValue);
                 this.auxMode = (short) msg.optInt(DishWasherConstant.ADD_AUX);
+
+                this.workStatus = powerStatus;
+                this.faultId = this.abnormalAlarmStatus;
                 break;
 //            case MsgKeys.getAlarmEventReport:
 //                this.alarmId = (short) msg.optInt(DishWasherConstant.DishWasherAlarm);

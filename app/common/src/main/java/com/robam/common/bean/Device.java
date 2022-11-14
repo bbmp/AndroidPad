@@ -78,6 +78,9 @@ public class Device {
     //子设备
     public List<Device> subDevices;
 
+    //故障ID
+    public int faultId;
+
     /**
      * 蓝牙产品品类
      */

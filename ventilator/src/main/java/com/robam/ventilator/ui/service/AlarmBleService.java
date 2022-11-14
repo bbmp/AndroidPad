@@ -21,7 +21,7 @@ import com.robam.stove.device.StoveAbstractControl;
 public class AlarmBleService extends Service {
 
     private static final int PENDING_REQUEST = 0;
-    private static final int INTERVAL = 15000;
+    private static final int INTERVAL = 6000;
     private AlarmManager alarmManager;
     private PendingIntent pIntent;
 

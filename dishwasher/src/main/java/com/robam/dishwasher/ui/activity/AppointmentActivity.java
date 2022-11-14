@@ -5,7 +5,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.view.View;
 import android.widget.TextView;
-import com.robam.common.bean.MqttDirective;
+
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.common.utils.DateUtil;
@@ -14,6 +16,7 @@ import com.robam.dishwasher.base.DishWasherBaseActivity;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.dishwasher.bean.DishWasherModeBean;
 import com.robam.dishwasher.constant.DishWasherConstant;
+import com.robam.dishwasher.constant.DishWasherState;
 import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.ui.adapter.RvStringAdapter;
 import com.robam.dishwasher.util.DishWasherCommandHelper;
@@ -90,18 +93,40 @@ public class AppointmentActivity extends DishWasherBaseActivity {
 
         setOnClickListener(R.id.btn_cancel, R.id.btn_ok,R.id.ll_left);
 
-        MqttDirective.getInstance().getDirective().observe(this, s -> {
-            switch (s.shortValue()){
-                case MsgKeys.getDishWasherWorkMode:
-                    Intent intent = new Intent();
-                    intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, modeBean);
-                    intent.setClass(AppointmentActivity.this, AppointingActivity.class);
-                    startActivity(intent);
-                    finish();
+//        MqttDirective.getInstance().getDirective().observe(this, s -> {
+//            switch (s.shortValue()){
+//                case MsgKeys.getDishWasherWorkMode:
+//                    Intent intent = new Intent();
+//                    intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, modeBean);
+//                    intent.setClass(AppointmentActivity.this, AppointingActivity.class);
+//                    startActivity(intent);
+//                    finish();
+//                    break;
+//                case MsgKeys.getDishWasherPower:
+//                    sendAppointingCommand();
+//                    break;
+//            }
+//        });
+
+        AccountInfo.getInstance().getGuid().observe(this, s -> {
+            for (Device device: AccountInfo.getInstance().deviceList) {
+                if (device.guid.equals(s) && device instanceof DishWasher && device.guid.equals(HomeDishWasher.getInstance().guid)) {
+                    DishWasher dishWasher = (DishWasher) device;
+                    setLock(dishWasher.StoveLock == DishWasherState.LOCK);
+                    switch (dishWasher.powerStatus){
+                        case DishWasherState.WAIT:
+                        case DishWasherState.WORKING:
+                        case DishWasherState.PAUSE:
+                            if(dishWasher.AppointmentSwitchStatus == DishWasherState.APPOINTMENT_ON){
+                                Intent intent = new Intent();
+                                intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, modeBean);
+                                intent.setClass(AppointmentActivity.this, AppointingActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                    }
                     break;
-                case MsgKeys.getDishWasherPower:
-                    sendAppointingCommand();
-                    break;
+                }
             }
         });
     }

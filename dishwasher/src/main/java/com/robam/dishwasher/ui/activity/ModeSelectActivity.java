@@ -21,6 +21,8 @@ import com.robam.dishwasher.bean.DishWasherAuxBean;
 import com.robam.dishwasher.bean.DishWasherModeBean;
 import com.robam.dishwasher.constant.DishWasherAuxEnum;
 import com.robam.dishwasher.constant.DishWasherConstant;
+import com.robam.dishwasher.constant.DishWasherEnum;
+import com.robam.dishwasher.constant.DishWasherState;
 import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.util.DishWasherCommandHelper;
 
@@ -46,7 +48,10 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
     @Override
     protected void initView() {
         showLeft();
+        setRight(R.string.dishwasher_appointment);
         showCenter();
+        showRightCenter();
+        setOnClickListener(R.id.ll_left, R.id.ll_right, R.id.btn_start);
         radioGroup = findViewById(R.id.rg_aux);
         tvMode = findViewById(R.id.tv_mode);
         tvTime = findViewById(R.id.tv_time);
@@ -58,10 +63,6 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
         rButton4 = findViewById(R.id.rb_button4);
         tvStartHint = findViewById(R.id.tv_start);
         tvAuxPrompt = findViewById(R.id.aux_prompt_tv);
-        setRight(R.string.dishwasher_appointment);
-        showRightCenter();
-        setOnClickListener(R.id.ll_left, R.id.ll_right, R.id.btn_start);
-
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             setTvAuxPrompt(group,checkedId);
             if (checkedId == R.id.rb_button1) {
@@ -81,10 +82,15 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
                 if (device.guid.equals(s) && device instanceof DishWasher && device.guid.equals(HomeDishWasher.getInstance().guid)) {
                     DishWasher dishWasher = (DishWasher) device;
                     setLock(dishWasher.StoveLock == 1);
-                    toWaringPage(dishWasher.abnormalAlarmStatus);
-//                    if(dishWasher.workMode != 0){
-//                        toWorkPage();
-//                    }
+                    boolean toWaringPage = toWaringPage(dishWasher.abnormalAlarmStatus);
+                    if(!toWaringPage && dishWasher.workMode != 0){
+                        switch (dishWasher.powerStatus){
+                            //case DishWasherState.WAIT://启动设置成功后，设备powerStatus在一段时间内，仍然在待机状态
+                            case DishWasherState.WORKING:
+                            case DishWasherState.PAUSE:
+                                toWorkPage();
+                        }
+                    }
                 }
             }
         });
@@ -95,7 +101,7 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
                     sendStartWorkCommand();
                     break;
                 case MsgKeys.getDishWasherWorkMode:
-                    toWorkPage();
+                    //toWorkPage();
                     break;
             }
         });
@@ -206,6 +212,9 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
                     rButton3.setText(R.string.dishwasher_down_wash);
                 }
                 break;
+            }
+            if(modeBean.code == DishWasherEnum.AUTO_AERATION.FLUSH.getCode()){
+                hideRight();
             }
         }
     }
