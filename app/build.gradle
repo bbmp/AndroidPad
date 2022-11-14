@@ -105,4 +105,5 @@ dependencies {
     //二维码
     implementation "com.google.zxing:core:$versions.zxing_core"
     implementation "androidx.multidex:multidex:$versions.multidex"
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:$versions.gif_drawable'
 }

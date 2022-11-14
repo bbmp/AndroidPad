@@ -29,6 +29,7 @@ import com.robam.common.device.Plat;
 import com.robam.common.manager.BlueToothManager;
 import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.utils.DeviceUtils;
+import com.robam.common.utils.ImageUtils;
 import com.robam.common.utils.MMKVUtils;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.common.device.subdevice.Pan;
@@ -75,6 +76,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import pl.droidsonroids.gif.GifImageView;
+
 public class HomePage extends VentilatorBasePage {
     /**
      * 主功能
@@ -100,6 +103,7 @@ public class HomePage extends VentilatorBasePage {
     //产品中心
     private RvProductsAdapter rvProductsAdapter;
     private TextView tvPerformance, tvComfort;
+    private GifImageView gifImageView; //背景图片
     private Group group;
     private DrawerLayout drawerLayout;
     private LinearLayout llSetting, llProducts;
@@ -122,6 +126,7 @@ public class HomePage extends VentilatorBasePage {
     @Override
     protected void initView() {
         recyclerView = findViewById(R.id.rv_fun);
+        gifImageView = findViewById(R.id.iv_bg);
         tvPerformance = findViewById(R.id.tv_performance);
         tvComfort = findViewById(R.id.tv_comfort);
         group = findViewById(R.id.ventilator_group);
@@ -209,13 +214,14 @@ public class HomePage extends VentilatorBasePage {
     @Override
     protected void initData() {
         //主功能
-        funList.add(new VenFunBean(1, "fun1", "logo_roki", R.drawable.ventilator_oil_clean, "into"));
-        funList.add(new VenFunBean(1, "fun2", "logo_roki", R.drawable.ventilator_gear_weak, "into"));
-        funList.add(new VenFunBean(1, "fun3", "logo_roki", R.drawable.ventilator_gear_medium, "into"));
-        funList.add(new VenFunBean(1, "fun4", "logo_roki", R.drawable.ventilator_gear_max, "into"));
-        rvFunctionAdapter = new RvMainFunctonAdapter();
+        funList.add(new VenFunBean(1, "fun1", "ventilator_bg_normal", R.drawable.ventilator_oil_clean, "into"));
+        funList.add(new VenFunBean(1, "fun2", "ventilator_bg_weak", R.drawable.ventilator_gear_weak, "into"));
+        funList.add(new VenFunBean(1, "fun3", "ventilator_bg_mid", R.drawable.ventilator_gear_medium, "into"));
+        funList.add(new VenFunBean(1, "fun4", "ventilator_bg_fry", R.drawable.ventilator_gear_max, "into"));
+        rvFunctionAdapter = new RvMainFunctonAdapter(getContext());
         recyclerView.setAdapter(rvFunctionAdapter);
         rvFunctionAdapter.setList(funList);
+
         //主功能
         rvFunctionAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
@@ -401,6 +407,7 @@ public class HomePage extends VentilatorBasePage {
                         rvFunctionAdapter.setPickPosition(3);
                     else if (null != rvFunctionAdapter)
                         rvFunctionAdapter.setPickPosition(-1);
+                    setBackground(rvFunctionAdapter.getPickPosition()); //设置背景
 
                     if (HomeVentilator.getInstance().param7 == 0x00) { //性能模式
                         tvPerformance.setSelected(true);
@@ -627,6 +634,20 @@ public class HomePage extends VentilatorBasePage {
                 llProducts.setBackgroundColor(getContext().getResources().getColor(R.color.ventilator_color_menu));
             drawerLayout.openDrawer(gravity);
         }
+    }
+
+    /**
+     * 设置背景图片
+     *
+     * @param index
+     */
+    private void setBackground(int index) {
+        //设置背景图片
+        if (index < 0 || index > 3)
+            index = 0;
+        int resId = getResources().getIdentifier(rvFunctionAdapter.getItem(index).backgroundImg, "drawable", getContext().getPackageName());
+//        ImageUtils.loadGif(getContext(), resId, imageView);
+        gifImageView.setImageResource(resId);
     }
 
     @Override

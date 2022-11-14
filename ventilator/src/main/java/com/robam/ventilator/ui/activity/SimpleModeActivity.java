@@ -47,7 +47,7 @@ public class SimpleModeActivity extends VentilatorBaseActivity {
         funList.add(new VenFunBean(1, "fun3", "logo_roki", -1, "into"));
         funList.add(new VenFunBean(1, "fun4", "logo_roki", -1, "into"));
         funList.add(new VenFunBean(1, "fun5", "logo_roki", -1, "into"));
-        rvMainFunctonAdapter = new RvMainFunctonAdapter();
+        rvMainFunctonAdapter = new RvMainFunctonAdapter(this);
         rvSimple.setAdapter(rvMainFunctonAdapter);
         rvMainFunctonAdapter.setList(funList);
     }

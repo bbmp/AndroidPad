@@ -47,6 +47,8 @@ import com.robam.stove.ui.dialog.HomeLockDialog;
 import java.util.ArrayList;
 import java.util.List;
 
+import pl.droidsonroids.gif.GifImageView;
+
 public class HomePage extends StoveBasePage {
     /**
      * 主功能
@@ -59,7 +61,7 @@ public class HomePage extends StoveBasePage {
     private LinearLayout llLeftStove, llRightStove;
     private TextView tvLeftStove, tvRightStove;
     //背景
-    private ImageView imageView;
+    private GifImageView gifImageView;
     private ImageView ivLock;
 
     private IDialog iDialogStop, iDialogAffirm;
@@ -78,7 +80,7 @@ public class HomePage extends StoveBasePage {
 
         rvMain = findViewById(R.id.rv_main);
         ivFloat = findViewById(R.id.iv_float);
-        imageView = findViewById(R.id.iv_bg);
+        gifImageView = findViewById(R.id.iv_bg);
         llLeftStove = findViewById(R.id.ll_left_stove);
         llRightStove = findViewById(R.id.ll_right_stove);
         tvLeftStove = findViewById(R.id.tv_left_stove);
@@ -327,7 +329,8 @@ public class HomePage extends StoveBasePage {
     private void setBackground(int index) {
         //设置背景图片
         int resId = getResources().getIdentifier(rvMainFunctionAdapter.getItem(index).backgroundImg, "drawable", getContext().getPackageName());
-        ImageUtils.loadGif(getContext(), resId, imageView);
+//        ImageUtils.loadGif(getContext(), resId, imageView);
+        gifImageView.setImageResource(resId);
     }
 
     @Override

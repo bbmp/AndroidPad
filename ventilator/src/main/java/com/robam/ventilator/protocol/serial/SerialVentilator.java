@@ -332,7 +332,7 @@ public class SerialVentilator {
     }
     //蜂鸣声
     public static byte[] beep() {
-        byte beep = (byte) 0x02;     //蜂鸣
+        byte beep = (byte) 0x04;     //蜂鸣
         byte[] payload = new byte[]{
                 HomeVentilator.getInstance().startup,
                 HomeVentilator.getInstance().lightOn,
@@ -360,7 +360,7 @@ public class SerialVentilator {
      */
     public static byte[] setGear(byte curgear) {
         byte gear = curgear;
-        byte beep = (byte) 0x02;     //蜂鸣
+        byte beep = (byte) 0x04;     //蜂鸣
         byte[] payload = new byte[]{
                 HomeVentilator.getInstance().startup,
                 HomeVentilator.getInstance().lightOn,

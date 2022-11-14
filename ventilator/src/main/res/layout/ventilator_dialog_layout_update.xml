@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/share_dialog"
+    android:background="@drawable/ventilator_ic_bg"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/ventilator_guideline7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.16" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/ventilator_guideline8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.84" />
+
+    <TextView
+        android:id="@+id/tv_updating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_48"
+        android:layout_marginBottom="@dimen/dp_26"
+        android:textColor="@color/ventilator_white"
+        android:text="@string/ventilator_updating"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/sbr_progress"/>
+
+    <ProgressBar
+        android:id="@+id/sbr_progress"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:progress="0"
+        android:minHeight="@dimen/dp_8"
+        android:maxHeight="@dimen/dp_8"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:progressDrawable="@drawable/ventilator_progress_bg"
+        app:layout_constraintLeft_toLeftOf="@id/ventilator_guideline7"
+        app:layout_constraintRight_toRightOf="@id/ventilator_guideline8"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_32"
+        android:layout_marginTop="@dimen/dp_26"
+        android:textColor="@color/ventilator_white"
+        android:text="@string/ventilator_donot_cut_power"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sbr_progress"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
