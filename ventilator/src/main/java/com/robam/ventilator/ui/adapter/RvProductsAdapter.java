@@ -308,7 +308,7 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
      */
     private boolean isDishWasherWorkFinish(DishWasher dishWasher,BaseViewHolder baseViewHolder){
         MqttDirective.WorkState workState = MqttDirective.getInstance().getWorkState(dishWasher.guid);
-        boolean isWorkFinish = false;
+        boolean isWorkFinish = true;
         if(workState != null && workState.flag == 1 &&
                 System.currentTimeMillis() - workState.finishTimeL <= 1000 * 60 * 2 &&
                 (dishWasher.powerStatus != DishWasherState.WORKING  || dishWasher.powerStatus != DishWasherState.PAUSE)
@@ -322,7 +322,8 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
             }
             baseViewHolder.setGone(R.id.layout_work, true);
             baseViewHolder.setGone(R.id.btn_detail, true);
-            baseViewHolder.setText(R.id.tv_hint, modelName+"完成");
+            //baseViewHolder.setText(R.id.tv_hint, modelName+"完成");
+            baseViewHolder.setText(R.id.tv_hint, R.string.ventilator_cleaning_completion);
             return true;
         }
         return false;
