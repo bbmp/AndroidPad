@@ -46,7 +46,8 @@ public class MqttStove extends MqttPublic {
             case MsgKeys.SetStoveLock_Req: //设置童锁
             case MsgKeys.SetStoveStatus_Req: //设置灶具状态
             case MsgKeys.SetStoveLevel_Req: //设置挡位
-            case MsgKeys.SetStoveShutdown_Req: { //定时设置
+            case MsgKeys.SetStoveShutdown_Req: //定时设置
+            case MsgKeys.setStoveInteraction_Req: {  //设置灶具智能互动
                 String curGuid = msg.getrTopic().getDeviceType() + msg.getrTopic().getSignNum(); //当前设备guid
                 StoveAbstractControl.getInstance().remoteControl(curGuid, payload);
             }
@@ -263,6 +264,15 @@ public class MqttStove extends MqttPublic {
                     buf.put((byte) 1);// len
                     buf.put((byte) msg.optInt(StoveConstant.setMode));//设置模式
                 }
+                break;
+            case MsgKeys.setStoveInteraction_Req: //设置灶具智能互动
+                //控制端类型
+                buf.put((byte) ITerminalType.PAD);
+                buf.put((byte) msg.optInt(StoveConstant.stoveId)); //炉头id
+                buf.put((byte) 0x01); //参数个数
+                buf.put((byte) 0x01); //key 开启曲线创作
+                buf.put((byte) 1);// len
+                buf.put((byte) 0x01);//
                 break;
         }
         encodeMsg(buf, msg);

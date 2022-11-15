@@ -108,7 +108,7 @@ public abstract class BaseActivity extends AbsActivity implements ActivityAction
 
     @Override
     public boolean onKeyLongPress(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_F2) {
+        if (keyCode == KeyEvent.KEYCODE_MEDIA_PREVIOUS) {
             if (!iPublicVentilatorApi.isStartUp()) {//关机状态
                 lockLongPressKey = true;
                 iPublicVentilatorApi.setColorLamp();
@@ -121,7 +121,7 @@ public abstract class BaseActivity extends AbsActivity implements ActivityAction
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_F2) {
+        if (keyCode == KeyEvent.KEYCODE_MEDIA_PREVIOUS) {
             if (event.getRepeatCount() == 0) {
                 lockLongPressKey = false;
                 event.startTracking();
@@ -134,7 +134,7 @@ public abstract class BaseActivity extends AbsActivity implements ActivityAction
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_F2) {
+        if (keyCode == KeyEvent.KEYCODE_MEDIA_PREVIOUS) {
             if (lockLongPressKey) {
                 lockLongPressKey = false;
                 return true;
@@ -150,7 +150,7 @@ public abstract class BaseActivity extends AbsActivity implements ActivityAction
                 }
                 return true;
             }
-        } else if (keyCode == KeyEvent.KEYCODE_F1) {
+        } else if (keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE) {
             if (null != iPublicVentilatorApi) {
                 if (iPublicVentilatorApi.isStartUp()) {
                     iPublicVentilatorApi.beep();

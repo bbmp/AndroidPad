@@ -176,6 +176,8 @@ public class CloudHelper {
                 dir.mkdirs();
             }
             File file = new File(dir, destFileName);
+            if (file.exists())
+                file.delete();
             fos = new FileOutputStream(file);
             int progress = 0;
             while ((len = is.read(buf)) != -1) {

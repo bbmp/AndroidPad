@@ -91,7 +91,7 @@ public class ShortcutActivity extends VentilatorBaseActivity {
         rvDeviceWork.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
 
         rvDevideOnline.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
-        rvShortcutFunAdapter = new RvShortcutFunAdapter();
+        rvShortcutFunAdapter = new RvShortcutFunAdapter(this);
         recyclerView.setAdapter(rvShortcutFunAdapter);
         //烟机状态
         if (HomeVentilator.getInstance().gear == (byte) 0xA1)

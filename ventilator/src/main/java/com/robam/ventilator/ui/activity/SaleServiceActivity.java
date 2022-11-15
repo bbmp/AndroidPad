@@ -2,6 +2,7 @@ package com.robam.ventilator.ui.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.View;
@@ -21,6 +22,12 @@ import com.robam.ventilator.constant.DialogConstant;
 import com.robam.ventilator.factory.VentilatorDialogFactory;
 import com.robam.ventilator.http.CloudHelper;
 import com.robam.ventilator.response.AppTypeRes;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 
 public class SaleServiceActivity extends VentilatorBaseActivity {
     private TextView tvSysV;
@@ -94,6 +101,53 @@ public class SaleServiceActivity extends VentilatorBaseActivity {
             }
         }
     };
+    private boolean installSilent(String path) {
+        boolean result = false;
+        BufferedReader es = null;
+        DataOutputStream os = null;
+
+        try {
+            Process process = Runtime.getRuntime().exec("su");
+            os = new DataOutputStream(process.getOutputStream());
+
+            String command = "pm install -r " + path + "\n";
+            os.write(command.getBytes(Charset.forName("utf-8")));
+            os.flush();
+            os.writeBytes("exit\n");
+            os.flush();
+
+            process.waitFor();
+            es = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+
+            String line;
+            StringBuilder builder = new StringBuilder();
+            while ((line = es.readLine()) != null) {
+                builder.append(line);
+            }
+
+        /* Installation is considered a Failure if the result contains
+            the Failure character, or a success if it is not.
+             */
+            if (!builder.toString().contains("Failure")) {
+                result = true;
+            }
+        } catch (Exception e) {
+
+        } finally {
+            try {
+                if (os != null) {
+                    os.close();
+                }
+                if (es != null) {
+                    es.close();
+                }
+            } catch (IOException e) {
+
+            }
+        }
+
+        return result;
+    }
 
     private void updateVersion() {
         if (null == updateDialog) {
@@ -117,6 +171,17 @@ public class SaleServiceActivity extends VentilatorBaseActivity {
                             @Override
                             public void onFinish(String path) {
                                 closeProgressDialog();
+                                //静默安装
+                                if (installSilent(path)) {
+                                    //安装成功，重启应用
+                                    Intent intent = new Intent();
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    intent.setClassName(getApplicationContext(), "com.robam.androidpad.MainActivity");
+                                    startActivity(intent);
+
+                                    android.os.Process.killProcess(android.os.Process.myPid());
+                                    System.exit(10);
+                                }
                             }
 
                             @Override

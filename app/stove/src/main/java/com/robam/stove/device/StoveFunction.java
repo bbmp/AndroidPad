@@ -24,6 +24,8 @@ public interface StoveFunction {
     void setStoveMode(String targetGuid, int stoveId, int mode, int timingTime);
     //锅上报转发给灶
     void setStoveParams(int cmd, byte[] payload);
+    //设置灶具智能互动
+    void setStoveInteraction(String targetGuid, int stoveId);
     //远程控制命令
     void remoteControl(String targetGuid, byte[] payload);
 }
