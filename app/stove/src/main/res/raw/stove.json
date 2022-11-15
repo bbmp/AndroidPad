@@ -1,6 +1,6 @@
 [
   {
-    "backgroundImg": "stove_ic_bg_steam",
+    "backgroundImg": "stove_bg_smart",
     "funtionCode": 1,
     "funtionName": "智能\n烹饪",
     "into": "com.robam.stove.ui.activity.ModeSelectActivity",
@@ -29,21 +29,21 @@
     ]
   },
   {
-    "backgroundImg": "stove_ic_bg_oven",
+    "backgroundImg": "stove_bg_curve",
     "funtionCode": 2,
     "funtionName": "烹饪\n曲线",
     "into": "com.robam.stove.ui.activity.CurveActivity",
     "mode": []
   },
   {
-    "backgroundImg": "stove_ic_bg_zha",
+    "backgroundImg": "stove_bg_recipe",
     "funtionCode": 3,
     "funtionName": "菜谱",
     "into": "com.robam.stove.ui.activity.RecipeActivity",
     "mode": []
   },
   {
-    "backgroundImg": "stove_ic_bg_multi",
+    "backgroundImg": "stove_bg_time",
     "funtionCode": 4,
     "funtionName": "定时",
     "into": "com.robam.stove.ui.activity.TimeSelectActivity",

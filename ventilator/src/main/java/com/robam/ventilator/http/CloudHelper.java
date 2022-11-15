@@ -1,12 +1,15 @@
 package com.robam.ventilator.http;
 
+import android.content.Context;
+
 import com.google.gson.Gson;
-import com.robam.common.BuildConfig;
 import com.robam.common.bean.BaseResponse;
+import com.robam.common.http.DownloadListener;
 import com.robam.common.http.ILife;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.http.RetrofitClient;
 import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.StorageUtils;
 import com.robam.ventilator.constant.HostServer;
 import com.robam.ventilator.request.AppTypeReq;
 import com.robam.ventilator.request.BindDeviceReq;
@@ -16,6 +19,10 @@ import com.robam.ventilator.request.GetUserReq;
 import com.robam.ventilator.request.GetVerifyCodeReq;
 import com.robam.ventilator.request.LoginQrcodeReq;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.ref.WeakReference;
 
 import okhttp3.MediaType;
@@ -25,9 +32,9 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 public class CloudHelper {
-
     private static final String APPLICATION_JSON_ACCEPT_APPLICATION_JSON = "application/json; Accept: application/json";
-    private static ICloudService svr = RetrofitClient.getInstance().createApi(ICloudService.class,  BuildConfig.API_PRO ? HostServer.apiHost:HostServer.apiHostTest);
+    private static ICloudService svr = RetrofitClient.getInstance().createApi(ICloudService.class, HostServer.apiHost);
+    private static IDownloadService downloadService = RetrofitClient.getInstance().createDownApi(IDownloadService.class, HostServer.apiHost);
 
     //获取验证码
     public static <T extends BaseResponse> void getVerifyCode(ILife iLife, String phone, Class<T> entity,
@@ -133,6 +140,73 @@ public class CloudHelper {
                 RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
         Call<ResponseBody> call = svr.checkAppVersion(requestBody);
         enqueue(iLife, entity, call, callback);
+    }
+    //下载文件
+    public static void downloadFile(Context context, String url, final DownloadListener listener) {
+
+        Call<ResponseBody> responseBodyCall = downloadService.downloadFile(url);
+        responseBodyCall.enqueue(new retrofit2.Callback<ResponseBody>() {
+
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                saveFile(response.body(), StorageUtils.getCachDir(context) , "temp.apk", listener);
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                listener.onFail("net failed");
+            }
+        });
+
+    }
+
+    private static void saveFile(ResponseBody responseBody, String destFileDir, String destFileName, DownloadListener downloadListener) {
+        InputStream is = null;
+        byte[] buf = new byte[8192];
+        int len = 0;
+        FileOutputStream fos = null;
+        try {
+            is = responseBody.byteStream();
+            final long total = responseBody.contentLength();
+            long sum = 0;
+
+            File dir = new File(destFileDir);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            File file = new File(dir, destFileName);
+            fos = new FileOutputStream(file);
+            int progress = 0;
+            while ((len = is.read(buf)) != -1) {
+                sum += len;
+                fos.write(buf, 0, len);
+
+                if ((int) (sum * 100 / total) != progress) {
+                    progress = (int) (sum * 100 / total);
+                    downloadListener.onProgress(progress);
+                }
+            }
+            fos.flush();
+
+            //下载完成，并返回保存的文件路径
+            downloadListener.onFinish(file.getAbsolutePath());
+
+        } catch (IOException e) {
+            downloadListener.onFail("IOException");
+        } finally {
+            try {
+                if (is != null) is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                if (fos != null) fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 
     //统一处理回调

@@ -31,6 +31,7 @@ versions.room = "1.1.1"
 versions.multidex = "2.0.1"
 versions.ktx = "1.5.0"//kotlin扩展
 versions.utilcodex = "1.31.1"//工具类
+versions.gif_drawable = "1.2.25" //gif
 
 
 ext.versions = versions

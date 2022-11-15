@@ -52,9 +52,9 @@
         android:layout_width="@dimen/dp_10"
         android:layout_height="@dimen/dp_10"
         android:background="@drawable/ventilator_shape_online_bg"
-        app:layout_constraintBottom_toBottomOf="@id/iv_work"
+        app:layout_constraintBottom_toBottomOf="@id/tv_online"
         app:layout_constraintLeft_toLeftOf="@id/rv_device_online"
-        app:layout_constraintTop_toTopOf="@id/iv_work" />
+        app:layout_constraintTop_toTopOf="@id/tv_online" />
 
     <TextView
         android:id="@+id/tv_online"

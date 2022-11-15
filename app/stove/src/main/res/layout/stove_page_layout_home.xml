@@ -5,13 +5,13 @@
     android:layout_height="match_parent"
     android:background="@drawable/stove_ic_bg">
 
-    <ImageView
+    <pl.droidsonroids.gif.GifImageView
         android:id="@+id/iv_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitXY">
 
-    </ImageView>
+    </pl.droidsonroids.gif.GifImageView>
 
     <include
         android:id="@+id/ll_title"
