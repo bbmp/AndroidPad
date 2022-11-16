@@ -576,7 +576,7 @@ public class SerialVentilator {
             //查询返回
             case MSG_TYPE_QUERY:
                 HomeVentilator.getInstance().startup = data[startupIndex - 1];
-                HomeVentilator.getInstance().status  = data[startupIndex - 1]; //工作状态
+//                HomeVentilator.getInstance().status  = data[startupIndex - 1]; //工作状态
                 HomeVentilator.getInstance().lightOn = data[lightOnIndex - 1];
                 HomeVentilator.getInstance().gear    = data[gearIndex    - 1];
                 HomeVentilator.getInstance().beep    = data[beepIndex    - 1];

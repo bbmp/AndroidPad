@@ -49,4 +49,9 @@ public class PublicPanApi implements IPublicPanApi {
         }, R.id.tv_ok);
         iDialog.show();
     }
+
+    @Override
+    public void queryFanPan() {
+        PanAbstractControl.getInstance().queryFanPan();
+    }
 }

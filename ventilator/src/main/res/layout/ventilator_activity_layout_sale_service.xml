@@ -97,6 +97,7 @@
         android:id="@+id/tv_qrcode"
         android:layout_width="@dimen/dp_168"
         android:layout_height="@dimen/dp_168"
+        android:src="@drawable/ventilator_wx_qrcode"
         app:layout_constraintLeft_toLeftOf="@id/ventilator_guideline2"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"

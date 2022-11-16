@@ -83,6 +83,14 @@ public class HomeActivity extends BaseActivity {
                 startActivity(intent);
             }
         });
+
+        try {
+            int wifiSleepValue = Settings.System.getInt(getContentResolver(), Settings.System.WIFI_SLEEP_POLICY, Settings.System.WIFI_SLEEP_POLICY_DEFAULT);
+            Settings.Global.putInt(getContentResolver(), Settings.System.WIFI_SLEEP_POLICY, Settings.System.WIFI_SLEEP_POLICY_NEVER);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override

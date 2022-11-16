@@ -18,6 +18,8 @@ public interface IPublicPanApi extends IPublicApi {
     void setCurvePanParams(String targetGuid, long recipeId, String smartPanCurveParams);
     //设置灶参数
     void setCurveStoveParams(String targetGuid, long recipeId, int stoveId, String curveStageParams, String curveTempParams);
-
-    void lowBatteryHint(Context context);  //低电量提示
+    //低电量提示
+    void lowBatteryHint(Context context);
+    //烟锅联动开关查询
+    void queryFanPan();
 }

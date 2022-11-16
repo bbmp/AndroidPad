@@ -64,6 +64,9 @@ public class MqttPan extends MqttPublic {
                 MqttManager.getInstance().publish(newMsg, PanFactory.getProtocol());
             }
                 break;
+            case MsgKeys.SetPotSwitch_Req: //烟锅联动开关查询
+                break;
+            case MsgKeys.SetPotCom_Req:  //烟锅联动开关
             case MsgKeys.POT_INTERACTION_Req: //智能互动
             case MsgKeys.POT_CURVETEMP_Req:   //曲线还原灶参数下发
             case MsgKeys.POT_CURVEElectric_Req: {  //曲线还原锅参数下发
@@ -165,6 +168,11 @@ public class MqttPan extends MqttPublic {
 //                    PanAbstractControl.getInstance().queryAttribute(HomePan.getInstance().guid);
             }
                 break;
+            case MsgKeys.GetPotSwitch_Rep: {//烟锅联动查询回复
+                int rc = MsgUtils.getByte(payload[offset++]);
+                int onOff = rc & 0x01000000;
+            }
+                break;
             case MsgKeys.POT_P_MENU_Rep: //p档菜谱
             case MsgKeys.POT_CURVETEMP_Rep: {//设置灶参数返回
                 int rc = MsgUtils.getByte(payload[offset++]);
@@ -189,6 +197,8 @@ public class MqttPan extends MqttPublic {
         switch (msg.getID()) {
             case MsgKeys.GetPotTemp_Req: //属性查询
                 buf.put((byte) ITerminalType.PAD);
+                break;
+            case MsgKeys.SetPotSwitch_Req: //烟锅联动开关查询
                 break;
             case MsgKeys.POT_INTERACTION_Req: {
 //                buf.put((byte) 0x00);// 蓝牙品类

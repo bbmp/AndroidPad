@@ -438,6 +438,8 @@ public class HomeVentilator {
                         VentilatorAbstractControl.getInstance().closeOilClean();
                         //关灯
                         Plat.getPlatform().closeWaterLamp();
+                        //取消油网清洗
+                        HomeVentilator.getInstance().status = HomeVentilator.getInstance().startup;
                         return true;
                     }
                 });

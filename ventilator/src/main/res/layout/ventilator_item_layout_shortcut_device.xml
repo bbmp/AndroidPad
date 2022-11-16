@@ -25,7 +25,7 @@
         app:layout_constraintLeft_toLeftOf="@id/view_board"
         app:layout_constraintRight_toRightOf="@id/view_board"
         app:layout_constraintBottom_toBottomOf="@id/view_board"
-        tools:text="5068s"/>
+        tools:text="5068S"/>
 
     <TextView
         android:id="@+id/tv_device_name"

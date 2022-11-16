@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.robam.common.IDeviceType;
+import com.robam.common.bean.BaseResponse;
 import com.robam.common.device.Plat;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.mqtt.MqttManager;
@@ -132,39 +133,14 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
                 @Override
                 public void onSuccess(GetDeviceRes getDeviceRes) {
                     if (null != getDeviceRes && null != getDeviceRes.devices) {
-                        List<Fragment> fragments = new ArrayList<>();
                         for (Device device: getDeviceRes.devices) {
-                            if (device.dc.equals(IDeviceType.RXWJ) ||
-                                    (device.dc.equals(IDeviceType.RYYJ) && (Plat.getPlatform().getDeviceOnlySign()).equals(device.guid)) ||   //当前烟机
-                                    device.dc.equals(IDeviceType.RXDG) ||
-                                    device.dc.equals(IDeviceType.RZKY)) { //过滤套系外设备
-                                DeviceUserPage deviceUserPage = new DeviceUserPage(device, userInfo);
-                                fragments.add(deviceUserPage);
-                                List<Device> subDevices = device.subDevices;
-                                if ((Plat.getPlatform().getDeviceOnlySign()).equals(device.guid) && null != subDevices) { //当前烟机子设备
-                                    for (Device subDevice : subDevices) {
-                                        if (IDeviceType.RZNG.equals(subDevice.dc)) {//锅
-                                            DeviceUserPage panUserPage = new DeviceUserPage(subDevice, userInfo);
-                                            fragments.add(panUserPage);
-                                        }
-                                        else if (IDeviceType.RRQZ.equals(subDevice.dc)) {//灶具
-                                            DeviceUserPage stoveUserPage = new DeviceUserPage(subDevice, userInfo);
-                                            fragments.add(stoveUserPage);
-                                        }
-                                    }
-                                }
+                            if (device.dc.equals(IDeviceType.RYYJ) && (Plat.getPlatform().getDeviceOnlySign()).equals(device.guid)) {//已经绑定当前烟机
+                                setDeviceUserData(getDeviceRes.devices, userInfo);
+                                return;
                             }
                         }
-
-                        //添加设置适配器
-                        vpDevice.setAdapter(new DeviceUserPagerAdapter(getSupportFragmentManager(), fragments));
-                        vpDevice.setOffscreenPageLimit(fragments.size());
-                        //设置指示器
-                        PageIndicator pageIndicator = new PageIndicator(PersonalCenterActivity.this, llDot, fragments.size());
-                        vpDevice.addOnPageChangeListener(pageIndicator);
-                        //获取到设备显示
-                        vpDevice.setVisibility(View.VISIBLE);
-                        llDot.setVisibility(View.VISIBLE);
+                        //还没有绑定
+                        bindDevice(userInfo);
                     }
                 }
 
@@ -179,6 +155,77 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
             //logout
 //            AccountInfo.getInstance().deviceList.clear();
         }
+    }
+
+    private void setDeviceUserData(List<Device> devices, UserInfo userInfo) {
+        List<Fragment> fragments = new ArrayList<>();
+        for (Device device: devices) {
+            if (device.dc.equals(IDeviceType.RXWJ) ||
+                    (device.dc.equals(IDeviceType.RYYJ) && (Plat.getPlatform().getDeviceOnlySign()).equals(device.guid)) ||   //当前烟机
+                    device.dc.equals(IDeviceType.RXDG) ||
+                    device.dc.equals(IDeviceType.RZKY)) { //过滤套系外设备
+                DeviceUserPage deviceUserPage = new DeviceUserPage(device, userInfo);
+                fragments.add(deviceUserPage);
+                List<Device> subDevices = device.subDevices;
+                if ((Plat.getPlatform().getDeviceOnlySign()).equals(device.guid) && null != subDevices) { //当前烟机子设备
+                    for (Device subDevice : subDevices) {
+                        if (IDeviceType.RZNG.equals(subDevice.dc)) {//锅
+                            DeviceUserPage panUserPage = new DeviceUserPage(subDevice, userInfo);
+                            fragments.add(panUserPage);
+                        }
+                        else if (IDeviceType.RRQZ.equals(subDevice.dc)) {//灶具
+                            DeviceUserPage stoveUserPage = new DeviceUserPage(subDevice, userInfo);
+                            fragments.add(stoveUserPage);
+                        }
+                    }
+                }
+            }
+        }
+
+        //添加设置适配器
+        vpDevice.setAdapter(new DeviceUserPagerAdapter(getSupportFragmentManager(), fragments));
+        vpDevice.setOffscreenPageLimit(fragments.size());
+        //设置指示器
+        PageIndicator pageIndicator = new PageIndicator(PersonalCenterActivity.this, llDot, fragments.size());
+        vpDevice.addOnPageChangeListener(pageIndicator);
+        //获取到设备显示
+        vpDevice.setVisibility(View.VISIBLE);
+        llDot.setVisibility(View.VISIBLE);
+    }
+
+    //绑定设备 返回列表中无主设备
+    private void bindDevice(UserInfo userInfo) {
+        //绑定主设备
+        CloudHelper.bindDevice(this, userInfo.id,
+                Plat.getPlatform().getDeviceOnlySign(), IDeviceType.RYYJ_ZN, true, BaseResponse.class, new RetrofitCallback<BaseResponse>() {
+                    @Override
+                    public void onSuccess(BaseResponse baseResponse) {
+                        if (null != baseResponse) {
+                            LogUtils.e("绑定成功" + Plat.getPlatform().getDeviceOnlySign());
+                            //重新获取
+                            CloudHelper.getDevices(PersonalCenterActivity.this, userInfo.id, GetDeviceRes.class, new RetrofitCallback<GetDeviceRes>() {
+                                @Override
+                                public void onSuccess(GetDeviceRes getDeviceRes) {
+                                    if (null != getDeviceRes && null != getDeviceRes.devices) {
+
+                                        setDeviceUserData(getDeviceRes.devices, userInfo);
+
+                                    }
+                                }
+
+                                @Override
+                                public void onFaild(String err) {
+                                    LogUtils.e("getDevices" + err);
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onFaild(String err) {
+                        LogUtils.e("绑定失败" + Plat.getPlatform().getDeviceOnlySign());
+                    }
+                });
     }
 
     private void unSubscribeDevices() {

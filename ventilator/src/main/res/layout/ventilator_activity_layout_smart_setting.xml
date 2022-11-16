@@ -33,7 +33,7 @@
         android:id="@+id/tv_device_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="5068s"
+        android:text="5068S"
         android:textColor="@color/ventilator_white"
         android:textSize="@dimen/sp_28"
         app:layout_constraintBottom_toBottomOf="@id/bt_reset"

@@ -158,8 +158,8 @@ public class SaleServiceActivity extends VentilatorBaseActivity {
             updateDialog.setListeners(new IDialog.DialogOnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    showProressDialog();
                     if (v.getId() == R.id.tv_ok) {
+                        showProressDialog();
                         CloudHelper.downloadFile(getApplicationContext(), versionUrl, new DownloadListener() {
                             @Override
                             public void onProgress(int progress) {

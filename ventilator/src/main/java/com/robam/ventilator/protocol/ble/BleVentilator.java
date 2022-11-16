@@ -422,7 +422,7 @@ public class BleVentilator {
                                                         //通知上线
                                                         HomeVentilator.getInstance().notifyOnline(new String(guid), new String(biz_id), 1);
                                                         //订阅主题
-//                                                        MqttManager.getInstance().subscribe(DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid));
+                                                        MqttManager.getInstance().subscribe(device.dc, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid));
                                                     }
                                                     break;
                                                 }
