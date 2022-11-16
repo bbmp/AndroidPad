@@ -34,4 +34,8 @@ public class CabModeBean implements Serializable {
         this.maxTime = maxTime;
         this.stepTime = stepTime;
     }
+
+    public CabModeBean newCab(){
+        return new CabModeBean(this.code,this.name,this.defTime,this.minTime,this.maxTime,this.stepTime);
+    }
 }

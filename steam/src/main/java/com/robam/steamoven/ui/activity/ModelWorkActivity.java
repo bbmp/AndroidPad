@@ -67,7 +67,7 @@ ModelWorkActivity extends SteamBaseActivity {
     private static final int DIRECTIVE_OFFSET_NONE = -100;//其他
 
     private static final int DEVICE_IDLE_DUR = 1000 * 60 * 10;//页面空闲最大时长
-    private static final int DEVICE_IDLE_SHOW = (int) (1000 * 60 * 0.1f);//页面空闲最大时长
+    private static final int DEVICE_IDLE_SHOW = (int) (1000 * 60 * 0.05f);//页面空闲最大时长
     private List entryList = new ArrayList<Entry>();//数据集合
     private SteamOverTimeDialog timeDialog;//加时弹窗
     private float maxYValue = 100;
@@ -77,6 +77,7 @@ ModelWorkActivity extends SteamBaseActivity {
 
     private boolean showDialog = false;
     private SteamCommonDialog finishDialog;//正常烹饪结束弹窗
+    private boolean isInitiativeEnd = false;//是否主动结束
 
 
 
@@ -105,7 +106,7 @@ ModelWorkActivity extends SteamBaseActivity {
             switch (s - directive_offset){
                 case DIRECTIVE_OFFSET_END:
                     LogUtils.e(TAG+"主动结束回到主页");
-                    goHome();
+                    //goHome();
                     break;
                 case DIRECTIVE_OFFSET_OVER_TIME:
                     break;
@@ -299,9 +300,13 @@ ModelWorkActivity extends SteamBaseActivity {
                     goHome();
                     return;
                 }
-                if(System.currentTimeMillis() - workTimeMS >= DEVICE_IDLE_SHOW){
-                    //容易多次弹出
-                    dealWorkFinish(steamOven);
+                if(isInitiativeEnd){
+                    goHome();
+                }else{
+                    if(System.currentTimeMillis() - workTimeMS >= DEVICE_IDLE_SHOW){
+                        //容易多次弹出
+                        dealWorkFinish(steamOven);
+                    }
                 }
                 break;
             case SteamStateConstant.WORK_STATE_PREHEAT:
@@ -314,7 +319,7 @@ ModelWorkActivity extends SteamBaseActivity {
                     LogUtils.e(TAG+" updateViews 工作模式已切换 回到主页");
                     return;
                 }
-                dismissAllDialog();
+                dismissDialog();
                 showDialog = false;
                 updateViewsPreheat(steamOven,false,false);
                 break;
@@ -437,10 +442,10 @@ ModelWorkActivity extends SteamBaseActivity {
         if (id == R.id.ll_left) {
             showStopWorkDialog();
         }else if(id == R.id.multi_work_pause){//暂停工作
-            updateViewsPreheat(getSteamOven(),true,true);
+            //updateViewsPreheat(getSteamOven(),true,true);
             SteamCommandHelper.sendWorkCtrCommand(false,directive_offset + DIRECTIVE_OFFSET_PAUSE_CONTINUE);
         }else if(id==R.id.multi_work_start){//继续工作
-            updateViewsPreheat(getSteamOven(),true,false);
+            //updateViewsPreheat(getSteamOven(),true,false);
             SteamCommandHelper.sendWorkCtrCommand(true,directive_offset + DIRECTIVE_OFFSET_PAUSE_CONTINUE);
         }else if(id == R.id.multi_work_ic_steam){//加湿控制命令
             SteamCommandHelper.sendCommand(QualityKeys.steamCtrl,DIRECTIVE_OFFSET_NONE);
@@ -458,6 +463,7 @@ ModelWorkActivity extends SteamBaseActivity {
             steamCommonDialog.dismiss();
             if(v.getId() == R.id.tv_ok){
                 //sendEndWorkCommand();
+                isInitiativeEnd = true;
                 SteamCommandHelper.sendEndWorkCommand( directive_offset + DIRECTIVE_OFFSET_END);
             }
         },R.id.tv_cancel,R.id.tv_ok);
@@ -474,20 +480,27 @@ ModelWorkActivity extends SteamBaseActivity {
         finish();
     }
 
-    private void dismissAllDialog(){
+    private void dismissDialog(){
         if(timeDialog != null && timeDialog.isShow()){
             timeDialog.dismiss();
-        }
-        if(finishDialog != null && finishDialog.isShow()){
-            finishDialog.dismiss();
         }
         if(recipeWorkFinishDialog != null && recipeWorkFinishDialog.isShow()){
             recipeWorkFinishDialog.dismiss();
         }
+        if(finishDialog != null && finishDialog.isShow()){
+            finishDialog.dismiss();
+        }
+
+    }
+
+    private void dismissAllDialog(){
         if(steamCommonDialog != null && steamCommonDialog.isShow()){
             steamCommonDialog.dismiss();
         }
+        dismissDialog();
     }
+
+
 
     private void initViewInfo(MultiSegment segment){
         boolean isPreHeat = segment.isPreheat();

@@ -13,6 +13,8 @@ import com.robam.steamoven.R;
 import com.robam.steamoven.bean.MultiSegment;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.SteamConstant;
+import com.robam.steamoven.constant.SteamModeEnum;
+import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.device.SteamAbstractControl;
 import java.util.HashMap;
@@ -57,6 +59,16 @@ public class SteamCommandHelper {
 
             }
         });
+    }
+
+    /**
+     *
+     * @param map 指令数据集合
+     * @param bsCode 业务编码
+     */
+    public void sendCommonMsg(Map map,final int bsCode){
+        perOrderTimeMin = System.currentTimeMillis();
+        SteamAbstractControl.getInstance().sendCommonMsg(map, (String) map.get(SteamConstant.TARGET_GUID), (Short) map.get(SteamConstant.MSG_ID));
     }
 
 
@@ -239,7 +251,8 @@ public class SteamCommandHelper {
             commonMap.put(SteamConstant.steamLength, 1);
             commonMap.put(SteamConstant.steam, steamFlow);
         }
-        SteamCommandHelper.getInstance().sendCommonMsgForLiveData(commonMap,flag);
+        //getInstance().sendCommonMsgForLiveData(commonMap,flag);
+        getInstance().sendCommonMsg(commonMap,flag);
     }
 
     /**
@@ -546,9 +559,16 @@ public class SteamCommandHelper {
             ToastUtils.showLong(context, R.string.steam_offline);
             return false;
         }
-        if(curDevice.mode != 0){
-            ToastUtils.showLong(context, R.string.steam_working_prompt);
-            //return false;
+        if(curDevice.mode != 0 && (curDevice.powerState == SteamStateConstant.POWER_STATE_AWAIT
+                || curDevice.powerState == SteamStateConstant.POWER_STATE_ON
+                || curDevice.powerState == SteamStateConstant.POWER_STATE_TROUBLE)){
+            if(curDevice.workState == SteamStateConstant.WORK_STATE_PREHEAT ||
+                    curDevice.workState == SteamStateConstant.WORK_STATE_PREHEAT_PAUSE ||
+                    curDevice.workState == SteamStateConstant.WORK_STATE_WORKING ||
+                    curDevice.workState == SteamStateConstant.WORK_STATE_WORKING_PAUSE){
+                ToastUtils.showLong(context, R.string.steam_working_prompt);
+                //return false;
+            }
         }
         if(curDevice.doorState != 0){//门状态检测
             ToastUtils.showLong(context,R.string.steam_close_door_prompt);
@@ -627,7 +647,8 @@ public class SteamCommandHelper {
         commonMap.put(SteamConstant.workCtrlKey, 2);
         commonMap.put(SteamConstant.workCtrlLength, 1);
         commonMap.put(SteamConstant.workCtrl, SteamConstant.WORK_CTRL_STOP);//结束工作
-        SteamCommandHelper.getInstance().sendCommonMsgForLiveData(commonMap,flag);
+        //getInstance().sendCommonMsgForLiveData(commonMap,flag);
+        getInstance().sendCommonMsgForLiveData(commonMap,flag);
     }
 
 

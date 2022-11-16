@@ -14,6 +14,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
 import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.IModeSelect;
@@ -28,6 +30,7 @@ import com.robam.steamoven.constant.SteamConstant;
 import com.robam.steamoven.constant.SteamEnum;
 import com.robam.steamoven.constant.SteamModeEnum;
 import com.robam.steamoven.constant.SteamOvenSteamEnum;
+import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.device.SteamAbstractControl;
 import com.robam.steamoven.protocol.SteamCommandHelper;
@@ -35,6 +38,8 @@ import com.robam.steamoven.ui.pages.ModeSelectPage;
 import com.robam.steamoven.ui.pages.SteamSelectPage;
 import com.robam.steamoven.ui.pages.TempSelectPage;
 import com.robam.steamoven.ui.pages.TimeSelectPage;
+import com.robam.steamoven.utils.MultiSegmentUtil;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -85,8 +90,6 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
         showLeft();
         showCenter();
         //showRightCenter();
-
-
         tabLayout = findViewById(R.id.tabLayout);
         noScrollViewPager = findViewById(R.id.pager);
         tabLayout.setSelectedTabIndicatorHeight(0);
@@ -125,19 +128,65 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
 
             }
         });
-        MqttDirective.getInstance().getDirective().observe(this, s -> {
-            switch (s - directive_offset){
-                case MsgKeys.setDeviceAttribute_Req:
-                    toWorkPage();
-                    break;
-                case DIRECTIVE_OFFSET_AUX_MODEL:
-                    toAxuWorkPage();
-                    break;
+        AccountInfo.getInstance().getGuid().observe(this, s -> {
+            for (Device device: AccountInfo.getInstance().deviceList) {
+                if (device.guid.equals(s) && device instanceof SteamOven && device.guid.equals(HomeSteamOven.getInstance().guid)) {
+                    SteamOven steamOven = (SteamOven) device;
+                    if(toWaringPage(steamOven)){
+                        return;
+                    }
+                    switch (steamOven.powerState){
+                        case SteamStateConstant.POWER_STATE_AWAIT:
+                        case SteamStateConstant.POWER_STATE_ON:
+                        case SteamStateConstant.POWER_STATE_TROUBLE:
+                            toWorkPage(steamOven);
+                            break;
+                        case SteamStateConstant.POWER_STATE_OFF:
+                            break;
+                    }
+                }
             }
         });
+//        MqttDirective.getInstance().getDirective().observe(this, s -> {
+//            switch (s - directive_offset){
+//                case MsgKeys.setDeviceAttribute_Req:
+//                    toWorkPage();
+//                    break;
+//                case DIRECTIVE_OFFSET_AUX_MODEL:
+//                    toAxuWorkPage();
+//                    break;
+//            }
+//        });
 
 
     }
+
+
+    /**
+     * 去往工作页面
+     * @param steamOven
+     */
+    private void toWorkPage(SteamOven steamOven){
+        if(steamOven.mode == 0){
+            return;
+        }
+        switch (steamOven.workState){
+            case SteamStateConstant.WORK_STATE_LEISURE:
+            case SteamStateConstant.WORK_STATE_APPOINTMENT://预约页面
+                break;
+            case SteamStateConstant.WORK_STATE_PREHEAT:
+            case SteamStateConstant.WORK_STATE_PREHEAT_PAUSE:
+            case SteamStateConstant.WORK_STATE_WORKING:
+            case SteamStateConstant.WORK_STATE_WORKING_PAUSE:
+                if(SteamModeEnum.isAuxModel(steamOven.mode)){
+                    toAxuWorkPage();
+                    return;
+                }
+                toWorkPage();
+                break;
+        }
+    }
+
 
     private boolean isClickAble(TabLayout.Tab tab){
         TabLayout.Tab tabAt = tabLayout.getTabAt(0);

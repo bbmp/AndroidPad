@@ -101,4 +101,5 @@
     <string name="ventilator_product_failure">产品故障</string>
     <string name="ventilator_cleaning_completion">清洁完成</string>
     <string name="ventilator_disinfect_completion">消毒完成</string>
+    <string name="ventilator_cabinet_completion">结束</string>
 </resources>

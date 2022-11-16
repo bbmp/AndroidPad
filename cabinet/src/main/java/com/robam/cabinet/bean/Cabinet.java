@@ -68,12 +68,11 @@ public class Cabinet extends Device{
                     germ = (short) msg.optInt(CabinetConstant.SteriParaGerm);
                     ozone = (short) msg.optInt(CabinetConstant.SteriParaOzone);
                     argumentNumber = (short) msg.optInt(CabinetConstant.ArgumentNumber);
-                    if (argumentNumber > 0) {
-                        // 预约剩余时间
-                        remainingAppointTime = (short) msg.optInt(CabinetConstant.REMAINING_APPOINT_TIME);
-                        //停止工作时是否进入安全锁
-                        steriSecurityLock = (short) msg.optInt(CabinetConstant.SteriSecurityLock);
-                    }
+                    // 预约剩余时间
+                    remainingAppointTime = (short) msg.optInt(CabinetConstant.REMAINING_APPOINT_TIME);
+                    //停止工作时是否进入安全锁
+                    steriSecurityLock = (short) msg.optInt(CabinetConstant.SteriSecurityLock);
+                    //if (argumentNumber > 0) {}
                     break;
                 case MsgKeys.GetSteriPVConfig_Rep:
                     break;
@@ -92,17 +91,11 @@ public class Cabinet extends Device{
 
 
 
-    public short setSteriTem;
-    public short oldstatus;
     public short isChildLock;
-    public boolean isDoorLock;
     public short AlarmStautus;
     public short remainingAppointTime;//预约剩余时间
-    public short SteriReserveTime;
-    public short SteriDrying;
     public short remainingModeWorkTime; //剩余工作时间
     public short temp, hum, germ, ozone;
-    //short weeklySteri_week;
     public short doorLock;
     public short argumentNumber;
     public short steriSecurityLock;

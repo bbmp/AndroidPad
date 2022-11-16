@@ -6,6 +6,8 @@ import android.serialport.helper.SerialPortConfig;
 import android.serialport.helper.SerialPortHelper;
 
 import com.clj.fastble.BleManager;
+import com.robam.cabinet.device.CabinetAbstractControl;
+import com.robam.cabinet.device.CabinetMqttControl;
 import com.robam.common.bean.MqttDirective;
 import com.robam.common.http.RetrofitClient;
 import com.robam.common.mqtt.MqttManager;
@@ -51,6 +53,8 @@ public class AppVentilator {
         PanAbstractControl.getInstance().init(new PanBluetoothControl());
         //洗碗机控制
         DishWasherAbstractControl.getInstance().init(new DishWasherMqttControl());
+        //消毒柜
+        CabinetAbstractControl.getInstance().init(new CabinetMqttControl());
 
         //初始化
         MqttDirective.getInstance();

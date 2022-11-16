@@ -29,6 +29,11 @@ public class CabinetAbstractControl implements CabinetFunction{
     }
 
     @Override
+    public void queryAttribute(String targetGuid) {
+        function.queryAttribute(targetGuid);
+    }
+
+    @Override
     public void sendCommonMsg(Map<String, Object> params, String targetGuid, short msg_id) {
         function.sendCommonMsg(params,targetGuid,msg_id);
     }

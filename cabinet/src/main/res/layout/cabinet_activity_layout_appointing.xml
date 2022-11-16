@@ -89,7 +89,7 @@
         android:id="@+id/iv_start"
         android:layout_width="@dimen/dp_60"
         android:layout_height="@dimen/dp_60"
-        android:src="@drawable/cabinet_ic_start"
+        android:src="@drawable/cabinet_work_stop"
         android:layout_marginRight="@dimen/dp_100"
         app:layout_constraintTop_toTopOf="@id/tv_countdown"
         app:layout_constraintBottom_toBottomOf="@id/tv_countdown"

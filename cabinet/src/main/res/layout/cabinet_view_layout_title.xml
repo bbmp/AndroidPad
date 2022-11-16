@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_32"
             android:text="@string/cabinet_back"
-            android:textColor="@color/cabinet_white"/>
+            android:textColor="@color/cabinet_mode70"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/ll_left_center"
@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_32"
             android:text="@string/cabinet_back"
-            android:textColor="@color/cabinet_white"/>
+            android:textColor="@color/cabinet_mode70"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/ll_center"
@@ -78,13 +78,13 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_32"
             android:text="time"
-            android:textColor="@color/cabinet_white" />
+            android:textColor="@color/cabinet_mode70" />
         <TextView
             android:id="@+id/tv_center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_32"
-            android:textColor="@color/cabinet_white"
+            android:textColor="@color/cabinet_mode70"
             android:visibility="gone"/>
         <View
             android:id="@+id/view_center"
@@ -122,7 +122,7 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_32"
             android:text="@string/cabinet_screen_lock"
-            android:textColor="@color/cabinet_white"/>
+            android:textColor="@color/cabinet_mode70"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/ll_right"
@@ -150,7 +150,7 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_32"
             android:text=""
-            android:textColor="@color/cabinet_white"/>
+            android:textColor="@color/cabinet_mode70"/>
     </LinearLayout>
     <ImageView
         android:id="@+id/iv_float"

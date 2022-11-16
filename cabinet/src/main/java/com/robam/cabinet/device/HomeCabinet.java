@@ -12,9 +12,9 @@ public class HomeCabinet {
     public String guid;
 
     /**
-     * 预约开始时间
+     *剩余预约时间
      */
-    public String orderTime;
+    public int orderTime;
     /**
      * 工作模式
      */

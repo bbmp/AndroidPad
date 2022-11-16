@@ -9,7 +9,12 @@ public interface CabinetFunction {
 
     void powerOn();
 
+    void queryAttribute(String targetGuid);
+
     void sendCommonMsg(Map<String,Object> params, String targetGuid, short msg_id);
 
     void sendCommonMsg(Map<String,Object> params, String targetGuid, short msg_id, MqttManager.MqttSendMsgListener listening);
+
+
+
 }

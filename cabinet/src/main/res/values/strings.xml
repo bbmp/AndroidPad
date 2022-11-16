@@ -16,4 +16,5 @@
     <string name="cabinet_screen_lock_hint">屏幕已锁定，长按本图标进行解锁</string>
     <string name="cabinet_screen_lock">童锁</string>
     <string name="cabinet_unlock_hint">请长按2s童锁解除锁定</string>
+    <string name="cabinet_no_guid">缺少数据</string>
 </resources>

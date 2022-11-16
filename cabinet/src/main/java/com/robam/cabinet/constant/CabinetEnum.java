@@ -27,7 +27,7 @@ public enum CabinetEnum {
 
     public static String match(int key) {
 
-        String value = null;
+        String value = "";
 
         for (CabinetEnum s : values()) {
             if (s.getCode() == key) {

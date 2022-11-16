@@ -1,5 +1,6 @@
 package com.robam.cabinet.base;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
@@ -16,6 +17,7 @@ import com.robam.cabinet.R;
 import com.robam.cabinet.constant.CabinetConstant;
 import com.robam.cabinet.device.HomeCabinet;
 import com.robam.cabinet.manager.CabinetActivityManager;
+import com.robam.cabinet.ui.activity.MainActivity;
 import com.robam.cabinet.ui.dialog.LockDialog;
 import com.robam.cabinet.util.CabinetCommonHelper;
 import com.robam.common.bean.AccountInfo;
@@ -63,7 +65,22 @@ public abstract class CabinetBaseActivity extends BaseActivity {
         });
     }
     public void showRightCenter() {
-        findViewById(R.id.ll_right_center).setVisibility(View.VISIBLE);
+        View rightCenter = findViewById(R.id.ll_right_center);
+        if(rightCenter == null){
+            return;
+        }
+        rightCenter.setVisibility(View.VISIBLE);
+        rightCenter.setOnClickListener(v -> {
+            Map map = CabinetCommonHelper.getCommonMap(MsgKeys.SetSteriLock_Req);
+            map.put(CabinetConstant.SteriLock,0);
+            CabinetCommonHelper.sendCommonMsg(map);
+        });
+        rightCenter.setOnLongClickListener(v->{
+            Map map = CabinetCommonHelper.getCommonMap(MsgKeys.SetSteriLock_Req);
+            map.put(CabinetConstant.SteriLock,1);
+            CabinetCommonHelper.sendCommonMsg(map);
+            return true;
+        });
     }
 
     public void setRight(int res) {
@@ -78,9 +95,7 @@ public abstract class CabinetBaseActivity extends BaseActivity {
         if (id == R.id.ll_right_center) {//童锁处理
             //ToastUtils.show(getContext(),"解锁了",Toast.LENGTH_SHORT);
             //判断当前模式 ：该解锁还是上锁
-            Map map = CabinetCommonHelper.getCommonMap(MsgKeys.SetSteriLock_Req);
-            map.put(CabinetConstant.SteriLock,lock?0:1);
-            CabinetCommonHelper.sendCommonMsgForLiveData(map,LOCK_FLAG);
+
         }
     }
 
@@ -171,6 +186,12 @@ public abstract class CabinetBaseActivity extends BaseActivity {
         }
         ((ImageView) iconView).setImageResource(lock ? R.drawable.cabinet_screen_lock : R.drawable.cabinet_screen_unlock);
         ((TextView) tvView).setTextColor(getResources().getColor(lock?R.color.cabinet_lock:R.color.cabinet_white));
+    }
+
+    public void goHome(){
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
 

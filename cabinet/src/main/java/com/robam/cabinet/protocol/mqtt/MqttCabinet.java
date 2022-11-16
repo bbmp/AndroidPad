@@ -1,6 +1,8 @@
 package com.robam.cabinet.protocol.mqtt;
 
 import com.robam.cabinet.constant.CabinetConstant;
+import com.robam.cabinet.device.CabinetAbstractControl;
+import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MqttPublic;
 import com.robam.common.mqtt.MsgKeys;
@@ -14,29 +16,15 @@ public class MqttCabinet extends MqttPublic {
 
     @Override
     protected void onDecodeMsg(MqttMsg msg, byte[] payload, int offset) throws Exception {
-//        switch (msg.getID()) {
-//            case MsgKeys.GetSteriStatus_Rep: //消毒柜状态响应
-//                short steriStatus =
-//                        ByteUtils.toShort(payload[offset++]);
-//                msg.putOpt(CabinetConstant.SteriStatus, steriStatus);
-//                short steriLock =
-//                        ByteUtils.toShort(payload[offset++]);
-//                short steriWorkLeftTimeL =
-//                        ByteUtils.toShort(payload[offset++]);
-//                short steriWorkLeftTimeH =
-//                        ByteUtils.toShort(payload[offset++]);
-//                short ateriAlarmStatus =
-//                        ByteUtils.toShort(payload[offset++]);
-//                break;
-//        }
-
         switch (msg.getID()) {
-
+            case MsgKeys.SetSteriLock_Rep:
             case MsgKeys.SetSteriPowerOnOff_Rep:
                 msg.putOpt(CabinetConstant.RC, ByteUtils.toShort(payload[offset++]));
+                CabinetAbstractControl.getInstance().queryAttribute(msg.getGuid());
                 break;
             case MsgKeys.GetSteriStatus_Rep:
-                msg.putOpt(CabinetConstant.SteriStatus, ByteUtils.toShort(payload[offset++]));
+                short mode = ByteUtils.toShort(payload[offset++]);
+                msg.putOpt(CabinetConstant.SteriStatus, mode);
                 msg.putOpt(CabinetConstant.SteriLock, ByteUtils.toShort(payload[offset++]));
                 msg.putOpt(CabinetConstant.SteriWorkLeftTimeL, ByteUtils.toInt32(payload, offset++, ByteOrder.LITTLE_ENDIAN));
                 offset++;
@@ -50,7 +38,6 @@ public class MqttCabinet extends MqttPublic {
                 msg.putOpt(CabinetConstant.SteriParaOzone, ByteUtils.toShort(payload[offset++]));
                 short argument = ByteUtils.toShort(payload[offset++]);
                 msg.putOpt(CabinetConstant.ArgumentNumber, argument);
-
                 while (argument > 0) {
                     short argument_key = ByteUtils.toShort(payload[offset++]);
                     switch (argument_key) {
@@ -62,7 +49,6 @@ public class MqttCabinet extends MqttPublic {
                             msg.putOpt(CabinetConstant.REMAINING_APPOINT_TIME,anInt);
                             offset++;
                             break;
-                        // TODO: 2019/12/13 新增安全锁定
                         case 2:
                             msg.putOpt(CabinetConstant.Key, argument_key);
                             msg.putOpt(CabinetConstant.Length,ByteUtils.toShort(payload[offset++]));
@@ -74,140 +60,67 @@ public class MqttCabinet extends MqttPublic {
                     }
                     argument--;
                 }
-
-
-                break;
-
-            case MsgKeys.GetSteriPVConfig_Rep:
-                msg.putOpt(CabinetConstant.SteriSwitchDisinfect, ByteUtils.toShort(payload[offset++]));
-                msg.putOpt(CabinetConstant.SteriInternalDisinfect, ByteUtils.toShort(payload[offset++]));
-                msg.putOpt(CabinetConstant.SteriSwitchWeekDisinfect, ByteUtils.toShort(payload[offset++]));
-                msg.putOpt(CabinetConstant.SteriWeekInternalDisinfect, ByteUtils.toShort(payload[offset++]));
-                msg.putOpt(CabinetConstant.SteriPVDisinfectTime, ByteUtils.toShort(payload[offset++]));
-                msg.putOpt(CabinetConstant.ArgumentNumber, ByteUtils.toShort(payload[offset++]));
-                break;
-
-            case MsgKeys.SetSteriPVConfig_Rep:
-                msg.putOpt(CabinetConstant.RC,
-                        ByteUtils.toShort(payload[offset++]));
+                if(mode != 0){//记录最新工作模式
+                    MqttDirective.getInstance().updateModelWorkState(msg.getGuid(),mode);
+                }
                 break;
 
             // 通知类
             case MsgKeys.SteriAlarm_Noti:
                 msg.putOpt(CabinetConstant.AlarmId, ByteUtils.toShort(payload[offset++]));
                 break;
-
             case MsgKeys.SteriEvent_Noti:
                 msg.putOpt(CabinetConstant.EventId, ByteUtils.toShort(payload[offset++]));
                 msg.putOpt(CabinetConstant.EventParam, ByteUtils.toShort(payload[offset++]));
                 msg.putOpt(CabinetConstant.ArgumentNumber, ByteUtils.toShort(payload[offset++]));
                 msg.putOpt(CabinetConstant.UserId, MsgUtils.getString(payload, offset++, 10));
                 break;
-            case MsgKeys.SetSteriLock_Rep:
-                msg.putOpt(CabinetConstant.RC,
-                        ByteUtils.toShort(payload[offset++]));
-                break;
         }
-
-        //LogUtils.i("20171207", "829key:" + key);
-
     }
 
     @Override
     protected void onEncodeMsg(ByteBuffer buf, MqttMsg msg) {
-//        switch (msg.getID()) {
-//            case MsgKeys.GetSteriStatus_Req: //消毒柜状态查询
-//                buf.put((byte) ITerminalType.PAD);
-//                break;
-//        }
-
-        String str;
-        boolean bool;
-        byte b;
-        short s;
         switch (msg.getID()) {
             case MsgKeys.SetSteriPowerOnOff_Req:
-                str = msg.optString(CabinetConstant.UserId);
-                buf.put(str.getBytes());
-                //
-                b = (byte) msg.optInt(CabinetConstant.SteriStatus);
-                buf.put(b);
+                buf.put(msg.optString(CabinetConstant.UserId).getBytes());
+                buf.put((byte) msg.optInt(CabinetConstant.SteriStatus));
                 short setTime = (short) msg.optInt(CabinetConstant.SteriTime);
-                s = (short) (setTime & 0xFF);
-                buf.putShort(s);
-                   /* s = (short) ((setTime >> 8) & 0xFF);
-                    LogUtils.i("20171206","time1:"+s);
-                    buf.putShort(s);*/
-                b = (byte) msg.optInt(CabinetConstant.ArgumentNumber);
-                buf.put(b);
-                //LogUtils.i("20171206", "Argument:" + msg.optInt(CabinetConstant.ArgumentNumber));
-
+                buf.put((byte) (setTime & 0xFF));
+                buf.put((byte) ((setTime >> 8) & 0xFF));
+                buf.put((byte) msg.optInt(CabinetConstant.ArgumentNumber));
                 if (msg.optInt(CabinetConstant.ArgumentNumber) > 0) {
-                    if (msg.optInt(CabinetConstant.Key) == 1) {
-                        b = (byte) msg.optInt(CabinetConstant.Key);
-                        buf.put(b);
-                        b = (byte) msg.optInt(CabinetConstant.Length);
-                        buf.put(b);
-                        b = (byte) msg.optInt(CabinetConstant.warmDishTempValue);
-                        buf.put(b);
+                    if (msg.optInt(CabinetConstant.warmDishKey) == 1) {
+                        buf.put((byte) msg.optInt(CabinetConstant.warmDishKey));
+                        buf.put((byte) msg.optInt(CabinetConstant.warmDishLength));
+                        buf.put((byte) msg.optInt(CabinetConstant.warmDishTempValue));
                     }
-
                     if (msg.optInt(CabinetConstant.Key) == 2) {
-                        b = (byte) msg.optInt(CabinetConstant.Key);
-                        buf.put(b);
-                        b = (byte) msg.optInt(CabinetConstant.Length);
-                        buf.put(b);
-
-                        int SteriReserveTime = msg.optInt(CabinetConstant.SteriReserveTime);
-                        b = (byte) (SteriReserveTime & 0xFF);
-                        buf.put(b);
-                        b = (byte) ((SteriReserveTime >> 8) & 0xFF);
-                        buf.put(b);
-
-
-
+                        buf.put((byte) msg.optInt(CabinetConstant.Key));
+                        buf.put((byte) msg.optInt(CabinetConstant.Length));
+                        int appointmentTime = msg.optInt(CabinetConstant.SteriReserveTime);
+                        buf.put((byte) (appointmentTime & 0xFF));
+                        buf.put((byte) ((appointmentTime >> 8) & 0xFF));
                     }
                 }
                 break;
-
             case MsgKeys.GetSteriStatus_Req:
-                str = msg.optString(CabinetConstant.UserId);
-                buf.put(str.getBytes());
+                buf.put(msg.optString(CabinetConstant.UserId).getBytes());
                 break;
-
-
-            case MsgKeys.GetSteriPVConfig_Req:
-                str = msg.optString(CabinetConstant.UserId);
-                buf.put(str.getBytes());
-                break;
-
-
             case MsgKeys.SetSteriPVConfig_Req:
-                str = msg.optString(CabinetConstant.UserId);
-                buf.put(str.getBytes());
-
-                bool = msg.optBoolean(CabinetConstant.SteriSwitchDisinfect);
+                buf.put(msg.optString(CabinetConstant.UserId).getBytes());
+                boolean bool = msg.optBoolean(CabinetConstant.SteriSwitchDisinfect);
                 buf.put(bool ? (byte) 1 : (byte) 0);
-
-                b = (byte) msg.optInt(CabinetConstant.SteriInternalDisinfect);
-                buf.put(b);
-
+                buf.put((byte) msg.optInt(CabinetConstant.SteriInternalDisinfect));
                 bool = msg.optBoolean(CabinetConstant.SteriSwitchWeekDisinfect);
                 buf.put(bool ? (byte) 1 : (byte) 0);
-
-                b = (byte) msg.optInt(CabinetConstant.SteriWeekInternalDisinfect);
-                buf.put(b);
-                b = (byte) msg.optInt(CabinetConstant.SteriPVDisinfectTime);
-                buf.put(b);
-
-                b = (byte) msg.optInt(CabinetConstant.ArgumentNumber);
-                buf.put(b);
+                buf.put((byte) msg.optInt(CabinetConstant.SteriWeekInternalDisinfect));
+                buf.put((byte) msg.optInt(CabinetConstant.SteriPVDisinfectTime));
+                buf.put((byte) msg.optInt(CabinetConstant.ArgumentNumber));
                 break;
             case MsgKeys.SetSteriLock_Req:
-                    /*str = msg.optString(CabinetConstant.UserId);
-                    buf.put(str.getBytes());*/
-                b = (byte) msg.optInt(CabinetConstant.SteriLock);
-                buf.put(b);
+                //buf.put(msg.optString(CabinetConstant.UserId).getBytes());
+                byte value = (byte) msg.optInt(CabinetConstant.SteriLock);
+                buf.put(value);
                 break;
 
         }

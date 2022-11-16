@@ -11,12 +11,14 @@ CabinetConstant {
     public final static int FUN_DRY = 4;
 
     //净存
-    public final static int FUN_FLUSH = -1;
+    public final static int FUN_FLUSH = 11;//待核对
     //智能
-    public final static int FUN_SMART = -1;
+    public final static int FUN_SMART = 8;//待核对
 
     //预约
     public final static int APPOINTMENT = 5;
+    public final static int OFF = 0;
+    public final static int ON = 1;
 
     //模式
     public final static int MODE_DISINFECT = 1;
@@ -125,6 +127,8 @@ CabinetConstant {
      * 暖碟温度
      */
     public final static String warmDishTempValue = "warmDishTempValue";
+    public final static String warmDishKey = "warmDishKey";
+    public final static String warmDishLength = "warmDishLength";
     /**
      * 消毒柜参数：
      * TEM[1Byte]  温度值

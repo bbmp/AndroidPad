@@ -12,6 +12,9 @@ import androidx.lifecycle.LifecycleOwner;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+import com.robam.cabinet.bean.Cabinet;
+import com.robam.cabinet.constant.CabinetConstant;
+import com.robam.cabinet.constant.CabinetEnum;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.MqttDirective;
@@ -26,6 +29,7 @@ import com.robam.dishwasher.constant.DishWasherState;
 import com.robam.dishwasher.constant.DishWasherWaringEnum;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.common.device.subdevice.Stove;
+import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.utils.SteamDataUtil;
 import com.robam.ventilator.R;
 
@@ -56,19 +60,8 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
                     baseViewHolder.setImageResource(R.id.iv_online, R.drawable.ventilator_shape_offline_bg);
                 } else {
                     //在线
-                    baseViewHolder.setText(R.id.tv_online, R.string.ventilator_online);
-                    baseViewHolder.setImageResource(R.id.iv_online, R.drawable.ventilator_shape_online_bg);
-                    if (device.getWorkStatus() == 0) {
-                        baseViewHolder.setVisible(R.id.layout_offline, true);
-                        baseViewHolder.setGone(R.id.layout_work, true);
-                        baseViewHolder.setGone(R.id.btn_detail, true);
-                        baseViewHolder.setText(R.id.tv_hint, "消杀洁净\n智享厨房");
-                    } else if (device.getWorkStatus() != 0) {
-                        baseViewHolder.setGone(R.id.layout_offline, true);
-                        baseViewHolder.setVisible(R.id.layout_work, true);
-                    } else {
-                        //故障
-                    }
+                    Cabinet cabinet = (Cabinet) device;
+                    dealCabinetWork(cabinet,baseViewHolder);
                 }
             } else if (IDeviceType.RRQZ.equals(device.dc)) {//灶具
                 ivDevice.setImageResource(R.drawable.ventilator_stove);
@@ -133,21 +126,24 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
                         baseViewHolder.setGone(R.id.btn_detail, true);
                         baseViewHolder.setText(R.id.tv_hint, "轻松烹饪\n智享厨房");
                     } else if (device.getWorkStatus() != 0) {
+
                         SteamOven steamOven = (SteamOven) device;
-                        baseViewHolder.setGone(R.id.layout_offline, true);
-                        baseViewHolder.setVisible(R.id.layout_work, true);
-                        baseViewHolder.setGone(R.id.ventilator_group7, true);
-                        baseViewHolder.setVisible(R.id.ventilator_group6, true);
+                        if(isSteamWork(steamOven,baseViewHolder)){
+                            baseViewHolder.setGone(R.id.layout_offline, true);
+                            baseViewHolder.setVisible(R.id.layout_work, true);
+                            baseViewHolder.setGone(R.id.ventilator_group7, true);
+                            baseViewHolder.setVisible(R.id.ventilator_group6, true);
 
-                        baseViewHolder.setText(R.id.tv_mode, SteamDataUtil.getModelName(device));
-                        baseViewHolder.setText(R.id.tv_time, DateUtil.secForMatTime3(steamOven.totalRemainSeconds) + "min");
+                            baseViewHolder.setText(R.id.tv_mode, SteamDataUtil.getModelName(device));
+                            baseViewHolder.setText(R.id.tv_time, DateUtil.secForMatTime3(steamOven.totalRemainSeconds) + "min");
 
-                        if (steamOven.getWorkStatus() == 2 || steamOven.getWorkStatus() == 4) //预热中和工作中
-                            baseViewHolder.setText(R.id.btn_work, R.string.ventilator_pause);
-                        else if (steamOven.getWorkStatus() == 3 || steamOven.getWorkStatus() == 5) //暂停中
-                            baseViewHolder.setText(R.id.btn_work, R.string.ventilator_continue);
-                        else
-                            baseViewHolder.setGone(R.id.btn_work, true);
+                            if (steamOven.getWorkStatus() == 2 || steamOven.getWorkStatus() == 4) //预热中和工作中
+                                baseViewHolder.setText(R.id.btn_work, R.string.ventilator_pause);
+                            else if (steamOven.getWorkStatus() == 3 || steamOven.getWorkStatus() == 5) //暂停中
+                                baseViewHolder.setText(R.id.btn_work, R.string.ventilator_continue);
+                            else
+                                baseViewHolder.setGone(R.id.btn_work, true);
+                        }
                     } else {
                         //故障
                     }
@@ -327,7 +323,6 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
             return true;
         }
         return false;
-
     }
 
 
@@ -348,5 +343,54 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
         return spannableString;
     }
 
+    private boolean isSteamWork(SteamOven steamOven,BaseViewHolder baseViewHolder){
+        if(steamOven.powerState != SteamStateConstant.POWER_STATE_OFF &&
+                (steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT ||
+                steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT_PAUSE ||
+                steamOven.workState == SteamStateConstant.WORK_STATE_WORKING ||
+                steamOven.workState == SteamStateConstant.WORK_STATE_WORKING_PAUSE)){
+            return true;
+        }
+        baseViewHolder.setVisible(R.id.layout_offline, true);
+        baseViewHolder.setGone(R.id.layout_work, true);
+        baseViewHolder.setGone(R.id.btn_detail, true);
+        baseViewHolder.setText(R.id.tv_hint, "会洗锅的\n洗碗机");
+        return false;
+    }
 
+    private void dealCabinetWork(Cabinet cabinet, BaseViewHolder baseViewHolder){
+        boolean isWork = false;
+        boolean workFinish = false;
+        if((cabinet.status == CabinetConstant.FUN_DISINFECT || cabinet.status == CabinetConstant.FUN_CLEAN
+           || cabinet.status == CabinetConstant.FUN_DRY || cabinet.status == CabinetConstant.FUN_FLUSH
+            || cabinet.status == CabinetConstant.FUN_SMART) && cabinet.remainingModeWorkTime != 0 ){
+            isWork = true;
+        }
+        if(!isWork){
+            MqttDirective.WorkState workState = MqttDirective.getInstance().getWorkState(cabinet.guid);
+            if(workState != null && workState.flag == 1 &&
+                    System.currentTimeMillis() - workState.finishTimeL <= 1000 * 60 * 2){//工作完成两分钟内，显示工作完成
+               workFinish = true;
+            }
+            if(workFinish){
+                baseViewHolder.setVisible(R.id.layout_offline, true);
+                baseViewHolder.setGone(R.id.layout_work, true);
+                baseViewHolder.setGone(R.id.btn_detail, true);
+                baseViewHolder.setText(R.id.tv_hint, "消毒完成");
+            }else{
+                baseViewHolder.setVisible(R.id.layout_offline, true);
+                baseViewHolder.setGone(R.id.layout_work, true);
+                baseViewHolder.setGone(R.id.btn_detail, true);
+                baseViewHolder.setText(R.id.tv_hint, "消杀洁净\n智享厨房");
+            }
+        }else{
+            baseViewHolder.setText(R.id.tv_online, R.string.ventilator_online);
+            baseViewHolder.setImageResource(R.id.iv_online, R.drawable.ventilator_shape_online_bg);
+            baseViewHolder.setVisible(R.id.layout_offline, true);
+            baseViewHolder.setGone(R.id.layout_work, true);
+            baseViewHolder.setGone(R.id.btn_detail, true);
+            baseViewHolder.setText(R.id.tv_hint, CabinetEnum.match(cabinet.status));
+            baseViewHolder.setText(R.id.btn_work, R.string.ventilator_cabinet_completion);
+        }
+    }
 }

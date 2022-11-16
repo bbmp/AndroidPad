@@ -1,6 +1,5 @@
 package com.robam.cabinet.ui.activity;
 
-import android.content.Intent;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.RelativeSizeSpan;
@@ -10,6 +9,7 @@ import android.widget.TextView;
 import com.robam.cabinet.R;
 import com.robam.cabinet.base.CabinetBaseActivity;
 import com.robam.cabinet.bean.Cabinet;
+import com.robam.cabinet.bean.WorkModeBean;
 import com.robam.cabinet.constant.CabinetConstant;
 import com.robam.cabinet.constant.CabinetEnum;
 import com.robam.cabinet.constant.DialogConstant;
@@ -18,12 +18,10 @@ import com.robam.cabinet.factory.CabinetDialogFactory;
 import com.robam.cabinet.util.CabinetCommonHelper;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
-import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.MCountdownView;
 import com.robam.common.utils.DateUtil;
-import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.TimeUtils;
 import java.util.Map;
 
@@ -46,6 +44,9 @@ public class WorkActivity extends CabinetBaseActivity {
      * 是否工作结束
      */
     private boolean workFinish = false;
+
+    private WorkModeBean workModeBean;
+    //private int workModeCode;
 
 
     @Override
@@ -71,35 +72,47 @@ public class WorkActivity extends CabinetBaseActivity {
                     }
                     Cabinet cabinet = (Cabinet) device;
                     setLock(cabinet.isChildLock == 1);
-                    if(cabinet.remainingModeWorkTime > 0){
-                        updateWorkTime(cabinet.remainingModeWorkTime);
-                    }else{
-                        if(!workFinish){
-                            workFinish = true;
-                            workFinish();
-                        }
+                    switch (cabinet.status){
+                        case CabinetConstant.FUN_DISINFECT:
+                        case CabinetConstant.FUN_CLEAN:
+                        case CabinetConstant.FUN_DRY:
+                        case CabinetConstant.FUN_FLUSH:
+                        case CabinetConstant.FUN_SMART:
+                            if(cabinet.remainingModeWorkTime > 0){
+                                updateWorkTime(cabinet.remainingModeWorkTime);
+                            }else{
+                                if(!workFinish){
+                                    workFinish = true;
+                                    workFinish();
+                                }
+                            }
+                            break;
+                        default:
+                            if(!workFinish){
+                                goHome();
+                            }
+                            break;
                     }
+
                     break;
                 }
             }
         });
 
-        MqttDirective.getInstance().getDirective().observe(this, s->{
-
-            if(s == (directive_offset + MsgKeys.SetSteriPowerOnOff_Req)){
-                Intent intent = new Intent(this,MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
+//        MqttDirective.getInstance().getDirective().observe(this, s->{
+//            if(s == (directive_offset + MsgKeys.SetSteriPowerOnOff_Req)){
+//                goHome();
+//            }
+//        });
     }
 
     @Override
     protected void initData() {
         //工作模式
-        tvMode.setText(CabinetEnum.match(HomeCabinet.getInstance().workMode));
+        workModeBean = (WorkModeBean) getIntent().getSerializableExtra(CabinetConstant.EXTRA_MODE_BEAN);
+        tvMode.setText(CabinetEnum.match(workModeBean.code));
         //工作时长
-        updateWorkTime(HomeCabinet.getInstance().workHours*60);
+        updateWorkTime(workModeBean.modelSurplusTime);
         //setCountDownTime();
     }
 
@@ -108,7 +121,6 @@ public class WorkActivity extends CabinetBaseActivity {
      * @param remainingTime
      */
     private void updateWorkTime(int remainingTime){
-        //LogUtils.e("updateWorkTime " + remainingTime + " from  "+flag);
         String time = TimeUtils.secToHourMinUp(remainingTime);
         SpannableString spannableString = new SpannableString(time);
         int pos = time.indexOf("h");
@@ -149,13 +161,10 @@ public class WorkActivity extends CabinetBaseActivity {
         IDialog iDialog = CabinetDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_WORK_COMPLETE);
         iDialog.setCancelable(false);
         iDialog.setContentText(CabinetEnum.match(HomeCabinet.getInstance().workMode) + "完成");
-        iDialog.setListeners(new IDialog.DialogOnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //结束工作
-                if (v.getId() == R.id.tv_ok) {
-                    startActivity(MainActivity.class);
-                }
+        iDialog.setListeners(v -> {
+            //结束工作
+            if (v.getId() == R.id.tv_ok) {
+                startActivity(MainActivity.class);
             }
         }, R.id.tv_ok);
         iDialog.show();
@@ -168,8 +177,7 @@ public class WorkActivity extends CabinetBaseActivity {
         if (id == R.id.ll_left) {
             workStop();
         } else if (id == R.id.iv_start) {
-//            startActivity(MainActivity.class);
-//            finish();
+            workStop();
             //showEndDialog();
         }
     }
@@ -201,9 +209,7 @@ public class WorkActivity extends CabinetBaseActivity {
         IDialog iDialog =  CabinetDialogFactory.createDialogByType(this,DialogConstant.DIALOG_TYPE_WORK_COMPLETE);
         iDialog.setCancelable(false);
         iDialog.setListeners(v -> {
-            Intent intent = new Intent(this,MainActivity.class);
-            startActivity(intent);
-            finish();
+            goHome();
         }, R.id.tv_ok);
         iDialog.show();
     }
