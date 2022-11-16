@@ -20,16 +20,17 @@ import com.robam.dishwasher.bean.DishWasherModeBean;
 import com.robam.dishwasher.constant.DishWasherConstant;
 import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.ui.adapter.RvMainModeAdapter;
-
+import pl.droidsonroids.gif.GifImageView;
 import java.util.List;
 
 public class HomePage extends DishWasherBasePage {
     private RecyclerView rvMain;
     private RvMainModeAdapter rvMainModeAdapter;
     private PickerLayoutManager pickerLayoutManager;
-    private ImageView imageView;
+    //private ImageView imageView;
     private TextView tvFunhint;
     private TextView tvTime, tvTemp, tvTempUnit;
+    private GifImageView gifImageView; //背景图片
 
     @Override
     protected int getLayoutId() {
@@ -39,12 +40,12 @@ public class HomePage extends DishWasherBasePage {
     @Override
     protected void initView() {
         rvMain = findViewById(R.id.rv_main);
-        imageView = findViewById(R.id.iv_bg);
+        //imageView = findViewById(R.id.iv_bg);
         tvFunhint = findViewById(R.id.tv_fun_hint);
         tvTime = findViewById(R.id.tv_time);
         tvTemp = findViewById(R.id.tv_temp);
         tvTempUnit = findViewById(R.id.tv_temp_unit);
-
+        gifImageView = findViewById(R.id.iv_bg);
         pickerLayoutManager = new PickerLayoutManager.Builder(getContext())
                 .setOrientation(RecyclerView.HORIZONTAL)
                 .setMaxItem(3)
@@ -121,7 +122,8 @@ public class HomePage extends DishWasherBasePage {
     private void setBackground(int index) {
         //设置背景图片
         int resId = getResources().getIdentifier(rvMainModeAdapter.getItem(index).backgroundImg, "drawable", getContext().getPackageName());
-        ImageUtils.loadGif(getContext(), resId, imageView);
+        //ImageUtils.loadGif(getContext(), resId, imageView);
+        gifImageView.setImageResource(resId);
     }
 
     @Override

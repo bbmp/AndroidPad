@@ -36,5 +36,6 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     api project(path: ':app:common')
     api "com.github.CymChad:BaseRecyclerViewAdapterHelper:$versions.BaseRecyclerViewAdapterHelper"
+    api "pl.droidsonroids.gif:android-gif-drawable:$versions.gif_drawable"
 
 }

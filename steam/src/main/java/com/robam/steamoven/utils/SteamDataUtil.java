@@ -83,5 +83,21 @@ public class SteamDataUtil {
         return SteamModeEnum.match(steamOven.mode);
     }
 
+    /**
+     * 获取菜谱或者模式名称
+     * @param guid 设备GUID
+     * @param modeCode 模式code
+     * @param recipeId  菜谱code
+     * @return 菜谱或者模式名称，菜谱名称优先
+     */
+    public static String getModelName(String guid,int modeCode,int recipeId){
+        if(recipeId != 0){
+            return getRecipeData(DeviceUtils.getDeviceTypeId(guid),recipeId);
+        }
+        return SteamModeEnum.match(modeCode);
+    }
+
+
+
 
 }

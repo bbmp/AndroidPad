@@ -10,11 +10,13 @@ import com.robam.cabinet.bean.CabModeBean;
 import com.robam.cabinet.bean.Cabinet;
 import com.robam.cabinet.bean.WorkModeBean;
 import com.robam.cabinet.constant.CabinetConstant;
+import com.robam.cabinet.constant.EventConstant;
 import com.robam.cabinet.device.HomeCabinet;
 import com.robam.cabinet.ui.adapter.RvTimeAdapter;
 import com.robam.cabinet.util.CabinetCommonHelper;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
+import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import java.util.ArrayList;
@@ -28,6 +30,7 @@ public class ModeSelectActivity extends CabinetBaseActivity {
     CabModeBean cabModeBean = null;
 
     public int directive_offset = 30000;
+    public static   final int  POWER_ON_OFFSET=  300;
 
     @Override
     protected int getLayoutId() {
@@ -61,23 +64,39 @@ public class ModeSelectActivity extends CabinetBaseActivity {
                 if (device.guid.equals(s) && device instanceof Cabinet && device.guid.equals(HomeCabinet.getInstance().guid)) {
                     Cabinet cabinet = (Cabinet) device;
                     setLock(cabinet.isChildLock == 1);
-                    switch (cabinet.status){
+                    switch (cabinet.workMode){
                         case CabinetConstant.FUN_DISINFECT:
                         case CabinetConstant.FUN_CLEAN:
                         case CabinetConstant.FUN_DRY:
                         case CabinetConstant.FUN_FLUSH:
+                        case CabinetConstant.FUN_SMART:
+                        case CabinetConstant.FUN_WARING:
                             toWorkPage(cabinet);
                             break;
                     }
                 }
             }
         });
+
+        MqttDirective.getInstance().getDirective().observe(this, s->{
+            if(s != EventConstant.WARING_CODE_NONE){
+                showWaring(s);
+            }
+            switch (s - directive_offset){
+                case POWER_ON_OFFSET:
+                    CabinetCommonHelper.startAppointCommand(cabModeBean.code,
+                            Integer.parseInt(rvTimeAdapter.getItem(pickerLayoutManager.getPickedPosition())),0,
+                            directive_offset + MsgKeys.SetSteriPowerOnOff_Req);
+            }
+        });
+
     }
 
     private void toWorkPage(Cabinet cabinet){
         Intent intent = new Intent(this,WorkActivity.class);
         WorkModeBean workModeBean = new WorkModeBean(cabModeBean);
-        workModeBean.orderSurplusTime = cabinet.remainingModeWorkTime;
+        //workModeBean.orderSurplusTime = cabinet.remainingModeWorkTime;
+        workModeBean.orderSurplusTime = Integer.parseInt(rvTimeAdapter.getItem(pickerLayoutManager.getPickedPosition()));
         intent.putExtra(CabinetConstant.EXTRA_MODE_BEAN,workModeBean);
         startActivity(intent);
         finish();
@@ -126,9 +145,7 @@ public class ModeSelectActivity extends CabinetBaseActivity {
         } else if (id == R.id.btn_start) {
             //开始工作
             //startWork();
-            CabinetCommonHelper.startWorkCommand(cabModeBean.code,
-                    Integer.parseInt(rvTimeAdapter.getItem(pickerLayoutManager.getPickedPosition())),
-                    directive_offset + MsgKeys.SetSteriPowerOnOff_Req);
+            CabinetCommonHelper.startPowerOn(POWER_ON_OFFSET + directive_offset);
         } else if (view.getId() == R.id.iv_float) {
             Intent intent = new Intent();
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);

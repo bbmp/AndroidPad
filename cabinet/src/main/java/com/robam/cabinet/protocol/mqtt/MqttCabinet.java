@@ -1,12 +1,16 @@
 package com.robam.cabinet.protocol.mqtt;
 
+import android.util.Log;
+
 import com.robam.cabinet.constant.CabinetConstant;
+import com.robam.cabinet.constant.EventConstant;
 import com.robam.cabinet.device.CabinetAbstractControl;
 import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MqttPublic;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.ByteUtils;
+import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MsgUtils;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -25,13 +29,16 @@ public class MqttCabinet extends MqttPublic {
             case MsgKeys.GetSteriStatus_Rep:
                 short mode = ByteUtils.toShort(payload[offset++]);
                 msg.putOpt(CabinetConstant.SteriStatus, mode);
-                msg.putOpt(CabinetConstant.SteriLock, ByteUtils.toShort(payload[offset++]));
-                msg.putOpt(CabinetConstant.SteriWorkLeftTimeL, ByteUtils.toInt32(payload, offset++, ByteOrder.LITTLE_ENDIAN));
+                short doorState = ByteUtils.toShort(payload[offset++]);
+                msg.putOpt(CabinetConstant.SteriLock, doorState);
+                int workTime = ByteUtils.toInt32(payload, offset++, ByteOrder.LITTLE_ENDIAN);
+                msg.putOpt(CabinetConstant.SteriWorkLeftTimeL, workTime);
                 offset++;
                 offset++;
                 offset++;
                 msg.putOpt(CabinetConstant.SteriDoorLock, ByteUtils.toShort(payload[offset++]));
-                msg.putOpt(CabinetConstant.SteriAlarmStatus, ByteUtils.toShort(payload[offset++]));
+                short waringCode = ByteUtils.toShort(payload[offset++]);
+                msg.putOpt(CabinetConstant.SteriAlarmStatus, waringCode);
                 msg.putOpt(CabinetConstant.SteriParaTem, ByteUtils.toShort(payload[offset++]));
                 msg.putOpt(CabinetConstant.SteriParaHum, ByteUtils.toShort(payload[offset++]));
                 msg.putOpt(CabinetConstant.SteriParaGerm, ByteUtils.toShort(payload[offset++]));
@@ -46,6 +53,7 @@ public class MqttCabinet extends MqttPublic {
                             short aShort = ByteUtils.toShort(payload[offset++]);
                             msg.putOpt(CabinetConstant.Length,aShort);
                             int anInt = ByteUtils.toInt16(payload, offset++,ByteOrder.LITTLE_ENDIAN);
+                            //int anInt = ByteUtils.toInt16(payload, offset++, ByteUtils.BYTE_ORDER);
                             msg.putOpt(CabinetConstant.REMAINING_APPOINT_TIME,anInt);
                             offset++;
                             break;
@@ -60,20 +68,30 @@ public class MqttCabinet extends MqttPublic {
                     }
                     argument--;
                 }
-                if(mode != 0){//记录最新工作模式
-                    MqttDirective.getInstance().updateModelWorkState(msg.getGuid(),mode);
+                if(mode != 0 && workTime != 0){//记录最新工作模式
+                    LogUtils.e("MqttCabinet updateModelWorkState");
+                    MqttDirective.getInstance().updateModelWorkState(msg.getGuid(),mode,0);
                 }
                 break;
 
             // 通知类
             case MsgKeys.SteriAlarm_Noti:
-                msg.putOpt(CabinetConstant.AlarmId, ByteUtils.toShort(payload[offset++]));
+                short waringCodeNoti = ByteUtils.toShort(payload[offset++]);
+                msg.putOpt(CabinetConstant.AlarmId, waringCodeNoti);
+                MqttDirective.getInstance().getDirective().setValue((int)waringCodeNoti);
                 break;
             case MsgKeys.SteriEvent_Noti:
-                msg.putOpt(CabinetConstant.EventId, ByteUtils.toShort(payload[offset++]));
-                msg.putOpt(CabinetConstant.EventParam, ByteUtils.toShort(payload[offset++]));
+                short eventId = ByteUtils.toShort(payload[offset++]);
+                short eventParam = ByteUtils.toShort(payload[offset++]);
+                msg.putOpt(CabinetConstant.EventId, eventId);
+                msg.putOpt(CabinetConstant.EventParam, eventParam);
                 msg.putOpt(CabinetConstant.ArgumentNumber, ByteUtils.toShort(payload[offset++]));
                 msg.putOpt(CabinetConstant.UserId, MsgUtils.getString(payload, offset++, 10));
+                if(eventId == EventConstant.WORK_FINISH && eventParam == 0){
+                    LogUtils.e("MqttCabinet finishWorkModelState");
+                    MqttDirective.getInstance().finishWorkModelState(msg.getGuid());
+                    //MqttDirective.getInstance().getDirective().setValue((int) eventId);
+                }
                 break;
         }
     }
@@ -98,8 +116,10 @@ public class MqttCabinet extends MqttPublic {
                         buf.put((byte) msg.optInt(CabinetConstant.Key));
                         buf.put((byte) msg.optInt(CabinetConstant.Length));
                         int appointmentTime = msg.optInt(CabinetConstant.SteriReserveTime);
-                        buf.put((byte) (appointmentTime & 0xFF));
-                        buf.put((byte) ((appointmentTime >> 8) & 0xFF));
+                        byte time1 = (byte) (appointmentTime & 0xFF);
+                        byte time2 = (byte) ((appointmentTime >> 8) & 0xFF);
+                        buf.put(time1);
+                        buf.put(time2);
                     }
                 }
                 break;

@@ -43,6 +43,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import pl.droidsonroids.gif.GifImageView;
+
 public class HomePage extends SteamBasePage {
 
     private RecyclerView rvMain, rvDot;
@@ -50,7 +52,8 @@ public class HomePage extends SteamBasePage {
     private RvDotAdapter rvDotAdapter;
     private RelativeLayout llMain;
     private PickerLayoutManager pickerLayoutManager;
-    private ImageView imageView;
+    //private ImageView imageView;
+    private GifImageView gifImageView; //背景图片
 
     public static HomePage newInstance() {
         return new HomePage();
@@ -67,7 +70,8 @@ public class HomePage extends SteamBasePage {
 
         rvMain = findViewById(R.id.rv_main);
         rvDot = findViewById(R.id.rv_dot);
-        imageView = findViewById(R.id.iv_bg);
+        //imageView = findViewById(R.id.iv_bg);
+        gifImageView = findViewById(R.id.iv_bg);
         pickerLayoutManager = new PickerLayoutManager.Builder(getContext())
                 .setOrientation(RecyclerView.HORIZONTAL)
                 .setMaxItem(3)
@@ -145,7 +149,8 @@ public class HomePage extends SteamBasePage {
     private void setBackground(int index) {
         //设置背景图片
         int resId = getResources().getIdentifier(rvMainFuntionAdapter.getItem(index).backgroundImg, "drawable", getContext().getPackageName());
-        ImageUtils.loadGif(getContext(), resId, imageView);
+        //ImageUtils.loadGif(getContext(), resId, imageView);
+        gifImageView.setImageResource(resId);
     }
 
     /**

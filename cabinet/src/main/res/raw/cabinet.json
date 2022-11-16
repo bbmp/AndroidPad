@@ -15,11 +15,11 @@
   },
   {
     "backgroundImg": "cabinet_ic_bg_oven",
-    "funtionCode": 7,
+    "funtionCode": 3,
     "funtionName": "快洁",
     "into": "com.robam.cabinet.ui.activity.ModeSelectActivity",
     "mode": {
-      "code": 7,
+      "code": 3,
       "name": "快洁",
       "defTime": 3,
       "minTime": 3,
@@ -43,11 +43,11 @@
   },
   {
     "backgroundImg": "cabinet_ic_bg_multi",
-    "funtionCode": 4,
+    "funtionCode": 13,
     "funtionName": "净存",
     "into": "com.robam.cabinet.ui.activity.ModeSelectActivity",
     "mode": {
-      "code": 4,
+      "code": 13,
       "name": "净存",
       "defTime": 20,
       "minTime": 20,
@@ -57,11 +57,11 @@
   },
   {
     "backgroundImg": "cabinet_ic_bg_aux",
-    "funtionCode": 5,
+    "funtionCode": 8,
     "funtionName": "智能",
     "into": "com.robam.cabinet.ui.activity.ModeSelectActivity",
     "mode": {
-      "code": 5,
+      "code": 8,
       "name": "智能",
       "defTime": 45,
       "minTime": 45,

@@ -102,11 +102,9 @@ public class MqttDishWasher extends MqttPublic {
                 msg.putOpt(DishWasherConstant.LackSaltStatus, lackSaltStatus);
                 msg.putOpt(DishWasherConstant.AbnormalAlarmStatus, abnormalAlarmStatus);
                 msg.putOpt(DishWasherConstant.ADD_AUX, ADD_AUX);
-
-                if(dishWasherWorkMode != 0){//记录最新工作模式
-                    MqttDirective.getInstance().updateModelWorkState(msg.getGuid(),dishWasherWorkMode);
+                if(dishWasherWorkMode != 0 && remainingWorkingTime > 0){//记录最新工作模式
+                    MqttDirective.getInstance().updateModelWorkState(msg.getGuid(),dishWasherWorkMode,0);
                 }
-
                 break;
             case MsgKeys.getEventReport:
                 short aShort = ByteUtils.toShort(payload[offset++]);

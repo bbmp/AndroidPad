@@ -13,11 +13,13 @@ import com.robam.cabinet.bean.WorkModeBean;
 import com.robam.cabinet.constant.CabinetConstant;
 import com.robam.cabinet.constant.CabinetEnum;
 import com.robam.cabinet.constant.DialogConstant;
+import com.robam.cabinet.constant.EventConstant;
 import com.robam.cabinet.device.HomeCabinet;
 import com.robam.cabinet.factory.CabinetDialogFactory;
 import com.robam.cabinet.util.CabinetCommonHelper;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
+import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.MCountdownView;
@@ -72,13 +74,15 @@ public class WorkActivity extends CabinetBaseActivity {
                     }
                     Cabinet cabinet = (Cabinet) device;
                     setLock(cabinet.isChildLock == 1);
-                    switch (cabinet.status){
+                    switch (cabinet.workMode){
                         case CabinetConstant.FUN_DISINFECT:
                         case CabinetConstant.FUN_CLEAN:
                         case CabinetConstant.FUN_DRY:
                         case CabinetConstant.FUN_FLUSH:
                         case CabinetConstant.FUN_SMART:
+                        case CabinetConstant.FUN_WARING:
                             if(cabinet.remainingModeWorkTime > 0){
+                                tvMode.setText(CabinetEnum.match(cabinet.workMode));
                                 updateWorkTime(cabinet.remainingModeWorkTime);
                             }else{
                                 if(!workFinish){
@@ -99,11 +103,11 @@ public class WorkActivity extends CabinetBaseActivity {
             }
         });
 
-//        MqttDirective.getInstance().getDirective().observe(this, s->{
-//            if(s == (directive_offset + MsgKeys.SetSteriPowerOnOff_Req)){
-//                goHome();
-//            }
-//        });
+        MqttDirective.getInstance().getDirective().observe(this, s->{
+            if(s != EventConstant.WARING_CODE_NONE){
+                showWaring(s);
+            }
+        });
     }
 
     @Override
@@ -193,14 +197,16 @@ public class WorkActivity extends CabinetBaseActivity {
             //结束工作
             if (v.getId() == R.id.tv_ok) {
                 Map map = CabinetCommonHelper.getCommonMap(MsgKeys.SetSteriPowerOnOff_Req);
-                map.put(CabinetConstant.SteriStatus, 1);
+                map.put(CabinetConstant.SteriStatus, 0);
                 map.put(CabinetConstant.SteriTime, 0);
                 map.put(CabinetConstant.ArgumentNumber,0);
-                CabinetCommonHelper.sendCommonMsgForLiveData(map,directive_offset + MsgKeys.SetSteriPowerOnOff_Req);
+                //CabinetCommonHelper.sendCommonMsg(map,directive_offset + MsgKeys.SetSteriPowerOnOff_Req);
+                CabinetCommonHelper.sendCommonMsg(map);
             }
         }, R.id.tv_cancel, R.id.tv_ok);
         iDialog.show();
     }
+
 
     /**
      * 工作结束弹窗

@@ -14,6 +14,7 @@ import com.robam.cabinet.bean.WorkModeBean;
 import com.robam.cabinet.constant.CabinetConstant;
 import com.robam.cabinet.constant.CabinetEnum;
 import com.robam.cabinet.constant.DialogConstant;
+import com.robam.cabinet.constant.EventConstant;
 import com.robam.cabinet.device.HomeCabinet;
 import com.robam.cabinet.factory.CabinetDialogFactory;
 import com.robam.cabinet.util.CabinetAppointmentUtil;
@@ -70,7 +71,7 @@ public class AppointingActivity extends CabinetBaseActivity {
             for (Device device: AccountInfo.getInstance().deviceList) {
                 if (device.guid.equals(s) && device instanceof Cabinet && device.guid.equals(HomeCabinet.getInstance().guid)) { //当前锅
                     Cabinet cabinet = (Cabinet) device;
-                    switch (cabinet.status){
+                    switch (cabinet.workMode){
                         case CabinetConstant.FUN_DISINFECT:
                         case CabinetConstant.FUN_CLEAN:
                         case CabinetConstant.FUN_DRY:
@@ -78,7 +79,7 @@ public class AppointingActivity extends CabinetBaseActivity {
                         case CabinetConstant.FUN_SMART:
                             updateAppointingView(cabinet);
                             break;
-                        case CabinetConstant.APPOINTMENT:
+                        //case CabinetConstant.APPOINTMENT:
                         case CabinetConstant.OFF:
                         case CabinetConstant.ON:
                             goHome();
@@ -88,14 +89,11 @@ public class AppointingActivity extends CabinetBaseActivity {
                 }
             }
         });
-//        MqttDirective.getInstance().getDirective().observe(this, s->{
-//
-//               if(s == (directive_offset + MsgKeys.SetSteriPowerOnOff_Req)){
-//                   Intent intent = new Intent(this,MainActivity.class);
-//                   startActivity(intent);
-//                   finish();
-//               }
-//        });
+        MqttDirective.getInstance().getDirective().observe(this, s->{
+            if(s != EventConstant.WARING_CODE_NONE){
+                showWaring(s);
+            }
+        });
     }
 
 
@@ -114,11 +112,11 @@ public class AppointingActivity extends CabinetBaseActivity {
         tvAppointmentHint.setText(CabinetAppointmentUtil.startTimePoint(orderTime));
     }
 
-    private void updateAppointingView( Cabinet cabinet){
-        if(cabinet.remainingAppointTime == 0){
-            HomeCabinet.getInstance().workMode = cabinet.status;
-            HomeCabinet.getInstance().workHours = cabinet.remainingModeWorkTime;
+    private void updateAppointingView(Cabinet cabinet){
+        if(cabinet.remainingAppointTime <= 0){
+            WorkModeBean workModeBean = new WorkModeBean(cabinet.workMode,0,cabinet.remainingModeWorkTime);
             Intent intent = new Intent(this,WorkActivity.class);
+            intent.putExtra(CabinetConstant.EXTRA_MODE_BEAN,workModeBean);
             startActivity(intent);
         }else{
             int totalTime = cabinet.remainingAppointTime * 60;
@@ -208,7 +206,7 @@ public class AppointingActivity extends CabinetBaseActivity {
             //结束工作
             if (v.getId() == R.id.tv_ok) {
                 Map map = CabinetCommonHelper.getCommonMap(MsgKeys.SetSteriPowerOnOff_Req);
-                map.put(CabinetConstant.SteriStatus, 1);
+                map.put(CabinetConstant.SteriStatus, 0);
                 map.put(CabinetConstant.SteriTime, 0);
                 map.put(CabinetConstant.ArgumentNumber,0);
                 CabinetCommonHelper.sendCommonMsgForLiveData(map,directive_offset + MsgKeys.SetSteriPowerOnOff_Req);

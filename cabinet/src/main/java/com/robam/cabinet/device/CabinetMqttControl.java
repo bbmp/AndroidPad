@@ -1,5 +1,7 @@
 package com.robam.cabinet.device;
 
+import com.robam.cabinet.constant.CabinetConstant;
+import com.robam.cabinet.util.CabinetCommonHelper;
 import com.robam.common.bean.RTopic;
 import com.robam.common.device.Plat;
 import com.robam.common.mqtt.MqttManager;
@@ -12,8 +14,12 @@ import java.util.Map;
 //这边是控制协议打包
 public class CabinetMqttControl implements CabinetFunction{
     @Override
-    public void shutDown() {
-
+    public void shutDown(String targetGuid) {
+        Map map = CabinetCommonHelper.getCommonMap(MsgKeys.SetSteriPowerOnOff_Req);
+        map.put(CabinetConstant.SteriStatus, 0);
+        map.put(CabinetConstant.SteriTime, 0);
+        map.put(CabinetConstant.ArgumentNumber,0);
+        sendCommonMsg(map,targetGuid,MsgKeys.SetSteriPowerOnOff_Req);
     }
 
     @Override

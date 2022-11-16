@@ -9,4 +9,5 @@
     <color name="cabinet_mode">#fff6f6f6</color>
     <color name="cabinet_lock">#ff72afff</color>
     <color name="cabinet_white80">#CCffffff</color>
+    <color name="cabinet_color_f6">#f6f6f6</color>
 </resources>

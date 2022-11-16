@@ -5,7 +5,7 @@ import com.robam.common.mqtt.MqttManager;
 import java.util.Map;
 
 public interface CabinetFunction {
-    void shutDown();
+    void shutDown(String targetGuid);
 
     void powerOn();
 

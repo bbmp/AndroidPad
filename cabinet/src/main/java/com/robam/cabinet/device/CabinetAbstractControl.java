@@ -19,8 +19,8 @@ public class CabinetAbstractControl implements CabinetFunction{
         this.function = cabinetFunction;
     }
     @Override
-    public void shutDown() {
-        function.shutDown();
+    public void shutDown(String guid) {
+        function.shutDown(guid);
     }
 
     @Override

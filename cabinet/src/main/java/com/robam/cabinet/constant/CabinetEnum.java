@@ -7,6 +7,7 @@ public enum CabinetEnum {
     DRY(CabinetConstant.FUN_DRY,"烘干"),
     FLUSH(CabinetConstant.FUN_FLUSH,"净存"),
     SMART(CabinetConstant.FUN_SMART,"智能"),
+    WARING(CabinetConstant.FUN_WARING,"报警"),
     ;
 
     private int code;

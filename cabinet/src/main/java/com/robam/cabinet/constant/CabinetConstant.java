@@ -6,17 +6,19 @@ CabinetConstant {
     //消毒
     public final static int FUN_DISINFECT = 2;
     //快洁
-    public final static int FUN_CLEAN = 7;
+    public final static int FUN_CLEAN = 3;
     //烘干
     public final static int FUN_DRY = 4;
 
     //净存
-    public final static int FUN_FLUSH = 11;//待核对
+    public final static int FUN_FLUSH = 13;//待核对
     //智能
     public final static int FUN_SMART = 8;//待核对
 
+    public final static int FUN_WARING = 6;//报警
+
     //预约
-    public final static int APPOINTMENT = 5;
+    //public final static int APPOINTMENT = 5;
     public final static int OFF = 0;
     public final static int ON = 1;
 

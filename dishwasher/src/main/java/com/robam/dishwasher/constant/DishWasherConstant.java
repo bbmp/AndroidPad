@@ -22,16 +22,16 @@ public class DishWasherConstant {
     public final static int AUX_FLUSH = 8;//长效净存
     public final static int AUX_DOWN_WASH = 3;//下层洗
 
-    public final static int DEVICE_WARING_E0 = 0;//下层洗
-    public final static int DEVICE_WARING_E1 = 1;//下层洗
-    public final static int DEVICE_WARING_E3 = 2;//下层洗
-    public final static int DEVICE_WARING_E4 = 4;//下层洗
-    public final static int DEVICE_WARING_E5 = 5;//下层洗
-    public final static int DEVICE_WARING_E6 = 6;//下层洗
-    public final static int DEVICE_WARING_E7 = 7;//下层洗
-    //public final static int DEVICE_WARING_E8 = 8;//下层洗
-    public final static int DEVICE_WARING_E9 = 9;//下层洗
-    public final static int DEVICE_WARING_E10 = 10;//下层洗
+    public final static int DEVICE_WARING_E0 = 0;//
+    public final static int DEVICE_WARING_E1 = 1;//
+    public final static int DEVICE_WARING_E3 = 2;//
+    public final static int DEVICE_WARING_E4 = 4;//
+    public final static int DEVICE_WARING_E5 = 5;//
+    public final static int DEVICE_WARING_E6 = 6;//
+    public final static int DEVICE_WARING_E7 = 7;//
+    //public final static int DEVICE_WARING_E8 = 8;//
+    public final static int DEVICE_WARING_E9 = 9;//
+    public final static int DEVICE_WARING_E10 = 10;//
 
 
     public final static String EXTRA_MODEBEAN = "modebean";

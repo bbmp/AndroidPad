@@ -21,6 +21,7 @@ import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.google.gson.Gson;
 import com.robam.cabinet.bean.Cabinet;
+import com.robam.cabinet.device.CabinetAbstractControl;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.BaseResponse;
 import com.robam.common.constant.ComnConstant;
@@ -388,6 +389,8 @@ public class HomePage extends VentilatorBasePage {
                             DishWasherAbstractControl.getInstance().pauseWork(device.guid);
                         else if (dishWasher.workStatus == 3)  //暂停中
                             DishWasherAbstractControl.getInstance().continueWork(device.guid);
+                    }else if(device instanceof Cabinet){
+                            CabinetAbstractControl.getInstance().shutDown(device.guid);
                     }
                 }
                 //close products menu

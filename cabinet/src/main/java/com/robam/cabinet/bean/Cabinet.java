@@ -40,7 +40,7 @@ public class Cabinet extends Device{
 
     @Override
     public boolean onMsgReceived(MqttMsg msg) {
-        if (null != msg && null != msg.opt(CabinetConstant.SteriStatus)) {
+        if (null != msg) {//&& null != msg.opt(CabinetConstant.SteriStatus)
             queryNum = 0;
             status = Device.ONLINE;
             parserDeviceInfo(msg);
@@ -55,14 +55,14 @@ public class Cabinet extends Device{
             int key = msg.getID();
             switch (key) {
                 case MsgKeys.SteriAlarm_Noti:
-                    short alarmId = (short) msg.optInt(CabinetConstant.AlarmId);
+                    waringCode = (short) msg.optInt(CabinetConstant.AlarmId);
                     break;
                 case MsgKeys.GetSteriStatus_Rep:
-                    status = (short) msg.optInt(CabinetConstant.SteriStatus);
+                    workMode = (short) msg.optInt(CabinetConstant.SteriStatus);
                     isChildLock = (short) msg.optInt(CabinetConstant.SteriLock);
                     remainingModeWorkTime = (short) msg.optInt(CabinetConstant.SteriWorkLeftTimeL);
                     doorLock = (short) msg.optInt(CabinetConstant.SteriDoorLock);
-                    AlarmStautus = (short) msg.optInt(CabinetConstant.SteriAlarmStatus);
+                    alarmStatus = (short) msg.optInt(CabinetConstant.SteriAlarmStatus);
                     temp = (short) msg.optInt(CabinetConstant.SteriParaTem);
                     hum = (short) msg.optInt(CabinetConstant.SteriParaHum);
                     germ = (short) msg.optInt(CabinetConstant.SteriParaGerm);
@@ -92,11 +92,12 @@ public class Cabinet extends Device{
 
 
     public short isChildLock;
-    public short AlarmStautus;
+    public short alarmStatus;//告警编码
     public short remainingAppointTime;//预约剩余时间
     public short remainingModeWorkTime; //剩余工作时间
     public short temp, hum, germ, ozone;
     public short doorLock;
     public short argumentNumber;
     public short steriSecurityLock;
+    public short waringCode = 255;//告警编码，默认255，没有告警
 }

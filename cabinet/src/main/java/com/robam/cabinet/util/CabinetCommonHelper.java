@@ -14,16 +14,12 @@ import java.util.Map;
 public class CabinetCommonHelper {
 
     public static long perOrderTimeMin = System.currentTimeMillis() ;
-    public static final float COMMON_DELAY_DUR = 0.05f*1000;
-    public static short preCommonId = -100;
-
+    public static final float COMMON_DELAY_DUR = 0.1f*1000;
 
     public static void sendCommonMsg(Map map){
         perOrderTimeMin = System.currentTimeMillis();
         CabinetAbstractControl.getInstance().sendCommonMsg(map,(String) map.get(CabinetConstant.TARGET_GUID), (Short) map.get(CabinetConstant.MSG_ID));
     }
-
-
 
     public static void sendCommonMsgForLiveData(Map map,final int bsCode){
         perOrderTimeMin = System.currentTimeMillis();
@@ -48,15 +44,6 @@ public class CabinetCommonHelper {
         map.put(CabinetConstant.MSG_ID, msgId);
         map.put(CabinetConstant.TerminalType, ITerminalType.PAD);
         return map;
-    }
-
-
-    /**
-     * 获取预约执行时间
-     * @return
-     */
-    public static int getAppointingTimeMin(String appointTimeStr){
-        return 40;
     }
 
     public static boolean isSafe(){
@@ -89,10 +76,13 @@ public class CabinetCommonHelper {
 
     }
 
-    public static void startWorkCommand(int code,int time,final int bsCode){
+    public static void startPowerOn(int bsCode){
         Map map = CabinetCommonHelper.getCommonMap(MsgKeys.SetSteriPowerOnOff_Req);
-        map.put(CabinetConstant.SteriStatus, code);
-        map.put(CabinetConstant.SteriTime, time);
-        CabinetCommonHelper.sendCommonMsg(map);
+        map.put(CabinetConstant.SteriStatus, 1);
+        map.put(CabinetConstant.SteriTime, 0);
+        map.put(CabinetConstant.ArgumentNumber,0);
+        CabinetCommonHelper.sendCommonMsgForLiveData(map,bsCode);
+
     }
+
 }

@@ -10,11 +10,13 @@ import com.robam.cabinet.bean.CabModeBean;
 import com.robam.cabinet.bean.Cabinet;
 import com.robam.cabinet.bean.WorkModeBean;
 import com.robam.cabinet.constant.CabinetConstant;
+import com.robam.cabinet.constant.EventConstant;
 import com.robam.cabinet.device.HomeCabinet;
 import com.robam.cabinet.ui.adapter.RvStringAdapter;
 import com.robam.cabinet.util.CabinetCommonHelper;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
+import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.common.utils.DateUtil;
@@ -60,6 +62,7 @@ public class AppointmentActivity extends CabinetBaseActivity {
     private CabModeBean cabModeBean = null;
 
     public int directive_offset = 1300000;
+    public static  final int POWER_ON_OFFSET=  400;
 
     @Override
     protected int getLayoutId() {
@@ -94,12 +97,13 @@ public class AppointmentActivity extends CabinetBaseActivity {
                 if (device.guid.equals(s) && device instanceof Cabinet && device.guid.equals(HomeCabinet.getInstance().guid)) {
                     Cabinet cabinet = (Cabinet) device;
                     setLock(cabinet.isChildLock == 1);
-                    switch (cabinet.status){
+                    switch (cabinet.workMode){
                         case CabinetConstant.FUN_DISINFECT:
                         case CabinetConstant.FUN_CLEAN:
                         case CabinetConstant.FUN_DRY:
                         case CabinetConstant.FUN_FLUSH:
                         case CabinetConstant.FUN_SMART:
+                        case CabinetConstant.FUN_WARING:
                             if(cabinet.remainingAppointTime != 0){
                                 toAppointPage(cabinet);
                             }
@@ -107,6 +111,25 @@ public class AppointmentActivity extends CabinetBaseActivity {
                     }
 
                 }
+            }
+        });
+
+        MqttDirective.getInstance().getDirective().observe(this, s->{
+            if(s != EventConstant.WARING_CODE_NONE){
+                showWaring(s);
+            }
+            switch (s - directive_offset){
+                case POWER_ON_OFFSET:
+                    try {
+                        CabinetCommonHelper.startAppointCommand(cabModeBean.code,
+                                cabModeBean.defTime,
+                                (int)getAppointingTimeMin(tvTime.getText().toString()),
+                                directive_offset + MsgKeys.SetSteriPowerOnOff_Req);
+                        //startWork();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    break;
             }
         });
     }
@@ -183,15 +206,8 @@ public class AppointmentActivity extends CabinetBaseActivity {
         if (id == R.id.btn_cancel) {
             finish();
         } else if (id == R.id.btn_ok) { //确认预约
-            try {
-                CabinetCommonHelper.startAppointCommand(cabModeBean.code,
-                        cabModeBean.defTime,
-                        (int)getAppointingTimeMin(tvTime.getText().toString()),
-                        directive_offset + MsgKeys.SetSteriPowerOnOff_Req);
-                //startWork();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+            CabinetCommonHelper.startPowerOn(directive_offset+POWER_ON_OFFSET);
+
         } else if (id == R.id.ll_left) {
             finish();
         }

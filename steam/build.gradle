@@ -49,4 +49,5 @@ dependencies {
     //数据库：litepal
     api 'org.litepal.guolindev:core:3.2.3'
     api "com.github.CymChad:BaseRecyclerViewAdapterHelper:$versions.BaseRecyclerViewAdapterHelper"
+    api "pl.droidsonroids.gif:android-gif-drawable:$versions.gif_drawable"
 }

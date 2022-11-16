@@ -17,4 +17,17 @@
     <string name="cabinet_screen_lock">童锁</string>
     <string name="cabinet_unlock_hint">请长按2s童锁解除锁定</string>
     <string name="cabinet_no_guid">缺少数据</string>
+    <string name="cabinet_maintain_phone">维修电话：658889789</string>
+
+    <string name="cabinet_waring_e0_title">E0：门控告警</string>
+    <string name="cabinet_waring_e1_title">E1：紫外线灯管未接通/传感器不良</string>
+    <string name="cabinet_waring_e2_title">E2：温度传感器不良</string>
+    <string name="cabinet_waring_e5_title">E5：传感器故障</string>
+    <string name="cabinet_waring_e6_title">E6：通讯故障</string>
+
+    <string name="cabinet_waring_e0_content">门未关，请关好机门</string>
+    <string name="cabinet_waring_e1_content">紫外线灯管或传感器故障，请关闭消毒柜并申请售后服务</string>
+    <string name="cabinet_waring_e2_content">温度传感器故障，请关闭消毒柜并申请售后服务</string>
+    <string name="cabinet_waring_e5_content">传感器故障，请联系专业技术人员咨询或维修</string>
+    <string name="cabinet_waring_e6_content">通信故障，请关闭消毒柜并申请售后服务。</string>
 </resources>

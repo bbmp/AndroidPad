@@ -15,9 +15,13 @@ import androidx.lifecycle.Observer;
 
 import com.robam.cabinet.R;
 import com.robam.cabinet.constant.CabinetConstant;
+import com.robam.cabinet.constant.CabinetWaringEnum;
+import com.robam.cabinet.constant.Constant;
+import com.robam.cabinet.constant.EventConstant;
 import com.robam.cabinet.device.HomeCabinet;
 import com.robam.cabinet.manager.CabinetActivityManager;
 import com.robam.cabinet.ui.activity.MainActivity;
+import com.robam.cabinet.ui.activity.WaringActivity;
 import com.robam.cabinet.ui.dialog.LockDialog;
 import com.robam.cabinet.util.CabinetCommonHelper;
 import com.robam.common.bean.AccountInfo;
@@ -185,7 +189,7 @@ public abstract class CabinetBaseActivity extends BaseActivity {
             return;
         }
         ((ImageView) iconView).setImageResource(lock ? R.drawable.cabinet_screen_lock : R.drawable.cabinet_screen_unlock);
-        ((TextView) tvView).setTextColor(getResources().getColor(lock?R.color.cabinet_lock:R.color.cabinet_white));
+        ((TextView) tvView).setTextColor(getResources().getColor(lock?R.color.cabinet_lock:R.color.cabinet_white70));
     }
 
     public void goHome(){
@@ -194,5 +198,33 @@ public abstract class CabinetBaseActivity extends BaseActivity {
         finish();
     }
 
+    /**
+     * 跳转到告警页面
+     * @param waringCode
+     * @return
+     */
+    protected boolean toWaringPage(int waringCode){
+        if(waringCode != CabinetWaringEnum.E0.getCode() && CabinetWaringEnum.match(waringCode).getCode() != CabinetWaringEnum.E0.getCode()){
+            //跳转到告警页面
+            Intent intent = new Intent(this, WaringActivity.class);
+            intent.putExtra(Constant.WARING_CODE,waringCode);
+            startActivity(intent);
+            return true;
+        }
+        return false;
+    }
 
+    public void showWaring(int waringCode){
+        if(waringCode != EventConstant.WARING_CODE_NONE){
+            CabinetWaringEnum match = CabinetWaringEnum.match(waringCode);
+            if(match.getCode() != CabinetWaringEnum.E255.getCode()){
+                runOnUiThread(() -> {
+//                    Intent intent = new Intent(CabinetBaseActivity.this, WaringActivity.class);
+//                    intent.putExtra(Constant.WARING_CODE,waringCode);
+//                    startActivity(intent);
+                    ToastUtils.showLong(this, match.getPromptContentRes());
+                });
+            }
+        }
+    }
 }

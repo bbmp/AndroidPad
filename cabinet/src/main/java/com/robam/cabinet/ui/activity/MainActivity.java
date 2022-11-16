@@ -8,11 +8,13 @@ import com.robam.cabinet.base.CabinetBaseActivity;
 import com.robam.cabinet.bean.Cabinet;
 import com.robam.cabinet.bean.WorkModeBean;
 import com.robam.cabinet.constant.CabinetConstant;
+import com.robam.cabinet.constant.EventConstant;
 import com.robam.cabinet.device.CabinetAbstractControl;
 import com.robam.cabinet.device.HomeCabinet;
 import com.robam.cabinet.util.CabinetCommonHelper;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
+import com.robam.common.bean.MqttDirective;
 import com.robam.common.constant.ComnConstant;
 import com.robam.common.utils.StringUtils;
 import com.robam.common.utils.ToastUtils;
@@ -50,15 +52,19 @@ public class MainActivity extends CabinetBaseActivity {
                 if (device.guid.equals(s) && device instanceof Cabinet && device.guid.equals(HomeCabinet.getInstance().guid)) { //当前锅
                     Cabinet cabinet = (Cabinet) device;
                     setLock(cabinet.isChildLock == 1);
+//                    if(toWaringPage(cabinet.alarmStatus)){
+//                        return;
+//                    }
                     if(!CabinetCommonHelper.isSafe()){
                         return;
                     }
-                    switch (cabinet.status){
+                    switch (cabinet.workMode){
                         case CabinetConstant.FUN_DISINFECT:
                         case CabinetConstant.FUN_CLEAN:
                         case CabinetConstant.FUN_DRY:
                         case CabinetConstant.FUN_FLUSH:
                         case CabinetConstant.FUN_SMART:
+                        case CabinetConstant.FUN_WARING:
                             this.toWorkingPage(cabinet);
                             break;
                     }
@@ -66,17 +72,22 @@ public class MainActivity extends CabinetBaseActivity {
                 }
             }
         });
+        MqttDirective.getInstance().getDirective().observe(this, s->{
+            if(s != EventConstant.WARING_CODE_NONE){
+                showWaring(s);
+            }
+        });
     }
 
     private void toWorkingPage(Cabinet cabinet) {
-        if(cabinet.remainingAppointTime != 0){//预约
-            WorkModeBean workModeBean = new WorkModeBean(cabinet.status, cabinet.remainingModeWorkTime,0);
-            Intent intent = new Intent(this,AppointingActivity.class);
+        if(cabinet.remainingModeWorkTime > 0){//工作
+            WorkModeBean workModeBean = new WorkModeBean(cabinet.workMode,0, cabinet.remainingModeWorkTime);
+            Intent intent = new Intent(this,WorkActivity.class);
             intent.putExtra(CabinetConstant.EXTRA_MODE_BEAN,workModeBean);
             startActivity(intent);
-        }else if(cabinet.remainingModeWorkTime != 0){//工作
-            WorkModeBean workModeBean = new WorkModeBean(cabinet.status,0, cabinet.remainingModeWorkTime);
-            Intent intent = new Intent(this,WorkActivity.class);
+        }else if(cabinet.remainingAppointTime > 0){//预约 每次结束后，都有一段时间预约时间是1380，需与设备端一起排查问题
+            WorkModeBean workModeBean = new WorkModeBean(cabinet.workMode, cabinet.remainingModeWorkTime,0);
+            Intent intent = new Intent(this,AppointingActivity.class);
             intent.putExtra(CabinetConstant.EXTRA_MODE_BEAN,workModeBean);
             startActivity(intent);
         }

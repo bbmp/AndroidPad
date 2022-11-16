@@ -35,7 +35,7 @@ import com.robam.ventilator.device.VentilatorFactory;
 public class AlarmMqttService extends Service {
 
     private static final int PENDING_REQUEST = 0;
-    private static final int INTERVAL = 15000;
+    private static final int INTERVAL = 5000;
     private AlarmManager alarmManager;
     private PendingIntent pIntent;
 

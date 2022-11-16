@@ -3,13 +3,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <ImageView
+<!--    <ImageView-->
+<!--        android:id="@+id/iv_bg"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:scaleType="fitXY">-->
+
+<!--    </ImageView>-->
+    <pl.droidsonroids.gif.GifImageView
         android:id="@+id/iv_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="fitXY">
+        android:scaleType="fitXY"
+        android:src="@drawable/steam_ic_bg_oven"/>
 
-    </ImageView>
     <include layout="@layout/steam_view_layout_title"
         android:id="@+id/ll_title"
         android:layout_width="match_parent"

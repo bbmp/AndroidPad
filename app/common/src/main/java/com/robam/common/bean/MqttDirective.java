@@ -19,14 +19,12 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class MqttDirective {
 
-    public static final String DATE_SPLIT_FLAG = "&!&";
-
+    private static final int MAX_WORK_TIME_OF_DURATION = 1000 * 60 * 10;//工作完成后，多长时间内显示完成状态
+    private static final int SAFE_UPDATE_INTERVAL = 1000 * 10;//安全更新时间
     private BusMutableLiveData<Integer> directive = new BusMutableLiveData<>(-100); //设备状态变化
     private Map<String,WorkState> workModelState = new ConcurrentHashMap<>();
 
-    private MqttDirective(){
-
-    }
+    private MqttDirective(){}
 
     private static class Holder {
         private static MqttDirective instance = new MqttDirective();
@@ -92,15 +90,21 @@ public class MqttDirective {
      * @param guid
      * @param workModel
      */
-   public void updateModelWorkState(String guid,int workModel){
+   public void updateModelWorkState(String guid,int workModel,int repeatId){
        WorkState workState = workModelState.get(guid);
+       if(workState != null && workState.flag == 1 &&
+               System.currentTimeMillis() - workState.finishTimeL <= SAFE_UPDATE_INTERVAL){//安全检查，在任务刚结束的10秒内，不做更新
+           return;
+       }
        if(workState == null){
            workState = new WorkState();
            workState.finishTimeL = System.currentTimeMillis();
            workState.workModel = workModel;
            workState.flag = 0;
+           workState.repeatId = repeatId;
            workModelState.put(guid,workState);
        }
+       workState.repeatId = repeatId;
        workState.finishTimeL = System.currentTimeMillis();
        workState.workModel = workModel;
        workState.flag = 0;//0 - 查询更新 ； 1 - 结束事件更新
@@ -116,9 +120,27 @@ public class MqttDirective {
    }
 
     public static class WorkState {
-       public long finishTimeL;//完成结束时间
-        public int workModel;//完成工作模式
+        public long finishTimeL;//模式时间毫秒值
+        public int workModel;//工作模式
+        public int repeatId;//菜谱ID
         public int flag;
+
+        /**
+         * 是否正常工作结束
+         * @return
+         */
+        public boolean isFinish(){
+            return flag == 1 && System.currentTimeMillis() - finishTimeL <= MAX_WORK_TIME_OF_DURATION ;
+        }
+
+        /**
+         * 是否结束(正常/主动/异常结束)
+         * @return
+         */
+        public boolean isEnd(){
+            return System.currentTimeMillis() - finishTimeL <= MAX_WORK_TIME_OF_DURATION ;
+        }
+
     }
 
     public WorkState getWorkState(String guid){
