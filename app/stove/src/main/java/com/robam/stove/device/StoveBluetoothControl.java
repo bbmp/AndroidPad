@@ -311,6 +311,27 @@ public class StoveBluetoothControl implements StoveFunction{
     }
 
     @Override
+    public void setStoveInteraction(String targetGuid, int stoveId) {
+        try {
+            for (Device device : AccountInfo.getInstance().deviceList) {
+                if (device instanceof Stove && null != device.guid && device.guid.equals(targetGuid)) { //
+                    //模拟收发
+                    MqttMsg msg = new MqttMsg.Builder()
+                            .setMsgId(MsgKeys.setStoveInteraction_Req)
+                            .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
+                            .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
+                            .build();
+                    //打包payload
+                    byte[] mqtt_data = StoveFactory.getProtocol().encode(msg);
+
+                    write_no_response(targetGuid, ((Stove) device).bleDevice, ((Stove) device).characteristic, mqtt_data);
+                    break;
+                }
+            }
+        } catch (Exception e) {}
+    }
+
+    @Override
     public void remoteControl(String targetGuid, byte[] payload) {
         try {
             for (Device device: AccountInfo.getInstance().deviceList) {

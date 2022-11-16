@@ -182,6 +182,8 @@ public interface MsgKeys {
 
     short setStoveMode_Req = 173; //设置灶具定温烹饪
 
+    short setStoveInteraction_Req = 175; //设置灶具智能互动
+
     /**
      * 一体机状态查询
      */

@@ -66,8 +66,12 @@ public class StoveAbstractControl implements StoveFunction{
     }
 
     @Override
+    public void setStoveInteraction(String targetGuid, int stoveId) {
+        function.setStoveInteraction(targetGuid, stoveId);
+    }
+
+    @Override
     public void remoteControl(String targetGuid, byte[] payload) {
         function.remoteControl(targetGuid, payload);
     }
-
 }

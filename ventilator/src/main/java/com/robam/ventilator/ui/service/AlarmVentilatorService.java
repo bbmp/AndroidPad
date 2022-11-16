@@ -91,7 +91,7 @@ public class AlarmVentilatorService extends Service {
                                             }
                                         }
                                     }
-                                } else if (line.contains("00a3")) { //右键
+                                } else if (line.contains("00a4")) { //右键
                                     if (line.contains("00000001")) {//down事件
 
                                     } else if (line.contains("00000000")) { //up事件

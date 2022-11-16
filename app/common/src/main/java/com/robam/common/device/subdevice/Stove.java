@@ -72,7 +72,7 @@ public class Stove extends Device {
      * 左灶工作模式
      */
     public int leftWorkMode;
-
+    //左灶工作状态
     public int leftStatus;
 
     public int leftLevel;
