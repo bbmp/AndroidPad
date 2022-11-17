@@ -59,8 +59,8 @@ public class CabinetCommonHelper {
      */
     public static void startAppointCommand(int code,int defTime,int appointTime,int flag){
         Map map = CabinetCommonHelper.getCommonMap(MsgKeys.SetSteriPowerOnOff_Req);
-        map.put(CabinetConstant.SteriStatus, code);
-        map.put(CabinetConstant.SteriTime, defTime);
+        map.put(CabinetConstant.CABINET_STATUS, code);
+        map.put(CabinetConstant.CABINET_TIME, defTime);
         map.put(CabinetConstant.ArgumentNumber,2);//附加参数 - 预约放在附加参数中
 
         //TODO(若不加，设备无法正常获取预约时间，待设备方查找问题，暂时先设置上)
@@ -71,15 +71,15 @@ public class CabinetCommonHelper {
         //预约时间
         map.put(CabinetConstant.Key,2);//附加参数 - 预约放在附加参数中
         map.put(CabinetConstant.Length,2);//附加参数 - 预约放在附加参数中
-        map.put(CabinetConstant.SteriReserveTime, appointTime);//附加参数 - 预约放在附加参数中
+        map.put(CabinetConstant.CABINET_APPOINT_TIME, appointTime);//附加参数 - 预约放在附加参数中
         CabinetCommonHelper.sendCommonMsgForLiveData(map,flag);
 
     }
 
     public static void startPowerOn(int bsCode){
         Map map = CabinetCommonHelper.getCommonMap(MsgKeys.SetSteriPowerOnOff_Req);
-        map.put(CabinetConstant.SteriStatus, 1);
-        map.put(CabinetConstant.SteriTime, 0);
+        map.put(CabinetConstant.CABINET_STATUS, 1);
+        map.put(CabinetConstant.CABINET_TIME, 0);
         map.put(CabinetConstant.ArgumentNumber,0);
         CabinetCommonHelper.sendCommonMsgForLiveData(map,bsCode);
 

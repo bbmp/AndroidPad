@@ -208,9 +208,13 @@ public class WorkActivity extends DishWasherBaseActivity {
 
 
 
+    IDialog iDialog;
     //停止工作提示
     private void stopWork() {
-        IDialog iDialog = DishWasherDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_COMMON_DIALOG);
+        if(iDialog != null && iDialog.isShow()){
+            return;
+        }
+        iDialog = DishWasherDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_COMMON_DIALOG);
         iDialog.setCancelable(false);
         iDialog.setListeners(v -> {
             iDialog.dismiss();
@@ -226,6 +230,12 @@ public class WorkActivity extends DishWasherBaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if(commonDialog != null && commonDialog.isShow()){
+            commonDialog.dismiss();
+        }
+        if(iDialog != null && iDialog.isShow()){
+            iDialog.dismiss();
+        }
     }
 
     //工作中 - 需更新时间
@@ -348,6 +358,8 @@ public class WorkActivity extends DishWasherBaseActivity {
         startActivity(intent);
         finish();
     }
+
+
 
 
 

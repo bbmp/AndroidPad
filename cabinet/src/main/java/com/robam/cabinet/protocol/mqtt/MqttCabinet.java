@@ -1,7 +1,5 @@
 package com.robam.cabinet.protocol.mqtt;
 
-import android.util.Log;
-
 import com.robam.cabinet.constant.CabinetConstant;
 import com.robam.cabinet.constant.EventConstant;
 import com.robam.cabinet.device.CabinetAbstractControl;
@@ -10,7 +8,6 @@ import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MqttPublic;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.ByteUtils;
-import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MsgUtils;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -28,17 +25,17 @@ public class MqttCabinet extends MqttPublic {
                 break;
             case MsgKeys.GetSteriStatus_Rep:
                 short mode = ByteUtils.toShort(payload[offset++]);
-                msg.putOpt(CabinetConstant.SteriStatus, mode);
+                msg.putOpt(CabinetConstant.CABINET_STATUS, mode);
                 short doorState = ByteUtils.toShort(payload[offset++]);
-                msg.putOpt(CabinetConstant.SteriLock, doorState);
+                msg.putOpt(CabinetConstant.CABINET_LOCK, doorState);
                 int workTime = ByteUtils.toInt32(payload, offset++, ByteOrder.LITTLE_ENDIAN);
-                msg.putOpt(CabinetConstant.SteriWorkLeftTimeL, workTime);
+                msg.putOpt(CabinetConstant.REMAINING_WORK_TIME, workTime);
                 offset++;
                 offset++;
                 offset++;
-                msg.putOpt(CabinetConstant.SteriDoorLock, ByteUtils.toShort(payload[offset++]));
+                msg.putOpt(CabinetConstant.CABINET_DOOR, ByteUtils.toShort(payload[offset++]));
                 short waringCode = ByteUtils.toShort(payload[offset++]);
-                msg.putOpt(CabinetConstant.SteriAlarmStatus, waringCode);
+                msg.putOpt(CabinetConstant.CABINET_ALARM_STATUS, waringCode);
                 msg.putOpt(CabinetConstant.SteriParaTem, ByteUtils.toShort(payload[offset++]));
                 msg.putOpt(CabinetConstant.SteriParaHum, ByteUtils.toShort(payload[offset++]));
                 msg.putOpt(CabinetConstant.SteriParaGerm, ByteUtils.toShort(payload[offset++]));
@@ -48,19 +45,24 @@ public class MqttCabinet extends MqttPublic {
                 while (argument > 0) {
                     short argument_key = ByteUtils.toShort(payload[offset++]);
                     switch (argument_key) {
-                        case 1:
-                            msg.putOpt(CabinetConstant.Key, argument_key);
-                            short aShort = ByteUtils.toShort(payload[offset++]);
-                            msg.putOpt(CabinetConstant.Length,aShort);
-                            int anInt = ByteUtils.toInt16(payload, offset++,ByteOrder.LITTLE_ENDIAN);
-                            //int anInt = ByteUtils.toInt16(payload, offset++, ByteUtils.BYTE_ORDER);
-                            msg.putOpt(CabinetConstant.REMAINING_APPOINT_TIME,anInt);
+                        case 1://预约剩余时间
+                            offset++;//length
+                            msg.putOpt(CabinetConstant.REMAINING_APPOINT_TIME,ByteUtils.toInt16(payload, offset++,ByteOrder.LITTLE_ENDIAN));
                             offset++;
                             break;
-                        case 2:
-                            msg.putOpt(CabinetConstant.Key, argument_key);
-                            msg.putOpt(CabinetConstant.Length,ByteUtils.toShort(payload[offset++]));
-                            msg.putOpt(CabinetConstant.SteriSecurityLock,ByteUtils.toShort(payload[offset++]));
+                        case 2://停止工作是否进入安全锁定
+                            offset++;//length
+                            offset++;//value
+                            break;
+                        case 3://预约设定时间
+                            offset++;//length
+                            offset++;//value
+                            offset++;//value
+                            break;
+                        case 4://工作设定时间
+                            offset++;//length
+                            msg.putOpt(CabinetConstant.WORK_SETTING_TIME,ByteUtils.toInt16(payload, offset++,ByteOrder.LITTLE_ENDIAN));
+                            offset++;
                             break;
                         default:
                             break;
@@ -69,7 +71,6 @@ public class MqttCabinet extends MqttPublic {
                     argument--;
                 }
                 if(mode != 0 && workTime != 0){//记录最新工作模式
-                    LogUtils.e("MqttCabinet updateModelWorkState");
                     MqttDirective.getInstance().updateModelWorkState(msg.getGuid(),mode,0);
                 }
                 break;
@@ -77,7 +78,7 @@ public class MqttCabinet extends MqttPublic {
             // 通知类
             case MsgKeys.SteriAlarm_Noti:
                 short waringCodeNoti = ByteUtils.toShort(payload[offset++]);
-                msg.putOpt(CabinetConstant.AlarmId, waringCodeNoti);
+                msg.putOpt(CabinetConstant.CABINET_ALARM_ID, waringCodeNoti);
                 MqttDirective.getInstance().getDirective().setValue((int)waringCodeNoti);
                 break;
             case MsgKeys.SteriEvent_Noti:
@@ -88,9 +89,7 @@ public class MqttCabinet extends MqttPublic {
                 msg.putOpt(CabinetConstant.ArgumentNumber, ByteUtils.toShort(payload[offset++]));
                 msg.putOpt(CabinetConstant.UserId, MsgUtils.getString(payload, offset++, 10));
                 if(eventId == EventConstant.WORK_FINISH && eventParam == 0){
-                    LogUtils.e("MqttCabinet finishWorkModelState");
                     MqttDirective.getInstance().finishWorkModelState(msg.getGuid());
-                    //MqttDirective.getInstance().getDirective().setValue((int) eventId);
                 }
                 break;
         }
@@ -101,8 +100,8 @@ public class MqttCabinet extends MqttPublic {
         switch (msg.getID()) {
             case MsgKeys.SetSteriPowerOnOff_Req:
                 buf.put(msg.optString(CabinetConstant.UserId).getBytes());
-                buf.put((byte) msg.optInt(CabinetConstant.SteriStatus));
-                short setTime = (short) msg.optInt(CabinetConstant.SteriTime);
+                buf.put((byte) msg.optInt(CabinetConstant.CABINET_STATUS));
+                short setTime = (short) msg.optInt(CabinetConstant.CABINET_TIME);
                 buf.put((byte) (setTime & 0xFF));
                 buf.put((byte) ((setTime >> 8) & 0xFF));
                 buf.put((byte) msg.optInt(CabinetConstant.ArgumentNumber));
@@ -115,7 +114,7 @@ public class MqttCabinet extends MqttPublic {
                     if (msg.optInt(CabinetConstant.Key) == 2) {
                         buf.put((byte) msg.optInt(CabinetConstant.Key));
                         buf.put((byte) msg.optInt(CabinetConstant.Length));
-                        int appointmentTime = msg.optInt(CabinetConstant.SteriReserveTime);
+                        int appointmentTime = msg.optInt(CabinetConstant.CABINET_APPOINT_TIME);
                         byte time1 = (byte) (appointmentTime & 0xFF);
                         byte time2 = (byte) ((appointmentTime >> 8) & 0xFF);
                         buf.put(time1);
@@ -128,7 +127,7 @@ public class MqttCabinet extends MqttPublic {
                 break;
             case MsgKeys.SetSteriPVConfig_Req:
                 buf.put(msg.optString(CabinetConstant.UserId).getBytes());
-                boolean bool = msg.optBoolean(CabinetConstant.SteriSwitchDisinfect);
+                boolean bool = msg.optBoolean(CabinetConstant.CABINET_SWITCH_DISINFECH);
                 buf.put(bool ? (byte) 1 : (byte) 0);
                 buf.put((byte) msg.optInt(CabinetConstant.SteriInternalDisinfect));
                 bool = msg.optBoolean(CabinetConstant.SteriSwitchWeekDisinfect);
@@ -139,7 +138,7 @@ public class MqttCabinet extends MqttPublic {
                 break;
             case MsgKeys.SetSteriLock_Req:
                 //buf.put(msg.optString(CabinetConstant.UserId).getBytes());
-                byte value = (byte) msg.optInt(CabinetConstant.SteriLock);
+                byte value = (byte) msg.optInt(CabinetConstant.CABINET_LOCK);
                 buf.put(value);
                 break;
 

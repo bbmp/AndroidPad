@@ -35,6 +35,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_dot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:visibility="invisible"
+        android:layout_marginBottom="@dimen/dp_38"/>
+
     <TextView
         android:id="@+id/tv_time"
         android:layout_width="wrap_content"
@@ -66,8 +76,7 @@
         app:layout_constraintLeft_toRightOf="@id/tv_temp"
         app:layout_constraintRight_toLeftOf="@id/tv_fun_hint"
         app:layout_constraintTop_toTopOf="@id/tv_temp"
-        android:text="℃"
-        android:visibility="gone"/>
+        android:text="℃"/>
     <TextView
         android:id="@+id/tv_fun_hint"
         android:layout_width="wrap_content"
@@ -78,4 +87,12 @@
         app:layout_constraintLeft_toRightOf="@id/tv_temp_unit"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/mode_prompt_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:constraint_referenced_ids="tv_time,tv_temp,tv_temp_unit,tv_fun_hint" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

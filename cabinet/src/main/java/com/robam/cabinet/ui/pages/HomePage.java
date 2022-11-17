@@ -15,6 +15,7 @@ import com.robam.cabinet.R;
 import com.robam.cabinet.base.CabinetBasePage;
 import com.robam.cabinet.bean.CabFunBean;
 import com.robam.cabinet.constant.CabinetConstant;
+import com.robam.cabinet.constant.Constant;
 import com.robam.cabinet.ui.adapter.RvDotAdapter;
 import com.robam.cabinet.ui.adapter.RvMainFunctionAdapter;
 import com.robam.common.manager.FunctionManager;
@@ -105,7 +106,7 @@ public class HomePage extends CabinetBasePage {
                     CabFunBean cabFunBean = (CabFunBean) adapter.getItem(position);
 
                     Intent intent = new Intent();
-                    intent.putExtra(CabinetConstant.EXTRA_MODE_BEAN, cabFunBean.mode);
+                    intent.putExtra(Constant.EXTRA_MODE_BEAN, cabFunBean.mode);
                     intent.setClassName(getContext(), cabFunBean.into);
                     startActivity(intent);
                 }

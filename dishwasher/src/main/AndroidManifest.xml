@@ -18,6 +18,7 @@
         <activity
             android:name=".ui.activity.WorkActivity"
             android:exported="false"
+            android:launchMode="singleTop"
             android:screenOrientation="landscape"/>
         <activity
             android:name=".ui.activity.AppointingActivity"

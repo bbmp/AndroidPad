@@ -90,16 +90,18 @@ public class CircleProgressView extends View {
         mRectF = new RectF(mRectL, mRectT, mRectL + mRectLength, mRectT + mRectLength);
 
         // 设置进度圆环渐变色
-        if (mColorArray != null && mColorArray.length > 1)
-            mProgPaint.setShader(new LinearGradient(0, 0, 0, getMeasuredWidth(), mColorArray, null, Shader.TileMode.MIRROR));
-            //mProgPaint.setShader(new SweepGradient(getMeasuredWidth()/2, getMeasuredWidth()/2, mColorArray, null));
+        if (mColorArray != null && mColorArray.length > 1){
+            //mProgPaint.setShader(new LinearGradient(0, 0, 0, getMeasuredWidth(), mColorArray, null, Shader.TileMode.MIRROR));
+            mProgPaint.setShader(new SweepGradient(getMeasuredWidth()/2, getMeasuredWidth()/2, mColorArray, new float[]{0f,0.65f} ));
+        }
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        canvas.rotate(-90 - 5,getWidth()/2,getHeight()/2);
         canvas.drawArc(mRectF, 0, 360, false, mBackPaint);
-        canvas.drawArc(mRectF, -90, 360 * mProgress / 100, false, mProgPaint);
+        canvas.drawArc(mRectF, 5, 360 * mProgress / 100, false, mProgPaint);
 //        if (mProgress <= 24.75) {
 //            canvas.drawArc(mRectF, 270, 360 * mProgress / 100, false, mProgPaint);
 //        } else if (mProgress > 24.75 && mProgress < 25.25) {

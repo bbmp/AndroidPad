@@ -47,7 +47,7 @@ public class DishWasher extends Device{
 
     @Override
     public boolean onMsgReceived(MqttMsg msg) {
-        if(msg != null &&  null != msg.opt(DishWasherConstant.powerStatus)){
+        if(msg != null){//&&  null != msg.opt(DishWasherConstant.powerStatus)
             queryNum = 0;
             status = Device.ONLINE;
             parserMsg(msg.getID(),msg);

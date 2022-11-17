@@ -1,5 +1,6 @@
 package com.robam.cabinet.ui.activity;
 
+import android.content.Intent;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.RelativeSizeSpan;
@@ -12,6 +13,7 @@ import com.robam.cabinet.bean.Cabinet;
 import com.robam.cabinet.bean.WorkModeBean;
 import com.robam.cabinet.constant.CabinetConstant;
 import com.robam.cabinet.constant.CabinetEnum;
+import com.robam.cabinet.constant.Constant;
 import com.robam.cabinet.constant.DialogConstant;
 import com.robam.cabinet.constant.EventConstant;
 import com.robam.cabinet.device.HomeCabinet;
@@ -74,6 +76,9 @@ public class WorkActivity extends CabinetBaseActivity {
                     }
                     Cabinet cabinet = (Cabinet) device;
                     setLock(cabinet.isChildLock == 1);
+//                    if(toWaringPage(cabinet.alarmStatus)){
+//                        return;
+//                    }
                     switch (cabinet.workMode){
                         case CabinetConstant.FUN_DISINFECT:
                         case CabinetConstant.FUN_CLEAN:
@@ -113,7 +118,7 @@ public class WorkActivity extends CabinetBaseActivity {
     @Override
     protected void initData() {
         //工作模式
-        workModeBean = (WorkModeBean) getIntent().getSerializableExtra(CabinetConstant.EXTRA_MODE_BEAN);
+        workModeBean = (WorkModeBean) getIntent().getSerializableExtra(Constant.EXTRA_MODE_BEAN);
         tvMode.setText(CabinetEnum.match(workModeBean.code));
         //工作时长
         updateWorkTime(workModeBean.modelSurplusTime);
@@ -197,8 +202,8 @@ public class WorkActivity extends CabinetBaseActivity {
             //结束工作
             if (v.getId() == R.id.tv_ok) {
                 Map map = CabinetCommonHelper.getCommonMap(MsgKeys.SetSteriPowerOnOff_Req);
-                map.put(CabinetConstant.SteriStatus, 0);
-                map.put(CabinetConstant.SteriTime, 0);
+                map.put(CabinetConstant.CABINET_STATUS, 0);
+                map.put(CabinetConstant.CABINET_TIME, 0);
                 map.put(CabinetConstant.ArgumentNumber,0);
                 //CabinetCommonHelper.sendCommonMsg(map,directive_offset + MsgKeys.SetSteriPowerOnOff_Req);
                 CabinetCommonHelper.sendCommonMsg(map);
@@ -215,6 +220,15 @@ public class WorkActivity extends CabinetBaseActivity {
         IDialog iDialog =  CabinetDialogFactory.createDialogByType(this,DialogConstant.DIALOG_TYPE_WORK_COMPLETE);
         iDialog.setCancelable(false);
         iDialog.setListeners(v -> {
+            Cabinet cabinet = getCabinet();
+            if(cabinet != null){
+                MqttDirective.WorkState workState = MqttDirective.getInstance().getWorkState(cabinet.guid);
+                if(workState != null && workState.isFinish() && workState.workModel == CabinetEnum.SMART.getCode()){
+                    Intent intent = new Intent(WorkActivity.this,CruiseActivity.class);
+                    startActivity(intent);
+                    return;
+                }
+            }
             goHome();
         }, R.id.tv_ok);
         iDialog.show();

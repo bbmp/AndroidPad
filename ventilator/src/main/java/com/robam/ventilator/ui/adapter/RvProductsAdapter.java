@@ -15,6 +15,7 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.robam.cabinet.bean.Cabinet;
 import com.robam.cabinet.constant.CabinetConstant;
 import com.robam.cabinet.constant.CabinetEnum;
+import com.robam.cabinet.constant.CabinetWaringEnum;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.MqttDirective;
@@ -61,6 +62,8 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
                     baseViewHolder.setImageResource(R.id.iv_online, R.drawable.ventilator_shape_offline_bg);
                 } else {
                     //在线
+                    baseViewHolder.setText(R.id.tv_online, R.string.ventilator_online);
+                    baseViewHolder.setImageResource(R.id.iv_online, R.drawable.ventilator_shape_online_bg);
                     Cabinet cabinet = (Cabinet) device;
                     dealCabinetWorkView(cabinet,baseViewHolder);
                 }
@@ -136,14 +139,8 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
                     //在线
                     baseViewHolder.setText(R.id.tv_online, R.string.ventilator_online);
                     baseViewHolder.setImageResource(R.id.iv_online, R.drawable.ventilator_shape_online_bg);
-                    if(device.faultId != 0 && DishWasherWaringEnum.match(device.faultId).getCode() != DishWasherWaringEnum.E10.getCode()){//故障
-                        baseViewHolder.setText(R.id.tv_hint, R.string.ventilator_product_failure);
-                        baseViewHolder.setVisible(R.id.btn_detail,true);
-                        baseViewHolder.setGone(R.id.layout_work,true);
-                    }else{
-                        DishWasher dishWasher = (DishWasher) device;
-                        dealDishWasherWorkFinish(dishWasher,baseViewHolder);
-                    }
+                    DishWasher dishWasher = (DishWasher) device;
+                    dealDishWasherWorkFinish(dishWasher,baseViewHolder);
                 }
             } else if (IDeviceType.RZNG.equals(device.dc)) {//无人锅
                 ivDevice.setImageResource(R.drawable.ventilator_pan);
@@ -256,6 +253,13 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
      * @return
      */
     private void dealDishWasherWorkFinish(DishWasher dishWasher,BaseViewHolder baseViewHolder){
+        if(dishWasher.faultId != 0 && DishWasherWaringEnum.match(dishWasher.faultId).getCode() != DishWasherWaringEnum.E0.getCode()){//故障
+            baseViewHolder.setVisible(R.id.layout_offline, true);
+            baseViewHolder.setText(R.id.tv_hint, R.string.ventilator_product_failure);
+            baseViewHolder.setGone(R.id.layout_work, true);
+            baseViewHolder.setVisible(R.id.btn_detail, true);
+            return;
+        }
         MqttDirective.WorkState workState = MqttDirective.getInstance().getWorkState(dishWasher.guid);
         boolean isWork = false;
         if((dishWasher.powerStatus == DishWasherState.WORKING  ||
@@ -357,6 +361,14 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
      * @param baseViewHolder
      */
     private void dealCabinetWorkView(Cabinet cabinet, BaseViewHolder baseViewHolder){
+
+        if(cabinet.faultId != 255 && CabinetWaringEnum.match(cabinet.faultId).getCode() != CabinetWaringEnum.E255.getCode()){//故障
+            baseViewHolder.setVisible(R.id.layout_offline, true);
+            baseViewHolder.setText(R.id.tv_hint, R.string.ventilator_product_failure);
+            baseViewHolder.setGone(R.id.layout_work, true);
+            baseViewHolder.setVisible(R.id.btn_detail, true);
+            return;
+        }
         boolean isWork = false;
         boolean workFinish = false;
         if((cabinet.workMode == CabinetConstant.FUN_DISINFECT || cabinet.workMode == CabinetConstant.FUN_CLEAN
@@ -364,8 +376,7 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
             || cabinet.workMode == CabinetConstant.FUN_SMART) && cabinet.remainingModeWorkTime != 0 ){
             isWork = true;
         }
-        baseViewHolder.setText(R.id.tv_online, R.string.ventilator_online);
-        baseViewHolder.setImageResource(R.id.iv_online, R.drawable.ventilator_shape_online_bg);
+
         if(!isWork){
             MqttDirective.WorkState workState = MqttDirective.getInstance().getWorkState(cabinet.guid);
             if(workState != null && workState.isFinish()){

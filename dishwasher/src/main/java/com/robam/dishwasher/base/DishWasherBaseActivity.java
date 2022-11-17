@@ -198,6 +198,7 @@ public abstract class DishWasherBaseActivity extends BaseActivity {
     public void goHome(){
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+        finish();
     }
 
 

@@ -21,6 +21,7 @@ import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.google.gson.Gson;
 import com.robam.cabinet.bean.Cabinet;
+import com.robam.cabinet.constant.CabinetWaringEnum;
 import com.robam.cabinet.device.CabinetAbstractControl;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.BaseResponse;
@@ -362,7 +363,6 @@ public class HomePage extends VentilatorBasePage {
                     }
                 } else if (view.getId() == R.id.btn_detail) {
                     //查看详情
-
                     Device device = (Device) adapter.getItem(position);
                     if(!toWaringPage(device)){
                         Intent intent = new Intent();
@@ -726,16 +726,29 @@ public class HomePage extends VentilatorBasePage {
         }
     }
 
+    /**
+     * 去往告警详情页
+     * @param device
+     * @return
+     */
     private boolean toWaringPage(Device device){
-        if(device.faultId != 0){
-            if(device instanceof DishWasher){
-                if(DishWasherWaringEnum.match(device.faultId).getCode() != DishWasherWaringEnum.E0.getCode()){
-                    Intent intent = new Intent(getContext(), com.robam.dishwasher.ui.activity.WaringActivity.class);
-                    intent.putExtra(ComnConstant.WARING_FROM,1);
-                    intent.putExtra(ComnConstant.WARING_CODE,device.faultId);
-                    startActivity(intent);
-                    return true;
-                }
+        if(device instanceof DishWasher){
+            if(device.faultId != DishWasherWaringEnum.E0.getCode() &&
+                    DishWasherWaringEnum.match(device.faultId).getCode() != DishWasherWaringEnum.E0.getCode()){//判断本地是否存在该故障信息
+                Intent intent = new Intent(getContext(), com.robam.dishwasher.ui.activity.WaringActivity.class);
+                intent.putExtra(ComnConstant.WARING_FROM,1);
+                intent.putExtra(ComnConstant.WARING_CODE,device.faultId);
+                startActivity(intent);
+                return true;
+            }
+        }else if(device instanceof Cabinet) {
+            if (device.faultId != CabinetWaringEnum.E255.getCode() &&
+                    CabinetWaringEnum.match(device.faultId).getCode() != CabinetWaringEnum.E255.getCode()){////判断本地是否存在该故障信息
+                Intent intent = new Intent(getContext(), com.robam.cabinet.ui.activity.WaringActivity.class);
+                intent.putExtra(ComnConstant.WARING_FROM,1);
+                intent.putExtra(ComnConstant.WARING_CODE,device.faultId);
+                startActivity(intent);
+                return true;
             }
         }
         return false;

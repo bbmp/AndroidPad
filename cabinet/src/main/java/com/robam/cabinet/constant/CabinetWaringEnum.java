@@ -9,7 +9,7 @@ public enum CabinetWaringEnum {
     E3(Constant.DEVICE_WARING_E2,"",R.string.cabinet_waring_e2_title,R.string.cabinet_waring_e2_content),
     E5(Constant.DEVICE_WARING_E5,"",R.string.cabinet_waring_e5_title,R.string.cabinet_waring_e5_content),
     E6(Constant.DEVICE_WARING_E6,"",R.string.cabinet_waring_e6_title,R.string.cabinet_waring_e6_content),
-    E255(Constant.DEVICE_WARING_E255,"",-1,-1);
+    E255(Constant.DEVICE_WARING_E255,"",-1,-1);//无告警
 
 
     private int code;

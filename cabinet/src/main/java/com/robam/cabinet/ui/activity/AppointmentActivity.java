@@ -10,6 +10,7 @@ import com.robam.cabinet.bean.CabModeBean;
 import com.robam.cabinet.bean.Cabinet;
 import com.robam.cabinet.bean.WorkModeBean;
 import com.robam.cabinet.constant.CabinetConstant;
+import com.robam.cabinet.constant.Constant;
 import com.robam.cabinet.constant.EventConstant;
 import com.robam.cabinet.device.HomeCabinet;
 import com.robam.cabinet.ui.adapter.RvStringAdapter;
@@ -97,6 +98,9 @@ public class AppointmentActivity extends CabinetBaseActivity {
                 if (device.guid.equals(s) && device instanceof Cabinet && device.guid.equals(HomeCabinet.getInstance().guid)) {
                     Cabinet cabinet = (Cabinet) device;
                     setLock(cabinet.isChildLock == 1);
+//                    if(toWaringPage(cabinet.alarmStatus)){
+//                        return;
+//                    }
                     switch (cabinet.workMode){
                         case CabinetConstant.FUN_DISINFECT:
                         case CabinetConstant.FUN_CLEAN:
@@ -138,7 +142,7 @@ public class AppointmentActivity extends CabinetBaseActivity {
         Intent intent = new Intent(this,AppointingActivity.class);
         WorkModeBean workModeBean = new WorkModeBean(this.cabModeBean);
         workModeBean.orderSurplusTime = cabinet.remainingAppointTime;
-        intent.putExtra(CabinetConstant.EXTRA_MODE_BEAN, workModeBean);
+        intent.putExtra(Constant.EXTRA_MODE_BEAN, workModeBean);
         startActivity(intent);
         finish();
     }
@@ -151,7 +155,7 @@ public class AppointmentActivity extends CabinetBaseActivity {
             hourData.add((i < 10 ? "0" : "") + i + "");
         }
 
-        cabModeBean = (CabModeBean) getIntent().getSerializableExtra(CabinetConstant.EXTRA_MODE_BEAN);
+        cabModeBean = (CabModeBean) getIntent().getSerializableExtra(Constant.EXTRA_MODE_BEAN);
 
         // 生产分钟
         ArrayList<String> minuteData = new ArrayList<>(6);
@@ -232,13 +236,13 @@ public class AppointmentActivity extends CabinetBaseActivity {
     @Deprecated
     private void startWork() throws ParseException {
         Map map = CabinetCommonHelper.getCommonMap(MsgKeys.SetSteriPowerOnOff_Req);
-        map.put(CabinetConstant.SteriStatus, cabModeBean.code);
-        map.put(CabinetConstant.SteriTime, cabModeBean.defTime);
+        map.put(CabinetConstant.CABINET_STATUS, cabModeBean.code);
+        map.put(CabinetConstant.CABINET_TIME, cabModeBean.defTime);
         map.put(CabinetConstant.ArgumentNumber,1);//附加参数 - 预约放在附加参数中
         //预约时间
         map.put(CabinetConstant.Key,2);//附加参数 - 预约放在附加参数中
         map.put(CabinetConstant.Length,2);//附加参数 - 预约放在附加参数中
-        map.put(CabinetConstant.SteriReserveTime, getAppointingTimeMin(tvTime.getText().toString()));//附加参数 - 预约放在附加参数中
+        map.put(CabinetConstant.CABINET_APPOINT_TIME, getAppointingTimeMin(tvTime.getText().toString()));//附加参数 - 预约放在附加参数中
         CabinetCommonHelper.sendCommonMsgForLiveData(map,directive_offset + MsgKeys.SetSteriPowerOnOff_Req);
     }
 

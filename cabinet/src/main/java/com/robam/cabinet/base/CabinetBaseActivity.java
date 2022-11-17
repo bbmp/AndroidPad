@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 
 import com.robam.cabinet.R;
+import com.robam.cabinet.bean.Cabinet;
 import com.robam.cabinet.constant.CabinetConstant;
 import com.robam.cabinet.constant.CabinetWaringEnum;
 import com.robam.cabinet.constant.Constant;
@@ -25,11 +26,11 @@ import com.robam.cabinet.ui.activity.WaringActivity;
 import com.robam.cabinet.ui.dialog.LockDialog;
 import com.robam.cabinet.util.CabinetCommonHelper;
 import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.activity.BaseActivity;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.utils.ClickUtils;
-import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ToastUtils;
 
 import java.util.Map;
@@ -44,7 +45,7 @@ public abstract class CabinetBaseActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         CabinetActivityManager.getInstance().addActivity(this);
-        setOnClickListener(R.id.ll_left, R.id.ll_right_center);
+        setOnClickListener(R.id.ll_left);
     }
 //    public void showFloat() {
 //        findViewById(R.id.iv_float).setVisibility(View.VISIBLE);
@@ -76,12 +77,12 @@ public abstract class CabinetBaseActivity extends BaseActivity {
         rightCenter.setVisibility(View.VISIBLE);
         rightCenter.setOnClickListener(v -> {
             Map map = CabinetCommonHelper.getCommonMap(MsgKeys.SetSteriLock_Req);
-            map.put(CabinetConstant.SteriLock,0);
+            map.put(CabinetConstant.CABINET_LOCK,0);
             CabinetCommonHelper.sendCommonMsg(map);
         });
         rightCenter.setOnLongClickListener(v->{
             Map map = CabinetCommonHelper.getCommonMap(MsgKeys.SetSteriLock_Req);
-            map.put(CabinetConstant.SteriLock,1);
+            map.put(CabinetConstant.CABINET_LOCK,1);
             CabinetCommonHelper.sendCommonMsg(map);
             return true;
         });
@@ -204,7 +205,7 @@ public abstract class CabinetBaseActivity extends BaseActivity {
      * @return
      */
     protected boolean toWaringPage(int waringCode){
-        if(waringCode != CabinetWaringEnum.E0.getCode() && CabinetWaringEnum.match(waringCode).getCode() != CabinetWaringEnum.E0.getCode()){
+        if(waringCode != CabinetWaringEnum.E255.getCode() && CabinetWaringEnum.match(waringCode).getCode() != CabinetWaringEnum.E255.getCode()){
             //跳转到告警页面
             Intent intent = new Intent(this, WaringActivity.class);
             intent.putExtra(Constant.WARING_CODE,waringCode);
@@ -226,5 +227,14 @@ public abstract class CabinetBaseActivity extends BaseActivity {
                 });
             }
         }
+    }
+
+    public Cabinet getCabinet(){
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device instanceof Cabinet && device.guid.equals(HomeCabinet.getInstance().guid)) {
+                return (Cabinet) device;
+            }
+        }
+        return null;
     }
 }

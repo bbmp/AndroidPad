@@ -10,6 +10,7 @@ import com.robam.cabinet.bean.CabModeBean;
 import com.robam.cabinet.bean.Cabinet;
 import com.robam.cabinet.bean.WorkModeBean;
 import com.robam.cabinet.constant.CabinetConstant;
+import com.robam.cabinet.constant.Constant;
 import com.robam.cabinet.constant.EventConstant;
 import com.robam.cabinet.device.HomeCabinet;
 import com.robam.cabinet.ui.adapter.RvTimeAdapter;
@@ -57,13 +58,16 @@ public class ModeSelectActivity extends CabinetBaseActivity {
                     //设置工作时长
                 }).build();
         rvMode.setLayoutManager(pickerLayoutManager);
-        setOnClickListener(R.id.ll_right, R.id.ll_right_center, R.id.btn_start, R.id.iv_float);
+        setOnClickListener(R.id.ll_right, R.id.btn_start, R.id.iv_float);
 
         AccountInfo.getInstance().getGuid().observe(this, s -> {
             for (Device device: AccountInfo.getInstance().deviceList) {
                 if (device.guid.equals(s) && device instanceof Cabinet && device.guid.equals(HomeCabinet.getInstance().guid)) {
                     Cabinet cabinet = (Cabinet) device;
                     setLock(cabinet.isChildLock == 1);
+//                    if(toWaringPage(cabinet.faultId)){
+//                        return;
+//                    }
                     switch (cabinet.workMode){
                         case CabinetConstant.FUN_DISINFECT:
                         case CabinetConstant.FUN_CLEAN:
@@ -97,7 +101,7 @@ public class ModeSelectActivity extends CabinetBaseActivity {
         WorkModeBean workModeBean = new WorkModeBean(cabModeBean);
         //workModeBean.orderSurplusTime = cabinet.remainingModeWorkTime;
         workModeBean.orderSurplusTime = Integer.parseInt(rvTimeAdapter.getItem(pickerLayoutManager.getPickedPosition()));
-        intent.putExtra(CabinetConstant.EXTRA_MODE_BEAN,workModeBean);
+        intent.putExtra(Constant.EXTRA_MODE_BEAN,workModeBean);
         startActivity(intent);
         finish();
     }
@@ -106,7 +110,7 @@ public class ModeSelectActivity extends CabinetBaseActivity {
     @Override
     protected void initData() {
         if (null != getIntent()){
-            cabModeBean = (CabModeBean) getIntent().getSerializableExtra(CabinetConstant.EXTRA_MODE_BEAN);
+            cabModeBean = (CabModeBean) getIntent().getSerializableExtra(Constant.EXTRA_MODE_BEAN);
         }
         if (null != cabModeBean) {
             //当前模式
@@ -140,7 +144,7 @@ public class ModeSelectActivity extends CabinetBaseActivity {
             Intent intent = new Intent(this,AppointmentActivity.class);
             CabModeBean cabModeBean = this.cabModeBean.newCab();
             cabModeBean.defTime = Integer.parseInt(rvTimeAdapter.getItem(pickerLayoutManager.getPickedPosition()));
-            intent.putExtra(CabinetConstant.EXTRA_MODE_BEAN, cabModeBean);
+            intent.putExtra(Constant.EXTRA_MODE_BEAN, cabModeBean);
             startActivity(intent);
         } else if (id == R.id.btn_start) {
             //开始工作

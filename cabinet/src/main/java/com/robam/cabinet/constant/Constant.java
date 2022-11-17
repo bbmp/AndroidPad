@@ -21,4 +21,6 @@ public interface Constant {
      int DEVICE_WARING_E10 = 10;//下层洗
 
     String WARING_CODE = "waring_code";
+
+     String EXTRA_MODE_BEAN = "modebean";
 }

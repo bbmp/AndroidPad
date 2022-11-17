@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MqttDirective {
 
     private static final int MAX_WORK_TIME_OF_DURATION = 1000 * 60 * 10;//工作完成后，多长时间内显示完成状态
-    private static final int SAFE_UPDATE_INTERVAL = 1000 * 10;//安全更新时间
+    private static final int SAFE_UPDATE_INTERVAL = 1000 * 30;//安全更新时间 30秒
     private BusMutableLiveData<Integer> directive = new BusMutableLiveData<>(-100); //设备状态变化
     private Map<String,WorkState> workModelState = new ConcurrentHashMap<>();
 
@@ -104,10 +104,12 @@ public class MqttDirective {
            workState.repeatId = repeatId;
            workModelState.put(guid,workState);
        }
+       //LogUtils.e("MqttCabinet updateModelWorkState guid="+guid +" flag=" +workState.flag +" dir="+(System.currentTimeMillis() - workState.finishTimeL));
        workState.repeatId = repeatId;
        workState.finishTimeL = System.currentTimeMillis();
        workState.workModel = workModel;
        workState.flag = 0;//0 - 查询更新 ； 1 - 结束事件更新
+
    }
 
    public void finishWorkModelState(String guid){
@@ -117,6 +119,7 @@ public class MqttDirective {
        }
        workState.finishTimeL = System.currentTimeMillis();
        workState.flag = 1;//0 - 查询更新 ； 1 - 结束事件更新
+       //LogUtils.e("MqttCabinet finishWorkModelState guid=" + guid);
    }
 
     public static class WorkState {

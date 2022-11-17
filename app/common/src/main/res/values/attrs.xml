@@ -53,6 +53,7 @@
         <attr name="common_progColor" format="color" />        <!--进度圆环颜色-->
         <attr name="common_progStartColor" format="color" />   <!--进度圆环开始颜色-->
         <attr name="common_progFirstColor" format="color" />   <!--进度圆环结束颜色-->
+        <attr name="common_progEndColor" format="color" />   <!--进度圆环结束颜色-->
         <attr name="common_progress" format="integer" />       <!--圆环进度-->
     </declare-styleable>
 <!--    模糊背景-->

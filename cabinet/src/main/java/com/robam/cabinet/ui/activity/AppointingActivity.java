@@ -13,13 +13,13 @@ import com.robam.cabinet.bean.Cabinet;
 import com.robam.cabinet.bean.WorkModeBean;
 import com.robam.cabinet.constant.CabinetConstant;
 import com.robam.cabinet.constant.CabinetEnum;
+import com.robam.cabinet.constant.Constant;
 import com.robam.cabinet.constant.DialogConstant;
 import com.robam.cabinet.constant.EventConstant;
 import com.robam.cabinet.device.HomeCabinet;
 import com.robam.cabinet.factory.CabinetDialogFactory;
 import com.robam.cabinet.util.CabinetAppointmentUtil;
 import com.robam.cabinet.util.CabinetCommonHelper;
-import com.robam.cabinet.util.TimeDisplayUtil;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.MqttDirective;
@@ -71,6 +71,10 @@ public class AppointingActivity extends CabinetBaseActivity {
             for (Device device: AccountInfo.getInstance().deviceList) {
                 if (device.guid.equals(s) && device instanceof Cabinet && device.guid.equals(HomeCabinet.getInstance().guid)) { //当前锅
                     Cabinet cabinet = (Cabinet) device;
+                    setLock(cabinet.isChildLock == 1);
+//                    if(toWaringPage(cabinet.alarmStatus)){
+//                        return;
+//                    }
                     switch (cabinet.workMode){
                         case CabinetConstant.FUN_DISINFECT:
                         case CabinetConstant.FUN_CLEAN:
@@ -100,7 +104,7 @@ public class AppointingActivity extends CabinetBaseActivity {
     @Override
     protected void initData() {
        // setCountDownTime();
-        workModeBean = (WorkModeBean) getIntent().getSerializableExtra(CabinetConstant.EXTRA_MODE_BEAN);
+        workModeBean = (WorkModeBean) getIntent().getSerializableExtra(Constant.EXTRA_MODE_BEAN);
         //工作模式
         tvMode.setText(CabinetEnum.match(workModeBean.code));
         int orderTime= workModeBean.orderSurplusTime;
@@ -116,7 +120,7 @@ public class AppointingActivity extends CabinetBaseActivity {
         if(cabinet.remainingAppointTime <= 0){
             WorkModeBean workModeBean = new WorkModeBean(cabinet.workMode,0,cabinet.remainingModeWorkTime);
             Intent intent = new Intent(this,WorkActivity.class);
-            intent.putExtra(CabinetConstant.EXTRA_MODE_BEAN,workModeBean);
+            intent.putExtra(Constant.EXTRA_MODE_BEAN,workModeBean);
             startActivity(intent);
         }else{
             int totalTime = cabinet.remainingAppointTime * 60;
@@ -206,8 +210,8 @@ public class AppointingActivity extends CabinetBaseActivity {
             //结束工作
             if (v.getId() == R.id.tv_ok) {
                 Map map = CabinetCommonHelper.getCommonMap(MsgKeys.SetSteriPowerOnOff_Req);
-                map.put(CabinetConstant.SteriStatus, 0);
-                map.put(CabinetConstant.SteriTime, 0);
+                map.put(CabinetConstant.CABINET_STATUS, 0);
+                map.put(CabinetConstant.CABINET_TIME, 0);
                 map.put(CabinetConstant.ArgumentNumber,0);
                 CabinetCommonHelper.sendCommonMsgForLiveData(map,directive_offset + MsgKeys.SetSteriPowerOnOff_Req);
             }
