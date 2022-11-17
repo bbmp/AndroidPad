@@ -13,6 +13,7 @@ import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.google.gson.Gson;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.BaseResponse;
+import com.robam.common.device.Plat;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.manager.BlueToothManager;
 import com.robam.common.mqtt.MqttManager;
@@ -77,9 +78,12 @@ public class DeviceUserPage extends VentilatorBasePage {
                     UserInfo userInfo = (UserInfo) adapter.getItem(position);
                     if (null != userInfo ) {
                         //删除自己
-                        if (userInfo.id == curUser.id)
-                            ;
-                        else {
+                        if (userInfo.id == curUser.id) {
+                            if (device.dc.equals(IDeviceType.RYYJ) && device.guid.equals(Plat.getPlatform().getDeviceOnlySign())) { //当前烟机登录的账号
+                                ToastUtils.showShort(getContext(), R.string.ventilator_donot_delete_this);
+                                return;
+                            }
+                        } else {
                             //非管理员
                             if (curUser.id != device.ownerId) {
                                 ToastUtils.showShort(getContext(), R.string.ventilator_not_administrator);

@@ -98,6 +98,7 @@
     <string name="ventilator_update_version_hint">确认更新到新版本</string>
     <string name="ventilator_update">更新</string>
     <string name="ventilator_updating">版本更新中</string>
+    <string name="ventilator_donot_delete_this">不能删除当前账号</string>
     <string name="ventilator_product_failure">产品故障</string>
     <string name="ventilator_cleaning_completion">清洁完成</string>
     <string name="ventilator_disinfect_completion">消毒完成</string>

@@ -6,6 +6,8 @@ import com.blankj.utilcode.util.ActivityUtils
 import com.robam.common.bean.AccountInfo
 import com.robam.common.device.subdevice.Pan
 import com.robam.common.device.subdevice.Stove
+import com.robam.common.module.IPublicPanApi
+import com.robam.common.module.ModulePubliclHelper
 import com.robam.common.ui.dialog.IDialog
 import com.robam.common.ui.helper.VerticalSpaceItemDecoration
 import com.robam.common.utils.MMKVUtils
@@ -86,6 +88,11 @@ class SmartSettingActivity : VentilatorBaseActivity() {
                 mAdapter.setList(mList)
             }
         }
+        //查询烟锅联动开关
+        val iPublicPanApi = ModulePubliclHelper.getModulePublic(
+            IPublicPanApi::class.java, IPublicPanApi.PAN_PUBLIC
+        )
+        iPublicPanApi?.queryFanPan()
     }
 
     /**

@@ -35,6 +35,8 @@ public class Pan extends Device {
     public int orderNo;
     //菜谱id
     public int recipeId;
+    //烟锅联动开关
+    public boolean fanPan;
 
     public Pan(Device device) {
         this.ownerId = device.ownerId;

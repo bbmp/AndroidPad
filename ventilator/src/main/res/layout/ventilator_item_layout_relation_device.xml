@@ -38,7 +38,7 @@
         android:textColor="@color/ventilator_white_50"
         android:textSize="@dimen/sp_24"
         android:layout_marginLeft="@dimen/dp_5"
-        tools:text="5068s"
+        tools:text="5068S"
         app:layout_constraintLeft_toRightOf="@id/tv_device_name"
         app:layout_constraintRight_toRightOf="@id/view_board"
         app:layout_constraintTop_toTopOf="@id/tv_device_name"

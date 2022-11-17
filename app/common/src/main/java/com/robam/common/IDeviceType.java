@@ -44,5 +44,5 @@ public interface IDeviceType {
     String SERIES_STEAM = "CQ928";
     String SERIES_DISHWASHER = "WB758";
     String SERIES_CABINET = "XG858";
-    String SERIES_VENTILATOR = "5068s";
+    String SERIES_VENTILATOR = "5068S";
 }

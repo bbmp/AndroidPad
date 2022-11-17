@@ -166,17 +166,17 @@ public class ShortcutActivity extends VentilatorBaseActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         intent.putExtra(ComnConstant.EXTRA_GUID, device.guid); //传入启动设备
         if (IDeviceType.RXWJ.equals(device.dc))
-            intent.setClassName(ShortcutActivity.this, "com.robam.dishwasher.ui.activity.MainActivity");
+            intent.setClassName(ShortcutActivity.this, IPublicDishWasherApi.DISHWASHER_HOME);
         else if (IDeviceType.RZKY.equals(device.dc))
-            intent.setClassName(ShortcutActivity.this, "com.robam.steamoven.ui.activity.MainActivity");
+            intent.setClassName(ShortcutActivity.this, IPublicSteamApi.STEAM_HOME);
         else if (IDeviceType.RRQZ.equals(device.dc))
-            intent.setClassName(ShortcutActivity.this, "com.robam.stove.ui.activity.MainActivity");
+            intent.setClassName(ShortcutActivity.this, IPublicStoveApi.STOVE_HOME);
         else if (IDeviceType.RZNG.equals(device.dc))
-            intent.setClassName(ShortcutActivity.this, "com.robam.pan.ui.activity.MainActivity");
+            intent.setClassName(ShortcutActivity.this, IPublicPanApi.PAN_HOME);
         else if (IDeviceType.RXDG.equals(device.dc))
-            intent.setClassName(ShortcutActivity.this, "com.robam.cabinet.ui.activity.MainActivity");
+            intent.setClassName(ShortcutActivity.this, IPublicCabinetApi.CABINET_HOME);
         else
-            intent.setClassName(ShortcutActivity.this, "com.robam.ventilator.ui.activity.HomeActivity");
+            intent.setClassName(ShortcutActivity.this, IPublicVentilatorApi.VENTILATOR_HOME);
         //清空所有任务栈，除烟机
         StoveActivityManager.getInstance().finishAllActivity();
         PanActivityManager.getInstance().finishAllActivity();
@@ -207,7 +207,7 @@ public class ShortcutActivity extends VentilatorBaseActivity {
     private void getDeviceInfo(UserInfo userInfo) {
         List<Device> workList = new ArrayList<>();
         List<Device> onlineList = new ArrayList<>();
-        Device ventilator = new Ventilator("油烟机", IDeviceType.RYYJ, "5068s");
+        Device ventilator = new Ventilator("油烟机", IDeviceType.RYYJ, Plat.getPlatform().getDt());
         ventilator.guid = Plat.getPlatform().getDeviceOnlySign();
         if (HomeVentilator.getInstance().gear == (byte) 0xA0)
             onlineList.add(ventilator);

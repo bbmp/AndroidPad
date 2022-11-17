@@ -1,6 +1,7 @@
 package com.robam.common.device;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.robam.common.utils.LogUtils;
 import com.topband.tbapi.TBManager;
@@ -50,17 +51,19 @@ public class TbangPlat implements IPlat{
 
     @Override
     public String getDt() {
-        return "5917S";
+        return "5068S";
     }
 
     @Override
     public String getDeviceOnlySign() {
-        return getDt() + getMac().replace(":" , "");
+        return getDt() + getMac();
     }
 
     @Override
     public String getMac() {
 //        LogUtils.e("mac = " + tbManager.getWiFiMac().replace(":" , ""));
+        if (!TextUtils.isEmpty(tbManager.getWiFiMac()))
+            return tbManager.getWiFiMac().replace(":" , "");
         return "121212121212";
     }
 

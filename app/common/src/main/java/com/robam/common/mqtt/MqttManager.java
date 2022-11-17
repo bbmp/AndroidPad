@@ -200,7 +200,7 @@ public class MqttManager {
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-
+                    LogUtils.e("重连失败");
                 }
             });
         } catch (Exception e) {
