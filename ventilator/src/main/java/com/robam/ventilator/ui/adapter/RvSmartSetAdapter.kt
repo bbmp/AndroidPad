@@ -32,8 +32,8 @@ class RvSmartSetAdapter(@LayoutRes layoutResId: Int, data: MutableList<SmartSetB
                 holder.setText(R.id.tv_mode_desc, item.modeDescName)
             }
         }
-
-
+        //是否可点击
+        holder.getView<SwitchButton>(R.id.sb_mode).isEnabled = item.enabled == true
         //模式开关
         holder.getView<SwitchButton>(R.id.sb_mode).isChecked = item.modeSwitch == true
         //模式描述开关
@@ -53,6 +53,7 @@ class RvSmartSetAdapter(@LayoutRes layoutResId: Int, data: MutableList<SmartSetB
 }
 
 data class SmartSetBean(
+    val enabled: Boolean? = false,
     //模式类型名字
     val modeName: String,
     //模式描述

@@ -22,4 +22,6 @@ public interface IPublicPanApi extends IPublicApi {
     void lowBatteryHint(Context context);
     //烟锅联动开关查询
     void queryFanPan();
+    //烟锅联动开关设置
+    void setFanPan(int onOff);
 }

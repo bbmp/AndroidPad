@@ -9,6 +9,8 @@ import com.robam.common.bean.Device;
 import com.robam.common.ble.BleDecoder;
 import com.robam.common.constant.PanConstant;
 import com.robam.common.manager.BlueToothManager;
+import com.robam.common.module.IPublicVentilatorApi;
+import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.ByteUtils;
@@ -36,7 +38,7 @@ public class Pan extends Device {
     //菜谱id
     public int recipeId;
     //烟锅联动开关
-    public boolean fanPan;
+    public int fanPan;
 
     public Pan(Device device) {
         this.ownerId = device.ownerId;
@@ -113,6 +115,12 @@ public class Pan extends Device {
             int rc = msg.optInt(PanConstant.interaction);
             if (rc == 0)
                 msgId = MsgKeys.POT_INTERACTION_Rep;
+        } else if (null != msg && msg.has(PanConstant.fanpan)) { //烟锅联动状态
+            fanPan = msg.optInt(PanConstant.fanpan);
+            IPublicVentilatorApi iPublicVentilatorApi = ModulePubliclHelper.getModulePublic(IPublicVentilatorApi.class, IPublicVentilatorApi.VENTILATOR_PUBLIC);
+            if (null != iPublicVentilatorApi) {
+                iPublicVentilatorApi.setSmartSet();
+            }
         }
         return false;
     }

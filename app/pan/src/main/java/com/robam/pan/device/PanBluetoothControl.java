@@ -351,6 +351,27 @@ public class PanBluetoothControl implements PanFunction{
     }
 
     @Override
+    public void setFanPan(int onOff) {
+        try {
+            for (Device device : AccountInfo.getInstance().deviceList) {
+                if (device instanceof Pan) {
+                    MqttMsg msg = new MqttMsg.Builder()
+                            .setMsgId(MsgKeys.SetPotCom_Req)
+                            .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
+                            .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
+                            .build();
+                    msg.putOpt(PanConstant.fanpan, onOff);
+                    //打包payload
+                    byte[] mqtt_data = PanFactory.getProtocol().encode(msg);
+
+                    write_no_response(msg, ((Pan) device).bleDevice, ((Pan) device).characteristic, mqtt_data);
+                    break;
+                }
+            }
+        } catch (Exception e) {}
+    }
+
+    @Override
     public void remoteControl(String targetGuid, byte[] payload) {
         try {
             for (Device device: AccountInfo.getInstance().deviceList) {

@@ -7,6 +7,7 @@ import com.robam.common.IDeviceType;
 import com.robam.common.bean.RTopic;
 import com.robam.common.constant.ComnConstant;
 import com.robam.common.device.IPlat;
+import com.robam.common.utils.ApiSecurityExample;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.StringUtils;
 
@@ -51,7 +52,14 @@ public class MqttManager {
 
         iPlat = plat;
         iProtocol = protocol;
+//        USERNAME = iPlat.getDeviceOnlySign() +"&"+ iPlat.getDt();
+//        String clientid = iPlat.getDt() + "." + iPlat.getDeviceOnlySign();
+//        long random = System.currentTimeMillis();
+//        String password = "clientid" + clientid + "deviceGuid" + iPlat.getDeviceOnlySign() + "deviceType" + iPlat.getDt() + "random" + random;
+//        PASSWORD = ApiSecurityExample.hmacSha256("Kp0lxmm1", password);
+
         CLIENTID = iPlat.getDeviceOnlySign();
+//        CLIENTID = clientid + "|securemode=2,signmethod=hmacsha256,random=" + random + "|";
         mqttAndroidClient = new MqttAndroidClient(context, HOST, CLIENTID);
         mqttAndroidClient.setCallback(mqttCallback); //设置监听订阅消息的回调
         mMqttConnectOptions = new MqttConnectOptions();
