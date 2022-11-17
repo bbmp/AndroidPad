@@ -28,17 +28,6 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-<!--    <com.robam.common.ui.view.MCountdownView-->
-<!--        android:id="@+id/tv_countdown"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:textColor="@color/cabinet_white"-->
-<!--        android:textSize="@dimen/sp_100"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintRight_toLeftOf="@id/cabinet_guideline"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        tools:text="" />-->
-
     <TextView
         android:id="@+id/tv_state"
         android:layout_width="wrap_content"
@@ -57,6 +46,7 @@
         android:layout_height="wrap_content"
         android:text="当前腔内状态"
         android:textColor="@color/cabinet_white"
+        android:layout_marginTop="@dimen/dp_24"
         android:textSize="@dimen/sp_32"
         app:layout_constraintLeft_toLeftOf="@id/tv_state"
         app:layout_constraintTop_toBottomOf="@id/tv_state" />

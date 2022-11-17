@@ -92,7 +92,7 @@ public class CircleProgressView extends View {
         // 设置进度圆环渐变色
         if (mColorArray != null && mColorArray.length > 1){
             //mProgPaint.setShader(new LinearGradient(0, 0, 0, getMeasuredWidth(), mColorArray, null, Shader.TileMode.MIRROR));
-            mProgPaint.setShader(new SweepGradient(getMeasuredWidth()/2, getMeasuredWidth()/2, mColorArray, new float[]{0f,0.65f} ));
+            mProgPaint.setShader(new SweepGradient(getMeasuredWidth()/2, getMeasuredWidth()/2, mColorArray, new float[]{0f,0.75f} ));
         }
     }
 

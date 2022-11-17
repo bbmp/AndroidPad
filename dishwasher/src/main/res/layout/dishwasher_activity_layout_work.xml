@@ -15,10 +15,20 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <View
+        android:layout_width="@dimen/dp_292"
+        android:layout_height="@dimen/dp_292"
+        android:background="@drawable/dishwasher_progress_bg"
+        app:layout_constraintTop_toTopOf="@id/progress"
+        app:layout_constraintBottom_toBottomOf="@id/progress"
+        app:layout_constraintLeft_toLeftOf="@id/progress"
+        app:layout_constraintRight_toRightOf="@id/progress"
+        />
+
     <com.robam.common.ui.view.CircleProgressView
         android:id="@+id/progress"
-        android:layout_width="@dimen/dp_290"
-        android:layout_height="@dimen/dp_290"
+        android:layout_width="@dimen/dp_260"
+        android:layout_height="@dimen/dp_260"
         android:layout_marginRight="@dimen/dp_100"
         app:common_backColor="#99333333"
         app:common_backWidth="@dimen/dp_8"
@@ -36,7 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_32"
         android:textColor="@color/dishwasher_white70"
-        android:textSize="@dimen/sp_80"
+        android:textSize="@dimen/sp_48"
         android:text="洗涤"
         app:layout_constraintLeft_toLeftOf="@id/progress"
         app:layout_constraintTop_toTopOf="@id/progress"
@@ -51,8 +61,7 @@
         android:textColor="@color/dishwasher_white70"
         android:textSize="@dimen/sp_40"
         app:layout_constraintLeft_toLeftOf="@id/dishwasher_guideline2"
-        app:layout_constraintTop_toBottomOf="@id/ll_title"
-        app:layout_constraintBottom_toTopOf="@id/tv_time"
+        app:layout_constraintTop_toBottomOf="@id/dishwasher_guideline3"
         app:layout_constraintVertical_chainStyle="packed"/>
 
     <TextView
@@ -84,8 +93,7 @@
         android:textColor="@color/dishwasher_white"
         android:textSize="@dimen/sp_100"
         app:layout_constraintLeft_toLeftOf="@id/tv_mode"
-        app:layout_constraintTop_toBottomOf="@id/tv_mode"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/tv_mode"/>
 
     <ImageView
         android:id="@+id/iv_start"
@@ -114,5 +122,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_percent="0.47" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/dishwasher_guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.35" />
 </androidx.constraintlayout.widget.ConstraintLayout>
