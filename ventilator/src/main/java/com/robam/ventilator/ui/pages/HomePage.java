@@ -308,8 +308,8 @@ public class HomePage extends VentilatorBasePage {
                     drawerLayout.closeDrawer(Gravity.RIGHT);
                 }
                 Device device = (Device) adapter.getItem(position);
-//                if (device.status != Device.ONLINE)
-//                    return;
+                if (device.status != Device.ONLINE)
+                    return;
                 //跳转设备首页
                 Intent intent = new Intent();
                 intent.putExtra(ComnConstant.EXTRA_GUID, device.guid);
