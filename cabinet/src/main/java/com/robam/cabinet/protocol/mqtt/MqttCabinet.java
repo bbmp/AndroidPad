@@ -8,6 +8,7 @@ import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MqttPublic;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.ByteUtils;
+import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MsgUtils;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -47,8 +48,10 @@ public class MqttCabinet extends MqttPublic {
                     switch (argument_key) {
                         case 1://预约剩余时间
                             offset++;//length
-                            msg.putOpt(CabinetConstant.REMAINING_APPOINT_TIME,ByteUtils.toInt16(payload, offset++,ByteOrder.LITTLE_ENDIAN));
+                            int remainOrderTime = ByteUtils.toInt16(payload, offset++,ByteOrder.LITTLE_ENDIAN);
+                            msg.putOpt(CabinetConstant.REMAINING_APPOINT_TIME,remainOrderTime);
                             offset++;
+                            LogUtils.e("Mqtt REMAINING_APPOINT_TIME " + remainOrderTime +" REMAINING_TIME "+workTime );
                             break;
                         case 2://停止工作是否进入安全锁定
                             offset++;//length

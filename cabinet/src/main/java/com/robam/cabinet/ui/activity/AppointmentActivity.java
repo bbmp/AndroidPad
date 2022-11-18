@@ -141,7 +141,7 @@ public class AppointmentActivity extends CabinetBaseActivity {
     private void toAppointPage(Cabinet cabinet){
         Intent intent = new Intent(this,AppointingActivity.class);
         WorkModeBean workModeBean = new WorkModeBean(this.cabModeBean);
-        workModeBean.orderSurplusTime = cabinet.remainingAppointTime;
+        workModeBean.modelSurplusTime = cabinet.modeWorkTime;
         intent.putExtra(Constant.EXTRA_MODE_BEAN, workModeBean);
         startActivity(intent);
         finish();

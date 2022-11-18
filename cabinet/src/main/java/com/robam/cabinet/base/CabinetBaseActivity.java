@@ -77,12 +77,12 @@ public abstract class CabinetBaseActivity extends BaseActivity {
         rightCenter.setVisibility(View.VISIBLE);
         rightCenter.setOnClickListener(v -> {
             Map map = CabinetCommonHelper.getCommonMap(MsgKeys.SetSteriLock_Req);
-            map.put(CabinetConstant.CABINET_LOCK,0);
+            map.put(CabinetConstant.CABINET_LOCK,1);
             CabinetCommonHelper.sendCommonMsg(map);
         });
         rightCenter.setOnLongClickListener(v->{
             Map map = CabinetCommonHelper.getCommonMap(MsgKeys.SetSteriLock_Req);
-            map.put(CabinetConstant.CABINET_LOCK,1);
+            map.put(CabinetConstant.CABINET_LOCK,0);
             CabinetCommonHelper.sendCommonMsg(map);
             return true;
         });

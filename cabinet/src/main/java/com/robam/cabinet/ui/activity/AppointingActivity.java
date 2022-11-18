@@ -60,6 +60,7 @@ public class AppointingActivity extends CabinetBaseActivity {
     protected void initView() {
         showLeft();
         showCenter();
+        showRightCenter();
         tvCountdown = findViewById(R.id.tv_countdown);
         tvAppointmentHint = findViewById(R.id.tv_appointment_hint);
         tvMode = findViewById(R.id.tv_mode);
