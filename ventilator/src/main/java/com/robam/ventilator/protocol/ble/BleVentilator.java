@@ -589,12 +589,15 @@ public class BleVentilator {
                                             //移除消息
                                             BlueToothManager.send_map.remove(ByteUtils.toInt(ret2[BleDecoder.DECODE_CMD_KEY_OFFSET]));
 
-                                            if (Plat.getPlatform().getDeviceOnlySign().equals(target_guid) && device instanceof Pan) { //烟机查询
+                                            if (device instanceof Pan) { //烟机查询
 
                                                 byte payload[] = ble_make_external_mqtt(target_guid, ret2);
                                                 MqttMsg msg = PanFactory.getProtocol().decode(topic, payload);
                                                 if (((Pan) device).onBleReceived(msg))
                                                     AccountInfo.getInstance().getGuid().setValue(device.guid); //更新锅状态
+                                                if (!Plat.getPlatform().getDeviceOnlySign().equals(target_guid))
+                                                    //远程控制指令
+                                                    ble_mqtt_publish(topic, device.guid, ret2);
                                             } else
                                                 //远程控制指令
                                                 ble_mqtt_publish(topic, device.guid, ret2);

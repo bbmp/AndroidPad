@@ -24,6 +24,7 @@ import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
 import com.robam.common.bean.AccountInfo;
 import com.robam.ventilator.constant.VentilatorConstant;
+import com.robam.ventilator.device.HomeVentilator;
 import com.robam.ventilator.manager.VenWifiManager;
 import com.robam.ventilator.ui.adapter.RvWifiAdapter;
 import com.robam.ventilator.ui.receiver.VentilatorReceiver;
@@ -46,12 +47,15 @@ public class WifiSettingActivity extends VentilatorBaseActivity {
     @Override
     protected void initView() {
         setCenter(R.string.ventilator_net_set);
+        mWifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
         boolean first = false;
         group = findViewById(R.id.ventilator_group2);
         Bundle bundle = getIntent().getExtras();
         if (null != bundle) {
             first = bundle.getBoolean(VentilatorConstant.EXTRA_FIRST, false);
             if (first) {
+                HomeVentilator.getInstance().registerWifiReceiver(this.getApplicationContext());
+                VenWifiManager.openWifi(mWifiManager);
                 group.setVisibility(View.GONE);
                 //首次进入
                 setRight();
@@ -106,7 +110,6 @@ public class WifiSettingActivity extends VentilatorBaseActivity {
 
     //已授权
     private void onPermissionGranted() {
-        mWifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
         //监听联网状态
         AccountInfo.getInstance().getConnect().observe(this, new Observer<Boolean>() {
             @Override

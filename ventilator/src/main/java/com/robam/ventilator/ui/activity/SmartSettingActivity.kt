@@ -44,12 +44,12 @@ class SmartSettingActivity : VentilatorBaseActivity() {
         showLeft()
         setCenter(R.string.ventilator_smart_setting)
         //查询烟锅联动状态
-        for (device in AccountInfo.getInstance().deviceList) {
-            if (device is Pan && device.status == Device.ONLINE) {
-                iPublicPanApi?.queryFanPan()
-                break
-            }
-        }
+//        for (device in AccountInfo.getInstance().deviceList) {
+//            if (device is Pan && device.status == Device.ONLINE) {
+//                iPublicPanApi?.queryFanPan()
+//                break
+//            }
+//        }
 
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context)

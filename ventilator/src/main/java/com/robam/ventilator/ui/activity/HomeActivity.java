@@ -64,6 +64,8 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+        //注册wifi广播
+        HomeVentilator.getInstance().registerWifiReceiver(this.getApplicationContext());
         if (Build.VERSION.SDK_INT >= 23) {
             if (Settings.canDrawOverlays(this)) {
 
@@ -238,6 +240,8 @@ public class HomeActivity extends BaseActivity {
         stopService(new Intent(this.getApplicationContext(), AlarmMqttService.class));
         stopService(new Intent(this.getApplicationContext(), AlarmBleService.class));
         stopService(new Intent(this.getApplicationContext(), AlarmVentilatorService.class)); //停止串口查询
+        //取消注册广播
+        HomeVentilator.getInstance().unregisterWifiReceiver(this.getApplicationContext());
     }
 
     //获取token

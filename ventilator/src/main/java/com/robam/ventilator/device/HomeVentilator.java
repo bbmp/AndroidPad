@@ -3,6 +3,8 @@ package com.robam.ventilator.device;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.serialport.helper.SerialPortHelper;
@@ -37,6 +39,7 @@ import com.robam.ventilator.factory.VentilatorDialogFactory;
 import com.robam.ventilator.protocol.serial.SerialVentilator;
 import com.robam.ventilator.ui.activity.HomeActivity;
 import com.robam.ventilator.ui.dialog.DelayCloseDialog;
+import com.robam.ventilator.ui.receiver.VentilatorReceiver;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -294,8 +297,11 @@ public class HomeVentilator {
                     shutDownHint(isLink);
                 }
             }, 2000); //延时，防止自动跳转时覆盖
-        } else
+        } else {
+            VentilatorAbstractControl.getInstance().beep();
+
             shutDownHint(false);
+        }
     }
 
     private DelayCloseDialog delayCloseDialog;
@@ -457,5 +463,25 @@ public class HomeVentilator {
     public void closeLock() {
         if (isLock())
             homeLock.dismiss();
+    }
+    //注册WiFi广播
+    private VentilatorReceiver ventilatorReceiver;
+    public void registerWifiReceiver(Context context) {
+        if (null == ventilatorReceiver) {
+            ventilatorReceiver = new VentilatorReceiver();
+            IntentFilter filter = new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
+            filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);//监听wifi是开关变化的状态
+            filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);//监听wifi连接状态
+            filter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);//监听wifi列表变化（开启一个热点或者关闭一个热点）
+            context.registerReceiver(ventilatorReceiver, filter);
+        }
+    }
+    public void unregisterWifiReceiver(Context context) {
+        if (null != ventilatorReceiver) {
+            try {
+                context.unregisterReceiver(ventilatorReceiver);
+                ventilatorReceiver = null;
+            } catch (Exception e) {}
+        }
     }
 }

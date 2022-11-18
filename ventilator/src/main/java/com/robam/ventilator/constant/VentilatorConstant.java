@@ -54,4 +54,5 @@ public class VentilatorConstant {
     public final static String DEVICE_GUID = "device_guid";
     public final static String DEVICE_BIZ = "device_biz"; //业务编吗
     public final static String DEVICE_STATUS = "device_status";
+    public final static String KEYS = "keys";
 }

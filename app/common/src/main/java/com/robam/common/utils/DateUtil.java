@@ -1002,6 +1002,34 @@ public class DateUtil {
         }
         return curWeek;
     }
+    public static int getWeek(String setTime) {
+        int curWeek = 1;
+        String week = setTime.substring(0, 2);
+        switch (week) {
+            case "周日":
+                curWeek = 1;
+                break;
+            case "周一":
+                curWeek = 2;
+                break;
+            case "周二":
+                curWeek = 3;
+                break;
+            case "周三":
+                curWeek = 4;
+                break;
+            case "周四":
+                curWeek = 5;
+                break;
+            case "周五":
+                curWeek = 6;
+                break;
+            case "周六":
+                curWeek = 7;
+                break;
+        }
+        return curWeek;
+    }
     //比较小时和分钟
     public static boolean isNowTime(String setTime) {
         String curTime = (String) DateFormat.format("HH:mm", System.currentTimeMillis());

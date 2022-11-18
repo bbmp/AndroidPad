@@ -92,11 +92,6 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
     }
 
     @Override
-    public void beep() {
-        VentilatorAbstractControl.getInstance().beep();
-    }
-
-    @Override
     public void startService(Context context) {
         //启动定时服务
         Intent intent = new Intent(context, AlarmMqttService.class);
@@ -169,8 +164,4 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
         HomeVentilator.getInstance().cancleDelayShutDown();
     }
 
-    @Override
-    public void setSmartSet() {
-        HomeVentilator.getInstance().smartSet.setValue(true);
-    }
 }
