@@ -61,8 +61,8 @@ public class MqttManager {
 //        PASSWORD = ApiSecurityExample.hmacSha256("Kp0lxmm1", password);
 
         CLIENTID = iPlat.getDeviceOnlySign();
+        //        CLIENTID = clientid + "|securemode=2,signmethod=hmacsha256,random=" + random + "|";
         mqttAndroidClient = new MqttAndroidClient(context, BuildConfig.API_PRO?HOST:HOST_DEV, CLIENTID);
-//        CLIENTID = clientid + "|securemode=2,signmethod=hmacsha256,random=" + random + "|";
         mqttAndroidClient = new MqttAndroidClient(context, HOST, CLIENTID);
         mqttAndroidClient.setCallback(mqttCallback); //设置监听订阅消息的回调
         mMqttConnectOptions = new MqttConnectOptions();
