@@ -54,4 +54,9 @@ public class PublicPanApi implements IPublicPanApi {
     public void queryFanPan() {
         PanAbstractControl.getInstance().queryFanPan();
     }
+
+    @Override
+    public void setFanPan(int onOff) {
+        PanAbstractControl.getInstance().setFanPan(onOff);
+    }
 }

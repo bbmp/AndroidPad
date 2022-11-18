@@ -168,4 +168,9 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
     public void closeDelayDialog() {
         HomeVentilator.getInstance().cancleDelayShutDown();
     }
+
+    @Override
+    public void setSmartSet() {
+        HomeVentilator.getInstance().smartSet.setValue(true);
+    }
 }

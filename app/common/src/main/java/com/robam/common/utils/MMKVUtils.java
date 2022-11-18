@@ -212,28 +212,28 @@ public class MMKVUtils {
     }
 
     //烟锅联动
-    public static void setFanPan(boolean fanPan) {
-        MMKV mmkv = MMKV.defaultMMKV();
-        mmkv.encode(FAN_PAN, fanPan);
-        if (!fanPan)
-            mmkv.encode(FAN_PAN_GEAR, false);
-    }
+//    public static void setFanPan(boolean fanPan) {
+//        MMKV mmkv = MMKV.defaultMMKV();
+//        mmkv.encode(FAN_PAN, fanPan);
+//        if (!fanPan)
+//            mmkv.encode(FAN_PAN_GEAR, false);
+//    }
 
     //烟锅联动匹配风量
-    public static void setFanPanGear(boolean onOff) {
-        MMKV mmkv = MMKV.defaultMMKV();
-        mmkv.encode(FAN_PAN_GEAR, onOff);
-    }
+//    public static void setFanPanGear(boolean onOff) {
+//        MMKV mmkv = MMKV.defaultMMKV();
+//        mmkv.encode(FAN_PAN_GEAR, onOff);
+//    }
     //获取烟锅联动
-    public static boolean getFanPan() {
-        MMKV mmkv = MMKV.defaultMMKV();
-        return mmkv.decodeBool(FAN_PAN, true);
-    }
+//    public static boolean getFanPan() {
+//        MMKV mmkv = MMKV.defaultMMKV();
+//        return mmkv.decodeBool(FAN_PAN, true);
+//    }
     //烟锅联动匹配风量
-    public static boolean getFanPanGear() {
-        MMKV mmkv = MMKV.defaultMMKV();
-        return mmkv.decodeBool(FAN_PAN_GEAR);
-    }
+//    public static boolean getFanPanGear() {
+//        MMKV mmkv = MMKV.defaultMMKV();
+//        return mmkv.decodeBool(FAN_PAN_GEAR);
+//    }
 
     //烟蒸烤联动
     public static void setFanSteam(boolean fanSteam) {

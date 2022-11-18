@@ -48,7 +48,7 @@ public class MqttVentilator extends MqttPublic {
         //内部命令
         switch (msg.getID()) {
             case BleDecoder.EVENT_POT_TEMPERATURE_DROP: //锅温度骤降且烟锅联动开启,且烟机不工作烟机爆炒档
-                if (!MMKVUtils.getFanPan() || HomeVentilator.getInstance().isLock()) //烟锅联动未开 或锁屏状态
+                if (/*!MMKVUtils.getFanPan() ||*/ HomeVentilator.getInstance().isLock()) //烟锅联动未开 或锁屏状态
                     return;
                 if (HomeVentilator.getInstance().gear == (byte) 0xA0) { //不工作
                     if (HomeVentilator.getInstance().startup == (byte) 0x00) { //先开机
@@ -60,14 +60,14 @@ public class MqttVentilator extends MqttPublic {
                 }
                 break;
             case BleDecoder.EVENT_POT_TEMPERATURE_OV: //防干烧预警 锅温280以上且烟锅联动开启
-                if (!MMKVUtils.getFanPan() || HomeVentilator.getInstance().isLock()) //烟锅联动未开 或锁屏状态
+                if (/*!MMKVUtils.getFanPan() || */HomeVentilator.getInstance().isLock()) //烟锅联动未开 或锁屏状态
                     return;
                 //关闭灶具
                 StoveAbstractControl.getInstance().setAttribute(HomeStove.getInstance().guid, IPublicStoveApi.STOVE_LEFT, 0x00, StoveConstant.STOVE_CLOSE);
                 StoveAbstractControl.getInstance().setAttribute(HomeStove.getInstance().guid, IPublicStoveApi.STOVE_RIGHT, 0x00, StoveConstant.STOVE_CLOSE);
                 break;
             case BleDecoder.EVENT_POT_LINK_2_RH://烟锅联动锅温50以上，烟机未开且烟锅联动开启
-                if (!MMKVUtils.getFanPan() || HomeVentilator.getInstance().isLock()) //烟锅联动未开 或锁屏状态
+                if (/*!MMKVUtils.getFanPan() ||*/ HomeVentilator.getInstance().isLock()) //烟锅联动未开 或锁屏状态
                     return;
                 //烟机开2挡
                 if (HomeVentilator.getInstance().gear == (byte) 0xA0) { //不工作
@@ -93,7 +93,7 @@ public class MqttVentilator extends MqttPublic {
                             msg.putOpt(VentilatorConstant.FanGear, gear);
                             for (Device device: AccountInfo.getInstance().deviceList) {
                                 if (msg.getGuid().equals(device.guid) && device instanceof Pan) {
-                                    if (MMKVUtils.getFanPan() && MMKVUtils.getFanPanGear() && HomeVentilator.getInstance().isLock()) {//烟锅联动打开和自动匹配风量打开 非锁屏
+                                    if (/*MMKVUtils.getFanPan() && MMKVUtils.getFanPanGear() && */HomeVentilator.getInstance().isLock()) {//烟锅联动打开和自动匹配风量打开 非锁屏
                                         if (HomeVentilator.getInstance().startup == (byte) 0x00) { //先开机
                                             VentilatorAbstractControl.getInstance().powerOnGear(gear);
                                             Plat.getPlatform().screenOn();

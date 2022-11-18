@@ -69,6 +69,11 @@ public class PanAbstractControl implements PanFunction{
     }
 
     @Override
+    public void setFanPan(int onOff) {
+        function.setFanPan(onOff);
+    }
+
+    @Override
     public void remoteControl(String targetGuid, byte[] payload) {
         function.remoteControl(targetGuid, payload);
     }

@@ -26,6 +26,8 @@ public interface PanFunction {
     void setPanParams(int cmd, byte[] payload);
     //查询烟锅联动开关状态
     void queryFanPan();
+    //设置烟锅联动开关
+    void setFanPan(int onOff);
     //远程控制命令
     void remoteControl(String targetGuid, byte[] payload);
 }

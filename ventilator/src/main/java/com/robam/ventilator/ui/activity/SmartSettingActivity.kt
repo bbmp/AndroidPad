@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.blankj.utilcode.util.ActivityUtils
 import com.robam.common.bean.AccountInfo
+import com.robam.common.bean.Device
 import com.robam.common.device.subdevice.Pan
 import com.robam.common.device.subdevice.Stove
 import com.robam.common.module.IPublicPanApi
@@ -33,10 +34,22 @@ class SmartSettingActivity : VentilatorBaseActivity() {
 
     override fun getLayoutId() = R.layout.ventilator_activity_layout_smart_setting
 
+    //烟锅联动状态查询
+    //查询烟锅联动开关
+    private var iPublicPanApi = ModulePubliclHelper.getModulePublic(
+        IPublicPanApi::class.java, IPublicPanApi.PAN_PUBLIC
+    )
 
     override fun initView() {
         showLeft()
         setCenter(R.string.ventilator_smart_setting)
+        //查询烟锅联动状态
+        for (device in AccountInfo.getInstance().deviceList) {
+            if (device is Pan && device.status == Device.ONLINE) {
+                iPublicPanApi?.queryFanPan()
+                break
+            }
+        }
 
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
@@ -59,7 +72,7 @@ class SmartSettingActivity : VentilatorBaseActivity() {
                             data[position].modeSwitch = !data[position].modeSwitch!!
                             notifyItemChanged(position)
                             //切换开关保存本地
-                            saveModeValue(position, data[position].modeSwitch == true)
+                            saveModeValue(data[position].modeName, data[position].modeSwitch == true)
                         }
                         R.id.sb_mode_desc -> {
                             data[position].modeDescSwitch = !data[position].modeDescSwitch!!
@@ -88,33 +101,43 @@ class SmartSettingActivity : VentilatorBaseActivity() {
                 mAdapter.setList(mList)
             }
         }
-        //查询烟锅联动开关
-        val iPublicPanApi = ModulePubliclHelper.getModulePublic(
-            IPublicPanApi::class.java, IPublicPanApi.PAN_PUBLIC
-        )
-        iPublicPanApi?.queryFanPan()
+
     }
 
     /**
      * 开关状态本地保存
      */
-    private fun saveModeValue(position: Int, onOff: Boolean) {
-        when (position) {
-            0 -> {
+    private fun saveModeValue(modeName: String, onOff: Boolean) {
+        when (modeName) {
+            "假日模式" -> {
                 MMKVUtils.setHoliday(onOff)
                 HomeVentilator.getInstance().holiday = onOff
             }
-            1 -> MMKVUtils.setOilClean(onOff)
-            2 -> MMKVUtils.setDelayShutdown(onOff)
-            3 -> {
+            "油网清洗提醒功能" -> MMKVUtils.setOilClean(onOff)
+            "延时关机" -> MMKVUtils.setDelayShutdown(onOff)
+            "烟灶联动" -> {
                 MMKVUtils.setFanStove(onOff)
                 if (!onOff) { //烟灶联动关闭
                     HomeVentilator.getInstance().stopLevelCountDown()
                     HomeVentilator.getInstance().stopA6CountDown()
                 }
             }
-            4 -> MMKVUtils.setFanPan(onOff)
-            5 -> MMKVUtils.setFanSteam(onOff)
+            "烟锅联动" -> {
+                for (device in AccountInfo.getInstance().deviceList) { //查找锅
+                    if (device is Pan) {
+                        var pan: Pan = device
+
+                        if (onOff) {
+                            pan.fanPan = pan.fanPan.or(0x02)
+                        } else //关闭时风量也关闭
+                            pan.fanPan = pan.fanPan.and(0xF9)
+                        pan.let { iPublicPanApi?.setFanPan(it.fanPan) }  //设置烟锅联动
+                        break
+                    }
+                }
+
+            }
+            "烟蒸烤联动" -> MMKVUtils.setFanSteam(onOff)
         }
     }
     /**
@@ -123,7 +146,19 @@ class SmartSettingActivity : VentilatorBaseActivity() {
     private fun saveModedescValue(modeName: String, onOff: Boolean) {
         when (modeName) {
             "烟灶联动" -> MMKVUtils.setFanStoveGear(onOff)
-            "烟锅联动" -> MMKVUtils.setFanPanGear(onOff)
+            "烟锅联动" -> {
+                for (device in AccountInfo.getInstance().deviceList) { //查找锅
+                    if (device is Pan) {
+                        var pan: Pan = device
+                        if (onOff) {
+                            pan.fanPan = pan.fanPan.or(0x04)
+                        } else //关闭
+                            pan.fanPan = pan.fanPan.and(0xFB)
+                        pan.let { iPublicPanApi?.setFanPan(it.fanPan) }  //设置烟锅联动
+                    }
+                }
+
+            }
             "烟蒸烤联动" -> MMKVUtils.setFanSteamGear(onOff)
         }
     }
@@ -135,6 +170,7 @@ class SmartSettingActivity : VentilatorBaseActivity() {
 
         mList.add(
             SmartSetBean(
+                true,
                 "假日模式",
                 String.format(
                     context.getString(R.string.ventilator_holiday_desc_set),
@@ -146,6 +182,7 @@ class SmartSettingActivity : VentilatorBaseActivity() {
         )
         mList.add(
             SmartSetBean(
+                true,
                 "油网清洗提醒功能",
                 "",
                 MMKVUtils.getOilClean()
@@ -153,6 +190,7 @@ class SmartSettingActivity : VentilatorBaseActivity() {
         )
         mList.add(
             SmartSetBean(
+                true,
                 "延时关机",
                 String.format(
                     context.getString(R.string.ventilator_shutdown_delay_set),
@@ -162,37 +200,45 @@ class SmartSettingActivity : VentilatorBaseActivity() {
             )
         )
         //灶
-        val stoveList =
-            AccountInfo.getInstance().deviceList.filter { it is Stove }.map { it.displayType }
-        if (stoveList.isNotEmpty()) {
-            val stoveListDevice =
-                "关联产品:${stoveList.toString().substring(1,stoveList.toString().length-1)}"
-            mList.add(
-                SmartSetBean(
-                    "烟灶联动",
-                    "$stoveListDevice \n灶具小火工作时，烟机自动匹配风量",
-                    MMKVUtils.getFanStove(),
-                    MMKVUtils.getFanStoveGear(),
-                    true
+        for (device in AccountInfo.getInstance().deviceList) {
+            if (device is Stove) {
+                val stove: Stove = device
+                val stoveListDevice =
+                    "关联产品:${stove.displayType}"
+                mList.add(
+                    SmartSetBean(
+                        stove.status == Device.ONLINE,
+                        "烟灶联动",
+                        "$stoveListDevice \n灶具小火工作时，烟机自动匹配风量",
+                        MMKVUtils.getFanStove(),
+                        MMKVUtils.getFanStoveGear(),
+                        true
+                    )
                 )
-            )
+
+                break
+            }
         }
-
         //锅
-        val panList =
-            AccountInfo.getInstance().deviceList.filter { it is Pan }.map { it.displayType }
-        if (panList.isNotEmpty()) {
-
-            val panListDevice = "关联产品:${panList.toString().substring(1,panList.toString().length-1)}"
-            mList.add(
-                SmartSetBean(
-                    "烟锅联动",
-                    "$panListDevice \n明火自动翻炒锅工作时开着，烟机自动匹配风量",
-                    MMKVUtils.getFanPan(),
-                    MMKVUtils.getFanPanGear(),
-                    true
+        for (device in AccountInfo.getInstance().deviceList) {
+            if (device is Pan) {
+                val pan: Pan = device
+                val panListDevice = "关联产品:${pan.displayType}"
+                val fanPan: Int = pan.fanPan and 0x02 shr 1
+                val fanPanGear: Int = pan.fanPan and 0x04 shr 2
+                mList.add(
+                    SmartSetBean(
+                        pan.status == Device.ONLINE,
+                        "烟锅联动",
+                        "$panListDevice \n明火自动翻炒锅工作时开着，烟机自动匹配风量",
+                        fanPan === 1,
+                        fanPanGear === 1,
+                        true
+                    )
                 )
-            )
+
+                break
+            }
         }
 
         //一体机
@@ -212,6 +258,7 @@ class SmartSettingActivity : VentilatorBaseActivity() {
 
             mList.add(
                 SmartSetBean(
+                    true,
                     "烟蒸烤联动",
                     "$steamOvenListDevice \n一体机工作室开门，烟机自动匹配风量",
                     MMKVUtils.getFanSteam(),

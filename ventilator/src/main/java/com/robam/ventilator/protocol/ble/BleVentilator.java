@@ -26,6 +26,8 @@ import com.robam.common.bean.RTopic;
 import com.robam.common.ble.BleDecoder;
 import com.robam.common.device.Plat;
 import com.robam.common.manager.BlueToothManager;
+import com.robam.common.module.IPublicPanApi;
+import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.utils.ByteUtils;
@@ -59,6 +61,8 @@ public class BleVentilator {
     private static ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(2, 2, 0, TimeUnit.MILLISECONDS,
             new SynchronousQueue<>());
     private static WeakReference<BleCallBack> bleCallBackWeakReference;
+    private static final int MSG_DELAY_DISCONNECT = 1;
+    private static final int MSG_QUERY_FANPAN = 2; //烟锅联动查询
 
     public interface BleCallBack {
         void onScanFinished();
@@ -423,6 +427,12 @@ public class BleVentilator {
                                                         HomeVentilator.getInstance().notifyOnline(new String(guid), new String(biz_id), 1);
                                                         //订阅主题
                                                         MqttManager.getInstance().subscribe(device.dc, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid));
+                                                        //延时查询烟锅联动状态
+                                                        if (IDeviceType.RZNG.equals(device.dc)) {
+                                                            Message message = handler.obtainMessage();
+                                                            message.arg1 = MSG_QUERY_FANPAN;
+                                                            handler.sendMessageDelayed(message, 200);
+                                                        }
                                                     }
                                                     break;
                                                 }
@@ -451,10 +461,15 @@ public class BleVentilator {
                                     ble_write_no_resp(bleDevice, BleDecoder.ByteArraysTobyteArrays(resp));
 //                                    listRemove(channel);
                                     break;
-                                case BleDecoder.RESP_DISCONNECT_BLE_PRIOR_NOTICE://收到BLE从机的断开预通知响应
+                                case BleDecoder.RESP_DISCONNECT_BLE_PRIOR_NOTICE: {//收到BLE从机的断开预通知响应
 //                                    listRemove(channel);
 //                                    BleDeviceInfo.getInstance().removeDeviceFromMap(bleDevice);
-                                    delay_disconnect_ble(bleDevice);
+                                    Message message = handler.obtainMessage();
+                                    message.arg1 = MSG_DELAY_DISCONNECT;
+                                    message.obj = bleDevice;
+                                    handler.sendMessageDelayed(message, 1000);
+
+                                }
                                     //通知下线
                                     break;
                                 case BleDecoder.EVENT_IH_POWER_CHANGED_INT://灶具挡位变化
@@ -672,8 +687,14 @@ public class BleVentilator {
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
-            if (null != msg)
-                StoveAbstractControl.getInstance().queryAttribute((String) msg.obj);
+            if (null != msg && msg.arg1 == MSG_DELAY_DISCONNECT) //延时断开
+                delay_disconnect_ble((BleDevice) msg.obj);
+            else if (null != msg && msg.arg1 == MSG_QUERY_FANPAN) {//烟锅联动状态查询
+                //查询烟锅联动开关
+                IPublicPanApi iPublicPanApi = ModulePubliclHelper.getModulePublic(IPublicPanApi.class, IPublicPanApi.PAN_PUBLIC);
+                if (null != iPublicPanApi)
+                    iPublicPanApi.queryFanPan();
+            }
         }
     };
 }
