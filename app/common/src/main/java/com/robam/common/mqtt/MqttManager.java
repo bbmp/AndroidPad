@@ -10,7 +10,6 @@ import com.robam.common.constant.ComnConstant;
 import com.robam.common.device.IPlat;
 import com.robam.common.utils.ApiSecurityExample;
 import com.robam.common.utils.LogUtils;
-import com.robam.common.utils.MsgUtils;
 import com.robam.common.utils.StringUtils;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
@@ -32,7 +31,7 @@ public class MqttManager {
     private MqttAndroidClient mqttAndroidClient;
     private MqttConnectOptions mMqttConnectOptions;
     private String HOST = "tcp://mqtt.myroki.com:1883";//服务器地址（协议+地址+端口号）
-    public String HOST_DEV = "tcp://develop.mqtt.myroki.com:1883";//服务器地址（协议+地址+端口号） //modify by zm TODO(暂时切换到测试环境)
+    public String HOST_DEV = "tcp://develop.mqtt.myroki.com:1883";//测试服务器地址（协议+地址+端口号）
     private String USERNAME = "admin";//用户名
     private String PASSWORD = "jnkj2014";//密码
     public String RESPONSE_TOPIC = "message_arrived";//响应主题
