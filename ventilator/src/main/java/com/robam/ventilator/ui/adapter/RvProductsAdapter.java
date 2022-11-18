@@ -58,6 +58,7 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
                     baseViewHolder.setVisible(R.id.layout_offline, true);
                     baseViewHolder.setText(R.id.tv_hint, R.string.ventilator_check_connect_status);
                     baseViewHolder.setGone(R.id.layout_work, true);
+                    baseViewHolder.setVisible(R.id.btn_detail, true);
                     baseViewHolder.setText(R.id.tv_online, R.string.ventilator_offline);
                     baseViewHolder.setImageResource(R.id.iv_online, R.drawable.ventilator_shape_offline_bg);
                 } else {
@@ -131,6 +132,7 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
                 ivDevice.setImageResource(R.drawable.ventilator_dishwasher);
                 if (device.getStatus() == Device.OFFLINE) {//离线
                     baseViewHolder.setVisible(R.id.layout_offline, true);
+                    baseViewHolder.setVisible(R.id.btn_detail, true);
                     baseViewHolder.setText(R.id.tv_hint, R.string.ventilator_check_connect_status);
                     baseViewHolder.setGone(R.id.layout_work, true);
                     baseViewHolder.setText(R.id.tv_online, R.string.ventilator_offline);
