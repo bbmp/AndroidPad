@@ -12,8 +12,8 @@ public enum DishWasherEnum {
     SELFCLEAN(DishWasherConstant.MODE_SELFCLEAN,"自清洁"),
     FLUSH(DishWasherConstant.MODE_FLUSH,"护婴净存"),
     DRAIN_WATER(DishWasherConstant.MODE_DRAIN_WATER,"排水"),
-    //SELF_INSPECTION(DishWasherConstant.MODE_SELF_INSPECTION,"自检测试"),
-    AUTO_AERATION(DishWasherConstant.MODE_AUTO_AERATION,"自动换气等待");
+    SELF_INSPECTION(DishWasherConstant.MODE_SELF_INSPECTION,"自检"),
+    AUTO_AERATION(DishWasherConstant.MODE_AUTO_AERATION,"换气等待");
 
     private int code;
     private String value;

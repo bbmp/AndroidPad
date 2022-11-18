@@ -301,6 +301,20 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
      */
     private SpannableString getSpan(int remainTime){
         String time = TimeUtils.secToHourMinUp(remainTime);
+        if(remainTime >= 60*60*10){//超过10小时，只显示小时数据
+            int minIndex = time.indexOf("min");
+            int hourIndex = time.indexOf("h");
+            if(minIndex != 0 && hourIndex != 0){
+                try{
+                    //time = (Integer.parseInt(time.substring(0,hourIndex)) + 1) +"h";//暂时不加1
+                    time = time.substring(0,hourIndex)+"h";//暂时不加1
+                }catch (NumberFormatException e){}
+            }else{
+                try{
+                    time = time.substring(0,hourIndex) +"h";
+                }catch (NumberFormatException e){}
+            }
+        }
         SpannableString spannableString = new SpannableString(time);
         int pos = time.indexOf("h");
         if (pos >= 0)

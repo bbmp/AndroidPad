@@ -160,9 +160,9 @@ public class WorkActivity extends DishWasherBaseActivity {
             cpgBar.setVisibility(View.VISIBLE);
             tvModeCur.setVisibility(View.VISIBLE);
             tvModeCur.setText(R.string.dishwasher_aeration);
-        }else if(DishWasherEnum.AUTO_AERATION.getCode() == code){//自动换气
+        }else if(DishWasherEnum.AUTO_AERATION.getCode() == code){//换气等待
             tvMode.setText(DishWasherEnum.match(code));
-            cpgBar.setVisibility(View.VISIBLE);
+            cpgBar.setVisibility(View.INVISIBLE);
             tvModeCur.setVisibility(View.VISIBLE);
             tvModeCur.setText(R.string.dishwasher_aeration);
         }else{
@@ -250,18 +250,26 @@ public class WorkActivity extends DishWasherBaseActivity {
         }else if(dishWasher.powerStatus == DishWasherState.PAUSE){
             tvDuration.setText(getSpan(dishWasher.remainingWorkingTime*60));
         }
-        float progress;
-        if(modeBean.time == 0){
-            progress = MAX_PROGRESS;
+        float progress = MAX_PROGRESS;
+        if(dishWasher.workMode == DishWasherConstant.MODE_FLUSH){//护婴净存/自动换气
+            //获取分钟数
+            int residueTimeM = dishWasher.remainingWorkingTime % 60;
+            progress = residueTimeM / 60f * 100;
+        }else if(dishWasher.workMode == DishWasherConstant.MODE_AUTO_AERATION){
+            return;
         }else{
-            progress =  (dishWasher.remainingWorkingTime*60f/modeBean.time) * 100;
+            if(modeBean.time != 0){
+                progress =  (dishWasher.remainingWorkingTime*60f/modeBean.time) * 100;
+            }
         }
         if(progress > MAX_PROGRESS){
             progress = MAX_PROGRESS;
         }
         cpgBar.setProgress(progress);
         tvAuxMode.setText(DishWasherAuxEnum.match(dishWasher.auxMode));//附加模式
-        showRemindDialog(dishWasher);
+        if(dishWasher.workMode != DishWasherConstant.MODE_FLUSH && dishWasher.workMode != DishWasherConstant.MODE_AUTO_AERATION){
+            showRemindDialog(dishWasher);
+        }
     }
 
 
