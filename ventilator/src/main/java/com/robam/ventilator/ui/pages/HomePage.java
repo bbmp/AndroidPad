@@ -263,7 +263,7 @@ public class HomePage extends VentilatorBasePage {
                 if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
                     drawerLayout.closeDrawer(Gravity.LEFT);
                 }
-                
+
                 VenFunBean venFunBean = (VenFunBean) adapter.getItem(position);
 
                 Intent intent = new Intent();
@@ -407,7 +407,8 @@ public class HomePage extends VentilatorBasePage {
                         rvFunctionAdapter.setPickPosition(3);
                     else if (null != rvFunctionAdapter)
                         rvFunctionAdapter.setPickPosition(-1);
-                    setBackground(rvFunctionAdapter.getPickPosition()); //设置背景
+                    if (null != rvFunctionAdapter)
+                        setBackground(rvFunctionAdapter.getPickPosition()); //设置背景
 
                     if (HomeVentilator.getInstance().param7 == 0x00) { //性能模式
                         tvPerformance.setSelected(true);
@@ -433,7 +434,8 @@ public class HomePage extends VentilatorBasePage {
                     return;
                 LogUtils.e("onChanged " + s);
                 refreshTime = System.currentTimeMillis();
-                rvProductsAdapter.setList(AccountInfo.getInstance().deviceList);
+                if (null != rvProductsAdapter)
+                    rvProductsAdapter.setList(AccountInfo.getInstance().deviceList);
             }
         });
         //油网清洗检查
@@ -551,18 +553,18 @@ public class HomePage extends VentilatorBasePage {
                 }
             }
         }
-        List<String> names = new ArrayList();
-
-        for (Device device: AccountInfo.getInstance().deviceList) {
-            if (device instanceof Pan && null == ((Pan) device).bleDevice)
-                names.add(BlueToothManager.pan);
-            else if (device instanceof Stove && null == ((Stove) device).bleDevice)
-                names.add(BlueToothManager.stove);
-        }
-        if (names.size() > 0) {
-            BlueToothManager.setScanRule(names.toArray(new String[names.size()]));
-            BleVentilator.startScan("", null);
-        }
+//        List<String> names = new ArrayList();
+//
+//        for (Device device: AccountInfo.getInstance().deviceList) {
+//            if (device instanceof Pan && null == ((Pan) device).bleDevice)
+//                names.add(BlueToothManager.pan);
+//            else if (device instanceof Stove && null == ((Stove) device).bleDevice)
+//                names.add(BlueToothManager.stove);
+//        }
+//        if (names.size() > 0) {
+//            BlueToothManager.setScanRule(names.toArray(new String[names.size()]));
+//            BleVentilator.startScan("", null);
+//        }
         //订阅设备主题
         subscribeDevice();
 

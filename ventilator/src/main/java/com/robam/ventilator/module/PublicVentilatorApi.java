@@ -164,4 +164,9 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
         HomeVentilator.getInstance().cancleDelayShutDown();
     }
 
+    @Override
+    public void updateOperationTime() {
+        HomeVentilator.getInstance().updateOperationTime();
+    }
+
 }

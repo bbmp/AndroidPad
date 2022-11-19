@@ -65,6 +65,8 @@ public class HomeVentilator {
     public String holidayDay = MMKVUtils.getHolidayDay(); //假日模式每隔几天通风
     //风机最后运行时间
     public long fanOffTime = MMKVUtils.getFanOffTime();
+    //烟机操作时间
+    public long operationTime = 0;
 
     private ThreadPoolExecutor A6CountDown = new ThreadPoolExecutor(1, 1, 0, TimeUnit.SECONDS, new SynchronousQueue<>(),
             new ThreadPoolExecutor.DiscardPolicy());//无法重复提交
@@ -351,6 +353,7 @@ public class HomeVentilator {
         VentilatorAbstractControl.getInstance().powerOn();
         Plat.getPlatform().screenOn();
         Plat.getPlatform().openPowerLamp();
+        updateOperationTime(); //开机时间
     }
     //关闭烟机
     public void closeVentilator() {
@@ -483,5 +486,16 @@ public class HomeVentilator {
                 ventilatorReceiver = null;
             } catch (Exception e) {}
         }
+    }
+    //是否开机状态
+    public boolean isStartUp() {
+        if (startup == (byte) 0x01)
+            return true;
+        return false;
+    }
+    //更新操作时间
+    public void updateOperationTime() {
+        operationTime = System.currentTimeMillis();
+        LogUtils.i("operationTime = " + operationTime);
     }
 }

@@ -57,6 +57,7 @@ public class AlarmVentilatorService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+
         mHandler.postDelayed(runnable, INTERVAL);
         keyMonitor.execute(new Runnable() {
             @Override
@@ -121,8 +122,15 @@ public class AlarmVentilatorService extends Service {
         //串口查询
         SerialPortHelper.getInstance().addCommands(data);
 
+        //5分钟未操作自动关机
+        if ((Math.abs(System.currentTimeMillis() - HomeVentilator.getInstance().operationTime) >= 5*60*1000)
+            && HomeVentilator.getInstance().gear == (byte) 0xA0 //风机未开
+                && HomeVentilator.getInstance().isStartUp() //开机状态
+                && !HomeVentilator.getInstance().isLock())  //非锁屏状态
+            HomeVentilator.getInstance().closeVentilator(); //关闭烟机
+
         //检查油网清洗时间,油网清洗打开
-        if (MMKVUtils.getOilClean()) {
+        if (MMKVUtils.getOilClean() && HomeVentilator.getInstance().isStartUp()) {  //开机状态
             long runTime = MMKVUtils.getFanRuntime();
             if (runTime >= 60 * 60 * 60 * 1000) { //超过60小时
                 HomeVentilator.getInstance().oilClean.setValue(true);
