@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_32"
             android:text="@string/steam_back"
-            android:textColor="@color/steam_white"/>
+            android:textColor="@color/steam_white70"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/ll_left_center"
@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_32"
             android:text="@string/steam_mode_rotate"
-            android:textColor="@color/steam_white"/>
+            android:textColor="@color/steam_white70"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/ll_center"
@@ -79,13 +79,13 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_32"
             android:text="time"
-            android:textColor="@color/steam_white" />
+            android:textColor="@color/steam_white70" />
         <TextView
             android:id="@+id/tv_center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_32"
-            android:textColor="@color/steam_white"
+            android:textColor="@color/steam_white70"
             android:visibility="gone"/>
         <View
             android:id="@+id/view_center"
@@ -123,7 +123,7 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_32"
             android:text="@string/steam_light"
-            android:textColor="@color/steam_white"/>
+            android:textColor="@color/steam_white70"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/ll_right"
@@ -151,7 +151,7 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_32"
             android:text="@string/steam_back"
-            android:textColor="@color/steam_white"/>
+            android:textColor="@color/steam_white70"/>
     </LinearLayout>
     <ImageView
         android:id="@+id/iv_float"

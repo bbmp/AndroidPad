@@ -6,6 +6,8 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
 import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.steamoven.R;
@@ -13,8 +15,10 @@ import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.common.utils.DateUtil;
 import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.bean.MultiSegment;
+import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.SteamModeEnum;
+import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.ui.adapter.RvStringAdapter;
@@ -89,30 +93,53 @@ public class AppointmentActivity extends SteamBaseActivity {
 
         setOnClickListener(R.id.btn_cancel, R.id.btn_ok);
 
-        MqttDirective.getInstance().getDirective().observe(this, s -> {
-            switch (s - directive_offset){
-                case START:
-                    try {
-                        toAppointingPage();
-                    } catch (ParseException e) {
-                        e.printStackTrace();
+        AccountInfo.getInstance().getGuid().observe(this, s -> {
+            for (Device device: AccountInfo.getInstance().deviceList) {
+                if (device.guid.equals(s) && device instanceof SteamOven && device.guid.equals(HomeSteamOven.getInstance().guid)) {
+                    SteamOven steamOven = (SteamOven) device;
+                    if(toWaringPage(steamOven)){
+                        return;
                     }
-                    break;
+                    switch (steamOven.powerState){
+                        case SteamStateConstant.POWER_STATE_AWAIT:
+                        case SteamStateConstant.POWER_STATE_ON:
+                        case SteamStateConstant.POWER_STATE_TROUBLE:
+                            dealAppointingPage(steamOven);
+                            break;
+                        case SteamStateConstant.POWER_STATE_OFF:
+                            break;
+                    }
+                }
             }
         });
+//        MqttDirective.getInstance().getDirective().observe(this, s -> {
+//            switch (s - directive_offset){
+//                case START:
+//                    try {
+//                        toAppointingPage();
+//                    } catch (ParseException e) {
+//                        e.printStackTrace();
+//                    }
+//                    break;
+//            }
+//        });
     }
 
 
-    private void toAppointingPage() throws ParseException {
-        //int appointTime = (int) getAppointingTimeMin(tvTime.getText().toString()) * 60;
-        //multiSegment.workRemaining = appointTime;
-        HomeSteamOven.getInstance().orderTime = multiSegment.workRemaining;
-        HomeSteamOven.getInstance().workMode = (short) multiSegment.code;
-        HomeSteamOven.getInstance().workHours = multiSegment.duration;
-        Intent intent = new Intent(this,AppointingActivity.class);
-        intent.putExtra(Constant.SEGMENT_DATA_FLAG,multiSegment);
-        startActivity(intent);
-        finish();
+
+    private void dealAppointingPage(SteamOven steamOven) {
+        if(steamOven.mode == 0){
+            return;
+        }
+        if (steamOven.workState == SteamStateConstant.WORK_STATE_APPOINTMENT && steamOven.orderLeftTime > 0){
+            HomeSteamOven.getInstance().orderTime = multiSegment.workRemaining;
+            HomeSteamOven.getInstance().workMode = (short) multiSegment.code;
+            HomeSteamOven.getInstance().workHours = multiSegment.duration;
+            Intent intent = new Intent(this,AppointingActivity.class);
+            intent.putExtra(Constant.SEGMENT_DATA_FLAG,multiSegment);
+            startActivity(intent);
+            finish();
+        }
     }
 
 

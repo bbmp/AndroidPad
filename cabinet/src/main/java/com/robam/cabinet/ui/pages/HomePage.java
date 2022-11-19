@@ -26,12 +26,15 @@ import com.robam.common.utils.ToastUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import pl.droidsonroids.gif.GifImageView;
+
 public class HomePage extends CabinetBasePage {
     private RecyclerView rvMain, rvDot;
     private PickerLayoutManager pickerLayoutManager;
     private RvMainFunctionAdapter rvMainFunctionAdapter;
     private RvDotAdapter rvDotAdapter;
-    private ImageView imageView;
+    //private ImageView imageView;
+    private GifImageView gifImageView; //背景图片
     //主功能
 
     @Override
@@ -46,8 +49,8 @@ public class HomePage extends CabinetBasePage {
 
         rvMain = findViewById(R.id.rv_main);
         rvDot = findViewById(R.id.rv_dot);
-        imageView = findViewById(R.id.iv_bg);
-
+        //imageView = findViewById(R.id.iv_bg);
+        gifImageView = findViewById(R.id.iv_bg);
         pickerLayoutManager = new PickerLayoutManager.Builder(getContext())
                 .setOrientation(RecyclerView.HORIZONTAL)
                 .setMaxItem(3)
@@ -122,7 +125,8 @@ public class HomePage extends CabinetBasePage {
     private void setBackground(int index) {
         //设置背景图片
         int resId = getResources().getIdentifier(rvMainFunctionAdapter.getItem(index).backgroundImg, "drawable", getContext().getPackageName());
-        ImageUtils.loadGif(getContext(), resId, imageView);
+        //ImageUtils.loadGif(getContext(), resId, imageView);
+        gifImageView.setImageResource(resId);
     }
 
     /**

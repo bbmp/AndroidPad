@@ -524,6 +524,9 @@ public class MqttSteamOven extends MqttPublic {
                             msg.putOpt(SteamConstant.SteameOvenStatus, value);
                             msg.putOpt(SteamConstant.workState, value);
                             break;
+                        case QualityKeys.orderLeftSecs:
+                            msg.putOpt(SteamConstant.orderLeftTime, value);
+                            break;
                         case QualityKeys.faultCode: //故障码
                             msg.putOpt(SteamConstant.SteamFaultCode,value);
                             break;

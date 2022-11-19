@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
 import com.robam.common.bean.MqttDirective;
 import com.robam.common.manager.FunctionManager;
 import com.robam.common.mqtt.MsgKeys;
@@ -17,10 +20,14 @@ import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.bean.FuntionBean;
 import com.robam.steamoven.bean.ModeBean;
 import com.robam.steamoven.bean.MultiSegment;
+import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.MultiSegmentEnum;
 import com.robam.steamoven.constant.SteamConstant;
 import com.robam.steamoven.constant.SteamEnum;
+import com.robam.steamoven.constant.SteamModeEnum;
+import com.robam.steamoven.constant.SteamStateConstant;
+import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.ui.dialog.SteamCommonDialog;
 import java.util.ArrayList;
@@ -73,13 +80,53 @@ public class MultiActivity extends SteamBaseActivity {
         initOptContent();
         initDelBtnView();
         setOnClickListener(R.id.btn_start);
-        MqttDirective.getInstance().getDirective().observe(this, s -> {
-            switch (s - directive_offset){
-                case MsgKeys.setDeviceAttribute_Req:
-                    toMultiWorkPage();
-                    break;
+//        MqttDirective.getInstance().getDirective().observe(this, s -> {
+//            switch (s - directive_offset){
+//                case MsgKeys.setDeviceAttribute_Req:
+//                    toMultiWorkPage();
+//                    break;
+//            }
+//        });
+        AccountInfo.getInstance().getGuid().observe(this, s -> {
+            for (Device device: AccountInfo.getInstance().deviceList) {
+                if (device.guid.equals(s) && device instanceof SteamOven && device.guid.equals(HomeSteamOven.getInstance().guid)) {
+                    SteamOven steamOven = (SteamOven) device;
+                    if(toWaringPage(steamOven)){
+                        return;
+                    }
+                    switch (steamOven.powerState){
+                        case SteamStateConstant.POWER_STATE_AWAIT:
+                        case SteamStateConstant.POWER_STATE_ON:
+                        case SteamStateConstant.POWER_STATE_TROUBLE:
+                            toWorkPage(steamOven);
+                            break;
+                        case SteamStateConstant.POWER_STATE_OFF:
+                            break;
+                    }
+                }
             }
         });
+    }
+
+    /**
+     * 去往工作页面
+     * @param steamOven
+     */
+    private void toWorkPage(SteamOven steamOven){
+        if(steamOven.mode == 0){
+            return;
+        }
+        switch (steamOven.workState){
+            case SteamStateConstant.WORK_STATE_LEISURE:
+            case SteamStateConstant.WORK_STATE_APPOINTMENT://预约页面
+                break;
+            case SteamStateConstant.WORK_STATE_PREHEAT:
+            case SteamStateConstant.WORK_STATE_PREHEAT_PAUSE:
+            case SteamStateConstant.WORK_STATE_WORKING:
+            case SteamStateConstant.WORK_STATE_WORKING_PAUSE:
+                toMultiWorkPage();
+                break;
+        }
     }
 
     private void toMultiWorkPage(){

@@ -449,10 +449,9 @@ public class SteamOven extends Device {
 
     @Override
     public boolean onMsgReceived(MqttMsg msg) {
-        if (null != msg && null != msg.opt(SteamConstant.SteameOvenStatus)) {
+        if (null != msg) {// && null != msg.opt(SteamConstant.SteameOvenStatus)
             queryNum = 0; //查询超过一次无响应离线
             status = Device.ONLINE;
-
             parserMsg(msg);
             return true;
         }

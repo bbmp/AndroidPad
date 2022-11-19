@@ -87,30 +87,31 @@ public class AppointingActivity extends SteamBaseActivity {
                         case SteamStateConstant.POWER_STATE_TROUBLE:
                             if(steamOven.workState ==  SteamStateConstant.WORK_STATE_APPOINTMENT){
                                 updateViewInfo(steamOven);
-                            }else{
-                                finish();
+                            }else if(steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT ||
+                                    steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT_PAUSE  ||
+                                    steamOven.workState == SteamStateConstant.WORK_STATE_WORKING ||
+                                    steamOven.workState == SteamStateConstant.WORK_STATE_WORKING ){
+                                toWorkPage();
                             }
                             break;
                         case SteamStateConstant.POWER_STATE_OFF:
                             finish();
                             break;
                     }
-
-
                 }
             }
         });
 
-        MqttDirective.getInstance().getDirective().observe(this, s -> {
-            switch (s - directive_offset){
-                case MsgKeys.setDeviceAttribute_Req:
-                    toWorkPage();
-                    break;
-                case DIRECTIVE_OFFSET_END:
-                    goHome();
-                    break;
-            }
-        });
+//        MqttDirective.getInstance().getDirective().observe(this, s -> {
+//            switch (s - directive_offset){
+//                case MsgKeys.setDeviceAttribute_Req:
+//                    toWorkPage();
+//                    break;
+//                case DIRECTIVE_OFFSET_END:
+//                    goHome();
+//                    break;
+//            }
+//        });
     }
 
     private void toWorkPage(){
@@ -156,7 +157,8 @@ public class AppointingActivity extends SteamBaseActivity {
         commonMap.put(SteamConstant.workCtrlKey, 4);
         commonMap.put(SteamConstant.workCtrlLength, 1);
         commonMap.put(SteamConstant.workCtrl, SteamConstant.WORK_CTRL_STOP);//结束工作
-        SteamCommandHelper.getInstance().sendCommonMsgForLiveData(commonMap,directive_offset + DIRECTIVE_OFFSET_END);
+        //SteamCommandHelper.getInstance().sendCommonMsgForLiveData(commonMap,directive_offset + DIRECTIVE_OFFSET_END);
+        SteamCommandHelper.getInstance().sendCommonMsg(commonMap,directive_offset + DIRECTIVE_OFFSET_END);
     }
 
 
@@ -220,7 +222,8 @@ public class AppointingActivity extends SteamBaseActivity {
         steamCommonDialog.setListeners(v -> {
             steamCommonDialog.dismiss();
             if(v.getId() == R.id.tv_ok){
-                endWork();
+                //endWork();
+                SteamCommandHelper.sendEndWorkCommand(77);
             }
         },R.id.tv_cancel,R.id.tv_ok);
         steamCommonDialog.show();
@@ -321,8 +324,12 @@ public class AppointingActivity extends SteamBaseActivity {
         int hour = remainingTime / 3600;
         int min = (remainingTime - hour * 3600)/60;
         int second = remainingTime%60;
-        if(second != 0){
+        if(second != 0){//在remainingTime代表的时间满足xx:59:yy秒的情况时，second是yy不等于0，min =59;在此时对min进行 + 1;将导致 min = 60
             min += 1;
+        }
+        if(min == 60){
+            hour +=1;
+            min = 0;
         }
         return (hour <= 9 ? ("0"+hour) : hour) + ":" + (min <= 9 ? ("0"+min) : min);
     }

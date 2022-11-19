@@ -17,9 +17,11 @@ import com.robam.common.ui.activity.BaseActivity;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.bean.SteamOven;
+import com.robam.steamoven.constant.QualityKeys;
 import com.robam.steamoven.constant.SteamConstant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.manager.SteamActivityManager;
+import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.ui.activity.MainActivity;
 import com.robam.steamoven.ui.activity.WaringActivity;
 
@@ -42,7 +44,12 @@ public abstract class SteamBaseActivity extends BaseActivity {
     }
     public void showLeftCenter() {
         findViewById(R.id.ll_left_center).setVisibility(View.VISIBLE);
-        setOnClickListener(R.id.ll_left_center);
+        findViewById(R.id.ll_left_center).setOnClickListener(v -> {
+            SteamOven steamOven = getSteamOven();
+            if(steamOven != null){
+                SteamCommandHelper.sendSteamOrRotateCommand(QualityKeys.rotateSwitch, (short) (((int)steamOven.rotateSwitch) == 0?1:0),109);
+            }
+        });
     }
 
     public void hideLeftCenter(){

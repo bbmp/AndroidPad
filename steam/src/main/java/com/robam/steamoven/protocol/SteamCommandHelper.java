@@ -538,14 +538,15 @@ public class SteamCommandHelper {
      * @param commandCode 9 - 旋转、16 - 加湿
      * @param flag
      */
-    public static void sendCommand(short commandCode,int flag){
+    public static void sendSteamOrRotateCommand(short commandCode,short value,int flag){
         Map commonMap = getCommonMap(MsgKeys.setDeviceAttribute_Req);
         commonMap.put(SteamConstant.ARGUMENT_NUMBER, 1);
         commonMap.put(SteamConstant.BS_TYPE, SteamConstant.BS_TYPE_1) ;
         commonMap.put(SteamConstant.workCtrlKey, commandCode);
         commonMap.put(SteamConstant.workCtrlLength, 1);
-        commonMap.put(SteamConstant.workCtrl, (short)1);
-        getInstance().sendCommonMsgForLiveData(commonMap,flag);
+        commonMap.put(SteamConstant.workCtrl, value);//(short)1
+        //getInstance().sendCommonMsgForLiveData(commonMap,flag);
+        getInstance().sendCommonMsg(commonMap,flag);
     }
 
     /**

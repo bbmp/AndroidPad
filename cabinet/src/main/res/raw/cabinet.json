@@ -1,6 +1,6 @@
 [
   {
-    "backgroundImg": "cabinet_ic_bg_steam",
+    "backgroundImg": "cabinet_bg_xd",
     "funtionCode": 2,
     "funtionName": "消毒",
     "into": "com.robam.cabinet.ui.activity.ModeSelectActivity",
@@ -14,7 +14,7 @@
       }
   },
   {
-    "backgroundImg": "cabinet_ic_bg_oven",
+    "backgroundImg": "cabinet_bg_kj",
     "funtionCode": 3,
     "funtionName": "快洁",
     "into": "com.robam.cabinet.ui.activity.ModeSelectActivity",
@@ -28,7 +28,7 @@
     }
   },
   {
-    "backgroundImg": "cabinet_ic_bg_zha",
+    "backgroundImg": "cabinet_bg_hg",
     "funtionCode": 4,
     "funtionName": "烘干",
     "into": "com.robam.cabinet.ui.activity.ModeSelectActivity",
@@ -42,7 +42,7 @@
     }
   },
   {
-    "backgroundImg": "cabinet_ic_bg_multi",
+    "backgroundImg": "cabinet_bg_jc",
     "funtionCode": 13,
     "funtionName": "净存",
     "into": "com.robam.cabinet.ui.activity.ModeSelectActivity",
@@ -56,7 +56,7 @@
     }
   },
   {
-    "backgroundImg": "cabinet_ic_bg_aux",
+    "backgroundImg": "cabinet_bg_zn",
     "funtionCode": 8,
     "funtionName": "智能",
     "into": "com.robam.cabinet.ui.activity.ModeSelectActivity",

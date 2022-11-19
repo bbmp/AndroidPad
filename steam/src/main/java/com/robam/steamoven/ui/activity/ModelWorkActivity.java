@@ -448,9 +448,7 @@ ModelWorkActivity extends SteamBaseActivity {
             //updateViewsPreheat(getSteamOven(),true,false);
             SteamCommandHelper.sendWorkCtrCommand(true,directive_offset + DIRECTIVE_OFFSET_PAUSE_CONTINUE);
         }else if(id == R.id.multi_work_ic_steam){//加湿控制命令
-            SteamCommandHelper.sendCommand(QualityKeys.steamCtrl,DIRECTIVE_OFFSET_NONE);
-        }else if(id == R.id.ll_left_center){
-            SteamCommandHelper.sendCommand(QualityKeys.rotateSwitch,DIRECTIVE_OFFSET_NONE);
+            SteamCommandHelper.sendSteamOrRotateCommand(QualityKeys.steamCtrl, (short) 1,DIRECTIVE_OFFSET_NONE);
         }
     }
 
