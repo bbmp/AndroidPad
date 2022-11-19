@@ -39,4 +39,6 @@ public interface IPublicVentilatorApi extends IPublicApi {
     void delayShutDown();
     //关闭延时关机
     void closeDelayDialog();
+    //更新操作时间
+    void updateOperationTime();
 }

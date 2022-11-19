@@ -13,12 +13,15 @@ import android.view.WindowManager;
 import androidx.annotation.NonNull;
 
 import com.robam.common.R;
+import com.robam.common.module.IPublicVentilatorApi;
+import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.ui.action.ClickAction;
 
 public abstract class BaseDialog implements IDialog{
     protected Context mContext;
     protected FullDialog mDialog;
     protected View rootView;
+    private IPublicVentilatorApi iPublicVentilatorApi = ModulePubliclHelper.getModulePublic(IPublicVentilatorApi.class, IPublicVentilatorApi.VENTILATOR_PUBLIC);
 
     protected abstract void initView();
 
@@ -49,7 +52,12 @@ public abstract class BaseDialog implements IDialog{
 
     @Override
     public void dismiss() {
-        if (mDialog != null) mDialog.dismiss();
+        if (mDialog != null) {
+            mDialog.dismiss();
+            //有触摸，更新操作时间
+            if (null != iPublicVentilatorApi)
+                iPublicVentilatorApi.updateOperationTime();
+        }
     }
 
     @Override

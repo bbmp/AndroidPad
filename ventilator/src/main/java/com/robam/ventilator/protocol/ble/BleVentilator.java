@@ -27,6 +27,7 @@ import com.robam.common.ble.BleDecoder;
 import com.robam.common.device.Plat;
 import com.robam.common.manager.BlueToothManager;
 import com.robam.common.module.IPublicPanApi;
+import com.robam.common.module.IPublicStoveApi;
 import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.mqtt.MqttMsg;
@@ -63,6 +64,7 @@ public class BleVentilator {
     private static WeakReference<BleCallBack> bleCallBackWeakReference;
     private static final int MSG_DELAY_DISCONNECT = 1;
     private static final int MSG_QUERY_FANPAN = 2; //烟锅联动查询
+    private static final int MSG_QUERY_STOVEATTRIBUTE = 3;//查询灶具状态
 
     public interface BleCallBack {
         void onScanFinished();
@@ -508,7 +510,8 @@ public class BleVentilator {
                                                 StoveAbstractControl.getInstance().queryAttribute(device.guid);
 //                                                Message msg = handler.obtainMessage();
 //                                                msg.obj = device.guid;
-//                                                handler.sendMessageDelayed(msg, 1000); //延时查询
+//                                                msg.arg1 = MSG_QUERY_STOVEATTRIBUTE;
+//                                                handler.sendMessageDelayed(msg, 100); //延时查询
                                                 break;
                                             }
                                         }
@@ -598,6 +601,12 @@ public class BleVentilator {
                                                 if (!Plat.getPlatform().getDeviceOnlySign().equals(target_guid))
                                                     //远程控制指令
                                                     ble_mqtt_publish(topic, device.guid, ret2);
+                                            } else if (device instanceof Stove) { //灶具外部命令
+                                                StoveAbstractControl.getInstance().queryAttribute(device.guid); //查询灶状态
+
+                                                if (!Plat.getPlatform().getDeviceOnlySign().equals(target_guid))
+                                                    //远程控制指令
+                                                    ble_mqtt_publish(topic, device.guid, ret2);  //回复
                                             } else
                                                 //远程控制指令
                                                 ble_mqtt_publish(topic, device.guid, ret2);
@@ -697,6 +706,10 @@ public class BleVentilator {
                 IPublicPanApi iPublicPanApi = ModulePubliclHelper.getModulePublic(IPublicPanApi.class, IPublicPanApi.PAN_PUBLIC);
                 if (null != iPublicPanApi)
                     iPublicPanApi.queryFanPan();
+            } else if (null != msg && msg.arg1 == MSG_QUERY_STOVEATTRIBUTE) {
+                IPublicStoveApi iPublicStoveApi = ModulePubliclHelper.getModulePublic(IPublicStoveApi.class,
+                        IPublicStoveApi.STOVE_PUBLIC);
+                iPublicStoveApi.queryAttribute((String) msg.obj);
             }
         }
     };

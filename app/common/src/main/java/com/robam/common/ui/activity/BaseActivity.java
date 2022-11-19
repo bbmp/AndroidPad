@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -166,6 +167,14 @@ public abstract class BaseActivity extends AbsActivity implements ActivityAction
             }
         }
         return super.onKeyUp(keyCode, event);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        //有触摸，更新操作时间
+        if (null != iPublicVentilatorApi)
+            iPublicVentilatorApi.updateOperationTime();
+        return super.dispatchTouchEvent(ev);
     }
 
     @Override
