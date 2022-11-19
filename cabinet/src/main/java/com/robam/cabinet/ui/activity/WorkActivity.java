@@ -18,6 +18,7 @@ import com.robam.cabinet.constant.DialogConstant;
 import com.robam.cabinet.constant.EventConstant;
 import com.robam.cabinet.device.HomeCabinet;
 import com.robam.cabinet.factory.CabinetDialogFactory;
+import com.robam.cabinet.ui.dialog.WorkCompleteDialog;
 import com.robam.cabinet.util.CabinetCommonHelper;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
@@ -92,7 +93,8 @@ public class WorkActivity extends CabinetBaseActivity {
                             }else{
                                 if(!workFinish){
                                     workFinish = true;
-                                    workFinish();
+                                    //workFinish();
+                                    workComplete();
                                 }
                             }
                             break;
@@ -173,7 +175,16 @@ public class WorkActivity extends CabinetBaseActivity {
         iDialog.setListeners(v -> {
             //结束工作
             if (v.getId() == R.id.tv_ok) {
-                startActivity(MainActivity.class);
+                Cabinet cabinet = getCabinet();
+                if(cabinet != null){
+                    MqttDirective.WorkState workState = MqttDirective.getInstance().getWorkState(cabinet.guid);
+                    if(workState != null && workState.isFinish() && workState.workModel == CabinetEnum.SMART.getCode()){
+                        Intent intent = new Intent(WorkActivity.this,CruiseActivity.class);
+                        startActivity(intent);
+                        return;
+                    }
+                }
+                goHome();
             }
         }, R.id.tv_ok);
         iDialog.show();

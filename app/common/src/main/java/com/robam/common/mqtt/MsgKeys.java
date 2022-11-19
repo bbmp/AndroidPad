@@ -431,6 +431,8 @@ public interface MsgKeys {
      */
     short SetSteri826Lock_Rep = 154;
 
+    short SMART_CRUISING = 155;//智能巡航
+
     /**
      * 查询消毒柜温度／湿度／细菌数（请求）
      */

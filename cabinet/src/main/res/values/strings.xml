@@ -30,4 +30,5 @@
     <string name="cabinet_waring_e2_content">温度传感器故障，请关闭消毒柜并申请售后服务</string>
     <string name="cabinet_waring_e5_content">传感器故障，请联系专业技术人员咨询或维修</string>
     <string name="cabinet_waring_e6_content">通信故障，请关闭消毒柜并申请售后服务。</string>
+    <string name="cabinet_end_smart_cruising">是否结束智能巡航</string>
 </resources>

@@ -76,7 +76,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
     private static final int DEVICE_IDLE_DUR = 1000 * 60 * 10;//页面空闲最大时长
     private static final int DEVICE_IDLE_SHOW = (int) (1000 * 60 * 0.1f);//页面空闲最大时长
     private int sourceId = 0;//0 - 多段设置 ； 1 - 曲线
-
+    private boolean isInitiativeEnd = false;//是否主动结束
     private long workTimeMS = System.currentTimeMillis();
 
     @Override
@@ -122,17 +122,17 @@ public class MultiWorkActivity extends SteamBaseActivity {
             }
         });
 
-        MqttDirective.getInstance().getDirective().observe(this, s -> {
-            switch (s - directive_offset){
-                case DIRECTIVE_OFFSET_END:
-                case DIRECTIVE_OFFSET_GO_HOME:
-                    goHome();
-                    break;
-                case DIRECTIVE_OFFSET_WORK_FINISH:
-                    toCurveSavePage();
-                    break;
-            }
-        });
+//        MqttDirective.getInstance().getDirective().observe(this, s -> {
+//            switch (s - directive_offset){
+//                case DIRECTIVE_OFFSET_END:
+//                case DIRECTIVE_OFFSET_GO_HOME:
+//                    goHome();
+//                    break;
+//                case DIRECTIVE_OFFSET_WORK_FINISH:
+//                    toCurveSavePage();
+//                    break;
+//            }
+//        });
     }
 
     /**
@@ -148,9 +148,13 @@ public class MultiWorkActivity extends SteamBaseActivity {
                     goHome();
                     return;
                 }
-                if(System.currentTimeMillis() - workTimeMS >= DEVICE_IDLE_SHOW){
-                    //容易多次弹出
-                    dealWorkFinish(steamOven);
+                if(isInitiativeEnd){
+                    goHome();
+                }else{
+                    if(System.currentTimeMillis() - workTimeMS >= DEVICE_IDLE_SHOW){
+                        //容易多次弹出
+                        dealWorkFinish(steamOven);
+                    }
                 }
                 break;
             case SteamStateConstant.WORK_STATE_PREHEAT:
@@ -383,31 +387,16 @@ public class MultiWorkActivity extends SteamBaseActivity {
 //            this.backSettingPage();
             showStopWorkDialog();
         }else if(id == R.id.multi_work_pause){//暂停工作
-            SteamOven steamOven = getSteamOven();
-            boolean isPreHeat = (steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT || steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT_PAUSE);
-            this.setOptViewsState(steamOven,false,isPreHeat);
-            sendCommand(false);
+            //SteamOven steamOven = getSteamOven();
+            //boolean isPreHeat = (steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT || steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT_PAUSE);
+            //this.setOptViewsState(steamOven,false,isPreHeat);
+            SteamCommandHelper.sendWorkCtrCommand(false);
         }else if(id==R.id.multi_work_start){//继续工作
-            SteamOven steamOven = getSteamOven();
-            boolean isPreHeat = (steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT || steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT_PAUSE);
-            this.setOptViewsState(steamOven,true,isPreHeat);
-            sendCommand(true);
+            //SteamOven steamOven = getSteamOven();
+            //boolean isPreHeat = (steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT || steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT_PAUSE);
+            //this.setOptViewsState(steamOven,true,isPreHeat);
+            SteamCommandHelper.sendWorkCtrCommand(true);
         }
-    }
-
-    private void sendCommand(boolean work){
-        Map commonMap = SteamCommandHelper.getCommonMap(MsgKeys.setDeviceAttribute_Req);
-        commonMap.put(SteamConstant.BS_TYPE , SteamConstant.BS_TYPE_1) ;
-        commonMap.put(SteamConstant.ARGUMENT_NUMBER, 1);
-        //一体机工作控制
-        commonMap.put(SteamConstant.workCtrlKey, 4);
-        commonMap.put(SteamConstant.workCtrlLength, 1);
-        if(work){
-            commonMap.put(SteamConstant.workCtrl, SteamConstant.WORK_CTRL_CONTINUE);//继续工作
-        }else{
-            commonMap.put(SteamConstant.workCtrl, SteamConstant.WORK_CTRL_TIME_OUT);//暂停工作
-        }
-        SteamCommandHelper.getInstance().sendCommonMsgForLiveData(commonMap,directive_offset + DIRECTIVE_OFFSET_PAUSE_CONTINUE);
     }
 
     private void backSettingPage(){
@@ -430,20 +419,12 @@ public class MultiWorkActivity extends SteamBaseActivity {
             endDialog.dismiss();
             if(v.getId() == R.id.tv_ok){
                //goHome();
-                sendEndWorkCommand();
+                //sendEndWorkCommand();
+                isInitiativeEnd = true;
+                SteamCommandHelper.sendEndWorkCommand(11);
             }
         },R.id.tv_cancel,R.id.tv_ok);
         endDialog.show();
-    }
-
-
-
-    /**
-     * 是否正在烹饪
-     * @return
-     */
-    private boolean isWorking(){
-        return pauseCookView.getVisibility() == View.VISIBLE;
     }
 
 
@@ -506,77 +487,6 @@ public class MultiWorkActivity extends SteamBaseActivity {
     }
 
     private long curveId = 0;
-    //曲线详情
-    private SteamCurveDetail panCurveDetail;
-    //获取曲线详情
-//    private void getCurveDetail() {
-//        CloudHelper.getCurvebookDetail(this, curveId, GetCurveDetailRes.class, new RetrofitCallback<GetCurveDetailRes>() {
-//            @Override
-//            public void onSuccess(GetCurveDetailRes getCurveDetailRes) {
-//                if (null != getCurveDetailRes && null != getCurveDetailRes.payload) {
-//                    panCurveDetail = getCurveDetailRes.payload;
-//                    //这里用了曲线名
-//                    //tvRecipeName.setText(panCurveDetail.name);
-//
-//                    List<CurveStep> curveSteps = new ArrayList<>();
-//                    if (null != panCurveDetail.stepList) {
-//                        curveSteps.addAll(panCurveDetail.stepList);
-//                        //tvStartCook.setVisibility(View.VISIBLE);
-//                    }
-//                    //rvStep3Adapter.setList(curveSteps);
-//                    //画曲线
-//                    drawCurve(panCurveDetail);
-//                }
-//            }
-//
-//            @Override
-//            public void onFaild(String err) {
-//
-//            }
-//        });
-//    }
-
-    //曲线绘制
-    private void drawCurve(SteamCurveDetail panCurveDetail) {
-        Map<String, String> params = null;
-        try {
-            String[] data = new String[3];
-            params = new Gson().fromJson(panCurveDetail.temperatureCurveParams, new TypeToken<LinkedHashMap<String, String>>(){}.getType());
-            ArrayList<Entry> entryList = new ArrayList<>();
-            for (Map.Entry<String, String> entry : params.entrySet()) {
-                data = entry.getValue().split("-");
-                entryList.add(new Entry(Float.parseFloat(entry.getKey()), Float.parseFloat(data[0]))); //时间和温度
-            }
-
-            dm = new DynamicLineChartManager(cookChart, this);
-            dm.setLabelCount(5, 5);
-            dm.setAxisLine(true, false);
-            dm.setGridLine(false, false);
-            dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.steam_chart), entryList, true, false);
-            cookChart.notifyDataSetChanged();
-            //绘制步骤标记
-            List<CurveStep> stepList = panCurveDetail.stepList;
-            if (null != stepList) {
-                MarkViewStep mv = new MarkViewStep(this, cookChart.getXAxis().getValueFormatter());
-                mv.setChartView(cookChart);
-                cookChart.setMarker(mv);
-                List<Highlight> highlights = new ArrayList<>();
-                int dataIndex = 1;
-                for (CurveStep step : stepList) {
-                    highlights.add(new Highlight(Float.parseFloat(step.markTime), step.markTemp, 0, dataIndex));
-                    dataIndex++;
-                }
-                cookChart.highlightValues(highlights.toArray(new Highlight[highlights.size()]));
-            }
-            //最后一点
-            //tvFire.setText("火力：" + data[1] + "档");
-            //tvTemp.setText("温度：" + data[0] + "℃");
-            //tvTime.setText("时间：" + TimeUtils.secToMinSecond(panCurveDetail.needTime));
-        } catch (Exception e) {
-            LogUtils.e(e.getMessage());
-            params = null;
-        }
-    }
 
     private void showWorkEndDialog(){
         SteamCommonDialog steamCommonDialog = new SteamCommonDialog(this);
@@ -671,6 +581,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
                             parserCureData(getDeviceParamsRes);
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            continueCreateCurve();
                         }
                     }
 
@@ -783,19 +694,6 @@ public class MultiWorkActivity extends SteamBaseActivity {
         finish();
     }
 
-    /**
-     * 结束工作，发送命令
-     */
-    private void sendEndWorkCommand(){
-        Map commonMap = SteamCommandHelper.getCommonMap(MsgKeys.setDeviceAttribute_Req);
-        commonMap.put(SteamConstant.BS_TYPE , SteamConstant.BS_TYPE_1) ;
-        commonMap.put(SteamConstant.ARGUMENT_NUMBER, 1);
-        //一体机工作控制
-        commonMap.put(SteamConstant.workCtrlKey, 4);
-        commonMap.put(SteamConstant.workCtrlLength, 1);
-        commonMap.put(SteamConstant.workCtrl, SteamConstant.WORK_CTRL_STOP);//结束工作
-        SteamCommandHelper.getInstance().sendCommonMsgForLiveData(commonMap,directive_offset + DIRECTIVE_OFFSET_END);
-    }
 
     private void dismissAllDialog(){
         if(finishDialog != null && finishDialog.isShow()){

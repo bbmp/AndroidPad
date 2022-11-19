@@ -92,10 +92,12 @@ public class AppointingActivity extends SteamBaseActivity {
                                     steamOven.workState == SteamStateConstant.WORK_STATE_WORKING ||
                                     steamOven.workState == SteamStateConstant.WORK_STATE_WORKING ){
                                 toWorkPage();
+                            }else{
+                                goHome();
                             }
                             break;
                         case SteamStateConstant.POWER_STATE_OFF:
-                            finish();
+                            goHome();
                             break;
                     }
                 }
@@ -158,7 +160,7 @@ public class AppointingActivity extends SteamBaseActivity {
         commonMap.put(SteamConstant.workCtrlLength, 1);
         commonMap.put(SteamConstant.workCtrl, SteamConstant.WORK_CTRL_STOP);//结束工作
         //SteamCommandHelper.getInstance().sendCommonMsgForLiveData(commonMap,directive_offset + DIRECTIVE_OFFSET_END);
-        SteamCommandHelper.getInstance().sendCommonMsg(commonMap,directive_offset + DIRECTIVE_OFFSET_END);
+        SteamCommandHelper.getInstance().sendCommonMsg(commonMap);
     }
 
 
@@ -208,7 +210,7 @@ public class AppointingActivity extends SteamBaseActivity {
             if(!SteamCommandHelper.checkSteamState(this,getSteamOven(),segment.code)){
                 return;
             }
-            startWork(segment.code,segment.defTemp,segment.duration,segment.steam);
+            startWork();
         }
     }
 
@@ -229,90 +231,21 @@ public class AppointingActivity extends SteamBaseActivity {
         steamCommonDialog.show();
     }
 
-    /**
-     *
-     * @param mode  模式code
-     * @param setTemp 运行温度
-     * @param setTime  运行时间
-     * @param steamFlow 蒸汽量code
-     */
-    private void startWork(int mode,int setTemp,int setTime,int steamFlow){
-        Map commonMap = SteamCommandHelper.getCommonMap(MsgKeys.setDeviceAttribute_Req);
-        if (steamFlow == 0){
-            if (setTemp == 0){
-                commonMap.put(SteamConstant.ARGUMENT_NUMBER, 7);
-            }else {
-                commonMap.put(SteamConstant.ARGUMENT_NUMBER, 8);
-            }
-        }else {
-            if (setTemp == 0){
-                commonMap.put(SteamConstant.ARGUMENT_NUMBER, 8);
-            }else {
-                commonMap.put(SteamConstant.ARGUMENT_NUMBER, 9);
-            }
+
+    private void startWork(){
+        MultiSegment result = segment;
+        if(!SteamCommandHelper.checkSteamState(this,getSteamOven(),result.code)){
+            return;
         }
-        commonMap.put(SteamConstant.BS_TYPE , SteamConstant.BS_TYPE_0) ;
-        //一体机电源控制
-        commonMap.put(SteamConstant.powerCtrlKey, 2);
-        commonMap.put(SteamConstant.powerCtrlLength, 1);
-        commonMap.put(SteamConstant.powerCtrl, 1);
-
-        //一体机工作控制
-        commonMap.put(SteamConstant.workCtrlKey, 4);
-        commonMap.put(SteamConstant.workCtrlLength, 1);
-        commonMap.put(SteamConstant.workCtrl, 1);
-
-        //预约时间
-        commonMap.put(SteamConstant.setOrderMinutesKey, 5);
-        commonMap.put(SteamConstant.setOrderMinutesLength, 1);
-        commonMap.put(SteamConstant.setOrderMinutes01, 0);
-
-
-        //commonMap.put(SteamConstant.setOrderMinutes, orderTime);
-
-        //段数
-        commonMap.put(SteamConstant.sectionNumberKey, 100) ;
-        commonMap.put(SteamConstant.sectionNumberLength, 1) ;
-        commonMap.put(SteamConstant.sectionNumber, 1) ;
-
-        commonMap.put(SteamConstant.rotateSwitchKey, 9) ;
-        commonMap.put(SteamConstant.rotateSwitchLength, 1) ;
-        commonMap.put(SteamConstant.rotateSwitch, 0) ;
-        //模式
-        commonMap.put(SteamConstant.modeKey, 101) ;
-        commonMap.put(SteamConstant.modeLength, 1) ;
-        commonMap.put(SteamConstant.mode, mode) ;
-        //温度上温度
-
-        if (setTemp!=0) {
-            commonMap.put(SteamConstant.setUpTempKey, 102);
-            commonMap.put(SteamConstant.setUpTempLength, 1);
-            commonMap.put(SteamConstant.setUpTemp, setTemp);
-        }
-        //时间
-        setTime*=60;
-        commonMap.put(SteamConstant.setTimeKey, 104);
-        commonMap.put(SteamConstant.setTimeLength, 1);
-
-        final short lowTime = setTime > 255 ? (short) (setTime & 0Xff):(short)setTime;
-        if (setTime<=255){
-            commonMap.put(SteamConstant.setTime0b, lowTime);
+        if(SteamModeEnum.EXP.getMode() == result.code){
+            SteamCommandHelper.sendCommandForExp(result,0,MsgKeys.setDeviceAttribute_Req+directive_offset);
         }else{
-            commonMap.put(SteamConstant.setTimeKey, 104);
-            commonMap.put(SteamConstant.setTimeLength, 2);
-            short time = (short)(setTime & 0xff);
-            commonMap.put(SteamConstant.setTime0b, time);
-            short highTime = (short) ((setTime >> 8) & 0Xff);
-            commonMap.put(SteamConstant.setTime1b, highTime);
+            if(SteamModeEnum.isAuxModel(result.code)){
+                SteamCommandHelper.startModelWork(result,0);
+            }else{
+                SteamCommandHelper.startModelWork(result,0);
+            }
         }
-
-        if (steamFlow!=0) {
-            //蒸汽量
-            commonMap.put(SteamConstant.steamKey, 106);
-            commonMap.put(SteamConstant.steamLength, 1);
-            commonMap.put(SteamConstant.steam, steamFlow);
-        }
-        SteamCommandHelper.getInstance().sendCommonMsgForLiveData(commonMap,MsgKeys.setDeviceAttribute_Req+directive_offset);
     }
 
     /**

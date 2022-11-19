@@ -8,8 +8,7 @@ import com.robam.common.ui.dialog.BaseDialog;
 import com.robam.common.ui.dialog.FullDialog;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.steamoven.R;
-import com.robam.steamoven.bean.ModeBean;
-import com.robam.steamoven.ui.adapter.RvModeAdapter;
+import com.robam.steamoven.ui.adapter.RvTimeAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +19,9 @@ public class SteamOverTimeDialog extends BaseDialog {
     /**
      * 模式选择
      */
-    private RvModeAdapter rvModeAdapter;
+    private RvTimeAdapter rvTimeAdapter;
+
+
 
     /**
      * 重写选择器
@@ -60,31 +61,29 @@ public class SteamOverTimeDialog extends BaseDialog {
     }
 
     public void setData(){
-        rvModeAdapter = new RvModeAdapter();
-        rvSelect.setAdapter(rvModeAdapter);
+        rvTimeAdapter = new RvTimeAdapter(1);
+        rvSelect.setAdapter(rvTimeAdapter);
 
         //默认模式
         setList(getTestDataList());
     }
 
-    private List<ModeBean> getTestDataList(){
-        List<ModeBean> modeBeanList = new ArrayList<>();
+    private List<String> getTestDataList(){
+        List<String> timeList = new ArrayList<>();
         for(int i = 0;i < 10;i++){
-            ModeBean modeBean = new ModeBean();
-            modeBean.name = (i + 1) + "";
-            modeBeanList.add(modeBean);
+            timeList.add(i+"");
         }
-        return modeBeanList;
+        return timeList;
     }
 
-    public void setList(List<ModeBean> selectList) {
-        rvModeAdapter.setList(selectList);
+    public void setList(List<String> selectList) {
+        rvTimeAdapter.setList(selectList);
 
         //初始位置
         int initPos = Integer.MAX_VALUE / 2 - (Integer.MAX_VALUE/2) % selectList.size();
-        value = selectList.get(initPos%selectList.size()).name;
+        value = selectList.get(initPos%selectList.size());
         pickerLayoutManager.scrollToPosition(initPos);
-        rvModeAdapter.setPickPosition(initPos);
+        rvTimeAdapter.setPickPosition(initPos);
     }
 
     private void setLayoutManage(int maxItem, float scale) {
@@ -94,8 +93,8 @@ public class SteamOverTimeDialog extends BaseDialog {
                 .setScale(scale)
                 .setOnPickerListener((recyclerView, position) -> {
 
-                    rvModeAdapter.setPickPosition(position);
-                    value = rvModeAdapter.getItem(position).name;
+                    rvTimeAdapter.setPickPosition(position);
+                    value = rvTimeAdapter.getItem(position);
                 })
                 .build();
         rvSelect.setLayoutManager(pickerLayoutManager);

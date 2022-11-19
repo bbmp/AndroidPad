@@ -137,4 +137,6 @@ public abstract class SteamBaseActivity extends BaseActivity {
         super.onDestroy();
         SteamActivityManager.getInstance().removeActivity(this);
     }
+
+
 }

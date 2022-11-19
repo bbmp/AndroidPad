@@ -30,6 +30,13 @@ CabinetConstant {
      */
     public final static String WORK_SETTING_TIME = "work_setting_time";
 
+    /**
+     * 工作设定时间
+     */
+    public final static String SMART_CRUISING = "smart_cruising";//智能巡航
+    public final static String SMART_CRUISING_KEY = "smart_cruising_key";//智能巡航
+    public final static String SMART_CRUISING_LEN = "smart_cruising_len";//智能巡航
+
 
     /**
      * 报警码[1Byte]

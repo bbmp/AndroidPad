@@ -7,13 +7,11 @@
     android:background="@drawable/steam_ic_bg_xingkong"
     tools:context=".ui.activity.ModeSelectActivity">
 
-    <ImageView
-        android:id="@+id/iv_bg"
+    <pl.droidsonroids.gif.GifImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="fitXY">
-
-    </ImageView>
+        android:scaleType="fitXY"
+        android:src="@drawable/common_ic_bg"/>
     <include
         android:id="@+id/ll_title"
         layout="@layout/steam_view_layout_title"

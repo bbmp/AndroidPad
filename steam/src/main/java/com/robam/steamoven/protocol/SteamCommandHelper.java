@@ -64,12 +64,16 @@ public class SteamCommandHelper {
     /**
      *
      * @param map 指令数据集合
-     * @param bsCode 业务编码
      */
-    public void sendCommonMsg(Map map,final int bsCode){
+    public void sendCommonMsg(Map map){
         perOrderTimeMin = System.currentTimeMillis();
         SteamAbstractControl.getInstance().sendCommonMsg(map, (String) map.get(SteamConstant.TARGET_GUID), (Short) map.get(SteamConstant.MSG_ID));
     }
+
+
+
+
+
 
 
     public static Map getCommonMap(short msgId){
@@ -179,15 +183,15 @@ public class SteamCommandHelper {
         Map commonMap = SteamCommandHelper.getCommonMap(MsgKeys.setDeviceAttribute_Req);
         if (steamFlow == 0){
             if (setTemp == 0){
-                commonMap.put(SteamConstant.ARGUMENT_NUMBER, 7);
+                commonMap.put(SteamConstant.ARGUMENT_NUMBER, 6);
             }else {
-                commonMap.put(SteamConstant.ARGUMENT_NUMBER, 8);
+                commonMap.put(SteamConstant.ARGUMENT_NUMBER, 7);
             }
         }else {
             if (setTemp == 0){
-                commonMap.put(SteamConstant.ARGUMENT_NUMBER, 8);
+                commonMap.put(SteamConstant.ARGUMENT_NUMBER, 7);
             }else {
-                commonMap.put(SteamConstant.ARGUMENT_NUMBER, 9);
+                commonMap.put(SteamConstant.ARGUMENT_NUMBER, 8);
             }
         }
         commonMap.put(SteamConstant.BS_TYPE , SteamConstant.BS_TYPE_0) ;
@@ -214,9 +218,9 @@ public class SteamCommandHelper {
         commonMap.put(SteamConstant.sectionNumberLength, 1) ;
         commonMap.put(SteamConstant.sectionNumber, 1) ;
 
-        commonMap.put(SteamConstant.rotateSwitchKey, 9) ;
-        commonMap.put(SteamConstant.rotateSwitchLength, 1) ;
-        commonMap.put(SteamConstant.rotateSwitch, 0) ;
+//        commonMap.put(SteamConstant.rotateSwitchKey, 9) ;
+//        commonMap.put(SteamConstant.rotateSwitchLength, 1) ;
+//        commonMap.put(SteamConstant.rotateSwitch, 0) ;
         //模式
         commonMap.put(SteamConstant.modeKey, 101) ;
         commonMap.put(SteamConstant.modeLength, 1) ;
@@ -252,7 +256,7 @@ public class SteamCommandHelper {
             commonMap.put(SteamConstant.steam, steamFlow);
         }
         //getInstance().sendCommonMsgForLiveData(commonMap,flag);
-        getInstance().sendCommonMsg(commonMap,flag);
+        getInstance().sendCommonMsg(commonMap);
     }
 
     /**
@@ -331,9 +335,9 @@ public class SteamCommandHelper {
         try {
             Map msg = getCommonMap(MsgKeys.setDeviceAttribute_Req);
             if (steamFlow==0){
-                msg.put(SteamConstant.ARGUMENT_NUMBER, 9);
+                msg.put(SteamConstant.ARGUMENT_NUMBER, 8);
             }else {
-                msg.put(SteamConstant.ARGUMENT_NUMBER, 10);
+                msg.put(SteamConstant.ARGUMENT_NUMBER, 9);
             }
             msg.put(SteamConstant.BS_TYPE , SteamConstant.BS_TYPE_0) ;
             //一体机电源控制
@@ -384,9 +388,9 @@ public class SteamCommandHelper {
             msg.put(SteamConstant.sectionNumberLength, 1) ;
             msg.put(SteamConstant.sectionNumber, 1) ;
 
-            msg.put(SteamConstant.rotateSwitchKey, 9) ;
-            msg.put(SteamConstant.rotateSwitchLength, 1) ;
-            msg.put(SteamConstant.rotateSwitch, 0) ;
+//            msg.put(SteamConstant.rotateSwitchKey, 9) ;
+//            msg.put(SteamConstant.rotateSwitchLength, 1) ;
+//            msg.put(SteamConstant.rotateSwitch, 0) ;
             //模式
             msg.put(SteamConstant.modeKey, 101) ;
             msg.put(SteamConstant.modeLength, 1) ;
@@ -434,15 +438,15 @@ public class SteamCommandHelper {
         Map commonMap = SteamCommandHelper.getCommonMap(MsgKeys.setDeviceAttribute_Req);
         if (steamFlow == 0){
             if (setTemp == 0){
-                commonMap.put(SteamConstant.ARGUMENT_NUMBER, 7);
+                commonMap.put(SteamConstant.ARGUMENT_NUMBER, 6);
             }else {
-                commonMap.put(SteamConstant.ARGUMENT_NUMBER, 8);
+                commonMap.put(SteamConstant.ARGUMENT_NUMBER, 7);
             }
         }else {
             if (setTemp == 0){
-                commonMap.put(SteamConstant.ARGUMENT_NUMBER, 8);
+                commonMap.put(SteamConstant.ARGUMENT_NUMBER, 7);
             }else {
-                commonMap.put(SteamConstant.ARGUMENT_NUMBER, 9);
+                commonMap.put(SteamConstant.ARGUMENT_NUMBER, 8);
             }
         }
         commonMap.put(SteamConstant.BS_TYPE , SteamConstant.BS_TYPE_0) ;
@@ -492,9 +496,9 @@ public class SteamCommandHelper {
         commonMap.put(SteamConstant.sectionNumberLength, 1) ;
         commonMap.put(SteamConstant.sectionNumber, 1) ;
 
-        commonMap.put(SteamConstant.rotateSwitchKey, 9) ;
-        commonMap.put(SteamConstant.rotateSwitchLength, 1) ;
-        commonMap.put(SteamConstant.rotateSwitch, 0) ;
+//        commonMap.put(SteamConstant.rotateSwitchKey, 9) ;
+//        commonMap.put(SteamConstant.rotateSwitchLength, 1) ;
+//        commonMap.put(SteamConstant.rotateSwitch, 0) ;
         //模式
         commonMap.put(SteamConstant.modeKey, 101) ;
         commonMap.put(SteamConstant.modeLength, 1) ;
@@ -546,7 +550,7 @@ public class SteamCommandHelper {
         commonMap.put(SteamConstant.workCtrlLength, 1);
         commonMap.put(SteamConstant.workCtrl, value);//(short)1
         //getInstance().sendCommonMsgForLiveData(commonMap,flag);
-        getInstance().sendCommonMsg(commonMap,flag);
+        getInstance().sendCommonMsg(commonMap);
     }
 
     /**
@@ -605,7 +609,7 @@ public class SteamCommandHelper {
         return true;
     }
 
-    public static void sendWorkCtrCommand(boolean isWork,int flag){
+    public static void sendWorkCtrCommand(boolean isWork){
         Map commonMap = getCommonMap(MsgKeys.setDeviceAttribute_Req);
         commonMap.put(SteamConstant.BS_TYPE , SteamConstant.BS_TYPE_1) ;
         commonMap.put(SteamConstant.ARGUMENT_NUMBER, 1);
@@ -617,7 +621,8 @@ public class SteamCommandHelper {
         }else{
             commonMap.put(SteamConstant.workCtrl, SteamConstant.WORK_CTRL_TIME_OUT);//暂停工作
         }
-        getInstance().sendCommonMsgForLiveData(commonMap,flag);
+        //getInstance().sendCommonMsgForLiveData(commonMap,flag);
+        getInstance().sendCommonMsg(commonMap);
     }
 
 

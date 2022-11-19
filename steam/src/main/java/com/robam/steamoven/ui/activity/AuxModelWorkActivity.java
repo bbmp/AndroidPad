@@ -109,13 +109,13 @@ public class AuxModelWorkActivity extends SteamBaseActivity {
                 }
             }
         });
-        MqttDirective.getInstance().getDirective().observe(this, s -> {
-            switch (s){
-                case EDN_FLAG:
-                    goHome();
-                    break;
-            }
-        });
+//        MqttDirective.getInstance().getDirective().observe(this, s -> {
+//            switch (s){
+//                case EDN_FLAG:
+//                    goHome();
+//                    break;
+//            }
+//        });
     }
 
     private void updateViews(SteamOven steamOven){

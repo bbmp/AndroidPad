@@ -44,8 +44,7 @@ import java.util.List;
 import java.util.Map;
 
 //蒸、炸、烤模式工作页面
-public class
-ModelWorkActivity extends SteamBaseActivity {
+public class ModelWorkActivity extends SteamBaseActivity {
 
     public static final String TAG = "ModelWorkActivity";
     private List<MultiSegment> multiSegments = new ArrayList<>();//设置段数据
@@ -78,6 +77,7 @@ ModelWorkActivity extends SteamBaseActivity {
     private boolean showDialog = false;
     private SteamCommonDialog finishDialog;//正常烹饪结束弹窗
     private boolean isInitiativeEnd = false;//是否主动结束
+    private boolean showRotation = false;//展示旋转按钮
 
 
 
@@ -126,6 +126,9 @@ ModelWorkActivity extends SteamBaseActivity {
                     if(toWaringPage(steamOven)){
                         return;
                     }
+                    if(showRotation){
+                        setRotationView(steamOven.rotateSwitch == 1);
+                    }
                     switch (steamOven.powerState){
                         case SteamStateConstant.POWER_STATE_AWAIT:
                         case SteamStateConstant.POWER_STATE_ON:
@@ -133,9 +136,7 @@ ModelWorkActivity extends SteamBaseActivity {
                             updateViews(steamOven);
                             break;
                         case SteamStateConstant.POWER_STATE_OFF:
-                            if(System.currentTimeMillis() - workTimeMS >= DEVICE_IDLE_DUR){
-                                goHome();
-                            }
+                            goHome();
                             break;
                     }
 
@@ -150,6 +151,16 @@ ModelWorkActivity extends SteamBaseActivity {
      */
     private boolean isRecipeCooking(){
         return recipeId != 0;
+    }
+
+    private void setRotationView(boolean rotation){
+        ImageView iconView = findViewById(R.id.iv_left_center);
+        TextView tvView = findViewById(R.id.tv_left_center);
+        if(iconView == null || tvView == null){
+            return;
+        }
+        iconView.setImageResource(rotation ? R.drawable.steam_ic_roate_checked : R.drawable.steam_ic_roate_uncheck);
+        tvView.setTextColor(getResources().getColor(rotation?R.color.steam_lock:R.color.steam_white70));
     }
 
 
@@ -226,6 +237,7 @@ ModelWorkActivity extends SteamBaseActivity {
                             parserCureData(getDeviceParamsRes);
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            continueCreateCurve();
                         }
                     }
 
@@ -284,6 +296,13 @@ ModelWorkActivity extends SteamBaseActivity {
         }*/
         if(entryList.size() > 0){
             curTime = (int) ((Entry)entryList.get(entryList.size() -1)).getX();
+        }
+        if(entryList.size() == 0){
+            SteamOven steamOven = getSteamOven();
+            if(steamOven != null){
+                Entry entry = new Entry(0,(float) steamOven.curTemp);
+                entryList.add(entry);
+            }
         }
         dm.setAxisMaximum(maxYValue);
         dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.steam_chart), entryList, true, false);
@@ -377,8 +396,10 @@ ModelWorkActivity extends SteamBaseActivity {
             //设置当前段工作信息 - 后面的时间是否为剩余时长？
         }
         //加湿显示控制
-        steamIv.setVisibility(steamOven.steamState == 2 ? View.VISIBLE : View.INVISIBLE);
-        steamTv.setVisibility(steamOven.steamState == 1 ? View.VISIBLE : View.INVISIBLE);
+        if(showRotation){//只有炸模式才能显示是否加加湿
+            steamIv.setVisibility((isPause && steamOven.steamState == 2) ? View.VISIBLE : View.INVISIBLE);
+            steamTv.setVisibility(steamOven.steamState == 0 ? View.VISIBLE : View.INVISIBLE);
+        }
 
         preHeadTv.setVisibility((isPreHeat && isWorking)?View.VISIBLE:View.INVISIBLE);
         TextView  curModel = curCookInfoViewGroup.findViewById(R.id.multi_item_cur_model);
@@ -390,8 +411,8 @@ ModelWorkActivity extends SteamBaseActivity {
             curModel.setText(SteamModeEnum.match(steamOven.mode));
         }
         //设置温度
-        int setUpTemp = steamOven.setUpTemp;
-        int setDownTemp = steamOven.setDownTemp;
+        //int setUpTemp = steamOven.setUpTemp;
+        //int setDownTemp = steamOven.setDownTemp;
         curTemp.setText(TextSpanUtil.getSpan(steamOven.setUpTemp,Constant.UNIT_TEMP));
         //设置的工作时间 (秒)
         int setTime = steamOven.setTimeH * 256 + steamOven.setTime;
@@ -423,6 +444,7 @@ ModelWorkActivity extends SteamBaseActivity {
         }
         //非烤模式，隐藏旋转烤按钮
         if(!SteamModeEnum.isOvenModel(multiSegments.get(0).code)){
+            showRotation = true;
             hideLeftCenter();
         }
         recipeId = multiSegments.get(0).recipeId;
@@ -443,10 +465,10 @@ ModelWorkActivity extends SteamBaseActivity {
             showStopWorkDialog();
         }else if(id == R.id.multi_work_pause){//暂停工作
             //updateViewsPreheat(getSteamOven(),true,true);
-            SteamCommandHelper.sendWorkCtrCommand(false,directive_offset + DIRECTIVE_OFFSET_PAUSE_CONTINUE);
+            SteamCommandHelper.sendWorkCtrCommand(false);
         }else if(id==R.id.multi_work_start){//继续工作
             //updateViewsPreheat(getSteamOven(),true,false);
-            SteamCommandHelper.sendWorkCtrCommand(true,directive_offset + DIRECTIVE_OFFSET_PAUSE_CONTINUE);
+            SteamCommandHelper.sendWorkCtrCommand(true);
         }else if(id == R.id.multi_work_ic_steam){//加湿控制命令
             SteamCommandHelper.sendSteamOrRotateCommand(QualityKeys.steamCtrl, (short) 1,DIRECTIVE_OFFSET_NONE);
         }
@@ -581,7 +603,8 @@ ModelWorkActivity extends SteamBaseActivity {
             finishDialog.dismiss();
             if(v.getId() == R.id.tv_ok){//完成
                 //切换到烹饪结束状态
-                SteamCommandHelper.sendWorkFinishCommand(directive_offset+DIRECTIVE_OFFSET_WORK_FINISH);
+                SteamCommandHelper.sendEndWorkCommand( directive_offset + DIRECTIVE_OFFSET_WORK_FINISH);
+                //SteamCommandHelper.sendWorkFinishCommand(directive_offset+DIRECTIVE_OFFSET_WORK_FINISH);
             }else if(v.getId() == R.id.tv_cancel) {//加时
                 //showOverTime = true;
                 showOverTimeDialog();

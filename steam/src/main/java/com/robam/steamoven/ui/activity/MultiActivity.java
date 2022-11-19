@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
-import com.robam.common.bean.MqttDirective;
 import com.robam.common.manager.FunctionManager;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.LogUtils;
@@ -25,7 +24,6 @@ import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.MultiSegmentEnum;
 import com.robam.steamoven.constant.SteamConstant;
 import com.robam.steamoven.constant.SteamEnum;
-import com.robam.steamoven.constant.SteamModeEnum;
 import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.protocol.SteamCommandHelper;

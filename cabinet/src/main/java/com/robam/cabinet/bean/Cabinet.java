@@ -45,6 +45,7 @@ public class Cabinet extends Device{
     public short argumentNumber;
     public short steriSecurityLock;
     public short waringCode = 255;//告警编码，默认255，没有告警
+    public short smartCruising;//智能巡航，0 - 为开启，1 - 开启
 
     @Override
     public boolean onMsgReceived(MqttMsg msg) {
@@ -80,6 +81,7 @@ public class Cabinet extends Device{
                     remainingAppointTime = msg.optInt(CabinetConstant.REMAINING_APPOINT_TIME);
                     //停止工作时是否进入安全锁
                     steriSecurityLock = (short) msg.optInt(CabinetConstant.CABINET_SAFE_LOCK);
+                    smartCruising = (short) msg.optInt(CabinetConstant.SMART_CRUISING);
                     break;
                 case MsgKeys.GetSteriPVConfig_Rep:
                     break;

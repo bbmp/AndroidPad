@@ -94,7 +94,11 @@ public class SteamDataUtil {
         if(recipeId != 0){
             return getRecipeData(DeviceUtils.getDeviceTypeId(guid),recipeId);
         }
-        return SteamModeEnum.match(modeCode);
+        if(modeCode != 0){
+            return SteamModeEnum.match(modeCode);
+        }
+        return "";
+
     }
 
 

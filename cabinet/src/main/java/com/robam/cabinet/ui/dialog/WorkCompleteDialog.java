@@ -25,6 +25,7 @@ public class WorkCompleteDialog extends BaseDialog {
         }
     }
 
+
     @Override
     public void setContentText(CharSequence contentStr) {
         mContent.setText(contentStr);

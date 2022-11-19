@@ -57,8 +57,8 @@ public class WaringActivity extends CabinetBaseActivity {
 
     @Override
     protected void initData() {
-        int waringCode = getIntent().getIntExtra(Constant.WARING_CODE,0);
-        if(waringCode == 0){
+        int waringCode = getIntent().getIntExtra(Constant.WARING_CODE,-1);
+        if(waringCode == -1){
             return;
         }
         CabinetWaringEnum washerWaringEnum = CabinetWaringEnum.match(waringCode);

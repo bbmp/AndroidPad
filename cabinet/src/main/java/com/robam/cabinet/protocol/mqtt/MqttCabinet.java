@@ -67,6 +67,10 @@ public class MqttCabinet extends MqttPublic {
                             msg.putOpt(CabinetConstant.WORK_SETTING_TIME,ByteUtils.toInt16(payload, offset++,ByteOrder.LITTLE_ENDIAN));
                             offset++;
                             break;
+                        case 5://智能巡航模式
+                            offset++;//length
+                            msg.putOpt(CabinetConstant.SMART_CRUISING,ByteUtils.toShort(payload[offset++]));
+                            break;
                         default:
                             break;
 
@@ -123,6 +127,7 @@ public class MqttCabinet extends MqttPublic {
                         buf.put(time1);
                         buf.put(time2);
                     }
+
                 }
                 break;
             case MsgKeys.GetSteriStatus_Req:
@@ -144,6 +149,13 @@ public class MqttCabinet extends MqttPublic {
                 byte value = (byte) msg.optInt(CabinetConstant.CABINET_LOCK);
                 buf.put(value);
                 break;
+            case MsgKeys.SMART_CRUISING://智能巡航
+                buf.put((byte) msg.optInt(CabinetConstant.ArgumentNumber));
+                buf.put((byte) msg.optInt(CabinetConstant.SMART_CRUISING_KEY));
+                buf.put((byte) msg.optInt(CabinetConstant.SMART_CRUISING_LEN));
+                buf.put((byte) msg.optInt(CabinetConstant.SMART_CRUISING));
+                break;
+
 
         }
     }

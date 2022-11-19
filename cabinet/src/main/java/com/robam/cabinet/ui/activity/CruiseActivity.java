@@ -11,10 +11,13 @@ import com.robam.cabinet.constant.Constant;
 import com.robam.cabinet.constant.DialogConstant;
 import com.robam.cabinet.device.HomeCabinet;
 import com.robam.cabinet.factory.CabinetDialogFactory;
+import com.robam.cabinet.ui.dialog.WorkStopDialog;
 import com.robam.cabinet.util.CabinetCommonHelper;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
+import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.dialog.IDialog;
+import java.util.Map;
 
 /**
  *  智能巡航等待界面
@@ -45,6 +48,10 @@ public class CruiseActivity extends CabinetBaseActivity {
 //                    if(toWaringPage(cabinet.alarmStatus)){
 //                        return;
 //                    }
+                    if(cabinet.smartCruising != 1){//智能巡航模式被取消
+                        goHome();
+                        return;
+                    }
                     switch (cabinet.workMode){
                         case CabinetConstant.FUN_DISINFECT:
                         case CabinetConstant.FUN_CLEAN:
@@ -62,8 +69,6 @@ public class CruiseActivity extends CabinetBaseActivity {
                 }
             }
         });
-
-
     }
 
     @Override
@@ -81,10 +86,16 @@ public class CruiseActivity extends CabinetBaseActivity {
         //工作结束提示
         IDialog iDialog = CabinetDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_WORK_STOP);
         iDialog.setCancelable(false);
+        iDialog.setContentText(R.string.cabinet_end_smart_cruising);
         iDialog.setListeners(v -> {
             //结束工作
             if (v.getId() == R.id.tv_ok) {
-                goHome();
+                Map map = CabinetCommonHelper.getCommonMap(MsgKeys.SMART_CRUISING);
+                map.put(CabinetConstant.ArgumentNumber,1);
+                map.put(CabinetConstant.SMART_CRUISING_KEY,1);//智能巡航
+                map.put(CabinetConstant.SMART_CRUISING_LEN,1);//智能巡航
+                map.put(CabinetConstant.SMART_CRUISING,0);//智能巡航关闭
+                CabinetCommonHelper.sendCommonMsg(map);
             }
         }, R.id.tv_cancel, R.id.tv_ok);
         iDialog.show();
@@ -115,12 +126,14 @@ public class CruiseActivity extends CabinetBaseActivity {
             intent.putExtra(Constant.EXTRA_MODE_BEAN,workModeBean);
             startActivity(intent);
             finish();
+            return;
         }else if(cabinet.remainingAppointTime > 0){//预约 每次结束后，都有一段时间预约时间是1380，需与设备端一起排查问题
             WorkModeBean workModeBean = new WorkModeBean(cabinet.workMode, cabinet.remainingModeWorkTime,cabinet.modeWorkTime);
             Intent intent = new Intent(this,AppointingActivity.class);
             intent.putExtra(Constant.EXTRA_MODE_BEAN,workModeBean);
             startActivity(intent);
             finish();
+            return;
         }
     }
 

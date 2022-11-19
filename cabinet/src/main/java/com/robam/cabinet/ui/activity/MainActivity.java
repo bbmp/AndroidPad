@@ -56,6 +56,11 @@ public class MainActivity extends CabinetBaseActivity {
                     if(!CabinetCommonHelper.isSafe()){
                         return;
                     }
+                    if(cabinet.smartCruising == 1){//去往智能巡航页面
+                        Intent intent = new Intent(this,CruiseActivity.class);
+                        startActivity(intent);
+                        return;
+                    }
                     switch (cabinet.workMode){
                         case CabinetConstant.FUN_DISINFECT:
                         case CabinetConstant.FUN_CLEAN:
@@ -78,6 +83,7 @@ public class MainActivity extends CabinetBaseActivity {
     }
 
     private void toWorkingPage(Cabinet cabinet) {
+
         if(cabinet.remainingModeWorkTime > 0){//工作
             WorkModeBean workModeBean = new WorkModeBean(cabinet.workMode,0, cabinet.remainingModeWorkTime);
             Intent intent = new Intent(this,WorkActivity.class);

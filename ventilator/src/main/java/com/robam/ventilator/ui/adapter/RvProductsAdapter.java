@@ -345,7 +345,7 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
         }
         if(!isWork){
             MqttDirective.WorkState workState = MqttDirective.getInstance().getWorkState(steamOven.guid);
-            if(workState != null && workState.isEnd()){
+            if(workState != null && workState.isFinish()){
                 workFinish = true;
             }
             baseViewHolder.setVisible(R.id.layout_offline, true);
@@ -378,7 +378,8 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
      */
     private void dealCabinetWorkView(Cabinet cabinet, BaseViewHolder baseViewHolder){
 
-        if(cabinet.faultId != 255 && CabinetWaringEnum.match(cabinet.faultId).getCode() != CabinetWaringEnum.E255.getCode()){//故障
+        if(cabinet.faultId != 255 && cabinet.faultId != 0 &&
+                CabinetWaringEnum.match(cabinet.faultId).getCode() != CabinetWaringEnum.E255.getCode()){
             baseViewHolder.setVisible(R.id.layout_offline, true);
             baseViewHolder.setText(R.id.tv_hint, R.string.ventilator_product_failure);
             baseViewHolder.setGone(R.id.layout_work, true);

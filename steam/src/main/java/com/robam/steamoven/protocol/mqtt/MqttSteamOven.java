@@ -1,6 +1,8 @@
 package com.robam.steamoven.protocol.mqtt;
 
 import android.util.Log;
+
+import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MqttPublic;
 import com.robam.common.mqtt.MsgKeys;
@@ -8,6 +10,7 @@ import com.robam.common.utils.ByteUtils;
 import com.robam.common.utils.MsgUtils;
 import com.robam.steamoven.constant.QualityKeys;
 import com.robam.steamoven.constant.SteamConstant;
+import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.SteamAbstractControl;
 
 import java.nio.ByteBuffer;
@@ -528,7 +531,7 @@ public class MqttSteamOven extends MqttPublic {
                             msg.putOpt(SteamConstant.orderLeftTime, value);
                             break;
                         case QualityKeys.faultCode: //故障码
-                            msg.putOpt(SteamConstant.SteamFaultCode,value);
+                            msg.putOpt(SteamConstant.faultCode,value);
                             break;
                         case QualityKeys.totalRemainSeconds: //总剩余时间
                             msg.putOpt(SteamConstant.totalRemainSeconds, value);
@@ -637,6 +640,28 @@ public class MqttSteamOven extends MqttPublic {
                             break;
                     }
                 }
+                if(msg.getInt(SteamConstant.workState) == SteamStateConstant.WORK_STATE_WORKING_FINISH){
+                    MqttDirective.getInstance().finishWorkModelState(msg.getGuid());
+                }else{
+                    int recipeId = msg.getInt(SteamConstant.recipeId);
+                    if(recipeId != 0){
+                        int anInt = msg.getInt(SteamConstant.restTime);
+                        if(anInt > 0){
+                            MqttDirective.getInstance().updateModelWorkState(msg.getGuid(),0,recipeId);
+                        }
+                    }else{
+                        int mode = msg.getInt(SteamConstant.mode);
+                        if(mode != 0){
+                            int anInt = msg.getInt(SteamConstant.restTime);
+                            int anInt2 = msg.getInt(SteamConstant.restTime2);
+                            int anInt3 = msg.getInt(SteamConstant.restTime3);
+                            if((anInt + anInt2 + anInt3) > 0){
+                                MqttDirective.getInstance().updateModelWorkState(msg.getGuid(),mode,0);
+                            }
+                        }
+                    }
+                }
+
             }
                 break;
             case MsgKeys.setDeviceAttribute_Rep:
@@ -650,7 +675,7 @@ public class MqttSteamOven extends MqttPublic {
                 break;
             case MsgKeys.getDeviceAlarmEventReport:{
                 short code = ByteUtils.toShort(payload[offset++]);
-                msg.putOpt(SteamConstant.faultCode, code);
+                //msg.putOpt(SteamConstant.faultCode, code);
             }
             break;
             case MsgKeys.setSteameOvenStatusControl_Rep:
@@ -660,30 +685,7 @@ public class MqttSteamOven extends MqttPublic {
                 msg.putOpt(SteamConstant.SteameOvenAlarm, ByteUtils.toShort(payload[offset++]));
                 msg.putOpt(SteamConstant.ArgumentNumber, ByteUtils.toShort(payload[offset++]));
                 break;
-            case MsgKeys.setSteameOvenBasicMode_Rep://一体机基本模式回应
-                msg.putOpt(SteamConstant.RC, ByteUtils.toShort(payload[offset++]));
-                break;
-            case MsgKeys.setTheRecipe_Rep://一体机菜谱设置回
-                msg.putOpt(SteamConstant.RC, ByteUtils.toShort(payload[offset++]));
-                break;
-            case MsgKeys.setSteameOvenFloodlight_Rep://一体机照明灯回应
-                msg.putOpt(SteamConstant.RC, ByteUtils.toShort(payload[offset++]));
-                break;
-            case MsgKeys.setSteameOvenWater_Rep://水箱回应
-                msg.putOpt(SteamConstant.RC, ByteUtils.toShort(payload[offset++]));
-                break;
-            case MsgKeys.setSteameOvensteam_Rep://一体机加蒸汽回应
-                msg.putOpt(SteamConstant.RC, ByteUtils.toShort(payload[offset++]));
-                break;
-            case MsgKeys.setSteameOvenMultistageCooking_Rep://一体机多段烹饪回应
-                msg.putOpt(SteamConstant.RC, ByteUtils.toShort(payload[offset++]));
-                break;
-            case MsgKeys.setSteameOvenAutoRecipeMode610_Rep://一体机610多段烹饪回应
-                msg.putOpt(SteamConstant.RC, ByteUtils.toShort(payload[offset++]));
-                break;
-            case MsgKeys.setSteameOvenAutoRecipeMode_Rep:
-                msg.putOpt(SteamConstant.RC, ByteUtils.toShort(payload[offset++]));
-                break;
+
         }
 
     }
