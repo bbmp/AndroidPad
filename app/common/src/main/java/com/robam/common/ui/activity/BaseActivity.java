@@ -153,7 +153,7 @@ public abstract class BaseActivity extends AbsActivity implements ActivityAction
         } else if (keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE) {
             if (null != iPublicVentilatorApi) {
                 if (iPublicVentilatorApi.isStartUp()) {
-                    iPublicVentilatorApi.beep();
+
                     //延时关机
                    iPublicVentilatorApi.delayShutDown();
                 } else {

@@ -1,5 +1,7 @@
 package com.robam.pan.protocol.mqtt;
 
+import android.text.TextUtils;
+
 import com.robam.common.ITerminalType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
@@ -18,6 +20,7 @@ import com.robam.common.utils.MsgUtils;
 import com.robam.common.device.subdevice.Pan;
 import com.robam.common.constant.PanConstant;
 import com.robam.pan.constant.QualityKeys;
+import com.robam.pan.device.HomePan;
 import com.robam.pan.device.PanAbstractControl;
 import com.robam.pan.device.PanFactory;
 
@@ -76,12 +79,6 @@ public class MqttPan extends MqttPublic {
                 MqttManager.getInstance().publish(newMsg, PanFactory.getProtocol());
             }
                 break;
-            case MsgKeys.GetPotCom_Rep: { //远程设置烟锅联动返回
-                int rc = MsgUtils.getByte(payload[offset++]);
-                if (rc == 0)
-                    PanAbstractControl.getInstance().queryFanPan(); //重新查一遍
-            }
-            break;
             case MsgKeys.SetPotSwitch_Req: {//烟锅联动开关查询
                 //答复
                 String curGuid = msg.getrTopic().getDeviceType() + msg.getrTopic().getSignNum(); //当前设备guid
@@ -198,8 +195,8 @@ public class MqttPan extends MqttPublic {
             case MsgKeys.POT_INTERACTION_Rep: {  //设置锅智能互动参数返回
                 int rc = MsgUtils.getByte(payload[offset++]);
                 msg.putOpt(PanConstant.interaction, rc);
-//                if (rc == 0)
-//                    PanAbstractControl.getInstance().queryAttribute(HomePan.getInstance().guid);
+                if (rc == 0 && !TextUtils.isEmpty(HomePan.getInstance().guid))
+                    PanAbstractControl.getInstance().queryAttribute(HomePan.getInstance().guid);
             }
                 break;
             case MsgKeys.GetPotSwitch_Rep: {//烟锅联动查询回复

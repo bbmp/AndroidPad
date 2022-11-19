@@ -16,6 +16,7 @@ import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MqttPublic;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.ByteUtils;
+import com.robam.common.utils.DateUtil;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MMKVUtils;
@@ -237,6 +238,28 @@ public class MqttVentilator extends MqttPublic {
             case MsgKeys.GetFanStatus_Req: //烟机状态查询
                 buf.put((byte) ITerminalType.PAD);
                 break;
+            case MsgKeys.GetSmartConfig_Rep: { //读取智能互动参数回复
+                buf.put((byte) (MMKVUtils.getFanStove() ? 0x01: 0x00)); //烟灶联动开关
+                buf.put((byte) (MMKVUtils.getFanStoveGear() ? 0x01:0x00)); //挡位开关
+                buf.put((byte) (MMKVUtils.getDelayShutdown() ? 0x01:0x00));//延时关机开关
+                buf.put((byte) Integer.parseInt(MMKVUtils.getDelayShutdownTime())); //时间
+                buf.put((byte) (MMKVUtils.getOilClean() ? 0x01:0x00));//油网清洗开关
+                buf.put((byte) (MMKVUtils.getHoliday() ? 0x01:0x00));//假日模式开关
+                buf.put((byte) Integer.parseInt(MMKVUtils.getHolidayDay())); //间隔天数
+                buf.put((byte) (MMKVUtils.getHoliday() ? 0x01:0x00));//每周通风
+                String setTime = MMKVUtils.getHolidayWeekTime();
+                buf.put((byte) DateUtil.getWeek(setTime)); //通风时间点
+                buf.put((byte) Integer.parseInt(setTime.substring(2, 4)));
+                buf.put((byte) Integer.parseInt(setTime.substring(5, 7)));
+                buf.put((byte) 0x02);//参数个数
+                buf.put((byte) 0x03); //key
+                buf.put((byte) 0x01);
+                buf.put(HomeVentilator.getInstance().param7);//智感恒吸
+                buf.put((byte) 0x07); //key
+                buf.put((byte) 0x01);
+                buf.put((byte) (MMKVUtils.getFanStoveGear() ? 0x01:0x00));//灶具最小火力
+            }
+            break;
             case MsgKeys.GetFanStatus_Rep: //属性查询响应
                 buf.put(HomeVentilator.getInstance().status);//状态
 
@@ -251,7 +274,10 @@ public class MqttVentilator extends MqttPublic {
                     buf.put((byte) 0);
 
                 buf.put((byte) (AccountInfo.getInstance().getConnect().getValue()?1:0));//联网状态
-                buf.put((byte) 0);//参数个数
+                buf.put((byte) 1);//参数个数
+                buf.put((byte) 0x05); //key
+                buf.put((byte) 0x01);
+                buf.put(HomeVentilator.getInstance().param7);//智感恒吸
 
                 break;
             case MsgKeys.SetFanStatus_Rep: //设置烟机应答
@@ -272,6 +298,16 @@ public class MqttVentilator extends MqttPublic {
             case MsgKeys.SetFanTimeWork_Rep: //设置定时工作响应
                 buf.put((byte) 0);
                 break;
+            case MsgKeys.SetFanStatusCompose_Req: //设置烟机状态组合回复
+                if (null != msg.optJSONArray(VentilatorConstant.KEYS)) {
+                    JSONArray jsonArray = msg.optJSONArray(VentilatorConstant.KEYS);
+                    buf.put((byte) jsonArray.length());//参数个数
+                    for (int i = 0; i<jsonArray.length(); i++) {
+                        buf.put((byte)jsonArray.optInt(i)); //key
+                        buf.put((byte) 0x00);
+                    }
+                }
+                break;
         }
     }
 
@@ -286,9 +322,21 @@ public class MqttVentilator extends MqttPublic {
 
                 }
                 break;
+                case MsgKeys.GetSmartConfig_Req: { //读取智能互动模式
+                    //控制端类型
+                    short terminalType = ByteUtils.toShort(payload[offset++]);
+                    MqttMsg newMsg = new MqttMsg.Builder()
+                            .setMsgId(MsgKeys.GetSmartConfig_Rep)
+                            .setGuid(Plat.getPlatform().getDeviceOnlySign())
+                            .setDt(Plat.getPlatform().getDt())
+                            .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(msg.getGuid()), DeviceUtils.getDeviceNumber(msg.getGuid())))
+                            .build();
+                    MqttManager.getInstance().publish(newMsg, VentilatorFactory.getProtocol());
+                }
+                break;
                 case MsgKeys.GetFanStatus_Req: { //查询烟机
-                    //属性个数
-                    short attributeNum = ByteUtils.toShort(payload[offset++]);
+                    //控制端类型
+                    short terminalType = ByteUtils.toShort(payload[offset++]);
                     MqttMsg newMsg = new MqttMsg.Builder()
                             .setMsgId(MsgKeys.GetFanStatus_Rep)
                             .setGuid(Plat.getPlatform().getDeviceOnlySign())
@@ -439,11 +487,23 @@ public class MqttVentilator extends MqttPublic {
                     MqttManager.getInstance().publish(newMsg, VentilatorFactory.getProtocol());
                 }
                 break;
+                case MsgKeys.SetSmartConfig_Req: { //设置智能互动
+
+                }
+                    break;
                 case MsgKeys.SetFanStatusCompose_Rep: { //设置烟机状态组合
                     //控制端类型
                     short terminalType = ByteUtils.toShort(payload[offset++]);
                     //属性个数
                     short attributeNum = ByteUtils.toShort(payload[offset++]);
+                    //响应
+                    MqttMsg newMsg = new MqttMsg.Builder()
+                            .setMsgId(MsgKeys.SetFanStatusCompose_Req)
+                            .setGuid(Plat.getPlatform().getDeviceOnlySign())
+                            .setDt(Plat.getPlatform().getDt())
+                            .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(msg.getGuid()), DeviceUtils.getDeviceNumber(msg.getGuid())))
+                            .build();
+                    JSONArray jsonArray = new JSONArray();
                     while (attributeNum > 0) {
                         attributeNum--;
                         int key = MsgUtils.getByte(payload[offset++]);
@@ -456,26 +516,32 @@ public class MqttVentilator extends MqttPublic {
                                     HomeVentilator.getInstance().stopLevelCountDown();
                                     HomeVentilator.getInstance().stopA6CountDown();
                                 }
+                                jsonArray.put(key);
                             }
                                 break;
                             case 4: {  //延时关机设置
                                 int minute = MsgUtils.getByte(payload[offset++]);
                                 if (minute >= 1 && minute <= 5)
                                     MMKVUtils.setDelayShutdownTime(minute + "");
+                                jsonArray.put(key);
                             }
                             break;
                             case 17: { //智感恒吸
                                 int smart = MsgUtils.getByte(payload[offset++]);
                                 VentilatorAbstractControl.getInstance().setSmart(smart);
+                                jsonArray.put(key);
                             }
                                 break;
                             case 18: {//烟灶挡位联动开关
                                 boolean onOff = (MsgUtils.getByte(payload[offset++]) == 1 ? true : false); //开关
                                 MMKVUtils.setFanStoveGear(onOff);
+                                jsonArray.put(key);
                             }
                             break;
                         }
                     }
+                    newMsg.putOpt(VentilatorConstant.KEYS, jsonArray);
+                    MqttManager.getInstance().publish(newMsg, VentilatorFactory.getProtocol());
                 }
                     break;
                 case MsgKeys.setFanInteraction_Req: {//外部命令请求烟机互动 烟蒸烤联动

@@ -117,10 +117,10 @@ public class Pan extends Device {
                 msgId = MsgKeys.POT_INTERACTION_Rep;
         } else if (null != msg && msg.has(PanConstant.fanpan)) { //烟锅联动状态
             fanPan = msg.optInt(PanConstant.fanpan);
-            IPublicVentilatorApi iPublicVentilatorApi = ModulePubliclHelper.getModulePublic(IPublicVentilatorApi.class, IPublicVentilatorApi.VENTILATOR_PUBLIC);
-            if (null != iPublicVentilatorApi) {
-                iPublicVentilatorApi.setSmartSet();
-            }
+//            IPublicVentilatorApi iPublicVentilatorApi = ModulePubliclHelper.getModulePublic(IPublicVentilatorApi.class, IPublicVentilatorApi.VENTILATOR_PUBLIC);
+//            if (null != iPublicVentilatorApi) {
+//                iPublicVentilatorApi.setSmartSet();
+//            }
         }
         return false;
     }

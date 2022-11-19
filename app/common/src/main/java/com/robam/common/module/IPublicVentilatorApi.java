@@ -29,8 +29,6 @@ public interface IPublicVentilatorApi extends IPublicApi {
     void closeService(Context context);
     //开机
     void powerOn();
-    //蜂鸣声
-    void beep();
     //启动定时任务
     void startService(Context context);
     //冷暖光切换
@@ -41,6 +39,4 @@ public interface IPublicVentilatorApi extends IPublicApi {
     void delayShutDown();
     //关闭延时关机
     void closeDelayDialog();
-    //智能设置更新
-    void setSmartSet();
 }

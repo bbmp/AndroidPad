@@ -136,7 +136,7 @@ public class CurveActivity extends PanBaseActivity {
             @Override
             public void onChanged(String s) {
                 for (Device device: AccountInfo.getInstance().deviceList) {
-                    if (device.guid.equals(s) && device instanceof Stove) { //当前灶
+                    if (null != device.guid && device.guid.equals(s) && device instanceof Stove) { //当前灶
                         Stove stove = (Stove) device;
                         //开火提示状态
                         if (null != openDialog && openDialog.isShow()) {
