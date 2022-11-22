@@ -109,14 +109,14 @@ public class CurveSaveActivity extends SteamBaseActivity {
         this.curveDetailRes = getDeviceParamsRes;
         if(getDeviceParamsRes == null || getDeviceParamsRes.payload == null || getDeviceParamsRes.payload.temperatureCurveParams == null){
             ToastUtils.showLong(this,R.string.steam_curve_no_data);
-            goHome();
+            //goHome();
             return;
         }
         JSONObject jsonObject = new JSONObject(getDeviceParamsRes.payload.temperatureCurveParams);
         Iterator<String> keys = jsonObject.keys();
         if(keys == null || !keys.hasNext()){
             ToastUtils.showLong(this,R.string.steam_curve_no_data);
-            goHome();
+            //goHome();
             return;
         }
         while (keys.hasNext()){

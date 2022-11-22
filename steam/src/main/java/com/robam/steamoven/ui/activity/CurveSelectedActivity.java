@@ -13,6 +13,8 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
 import com.robam.common.bean.MqttDirective;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.manager.DynamicLineChartManager;
@@ -26,12 +28,18 @@ import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.bean.CurveStep;
 import com.robam.steamoven.bean.MultiSegment;
 import com.robam.steamoven.bean.SteamCurveDetail;
+import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.SteamConstant;
+import com.robam.steamoven.constant.SteamModeEnum;
+import com.robam.steamoven.constant.SteamStateConstant;
+import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.http.CloudHelper;
 import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.response.GetCurveDetailRes;
 import com.robam.steamoven.ui.adapter.RvStep3Adapter;
+import com.robam.steamoven.utils.MultiSegmentUtil;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -86,13 +94,95 @@ public class CurveSelectedActivity extends SteamBaseActivity {
 
         setOnClickListener(R.id.tv_start_cook);
 
-        MqttDirective.getInstance().getDirective().observe(this, s -> {
-            switch (s - directive_offset){
-                case MsgKeys.setDeviceAttribute_Req:
-                    toWorkPage();
-                    break;
+//        MqttDirective.getInstance().getDirective().observe(this, s -> {
+//            switch (s - directive_offset){
+//                case MsgKeys.setDeviceAttribute_Req:
+//                    toWorkPage();
+//                    break;
+//            }
+//        });
+        AccountInfo.getInstance().getGuid().observe(this, s -> {
+            for (Device device: AccountInfo.getInstance().deviceList) {
+                if (device.guid.equals(s) && device instanceof SteamOven && device.guid.equals(HomeSteamOven.getInstance().guid)) {
+                    SteamOven steamOven = (SteamOven) device;
+                    if(!SteamCommandHelper.getInstance().isSafe()){
+                        return;
+                    }
+                    if(toWaringPage(steamOven)){
+                        return;
+                    }
+                    switch (steamOven.powerState){
+                        case SteamStateConstant.POWER_STATE_AWAIT:
+                        case SteamStateConstant.POWER_STATE_ON:
+                        case SteamStateConstant.POWER_STATE_TROUBLE:
+                            toWorkPage(steamOven);
+                            break;
+                        case SteamStateConstant.POWER_STATE_OFF:
+                            break;
+                    }
+
+
+                }
             }
         });
+    }
+
+    /**
+     * 跳转到指定业务页面
+     * @param steamOven
+     */
+    private void toWorkPage(SteamOven steamOven){
+        switch (steamOven.workState){
+            case SteamStateConstant.WORK_STATE_LEISURE:
+                break;
+            case SteamStateConstant.WORK_STATE_APPOINTMENT://预约页面
+                HomeSteamOven.getInstance().orderTime = steamOven.orderLeftTime;
+                Intent appointIntent = new Intent(this,AppointingActivity.class);
+                MultiSegment segment = MultiSegmentUtil.getSkipResult(steamOven);
+                segment.workRemaining = steamOven.orderLeftTime;
+                appointIntent.putExtra(Constant.SEGMENT_DATA_FLAG, segment);
+                startActivity(appointIntent);
+                break;
+            case SteamStateConstant.WORK_STATE_PREHEAT:
+            case SteamStateConstant.WORK_STATE_PREHEAT_PAUSE:
+            case SteamStateConstant.WORK_STATE_WORKING:
+            case SteamStateConstant.WORK_STATE_WORKING_PAUSE:
+                //辅助模式工作页面
+                if(SteamModeEnum.isAuxModel(steamOven.mode)){
+                    Intent intent = new Intent(this,AuxModelWorkActivity.class);
+                    intent.putExtra(Constant.SEGMENT_DATA_FLAG,MultiSegmentUtil.getSkipResult(steamOven));
+                    startActivity(intent);
+                    return;
+                }
+
+                Intent intent;
+                List<MultiSegment> list;
+                if(steamOven.sectionNumber >= 2){
+                    //多段工作页面
+                    intent = new Intent(this, MultiWorkActivity.class);
+                    list = getMultiWorkResult(steamOven);
+                }else{
+                    //基础模式工作页面
+                    intent = new Intent(this, ModelWorkActivity.class);
+                    list = new ArrayList<>();
+                    list.add(MultiSegmentUtil.getSkipResult(steamOven));
+                }
+                intent.putParcelableArrayListExtra(Constant.SEGMENT_DATA_FLAG, (ArrayList<? extends Parcelable>) list);
+                startActivity(intent);
+                break;
+        }
+    }
+
+    /**
+     * 获取多段数据集合
+     * @return
+     */
+    private List<MultiSegment> getMultiWorkResult(SteamOven steamOven){
+        List<MultiSegment> multiSegments = new ArrayList<>();
+        for(int i = 0;i < steamOven.sectionNumber;i++){
+            multiSegments.add(MultiSegmentUtil.getCurSegment(steamOven,i+1));
+        }
+        return multiSegments;
     }
 
     /**

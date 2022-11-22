@@ -65,7 +65,7 @@ public class AuxModelWorkActivity extends SteamBaseActivity {
     protected void initView() {
         //showLeft();
         showCenter();
-        showLight();
+        //showLight();
         promptParentView = findViewById(R.id.descaling_prompt_parent);
         promptTvInd1 = findViewById(R.id.descaling_index_1);
         promptTvInd2 = findViewById(R.id.descaling_index_2);
@@ -260,7 +260,7 @@ public class AuxModelWorkActivity extends SteamBaseActivity {
                //TODO(发送结束指令)
                 SteamCommandHelper.sendEndWorkCommand(EDN_FLAG);
             }
-        },R.id.tv_ok);
+        },R.id.tv_ok,R.id.tv_cancel);
         endDialog.show();
     }
 

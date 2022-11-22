@@ -97,10 +97,11 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                if(!isClickAble(tab)){
+                if(!isClickAble(tab)){//澎湃蒸，温度不能调节
                     if(preSelectTab.getId() != tab.getId()){
                         tabLayout.selectTab(preSelectTab);
                     }
+                    ToastUtils.showLong(ModeSelectActivity.this,R.string.steam_temp_prompt);
                     return;
                 }
                 preSelectTab = tab;
@@ -188,7 +189,11 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
         }
     }
 
-
+    /**
+     * 判断模式对应的参数是否可调节（澎湃蒸模式下温度不能调节）
+     * @param tab
+     * @return
+     */
     private boolean isClickAble(TabLayout.Tab tab){
         TabLayout.Tab tabAt = tabLayout.getTabAt(0);
         TextView tv = tabAt.getCustomView().findViewById(R.id.tv_mode);

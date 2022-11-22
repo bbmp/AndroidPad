@@ -78,6 +78,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
     private int sourceId = 0;//0 - 多段设置 ； 1 - 曲线
     private boolean isInitiativeEnd = false;//是否主动结束
     private long workTimeMS = System.currentTimeMillis();
+    private boolean isPageHide = false;//页面是否已经不显示
 
     @Override
     protected int getLayoutId() {
@@ -112,8 +113,11 @@ public class MultiWorkActivity extends SteamBaseActivity {
                             updateViewInfo(steamOven);
                             break;
                         case SteamStateConstant.POWER_STATE_OFF:
-                            if(System.currentTimeMillis() - workTimeMS >= DEVICE_IDLE_DUR){
+                            //goHome();
+                            if(multiSegments != null && multiSegments.get(0).recipeId != 0){
                                 goHome();
+                            }else{
+                                toCurveSavePage();
                             }
                             break;
                     }
@@ -122,17 +126,21 @@ public class MultiWorkActivity extends SteamBaseActivity {
             }
         });
 
-//        MqttDirective.getInstance().getDirective().observe(this, s -> {
-//            switch (s - directive_offset){
-//                case DIRECTIVE_OFFSET_END:
-//                case DIRECTIVE_OFFSET_GO_HOME:
-//                    goHome();
-//                    break;
-//                case DIRECTIVE_OFFSET_WORK_FINISH:
-//                    toCurveSavePage();
-//                    break;
-//            }
-//        });
+        MqttDirective.getInstance().getDirective().observe(this, s -> {
+            switch (s - directive_offset){
+                case DIRECTIVE_OFFSET_END:
+                case DIRECTIVE_OFFSET_GO_HOME:
+                    //goHome();
+                    break;
+                case DIRECTIVE_OFFSET_WORK_FINISH:
+                    if(multiSegments != null && multiSegments.get(0).recipeId != 0){
+                        goHome();
+                    }else{
+                        toCurveSavePage();
+                    }
+                    break;
+            }
+        });
     }
 
     /**
@@ -142,20 +150,23 @@ public class MultiWorkActivity extends SteamBaseActivity {
     private void updateViewInfo(SteamOven steamOven){
         switch (steamOven.workState){
             case SteamStateConstant.WORK_STATE_LEISURE://空闲
+                toCurveSavePage();
+                break;
             case SteamStateConstant.WORK_STATE_APPOINTMENT:
-                if(System.currentTimeMillis() - workTimeMS >= DEVICE_IDLE_DUR){
-                    LogUtils.e(TAG+" updateViews 空闲超过  "+DEVICE_IDLE_DUR+"秒，回到主页");
-                    goHome();
-                    return;
-                }
-                if(isInitiativeEnd){
-                    goHome();
-                }else{
-                    if(System.currentTimeMillis() - workTimeMS >= DEVICE_IDLE_SHOW){
-                        //容易多次弹出
-                        dealWorkFinish(steamOven);
-                    }
-                }
+                goHome();
+//                if(System.currentTimeMillis() - workTimeMS >= DEVICE_IDLE_DUR){
+//                    LogUtils.e(TAG+" updateViews 空闲超过  "+DEVICE_IDLE_DUR+"秒，回到主页");
+//                    goHome();
+//                    return;
+//                }
+//                if(isInitiativeEnd){
+//                    goHome();
+//                }else{
+//                    if(System.currentTimeMillis() - workTimeMS >= DEVICE_IDLE_SHOW){
+//                        //容易多次弹出
+//                        dealWorkFinish(steamOven);
+//                    }
+//                }
                 break;
             case SteamStateConstant.WORK_STATE_PREHEAT:
             case SteamStateConstant.WORK_STATE_PREHEAT_PAUSE:
@@ -516,7 +527,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
         dm.setAxisLine(true, false);
         dm.setGridLine(false, false);
         dm.setAxisMaximum(maxYValue);
-        dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.steam_chart), entryList, true, false);
+        dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.steam_chart_multi), entryList, true, false);
         cookChart.notifyDataSetChanged();
     }
 
@@ -525,7 +536,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
     private boolean isDestroy = false;
     private Runnable runnable;
     private Handler mHandler = new Handler();
-    private void continueCreateCurve(){
+    private void startCreateCurve(){
         runnable = () -> {
             if(isDestroy){
                 return;
@@ -544,6 +555,9 @@ public class MultiWorkActivity extends SteamBaseActivity {
             if (steamOven.workState != SteamStateConstant.WORK_STATE_PREHEAT &&
                     steamOven.workState != SteamStateConstant.WORK_STATE_WORKING) {
                 mHandler.postDelayed(runnable, 2000L);
+                return;
+            }
+            if(isPageHide){
                 return;
             }
 
@@ -581,13 +595,14 @@ public class MultiWorkActivity extends SteamBaseActivity {
                             parserCureData(getDeviceParamsRes);
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            continueCreateCurve();
+                            startCreateCurve();
                         }
                     }
 
                     @Override
                     public void onFaild(String err) {
                         //initLineChart();
+                        startCreateCurve();
                     }
                 });
     }
@@ -604,7 +619,8 @@ public class MultiWorkActivity extends SteamBaseActivity {
         if(getDeviceParamsRes == null || getDeviceParamsRes.payload == null || getDeviceParamsRes.payload.temperatureCurveParams == null){
             //initLineChart();
             dm.setAxisMaximum(maxYValue);
-            continueCreateCurve();
+            initStartTimerAndList();
+            startCreateCurve();
             return;
         }
 
@@ -613,7 +629,8 @@ public class MultiWorkActivity extends SteamBaseActivity {
         if(keys == null || !keys.hasNext()){
             //initLineChart();
             dm.setAxisMaximum(maxYValue);
-            continueCreateCurve();
+            initStartTimerAndList();
+            startCreateCurve();
             return;
         }
         while (keys.hasNext()){
@@ -638,13 +655,11 @@ public class MultiWorkActivity extends SteamBaseActivity {
                 return -1;
             }
         });
-        if(entryList.size() > 0){
-            curTime = (int) ((Entry)entryList.get(entryList.size() -1)).getX();
-        }
+        initStartTimerAndList();
         //initLineChart();
         dm.setAxisMaximum(maxYValue);
         dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.steam_chart), entryList, true, false);
-        continueCreateCurve();
+        startCreateCurve();
     }
 
     SteamCommonDialog finishDialog;
@@ -710,12 +725,42 @@ public class MultiWorkActivity extends SteamBaseActivity {
         super.goHome();
     }
 
+    private void initStartTimerAndList(){
+        if(entryList.size() > 0){
+            curTime = (int) ((Entry)entryList.get(entryList.size() -1)).getX();
+        }
+        if(entryList.size() == 0){
+            SteamOven steamOven = getSteamOven();
+            if(steamOven != null){
+                Entry entry = new Entry(0, steamOven.curTemp);
+                entryList.add(entry);
+            }
+        }
+    }
+
     private void dealWorkFinish(SteamOven steamOven){
         if(showDialog){
             return;
         }
         showWorkFinishDialog();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         mHandler.removeCallbacks(runnable);
         mHandler.removeCallbacksAndMessages(null);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        isPageHide = true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isPageHide = false;
     }
 }

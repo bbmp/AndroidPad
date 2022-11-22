@@ -5,14 +5,19 @@ import android.os.Parcelable;
 import android.view.View;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
-import com.robam.common.bean.MqttDirective;
+
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.bean.ModeBean;
 import com.robam.steamoven.bean.MultiSegment;
+import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.SteamConstant;
+import com.robam.steamoven.constant.SteamStateConstant;
+import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.ui.adapter.RvTimeAdapter;
 import java.util.ArrayList;
@@ -60,15 +65,60 @@ public class RecipeModeActivity extends SteamBaseActivity {
         findViewById(R.id.iv_select).setVisibility(View.VISIBLE);
         setLayoutManage(5, 0.44f);
         setOnClickListener(R.id.btn_start);
-        MqttDirective.getInstance().getDirective().observe(this, s -> {
-            switch (s){
-                case SEND_START_WORK:
-                    toWorkPage();
-                    break;
+//        MqttDirective.getInstance().getDirective().observe(this, s -> {
+//            switch (s){
+//                case SEND_START_WORK:
+//                    toWorkPage();
+//                    break;
+//
+//            }
+//        });
+        AccountInfo.getInstance().getGuid().observe(this, s -> {
+            for (Device device: AccountInfo.getInstance().deviceList) {
+                if (device.guid.equals(s) && device instanceof SteamOven && device.guid.equals(HomeSteamOven.getInstance().guid)) {
+                    SteamOven steamOven = (SteamOven) device;
+                    if(!SteamCommandHelper.getInstance().isSafe()){
+                        return;
+                    }
+                    if(toWaringPage(steamOven)){
+                        return;
+                    }
+                    switch (steamOven.powerState){
+                        case SteamStateConstant.POWER_STATE_AWAIT:
+                        case SteamStateConstant.POWER_STATE_ON:
+                        case SteamStateConstant.POWER_STATE_TROUBLE:
+                            toWorkPage(steamOven);
+                            break;
+                        case SteamStateConstant.POWER_STATE_OFF:
+                            break;
+                    }
 
+
+                }
             }
         });
 
+    }
+
+    /**
+     * 跳转到指定业务页面
+     * @param steamOven
+     */
+    private void toWorkPage(SteamOven steamOven){
+        switch (steamOven.workState){
+            case SteamStateConstant.WORK_STATE_LEISURE:
+                break;
+            case SteamStateConstant.WORK_STATE_APPOINTMENT://预约页面
+
+                break;
+            case SteamStateConstant.WORK_STATE_PREHEAT:
+            case SteamStateConstant.WORK_STATE_PREHEAT_PAUSE:
+            case SteamStateConstant.WORK_STATE_WORKING:
+            case SteamStateConstant.WORK_STATE_WORKING_PAUSE:
+                //辅助模式工作页面
+                toWorkPage();
+                break;
+        }
     }
 
     @Override
@@ -112,8 +162,8 @@ public class RecipeModeActivity extends SteamBaseActivity {
         }
 
         rvTimeAdapter.setList(timeList);
-        int offset = modeBean.defTime - modeBean.minTime;
-        int position = Integer.MAX_VALUE / 2-(Integer.MAX_VALUE / 2)%timeList.size() + offset;
+        int position = modeBean.defTime - modeBean.minTime;
+        //int position = Integer.MAX_VALUE / 2-(Integer.MAX_VALUE / 2)%timeList.size() + offset;
         pickerLayoutManager.scrollToPosition(position);
         rvTimeAdapter.setPickPosition(position);
         tvTime.setText(rvTimeAdapter.getItem(position));
@@ -135,6 +185,7 @@ public class RecipeModeActivity extends SteamBaseActivity {
      */
     private void sendStartWorkCommand(){
         SteamCommandHelper.sendRecipeWork(recipeId,Integer.parseInt(tvTime.getText().toString()),SEND_START_WORK);
+        //SteamCommandHelper.sendRecipeWork(10,Integer.parseInt(tvTime.getText().toString()),SEND_START_WORK);
     }
 
     private void toWorkPage(){

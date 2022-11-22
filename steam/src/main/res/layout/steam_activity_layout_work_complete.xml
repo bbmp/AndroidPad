@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/steam_ic_bg">
+
+    <TextView
+        android:id="@+id/tv_work_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_48"
+        android:gravity="center"
+        android:text="@string/steam_work_complete"
+        android:textColor="@color/steam_mode"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tv_cancel"
+        app:layout_constraintVertical_chainStyle="packed"/>
+
+    <TextView
+        android:id="@+id/tv_cancel"
+        android:layout_width="@dimen/dp_175"
+        android:layout_height="@dimen/dp_56"
+        android:layout_marginTop="@dimen/dp_65"
+        android:gravity="center"
+        android:textColor="@color/steam_white"
+        android:textSize="@dimen/sp_30"
+        android:text="@string/steam_work_complete_add_time"
+        android:background="@drawable/steam_shape_button_bg_cancel"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/tv_ok"
+        app:layout_constraintTop_toBottomOf="@id/tv_work_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_chainStyle="packed"/>
+
+    <TextView
+        android:id="@+id/tv_ok"
+        android:layout_width="@dimen/dp_175"
+        android:layout_height="@dimen/dp_56"
+        android:layout_marginLeft="@dimen/dp_165"
+        android:gravity="center"
+        android:textColor="@color/steam_white"
+        android:textSize="@dimen/sp_30"
+        android:text="@string/steam_common_step_complete"
+        android:background="@drawable/steam_shape_button_bg_ok"
+        app:layout_constraintLeft_toRightOf="@id/tv_cancel"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_cancel"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

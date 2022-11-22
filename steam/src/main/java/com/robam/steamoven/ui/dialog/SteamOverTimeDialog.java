@@ -71,7 +71,7 @@ public class SteamOverTimeDialog extends BaseDialog {
 
     private List<String> getDataList(){
         List<String> timeList = new ArrayList<>();
-        for(int i = 1;i < 10;i++){
+        for(int i = 1;i <= 10;i++){
             timeList.add(i+"");
         }
         return timeList;
@@ -81,7 +81,7 @@ public class SteamOverTimeDialog extends BaseDialog {
         rvTimeAdapter.setList(selectList);
 
         //初始位置
-        int initPos = Integer.MAX_VALUE / 2 - (Integer.MAX_VALUE/2) % selectList.size();
+        int initPos = 4;
         value = selectList.get(initPos%selectList.size());
         pickerLayoutManager.scrollToPosition(initPos);
         rvTimeAdapter.setPickPosition(initPos);

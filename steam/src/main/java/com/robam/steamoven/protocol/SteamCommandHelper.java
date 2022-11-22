@@ -288,27 +288,23 @@ public class SteamCommandHelper {
             //菜谱id
 
             msg.put(SteamConstant.recipeIdKey, 17);
-            msg.put(SteamConstant.recipeIdLength, 1);
-            short recipeIdTemp = recipeId > 255 ? (short) (recipeId & 0Xff):(short)recipeId;
             if (recipeId<=255){
-                msg.put(SteamConstant.recipeId, recipeIdTemp);
+                msg.put(SteamConstant.recipeIdLength, 1);
+                msg.put(SteamConstant.recipeId, recipeId);
             }else{
-                msg.put(SteamConstant.recipeIdKey, 17);
                 msg.put(SteamConstant.recipeIdLength, 2);
-                short lowPower = (short)(recipeIdTemp & 0xff);
+                short lowPower = (short)(recipeId & 0xff);
                 msg.put(SteamConstant.recipeId, lowPower);
-                short highPower = (short) ((recipeIdTemp >> 8) & 0Xff);
+                short highPower = (short) ((recipeId >> 8) & 0Xff);
                 msg.put(SteamConstant.recipeId01, highPower);
             }
 
             //msg.put(SteamConstant.recipeId, recipeId);
-
             //菜谱时间
             msg.put(SteamConstant.recipeSetMinutesKey, 18);
-            msg.put(SteamConstant.recipeSetMinutesLength, 1);
-            short SetMinutesTemp = recipeSetMinutes > 255 ? (short) (recipeSetMinutes & 0Xff):(short)recipeSetMinutes;
             if (recipeSetMinutes<=255){
-                msg.put(SteamConstant.recipeSetMinutes, SetMinutesTemp);
+                msg.put(SteamConstant.recipeSetMinutesLength, 1);
+                msg.put(SteamConstant.recipeSetMinutes, recipeSetMinutes);
             }else{
                 msg.put(SteamConstant.recipeSetMinutesLength, 2);
                 short time = (short)(recipeSetMinutes & 0xff);

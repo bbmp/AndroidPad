@@ -1188,5 +1188,6 @@
     <string name="steam_section_1">一段</string>
     <string name="steam_section_2">二段</string>
     <string name="steam_section_3">三段</string>
+    <string name="steam_temp_prompt">澎湃蒸不能调节温度</string>
 
 </resources>

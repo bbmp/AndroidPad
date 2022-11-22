@@ -14,13 +14,7 @@
         android:scaleType="fitXY">
 
     </ImageView>
-    <include
-        android:id="@+id/ll_title"
-        layout="@layout/steam_view_layout_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+
 
     <View
         android:id="@+id/ll_foot"
@@ -46,7 +40,7 @@
         android:id="@+id/rv_select"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/ll_title"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
@@ -100,4 +94,12 @@
         layout="@layout/steam_view_layout_tab_time"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_104"></include>
+
+    <include
+        android:id="@+id/ll_title"
+        layout="@layout/steam_view_layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -161,9 +161,9 @@ public class HomeActivity extends BaseActivity {
         Intent bleIntent = new Intent(this.getApplicationContext(), AlarmBleService.class);
         bleIntent.setPackage(getPackageName());
         startService(bleIntent);
-        Intent venIntent = new Intent(this.getApplicationContext(), AlarmVentilatorService.class);
-        venIntent.setPackage(getPackageName());
-        startService(venIntent);
+//        Intent venIntent = new Intent(this.getApplicationContext(), AlarmVentilatorService.class);//TODO("暂时屏蔽")
+//        venIntent.setPackage(getPackageName());
+//        startService(venIntent);
 //初始化主设备mqtt收发 烟机端只要网络连接上就需要启动mqtt服务，锅和灶不用登录
         //初始网络状态
         if (NetworkUtils.isConnect(this) && !AccountInfo.getInstance().getConnect().getValue())
