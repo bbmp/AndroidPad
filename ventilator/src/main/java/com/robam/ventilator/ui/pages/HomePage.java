@@ -1,7 +1,6 @@
 package com.robam.ventilator.ui.pages;
 
 import android.content.Intent;
-import android.os.Handler;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,8 +27,8 @@ import com.robam.common.constant.StoveConstant;
 import com.robam.common.device.Plat;
 import com.robam.common.manager.BlueToothManager;
 import com.robam.common.module.ModulePubliclHelper;
+import com.robam.common.ui.view.AudioWaveView;
 import com.robam.common.utils.DeviceUtils;
-import com.robam.common.utils.ImageUtils;
 import com.robam.common.utils.MMKVUtils;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.common.device.subdevice.Pan;
@@ -45,7 +44,6 @@ import com.robam.common.module.IPublicStoveApi;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
-import com.robam.common.utils.ClickUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ScreenUtils;
 import com.robam.stove.device.StoveAbstractControl;
@@ -61,7 +59,6 @@ import com.robam.ventilator.device.HomeVentilator;
 import com.robam.ventilator.device.VentilatorAbstractControl;
 import com.robam.ventilator.factory.VentilatorDialogFactory;
 import com.robam.ventilator.http.CloudHelper;
-import com.robam.ventilator.protocol.ble.BleVentilator;
 import com.robam.ventilator.response.GetDeviceRes;
 import com.robam.ventilator.ui.activity.AddDeviceActivity;
 import com.robam.ventilator.ui.activity.MatchNetworkActivity;
@@ -107,7 +104,8 @@ public class HomePage extends VentilatorBasePage {
     private Group group;
     private DrawerLayout drawerLayout;
     private LinearLayout llSetting, llProducts;
-
+    //风阻
+    private AudioWaveView viewFlow, viewSpeed;
     private IDialog oilClean;
 
     public static HomePage newInstance() {
@@ -136,6 +134,8 @@ public class HomePage extends VentilatorBasePage {
         llProducts = findViewById(R.id.ll_drawer_right);
         rvLeft = findViewById(R.id.rv_left);
         rvRight = findViewById(R.id.rv_right);
+        viewFlow = findViewById(R.id.iv_flow);
+        viewSpeed = findViewById(R.id.iv_speed);
 
 
         rvLeft.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -397,27 +397,46 @@ public class HomePage extends VentilatorBasePage {
             @Override
             public void onChanged(String s) {
                 if (Plat.getPlatform().getDeviceOnlySign().equals(s)) { //烟机更新
+                    boolean switchPick = false;
                     if (null != rvFunctionAdapter && HomeVentilator.getInstance().isLock()) //锁定
-                        rvFunctionAdapter.setPickPosition(0);
+                        switchPick = rvFunctionAdapter.setPickPosition(0);
                     else if (HomeVentilator.getInstance().gear == (byte) 0xA1 && null != rvFunctionAdapter)
-                        rvFunctionAdapter.setPickPosition(1);
+                        switchPick = rvFunctionAdapter.setPickPosition(1);
                     else if (HomeVentilator.getInstance().gear == (byte) 0xA3 && null != rvFunctionAdapter)
-                        rvFunctionAdapter.setPickPosition(2);
+                        switchPick = rvFunctionAdapter.setPickPosition(2);
                     else if (HomeVentilator.getInstance().gear == (byte) 0xA6 && null != rvFunctionAdapter)
-                        rvFunctionAdapter.setPickPosition(3);
+                        switchPick = rvFunctionAdapter.setPickPosition(3);
                     else if (null != rvFunctionAdapter)
-                        rvFunctionAdapter.setPickPosition(-1);
-                    if (null != rvFunctionAdapter)
+                        switchPick = rvFunctionAdapter.setPickPosition(-1);
+                    if (null != rvFunctionAdapter && switchPick)
                         setBackground(rvFunctionAdapter.getPickPosition()); //设置背景
 
                     if (HomeVentilator.getInstance().param7 == 0x00) { //性能模式
-                        tvPerformance.setSelected(true);
-                        tvComfort.setSelected(false);
-                        group.setVisibility(View.GONE);
+                        if (!tvPerformance.isSelected()) {
+                            tvPerformance.setSelected(true);
+                            tvComfort.setSelected(false);
+                            group.setVisibility(View.GONE);
+                        }
                     } else {  //舒适模式
-                        tvPerformance.setSelected(false);
-                        tvComfort.setSelected(true);
-                        group.setVisibility(View.VISIBLE);
+                        if (tvPerformance.isSelected()) {
+                            tvPerformance.setSelected(false);
+                            tvComfort.setSelected(true);
+                            group.setVisibility(View.VISIBLE);
+                        }
+                    }
+                    //风阻
+                    if (HomeVentilator.getInstance().gear == (byte) 0xA1) {
+                        viewFlow.setHeight(3, 1);
+                        viewSpeed.setHeight(3, 1);
+                    } else if (HomeVentilator.getInstance().gear == (byte) 0xA3) {
+                        viewFlow.setHeight(6, 4);
+                        viewSpeed.setHeight(6, 4);
+                    } else if (HomeVentilator.getInstance().gear == (byte) 0xA6) {
+                        viewFlow.setHeight(9, 7);
+                        viewSpeed.setHeight(9, 7);
+                    } else {
+                        viewFlow.setHeight(0, 0);
+                        viewSpeed.setHeight(0, 0);
                     }
                     return;
                 }

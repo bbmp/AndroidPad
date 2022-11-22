@@ -10,6 +10,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface ICloudService {
@@ -37,6 +38,10 @@ public interface ICloudService {
     String unbindDevice = "/rest/dms/api/device/unbind";
     //检查版本
     String checkAppVersion = "/rest/dms/api/app/version/check";
+    //获取烟蒸烤联动配置
+    String getLinkageConfig = "/rest/dms/api/linkage/config/{guid}";
+    //设置烟蒸烤联动信息
+    String setLinkageConfig = "/rest/dms/api/linkage/config";
 
     @POST(getVerifyCode)
     @Headers("Content-Type: application/json")
@@ -86,4 +91,11 @@ public interface ICloudService {
     @POST(checkAppVersion)
     @Headers("Content-Type: application/json")
     Call<ResponseBody> checkAppVersion(@Body RequestBody body);
+
+    @GET(getLinkageConfig)
+    Call<ResponseBody> getLinkageConfig(@Path ("guid") String guid, @Query("userId") long userId);
+
+    @POST(setLinkageConfig)
+    @Headers("Content-Type: application/json")
+    Call<ResponseBody> setLinkageConfig(@Body RequestBody body);
 }

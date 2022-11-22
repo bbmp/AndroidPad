@@ -2,14 +2,18 @@ package com.robam.ventilator.ui.activity
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.chad.library.adapter.base.listener.OnItemChildClickListener
 import com.robam.common.IDeviceType
 import com.robam.common.bean.AccountInfo
+import com.robam.common.bean.BaseResponse
 import com.robam.common.bean.Device
+import com.robam.common.device.Plat
+import com.robam.common.http.RetrofitCallback
 import com.robam.common.utils.MMKVUtils
 import com.robam.ventilator.R
 import com.robam.ventilator.base.VentilatorBaseActivity
+import com.robam.ventilator.constant.VentilatorConstant
 import com.robam.ventilator.device.HomeVentilator
+import com.robam.ventilator.http.CloudHelper
 import com.robam.ventilator.ui.adapter.RvRelationDeviceAdapter
 import kotlinx.android.synthetic.main.ventilator_activity_layout_relation_device.*
 
@@ -24,11 +28,15 @@ class RelationDeviceActivity: VentilatorBaseActivity() {
     override fun initView() {
         showLeft()
         showCenter()
+        val devideGuid = intent?.getStringExtra(VentilatorConstant.DEVICE_GUID)
+        val fanSteam = intent?.getBooleanExtra(VentilatorConstant.FAN_STEAM, false)?:false
+        val fanSteamGear = intent?.getBooleanExtra(VentilatorConstant.FAN_STEAM_GEAR, false)?:false
 
         rv_device.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
 
             adapter = mAdapter.apply {
+                relationDevice = devideGuid
                 //填充数据
                 addListData()
                 setList(mList)
@@ -38,10 +46,27 @@ class RelationDeviceActivity: VentilatorBaseActivity() {
                 setOnItemChildClickListener { _, _, position ->
                     var guid = mList[position].guid
                     if (relationDevice != guid) {
-                        MMKVUtils.setFanSteamDevice(guid)
-                        relationDevice = guid
-                        notifyDataSetChanged()
-                        HomeVentilator.getInstance().smartSet.value = true
+                        //关联设备
+                        CloudHelper.setLinkageConfig(this@RelationDeviceActivity,
+                            Plat.getPlatform().deviceOnlySign,
+                            fanSteam,
+                            fanSteamGear,
+                            guid,
+                            mList[position].displayType,
+                            BaseResponse::class.java,
+                            object : RetrofitCallback<BaseResponse?> {
+                                override fun onSuccess(baseResponse: BaseResponse?) {
+                                    if (null != baseResponse && baseResponse.rc == 0) { //设置成功
+                                        relationDevice = guid
+                                        notifyDataSetChanged()
+                                        //更新烟蒸烤
+                                        SmartSettingActivity.act?.updateFanStream(mList[position].displayType)
+                                    }
+                                }
+
+                                override fun onFaild(err: String) {}
+                            })
+
                     }
                 }
             }

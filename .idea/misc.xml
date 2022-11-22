@@ -103,6 +103,7 @@
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_dialog_layout_waiting.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_item_curve_recipe.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_item_layout_button.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_item_main_function.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_item_material.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_item_mode_select.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/stove/src/main/res/layout/stove_item_recipe.xml" value="0.11788194444444444" />
@@ -385,6 +386,8 @@
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_text_color_selected.xml" value="0.221" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_text_color_selector.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_waiting_bg.xml" value="0.171" />
+        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/activity_lock.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/activity_lock2.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/common_layout_popwindow.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/fragment_full_screen.xml" value="0.175" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/home_fragment.xml" value="0.175" />

@@ -10,7 +10,7 @@ import com.robam.ventilator.R
 class RvRelationDeviceAdapter (@LayoutRes layoutResId: Int, data: MutableList<Device>?) :
     BaseQuickAdapter<Device, BaseViewHolder>(layoutResId, data)  {
 
-    var relationDevice: String = MMKVUtils.getFanSteamDevice()
+    var relationDevice: String? = null
 
     override fun convert(holder: BaseViewHolder, item: Device) {
         holder.setText(R.id.tv_device_name, item.getCategoryName())

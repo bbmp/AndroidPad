@@ -63,54 +63,54 @@
             android:textSize="@dimen/sp_32" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/ventilator_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/dp_30"
-        android:layout_marginBottom="@dimen/sp_36"
-        android:text="@string/ventilator_air_speed"
-        android:textColor="@color/ventilator_white_50"
-        android:textSize="@dimen/sp_32"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/iv_speed" />
+<!--    <TextView-->
+<!--        android:id="@+id/ventilator_textview"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginRight="@dimen/dp_30"-->
+<!--        android:layout_marginBottom="@dimen/sp_36"-->
+<!--        android:text="@string/ventilator_air_speed"-->
+<!--        android:textColor="@color/ventilator_white_50"-->
+<!--        android:textSize="@dimen/sp_32"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintRight_toLeftOf="@id/iv_speed" />-->
 
-    <ImageView
+    <com.robam.common.ui.view.AudioWaveView
         android:id="@+id/iv_speed"
         android:layout_width="@dimen/dp_120"
         android:layout_height="@dimen/dp_60"
         android:layout_marginRight="@dimen/dp_56"
-        android:layout_marginBottom="@dimen/sp_36"
+        android:layout_marginBottom="@dimen/dp_36"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@id/ll_select" />
 
-    <ImageView
+    <com.robam.common.ui.view.AudioWaveView
         android:id="@+id/iv_flow"
         android:layout_width="@dimen/dp_120"
         android:layout_height="@dimen/dp_60"
         android:layout_marginLeft="@dimen/dp_56"
-        android:layout_marginBottom="@dimen/sp_36"
+        android:layout_marginBottom="@dimen/dp_36"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/ll_select" />
 
-    <TextView
-        android:id="@+id/ventilator_textview2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_30"
-        android:layout_marginBottom="@dimen/sp_36"
-        android:text="@string/ventilator_air_flow"
-        android:textColor="@color/ventilator_white_50"
-        android:textSize="@dimen/sp_32"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/iv_flow" />
+<!--    <TextView-->
+<!--        android:id="@+id/ventilator_textview2"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginLeft="@dimen/dp_30"-->
+<!--        android:layout_marginBottom="@dimen/sp_36"-->
+<!--        android:text="@string/ventilator_air_flow"-->
+<!--        android:textColor="@color/ventilator_white_50"-->
+<!--        android:textSize="@dimen/sp_32"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintLeft_toRightOf="@id/iv_flow" />-->
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/ventilator_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="ventilator_textview,iv_flow,ventilator_textview2,iv_speed" />
+        app:constraint_referenced_ids="iv_flow,iv_speed" />
     <LinearLayout
         android:id="@+id/ll_drawer_left"
         android:orientation="horizontal"

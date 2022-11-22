@@ -32,6 +32,8 @@ public class AudioWaveView extends View {
     private final int space = 6;
     /** 条随机高度 */
     private int randomHeight;
+    //高度
+    private int maxHeight, minHeight;
     private Random random;
     private Handler handler = new Handler() {
         @Override
@@ -50,6 +52,11 @@ public class AudioWaveView extends View {
         init();
     }
 
+    public void setHeight(int maxHegith, int minHeight) {
+        this.maxHeight = maxHegith;
+        this.minHeight = minHeight;
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -62,7 +69,8 @@ public class AudioWaveView extends View {
 
     private void init() {
         paint = new Paint();
-        paint.setColor(Color.WHITE);
+        paint.setAntiAlias(true);
+        paint.setColor(Color.parseColor("#33ffffff"));
         paint.setStyle(Paint.Style.FILL);
         random = new Random();
 
@@ -84,36 +92,39 @@ public class AudioWaveView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        int left = rectWidth + space;
+        if (maxHeight != 0 && minHeight != 0) {
+            int left = rectWidth + space;
+            int height = (int) (viewHeight / 9.0); //分成9段
+            //画每个条之前高度都重新随机生成
+            randomHeight = (viewHeight - height * (random.nextInt(maxHeight) % (maxHeight - minHeight + 1) + minHeight));
 
-        //画每个条之前高度都重新随机生成
-        randomHeight = random.nextInt(viewHeight);
-        rectF1.set(left * 0, randomHeight, left * 0 + rectWidth, viewHeight);
-        randomHeight = random.nextInt(viewHeight);
-        rectF2.set(left * 1, randomHeight, left * 1 + rectWidth, viewHeight);
-        randomHeight = random.nextInt(viewHeight);
-        rectF3.set(left * 2, randomHeight, left * 2 + rectWidth, viewHeight);
-        randomHeight = random.nextInt(viewHeight);
-        rectF4.set(left * 3, randomHeight, left * 3 + rectWidth, viewHeight);
-        randomHeight = random.nextInt(viewHeight);
-        rectF5.set(left * 4, randomHeight, left * 4 + rectWidth, viewHeight);
-        randomHeight = random.nextInt(viewHeight);
-        rectF6.set(left * 5, randomHeight, left * 5 + rectWidth, viewHeight);
-        randomHeight = random.nextInt(viewHeight);
-        rectF7.set(left * 6, randomHeight, left * 6 + rectWidth, viewHeight);
-        randomHeight = random.nextInt(viewHeight);
-        rectF8.set(left * 7, randomHeight, left * 7 + rectWidth, viewHeight);
+            rectF1.set(left * 0, randomHeight, left * 0 + rectWidth, viewHeight);
+            randomHeight = (viewHeight - height * (random.nextInt(maxHeight) % (maxHeight - minHeight + 1) + minHeight));
+            rectF2.set(left * 1, randomHeight, left * 1 + rectWidth, viewHeight);
+            randomHeight = (viewHeight - height * (random.nextInt(maxHeight) % (maxHeight - minHeight + 1) + minHeight));
+            rectF3.set(left * 2, randomHeight, left * 2 + rectWidth, viewHeight);
+            randomHeight = (viewHeight - height * (random.nextInt(maxHeight) % (maxHeight - minHeight + 1) + minHeight));
+            rectF4.set(left * 3, randomHeight, left * 3 + rectWidth, viewHeight);
+            randomHeight = (viewHeight - height * (random.nextInt(maxHeight) % (maxHeight - minHeight + 1) + minHeight));
+            rectF5.set(left * 4, randomHeight, left * 4 + rectWidth, viewHeight);
+            randomHeight = (viewHeight - height * (random.nextInt(maxHeight) % (maxHeight - minHeight + 1) + minHeight));
+            rectF6.set(left * 5, randomHeight, left * 5 + rectWidth, viewHeight);
+            randomHeight = (viewHeight - height * (random.nextInt(maxHeight) % (maxHeight - minHeight + 1) + minHeight));
+            rectF7.set(left * 6, randomHeight, left * 6 + rectWidth, viewHeight);
+            randomHeight = (viewHeight - height * (random.nextInt(maxHeight) % (maxHeight - minHeight + 1) + minHeight));
+            rectF8.set(left * 7, randomHeight, left * 7 + rectWidth, viewHeight);
 
-        canvas.drawRect(rectF1, paint);
-        canvas.drawRect(rectF2, paint);
-        canvas.drawRect(rectF3, paint);
-        canvas.drawRect(rectF4, paint);
-        canvas.drawRect(rectF5, paint);
-        canvas.drawRect(rectF6, paint);
-        canvas.drawRect(rectF7, paint);
-        canvas.drawRect(rectF8, paint);
+            canvas.drawRoundRect(rectF1, (float) (rectWidth / 2.0), (float) (rectWidth / 2.0), paint);
+            canvas.drawRoundRect(rectF2, (float) (rectWidth / 2.0), (float) (rectWidth / 2.0), paint);
+            canvas.drawRoundRect(rectF3, (float) (rectWidth / 2.0), (float) (rectWidth / 2.0), paint);
+            canvas.drawRoundRect(rectF4, (float) (rectWidth / 2.0), (float) (rectWidth / 2.0), paint);
+            canvas.drawRoundRect(rectF5, (float) (rectWidth / 2.0), (float) (rectWidth / 2.0), paint);
+            canvas.drawRoundRect(rectF6, (float) (rectWidth / 2.0), (float) (rectWidth / 2.0), paint);
+            canvas.drawRoundRect(rectF7, (float) (rectWidth / 2.0), (float) (rectWidth / 2.0), paint);
+            canvas.drawRoundRect(rectF8, (float) (rectWidth / 2.0), (float) (rectWidth / 2.0), paint);
+        }
 
-        handler.sendEmptyMessageDelayed(0, 100); //每间隔200毫秒发送消息刷新
+        handler.sendEmptyMessageDelayed(0, 200); //每间隔200毫秒发送消息刷新
     }
 
 }

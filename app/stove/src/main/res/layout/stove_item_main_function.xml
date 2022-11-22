@@ -4,16 +4,32 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ImageView
-        android:id="@+id/iv_round_bg"
-        android:layout_width="@dimen/dp_270"
-        android:layout_height="@dimen/dp_270"
-        android:background="@drawable/stove_main_item_bg"
-        android:layout_marginHorizontal="@dimen/dp_50"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+<!--    <ImageView-->
+<!--        android:id="@+id/iv_round_bg"-->
+<!--        android:layout_width="@dimen/dp_270"-->
+<!--        android:layout_height="@dimen/dp_270"-->
+<!--        android:background="@drawable/stove_main_item_bg"-->
+<!--        android:layout_marginHorizontal="@dimen/dp_50"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintRight_toRightOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"/>-->
+        <net.center.blurview.ShapeBlurView
+            android:id="@+id/iv_round_bg"
+            android:layout_width="@dimen/dp_270"
+            android:layout_height="@dimen/dp_270"
+            android:layout_marginHorizontal="@dimen/dp_50"
+            android:gravity="center"
+            android:lineSpacingMultiplier="0.8"
+            app:blur_mode="circle"
+            app:blur_radius="@dimen/dp_10"
+            app:blur_border_width="@dimen/dp_3"
+            app:blur_border_color="#4dffffff"
+            app:blur_overlay_color="#33ffffff"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
     <TextView
         android:id="@+id/tv_funtion_name"
         android:layout_width="0dp"
