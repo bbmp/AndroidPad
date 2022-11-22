@@ -43,7 +43,8 @@ public class SteamOverTimeDialog extends BaseDialog {
         if (mDialog == null) {
             mDialog = new FullDialog(mContext, rootView);
         }
-        setLayoutManage(1,1);
+        setLayoutManage(5, 0.44f);
+        //setLayoutManage(1,1);
     }
     @Override
     public void setContentText(int res) {
@@ -65,12 +66,12 @@ public class SteamOverTimeDialog extends BaseDialog {
         rvSelect.setAdapter(rvTimeAdapter);
 
         //默认模式
-        setList(getTestDataList());
+        setList(getDataList());
     }
 
-    private List<String> getTestDataList(){
+    private List<String> getDataList(){
         List<String> timeList = new ArrayList<>();
-        for(int i = 0;i < 10;i++){
+        for(int i = 1;i < 10;i++){
             timeList.add(i+"");
         }
         return timeList;

@@ -98,6 +98,8 @@ public interface Constant {
 
     String SEGMENT_DATA_FLAG = "segmentData";
 
+    String SEGMENT_SECTION = "segmentSection";//多端来源
+
     String SEGMENT_WORK_FLAG = "isWork";
 
     String RECIPE_LIST_FLAG = "RecipeList";

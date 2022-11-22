@@ -85,8 +85,11 @@ public class MainActivity extends SteamBaseActivity {
             finish();
             return;
         }
-        getSteamData();
-        getDeviceErrorInfo();
+        SteamOven steamOven = getSteamOven();
+        if(steamOven != null){//获取设备数据，主要用于展示菜谱
+            SteamDataUtil.getSteamData(this,steamOven.guid);
+        }
+        SteamDataUtil.getDeviceErrorInfo(this);
     }
 
     /**
@@ -148,48 +151,6 @@ public class MainActivity extends SteamBaseActivity {
         return multiSegments;
     }
 
-    /**
-     * 获取一体机数据
-     */
-    private void getSteamData() {
-        SteamOven steamOven = getSteamOven();
-        if(steamOven == null){
-            return;
-        }
-        String deviceTypeId = DeviceUtils.getDeviceTypeId(steamOven.guid);
-        String steamContent = SteamDataUtil.getSteamContent(deviceTypeId);
-        UserInfo info = AccountInfo.getInstance().getUser().getValue();
-        CloudHelper.getDeviceParams(this, (info != null) ? info.id:0, deviceTypeId, IDeviceType.RZKY, GetDeviceParamsRes.class,
-                new RetrofitCallback<GetDeviceParamsRes>() {
-                    @Override
-                    public void onSuccess(GetDeviceParamsRes getDeviceParamsRes) {
-                        if (null != getDeviceParamsRes && null != getDeviceParamsRes.modelMap){
-                            SteamDataUtil.saveSteam(deviceTypeId,new Gson().toJson(getDeviceParamsRes, GetDeviceParamsRes.class));
-                        }
-                    }
 
-                    @Override
-                    public void onFaild(String err) {
-
-                    }
-                });
-    }
-
-    private void getDeviceErrorInfo(){
-        CloudHelper.getDeviceErrorInfo(this,  GetDeviceErrorRes.class,
-                new RetrofitCallback<GetDeviceErrorRes>() {
-                    @Override
-                    public void onSuccess(GetDeviceErrorRes deviceErrorRes) {
-                        if(StringUtils.isNotBlank(deviceErrorRes.url)){//设备告警文件链接
-                            DeviceWarnInfoManager.getInstance().downFile(deviceErrorRes.url);
-                        }
-                    }
-
-                    @Override
-                    public void onFaild(String err) {
-
-                    }
-                });
-    }
 
 }

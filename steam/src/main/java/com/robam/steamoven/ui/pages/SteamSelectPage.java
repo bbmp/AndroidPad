@@ -27,11 +27,18 @@ public class SteamSelectPage extends SteamBasePage {
     private String curSteam;
     private ArrayList<String> steamList = new ArrayList<String>() {
         {
-            //add("小");
+            add("小");
             add("中");
             add("大");
         }
     };
+
+    public void removeSteam(String steamValue){
+        steamList.remove(steamValue);
+        if(rvSteamAdapter != null){
+            rvSteamAdapter.setList(steamList);
+        }
+    }
 
     public SteamSelectPage(TabLayout.Tab tab, ModeBean curMode) {
         this.tab = tab;
@@ -63,9 +70,11 @@ public class SteamSelectPage extends SteamBasePage {
     public void updateSteamTab(ModeBean modeBean) {
         if (null == rvSteamAdapter)
             return;
-
         int offset = modeBean.defSteam - modeBean.minSteam;
-        int position = Integer.MAX_VALUE / 2-(Integer.MAX_VALUE / 2)%steamList.size() + offset;
+        int position = offset;
+        if(needLoop){
+             position = Integer.MAX_VALUE / 2-(Integer.MAX_VALUE / 2)%steamList.size() + offset;
+        }
         pickerLayoutManager.scrollToPosition(position);
         rvSteamAdapter.setPickPosition(position);
         if (null != tab) {

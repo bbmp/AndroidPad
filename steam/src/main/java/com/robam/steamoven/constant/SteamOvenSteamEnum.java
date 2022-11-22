@@ -4,7 +4,7 @@ public enum SteamOvenSteamEnum {
     /**
      *
      */
-    SMALL_NONE(0,""),//小蒸汽
+    SMALL_NONE(0,""),//无蒸汽
     SMALL_STEAM(1,"小"),//小蒸汽
     MID_STEAM(2,"中"),//中蒸汽
     MAX_STEAM(3,"大");//大蒸汽

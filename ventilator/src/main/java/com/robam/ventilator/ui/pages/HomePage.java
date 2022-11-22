@@ -734,6 +734,9 @@ public class HomePage extends VentilatorBasePage {
      * @return
      */
     private boolean toWaringPage(Device device){
+        if(device.status == Device.OFFLINE){
+            return false;
+        }
         if(device instanceof DishWasher){
             if(device.faultId != DishWasherWaringEnum.E0.getCode() &&
                     DishWasherWaringEnum.match(device.faultId).getCode() != DishWasherWaringEnum.E0.getCode()){//判断本地是否存在该故障信息
@@ -752,6 +755,15 @@ public class HomePage extends VentilatorBasePage {
                 startActivity(intent);
                 return true;
             }
+        } else if(device instanceof SteamOven) {
+//            if (device.faultId != CabinetWaringEnum.E255.getCode() &&
+//                    CabinetWaringEnum.match(device.faultId).getCode() != CabinetWaringEnum.E255.getCode()){////判断本地是否存在该故障信息
+//                Intent intent = new Intent(getContext(), com.robam.cabinet.ui.activity.WaringActivity.class);
+//                intent.putExtra(ComnConstant.WARING_FROM,1);
+//                intent.putExtra(ComnConstant.WARING_CODE,device.faultId);
+//                startActivity(intent);
+//                return true;
+//            }
         }
         return false;
     }

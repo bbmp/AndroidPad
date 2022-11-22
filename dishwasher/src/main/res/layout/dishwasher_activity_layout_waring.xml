@@ -21,7 +21,7 @@
         app:layout_constraintTop_toBottomOf="@id/ll_title"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="@dimen/dp_75"
+        android:layout_marginTop="@dimen/dp_5"
         android:layout_width="@dimen/dp_114"
         android:layout_height="@dimen/dp_114"/>
 

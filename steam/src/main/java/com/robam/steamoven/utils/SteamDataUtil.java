@@ -1,12 +1,20 @@
 package com.robam.steamoven.utils;
 
 import com.google.gson.Gson;
+import com.robam.common.IDeviceType;
+import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
+import com.robam.common.bean.UserInfo;
+import com.robam.common.http.ILife;
+import com.robam.common.http.RetrofitCallback;
+import com.robam.common.manager.DeviceWarnInfoManager;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.StringUtils;
 import com.robam.steamoven.bean.DeviceConfigurationFunctions;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.SteamModeEnum;
+import com.robam.steamoven.http.CloudHelper;
+import com.robam.steamoven.response.GetDeviceErrorRes;
 import com.robam.steamoven.response.GetDeviceParamsRes;
 import com.tencent.mmkv.MMKV;
 import java.util.List;
@@ -99,6 +107,54 @@ public class SteamDataUtil {
         }
         return "";
 
+    }
+
+    /**
+     * 获取一体机数据
+     */
+    /**
+     *
+     * @param iLife
+     * @param guid 设备guid
+     */
+    public static void getSteamData(ILife iLife,String guid) {
+        String deviceTypeId = DeviceUtils.getDeviceTypeId(guid);
+        UserInfo info = AccountInfo.getInstance().getUser().getValue();
+        CloudHelper.getDeviceParams(iLife, (info != null) ? info.id:0, deviceTypeId, IDeviceType.RZKY, GetDeviceParamsRes.class,
+                new RetrofitCallback<GetDeviceParamsRes>() {
+                    @Override
+                    public void onSuccess(GetDeviceParamsRes getDeviceParamsRes) {
+                        if (null != getDeviceParamsRes && null != getDeviceParamsRes.modelMap){
+                            SteamDataUtil.saveSteam(deviceTypeId,new Gson().toJson(getDeviceParamsRes, GetDeviceParamsRes.class));
+                        }
+                    }
+
+                    @Override
+                    public void onFaild(String err) {
+
+                    }
+                });
+    }
+
+    /**
+     * 获取告警文件数据
+     * @param iLife
+     */
+    public static void getDeviceErrorInfo(ILife iLife){
+        CloudHelper.getDeviceErrorInfo(iLife,  GetDeviceErrorRes.class,
+                new RetrofitCallback<GetDeviceErrorRes>() {
+                    @Override
+                    public void onSuccess(GetDeviceErrorRes deviceErrorRes) {
+                        if(StringUtils.isNotBlank(deviceErrorRes.url)){//设备告警文件链接
+                            DeviceWarnInfoManager.getInstance().downFile(deviceErrorRes.url);
+                        }
+                    }
+
+                    @Override
+                    public void onFaild(String err) {
+
+                    }
+                });
     }
 
 

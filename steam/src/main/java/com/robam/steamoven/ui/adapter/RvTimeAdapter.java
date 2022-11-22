@@ -13,18 +13,20 @@ import com.robam.steamoven.R;
 public class RvTimeAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
     private int pickPosition;
     private int type; //0温度1时间2蒸汽
-
+    private boolean needLoop = false;
     public void setPickPosition(int pickPosition) {
         this.pickPosition = pickPosition % getData().size();
         notifyDataSetChanged();
     }
 
-
     @Override
     public int getItemCount() {
         if (getData().size() <= 1)
             return 1;
-        return Integer.MAX_VALUE;
+        if(needLoop){
+            return  Integer.MAX_VALUE;
+        }
+        return getData().size();
     }
 
     @Override

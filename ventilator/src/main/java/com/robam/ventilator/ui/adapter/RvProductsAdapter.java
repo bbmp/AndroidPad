@@ -351,7 +351,14 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
             baseViewHolder.setVisible(R.id.layout_offline, true);
             baseViewHolder.setGone(R.id.layout_work, true);
             baseViewHolder.setGone(R.id.btn_detail, true);
-            baseViewHolder.setText(R.id.tv_hint, workFinish ? SteamDataUtil.getModelName(steamOven.guid,steamOven.workMode,steamOven.recipeId) : "轻松烹饪\n智享厨房");
+            String contentValue = "轻松烹饪\n智享厨房";
+            if(workFinish){
+                String  workName = SteamDataUtil.getModelName(steamOven.guid,steamOven.workMode,steamOven.recipeId);
+                if(StringUtils.isNotBlank(workName)){
+                    contentValue = workName;
+                }
+            }
+            baseViewHolder.setText(R.id.tv_hint,contentValue);
         }else{
             baseViewHolder.setGone(R.id.layout_offline, true);
             baseViewHolder.setVisible(R.id.layout_work, true);

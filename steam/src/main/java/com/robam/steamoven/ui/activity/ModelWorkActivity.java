@@ -397,8 +397,8 @@ public class ModelWorkActivity extends SteamBaseActivity {
         }
         //加湿显示控制
         if(showRotation){//只有炸模式才能显示是否加加湿
-            steamIv.setVisibility((isPause && steamOven.steamState == 2) ? View.VISIBLE : View.INVISIBLE);
-            steamTv.setVisibility(steamOven.steamState == 0 ? View.VISIBLE : View.INVISIBLE);
+            steamIv.setVisibility((isWorking && steamOven.steamState == 2) ? View.VISIBLE : View.INVISIBLE);
+            steamTv.setVisibility(steamOven.steamState == 1 ? View.VISIBLE : View.INVISIBLE);
         }
 
         preHeadTv.setVisibility((isPreHeat && isWorking)?View.VISIBLE:View.INVISIBLE);
@@ -442,9 +442,9 @@ public class ModelWorkActivity extends SteamBaseActivity {
              //Toast.makeText(this,"缺少模式数据", Toast.LENGTH_LONG).show();
             return;
         }
-        //非烤模式，隐藏旋转烤按钮
-        if(!SteamModeEnum.isOvenModel(multiSegments.get(0).code)){
+        if(SteamModeEnum.isOvenModel(multiSegments.get(0).code)){
             showRotation = true;
+        }else{//非烤模式，隐藏旋转烤按钮
             hideLeftCenter();
         }
         recipeId = multiSegments.get(0).recipeId;
@@ -651,7 +651,7 @@ public class ModelWorkActivity extends SteamBaseActivity {
         }
         timeDialog = new SteamOverTimeDialog(this);
         timeDialog.setContentText(R.string.steam_work_complete_add_time);
-        timeDialog.setOKText(R.string.steam_work_complete_complete);
+        timeDialog.setOKText(R.string.steam_sure);
         timeDialog.setData();
         timeDialog.setListeners(v -> {
             timeDialog.dismiss();

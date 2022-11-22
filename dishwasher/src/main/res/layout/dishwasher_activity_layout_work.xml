@@ -37,7 +37,7 @@
         app:common_progWidth="@dimen/dp_20"
         app:common_progFirstColor="#C7DDFF "
         app:common_progEndColor= "#C7DDFF"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_title"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="@id/dishwasher_guideline2"/>
 

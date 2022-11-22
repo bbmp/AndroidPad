@@ -39,8 +39,10 @@ public class TempSelectPage extends SteamBasePage {
             return;
 
         rvTempAdapter.setList(selectList);
-
-        int position = Integer.MAX_VALUE / 2-(Integer.MAX_VALUE / 2)%selectList.size() + offset;
+        int position = offset;
+        if(needLoop){
+             position = Integer.MAX_VALUE / 2-(Integer.MAX_VALUE / 2)%selectList.size() + offset;
+        }
         pickerLayoutManager.scrollToPosition(position);
         rvTempAdapter.setPickPosition(position);
         if (null != tab) {
@@ -83,9 +85,12 @@ public class TempSelectPage extends SteamBasePage {
             tempList.add(i + "");
         }
         rvTempAdapter.setList(tempList);
-        int offset = modeBean.defTemp - modeBean.minTemp;
 
-        int position = Integer.MAX_VALUE / 2-(Integer.MAX_VALUE / 2)%tempList.size() + offset;
+        int offset = modeBean.defTemp - modeBean.minTemp;
+        int position = offset;
+        if(needLoop){
+            position = Integer.MAX_VALUE / 2-(Integer.MAX_VALUE / 2)%tempList.size() + offset;
+        }
         pickerLayoutManager.scrollToPosition(position);
         rvTempAdapter.setPickPosition(position);
         if (null != tab) {

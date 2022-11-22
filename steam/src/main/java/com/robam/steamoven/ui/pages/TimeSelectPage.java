@@ -77,7 +77,10 @@ public class TimeSelectPage extends SteamBasePage {
 
         rvTimeAdapter.setList(timeList);
         int offset = modeBean.defTime - modeBean.minTime;
-        int position = Integer.MAX_VALUE / 2-(Integer.MAX_VALUE / 2)%timeList.size() + offset;
+        int position = offset;
+        if(needLoop){
+            position = Integer.MAX_VALUE / 2-(Integer.MAX_VALUE / 2)%timeList.size() + offset;
+        }
         pickerLayoutManager.scrollToPosition(position);
         rvTimeAdapter.setPickPosition(position);
         if (null != tab) {

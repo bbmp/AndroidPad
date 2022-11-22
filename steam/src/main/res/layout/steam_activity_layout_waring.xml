@@ -13,7 +13,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="@dimen/dp_75"
+        android:layout_marginTop="@dimen/dp_15"
         android:layout_width="@dimen/dp_114"
         android:layout_height="@dimen/dp_114"/>
 
@@ -43,7 +43,7 @@
         android:id="@+id/waring_phone"
         android:layout_marginTop="@dimen/dp_36"
         android:textSize="@dimen/sp_32"
-        android:text="@string/dishwasher_maintain_phone"
+        android:text="@string/steam_maintain_phone"
         android:textColor="@color/steam_color_f6"
         app:layout_constraintTop_toBottomOf="@id/waring_desc"
         app:layout_constraintLeft_toLeftOf="parent"

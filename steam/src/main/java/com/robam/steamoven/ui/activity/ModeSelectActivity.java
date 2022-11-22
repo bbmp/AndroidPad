@@ -79,6 +79,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
     private static final int DIRECTIVE_OFFSET_AUX_MODEL = 800;
 
     private TabLayout.Tab preSelectTab = null;
+    private int sectionResId;
 
     @Override
     protected int getLayoutId() {
@@ -255,10 +256,14 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             finish();
             return;
         }
-
         if(modes.get(0).funCode != SteamEnum.AUX.fun){
            //showLeftCenter();
             setRight(R.string.steam_makeAnAppointment);
+        }
+        sectionResId = getIntent().getIntExtra(Constant.SEGMENT_SECTION,-1);
+        if(sectionResId != -1){
+            findViewById(R.id.section_value).setVisibility(View.VISIBLE);
+            ((TextView)findViewById(R.id.section_value)).setText(sectionResId);
         }
 
         needSetResult =  getIntent().getBooleanExtra(Constant.NEED_SET_RESULT,false);
@@ -292,6 +297,9 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             steamTab.setCustomView(steamView);
             tabLayout.addTab(steamTab);
             steamSelectPage = new SteamSelectPage(steamTab, defaultBean);
+            if(modes.get(0).funCode == SteamEnum.STEAM.fun){
+                steamSelectPage.removeSteam("小");
+            }
 
             fragments.add(new WeakReference<>(steamSelectPage));
 

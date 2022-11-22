@@ -13,6 +13,7 @@ public abstract class SteamBasePage extends HeadPage {
 //    public void showFloat() {
 //        findViewById(R.id.iv_float).setVisibility(View.VISIBLE);
 //    }
+    protected boolean needLoop = false;
     public void showLeft() {
         findViewById(R.id.ll_left).setVisibility(View.VISIBLE);
     }
@@ -29,5 +30,9 @@ public abstract class SteamBasePage extends HeadPage {
                     ivWifi.setVisibility(View.INVISIBLE);
             }
         });
+    }
+
+    public void setLoop(boolean needLoop) {
+        this.needLoop = needLoop;
     }
 }

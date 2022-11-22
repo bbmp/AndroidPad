@@ -69,7 +69,6 @@ public class MultiActivity extends SteamBaseActivity {
     protected void initView() {
         showLeft();
         showCenter();
-        showLight();
         optContentParentView = findViewById(R.id.multi_opt);
         optBottomParentView = findViewById(R.id.multi_bottom);
         totalDurationView = findViewById(R.id.steam_total_duration_value);
@@ -241,8 +240,23 @@ public class MultiActivity extends SteamBaseActivity {
         intent.setClassName(getContext(), funtionBean.into);
         intent.putExtra(Constant.NEED_SET_RESULT,true);
         intent.putExtra(Constant.SEGMENT_DATA_FLAG,curSegment);
+        intent.putExtra(Constant.SEGMENT_SECTION,getSectionResId(index));
         startActivityForResult(intent,index);
     }
+
+    private int getSectionResId(int index){
+        switch (index){
+            case 0:
+                return R.string.steam_section_1;
+            case 1:
+                return R.string.steam_section_2;
+            case 2:
+                return R.string.steam_section_3;
+            default:
+               return  -1;
+        }
+    }
+
 
 
 

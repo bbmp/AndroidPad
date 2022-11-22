@@ -58,7 +58,10 @@ public class ModeSelectPage extends SteamBasePage {
         rvModeAdapter.setList(selectList);
 
         //初始位置
-        int initPos = selectIndex != -1 ? selectIndex : (Integer.MAX_VALUE / 2 - (Integer.MAX_VALUE/2) % selectList.size());
+        int initPos = selectIndex != -1 ? selectIndex : 0;
+        if(needLoop){
+             initPos = selectIndex != -1 ? selectIndex : (Integer.MAX_VALUE / 2 - (Integer.MAX_VALUE/2) % selectList.size());
+        }
         pickerLayoutManager.scrollToPosition(initPos);
         rvModeAdapter.setPickPosition(initPos);
 

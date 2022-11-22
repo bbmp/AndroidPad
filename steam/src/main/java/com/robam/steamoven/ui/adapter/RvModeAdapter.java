@@ -11,7 +11,7 @@ import com.robam.steamoven.bean.ModeBean;
 
 public class RvModeAdapter extends BaseQuickAdapter<ModeBean, BaseViewHolder> {
     private int pickPosition;
-
+    private boolean needLoop = false;
     public void setPickPosition(int pickPosition) {
         this.pickPosition = pickPosition % getData().size();
         notifyDataSetChanged();
@@ -20,7 +20,10 @@ public class RvModeAdapter extends BaseQuickAdapter<ModeBean, BaseViewHolder> {
     public int getItemCount() {
         if (getData().size() <= 1)
             return 1;
-        return Integer.MAX_VALUE;
+        if(needLoop){
+            return  Integer.MAX_VALUE;
+        }
+        return getData().size();
     }
 
     @Override
