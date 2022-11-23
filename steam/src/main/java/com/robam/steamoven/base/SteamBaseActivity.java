@@ -12,6 +12,7 @@ import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.DeviceErrorInfo;
+import com.robam.common.constant.ComnConstant;
 import com.robam.common.manager.DeviceWarnInfoManager;
 import com.robam.common.ui.activity.BaseActivity;
 import com.robam.common.utils.DeviceUtils;
@@ -119,13 +120,13 @@ public abstract class SteamBaseActivity extends BaseActivity {
      * @return
      */
     public boolean toWaringPage(SteamOven steamOven){
-        if(steamOven.faultCode != 0){
-            DeviceErrorInfo deviceErrorInfo = DeviceWarnInfoManager.getInstance().getDeviceErrorInfo(IDeviceType.RZKY, DeviceUtils.getDeviceTypeId(steamOven.guid), steamOven.faultCode);
+        if(steamOven.faultId != 0){
+            DeviceErrorInfo deviceErrorInfo = DeviceWarnInfoManager.getInstance().getDeviceErrorInfo(IDeviceType.RZKY, DeviceUtils.getDeviceTypeId(steamOven.guid), steamOven.faultId);
             if(deviceErrorInfo == null){
                 return false;
             }
             Intent intent = new Intent(this, WaringActivity.class);
-            intent.putExtra(SteamConstant.WARING_CODE,(int)steamOven.faultCode);
+            intent.putExtra(ComnConstant.WARING_CODE,steamOven.faultId);
             startActivity(intent);
             return true;
         }

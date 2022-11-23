@@ -198,11 +198,15 @@ public class HomeActivity extends BaseActivity {
                 }
             }
         });
-
-        getContentView().postDelayed(()->{
+        new Thread(()->{
+            try {
+                Thread.sleep(4000);//延迟4秒
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             SteamDataUtil.getSteamData(HomeActivity.this,"CQ928");//获取一体机数据
             SteamDataUtil.getDeviceErrorInfo(HomeActivity.this);//获取告警信息数据
-        },2000);//延迟获取
+        }).start();
     }
 
     private void checkPermissions() {
