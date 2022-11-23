@@ -442,9 +442,9 @@ public class ModelWorkActivity extends SteamBaseActivity {
         TextView  curDuration = curCookInfoViewGroup.findViewById(R.id.multi_item_cur_duration);
 
         //工作模式
-        if(!isRecipeCooking()){//非菜谱模式设置，节省查询性能
-            curModel.setText(SteamModeEnum.match(steamOven.mode));
-        }
+//        if(isRecipeCooking()){
+//            curModel.setText();
+//        }
         //设置温度
         //int setUpTemp = steamOven.setUpTemp;
         //int setDownTemp = steamOven.setDownTemp;

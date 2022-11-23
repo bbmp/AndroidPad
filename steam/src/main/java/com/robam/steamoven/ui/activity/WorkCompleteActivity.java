@@ -28,6 +28,7 @@ public class WorkCompleteActivity extends SteamBaseActivity {
     private TextView mCancelTv;
     private TextView mOkTv;
     private TextView mContent;
+    private TextView mSingleOkTv;
 
     private SteamOverTimeDialog timeDialog;
 
@@ -52,7 +53,8 @@ public class WorkCompleteActivity extends SteamBaseActivity {
         mCancelTv = findViewById(R.id.tv_cancel);
         mOkTv = findViewById(R.id.tv_ok);
         mContent = findViewById(R.id.tv_work_content);
-        setOnClickListener(R.id.tv_cancel,R.id.tv_ok);
+        mSingleOkTv = findViewById(R.id.tv_single_ok);
+        setOnClickListener(R.id.tv_cancel,R.id.tv_ok,R.id.tv_single_ok);
 
         MqttDirective.getInstance().getDirective().observe(this, s -> {
             switch (s - directive_offset){
@@ -135,7 +137,9 @@ public class WorkCompleteActivity extends SteamBaseActivity {
         curveId = getIntent().getLongExtra(Constant.CURVE_ID,0);
         recipeId = getIntent().getLongExtra(Constant.RECIPE_ID,0);
         if(recipeId != 0){
-            mCancelTv.setVisibility(View.GONE);
+            mCancelTv.setVisibility(View.INVISIBLE);
+            mOkTv.setVisibility(View.INVISIBLE);
+            mSingleOkTv.setVisibility(View.VISIBLE);
         }
     }
 
@@ -146,6 +150,8 @@ public class WorkCompleteActivity extends SteamBaseActivity {
         if (id == R.id.tv_cancel) {//加时
             showOverTimeDialog();
         }else if(id == R.id.tv_ok){//完成
+            SteamCommandHelper.sendWorkFinishCommand(directive_offset+DIRECTIVE_OFFSET_WORK_FINISH);
+        }else if(id == R.id.tv_single_ok){
             SteamCommandHelper.sendWorkFinishCommand(directive_offset+DIRECTIVE_OFFSET_WORK_FINISH);
         }
     }
