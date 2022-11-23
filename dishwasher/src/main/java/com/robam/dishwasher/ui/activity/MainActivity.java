@@ -76,7 +76,7 @@ public class MainActivity extends DishWasherBaseActivity {
             finish();
             return;
         }
-        ToastUtils.show(this,HomeDishWasher.getInstance().guid, Toast.LENGTH_LONG);
+        //ToastUtils.show(this,HomeDishWasher.getInstance().guid, Toast.LENGTH_LONG);
         DishWasherAbstractControl.getInstance().queryAttribute(HomeDishWasher.getInstance().guid);
     }
 
