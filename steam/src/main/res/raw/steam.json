@@ -145,7 +145,7 @@
     ]
   },
   {
-    "backgroundImg": "steam_ic_bg_multi",
+    "backgroundImg": "steam_ic_bg_hum",
     "funtionCode": 4,
     "funtionName": "加湿烤",
     "into": "com.robam.steamoven.ui.activity.ModeSelectActivity",
@@ -281,19 +281,6 @@
         "minTime": 1,
         "maxTime": 180,
         "openDoorWork": 0,
-        "needWater": 1
-      },
-      {
-        "funCode": 7,
-        "code": 35,
-        "name": "除垢",
-        "defTemp": 0,
-        "defTime": 0,
-        "minTemp": 0,
-        "maxTemp": 0,
-        "minTime": 0,
-        "maxTime": 0,
-        "openDoorWork": 1,
         "needWater": 1
       },
       {

@@ -25,10 +25,12 @@ import com.robam.cabinet.constant.CabinetWaringEnum;
 import com.robam.cabinet.device.CabinetAbstractControl;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.BaseResponse;
+import com.robam.common.bean.DeviceErrorInfo;
 import com.robam.common.constant.ComnConstant;
 import com.robam.common.constant.StoveConstant;
 import com.robam.common.device.Plat;
 import com.robam.common.manager.BlueToothManager;
+import com.robam.common.manager.DeviceWarnInfoManager;
 import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.ImageUtils;
@@ -756,14 +758,14 @@ public class HomePage extends VentilatorBasePage {
                 return true;
             }
         } else if(device instanceof SteamOven) {
-//            if (device.faultId != CabinetWaringEnum.E255.getCode() &&
-//                    CabinetWaringEnum.match(device.faultId).getCode() != CabinetWaringEnum.E255.getCode()){////判断本地是否存在该故障信息
-//                Intent intent = new Intent(getContext(), com.robam.cabinet.ui.activity.WaringActivity.class);
-//                intent.putExtra(ComnConstant.WARING_FROM,1);
-//                intent.putExtra(ComnConstant.WARING_CODE,device.faultId);
-//                startActivity(intent);
-//                return true;
-//            }
+            String deviceTypeId = DeviceUtils.getDeviceTypeId(device.guid);
+            DeviceErrorInfo deviceErrorInfo = DeviceWarnInfoManager.getInstance().getDeviceErrorInfo(IDeviceType.RZKY, deviceTypeId, device.faultId);
+            if(deviceErrorInfo != null){
+                Intent intent = new Intent(getContext(), com.robam.steamoven.ui.activity.WaringActivity.class);
+                intent.putExtra(ComnConstant.WARING_FROM,1);
+                intent.putExtra(ComnConstant.WARING_CODE,device.faultId);
+                return true;
+            }
         }
         return false;
     }

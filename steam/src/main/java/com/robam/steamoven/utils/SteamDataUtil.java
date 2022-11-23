@@ -115,17 +115,17 @@ public class SteamDataUtil {
     /**
      *
      * @param iLife
-     * @param guid 设备guid
+     * @param guidType 设备guid类型(如 CQ928)
      */
-    public static void getSteamData(ILife iLife,String guid) {
-        String deviceTypeId = DeviceUtils.getDeviceTypeId(guid);
+    public static void getSteamData(ILife iLife,String guidType) {
+        //String deviceTypeId = DeviceUtils.getDeviceTypeId(guid);
         UserInfo info = AccountInfo.getInstance().getUser().getValue();
-        CloudHelper.getDeviceParams(iLife, (info != null) ? info.id:0, deviceTypeId, IDeviceType.RZKY, GetDeviceParamsRes.class,
+        CloudHelper.getDeviceParams(iLife, (info != null) ? info.id:0, guidType, IDeviceType.RZKY, GetDeviceParamsRes.class,
                 new RetrofitCallback<GetDeviceParamsRes>() {
                     @Override
                     public void onSuccess(GetDeviceParamsRes getDeviceParamsRes) {
                         if (null != getDeviceParamsRes && null != getDeviceParamsRes.modelMap){
-                            SteamDataUtil.saveSteam(deviceTypeId,new Gson().toJson(getDeviceParamsRes, GetDeviceParamsRes.class));
+                            SteamDataUtil.saveSteam(guidType,new Gson().toJson(getDeviceParamsRes, GetDeviceParamsRes.class));
                         }
                     }
 

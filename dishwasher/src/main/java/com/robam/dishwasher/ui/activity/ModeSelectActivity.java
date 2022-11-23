@@ -266,7 +266,7 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
             getLastState();
             return;
         }
-        sendSetPowerStateCommand(); //|| HomeDishWasher.getInstance().isTurnOff
+        DishWasherCommandHelper.sendPowerState(DishWasherState.WAIT);
 //        if((curDevice.powerStatus == DishWasherState.OFF)){
 //            sendSetPowerStateCommand();
 //        }else {
@@ -274,17 +274,10 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
 //        }
     }
 
-    private void sendSetPowerStateCommand(){
-        DishWasherCommandHelper.sendPowerOff(directive_offset + MsgKeys.setDishWasherPower);
-
-    }
 
     private void sendStartWorkCommand(){
         DishWasherCommandHelper.sendStartWork(modeBean.code,(short) getAuxCode(),directive_offset + MsgKeys.setDishWasherWorkMode);
     }
-
-
-
 
     /**
      *

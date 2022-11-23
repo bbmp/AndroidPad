@@ -7,6 +7,12 @@
     android:background="@drawable/dishwasher_ic_bg"
     tools:context=".ui.activity.AppointingActivity">
 
+    <pl.droidsonroids.gif.GifImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/common_ic_bg"/>
+
     <TextView
         android:id="@+id/waring_title"
         android:layout_marginTop="@dimen/dp_168"

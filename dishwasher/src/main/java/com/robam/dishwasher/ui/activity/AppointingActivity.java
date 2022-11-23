@@ -194,6 +194,7 @@ public class AppointingActivity extends DishWasherBaseActivity {
             tvCountdown.setTotalTime(totalTime);
             tvCountdown.setText(getTimeStr(HomeDishWasher.getInstance().orderWorkTime));
             tvAppointmentHint.setText(startTimePoint(HomeDishWasher.getInstance().orderWorkTime));
+            tvModeAux.setText(DishWasherAuxEnum.match(modeBean.auxCode));
         }
 
     }
@@ -248,53 +249,27 @@ public class AppointingActivity extends DishWasherBaseActivity {
         int id = view.getId();
         if (id == R.id.ll_left) {
             //取消预约提示
-            cancelAppointment();
+            cancelAppointment(DishWasherState.OFF);
         } else if (id == R.id.iv_start) {
-            //立即开始
-            //tvCountdown.stop();
-            DishWasherCommandHelper.sendPowerOff(0);
-            //Map params = DishWasherCommandHelper.getModelMap(MsgKeys.setDishWasherWorkMode, modeBean.code,(short) 0,0);
-            //DishWasherCommandHelper.getInstance().sendCommonMsgForLiveData(params,directive_offset+MsgKeys.setDishWasherWorkMode);//立即开始
+            //取消预约提示
+            cancelAppointment(DishWasherState.WAIT);
         }
     }
     //取消预约
-    private void cancelAppointment() {
+    private void cancelAppointment(int powerMode) {
         IDialog iDialog = DishWasherDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_COMMON_DIALOG);
         iDialog.setCancelable(false);
         iDialog.setContentText(R.string.dishwasher_cancel_appointment_hint);
         iDialog.setCancelText(R.string.dishwasher_cancel);
         iDialog.setOKText(R.string.dishwasher_cancel_appointment);
-        iDialog.setListeners(new IDialog.DialogOnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (v.getId() == R.id.tv_ok) {
-                    //结束倒计时
-                    /*tvCountdown.stop();
-                    finish();*/
-                    Map map = DishWasherCommandHelper.getCommonMap(MsgKeys.setDishWasherPower);
-                    map.put(DishWasherConstant.PowerMode,DishWasherState.OFF);
-                    DishWasherCommandHelper.getInstance().sendCommonMsg(map,MsgKeys.setDishWasherPower+directive_offset);                }
+        iDialog.setListeners(v -> {
+            if (v.getId() == R.id.tv_ok) {
+                DishWasherCommandHelper.sendPowerState(powerMode);
             }
         }, R.id.tv_cancel, R.id.tv_ok);
         iDialog.show();
     }
 
-   /* private void cancelAppointment(){
-        DiashWasherCommonDialog washerCommonDialog = new DiashWasherCommonDialog(this);
-        washerCommonDialog.setContentText(R.string.dishwasher_cancel_appointment_hint);
-        washerCommonDialog.setCancelText(R.string.dishwasher_cancel);
-        washerCommonDialog.setOKText(R.string.dishwasher_cancel_appointment);
-        washerCommonDialog.setListeners(v -> {
-            washerCommonDialog.dismiss();
-            if(v.getId() == R.id.tv_ok){
-                Map map = DishWasherCommonHelper.getCommonMap(MsgKeys.setDishWasherPower);
-                map.put(DishWasherConstant.PowerMode,DishWasherState.OFF);
-                DishWasherCommonHelper.sendCommonMsgForLiveData(map,MsgKeys.setDishWasherPower+directive_offset);
-            }
-        },R.id.tv_cancel, R.id.tv_ok);
-        washerCommonDialog.show();
-
-    }*/
 
     private SpannableString getSpan(int remainTime){
         String time = TimeUtils.secToHourMinUp(remainTime);

@@ -102,10 +102,10 @@ public class DishWasherCommandHelper {
         return true;
     }
 
-    public static void sendPowerOff(int flag){
+    public static void sendPowerState(int powerMode){
         Map map = DishWasherCommandHelper.getCommonMap(MsgKeys.setDishWasherPower);
-        map.put(DishWasherConstant.PowerMode,1);
-        getInstance().sendCommonMsg(map, flag);
+        map.put(DishWasherConstant.PowerMode,powerMode);
+        getInstance().sendCommonMsg(map, 0);
     }
 
     public static void sendStartWork(short modeCode,short auxCode,int flag){

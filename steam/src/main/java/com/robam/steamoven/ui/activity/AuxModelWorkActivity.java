@@ -34,26 +34,17 @@ public class AuxModelWorkActivity extends SteamBaseActivity {
 
     private ViewGroup promptParentView;
     private ViewGroup progressParentView;
-
     private TextView promptTvInd1,promptTvInd2,promptTvInd3;
     private TextView promptText;
-
     private TextView sureTv;
     private TextView progressPromptTv;
     private ProgressBar progressBar1,progressBar2,progressBar3;
-
     private int curTemp = 0;
     private boolean isProgress = false;
-
-
     private  TextView modelNameTv,modelTimeTv,modelTempTv;
-
     private MultiSegment segment;
-
     private long workTimeMS;
-
     private ImageView pauseIv,reStartIv;
-
     public static final int EDN_FLAG = 33;
 
     @Override
@@ -120,7 +111,7 @@ public class AuxModelWorkActivity extends SteamBaseActivity {
 
     private void updateViews(SteamOven steamOven){
         switch (steamOven.workState){
-            //case SteamStateConstant.WORK_STATE_APPOINTMENT:
+            case SteamStateConstant.WORK_STATE_APPOINTMENT:
             case SteamStateConstant.WORK_STATE_LEISURE://空闲
             case SteamStateConstant.WORK_STATE_WORKING_FINISH:
                 goHome();
@@ -167,13 +158,6 @@ public class AuxModelWorkActivity extends SteamBaseActivity {
     }
 
 
-    private void showLight(){
-        showRightCenter();
-        ((TextView)findViewById(R.id.tv_right_center)).setText(R.string.steam_light);
-        ((ImageView)findViewById(R.id.iv_right_center)).setImageResource(R.drawable.steam_ic_light_max);
-    }
-
-
     private void setProgressIndex(int curTemp,boolean isProgress){
         if(curTemp > 3){
             return;
@@ -183,11 +167,14 @@ public class AuxModelWorkActivity extends SteamBaseActivity {
             progressParentView.setVisibility(View.VISIBLE);
             for(int i = 1;i <= curTemp ;i++){
                 if(i == 1){
-                    progressBar1.setProgress(100);
+                    progressBar1.setProgress(50);
                 }else if(i == 2){
-                    progressBar2.setProgress(100);
+                    progressBar1.setProgress(100);
+                    progressBar2.setProgress(50);
                 }else if(i == 3){
-                    progressBar3.setProgress(100);
+                    progressBar1.setProgress(100);
+                    progressBar2.setProgress(100);
+                    progressBar3.setProgress(50);
                 }
             }
         }else{
@@ -211,32 +198,28 @@ public class AuxModelWorkActivity extends SteamBaseActivity {
     }
 
 
-
-
     @Override
     protected void initData() {
         segment = getIntent().getParcelableExtra(Constant.SEGMENT_DATA_FLAG);
         modelNameTv.setText(SteamModeEnum.match(segment.code));
         modelTimeTv.setText(TextSpanUtil.getSpan(segment.duration*60,Constant.UNIT_TIME_MIN));
         modelTempTv.setText(TextSpanUtil.getSpan(segment.defTemp,Constant.UNIT_TEMP));
-
         if(segment.code == SteamModeEnum.CHUGOU.getMode()){
             pauseIv.setVisibility(View.INVISIBLE);
             reStartIv.setVisibility(View.INVISIBLE);
+            SteamOven steamOven = getSteamOven();
+            if(steamOven != null){
+                updateViews(steamOven);
+            }
         }
     }
 
 
-
-
-
-
     @Override
     public void onClick(View view) {
-        //super.onClick(view);
         int id = view.getId();
         if (id == R.id.ll_left) {
-            descallingFinish();
+
         }else if(id == R.id.btn_start){
             curTemp += 1;
             isProgress = true;
@@ -263,25 +246,5 @@ public class AuxModelWorkActivity extends SteamBaseActivity {
         },R.id.tv_ok,R.id.tv_cancel);
         endDialog.show();
     }
-
-
-
-
-    public void descallingFinish(){
-        SteamErrorDialog steamCommonDialog = new SteamErrorDialog(this);
-        steamCommonDialog.setContentText(R.string.steam_descaling_complete);
-        steamCommonDialog.setOKText(R.string.steam_common_step_complete);
-        steamCommonDialog.setListeners(v -> {
-            steamCommonDialog.dismiss();
-            if(v.getId() == R.id.tv_ok){
-                Intent intent = new Intent(AuxModelWorkActivity.this,MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        },R.id.tv_ok);
-        steamCommonDialog.show();
-    }
-
-
 
 }

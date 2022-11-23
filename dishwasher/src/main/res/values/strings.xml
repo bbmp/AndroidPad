@@ -34,7 +34,7 @@
     <string name="dishwasher_start_working">启动</string>
     <string name="dishwasher_appointment">预约</string>
     <string name="dishwasher_start_hint">是否立即启动？</string>
-    <string name="dishwasher_cancel_appointment_hint">确认取消预约当前工作吗？</string>
+    <string name="dishwasher_cancel_appointment_hint">确认取消预约工作</string>
     <string name="dishwasher_start_work_hint">将在%s后启动工作</string>
     <string name="dishwasher_pausing">暂停中</string>
     <string name="dishwasher_unlock_hint">请长按2s童锁解除锁定</string>

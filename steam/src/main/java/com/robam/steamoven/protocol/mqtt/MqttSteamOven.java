@@ -643,18 +643,18 @@ public class MqttSteamOven extends MqttPublic {
                 if(msg.getInt(SteamConstant.workState) == SteamStateConstant.WORK_STATE_WORKING_FINISH){
                     MqttDirective.getInstance().finishWorkModelState(msg.getGuid());
                 }else{
-                    int recipeId = msg.getInt(SteamConstant.recipeId);
+                    int recipeId = msg.optInt(SteamConstant.recipeId);
                     if(recipeId != 0){
                         int anInt = msg.getInt(SteamConstant.restTime);
                         if(anInt > 0){
                             MqttDirective.getInstance().updateModelWorkState(msg.getGuid(),0,recipeId);
                         }
                     }else{
-                        int mode = msg.getInt(SteamConstant.mode);
+                        int mode = msg.optInt(SteamConstant.mode);
                         if(mode != 0){
-                            int anInt = msg.getInt(SteamConstant.restTime);
-                            int anInt2 = msg.getInt(SteamConstant.restTime2);
-                            int anInt3 = msg.getInt(SteamConstant.restTime3);
+                            int anInt = msg.optInt(SteamConstant.restTime);
+                            int anInt2 = msg.optInt(SteamConstant.restTime2);
+                            int anInt3 = msg.optInt(SteamConstant.restTime3);
                             if((anInt + anInt2 + anInt3) > 0){
                                 MqttDirective.getInstance().updateModelWorkState(msg.getGuid(),mode,0);
                             }

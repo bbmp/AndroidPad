@@ -18,9 +18,12 @@ import com.robam.cabinet.constant.CabinetEnum;
 import com.robam.cabinet.constant.CabinetWaringEnum;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.Device;
+import com.robam.common.bean.DeviceErrorInfo;
 import com.robam.common.bean.MqttDirective;
 import com.robam.common.device.subdevice.Pan;
+import com.robam.common.manager.DeviceWarnInfoManager;
 import com.robam.common.utils.DateUtil;
+import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.StringUtils;
 import com.robam.common.utils.TimeUtils;
 import com.robam.dishwasher.bean.DishWasher;
@@ -30,6 +33,7 @@ import com.robam.dishwasher.constant.DishWasherState;
 import com.robam.dishwasher.constant.DishWasherWaringEnum;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.common.device.subdevice.Stove;
+import com.robam.steamoven.constant.SteamModeEnum;
 import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.utils.SteamDataUtil;
 import com.robam.ventilator.R;
@@ -334,6 +338,17 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
      * @return
      */
     private void dealSteamWorkView(SteamOven steamOven,BaseViewHolder baseViewHolder){
+        if(steamOven.faultId != 0){//故障
+            String deviceTypeId = DeviceUtils.getDeviceTypeId(steamOven.guid);
+            DeviceErrorInfo deviceErrorInfo = DeviceWarnInfoManager.getInstance().getDeviceErrorInfo(IDeviceType.RZKY, deviceTypeId, steamOven.faultId);
+            if(deviceErrorInfo != null){
+                baseViewHolder.setVisible(R.id.layout_offline, true);
+                baseViewHolder.setText(R.id.tv_hint, R.string.ventilator_product_failure);
+                baseViewHolder.setGone(R.id.layout_work, true);
+                baseViewHolder.setVisible(R.id.btn_detail, true);
+                return;
+            }
+        }
         boolean isWork  = false;
         boolean workFinish = false;
         if(steamOven.powerState != SteamStateConstant.POWER_STATE_OFF &&
@@ -360,20 +375,27 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
             }
             baseViewHolder.setText(R.id.tv_hint,contentValue);
         }else{
-            baseViewHolder.setGone(R.id.layout_offline, true);
-            baseViewHolder.setVisible(R.id.layout_work, true);
-            baseViewHolder.setGone(R.id.ventilator_group7, true);
-            baseViewHolder.setVisible(R.id.ventilator_group6, true);
-
-            baseViewHolder.setText(R.id.tv_mode, SteamDataUtil.getModelName(steamOven));
-            baseViewHolder.setText(R.id.tv_time, DateUtil.secForMatTime3(steamOven.totalRemainSeconds) + "min");
-
-            if (steamOven.getWorkStatus() == 2 || steamOven.getWorkStatus() == 4) //预热中和工作中
-                baseViewHolder.setText(R.id.btn_work, R.string.ventilator_pause);
-            else if (steamOven.getWorkStatus() == 3 || steamOven.getWorkStatus() == 5) //暂停中
-                baseViewHolder.setText(R.id.btn_work, R.string.ventilator_continue);
-            else
-                baseViewHolder.setGone(R.id.btn_work, true);
+            String modelName = SteamDataUtil.getModelName(steamOven);
+            if(StringUtils.isBlank(modelName) || SteamModeEnum.CHUGOU.getName().equals(modelName)){//未查询到工作模式或者除垢模式
+                baseViewHolder.setVisible(R.id.layout_offline, true);
+                baseViewHolder.setGone(R.id.layout_work, true);
+                baseViewHolder.setGone(R.id.btn_detail, true);
+                String contentValue = StringUtils.isBlank(modelName) ? "轻松烹饪\n智享厨房" : modelName;
+                baseViewHolder.setText(R.id.tv_hint,contentValue);
+            }else{
+                baseViewHolder.setGone(R.id.layout_offline, true);
+                baseViewHolder.setVisible(R.id.layout_work, true);
+                baseViewHolder.setGone(R.id.ventilator_group7, true);
+                baseViewHolder.setVisible(R.id.ventilator_group6, true);
+                baseViewHolder.setText(R.id.tv_mode, modelName);
+                baseViewHolder.setText(R.id.tv_time, DateUtil.secForMatTime3(steamOven.totalRemainSeconds) + "min");
+                if (steamOven.getWorkStatus() == 2 || steamOven.getWorkStatus() == 4) //预热中和工作中
+                    baseViewHolder.setText(R.id.btn_work, R.string.ventilator_pause);
+                else if (steamOven.getWorkStatus() == 3 || steamOven.getWorkStatus() == 5) //暂停中
+                    baseViewHolder.setText(R.id.btn_work, R.string.ventilator_continue);
+                else
+                    baseViewHolder.setGone(R.id.btn_work, true);
+            }
         }
 
     }

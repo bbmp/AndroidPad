@@ -30,6 +30,7 @@ import com.robam.common.utils.NetworkUtils;
 import com.robam.common.utils.PermissionUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.common.utils.WindowsUtils;
+import com.robam.steamoven.utils.SteamDataUtil;
 import com.robam.ventilator.R;
 import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.device.HomeVentilator;
@@ -197,6 +198,11 @@ public class HomeActivity extends BaseActivity {
                 }
             }
         });
+
+        getContentView().postDelayed(()->{
+            SteamDataUtil.getSteamData(HomeActivity.this,"CQ928");//获取一体机数据
+            SteamDataUtil.getDeviceErrorInfo(HomeActivity.this);//获取告警信息数据
+        },2000);//延迟获取
     }
 
     private void checkPermissions() {

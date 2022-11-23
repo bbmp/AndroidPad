@@ -33,13 +33,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_64"
-        android:text="辅助模式"
-        android:visibility="invisible"
+        android:visibility="visible"
         android:textColor="@color/dishwasher_mode70"
         android:textSize="@dimen/sp_40"
         app:layout_constraintLeft_toRightOf="@id/tv_mode"
         app:layout_constraintBaseline_toBaselineOf="@id/tv_mode"
-        app:layout_constraintHorizontal_chainStyle="packed"/>
+        app:layout_constraintHorizontal_chainStyle="packed"
+        tools:text="辅助模式"/>
     <!--    SpannableString-->
     <TextView
         android:id="@+id/tv_time"
@@ -83,7 +83,7 @@
         android:layout_width="@dimen/dp_60"
         android:layout_height="@dimen/dp_60"
         android:layout_marginRight="@dimen/dp_100"
-        android:src="@drawable/dishwasher_ic_start"
+        android:src="@drawable/dishwasher_ic_stop"
         app:layout_constraintBottom_toBottomOf="@id/tv_countdown"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_countdown" />

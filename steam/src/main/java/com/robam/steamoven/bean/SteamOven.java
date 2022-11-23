@@ -66,7 +66,7 @@ public class SteamOven extends Device {
     /**
      * 故障码
      */
-    public short faultCode;
+    //public short faultCode;
     /**
      * 旋转烤开关
      */
@@ -495,7 +495,7 @@ public class SteamOven extends Device {
             this.powerState = (short) msg.optInt(SteamConstant.powerState);
             this.workState = (short) msg.optInt(SteamConstant.workState);
             this.orderLeftTime= msg.optInt(SteamConstant.orderLeftTime);
-            this.faultCode = (short) msg.optInt(SteamConstant.faultCode);//SteamFaultCode
+            this.faultId = (short) msg.optInt(SteamConstant.faultCode);//SteamFaultCode
             this.rotateSwitch = (short) msg.optInt(SteamConstant.rotateSwitch);
             this.waterBoxState = (short) msg.optInt(SteamConstant.waterBoxState);
             this.waterLevelState = (short) msg.optInt(SteamConstant.waterLevelState);
@@ -571,8 +571,7 @@ public class SteamOven extends Device {
             this.steam3 = (short) msg.optInt(SteamConstant.steam3);
             //onStatusChanged();
         }else if (key==MsgKeys.getDeviceAlarmEventReport){
-            this.faultCode = (short) msg.optInt(SteamConstant.faultCode);
-            //postEvent(new NewSteamOvenOneAlarmEvent(AbsSteameOvenOneNew.this , faultCode));
+            this.faultId = (short) msg.optInt(SteamConstant.faultCode);
         }
     }
 

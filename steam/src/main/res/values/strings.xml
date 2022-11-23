@@ -1176,7 +1176,7 @@
     <string name="steam_go_home">回到主页</string>
     <string name="steam_curve_exception_data">烹饪数据异常</string>
     <string name="steam_offline">产品已离线，请检查网络</string>
-    <string name="steam_close_door_prompt">请检查门是否关闭</string>
+    <string name="steam_close_door_prompt">门未关好，无法启动工作</string>
     <string name="steam_water_deficient">水箱缺水</string>
     <string name="steam_model_select_data_prompt">缺少模式数据</string>
     <string name="steam_water_box_prompt">水箱已弹出</string>

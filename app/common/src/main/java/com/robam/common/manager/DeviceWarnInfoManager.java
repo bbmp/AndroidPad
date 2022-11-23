@@ -1,20 +1,14 @@
 package com.robam.common.manager;
 
-import android.util.Log;
-
 import com.robam.common.bean.DeviceErrorInfo;
-import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.StringUtils;
 import com.tencent.mmkv.MMKV;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -102,7 +96,7 @@ public class DeviceWarnInfoManager {
                 }
             }
         }
-        LogUtils.e("fdasf "+ infoMap.size());
+        //LogUtils.e("fdasf "+ infoMap.size());
     }
 
 
