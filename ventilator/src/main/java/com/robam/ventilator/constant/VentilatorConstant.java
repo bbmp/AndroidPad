@@ -13,6 +13,8 @@ public class VentilatorConstant {
     public final static int SMART_SETTING = 8;
     public final static int SIMPLE_MODE = 9;
 
+    public final static int LOW_WIND = 5; //低风阻
+    public final static int MID_WIND = 8; //高风阻
 
     public final static String EXTRA_FIRST = "ven";
     public final static String EXTRA_WIFI_SSID = "ssid";
@@ -55,4 +57,6 @@ public class VentilatorConstant {
     public final static String DEVICE_BIZ = "device_biz"; //业务编吗
     public final static String DEVICE_STATUS = "device_status";
     public final static String KEYS = "keys";
+    public final static String FAN_STEAM = "fan_steam";//烟蒸烤联动开关
+    public final static String FAN_STEAM_GEAR = "fan_steam_gear";//烟蒸烤自动匹配风量
 }

@@ -1,10 +1,10 @@
 package com.robam.ventilator.ui.pages;
 
 import android.content.Intent;
-import android.os.Handler;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -32,8 +32,9 @@ import com.robam.common.device.Plat;
 import com.robam.common.manager.BlueToothManager;
 import com.robam.common.manager.DeviceWarnInfoManager;
 import com.robam.common.module.ModulePubliclHelper;
+import com.robam.common.ui.blurview.ShapeBlurView;
+import com.robam.common.ui.view.AudioWaveView;
 import com.robam.common.utils.DeviceUtils;
-import com.robam.common.utils.ImageUtils;
 import com.robam.common.utils.MMKVUtils;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.common.device.subdevice.Pan;
@@ -51,7 +52,6 @@ import com.robam.common.module.IPublicStoveApi;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
-import com.robam.common.utils.ClickUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ScreenUtils;
 import com.robam.steamoven.protocol.SteamCommandHelper;
@@ -68,7 +68,6 @@ import com.robam.ventilator.device.HomeVentilator;
 import com.robam.ventilator.device.VentilatorAbstractControl;
 import com.robam.ventilator.factory.VentilatorDialogFactory;
 import com.robam.ventilator.http.CloudHelper;
-import com.robam.ventilator.protocol.ble.BleVentilator;
 import com.robam.ventilator.response.GetDeviceRes;
 import com.robam.ventilator.ui.activity.AddDeviceActivity;
 import com.robam.ventilator.ui.activity.MatchNetworkActivity;
@@ -113,9 +112,11 @@ public class HomePage extends VentilatorBasePage {
     private GifImageView gifImageView; //背景图片
     private Group group;
     private DrawerLayout drawerLayout;
-    private LinearLayout llSetting, llProducts;
-
+    private FrameLayout llSetting, llProducts;
+    //风阻
+    private AudioWaveView viewFlow, viewSpeed;
     private IDialog oilClean;
+
 
     public static HomePage newInstance() {
         return new HomePage();
@@ -138,11 +139,13 @@ public class HomePage extends VentilatorBasePage {
         tvComfort = findViewById(R.id.tv_comfort);
         group = findViewById(R.id.ventilator_group);
         drawerLayout = findViewById(R.id.drawer_layout);
-//        drawerLayout.setScrimColor(getResources().getColor(R.color.ventilator_drawer_bg));
+        drawerLayout.setScrimColor(getResources().getColor(R.color.ventilator_transparent));
         llSetting = findViewById(R.id.ll_drawer_left);
         llProducts = findViewById(R.id.ll_drawer_right);
         rvLeft = findViewById(R.id.rv_left);
         rvRight = findViewById(R.id.rv_right);
+        viewFlow = findViewById(R.id.iv_flow);
+        viewSpeed = findViewById(R.id.iv_speed);
 
 
         rvLeft.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -198,6 +201,9 @@ public class HomePage extends VentilatorBasePage {
                 findViewById(R.id.iv_left_right).setVisibility(View.VISIBLE);
                 findViewById(R.id.iv_right_left).setVisibility(View.VISIBLE);
                 findViewById(R.id.iv_right_right).setVisibility(View.INVISIBLE);
+                findViewById(R.id.sb_view).setVisibility(View.GONE);
+                findViewById(R.id.sb_view_left).setVisibility(View.GONE);
+                findViewById(R.id.sb_view_right).setVisibility(View.GONE);
             }
 
             @Override
@@ -413,27 +419,46 @@ public class HomePage extends VentilatorBasePage {
             @Override
             public void onChanged(String s) {
                 if (Plat.getPlatform().getDeviceOnlySign().equals(s)) { //烟机更新
+                    boolean switchPick = false;
                     if (null != rvFunctionAdapter && HomeVentilator.getInstance().isLock()) //锁定
-                        rvFunctionAdapter.setPickPosition(0);
+                        switchPick = rvFunctionAdapter.setPickPosition(0);
                     else if (HomeVentilator.getInstance().gear == (byte) 0xA1 && null != rvFunctionAdapter)
-                        rvFunctionAdapter.setPickPosition(1);
+                        switchPick = rvFunctionAdapter.setPickPosition(1);
                     else if (HomeVentilator.getInstance().gear == (byte) 0xA3 && null != rvFunctionAdapter)
-                        rvFunctionAdapter.setPickPosition(2);
+                        switchPick = rvFunctionAdapter.setPickPosition(2);
                     else if (HomeVentilator.getInstance().gear == (byte) 0xA6 && null != rvFunctionAdapter)
-                        rvFunctionAdapter.setPickPosition(3);
+                        switchPick = rvFunctionAdapter.setPickPosition(3);
                     else if (null != rvFunctionAdapter)
-                        rvFunctionAdapter.setPickPosition(-1);
-                    if (null != rvFunctionAdapter)
+                        switchPick = rvFunctionAdapter.setPickPosition(-1);
+                    if (null != rvFunctionAdapter && switchPick)
                         setBackground(rvFunctionAdapter.getPickPosition()); //设置背景
 
                     if (HomeVentilator.getInstance().param7 == 0x00) { //性能模式
-                        tvPerformance.setSelected(true);
-                        tvComfort.setSelected(false);
-                        group.setVisibility(View.GONE);
+                        if (!tvPerformance.isSelected()) {
+                            tvPerformance.setSelected(true);
+                            tvComfort.setSelected(false);
+                            group.setVisibility(View.GONE);
+                        }
                     } else {  //舒适模式
-                        tvPerformance.setSelected(false);
-                        tvComfort.setSelected(true);
-                        group.setVisibility(View.VISIBLE);
+                        if (tvPerformance.isSelected()) {
+                            tvPerformance.setSelected(false);
+                            tvComfort.setSelected(true);
+                            group.setVisibility(View.VISIBLE);
+                        }
+                    }
+                    //风阻
+                    if (HomeVentilator.getInstance().gear == (byte) 0xA1) {
+                        viewFlow.setHeight(3, 1);
+                        viewSpeed.setHeight(3, 1);
+                    } else if (HomeVentilator.getInstance().gear == (byte) 0xA3) {
+                        viewFlow.setHeight(6, 4);
+                        viewSpeed.setHeight(6, 4);
+                    } else if (HomeVentilator.getInstance().gear == (byte) 0xA6) {
+                        viewFlow.setHeight(9, 7);
+                        viewSpeed.setHeight(9, 7);
+                    } else {
+                        viewFlow.setHeight(0, 0);
+                        viewSpeed.setHeight(0, 0);
                     }
                     return;
                 }
@@ -646,11 +671,18 @@ public class HomePage extends VentilatorBasePage {
             drawerLayout.closeDrawer(gravity);
         }
         else {
-            if (gravity == Gravity.LEFT)
+            if (gravity == Gravity.LEFT) { //左边打开
                 llSetting.setBackgroundColor(getContext().getResources().getColor(R.color.ventilator_color_menu));
-            if (gravity == Gravity.RIGHT)
+                findViewById(R.id.sb_view_left).setVisibility(View.GONE);
+                findViewById(R.id.sb_view_right).setVisibility(View.VISIBLE);
+            }
+            if (gravity == Gravity.RIGHT) {
                 llProducts.setBackgroundColor(getContext().getResources().getColor(R.color.ventilator_color_menu));
+                findViewById(R.id.sb_view_left).setVisibility(View.VISIBLE);
+                findViewById(R.id.sb_view_right).setVisibility(View.GONE);
+            }
             drawerLayout.openDrawer(gravity);
+            findViewById(R.id.sb_view).setVisibility(View.VISIBLE);
         }
     }
 
@@ -678,30 +710,42 @@ public class HomePage extends VentilatorBasePage {
     }
     //锁屏清洗提示
     private void lockClean(int contentStrId) {
-        if (null == oilClean) {
-            oilClean = VentilatorDialogFactory.createDialogByType(getContext(), DialogConstant.DIALOG_TYPE_VENTILATOR_COMMON);
-            oilClean.setCancelable(false);
-            oilClean.setContentText(contentStrId);
-            oilClean.setListeners(new IDialog.DialogOnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (v.getId() == R.id.tv_ok) {
-                        HomeVentilator.getInstance().screenLock();
+//        if (null == oilClean) {
+//            oilClean = VentilatorDialogFactory.createDialogByType(getContext(), DialogConstant.DIALOG_TYPE_VENTILATOR_COMMON);
+//            oilClean.setCancelable(false);
+//            oilClean.setContentText(contentStrId);
+//            oilClean.setListeners(new IDialog.DialogOnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    if (v.getId() == R.id.tv_ok) {
+//                        HomeVentilator.getInstance().screenLock();
+//
+//                        //打开油网清洗
+//                        VentilatorAbstractControl.getInstance().openOilClean();
+//                        //开灯
+//                        Plat.getPlatform().openWaterLamp();
+//
+//                        HomeVentilator.getInstance().status = 4; //油网清洗状态
+//
+//                    }
+//                    //重新计算
+//                    MMKVUtils.setFanRuntime(0);
+//                }
+//            }, R.id.tv_cancel, R.id.tv_ok);
+//        }
+//        oilClean.show();
 
-                        //打开油网清洗
-                        VentilatorAbstractControl.getInstance().openOilClean();
-                        //开灯
-                        Plat.getPlatform().openWaterLamp();
+        HomeVentilator.getInstance().screenLock();
 
-                        HomeVentilator.getInstance().status = 4; //油网清洗状态
+        //打开油网清洗
+        VentilatorAbstractControl.getInstance().openOilClean();
+        //开灯
+        Plat.getPlatform().openWaterLamp();
 
-                    }
-                    //重新计算
-                    MMKVUtils.setFanRuntime(0);
-                }
-            }, R.id.tv_cancel, R.id.tv_ok);
-        }
-        oilClean.show();
+        HomeVentilator.getInstance().status = 4; //油网清洗状态
+
+        //重新计算
+        MMKVUtils.setFanRuntime(0);
     }
 
     //切换至极简模式

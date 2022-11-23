@@ -27,6 +27,9 @@ class RvSmartSetAdapter(@LayoutRes layoutResId: Int, data: MutableList<SmartSetB
             "延时关机" -> {
                 TextColorHelp.setShutdownTextColor(item.modeDescName,holder.getView(R.id.tv_mode_desc))
             }
+            "烟蒸烤联动" -> {
+                TextColorHelp.setFanSteamTextColor(item.modeDescName,holder.getView(R.id.tv_mode_desc))
+            }
             else -> {
                 //模式描述
                 holder.setText(R.id.tv_mode_desc, item.modeDescName)
@@ -37,6 +40,7 @@ class RvSmartSetAdapter(@LayoutRes layoutResId: Int, data: MutableList<SmartSetB
         //模式开关
         holder.getView<SwitchButton>(R.id.sb_mode).isChecked = item.modeSwitch == true
         //模式描述开关
+        holder.getView<SwitchButton>(R.id.sb_mode_desc).isEnabled = item.enabled == true
         holder.getView<SwitchButton>(R.id.sb_mode_desc).isChecked = item.modeDescSwitch == true
 
         //模式描述文本没内容隐藏
@@ -53,11 +57,11 @@ class RvSmartSetAdapter(@LayoutRes layoutResId: Int, data: MutableList<SmartSetB
 }
 
 data class SmartSetBean(
-    val enabled: Boolean? = false,
+    var enabled: Boolean? = false,
     //模式类型名字
     val modeName: String,
     //模式描述
-    val modeDescName: String,
+    var modeDescName: String,
     //模式切换按钮
     var modeSwitch: Boolean? = false,
     //模式描述切换按钮

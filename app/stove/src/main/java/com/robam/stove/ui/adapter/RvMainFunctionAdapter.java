@@ -54,7 +54,7 @@ public class RvMainFunctionAdapter extends BaseQuickAdapter<StoveFunBean, BaseVi
         if (null != stoveFunBean) {
             TextView textView = baseViewHolder.getView(R.id.tv_funtion_name);
             textView.setText(stoveFunBean.funtionName);
-            ImageView imageView = baseViewHolder.getView(R.id.iv_round_bg);
+
         }
     }
 }

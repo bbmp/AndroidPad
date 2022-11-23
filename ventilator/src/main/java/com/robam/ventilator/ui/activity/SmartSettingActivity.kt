@@ -1,12 +1,17 @@
 package com.robam.ventilator.ui.activity
 
+import android.content.Intent
+import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.blankj.utilcode.util.ActivityUtils
 import com.robam.common.bean.AccountInfo
+import com.robam.common.bean.BaseResponse
 import com.robam.common.bean.Device
+import com.robam.common.device.Plat
 import com.robam.common.device.subdevice.Pan
 import com.robam.common.device.subdevice.Stove
+import com.robam.common.http.RetrofitCallback
 import com.robam.common.module.IPublicPanApi
 import com.robam.common.module.ModulePubliclHelper
 import com.robam.common.ui.dialog.IDialog
@@ -16,9 +21,13 @@ import com.robam.steamoven.bean.SteamOven
 import com.robam.ventilator.BuildConfig
 import com.robam.ventilator.R
 import com.robam.ventilator.base.VentilatorBaseActivity
+import com.robam.ventilator.request.LinkageConfigReq
 import com.robam.ventilator.constant.DialogConstant
+import com.robam.ventilator.constant.VentilatorConstant
 import com.robam.ventilator.device.HomeVentilator
 import com.robam.ventilator.factory.VentilatorDialogFactory
+import com.robam.ventilator.http.CloudHelper
+import com.robam.ventilator.response.GetLinkageConfigRes
 import com.robam.ventilator.ui.adapter.RvSmartSetAdapter
 import com.robam.ventilator.ui.adapter.SmartSetBean
 import kotlinx.android.synthetic.main.ventilator_activity_layout_smart_setting.*
@@ -32,6 +41,16 @@ class SmartSettingActivity : VentilatorBaseActivity() {
 
     private val mAdapter by lazy { RvSmartSetAdapter(R.layout.ventilator_item_smart_setting, null) }
 
+    private var linkageConfig: LinkageConfigReq? = null
+
+    companion object {
+        var act: SmartSettingActivity? = null
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        act = this
+    }
     override fun getLayoutId() = R.layout.ventilator_activity_layout_smart_setting
 
     //烟锅联动状态查询
@@ -43,13 +62,6 @@ class SmartSettingActivity : VentilatorBaseActivity() {
     override fun initView() {
         showLeft()
         setCenter(R.string.ventilator_smart_setting)
-        //查询烟锅联动状态
-//        for (device in AccountInfo.getInstance().deviceList) {
-//            if (device is Pan && device.status == Device.ONLINE) {
-//                iPublicPanApi?.queryFanPan()
-//                break
-//            }
-//        }
 
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
@@ -83,7 +95,13 @@ class SmartSettingActivity : VentilatorBaseActivity() {
                             when (data[position].modeName) {
                                 "假日模式" -> ActivityUtils.startActivity(HolidayDateSettingActivity::class.java)
                                 "延时关机" -> ActivityUtils.startActivity(ShutdownDelaySettingActivity::class.java)
-                                "烟蒸烤联动" -> ActivityUtils.startActivity(RelationDeviceActivity::class.java)
+                                "烟蒸烤联动" -> {
+                                    intent = Intent(this@SmartSettingActivity, RelationDeviceActivity::class.java)
+                                    intent.putExtra(VentilatorConstant.DEVICE_GUID, linkageConfig?.targetGuid)
+                                    intent.putExtra(VentilatorConstant.FAN_STEAM, linkageConfig?.enabled?:false)
+                                    intent.putExtra(VentilatorConstant.FAN_STEAM_GEAR, linkageConfig?.doorOpenEnabled?:false)
+                                    startActivity(intent)
+                                }
                             }
                         }
                     }
@@ -137,7 +155,25 @@ class SmartSettingActivity : VentilatorBaseActivity() {
                 }
 
             }
-            "烟蒸烤联动" -> MMKVUtils.setFanSteam(onOff)
+            "烟蒸烤联动" -> {
+                MMKVUtils.setFanSteam(onOff)
+                CloudHelper.setLinkageConfig(this@SmartSettingActivity,
+                    Plat.getPlatform().deviceOnlySign,
+                    onOff,
+                    linkageConfig?.doorOpenEnabled?:false,
+                    linkageConfig?.targetGuid,
+                    linkageConfig?.targetDeviceName,
+                    BaseResponse::class.java,
+                    object : RetrofitCallback<BaseResponse?> {
+                        override fun onSuccess(baseResponse: BaseResponse?) {
+                            if (null != baseResponse && baseResponse.rc == 0) { //设置成功
+
+                            }
+                        }
+
+                        override fun onFaild(err: String) {}
+                    })
+            }
         }
     }
     /**
@@ -159,7 +195,25 @@ class SmartSettingActivity : VentilatorBaseActivity() {
                 }
 
             }
-            "烟蒸烤联动" -> MMKVUtils.setFanSteamGear(onOff)
+            "烟蒸烤联动" -> {
+                MMKVUtils.setFanSteamGear(onOff)
+                CloudHelper.setLinkageConfig(this@SmartSettingActivity,
+                    Plat.getPlatform().deviceOnlySign,
+                    linkageConfig?.enabled?:true,
+                    onOff,
+                    linkageConfig?.targetGuid,
+                    linkageConfig?.targetDeviceName,
+                    BaseResponse::class.java,
+                    object : RetrofitCallback<BaseResponse?> {
+                        override fun onSuccess(baseResponse: BaseResponse?) {
+                            if (null != baseResponse && baseResponse.rc == 0) { //设置成功
+
+                            }
+                        }
+
+                        override fun onFaild(err: String) {}
+                    })
+            }
         }
     }
 
@@ -207,7 +261,7 @@ class SmartSettingActivity : VentilatorBaseActivity() {
                     "关联产品:${stove.displayType}"
                 mList.add(
                     SmartSetBean(
-                        stove.status == Device.ONLINE,
+                        true,
                         "烟灶联动",
                         "$stoveListDevice \n灶具小火工作时，烟机自动匹配风量",
                         MMKVUtils.getFanStove(),
@@ -242,30 +296,45 @@ class SmartSettingActivity : VentilatorBaseActivity() {
         }
 
         //一体机
-        var steamOvenListDevice: String? = null
-
+        var relationDevice: String? = null
+        var enabled = false //是否有一体机
         for (device in AccountInfo.getInstance().deviceList) {
             if (device is SteamOven) {
-                if (MMKVUtils.getFanSteamDevice() == device.guid) { //已关联
-                    steamOvenListDevice = "关联产品:${device.displayType}"
+                enabled = true
+                if (linkageConfig?.targetGuid == device.guid) { //已关联
+                    relationDevice = "${device.displayType}"
                     break
                 } else
-                    steamOvenListDevice = "暂无关联产品"
+                    relationDevice = "去关联"
             }
         }
 
-         steamOvenListDevice?.apply {
+        if (enabled) {
+            relationDevice?.apply {
 
-            mList.add(
-                SmartSetBean(
-                    true,
-                    "烟蒸烤联动",
-                    "$steamOvenListDevice \n一体机工作室开门，烟机自动匹配风量",
-                    MMKVUtils.getFanSteam(),
-                    MMKVUtils.getFanSteamGear(),
-                    true
+                mList.add(
+                    SmartSetBean(
+                        true,
+                        "烟蒸烤联动",
+                        "关联产品:$relationDevice \n一体机工作室开门，烟机自动匹配风量",
+                        linkageConfig?.enabled ?: false,
+                        linkageConfig?.doorOpenEnabled ?: false,
+                        true
+                    )
                 )
-            )
+            }
+        }
+    }
+    //更新烟蒸烤联动
+    fun updateFanStream(relationDevice: String?) { //关联设备
+        for (smartBean in mList) {
+            if (smartBean.modeName == "烟蒸烤联动") {
+                smartBean.modeDescName = "关联产品:$relationDevice\n一体机工作室开门，烟机自动匹配风量"
+                smartBean.modeSwitch = linkageConfig?.enabled ?: false
+                smartBean.modeDescSwitch = linkageConfig?.doorOpenEnabled ?: false
+                mAdapter?.notifyDataSetChanged()
+                break
+            }
         }
     }
 
@@ -277,6 +346,25 @@ class SmartSettingActivity : VentilatorBaseActivity() {
             //恢复初始提示
             resetDialog()
         }
+        //查询烟蒸烤联动状态
+        val userInfo = AccountInfo.getInstance().user.value
+
+        CloudHelper.getLinkageConfig(this, Plat.getPlatform().deviceOnlySign,
+            userInfo?.id ?: 0,
+            GetLinkageConfigRes::class.java, object : RetrofitCallback<GetLinkageConfigRes?> {
+                override fun onSuccess(getLinkageConfigRes: GetLinkageConfigRes?) {
+                    if (getLinkageConfigRes?.payload != null) {
+                        linkageConfig = getLinkageConfigRes.payload
+                        var relationDevice = "去关联"
+                        if (linkageConfig!!.targetDeviceName != null)
+                            relationDevice = "${linkageConfig!!.targetDeviceName}"
+                        updateFanStream(relationDevice)
+                    }
+                }
+
+                override fun onFaild(err: String) {}
+
+            })
     }
 
     //恢复初始

@@ -46,4 +46,19 @@ object TextColorHelp {
             .setForegroundColor(ColorUtils.getColor(R.color.ventilator_white_50))
             .create()
     }
+    //烟蒸烤联动关联颜色
+    fun setFanSteamTextColor(text: String, textView: TextView) {
+        val start = text.indexOf("一体机")//第一个出现的位置
+
+        SpanUtils.with(textView)
+            .append(text.substring(0, 5))
+            .setForegroundColor(ColorUtils.getColor(R.color.ventilator_white_50))
+
+            .append(text.substring(5, start))
+            .setForegroundColor(ColorUtils.getColor(R.color.ventilator_blue))
+
+            .append(text.substring(start, text.length))
+            .setForegroundColor(ColorUtils.getColor(R.color.ventilator_white_50))
+            .create()
+    }
 }

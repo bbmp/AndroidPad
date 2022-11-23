@@ -65,6 +65,5 @@ dependencies {
     api "androidx.core:core-ktx:$versions.ktx"
     api "pl.droidsonroids.gif:android-gif-drawable:$versions.gif_drawable"
     //工具类
-    implementation "com.blankj:utilcodex:$versions.utilcodex"
-
+    api "com.blankj:utilcodex:$versions.utilcodex"
 }

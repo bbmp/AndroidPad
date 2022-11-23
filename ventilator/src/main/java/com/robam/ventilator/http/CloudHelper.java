@@ -10,6 +10,7 @@ import com.robam.common.http.RetrofitCallback;
 import com.robam.common.http.RetrofitClient;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.StorageUtils;
+import com.robam.ventilator.request.LinkageConfigReq;
 import com.robam.ventilator.constant.HostServer;
 import com.robam.ventilator.request.AppTypeReq;
 import com.robam.ventilator.request.BindDeviceReq;
@@ -159,6 +160,20 @@ public class CloudHelper {
             }
         });
 
+    }
+    //获取烟蒸烤联动设置
+    public static <T extends BaseResponse> void getLinkageConfig(ILife iLife, String guid, long userId, Class<T> entity, final RetrofitCallback<T> callback) {
+        Call<ResponseBody> call = svr.getLinkageConfig(guid, userId);
+        enqueue(iLife, entity, call, callback);
+    }
+    //设置烟蒸烤联动
+    public static <T extends BaseResponse> void setLinkageConfig(ILife iLife, String deviceGuid, boolean enabled, boolean doorOpenEnabled, String targetGuid, String targetDeviceName,
+                                                                 Class<T> entity, final RetrofitCallback<T> callback) {
+        String json = new LinkageConfigReq(deviceGuid, doorOpenEnabled, enabled, targetGuid, targetDeviceName).toString();
+        RequestBody requestBody =
+                RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
+        Call<ResponseBody> call = svr.setLinkageConfig(requestBody);
+        enqueue(iLife, entity, call, callback);
     }
 
     private static void saveFile(ResponseBody responseBody, String destFileDir, String destFileName, DownloadListener downloadListener) {

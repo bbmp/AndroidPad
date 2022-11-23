@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/stove_ic_bg"
+    android:background="@drawable/common_curve_bg"
     tools:context=".ui.activity.CurveActivity">
     <include
         android:id="@+id/ll_title"
