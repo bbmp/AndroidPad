@@ -137,9 +137,9 @@ public class ModelWorkActivity extends SteamBaseActivity {
                     if(toWaringPage(steamOven)){
                         return;
                     }
-                    //if(showRotation){
+                    if(showRotation){
                         setRotationView(steamOven.rotateSwitch == 1);
-                    //}
+                    }
                     switch (steamOven.powerState){
                         case SteamStateConstant.POWER_STATE_AWAIT:
                         case SteamStateConstant.POWER_STATE_ON:
