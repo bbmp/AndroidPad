@@ -15,10 +15,10 @@ import androidx.annotation.NonNull;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+import com.robam.common.ui.blurview.ShapeBlurView;
 import com.robam.ventilator.R;
 import com.robam.ventilator.bean.VenFunBean;
 
-import net.center.blurview.ShapeBlurView;
 
 public class RvMainFunctonAdapter extends BaseQuickAdapter<VenFunBean, BaseViewHolder> {
     private Context mContext;
@@ -55,7 +55,7 @@ public class RvMainFunctonAdapter extends BaseQuickAdapter<VenFunBean, BaseViewH
                 baseViewHolder.getView(R.id.ventilator_main_item).setScaleX(1.6f);
                 baseViewHolder.getView(R.id.ventilator_main_item).setScaleY(1.6f);
                 ShapeBlurView blurView = baseViewHolder.getView(R.id.tv_fun_name);
-//                blurView.refreshView(ShapeBlurView.build(mContext).setDownSampleFactor(4*1.6f));
+                blurView.setScale(1.6f);
                 if (1 == pickPosition) {
                     imgAnimation.setDuration(4000);
                     baseViewHolder.getView(R.id.iv_fun).startAnimation(imgAnimation);
@@ -71,6 +71,8 @@ public class RvMainFunctonAdapter extends BaseQuickAdapter<VenFunBean, BaseViewH
                 baseViewHolder.getView(R.id.ventilator_main_item).setScaleY(1.0f);
                 baseViewHolder.getView(R.id.iv_fun).clearAnimation();
                 imgAnimation.cancel();
+                ShapeBlurView blurView = baseViewHolder.getView(R.id.tv_fun_name);
+                blurView.setScale(1.0f);
             }
             baseViewHolder.setImageResource(R.id.iv_fun, venFun.iconRes);
         }

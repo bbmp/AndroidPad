@@ -5,11 +5,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 <!--    模糊背景是图片-->
-    <com.robam.common.ui.view.BlurredView
-        android:id="@+id/blurredView"
+    <com.robam.common.ui.blurview.ShapeBlurView
+        android:id="@+id/sb_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:common_src="@drawable/ventilator_ic_bg"/>
+        android:gravity="center"
+        app:common_blur_mode="rectangle"
+        app:common_blur_radius="@dimen/dp_10"
+        app:common_blur_overlay_color="@color/ventilator_lock"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+    <TextView
+        android:id="@+id/tv_work_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_48"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/dp_24"
+        android:textColor="@color/ventilator_mode"
+        android:text="@string/ventilator_clean_oil_hint"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/iv_lock"/>
+
     <TextView
         android:id="@+id/tv_lock"
         android:layout_width="wrap_content"

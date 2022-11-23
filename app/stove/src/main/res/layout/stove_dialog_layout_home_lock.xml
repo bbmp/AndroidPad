@@ -2,9 +2,19 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/stove_lock">
-
+    android:layout_height="match_parent">
+    <com.robam.common.ui.blurview.ShapeBlurView
+        android:id="@+id/sb_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        app:common_blur_mode="rectangle"
+        app:common_blur_radius="@dimen/dp_10"
+        app:common_blur_overlay_color="@color/stove_lock"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
     <LinearLayout
         android:id="@+id/ll_left_stove"
         android:layout_width="wrap_content"

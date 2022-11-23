@@ -10,4 +10,6 @@
     <color name="pan_white_40">#66ffffff</color>
     <color name="pan_step">#72AFFF</color>
     <color name="pan_chart">#FF3D00</color>
+    <color name="pan_blur_overlay_color">#33ffffff</color>
+    <color name="pan_blur_border_color">#4dffffff</color>
 </resources>

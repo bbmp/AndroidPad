@@ -16,8 +16,7 @@ public class LockDialog extends BaseDialog {
     @Override
     protected void initView() {
         rootView = LayoutInflater.from(mContext).inflate(R.layout.ventilator_dialog_layout_lock, null);
-        BlurredView blurredView = rootView.findViewById(R.id.blurredView);
-        blurredView.setBlurredLevel(80);
+
 
         if (mDialog == null) {
             mDialog = new FullDialog(mContext, rootView);

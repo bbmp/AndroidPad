@@ -27,7 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/ventilator_white"
-        android:textSize="@dimen/sp_42"
+        android:textSize="@dimen/sp_38"
         app:layout_constraintLeft_toLeftOf="@id/view_border"
         app:layout_constraintRight_toRightOf="@id/view_border"
         app:layout_constraintTop_toTopOf="@id/view_border"
