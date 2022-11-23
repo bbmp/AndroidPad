@@ -57,6 +57,11 @@ public class WaringActivity extends CabinetBaseActivity {
 
     @Override
     protected void initData() {
+        fromFlag = getIntent().getIntExtra(ComnConstant.WARING_FROM,0);
+        if(fromFlag == FROM_VENTILATOR_FLAG){
+            showLeft();
+            setOnClickListener(R.id.ll_left);
+        }
         int waringCode = getIntent().getIntExtra(Constant.WARING_CODE,-1);
         if(waringCode == -1){
             return;
@@ -67,11 +72,6 @@ public class WaringActivity extends CabinetBaseActivity {
         }
         if(washerWaringEnum.getCode() == CabinetWaringEnum.E0.getCode()){
             phoneTv.setVisibility(View.INVISIBLE);
-        }
-        fromFlag = getIntent().getIntExtra(ComnConstant.WARING_FROM,0);
-        if(fromFlag == FROM_VENTILATOR_FLAG){
-            showLeft();
-            setOnClickListener(R.id.ll_left);
         }
         titleTv.setText(washerWaringEnum.getPromptTitleRes());
         descTv.setText(washerWaringEnum.getPromptContentRes());

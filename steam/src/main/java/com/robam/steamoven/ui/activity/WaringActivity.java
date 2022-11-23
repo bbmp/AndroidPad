@@ -46,19 +46,18 @@ public class WaringActivity extends SteamBaseActivity {
     @Override
     protected void initData() {
         int waringCode = getIntent().getIntExtra(ComnConstant.WARING_CODE,0);
-        SteamOven steamOven = getSteamOven();
-        if(waringCode == 0 || steamOven == null){
-            return;
-        }
-
-        DeviceErrorInfo deviceErrorInfo = DeviceWarnInfoManager.getInstance().getDeviceErrorInfo(IDeviceType.RZKY, DeviceUtils.getDeviceTypeId(steamOven.guid), waringCode);
-        if(deviceErrorInfo == null){
-            return;
-        }
         fromFlag = getIntent().getIntExtra(ComnConstant.WARING_FROM,0);
         if(fromFlag == FROM_VENTILATOR_FLAG){
             showLeft();
             setOnClickListener(R.id.ll_left);
+        }
+        SteamOven steamOven = getSteamOven();
+        if(waringCode == 0 || steamOven == null){
+            return;
+        }
+        DeviceErrorInfo deviceErrorInfo = DeviceWarnInfoManager.getInstance().getDeviceErrorInfo(IDeviceType.RZKY, DeviceUtils.getDeviceTypeId(steamOven.guid), waringCode);
+        if(deviceErrorInfo == null){
+            return;
         }
         titleTv.setText(deviceErrorInfo.alertName+"");
         descTv.setText(deviceErrorInfo.alertDescr+"");

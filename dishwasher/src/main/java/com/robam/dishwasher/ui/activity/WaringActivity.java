@@ -57,17 +57,17 @@ public class WaringActivity extends DishWasherBaseActivity {
     @Override
     protected void initData() {
         int waringCode = getIntent().getIntExtra(DishWasherConstant.WARING_CODE,0);
+        fromFlag = getIntent().getIntExtra(ComnConstant.WARING_FROM,0);
+        if(fromFlag == FROM_VENTILATOR_FLAG){
+            showLeft();
+            setOnClickListener(R.id.ll_left);
+        }
         if(waringCode == 0){
             return;
         }
         DishWasherWaringEnum washerWaringEnum = DishWasherWaringEnum.match(waringCode);
         if(washerWaringEnum.getCode() == 0){
             return;
-        }
-        fromFlag = getIntent().getIntExtra(ComnConstant.WARING_FROM,0);
-        if(fromFlag == FROM_VENTILATOR_FLAG){
-            showLeft();
-            setOnClickListener(R.id.ll_left);
         }
         titleTv.setText(washerWaringEnum.getPromptTitleRes());
         descTv.setText(washerWaringEnum.getPromptContentRes());
