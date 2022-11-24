@@ -62,8 +62,8 @@ public class RvMainFunctionAdapter extends BaseQuickAdapter<CabFunBean, BaseView
         if (null != cabFunBean) {
             TextView textView = baseViewHolder.getView(R.id.tv_funtion_name);
             textView.setText(cabFunBean.funtionName);
-            ImageView imageView = baseViewHolder.getView(R.id.iv_round_bg);
-            ImageUtils.loadImage(getContext(), R.drawable.cabinet_main_item_bg, options, imageView);
+            //ImageView imageView = baseViewHolder.getView(R.id.iv_round_bg);
+            //ImageUtils.loadImage(getContext(), R.drawable.cabinet_main_item_bg, options, imageView);
 //            if (pickPosition == getItemPosition(functionBean)) {
 //                textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getContext().getResources().getDimensionPixelSize(com.robam.common.R.dimen.sp_80));
 //            } else

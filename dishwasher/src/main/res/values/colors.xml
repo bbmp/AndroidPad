@@ -14,4 +14,6 @@
     <color name="dishwasher_color_51">#51000D2A</color>
     <color name="dishwasher_white_85">#D8FFFFFF</color>
     <color name="dishwasher_black_33">#33000000</color>
+    <color name="dishwasher_blur_overlay_color">#33ffffff</color>
+    <color name="dishwasher_blur_border_color">#4dffffff</color>
 </resources>

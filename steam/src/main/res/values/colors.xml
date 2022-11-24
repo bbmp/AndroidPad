@@ -64,5 +64,7 @@
     <color name="steam_color_f6">#f6f6f6</color>
     <color name="steam_white70">#B3ffffff</color>
     <color name="steam_lock">#ff72afff</color>
+    <color name="steam_blur_overlay_color">#33ffffff</color>
+    <color name="steam_blur_border_color">#4dffffff</color>
 
 </resources>

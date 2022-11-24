@@ -55,14 +55,12 @@ public class HomePage extends CabinetBasePage {
                 .setOrientation(RecyclerView.HORIZONTAL)
                 .setMaxItem(3)
                 .setScale(0.66f)
-                .setOnPickerListener(new PickerLayoutManager.OnPickerListener() {
-                    @Override
-                    public void onPicked(RecyclerView recyclerView, int position) {
-                        setBackground(position);
-                        //指示器更新
-                        rvDotAdapter.setPickPosition(position);
-                        rvMainFunctionAdapter.setPickPosition(position);
-                    }
+                .setAlpha(false)
+                .setOnPickerListener((recyclerView, position) -> {
+                    setBackground(position);
+                    //指示器更新
+                    rvDotAdapter.setPickPosition(position);
+                    rvMainFunctionAdapter.setPickPosition(position);
                 }).build();
         rvMain.setLayoutManager(pickerLayoutManager);
         rvDot.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));

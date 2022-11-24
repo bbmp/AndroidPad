@@ -54,7 +54,7 @@ public class RvMainModeAdapter extends BaseQuickAdapter<DishWasherModeBean, Base
         if (null != dishWaherModeBean) {
             TextView textView = baseViewHolder.getView(R.id.tv_mode_name);
             textView.setText(dishWaherModeBean.name);
-            ImageView imageView = baseViewHolder.getView(R.id.iv_round_bg);
+            //ImageView imageView = baseViewHolder.getView(R.id.iv_round_bg);
         }
     }
 }

@@ -54,6 +54,7 @@ public class HomePage extends DishWasherBasePage {
                 .setOrientation(RecyclerView.HORIZONTAL)
                 .setMaxItem(3)
                 .setScale(0.66f)
+                .setAlpha(false)
                 .setOnPickerListener((recyclerView, position) -> {
                     setBackground(position);
                     //指示器更新
