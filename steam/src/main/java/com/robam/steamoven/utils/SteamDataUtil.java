@@ -14,6 +14,7 @@ import com.robam.steamoven.bean.DeviceConfigurationFunctions;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.SteamModeEnum;
 import com.robam.steamoven.http.CloudHelper;
+import com.robam.steamoven.manager.RecipeManager;
 import com.robam.steamoven.response.GetDeviceErrorRes;
 import com.robam.steamoven.response.GetDeviceParamsRes;
 import com.tencent.mmkv.MMKV;
@@ -42,42 +43,43 @@ public class SteamDataUtil {
      * @return
      */
     public static String getRecipeData(String guid,long recipeId){
-        String steamContent = getSteamContent(guid);
-        if(StringUtils.isNotBlank(steamContent)){
-            GetDeviceParamsRes getDeviceParamsRes = new Gson().fromJson(steamContent, GetDeviceParamsRes.class);
-            if (null == getDeviceParamsRes || null == getDeviceParamsRes.modelMap ||
-                    getDeviceParamsRes.modelMap.otherFunc == null ||
-                    getDeviceParamsRes.modelMap.otherFunc.deviceConfigurationFunctions == null){
-                return "";
-            }
-            List<DeviceConfigurationFunctions>  dFunctions = getDeviceParamsRes.modelMap.otherFunc.deviceConfigurationFunctions;
-            for (DeviceConfigurationFunctions itemFuc: dFunctions) {
-                if ("localCookbook".equals(itemFuc.functionCode)) {
-                    if (null == itemFuc.subView || null == itemFuc.subView.modelMap || itemFuc.subView.modelMap.subView== null ||
-                            itemFuc.subView.modelMap.subView.deviceConfigurationFunctions == null) {
-                        break;
-                    }
-                    List<DeviceConfigurationFunctions> functions = itemFuc.subView.modelMap.subView.deviceConfigurationFunctions;
-                    for (DeviceConfigurationFunctions itemF: functions) {
-                        if (!"ckno".equals(itemF.functionCode)){
-                            if(itemF.subView == null || itemF.subView.modelMap == null ||
-                                    itemF.subView.modelMap.subView == null ||
-                                    itemF.subView.modelMap.subView.deviceConfigurationFunctions == null){
-                                break;
-                            }
-                            List<DeviceConfigurationFunctions> innerFunks = itemF.subView.modelMap.subView.deviceConfigurationFunctions;
-                            for(DeviceConfigurationFunctions dfItem : innerFunks){
-                                if(recipeId == dfItem.id){
-                                    return dfItem.functionName;
-                                }
-                            }
-                        }
-                    }
-                    break;
-                }
-            }
-        }
-        return "";
+        return RecipeManager.getInstance().getRecipeName(guid,recipeId);
+//        String steamContent = getSteamContent(guid);
+//        if(StringUtils.isNotBlank(steamContent)){
+//            GetDeviceParamsRes getDeviceParamsRes = new Gson().fromJson(steamContent, GetDeviceParamsRes.class);
+//            if (null == getDeviceParamsRes || null == getDeviceParamsRes.modelMap ||
+//                    getDeviceParamsRes.modelMap.otherFunc == null ||
+//                    getDeviceParamsRes.modelMap.otherFunc.deviceConfigurationFunctions == null){
+//                return "";
+//            }
+//            List<DeviceConfigurationFunctions>  dFunctions = getDeviceParamsRes.modelMap.otherFunc.deviceConfigurationFunctions;
+//            for (DeviceConfigurationFunctions itemFuc: dFunctions) {
+//                if ("localCookbook".equals(itemFuc.functionCode)) {
+//                    if (null == itemFuc.subView || null == itemFuc.subView.modelMap || itemFuc.subView.modelMap.subView== null ||
+//                            itemFuc.subView.modelMap.subView.deviceConfigurationFunctions == null) {
+//                        break;
+//                    }
+//                    List<DeviceConfigurationFunctions> functions = itemFuc.subView.modelMap.subView.deviceConfigurationFunctions;
+//                    for (DeviceConfigurationFunctions itemF: functions) {
+//                        if (!"ckno".equals(itemF.functionCode)){
+//                            if(itemF.subView == null || itemF.subView.modelMap == null ||
+//                                    itemF.subView.modelMap.subView == null ||
+//                                    itemF.subView.modelMap.subView.deviceConfigurationFunctions == null){
+//                                break;
+//                            }
+//                            List<DeviceConfigurationFunctions> innerFunks = itemF.subView.modelMap.subView.deviceConfigurationFunctions;
+//                            for(DeviceConfigurationFunctions dfItem : innerFunks){
+//                                if(recipeId == dfItem.id){
+//                                    return dfItem.functionName;
+//                                }
+//                            }
+//                        }
+//                    }
+//                    break;
+//                }
+//            }
+//        }
+//        return "";
     }
 
     public static String getModelName(Device device){
@@ -125,7 +127,8 @@ public class SteamDataUtil {
                     @Override
                     public void onSuccess(GetDeviceParamsRes getDeviceParamsRes) {
                         if (null != getDeviceParamsRes && null != getDeviceParamsRes.modelMap){
-                            SteamDataUtil.saveSteam(guidType,new Gson().toJson(getDeviceParamsRes, GetDeviceParamsRes.class));
+                            //SteamDataUtil.saveSteam(guidType,new Gson().toJson(getDeviceParamsRes, GetDeviceParamsRes.class));
+                            RecipeManager.getInstance().setRecipeInfo(guidType,getDeviceParamsRes);
                         }
                     }
 
