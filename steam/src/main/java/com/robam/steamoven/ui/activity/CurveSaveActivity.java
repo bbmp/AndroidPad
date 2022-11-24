@@ -112,7 +112,7 @@ public class CurveSaveActivity extends SteamBaseActivity {
         if(getDeviceParamsRes == null || getDeviceParamsRes.payload == null || getDeviceParamsRes.payload.temperatureCurveParams == null){
             ToastUtils.showLong(this,R.string.steam_curve_no_data);
             cookChart.setNoDataText(getString(R.string.steam_curve_no_data));
-            goHome();
+            initLineChart();
             return;
         }
         JSONObject jsonObject = new JSONObject(getDeviceParamsRes.payload.temperatureCurveParams);
@@ -120,7 +120,7 @@ public class CurveSaveActivity extends SteamBaseActivity {
         if(keys == null || !keys.hasNext()){
             ToastUtils.showLong(this,R.string.steam_curve_no_data);
             cookChart.setNoDataText(getString(R.string.steam_curve_no_data));
-            goHome();
+            initLineChart();
             return;
         }
         while (keys.hasNext()){
@@ -359,8 +359,6 @@ public class CurveSaveActivity extends SteamBaseActivity {
         },R.id.tv_cancel,R.id.tv_ok);
         steamCommonDialog.show();
     }
-
-
 
 
 

@@ -120,11 +120,12 @@ public class ModelWorkActivity extends SteamBaseActivity {
                     //continueCreateCurve();
                     break;
                 case DIRECTIVE_OFFSET_WORK_FINISH:
-                    if(recipeId != 0){
-                        goHome();
-                    }else{
-                        toCurveSavePage();
-                    }
+//                    if(recipeId != 0){
+//                        goHome();
+//                    }else{
+//                        toCurveSavePage();
+//                    }
+                    toCurveSavePage();
                     break;
             }
         });
@@ -333,9 +334,10 @@ public class ModelWorkActivity extends SteamBaseActivity {
         if(entryList.size() == 0){
             SteamOven steamOven = getSteamOven();
             if(steamOven != null){
-                Entry entry = new Entry(0, steamOven.curTemp);
+                Entry entry = new Entry(1, steamOven.curTemp);
                 entryList.add(entry);
             }
+            curTime = 1;
         }
     }
 
@@ -421,6 +423,7 @@ public class ModelWorkActivity extends SteamBaseActivity {
         if(steamOven == null){
             return;
         }
+        //LogUtils.e("ModelWork name recipeId " + steamOven.recipeId + " modelCode "+steamOven.mode + " name "+getModelName(steamOven.mode,steamOven.recipeId));
         boolean isPreHeat = (steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT || steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT_PAUSE);
         boolean isWorking = changeViewState ? !isPause : (steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT || steamOven.workState == SteamStateConstant.WORK_STATE_WORKING);
         //蒸汽量
@@ -599,6 +602,7 @@ public class ModelWorkActivity extends SteamBaseActivity {
         curDuration.setVisibility((isPreHeat && isWorking)?View.INVISIBLE:View.VISIBLE);
         //工作模式
         curModel.setText(getModelName(segment.code,recipeId));
+        //LogUtils.e("ModelWork name recipeId " + recipeId + " modelCode "+segment.code + " name "+getModelName(segment.code,recipeId));
         //设置温度
         curTemp.setText(TextSpanUtil.getSpan(segment.defTemp,Constant.UNIT_TEMP));
         //设置的工作时间 (秒)

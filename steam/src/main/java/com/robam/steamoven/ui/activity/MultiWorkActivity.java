@@ -134,11 +134,12 @@ public class MultiWorkActivity extends SteamBaseActivity {
                     //goHome();
                     break;
                 case DIRECTIVE_OFFSET_WORK_FINISH:
-                    if(multiSegments != null && multiSegments.get(0).recipeId != 0){
-                        goHome();
-                    }else{
-                        toCurveSavePage();
-                    }
+//                    if(multiSegments != null && multiSegments.get(0).recipeId != 0){
+//                        goHome();
+//                    }else{
+//                        toCurveSavePage();
+//                    }
+                    toCurveSavePage();
                     break;
             }
         });
@@ -739,9 +740,10 @@ public class MultiWorkActivity extends SteamBaseActivity {
         if(entryList.size() == 0){
             SteamOven steamOven = getSteamOven();
             if(steamOven != null){
-                Entry entry = new Entry(0, steamOven.curTemp);
+                Entry entry = new Entry(1, steamOven.curTemp);
                 entryList.add(entry);
             }
+            curTime = 1;
         }
     }
 
