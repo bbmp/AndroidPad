@@ -7,16 +7,20 @@ import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MsgKeys;
+import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.StringUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.SteamConstant;
+import com.robam.steamoven.constant.SteamModeEnum;
 import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.ui.dialog.SteamOverTimeDialog;
+import com.robam.steamoven.utils.SteamDataUtil;
 
 import java.util.Map;
 
@@ -41,6 +45,7 @@ public class WorkCompleteActivity extends SteamBaseActivity {
     private long curveId;//曲线ID
     private long recipeId = 0;//菜谱ID ； 若菜谱ID非 0 ； 则当前工作模式来源与菜谱
     private int addTime = 0;
+    private String curveDefaultName;//曲线默认名称
 
 
     @Override
@@ -128,6 +133,7 @@ public class WorkCompleteActivity extends SteamBaseActivity {
         dismissAllDialog();
         Intent intent = new Intent(this,CurveSaveActivity.class);
         intent.putExtra(Constant.CURVE_ID,curveId);
+        intent.putExtra(Constant.CARVE_NAME,curveDefaultName+"");
         startActivity(intent);
         finish();
     }
@@ -136,6 +142,7 @@ public class WorkCompleteActivity extends SteamBaseActivity {
     protected void initData() {
         curveId = getIntent().getLongExtra(Constant.CURVE_ID,0);
         recipeId = getIntent().getLongExtra(Constant.RECIPE_ID,0);
+        curveDefaultName = getIntent().getStringExtra(Constant.CARVE_NAME);
         if(recipeId != 0){
             mCancelTv.setVisibility(View.INVISIBLE);
             mOkTv.setVisibility(View.INVISIBLE);
@@ -235,6 +242,24 @@ public class WorkCompleteActivity extends SteamBaseActivity {
             commonMap.put(SteamConstant.addExtraTimeCtrl1, highTime);
         }
         SteamCommandHelper.getInstance().sendCommonMsgForLiveData(commonMap,DIRECTIVE_OFFSET_OVER_TIME+directive_offset);
+    }
+
+    /**
+     * 获取模式名称
+     * @param modelCode 模式名称
+     * @param recipeId 菜谱ID
+     * @return
+     */
+    private String getModelName(int modelCode,long recipeId){
+        if(recipeId != 0){
+            SteamOven steamOven = getSteamOven();
+            if(steamOven != null){
+                return SteamDataUtil.getRecipeData(DeviceUtils.getDeviceTypeId(steamOven.guid),recipeId);
+            }
+        }else{
+            return SteamModeEnum.match(modelCode);
+        }
+        return "";
     }
 
 

@@ -16,6 +16,7 @@ import com.robam.common.manager.DynamicLineChartManager;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.StringUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.bean.MultiSegment;
@@ -40,6 +41,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -184,7 +186,7 @@ public class ModelWorkActivity extends SteamBaseActivity {
         dm.setAxisLine(true, false);
         dm.setGridLine(false, false);
         dm.setAxisMaximum(maxYValue);
-        dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.steam_chart), entryList, true, false);
+        //dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.steam_chart), entryList, true, false);
         cookChart.notifyDataSetChanged();
     }
 
@@ -231,6 +233,9 @@ public class ModelWorkActivity extends SteamBaseActivity {
             //cookChart.highlightValues(highlights.toArray(new Highlight[highlights.size()]));
             mHandler.postDelayed(runnable, 2000L);
         };
+        dm.setAxisMaximum(maxYValue);
+        dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.steam_chart), entryList, true, false);
+        cookChart.notifyDataSetChanged();
         mHandler.removeCallbacks(runnable);
         mHandler.post(runnable);
     }
@@ -243,7 +248,7 @@ public class ModelWorkActivity extends SteamBaseActivity {
                     @Override
                     public void onSuccess(GetCurveDetailRes getDeviceParamsRes) {
                         dataHandler.removeCallbacksAndMessages(null);
-                        if(errCount <= 2 && !isDestroyed() && (getDeviceParamsRes == null || getDeviceParamsRes.payload == null)){
+                        if(errCount <= 2 && !isDestroyed() && (getDeviceParamsRes == null || getDeviceParamsRes.payload == null || getDeviceParamsRes.payload.temperatureCurveParams == null)){
                             errCount++;
                             dataHandler.postDelayed(()->{getCookingData(guid);},1000);
                             return;
@@ -285,8 +290,13 @@ public class ModelWorkActivity extends SteamBaseActivity {
             startCreateCurve();
             return;
         }
+        List<String> keyList = new LinkedList<>();
         while (keys.hasNext()){
             String key = keys.next();
+            if(keyList.contains(key)){//移除相同Key
+                continue;
+            }
+            keyList.add(key);
             String value = jsonObject.getString(key);
             String temp = value.split("-")[0];
             if(temp == null || temp.trim().length() == 0){
@@ -311,9 +321,9 @@ public class ModelWorkActivity extends SteamBaseActivity {
             entryList = entryList.subList(entryList.size() - 100,entryList.size());
         }*/
         initStartTimerAndList();
-        dm.setAxisMaximum(maxYValue);
-        dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.steam_chart), entryList, true, false);
         startCreateCurve();
+        LogUtils.e("ModelWork list.size "+entryList.size());
+
     }
 
     private void initStartTimerAndList(){
@@ -394,6 +404,7 @@ public class ModelWorkActivity extends SteamBaseActivity {
         // recipeId = multiSegments.get(0).recipeId;
         intent.putExtra(Constant.RECIPE_ID,recipeId);
         intent.putExtra(Constant.CURVE_ID,curveId);
+        intent.putExtra(Constant.CARVE_NAME,getCurveDefaultName(recipeId));
         startActivityForResult(intent,WORK_COMPLETE_CODE);
         //mHandler.removeCallbacks(runnable);
         //mHandler.removeCallbacksAndMessages(null);
@@ -587,14 +598,7 @@ public class ModelWorkActivity extends SteamBaseActivity {
 
         curDuration.setVisibility((isPreHeat && isWorking)?View.INVISIBLE:View.VISIBLE);
         //工作模式
-        if(isRecipeCooking()){
-            SteamOven steamOven = getSteamOven();
-            if(steamOven != null){
-                curModel.setText(SteamDataUtil.getRecipeData(DeviceUtils.getDeviceTypeId(steamOven.guid),recipeId));
-            }
-        }else{
-            curModel.setText(SteamModeEnum.match(segment.code));
-        }
+        curModel.setText(getModelName(segment.code,recipeId));
         //设置温度
         curTemp.setText(TextSpanUtil.getSpan(segment.defTemp,Constant.UNIT_TEMP));
         //设置的工作时间 (秒)
@@ -720,6 +724,7 @@ public class ModelWorkActivity extends SteamBaseActivity {
         dismissAllDialog();
         Intent intent = new Intent(this,CurveSaveActivity.class);
         intent.putExtra(Constant.CURVE_ID,curveId);
+        intent.putExtra(Constant.CARVE_NAME,getCurveDefaultName(recipeId));
         startActivity(intent);
         finish();
     }
@@ -777,5 +782,39 @@ public class ModelWorkActivity extends SteamBaseActivity {
         mHandler.removeCallbacks(runnable);
         mHandler.removeCallbacksAndMessages(null);
         dataHandler.removeCallbacksAndMessages(null);
+    }
+
+    /**
+     * 获取模式名称
+     * @param modelCode 模式名称
+     * @param recipeId 菜谱ID
+     * @return
+     */
+    private String getModelName(int modelCode,long recipeId){
+        if(recipeId != 0){
+            SteamOven steamOven = getSteamOven();
+            if(steamOven != null){
+                return SteamDataUtil.getRecipeData(DeviceUtils.getDeviceTypeId(steamOven.guid),recipeId);
+            }
+        }else{
+            return SteamModeEnum.match(modelCode);
+        }
+        return "";
+    }
+
+    /**
+     * 获取曲线默认名称
+     * @param recipeId
+     * @return
+     */
+    private String getCurveDefaultName(long recipeId){
+        if(multiSegments != null && multiSegments.size() >= 1){
+            String modelName = getModelName(multiSegments.get(0).code, recipeId);
+            if(StringUtils.isNotBlank(modelName) && recipeId == 0){
+                modelName += "模式";
+            }
+            return modelName;
+        }
+        return "";
     }
 }

@@ -87,7 +87,7 @@
         android:layout_marginBottom="@dimen/dp_24"
         android:background="@drawable/steam_shape_button_bg_ok"
         android:gravity="center"
-        android:text="@string/steam_start_working"
+        android:text="@string/steam_start_cooking"
         android:textColor="@color/steam_white"
         android:textSize="@dimen/sp_30"
         app:layout_constraintBottom_toBottomOf="parent"

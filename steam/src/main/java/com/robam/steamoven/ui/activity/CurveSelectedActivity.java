@@ -337,19 +337,19 @@ public class CurveSelectedActivity extends SteamBaseActivity {
             dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.steam_chart), entryList, true, false);
             cookChart.notifyDataSetChanged();
             //绘制步骤标记
-            List<CurveStep> stepList = steamCurveDetail.stepList;
-            if (null != stepList) {
-                MarkViewStep mv = new MarkViewStep(this, cookChart.getXAxis().getValueFormatter());
-                mv.setChartView(cookChart);
-                cookChart.setMarker(mv);
-                List<Highlight> highlights = new ArrayList<>();
-                int dataIndex = 1;
-                for (CurveStep step : stepList) {
-                    highlights.add(new Highlight(Float.parseFloat(step.markTime), step.markTemp, 0, dataIndex));
-                    dataIndex++;
-                }
-                cookChart.highlightValues(highlights.toArray(new Highlight[highlights.size()]));
-            }
+//            List<CurveStep> stepList = steamCurveDetail.stepList;
+//            if (null != stepList) {
+//                MarkViewStep mv = new MarkViewStep(this, cookChart.getXAxis().getValueFormatter());
+//                mv.setChartView(cookChart);
+//                cookChart.setMarker(mv);
+//                List<Highlight> highlights = new ArrayList<>();
+//                int dataIndex = 1;
+//                for (CurveStep step : stepList) {
+//                    highlights.add(new Highlight(Float.parseFloat(step.markTime), step.markTemp, 0, dataIndex));
+//                    dataIndex++;
+//                }
+//                cookChart.highlightValues(highlights.toArray(new Highlight[highlights.size()]));
+//            }
             //最后一点
 //            tvFire.setText("火力：" + data[1] + "档");
 //            tvTemp.setText("温度：" + data[0] + "℃");

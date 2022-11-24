@@ -14,6 +14,7 @@ import com.robam.common.bean.BaseResponse;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.manager.DynamicLineChartManager;
 import com.robam.common.mqtt.MsgKeys;
+import com.robam.common.utils.StringUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
@@ -63,6 +64,7 @@ public class CurveSaveActivity extends SteamBaseActivity {
     private long curveId;
 
     private GetCurveDetailRes curveDetailRes;
+    private String promptText;
 
 
     @Override
@@ -109,14 +111,16 @@ public class CurveSaveActivity extends SteamBaseActivity {
         this.curveDetailRes = getDeviceParamsRes;
         if(getDeviceParamsRes == null || getDeviceParamsRes.payload == null || getDeviceParamsRes.payload.temperatureCurveParams == null){
             ToastUtils.showLong(this,R.string.steam_curve_no_data);
-            //goHome();
+            cookChart.setNoDataText(getString(R.string.steam_curve_no_data));
+            goHome();
             return;
         }
         JSONObject jsonObject = new JSONObject(getDeviceParamsRes.payload.temperatureCurveParams);
         Iterator<String> keys = jsonObject.keys();
         if(keys == null || !keys.hasNext()){
             ToastUtils.showLong(this,R.string.steam_curve_no_data);
-            //goHome();
+            cookChart.setNoDataText(getString(R.string.steam_curve_no_data));
+            goHome();
             return;
         }
         while (keys.hasNext()){
@@ -153,6 +157,10 @@ public class CurveSaveActivity extends SteamBaseActivity {
         if(steamOven == null){
             Toast.makeText(this,"缺少模式数据",Toast.LENGTH_LONG).show();
             return;
+        }
+        String promptText = getIntent().getStringExtra(Constant.CARVE_NAME);
+        if(StringUtils.isNotBlank(promptText)){
+            finishTv.setText(promptText);
         }
         if(curveId == 0){
             getCurveByGuid(getSteamOven().guid);

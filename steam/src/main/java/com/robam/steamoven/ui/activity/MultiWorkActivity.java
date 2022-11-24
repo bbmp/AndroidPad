@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -527,8 +528,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
         dm.setAxisLine(true, false);
         dm.setGridLine(false, false);
         dm.setAxisMaximum(maxYValue);
-        dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.steam_chart_multi), entryList, true, false);
-        cookChart.notifyDataSetChanged();
+
     }
 
     //从0开始
@@ -575,6 +575,10 @@ public class MultiWorkActivity extends SteamBaseActivity {
             //cookChart.highlightValues(highlights.toArray(new Highlight[highlights.size()]));
             mHandler.postDelayed(runnable, 2000L);
         };
+        dm.setAxisMaximum(maxYValue);
+        dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.steam_chart_multi), entryList, true, false);
+        cookChart.notifyDataSetChanged();
+        mHandler.removeCallbacks(runnable);
         mHandler.post(runnable);
     }
 
@@ -618,7 +622,6 @@ public class MultiWorkActivity extends SteamBaseActivity {
         }
         if(getDeviceParamsRes == null || getDeviceParamsRes.payload == null || getDeviceParamsRes.payload.temperatureCurveParams == null){
             //initLineChart();
-            dm.setAxisMaximum(maxYValue);
             initStartTimerAndList();
             startCreateCurve();
             return;
@@ -628,13 +631,17 @@ public class MultiWorkActivity extends SteamBaseActivity {
         Iterator<String> keys = jsonObject.keys();
         if(keys == null || !keys.hasNext()){
             //initLineChart();
-            dm.setAxisMaximum(maxYValue);
             initStartTimerAndList();
             startCreateCurve();
             return;
         }
+        List<String> keyList = new LinkedList<>();
         while (keys.hasNext()){
             String key = keys.next();
+            if(keyList.contains(key)){
+                continue;
+            }
+            keyList.add(key);
             String value = jsonObject.getString(key);
             String temp = value.split("-")[0];
             if(temp == null || temp.trim().length() == 0){
@@ -657,8 +664,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
         });
         initStartTimerAndList();
         //initLineChart();
-        dm.setAxisMaximum(maxYValue);
-        dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.steam_chart), entryList, true, false);
+        //dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.steam_chart), entryList, true, false);
         startCreateCurve();
     }
 
@@ -705,6 +711,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
     private void toCurveSavePage(){
         Intent intent = new Intent(this,CurveSaveActivity.class);
         intent.putExtra(Constant.CURVE_ID,curveId);
+        intent.putExtra(Constant.CARVE_NAME,"多段模式");
         startActivity(intent);
         finish();
     }

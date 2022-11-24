@@ -119,6 +119,7 @@ public interface Constant {
     String WORK_FROM = "work_from";
 
     String AUX_MODEL = "aux_model";
+    String MAIN_MODEL = "aux_model";
 
 
 }
