@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         app:common_blur_mode="rectangle"
-        app:common_blur_radius="@dimen/dp_10"
+        app:common_blur_radius="@dimen/dp_20"
         app:common_blur_overlay_color="@color/stove_lock"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

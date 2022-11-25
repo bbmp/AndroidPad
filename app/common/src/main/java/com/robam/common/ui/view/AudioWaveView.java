@@ -47,6 +47,7 @@ public class AudioWaveView extends View {
         @Override
         public void handleMessage(Message msg) {
             invalidate();
+            handler.sendEmptyMessageDelayed(0, 200); //每间隔200毫秒发送消息刷新
         }
     };
 
@@ -80,18 +81,20 @@ public class AudioWaveView extends View {
         paint.setAntiAlias(true);
         paint.setColor(Color.parseColor("#33ffffff"));
         paint.setStyle(Paint.Style.FILL);
+        paint.setStrokeCap(Paint.Cap.ROUND);
         random = new Random();
 //        View view = inflate(context, R.layout.common_layout_round_rect, this);
-        initRect();
 //        View rect1 = view.findViewById(R.id.iv_rect1);
 //        rect1.setPivotX(0f);
-//        rect1.setPivotY(48f);
+//        rect1.setPivotY(45f);
 //        ObjectAnimator scaleY = ObjectAnimator.ofFloat(rect1, "scaleY", 0.1f, 0.3f);
 //        scaleY.setDuration(500);
 //        scaleY.setRepeatMode(ValueAnimator.REVERSE);
 //        scaleY.setInterpolator(new LinearInterpolator());
 //        scaleY.setRepeatCount(ValueAnimator.INFINITE);
 //        scaleY.start();
+        initRect();
+        handler.sendEmptyMessageDelayed(0, 200); //每间隔200毫秒发送消息刷新
     }
 
     private void initRect() {
@@ -142,7 +145,12 @@ public class AudioWaveView extends View {
             canvas.drawRoundRect(rectF8, (float) (rectWidth / 2.0), (float) (rectWidth / 2.0), paint);
         }
 
-        handler.sendEmptyMessageDelayed(0, 200); //每间隔200毫秒发送消息刷新
+
     }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        handler.removeCallbacksAndMessages(null);
+    }
 }

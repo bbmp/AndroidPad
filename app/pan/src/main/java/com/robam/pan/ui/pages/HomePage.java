@@ -119,13 +119,13 @@ public class HomePage extends PanBasePage {
                         if (pan.panTemp < 60)
                             tvTempHint.setText(R.string.pan_standby_ing);
                         else if (pan.panTemp < 130)
-                            tvTempHint.setText("油温" + pan.panTemp + "℃");
+                            tvTempHint.setText(getString(R.string.pan_oil_temp) + pan.panTemp + "℃");
                         else if (pan.panTemp >= 130 && pan.panTemp <= 180)
-                            tvTempHint.setText("油温" + pan.panTemp + getString(R.string.pan_oil_temp_hint1));
+                            tvTempHint.setText(getString(R.string.pan_oil_temp) + pan.panTemp + getString(R.string.pan_oil_temp_hint1));
                         else if (pan.panTemp > 180 && pan.panTemp <= 240)
-                            tvTempHint.setText("油温" + pan.panTemp + getString(R.string.pan_oil_temp_hint2));
+                            tvTempHint.setText(getString(R.string.pan_oil_temp) + pan.panTemp + getString(R.string.pan_oil_temp_hint2));
                         else if (pan.panTemp > 240 && pan.panTemp <= 280)
-                            tvTempHint.setText("油温" + pan.panTemp + getString(R.string.pan_oil_temp_hint3));
+                            tvTempHint.setText(getString(R.string.pan_oil_temp) + pan.panTemp + getString(R.string.pan_oil_temp_hint3));
                         else
                             tvTempHint.setText(R.string.pan_oil_temp_hint4);
                         break;

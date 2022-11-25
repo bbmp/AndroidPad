@@ -108,7 +108,7 @@ public class ShapeBlurView extends View {
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.common_ShapeBlurView);
             mBlurRadius = a.getDimension(R.styleable.common_ShapeBlurView_common_blur_radius,
                     TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, context.getResources().getDisplayMetrics()));
-            mDownSampleFactor = a.getFloat(R.styleable.common_ShapeBlurView_common_blur_down_sample, 2);
+            mDownSampleFactor = a.getFloat(R.styleable.common_ShapeBlurView_common_blur_down_sample, 4);
             mOverlayColor = a.getColor(R.styleable.common_ShapeBlurView_common_blur_overlay_color, 0x000000);
 
             float cornerRadiusOverride =
