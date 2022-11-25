@@ -5,96 +5,106 @@
     android:id="@+id/activity_short"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/ventilator_ic_bg"
-    android:paddingHorizontal="@dimen/dp_40"
     tools:context=".ui.activity.ShortcutActivity">
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/iv_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/common_ic_bg">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_fun"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_48"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/ventilator_guideline" />
+    </pl.droidsonroids.gif.GifImageView>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="@dimen/dp_40">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_fun"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_48"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/ventilator_guideline" />
 
-    <ImageView
-        android:id="@+id/iv_work"
-        android:layout_width="@dimen/dp_10"
-        android:layout_height="@dimen/dp_10"
-        android:background="@drawable/ventilator_shape_work_bg"
-        app:layout_constraintBottom_toBottomOf="@id/tv_work"
-        app:layout_constraintLeft_toLeftOf="@id/rv_device_work"
-        app:layout_constraintTop_toTopOf="@id/tv_work" />
+        <ImageView
+            android:id="@+id/iv_work"
+            android:layout_width="@dimen/dp_10"
+            android:layout_height="@dimen/dp_10"
+            android:background="@drawable/ventilator_shape_work_bg"
+            app:layout_constraintBottom_toBottomOf="@id/tv_work"
+            app:layout_constraintLeft_toLeftOf="@id/rv_device_work"
+            app:layout_constraintTop_toTopOf="@id/tv_work" />
 
-    <TextView
-        android:id="@+id/tv_work"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_5"
-        android:text="工作"
-        android:textColor="@color/ventilator_white_50"
-        android:textSize="@dimen/sp_20"
-        app:layout_constraintLeft_toRightOf="@id/iv_work"
-        app:layout_constraintBottom_toTopOf="@id/ventilator_guideline" />
+        <TextView
+            android:id="@+id/tv_work"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:text="工作"
+            android:textColor="@color/ventilator_white_50"
+            android:textSize="@dimen/sp_20"
+            app:layout_constraintLeft_toRightOf="@id/iv_work"
+            app:layout_constraintBottom_toTopOf="@id/ventilator_guideline" />
 
-<!--    <View-->
-<!--        android:id="@+id/view_work"-->
-<!--        android:layout_width="10dp"-->
-<!--        android:layout_height="@dimen/dp_4"-->
-<!--        android:background="@color/ventilator_line"-->
-<!--        app:layout_constraintBottom_toBottomOf="@id/tv_work"-->
-<!--        app:layout_constraintLeft_toRightOf="@id/tv_work"-->
-<!--        app:layout_constraintTop_toTopOf="@id/tv_work" />-->
+    <!--    <View-->
+    <!--        android:id="@+id/view_work"-->
+    <!--        android:layout_width="10dp"-->
+    <!--        android:layout_height="@dimen/dp_4"-->
+    <!--        android:background="@color/ventilator_line"-->
+    <!--        app:layout_constraintBottom_toBottomOf="@id/tv_work"-->
+    <!--        app:layout_constraintLeft_toRightOf="@id/tv_work"-->
+    <!--        app:layout_constraintTop_toTopOf="@id/tv_work" />-->
 
-    <ImageView
-        android:id="@+id/iv_online"
-        android:layout_width="@dimen/dp_10"
-        android:layout_height="@dimen/dp_10"
-        android:background="@drawable/ventilator_shape_online_bg"
-        app:layout_constraintBottom_toBottomOf="@id/tv_online"
-        app:layout_constraintLeft_toLeftOf="@id/rv_device_online"
-        app:layout_constraintTop_toTopOf="@id/tv_online" />
+        <ImageView
+            android:id="@+id/iv_online"
+            android:layout_width="@dimen/dp_10"
+            android:layout_height="@dimen/dp_10"
+            android:background="@drawable/ventilator_shape_online_bg"
+            app:layout_constraintBottom_toBottomOf="@id/tv_online"
+            app:layout_constraintLeft_toLeftOf="@id/rv_device_online"
+            app:layout_constraintTop_toTopOf="@id/tv_online" />
 
-    <TextView
-        android:id="@+id/tv_online"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="在线"
-        android:textColor="@color/ventilator_white_50"
-        android:textSize="@dimen/sp_20"
-        app:layout_constraintBaseline_toBaselineOf="@id/tv_work"
-        app:layout_constraintLeft_toRightOf="@id/iv_online" />
+        <TextView
+            android:id="@+id/tv_online"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="在线"
+            android:textColor="@color/ventilator_white_50"
+            android:textSize="@dimen/sp_20"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_work"
+            app:layout_constraintLeft_toRightOf="@id/iv_online" />
 
-<!--    <View-->
-<!--        android:id="@+id/view_online"-->
-<!--        android:layout_width="10dp"-->
-<!--        android:layout_height="@dimen/dp_4"-->
-<!--        android:background="@color/ventilator_line"-->
-<!--        app:layout_constraintBottom_toBottomOf="@id/tv_online"-->
-<!--        app:layout_constraintLeft_toRightOf="@id/tv_online"-->
-<!--        app:layout_constraintTop_toTopOf="@id/tv_online" />-->
+    <!--    <View-->
+    <!--        android:id="@+id/view_online"-->
+    <!--        android:layout_width="10dp"-->
+    <!--        android:layout_height="@dimen/dp_4"-->
+    <!--        android:background="@color/ventilator_line"-->
+    <!--        app:layout_constraintBottom_toBottomOf="@id/tv_online"-->
+    <!--        app:layout_constraintLeft_toRightOf="@id/tv_online"-->
+    <!--        app:layout_constraintTop_toTopOf="@id/tv_online" />-->
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_device_work"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_5"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ventilator_guideline" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_device_work"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_5"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ventilator_guideline" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_device_online"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_5"
-        app:layout_constraintLeft_toRightOf="@id/rv_device_work"
-        app:layout_constraintTop_toBottomOf="@id/ventilator_guideline" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_device_online"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_5"
+            app:layout_constraintLeft_toRightOf="@id/rv_device_work"
+            app:layout_constraintTop_toBottomOf="@id/ventilator_guideline" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/ventilator_guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.44" />
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/ventilator_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.44" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

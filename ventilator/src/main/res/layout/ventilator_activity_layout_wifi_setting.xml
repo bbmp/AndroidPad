@@ -4,9 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/ventilator_ic_bg"
     tools:context=".ui.activity.WifiSettingActivity">
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/iv_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/common_ic_bg">
 
+    </pl.droidsonroids.gif.GifImageView>
     <include
         android:id="@+id/ll_title"
         layout="@layout/ventilator_view_layout_title"

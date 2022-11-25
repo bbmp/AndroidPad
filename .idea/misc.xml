@@ -11,6 +11,10 @@
         <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_password_on_ic.xml" value="0.2115" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_shape_button_mark.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_shape_counter_down.xml" value="0.2115" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_shape_rect_down.xml" value="0.196" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_shape_rect_up.xml" value="0.196" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_shape_round_rect.xml" value="0.196" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_shape_round_up.xml" value="0.193" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_shape_step_bg.xml" value="0.139" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_shape_triangle.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/layout/common_blurredview.xml" value="0.1" />
@@ -19,6 +23,9 @@
         <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/layout/common_layout_markview_add.xml" value="0.11788194444444444" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/layout/common_layout_markview_step.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/layout/common_layout_popwindow.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/layout/common_layout_rect.xml" value="0.25" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/layout/common_layout_round_rect.xml" value="0.11788194444444444" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/layout/common_layout_wave_view.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/drawable/pan_main_item_bg.xml" value="0.1725" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/drawable/pan_recipe_img_bg.xml" value="0.261" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/drawable/pan_shape_border_bg.xml" value="0.1775" />
@@ -353,6 +360,7 @@
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_view_layout_tab_temp.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_view_layout_tab_time.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_view_layout_title.xml" value="0.17682291666666666" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/stove_activity_layout_recipe_detail.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/stream/src/main/res/layout/activity_ble.xml" value="0.13333333333333333" />
         <entry key="..\:/AndroidProjects/AndroidPad/stream/src/main/res/layout/fragment_take_photo.xml" value="0.18177083333333333" />
         <entry key="..\:/AndroidProjects/AndroidPad/stream/src/main/res/layout/home_fragment.xml" value="0.175" />
