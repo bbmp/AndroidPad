@@ -69,6 +69,8 @@ public class VentilatorReceiver extends BroadcastReceiver {
             }
         } else if (WifiManager.SCAN_RESULTS_AVAILABLE_ACTION.equals(intent.getAction())) {
             LogUtils.e("wifi列表发生变化");
+            boolean success = intent.getBooleanExtra(WifiManager.EXTRA_RESULTS_UPDATED, false);
+            AccountInfo.getInstance().getWifi().setValue(success);
         }
     }
 }

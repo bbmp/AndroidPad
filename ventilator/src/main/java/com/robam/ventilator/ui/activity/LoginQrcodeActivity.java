@@ -1,5 +1,6 @@
 package com.robam.ventilator.ui.activity;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.view.View;
@@ -15,6 +16,7 @@ import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.UserInfo;
+import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.http.CloudHelper;
 import com.robam.ventilator.response.GetLoginStatusRes;
 import com.robam.ventilator.response.GetUserInfoRes;
@@ -24,6 +26,7 @@ import java.util.UUID;
 public class LoginQrcodeActivity extends VentilatorBaseActivity {
     private ImageView ivQrcode;
     private static final String QRCODE_LOGIN = "qrcode";
+    private boolean first;
 
     @Override
     protected int getLayoutId() {
@@ -32,11 +35,20 @@ public class LoginQrcodeActivity extends VentilatorBaseActivity {
 
     @Override
     protected void initView() {
-        showLeft();
+        if (null != getIntent()) {
+            first = getIntent().getBooleanExtra(VentilatorConstant.EXTRA_FIRST, false);
+            if (first) { //首次登录
+                //跳过
+                setRight();
+            } else
+                showLeft();
+        } else
+            showLeft();
+
         setCenter(R.string.ventilator_login_qrcode);
         ivQrcode = findViewById(R.id.iv_qrcode);
 
-        setOnClickListener(R.id.tv_login_phone, R.id.tv_login_password);
+        setOnClickListener(R.id.tv_login_phone, R.id.tv_login_password, R.id.ll_right);
     }
 
     @Override
@@ -49,11 +61,19 @@ public class LoginQrcodeActivity extends VentilatorBaseActivity {
         super.onClick(view);
         int id = view.getId();
         if (id == R.id.tv_login_phone) {
-            startActivity(LoginPhoneActivity.class);
+            Intent intent = new Intent(LoginQrcodeActivity.this, LoginPhoneActivity.class);
+            intent.putExtra(VentilatorConstant.EXTRA_FIRST, first);
+            startActivity(intent);
             finish();
         } else if (id == R.id.tv_login_password) {
-            startActivity(LoginPasswordActivity.class);
+            Intent intent = new Intent(LoginQrcodeActivity.this, LoginPasswordActivity.class);
+            intent.putExtra(VentilatorConstant.EXTRA_FIRST, first);
+            startActivity(intent);
             finish();
+        } else if (id == R.id.ll_right) {
+            //跳转到首页
+            if (first)
+                HomeActivity.start(this);
         }
     }
 
@@ -111,6 +131,9 @@ public class LoginQrcodeActivity extends VentilatorBaseActivity {
                     MMKVUtils.setUser(userJson);
                     //登录成功
                     AccountInfo.getInstance().getUser().setValue(info);
+                    //跳转到首页
+                    if (first)
+                        HomeActivity.start(LoginQrcodeActivity.this);
                     finish();
                     //绑定设备
 //                    bindDevice(getUserInfoRes.getUser().id);

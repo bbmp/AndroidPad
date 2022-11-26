@@ -118,7 +118,7 @@
         android:gravity="center"
         android:visibility="gone"
         app:common_blur_mode="rectangle"
-        app:common_blur_radius="@dimen/dp_10"
+        app:common_blur_radius="@dimen/dp_20"
         app:common_blur_overlay_color="@color/ventilator_drawer_bg" />
     <FrameLayout
         android:id="@+id/ll_drawer_left"
@@ -159,7 +159,7 @@
             android:gravity="center"
             android:visibility="gone"
             app:common_blur_mode="rectangle"
-            app:common_blur_radius="@dimen/dp_10"
+            app:common_blur_radius="@dimen/dp_20"
             app:common_blur_overlay_color="@color/ventilator_drawer_bg" />
     </FrameLayout>
     <FrameLayout
@@ -202,7 +202,7 @@
             android:gravity="center"
             android:visibility="gone"
             app:common_blur_mode="rectangle"
-            app:common_blur_radius="@dimen/dp_10"
+            app:common_blur_radius="@dimen/dp_20"
             app:common_blur_overlay_color="@color/ventilator_drawer_bg" />
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

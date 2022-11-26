@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.provider.Settings;
 import android.serialport.helper.SerialPortHelper;
@@ -36,6 +37,7 @@ import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.device.HomeVentilator;
 import com.robam.ventilator.device.VentilatorFactory;
 import com.robam.ventilator.http.CloudHelper;
+import com.robam.ventilator.manager.VenWifiManager;
 import com.robam.ventilator.protocol.serial.SerialVentilator;
 import com.robam.ventilator.response.GetTokenRes;
 import com.robam.ventilator.response.GetUserInfoRes;
@@ -155,6 +157,8 @@ public class HomeActivity extends BaseActivity {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (!bluetoothAdapter.isEnabled())
             checkPermissions();
+        //打开wifi
+        checkWifiPermmissions();
         //启动定时服务
         Intent intent = new Intent(this.getApplicationContext(), AlarmMqttService.class);
         intent.setPackage(getPackageName());
@@ -165,10 +169,7 @@ public class HomeActivity extends BaseActivity {
         Intent venIntent = new Intent(this.getApplicationContext(), AlarmVentilatorService.class);
         venIntent.setPackage(getPackageName());
         startService(venIntent);
-//初始化主设备mqtt收发 烟机端只要网络连接上就需要启动mqtt服务，锅和灶不用登录
-        //初始网络状态
-        if (NetworkUtils.isConnect(this) && !AccountInfo.getInstance().getConnect().getValue())
-            AccountInfo.getInstance().getConnect().setValue(true);
+
         //监听网络状态
         AccountInfo.getInstance().getConnect().observe(this, new Observer<Boolean>() {
             @Override
@@ -208,7 +209,7 @@ public class HomeActivity extends BaseActivity {
             SteamDataUtil.getDeviceErrorInfo(HomeActivity.this);//获取告警信息数据
         }).start();
     }
-
+    //请求蓝牙权限
     private void checkPermissions() {
         //请求权限
         PermissionUtils.requestPermission(this, new PermissionUtils.OnPermissionListener() {
@@ -223,6 +224,23 @@ public class HomeActivity extends BaseActivity {
                 LogUtils.e("requestPermission onFailed");
             }
         }, Manifest.permission.BLUETOOTH, Manifest.permission.ACCESS_FINE_LOCATION);
+    }
+    //请求wifi权限
+    private void checkWifiPermmissions() {
+        //
+        PermissionUtils.requestPermission(this, new PermissionUtils.OnPermissionListener() {
+            @Override
+            public void onSucceed() {
+                //打开wifi
+                WifiManager mWifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+                VenWifiManager.openWifi(mWifiManager);
+            }
+
+            @Override
+            public void onFailed() {
+
+            }
+        }, Manifest.permission.CHANGE_WIFI_STATE);
     }
     //已授权
     @SuppressLint("MissingPermission")

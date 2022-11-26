@@ -43,8 +43,8 @@
 
     <ImageView
         android:id="@+id/iv_lock"
-        android:layout_width="@dimen/dp_104"
-        android:layout_height="@dimen/dp_104"
+        android:layout_width="@dimen/dp_108"
+        android:layout_height="@dimen/dp_108"
         android:padding="@dimen/dp_24"
         android:src="@drawable/ventilator_screen_lock"
         app:layout_constraintLeft_toLeftOf="parent"

@@ -107,4 +107,5 @@ dependencies {
     implementation "androidx.multidex:multidex:$versions.multidex"
     implementation "com.blankj:utilcodex:$versions.utilcodex"
     implementation "pl.droidsonroids.gif:android-gif-drawable:$versions.gif_drawable"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:$versions.swiperefreshlayout"
 }

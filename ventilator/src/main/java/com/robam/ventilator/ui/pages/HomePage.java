@@ -173,7 +173,7 @@ public class HomePage extends VentilatorBasePage {
                 } else {
 //                    LogUtils.e("x" + llProducts.getX());
                     int width = ScreenUtils.getWidthPixels(getContext());
-                    llProducts.setX(width - slideOffset * drawerView.getWidth() - getContext().getResources().getDimension(com.robam.common.R.dimen.dp_90));
+                    llProducts.setX(width - slideOffset * drawerView.getWidth() - getContext().getResources().getDimension(com.robam.common.R.dimen.dp_90) - 0.3f); //不加0.3会有一条黑线
                     llProducts.setBackgroundColor(getContext().getResources().getColor(R.color.ventilator_color_menu));
                     findViewById(R.id.sb_view_left).setVisibility(View.VISIBLE);
                     findViewById(R.id.sb_view_right).setVisibility(View.GONE);

@@ -392,6 +392,7 @@
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_shape_scrollbar_bg.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_shape_work_bg.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_shortcut_item_bg.xml" value="0.196" />
+        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_shortcut_item_selected.xml" value="0.1885" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_text_color_selected.xml" value="0.221" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_text_color_selector.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_waiting_bg.xml" value="0.171" />

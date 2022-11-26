@@ -12,7 +12,7 @@
         android:textColor="@color/ventilator_white"
         android:background="@drawable/ventilator_main_item_bg"
         android:lineSpacingMultiplier="0.8"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"

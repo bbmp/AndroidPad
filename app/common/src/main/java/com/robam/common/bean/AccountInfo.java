@@ -21,6 +21,7 @@ public class AccountInfo {
     private MutableLiveData<UserInfo> user = new MutableLiveData<>(null);
     private MutableLiveData<Boolean> connect = new MutableLiveData<>(false); //联网情况
     private MutableLiveData<String> guid = new MutableLiveData<>(""); //设备状态变化
+    private MutableLiveData<Boolean> wifi = new MutableLiveData<>(false);//wifi列表变化
     private AccountInfo() {}
 
     public String topGuid = Plat.getPlatform().getDeviceOnlySign();//当前设备
@@ -51,6 +52,9 @@ public class AccountInfo {
         return guid;
     }
 
+    public MutableLiveData<Boolean> getWifi() {
+        return wifi;
+    }
     //    private final RxLiveData<UserInfo> userData = new RxLiveData<>();
 //
 //    public RxLiveData<UserInfo> getUserData() {

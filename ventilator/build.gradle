@@ -50,7 +50,8 @@ dependencies {
     api project(path: ':dishwasher')   //洗碗机
     api project(path: ':cabinet')        //消毒柜
     api project(path: ':app:stove')       //灶具
-    api project(path: ':app:pan')      //锅
+    api project(path: ':app:pan')        //锅
+    api "androidx.swiperefreshlayout:swiperefreshlayout:$versions.swiperefreshlayout"
     testImplementation 'junit:junit:4.13.2'
     api "com.squareup.retrofit2:retrofit:$versions.retrofit"
     api "com.squareup.retrofit2:converter-gson:$versions.converter_gson"

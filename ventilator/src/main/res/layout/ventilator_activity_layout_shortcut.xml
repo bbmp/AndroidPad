@@ -73,10 +73,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_5"
+            android:layout_marginBottom="@dimen/dp_5"
             android:text="在线"
             android:textColor="@color/ventilator_white_50"
             android:textSize="@dimen/sp_20"
-            app:layout_constraintBaseline_toBaselineOf="@id/tv_work"
+            app:layout_constraintBottom_toTopOf="@id/ventilator_guideline"
             app:layout_constraintLeft_toRightOf="@id/iv_online" />
 
     <!--    <View-->

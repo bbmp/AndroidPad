@@ -37,6 +37,7 @@ import com.robam.common.ui.blurview.impl.AndroidXBlurImpl;
 import com.robam.common.ui.blurview.impl.BlurImpl;
 import com.robam.common.ui.blurview.impl.EmptyBlurImpl;
 import com.robam.common.ui.blurview.impl.SupportLibraryBlurImpl;
+import com.robam.common.utils.LogUtils;
 
 public class ShapeBlurView extends View {
     private Context mContext;
@@ -201,6 +202,7 @@ public class ShapeBlurView extends View {
                     bmp.recycle();
                     BLUR_IMPL = 3;
                 } catch (Throwable e) {
+                    LogUtils.e("getBlurImpl" + e.getMessage());
                 }
             }
         }
