@@ -496,7 +496,7 @@ public class ShapeBlurView extends View {
             final int[] locations = new int[2];
             Bitmap oldBmp = mBlurredBitmap;
             View decor = mDecorView;
-            if (decor != null && isShown() && prepare()) {
+            if (decor != null && isShown() && prepare() && getVisibility() == View.VISIBLE) {
                 boolean redrawBitmap = mBlurredBitmap != oldBmp;
                 oldBmp = null;
                 decor.getLocationOnScreen(locations);

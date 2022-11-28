@@ -82,7 +82,7 @@ public class VentilatorLocalControl implements VentilatorFunction{
     @Override
     public void setFanStatus(int status) {
         byte byteStatus;
-        if (status == VentilatorConstant.FAN_POWERON)
+        if (status == VentilatorConstant.FAN_SHUTDOWN)
             byteStatus = (byte) 0x01;
         else
             byteStatus = (byte) 0x00;

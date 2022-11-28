@@ -757,7 +757,7 @@ public class HomePage extends VentilatorBasePage {
         //开灯
         Plat.getPlatform().openWaterLamp();
 
-        HomeVentilator.getInstance().status = 4; //油网清洗状态
+        HomeVentilator.getInstance().status = VentilatorConstant.FAN_LOCK; //油网清洗状态
 
         //重新计算
         MMKVUtils.setFanRuntime(0);

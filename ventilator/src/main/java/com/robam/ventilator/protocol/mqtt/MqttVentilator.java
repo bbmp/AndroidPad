@@ -265,7 +265,8 @@ public class MqttVentilator extends MqttPublic {
 
                 buf.put(HomeVentilator.getInstance().gear); //挡位
 
-                buf.put(HomeVentilator.getInstance().lightOn); //灯开关
+                byte byteLight = (byte) (HomeVentilator.getInstance().lightOn == (byte) 0xA0 ? 0x00:0x01);
+                buf.put(byteLight); //灯开关
 
                 long runTime = MMKVUtils.getFanRuntime();
                 if (runTime >= 60 * 60 * 60 * 1000)
@@ -415,12 +416,18 @@ public class MqttVentilator extends MqttPublic {
                     short terminalType = ByteUtils.toShort(payload[offset++]);
                     //
                     //userid
-                    ByteUtils.toString(payload, offset++, 10);
+                    ByteUtils.toString(payload, offset, 10);
                     offset += 10;
                     //灯开关
                     short light = ByteUtils.toShort(payload[offset++]);
 
-                    VentilatorAbstractControl.getInstance().setFanLight(light);
+                    if (light == VentilatorConstant.FAN_LIGHT_OPEN) {
+                        VentilatorAbstractControl.getInstance().setFanLight(light);
+                        Plat.getPlatform().openWaterLamp();
+                    } else {
+                        VentilatorAbstractControl.getInstance().setFanLight(light);
+                        Plat.getPlatform().closeWaterLamp();
+                    }
                     //设置烟机灯回复
                     MqttMsg newMsg = new MqttMsg.Builder()
                             .setMsgId(MsgKeys.SetFanLight_Rep)
@@ -435,7 +442,7 @@ public class MqttVentilator extends MqttPublic {
                     //控制端类型
                     short terminalType = ByteUtils.toShort(payload[offset++]);
                     //userid
-                    ByteUtils.toString(payload, offset++, 10);
+                    ByteUtils.toString(payload, offset, 10);
                     offset += 10;
                     //挡位
                     short gear = ByteUtils.toShort(payload[offset++]);

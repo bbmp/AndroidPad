@@ -13,6 +13,8 @@ import android.widget.ImageView;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.gson.Gson;
+import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.RTopic;
@@ -44,6 +46,9 @@ import com.robam.ventilator.ui.receiver.VentilatorReceiver;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -270,6 +275,37 @@ public class HomeVentilator {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    //获取烟机子设备
+    public void setSubDevices(MqttMsg msg) throws Exception{
+        JSONArray jsonArray = new JSONArray();
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if ((device instanceof Pan) || (device instanceof Stove)) { //其他存在的子设备
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.putOpt(VentilatorConstant.DEVICE_GUID, device.guid);
+                jsonObject.putOpt(VentilatorConstant.DEVICE_BIZ, device.bid);
+                jsonObject.putOpt(VentilatorConstant.DEVICE_STATUS, device.status);
+                jsonArray.put(jsonObject);
+            }
+        }
+        //读文件
+        if (jsonArray.length() == 0) {
+            Set<String> deviceSets = MMKVUtils.getSubDevice();
+            if (null != deviceSets) {
+                for (String json : deviceSets) {
+                    Device subDevice = new Gson().fromJson(json, Device.class);
+                    if (IDeviceType.RZNG.equals(subDevice.dc) || IDeviceType.RRQZ.equals(subDevice.dc)) {//锅
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.putOpt(VentilatorConstant.DEVICE_GUID, subDevice.guid);
+                        jsonObject.putOpt(VentilatorConstant.DEVICE_BIZ, subDevice.bid);
+                        jsonObject.putOpt(VentilatorConstant.DEVICE_STATUS, subDevice.status);
+                        jsonArray.put(jsonObject);
+                    }
+                }
+            }
+        }
+        msg.putOpt(ComnConstant.DEVICE_NUM, jsonArray.length() + 1); //设备个数
+        msg.putOpt(VentilatorConstant.SUB_DEVICES, jsonArray);
     }
 
     //爆炒档开始倒计时

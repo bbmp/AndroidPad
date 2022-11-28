@@ -108,4 +108,5 @@ dependencies {
     implementation "com.blankj:utilcodex:$versions.utilcodex"
     implementation "pl.droidsonroids.gif:android-gif-drawable:$versions.gif_drawable"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$versions.swiperefreshlayout"
+    implementation "com.iqiyi.xcrash:xcrash-android-lib:$versions.xcrash"
 }

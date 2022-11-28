@@ -11,6 +11,7 @@ import com.robam.common.constant.StoveConstant;
 import com.robam.common.device.Plat;
 import com.robam.common.device.subdevice.Stove;
 import com.robam.common.module.IPublicVentilatorApi;
+import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MMKVUtils;
 import com.robam.ventilator.constant.VentilatorConstant;
@@ -22,6 +23,8 @@ import com.robam.ventilator.ui.activity.MatchNetworkActivity;
 import com.robam.ventilator.ui.service.AlarmBleService;
 import com.robam.ventilator.ui.service.AlarmMqttService;
 import com.robam.ventilator.ui.service.AlarmVentilatorService;
+
+import org.json.JSONArray;
 
 public class PublicVentilatorApi implements IPublicVentilatorApi {
     //给外部模块调用
@@ -167,6 +170,11 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
     @Override
     public void updateOperationTime() {
         HomeVentilator.getInstance().updateOperationTime();
+    }
+
+    @Override
+    public void setSubDevices(MqttMsg msg) throws Exception {
+        HomeVentilator.getInstance().setSubDevices(msg);
     }
 
 }
