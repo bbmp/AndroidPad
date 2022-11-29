@@ -142,7 +142,7 @@ public class HomeActivity extends BaseActivity {
 
                 //开机
                 if (HomeVentilator.getInstance().startup == 0x00) {
-
+                    HomeVentilator.getInstance().startup = 0x01;
                     HomeVentilator.getInstance().openVentilator();
                 }
 

@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 public class AlarmVentilatorService extends Service {
     private static final int INTERVAL = 3000;
     private byte data[] = SerialVentilator.packQueryCmd();
-    private long autoTime;
+
     //用于熄屏时读取按键
     private ThreadPoolExecutor keyMonitor = new ThreadPoolExecutor(1, 1, 0, TimeUnit.SECONDS, new SynchronousQueue<>(),
             new ThreadPoolExecutor.DiscardPolicy());//无法重复提交
@@ -126,7 +126,8 @@ public class AlarmVentilatorService extends Service {
         if ((Math.abs(System.currentTimeMillis() - HomeVentilator.getInstance().operationTime) >= 5*60*1000)
             && HomeVentilator.getInstance().gear == (byte) 0xA0 //风机未开
                 && HomeVentilator.getInstance().isStartUp() //开机状态
-                && !HomeVentilator.getInstance().isLock())  //非锁屏状态
+                && !HomeVentilator.getInstance().isLock() //非锁屏状态
+                && HomeVentilator.getInstance().lightOn == (byte) 0xA0)  //关灯状态
             HomeVentilator.getInstance().closeVentilator(); //关闭烟机
 
         //检查油网清洗时间,油网清洗打开
@@ -137,32 +138,30 @@ public class AlarmVentilatorService extends Service {
             }
         }
         //检查假日模式打开
-        if (HomeVentilator.getInstance().holiday && (Math.abs(System.currentTimeMillis() - autoTime) <= 59 * 1000)) { //一分钟内不重复通风
+        if (HomeVentilator.getInstance().holiday && (HomeVentilator.getInstance().startup == (byte) 0x00)) { //关机状态下
             String curWeek = DateUtil.getWeek();
             String weekTime = HomeVentilator.getInstance().weekTime; //为了效率，不每次io
             String week = weekTime.substring(0, 2);
 
             if (curWeek.equals(week) && DateUtil.isNowTime(weekTime)) {
-                //自动通风
-                if (HomeVentilator.getInstance().startup == (byte) 0x00) { //关机状态下
-                    autoTime = System.currentTimeMillis(); //通风时间
-                    HomeVentilator.getInstance().startAutoCountDown(); //自动通风
 
-                    return super.onStartCommand(intent, flags, startId);
-                }
+                HomeVentilator.getInstance().startAutoCountDown(); //自动通风
+
+                return super.onStartCommand(intent, flags, startId);
+
             }
         }
         //超过天数未使用
         int holidayDay = Integer.parseInt(HomeVentilator.getInstance().holidayDay);
         if (HomeVentilator.getInstance().holiday
-                && (Math.abs(System.currentTimeMillis() - HomeVentilator.getInstance().fanOffTime) > holidayDay * 86400 * 1000)) {
+                && (Math.abs(System.currentTimeMillis() - HomeVentilator.getInstance().fanOffTime) > holidayDay * 86400 * 1000)
+                && (HomeVentilator.getInstance().startup == (byte) 0x00)) { //关机状态下
             //自动通风
-            if (HomeVentilator.getInstance().startup == (byte) 0x00) { //关机状态下
-                autoTime = System.currentTimeMillis(); //通风时间
-                HomeVentilator.getInstance().startAutoCountDown(); //自动通风
 
-                return super.onStartCommand(intent, flags, startId);
-            }
+            HomeVentilator.getInstance().startAutoCountDown(); //自动通风
+
+            return super.onStartCommand(intent, flags, startId);
+
         }
 
         return super.onStartCommand(intent, flags, startId);

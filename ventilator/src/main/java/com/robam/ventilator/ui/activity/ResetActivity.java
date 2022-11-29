@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.robam.common.ui.dialog.IDialog;
+import com.robam.common.utils.MMKVUtils;
+import com.robam.common.utils.ToastUtils;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
 import com.robam.ventilator.constant.DialogConstant;
@@ -62,6 +64,8 @@ public class ResetActivity extends VentilatorBaseActivity {
 
                         clearPublic(); //恢复中
                         clearPrivate();
+                        //清除智能设置
+                        MMKVUtils.resetSmartSet();
 
                         mHandler.postDelayed(updateProgress, 100);
                     }
@@ -76,10 +80,11 @@ public class ResetActivity extends VentilatorBaseActivity {
         public void run() {
             if (null != progressDialog) {
                 ProgressBar progressBar = progressDialog.getRootView().findViewById(R.id.sbr_progress);
-                curProgress++;
+                curProgress+=2;
                 progressBar.setProgress(curProgress);
                 if (curProgress >= 100) {
                     closeProgressDialog();
+                    ToastUtils.showShort(getApplicationContext(), R.string.ventilator_reseted);
                     return;
                 }
                 mHandler.postDelayed(updateProgress, 100);

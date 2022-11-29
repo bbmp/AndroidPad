@@ -1037,7 +1037,7 @@ public class DateUtil {
         String curMin = curTime.substring(3, 5);
         String hour = setTime.substring(2, 4);
         String minute = setTime.substring(5, 7);
-        if (curHour == hour && curMin == minute) { //
+        if (curHour.equals(hour) && curMin.equals(minute)) { //
             return true;
         }
         return false;

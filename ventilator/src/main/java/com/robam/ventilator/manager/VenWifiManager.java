@@ -11,7 +11,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.net.wifi.WifiNetworkSpecifier;
+//import android.net.wifi.WifiNetworkSpecifier;
 import android.os.PatternMatcher;
 import android.text.TextUtils;
 import android.util.Log;
@@ -187,35 +187,41 @@ public class VenWifiManager {
      * @param pws
      */
     public static void connectWifiPws(Context context, String ssid, String pws, ConnectivityManager.NetworkCallback networkCallback) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q)
-        {
-            NetworkSpecifier specifier =
-                    new WifiNetworkSpecifier.Builder()
-                            .setSsidPattern(new PatternMatcher(ssid, PatternMatcher.PATTERN_PREFIX))
-                            .setWpa2Passphrase(pws)
-                            .build();
-
-            NetworkRequest request =
-                    new NetworkRequest.Builder()
-                            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-                            .removeCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-                            .setNetworkSpecifier(specifier)
-                            .build();
-
-            ConnectivityManager connectivityManager = (ConnectivityManager)
-                    context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-            connectivityManager.requestNetwork(request, networkCallback);
-            // Release the request when done.
-            // connectivityManager.unregisterNetworkCallback(networkCallback);
-        } else {
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q)
+//        {
+//            NetworkSpecifier specifier =
+//                    new WifiNetworkSpecifier.Builder()
+//                            .setSsidPattern(new PatternMatcher(ssid, PatternMatcher.PATTERN_PREFIX))
+//                            .setWpa2Passphrase(pws)
+//                            .build();
+//
+//            NetworkRequest request =
+//                    new NetworkRequest.Builder()
+//                            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+//                            .removeCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+//                            .setNetworkSpecifier(specifier)
+//                            .build();
+//
+//            ConnectivityManager connectivityManager = (ConnectivityManager)
+//                    context.getSystemService(Context.CONNECTIVITY_SERVICE);
+//
+//            connectivityManager.requestNetwork(request, networkCallback);
+//            // Release the request when done.
+//            // connectivityManager.unregisterNetworkCallback(networkCallback);
+//        } else {
             WifiManager mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
             mWifiManager.disableNetwork(mWifiManager.getConnectionInfo().getNetworkId());
             int netId = mWifiManager.addNetwork(getWifiConfig(mWifiManager, ssid, pws, true));
             mWifiManager.enableNetwork(netId, true);
-        }
+//        }
     }
-
+    //
+    public static boolean connectWifiPws(Context context, String ssid, String pws) {
+        WifiManager mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        mWifiManager.disableNetwork(mWifiManager.getConnectionInfo().getNetworkId());
+        int netId = mWifiManager.addNetwork(getWifiConfig(mWifiManager, ssid, pws, true));
+        return mWifiManager.enableNetwork(netId, true);
+    }
     /**
      * wifi设置
      *

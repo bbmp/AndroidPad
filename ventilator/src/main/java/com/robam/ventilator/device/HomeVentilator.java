@@ -160,7 +160,8 @@ public class HomeVentilator {
 
                 if (autoCountTime >= 1800) { //3分钟
                     //关闭烟机
-                    closeVentilator();
+                    if (startup == (byte) 0x01)
+                        closeVentilator();
                     return;
                 }
             }
@@ -320,6 +321,8 @@ public class HomeVentilator {
     }
     //延时关机提示
     public void delayShutDown(boolean isLink) {  //是否联动关机
+        if (isLock())  //锁屏状态，不响应
+            return;
         if (gear == (byte) 0xA0 && isLink) //联动关机 挡位未开
             return; //不响应
         if (gear == (byte) 0xA0 || !MMKVUtils.getDelayShutdown()) { //挡位没开或者延时关机关闭 立即关机

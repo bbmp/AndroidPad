@@ -311,8 +311,8 @@ public class HomePage extends VentilatorBasePage {
         rvRight.setAdapter(rvProductsAdapter);
 
         View head = LayoutInflater.from(getContext()).inflate(R.layout.ventilator_item_layout_image, null);
-        ImageView ivHead = head.findViewById(R.id.iv_head);
-        ivHead.setImageResource(R.drawable.ventilator_ic_bg);
+//        ImageView ivHead = head.findViewById(R.id.iv_head);
+//        ivHead.setImageResource(R.drawable.ventilator_ic_bg);
         rvProductsAdapter.addHeaderView(head);
         View foot = LayoutInflater.from(getContext()).inflate(R.layout.ventilator_item_layout_button, null);
         //添加产品
@@ -495,8 +495,11 @@ public class HomePage extends VentilatorBasePage {
                     return;
                 LogUtils.e("onChanged " + s);
                 refreshTime = System.currentTimeMillis();
-                if (null != rvProductsAdapter)
+                if (null != rvProductsAdapter) {
+                    if (AccountInfo.getInstance().deviceList.size() > 0)
+                        rvProductsAdapter.removeHeaderView(head);
                     rvProductsAdapter.setList(AccountInfo.getInstance().deviceList);
+                }
             }
         });
         //油网清洗检查

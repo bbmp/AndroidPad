@@ -2,6 +2,7 @@ package com.robam.ventilator.ui.activity;
 
 import android.net.ConnectivityManager;
 import android.net.Network;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -55,32 +56,52 @@ public class WifiConnectActivity extends VentilatorBaseActivity {
         if (id == R.id.btn_join) {
             //连接网络
             connecting();
+            final int sdkVersion = getApplicationInfo().targetSdkVersion;
+            if (sdkVersion > Build.VERSION_CODES.P) {
+                VenWifiManager.connectWifiPws(getApplicationContext()
+                        , tvName.getText().toString()
+                        , etPassword.getText().toString(), new ConnectivityManager.NetworkCallback() {
+                            @Override
+                            public void onAvailable(Network network) {
+                                Log.i("onAvailable", "success");
+                                if (null != waitingDialog)
+                                    waitingDialog.dismiss();
+                                //connect success
+                                finish();
+                            }
 
-            VenWifiManager.connectWifiPws(getApplicationContext()
-                    , tvName.getText().toString()
-                    ,etPassword.getText().toString(), new ConnectivityManager.NetworkCallback() {
+                            @Override
+                            public void onUnavailable() {
+                                Log.i("onUnavailable", "failed");
+                                if (null != waitingDialog)
+                                    waitingDialog.dismiss();
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        ToastUtils.showShort(WifiConnectActivity.this, R.string.ventilator_connect_failed);
+                                    }
+                                });
+                            }
+                        });
+            } else {
+                if (VenWifiManager.connectWifiPws(getApplicationContext()
+                        , tvName.getText().toString()
+                        , etPassword.getText().toString())) {
+                    if (null != waitingDialog)
+                        waitingDialog.dismiss();
+                    //connect success
+                    finish();
+                } else {
+                    if (null != waitingDialog)
+                        waitingDialog.dismiss();
+                    getActivity().runOnUiThread(new Runnable() {
                         @Override
-                        public void onAvailable(Network network) {
-                            Log.i("onAvailable", "success");
-                            if (null != waitingDialog)
-                                waitingDialog.dismiss();
-                            //connect success
-                            finish();
-                        }
-
-                        @Override
-                        public void onUnavailable() {
-                            Log.i("onUnavailable", "failed");
-                            if (null != waitingDialog)
-                                waitingDialog.dismiss();
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ToastUtils.showShort(WifiConnectActivity.this, R.string.ventilator_connect_failed);
-                                }
-                            });
+                        public void run() {
+                            ToastUtils.showShort(WifiConnectActivity.this, R.string.ventilator_connect_failed);
                         }
                     });
+                }
+            }
 
         }
     }

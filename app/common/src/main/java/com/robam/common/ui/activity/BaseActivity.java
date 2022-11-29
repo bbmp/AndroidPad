@@ -149,6 +149,7 @@ public abstract class BaseActivity extends AbsActivity implements ActivityAction
                     Plat.getPlatform().closeWaterLamp();
                     iPublicVentilatorApi.setFanLight(0);
                 }
+                iPublicVentilatorApi.updateOperationTime(); //更新操作时间
                 return true;
             }
         } else if (keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE) {
