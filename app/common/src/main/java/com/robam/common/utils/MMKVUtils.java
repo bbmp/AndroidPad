@@ -271,20 +271,7 @@ public class MMKVUtils {
     public static void resetSmartSet() {
         MMKV mmkv = MMKV.defaultMMKV();
 
-        mmkv.remove(FAN_RUNTIME);
-        mmkv.remove(HOLIDAY);
-        mmkv.remove(HOLIDAY_DAY);
-        mmkv.remove(HOLIDAY_WEEK_TIME);
-        mmkv.remove(OIL_CLEAN);
-        mmkv.remove(DELAY_SHUTDOWN);
-        mmkv.remove(DELAY_SHUTDOWN_TIME);
-        mmkv.remove(FAN_STOVE);
-        mmkv.remove(FAN_PAN);
-        mmkv.remove(FAN_STEAM);
-        mmkv.remove(FAN_STOVE_GEAR);
-        mmkv.remove(FAN_PAN_GEAR);
-        mmkv.remove(FAN_STEAM_GEAR);
-        mmkv.remove(FAN_RELATION_STEAM);
+        mmkv.clearAll();
     }
     //智感恒吸设置
     public static void setSmartSet(boolean status) {
@@ -295,5 +282,15 @@ public class MMKVUtils {
     public static boolean getSmartSet() {
         MMKV mmkv = MMKV.defaultMMKV();
         return mmkv.decodeBool(SMART_SET, false);
+    }
+    //wifi密码
+    public static void setWifi(String ssid, String pwd) {
+        MMKV mmkv = MMKV.defaultMMKV();
+        mmkv.encode(ssid, pwd);
+    }
+    //获取密码
+    public static String getWifiPwd(String ssid) {
+        MMKV mmkv = MMKV.defaultMMKV();
+        return mmkv.decodeString(ssid, "");
     }
 }

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.AlarmManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -76,15 +77,31 @@ public class DateSettingActivity extends VentilatorBaseActivity {
             public void onCheckedChanged(SwitchButton button, boolean checked) {
                 group.setVisibility(checked? View.GONE: View.VISIBLE);
                 llBorder.setVisibility(checked ? View.VISIBLE:View.GONE);
+                if (checked) {
+                    Settings.Global.putString(
+                            getContentResolver(),
+                            Settings.Global.AUTO_TIME,"1");
+                } else {
+                    Settings.Global.putString(
+                            getContentResolver(),
+                            Settings.Global.AUTO_TIME,"0");
+                }
             }
         });
+
         //已联网
         if (NetworkUtils.isConnect(this)) {
             switchButton.setChecked(true);
             group.setVisibility(View.GONE);
+            Settings.Global.putString(
+                    getContentResolver(),
+                    Settings.Global.AUTO_TIME,"1");
         } else {
             switchButton.setChecked(false);
             llBorder.setVisibility(View.GONE);
+            Settings.Global.putString(
+                    getContentResolver(),
+                    Settings.Global.AUTO_TIME,"0");
         }
         mHourAdapter = new RvStringAdapter();
         mMinuteAdapter = new RvStringAdapter();

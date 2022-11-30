@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.PasswordEditText;
+import com.robam.common.utils.MMKVUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
@@ -39,8 +40,8 @@ public class WifiConnectActivity extends VentilatorBaseActivity {
         if (null != bundle) {
             String ssid = bundle.getString(VentilatorConstant.EXTRA_WIFI_SSID);
             tvName.setText(ssid);
+            etPassword.setText(MMKVUtils.getWifiPwd(ssid));
         }
-
         setOnClickListener(R.id.btn_join);
     }
 
@@ -90,6 +91,7 @@ public class WifiConnectActivity extends VentilatorBaseActivity {
                     if (null != waitingDialog)
                         waitingDialog.dismiss();
                     //connect success
+                    MMKVUtils.setWifi(tvName.getText().toString(), etPassword.getText().toString());
                     finish();
                 } else {
                     if (null != waitingDialog)

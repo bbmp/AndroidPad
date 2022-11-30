@@ -157,6 +157,8 @@ public class HomeVentilator {
                     Thread.sleep(100);
                 } catch (Exception e) {}
                 autoCountTime++;
+                if (startup == (byte) 0x00) //中途关机
+                    return;
 
                 if (autoCountTime >= 1800) { //3分钟
                     //关闭烟机
