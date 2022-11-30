@@ -341,7 +341,7 @@ public class HomeVentilator {
                 }
             }, 2000); //延时，防止自动跳转时覆盖
         } else {
-            VentilatorAbstractControl.getInstance().beep();
+
 
             shutDownHint(false);
         }
@@ -377,16 +377,24 @@ public class HomeVentilator {
                     if (currentSecond <= 0) {
                         cancleDelayShutDown();
                         //关机
-                        Plat.getPlatform().screenOff(); //熄灭ping
-                        Plat.getPlatform().closePowerLamp();//关灯
-                        Plat.getPlatform().closeWaterLamp(); //关左灯
-                        VentilatorAbstractControl.getInstance().shutDown();
+                        closeVentilator();
                     }
                 }
             });
             delayCloseDialog.tvCountdown.start();
 
+            if (!isLink)
+                VentilatorAbstractControl.getInstance().beep();
             delayCloseDialog.show();
+        } else {
+            if (!isLink) { //主动关机
+                //关机
+                closeVentilator();
+
+                if (null != delayCloseDialog)
+                    delayCloseDialog.tvCountdown.stop();
+                cancleDelayShutDown();
+            }
         }
     }
     //打开烟机
