@@ -78,13 +78,9 @@ public class DateSettingActivity extends VentilatorBaseActivity {
                 group.setVisibility(checked? View.GONE: View.VISIBLE);
                 llBorder.setVisibility(checked ? View.VISIBLE:View.GONE);
                 if (checked) {
-                    Settings.Global.putString(
-                            getContentResolver(),
-                            Settings.Global.AUTO_TIME,"1");
+                    openAutoTime();
                 } else {
-                    Settings.Global.putString(
-                            getContentResolver(),
-                            Settings.Global.AUTO_TIME,"0");
+                    closeAutoTime();
                 }
             }
         });
@@ -93,15 +89,11 @@ public class DateSettingActivity extends VentilatorBaseActivity {
         if (NetworkUtils.isConnect(this)) {
             switchButton.setChecked(true);
             group.setVisibility(View.GONE);
-            Settings.Global.putString(
-                    getContentResolver(),
-                    Settings.Global.AUTO_TIME,"1");
+            openAutoTime();
         } else {
             switchButton.setChecked(false);
             llBorder.setVisibility(View.GONE);
-            Settings.Global.putString(
-                    getContentResolver(),
-                    Settings.Global.AUTO_TIME,"0");
+            closeAutoTime();
         }
         mHourAdapter = new RvStringAdapter();
         mMinuteAdapter = new RvStringAdapter();
@@ -128,6 +120,22 @@ public class DateSettingActivity extends VentilatorBaseActivity {
         mHourView.setAdapter(mHourAdapter);
         mMinuteView.setAdapter(mMinuteAdapter);
         setOnClickListener(R.id.btn_save);
+    }
+
+    private void closeAutoTime() {
+        try {
+            Settings.Global.putString(
+                    getContentResolver(),
+                    Settings.Global.AUTO_TIME, "0");
+        } catch (Exception e) {}
+    }
+
+    private void openAutoTime() {
+        try {
+            Settings.Global.putString(
+                    getContentResolver(),
+                    Settings.Global.AUTO_TIME,"1");
+        } catch (Exception e) {}
     }
 
     @Override
