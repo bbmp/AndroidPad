@@ -76,6 +76,12 @@ public class WifiSettingActivity extends VentilatorBaseActivity {
         switchButton = findViewById(R.id.sb_auto_set);
         rvWifi.setLayoutManager(new GridLayoutManager(this , 2 ));
         setOnClickListener(R.id.ll_right);
+        try {
+            if (!mWifiManager.isWifiEnabled())
+                switchButton.setChecked(false);
+            else
+                switchButton.setChecked(true);
+        } catch (Exception e) {}
         switchButton.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(SwitchButton button, boolean checked) {

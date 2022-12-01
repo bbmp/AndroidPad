@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.serialport.helper.SerialPortHelper;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 import androidx.lifecycle.MutableLiveData;
@@ -122,9 +123,8 @@ public class HomeVentilator {
                     //切换到弱档
 
                     if (startup == (byte)0x00) { //先开机
-                        VentilatorAbstractControl.getInstance().powerOnGear(VentilatorConstant.FAN_GEAR_WEAK);
-                        Plat.getPlatform().screenOn();
-                        Plat.getPlatform().openPowerLamp();
+
+                        openVentilatorGear(VentilatorConstant.FAN_GEAR_WEAK);
                     } else {
                         VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_WEAK); //弱档
 
@@ -146,10 +146,8 @@ public class HomeVentilator {
             int autoCountTime = 0;
             isAutoCountDown = false;
 
-            //切换到弱档
-            VentilatorAbstractControl.getInstance().powerOnGear(VentilatorConstant.FAN_GEAR_WEAK);
-            Plat.getPlatform().screenOn();
-            Plat.getPlatform().openPowerLamp();
+            //开机切换到弱档
+            openVentilatorGear(VentilatorConstant.FAN_GEAR_WEAK);
 
             while (!isAutoCountDown) {
 
@@ -397,12 +395,21 @@ public class HomeVentilator {
             }
         }
     }
+    //打开烟机并且开挡位 联动功能
+    public void openVentilatorGear(int gear) {
+        VentilatorAbstractControl.getInstance().powerOnGear(gear);
+        Plat.getPlatform().screenOn();
+        Plat.getPlatform().openPowerLamp();
+        updateOperationTime(); //开机时间
+        HomeVentilator.getInstance().startup = 0x01;
+    }
     //打开烟机
     public void openVentilator() {
         VentilatorAbstractControl.getInstance().powerOn();
         Plat.getPlatform().screenOn();
         Plat.getPlatform().openPowerLamp();
         updateOperationTime(); //开机时间
+        HomeVentilator.getInstance().startup = 0x01;
     }
     //关闭烟机
     public void closeVentilator() {
@@ -411,6 +418,7 @@ public class HomeVentilator {
         Plat.getPlatform().closePowerLamp();//关灯
         Plat.getPlatform().closeWaterLamp(); //关左灯
         VentilatorAbstractControl.getInstance().shutDown();
+        HomeVentilator.getInstance().startup = 0x00;
 
         Activity activity = AppActivityManager.getInstance().getCurrentActivity();
         if (null != activity) {
@@ -419,6 +427,9 @@ public class HomeVentilator {
             intent.setClass(activity, HomeActivity.class); //回首页
             activity.startActivity(intent);
         }
+//        activity = AppActivityManager.getInstance().getCurrentActivity();
+//        if (null != activity)
+//            activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 
     //关闭延时关机

@@ -142,7 +142,6 @@ public class HomeActivity extends BaseActivity {
 
                 //开机
                 if (HomeVentilator.getInstance().startup == 0x00) {
-                    HomeVentilator.getInstance().startup = 0x01;
                     HomeVentilator.getInstance().openVentilator();
                 }
 
@@ -175,6 +174,7 @@ public class HomeActivity extends BaseActivity {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean) {
+                    //启动mqtt
                     MqttManager.getInstance().start(HomeActivity.this, Plat.getPlatform(), VentilatorFactory.getTransmitApi());
                     //未登录
                     if (null == AccountInfo.getInstance().getUser().getValue()) {
@@ -187,6 +187,14 @@ public class HomeActivity extends BaseActivity {
 
                         }
                     }
+                    //自动设置时间
+                    try {
+                        Settings.Global.putString(
+                                getContentResolver(),
+                                Settings.Global.AUTO_TIME,"1");
+                    } catch (Exception e) {}
+                    //更新时间，防止自动关机
+                    HomeVentilator.getInstance().updateOperationTime();
                 }
                 else {
                     //断网

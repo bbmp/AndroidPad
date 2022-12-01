@@ -187,6 +187,7 @@ public class DeviceUserPage extends VentilatorBasePage {
     private void shareDialog() {
         IDialog iDialog = VentilatorDialogFactory.createDialogByType(getContext(), DialogConstant.DIALOG_TYPE_SHARE);
         iDialog.setCancelable(false);
+        iDialog.setContentText(device.guid);
         iDialog.show();
     }
     //删除子设备

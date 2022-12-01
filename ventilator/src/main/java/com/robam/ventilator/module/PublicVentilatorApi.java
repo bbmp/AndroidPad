@@ -90,8 +90,9 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
     }
 
     @Override
-    public void powerOn() {
-        VentilatorAbstractControl.getInstance().powerOn();
+    public void openVentilator() {
+//        VentilatorAbstractControl.getInstance().powerOn();
+        HomeVentilator.getInstance().openVentilator();
     }
 
     @Override
@@ -129,9 +130,8 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
                     //烟机没有启动打开烟机
                     if (MMKVUtils.getFanStove() && !HomeVentilator.getInstance().isLock()) {//烟灶联动开启且不锁屏
                         if (!isStartUp()) {
-                            VentilatorAbstractControl.getInstance().powerOnGear(VentilatorConstant.FAN_GEAR_MID); //开机并设置挡位
-                            Plat.getPlatform().screenOn();
-                            Plat.getPlatform().openPowerLamp();
+
+                            HomeVentilator.getInstance().openVentilatorGear(VentilatorConstant.FAN_GEAR_MID); //开机并设置挡位
                         } else if (HomeVentilator.getInstance().gear != (byte) 0x06) //非爆操档
                             VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_MID);
                     }

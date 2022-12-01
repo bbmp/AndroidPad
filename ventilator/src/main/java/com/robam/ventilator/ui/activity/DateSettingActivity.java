@@ -19,6 +19,7 @@ import com.robam.common.ui.view.SwitchButton;
 import com.robam.common.utils.NetworkUtils;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
+import com.robam.ventilator.device.HomeVentilator;
 import com.robam.ventilator.ui.adapter.RvStringAdapter;
 
 import java.util.ArrayList;
@@ -72,29 +73,19 @@ public class DateSettingActivity extends VentilatorBaseActivity {
         btnSave = findViewById(R.id.btn_save);
         mHourView = findViewById(R.id.rv_time_hour);
         mMinuteView = findViewById(R.id.rv_time_minute);
-        switchButton.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(SwitchButton button, boolean checked) {
-                group.setVisibility(checked? View.GONE: View.VISIBLE);
-                llBorder.setVisibility(checked ? View.VISIBLE:View.GONE);
-                if (checked) {
-                    openAutoTime();
-                } else {
-                    closeAutoTime();
-                }
-            }
-        });
+//        switchButton.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(SwitchButton button, boolean checked) {
+//                group.setVisibility(checked? View.GONE: View.VISIBLE);
+//                llBorder.setVisibility(checked ? View.VISIBLE:View.GONE);
+//                if (checked) {
+//                    openAutoTime();
+//                } else {
+//                    closeAutoTime();
+//                }
+//            }
+//        });
 
-        //已联网
-        if (NetworkUtils.isConnect(this)) {
-            switchButton.setChecked(true);
-            group.setVisibility(View.GONE);
-            openAutoTime();
-        } else {
-            switchButton.setChecked(false);
-            llBorder.setVisibility(View.GONE);
-            closeAutoTime();
-        }
         mHourAdapter = new RvStringAdapter();
         mMinuteAdapter = new RvStringAdapter();
 
@@ -165,8 +156,11 @@ public class DateSettingActivity extends VentilatorBaseActivity {
     public void onClick(View view) {
         super.onClick(view);
         int id = view.getId();
-        if (id == R.id.btn_save)
-            setSysTime(Integer.parseInt(mHourAdapter.getItem(hourInt)) , Integer.parseInt(mMinuteAdapter.getItem(minuteInt)));
+        if (id == R.id.btn_save) {
+            setSysTime(Integer.parseInt(mHourAdapter.getItem(hourInt)), Integer.parseInt(mMinuteAdapter.getItem(minuteInt)));
+            //防止自动关机
+            HomeVentilator.getInstance().updateOperationTime();
+        }
     }
     public void setHour(int hour) {
         int index = hour;

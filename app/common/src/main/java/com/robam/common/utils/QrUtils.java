@@ -4,9 +4,13 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 
 import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+
+import java.util.Hashtable;
 
 public class QrUtils {
 
@@ -26,8 +30,13 @@ public class QrUtils {
         // 生成二维矩阵,编码时指定大小,不要生成了图片以后再进行缩放,这样会模糊导致识别失败
         BitMatrix matrix;
         try {
+            Hashtable<EncodeHintType, Object> hints = new Hashtable<EncodeHintType, Object>();
+            hints.put(EncodeHintType.CHARACTER_SET, "UTF-8"); // 指定编码方式,防止中文乱码
+            hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H); // 指定纠错等级
+            hints.put(EncodeHintType.MARGIN, 0);
+
             matrix = new MultiFormatWriter().encode(str, BarcodeFormat.QR_CODE,
-                    qrWidth, qrHeight);
+                    qrWidth, qrHeight, hints);
 
 
             int width = matrix.getWidth();
