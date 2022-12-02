@@ -9,6 +9,7 @@ import android.net.wifi.WifiManager;
 
 import com.robam.common.utils.LogUtils;
 import com.robam.common.bean.AccountInfo;
+import com.robam.ventilator.device.HomeVentilator;
 
 public class VentilatorReceiver extends BroadcastReceiver {
     @Override
@@ -71,6 +72,10 @@ public class VentilatorReceiver extends BroadcastReceiver {
             LogUtils.e("wifi列表发生变化");
             boolean success = intent.getBooleanExtra(WifiManager.EXTRA_RESULTS_UPDATED, false);
             AccountInfo.getInstance().getWifi().setValue(success);
+        } else if (Intent.ACTION_TIME_CHANGED.equals(intent.getAction())) {
+            LogUtils.e("时间变化");
+            //防止自动关机
+            HomeVentilator.getInstance().updateOperationTime();
         }
     }
 }

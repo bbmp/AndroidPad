@@ -526,6 +526,24 @@ public class MqttVentilator extends MqttPublic {
                                 jsonArray.put(key);
                             }
                             break;
+                            case 6: {
+                                int isOpen = MsgUtils.getByte(payload[offset++]); //定时通风开关
+                                int holiday = MsgUtils.getByte(payload[offset++]); //定时天数
+                                MMKVUtils.setHoliday(isOpen == 1?true:false);
+                                MMKVUtils.setHolidayDay(holiday+"");
+                                jsonArray.put(key);
+                            }
+                            break;
+                            case 7: {
+                                int isOpen = MsgUtils.getByte(payload[offset++]); //定时通风开关
+                                int week = MsgUtils.getByte(payload[offset++]); //week
+                                int hour = MsgUtils.getByte(payload[offset++]); //hour
+                                int minute = MsgUtils.getByte(payload[offset++]); //minute
+                                MMKVUtils.setHoliday(isOpen == 1?true:false);
+                                MMKVUtils.setHolidayWeekTime(DateUtil.getWeekTime(week, hour, minute));
+                                jsonArray.put(key);
+                            }
+                            break;
                             case 17: { //智感恒吸
                                 int smart = MsgUtils.getByte(payload[offset++]);
                                 VentilatorAbstractControl.getInstance().setSmart(smart);

@@ -270,8 +270,24 @@ public class MMKVUtils {
     //恢复初始，智能设置部分
     public static void resetSmartSet() {
         MMKV mmkv = MMKV.defaultMMKV();
-
-        mmkv.clearAll();
+        String[] keys = mmkv.allKeys();
+        for (String key: keys) {
+            mmkv.remove(key);
+        }
+//        mmkv.remove(FAN_RUNTIME);
+//        mmkv.remove(HOLIDAY);
+//        mmkv.remove(HOLIDAY_DAY);
+//        mmkv.remove(HOLIDAY_WEEK_TIME);
+//        mmkv.remove(OIL_CLEAN);
+//        mmkv.remove(DELAY_SHUTDOWN);
+//        mmkv.remove(DELAY_SHUTDOWN_TIME);
+//        mmkv.remove(FAN_STOVE);
+//        mmkv.remove(FAN_PAN);
+//        mmkv.remove(FAN_STEAM);
+//        mmkv.remove(FAN_STOVE_GEAR);
+//        mmkv.remove(FAN_PAN_GEAR);
+//        mmkv.remove(FAN_STEAM_GEAR);
+//        mmkv.remove(FAN_RELATION_STEAM);
     }
     //智感恒吸设置
     public static void setSmartSet(boolean status) {

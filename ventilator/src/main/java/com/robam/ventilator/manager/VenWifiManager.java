@@ -219,10 +219,10 @@ public class VenWifiManager {
     public static boolean connectWifiPws(Context context, String ssid, String pws) {
         WifiManager mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         mWifiManager.disableNetwork(mWifiManager.getConnectionInfo().getNetworkId());
-        WifiConfiguration tempConfig = isExist(ssid, mWifiManager);
-        if (tempConfig != null) {
-            return mWifiManager.enableNetwork(tempConfig.networkId, true);
-        }
+//        WifiConfiguration tempConfig = isExist(ssid, mWifiManager);
+//        if (tempConfig != null) {
+//            return mWifiManager.enableNetwork(tempConfig.networkId, true);
+//        }
         int netId = mWifiManager.addNetwork(getWifiConfig(mWifiManager, ssid, pws, true));
         return mWifiManager.enableNetwork(netId, true);
     }

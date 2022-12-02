@@ -973,6 +973,34 @@ public class DateUtil {
         }
 
     }
+    //假日模式时间
+    public static String getWeekTime(int week, int hour, int minute) {
+        String curWeek = "周日";
+        switch (week) {
+            case 1:
+                curWeek = "周一";
+                break;
+            case 2:
+                curWeek = "周二";
+                break;
+            case 3:
+                curWeek = "周三";
+                break;
+            case 4:
+                curWeek = "周四";
+                break;
+            case 5:
+                curWeek = "周五";
+                break;
+            case 6:
+                curWeek = "周六";
+                break;
+            case 7:
+                curWeek = "周日";
+                break;
+        }
+        return curWeek + hour+":" + minute;
+    }
     //获取周几 和时间
     public static String getWeek() {
         String curWeek = "周日";
@@ -1006,25 +1034,25 @@ public class DateUtil {
         int curWeek = 1;
         String week = setTime.substring(0, 2);
         switch (week) {
-            case "周日":
+            case "周一":
                 curWeek = 1;
                 break;
-            case "周一":
+            case "周二":
                 curWeek = 2;
                 break;
-            case "周二":
+            case "周三":
                 curWeek = 3;
                 break;
-            case "周三":
+            case "周四":
                 curWeek = 4;
                 break;
-            case "周四":
+            case "周五":
                 curWeek = 5;
                 break;
-            case "周五":
+            case "周六":
                 curWeek = 6;
                 break;
-            case "周六":
+            case "周日":
                 curWeek = 7;
                 break;
         }

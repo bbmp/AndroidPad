@@ -158,8 +158,6 @@ public class DateSettingActivity extends VentilatorBaseActivity {
         int id = view.getId();
         if (id == R.id.btn_save) {
             setSysTime(Integer.parseInt(mHourAdapter.getItem(hourInt)), Integer.parseInt(mMinuteAdapter.getItem(minuteInt)));
-            //防止自动关机
-            HomeVentilator.getInstance().updateOperationTime();
         }
     }
     public void setHour(int hour) {

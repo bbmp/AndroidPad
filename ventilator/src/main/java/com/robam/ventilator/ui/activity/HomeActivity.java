@@ -193,8 +193,6 @@ public class HomeActivity extends BaseActivity {
                                 getContentResolver(),
                                 Settings.Global.AUTO_TIME,"1");
                     } catch (Exception e) {}
-                    //更新时间，防止自动关机
-                    HomeVentilator.getInstance().updateOperationTime();
                 }
                 else {
                     //断网

@@ -14,6 +14,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -148,7 +149,10 @@ public class WifiSettingActivity extends VentilatorBaseActivity {
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 ScanResult result = (ScanResult) adapter.getItem(position);
                 Intent intent = new Intent();
-                intent.putExtra(VentilatorConstant.EXTRA_WIFI_SSID, result.SSID);
+                if (!TextUtils.isEmpty(result.SSID))
+                    intent.putExtra(VentilatorConstant.EXTRA_WIFI_SSID, result.SSID);
+                else
+                    intent.putExtra(VentilatorConstant.EXTRA_WIFI_SSID, result.BSSID);
                 intent.setClass(WifiSettingActivity.this, WifiConnectActivity.class);
                 startActivity(intent);
             }
