@@ -20,6 +20,9 @@ import com.robam.ventilator.request.GetUserReq;
 import com.robam.ventilator.request.GetVerifyCodeReq;
 import com.robam.ventilator.request.LoginQrcodeReq;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -251,8 +254,19 @@ public class CloudHelper {
                     if (null != callback && null != rcReponse)
                         callback.onFaild(rcReponse.msg);
                 } catch (Exception e) {
-                    if (null != callback)
-                        callback.onFaild("exception:" + e.getMessage());
+                    if (null != callback) {
+                        try {
+                            String error = response.errorBody().string();
+                            JSONObject jsonObject = new JSONObject(error);
+                            if (jsonObject.has("error_description")) {
+                                callback.onFaild(jsonObject.optString("error_description"));
+                                return;
+                            }
+                        } catch (Exception jsonException) {
+                            jsonException.printStackTrace();
+                        }
+                        callback.onFaild("");
+                    }
                 }
             }
 

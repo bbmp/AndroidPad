@@ -8,11 +8,10 @@ import com.robam.common.bean.BaseResponse
 import com.robam.common.bean.Device
 import com.robam.common.device.Plat
 import com.robam.common.http.RetrofitCallback
-import com.robam.common.utils.MMKVUtils
+import com.robam.common.manager.LiveDataBus
 import com.robam.ventilator.R
 import com.robam.ventilator.base.VentilatorBaseActivity
 import com.robam.ventilator.constant.VentilatorConstant
-import com.robam.ventilator.device.HomeVentilator
 import com.robam.ventilator.http.CloudHelper
 import com.robam.ventilator.ui.adapter.RvRelationDeviceAdapter
 import kotlinx.android.synthetic.main.ventilator_activity_layout_relation_device.*
@@ -60,7 +59,9 @@ class RelationDeviceActivity: VentilatorBaseActivity() {
                                         relationDevice = guid
                                         notifyDataSetChanged()
                                         //更新烟蒸烤
-                                        SmartSettingActivity.act?.updateFanStream(mList[position].displayType)
+//                                        SmartSettingActivity.act?.updateFanStream(mList[position].displayType)
+                                        LiveDataBus.get().with("dt", String::class.java).value =
+                                            mList[position].displayType
                                     }
                                 }
 

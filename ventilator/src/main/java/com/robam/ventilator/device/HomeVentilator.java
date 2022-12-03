@@ -394,7 +394,6 @@ public class HomeVentilator {
     }
     //打开烟机并且开挡位 联动功能
     public void openVentilatorGear(int gear) {
-        startup = 0x01;
         VentilatorAbstractControl.getInstance().powerOnGear(gear);
         Plat.getPlatform().screenOn();
         Plat.getPlatform().openPowerLamp();
@@ -402,7 +401,6 @@ public class HomeVentilator {
     }
     //打开烟机
     public void openVentilator() {
-        startup = 0x01;
         VentilatorAbstractControl.getInstance().powerOn();
         Plat.getPlatform().screenOn();
         Plat.getPlatform().openPowerLamp();
@@ -415,7 +413,6 @@ public class HomeVentilator {
         Plat.getPlatform().closePowerLamp();//关灯
         Plat.getPlatform().closeWaterLamp(); //关左灯
         VentilatorAbstractControl.getInstance().shutDown();
-        startup = 0x00;
 
         Activity activity = AppActivityManager.getInstance().getCurrentActivity();
         if (null != activity) {

@@ -1,18 +1,17 @@
 package com.robam.ventilator.ui.activity
 
 import android.content.Intent
-import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.blankj.utilcode.util.ActivityUtils
 import com.robam.common.bean.AccountInfo
 import com.robam.common.bean.BaseResponse
 import com.robam.common.bean.Device
-import com.robam.common.bean.MqttDirective
 import com.robam.common.device.Plat
 import com.robam.common.device.subdevice.Pan
 import com.robam.common.device.subdevice.Stove
 import com.robam.common.http.RetrofitCallback
+import com.robam.common.manager.LiveDataBus
 import com.robam.common.module.IPublicPanApi
 import com.robam.common.module.ModulePubliclHelper
 import com.robam.common.ui.dialog.IDialog
@@ -22,12 +21,12 @@ import com.robam.steamoven.bean.SteamOven
 import com.robam.ventilator.BuildConfig
 import com.robam.ventilator.R
 import com.robam.ventilator.base.VentilatorBaseActivity
-import com.robam.ventilator.request.LinkageConfigReq
 import com.robam.ventilator.constant.DialogConstant
 import com.robam.ventilator.constant.VentilatorConstant
 import com.robam.ventilator.device.HomeVentilator
 import com.robam.ventilator.factory.VentilatorDialogFactory
 import com.robam.ventilator.http.CloudHelper
+import com.robam.ventilator.request.LinkageConfigReq
 import com.robam.ventilator.response.GetLinkageConfigRes
 import com.robam.ventilator.ui.adapter.RvSmartSetAdapter
 import com.robam.ventilator.ui.adapter.SmartSetBean
@@ -44,14 +43,6 @@ class SmartSettingActivity : VentilatorBaseActivity() {
 
     private var linkageConfig: LinkageConfigReq? = null
 
-    companion object {
-        var act: SmartSettingActivity? = null
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        act = this
-    }
     override fun getLayoutId() = R.layout.ventilator_activity_layout_smart_setting
 
     //烟锅联动状态查询
@@ -120,8 +111,13 @@ class SmartSettingActivity : VentilatorBaseActivity() {
                 mAdapter.setList(mList)
             }
         }
-        MqttDirective.getInstance().directive.observe(this) {
-
+        LiveDataBus.get().with(
+            "dt",
+            String::class.java
+        ).observe(
+            this
+        ) {
+            getFanSteamLinkage()
         }
     }
 
@@ -349,6 +345,10 @@ class SmartSettingActivity : VentilatorBaseActivity() {
             //恢复初始提示
             resetDialog()
         }
+        getFanSteamLinkage()
+    }
+
+    private fun getFanSteamLinkage() {
         //查询烟蒸烤联动状态
         val userInfo = AccountInfo.getInstance().user.value
 

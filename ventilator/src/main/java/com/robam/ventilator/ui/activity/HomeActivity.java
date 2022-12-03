@@ -158,16 +158,6 @@ public class HomeActivity extends BaseActivity {
             checkPermissions();
         //打开wifi
         checkWifiPermmissions();
-        //启动定时服务
-        Intent intent = new Intent(this.getApplicationContext(), AlarmMqttService.class);
-        intent.setPackage(getPackageName());
-        startService(intent);
-        Intent bleIntent = new Intent(this.getApplicationContext(), AlarmBleService.class);
-        bleIntent.setPackage(getPackageName());
-        startService(bleIntent);
-        Intent venIntent = new Intent(this.getApplicationContext(), AlarmVentilatorService.class);
-        venIntent.setPackage(getPackageName());
-        startService(venIntent);
 
         //监听网络状态
         AccountInfo.getInstance().getConnect().observe(this, new Observer<Boolean>() {
@@ -211,6 +201,17 @@ public class HomeActivity extends BaseActivity {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            //启动定时服务
+            Intent intent = new Intent(this.getApplicationContext(), AlarmMqttService.class);
+            intent.setPackage(getPackageName());
+            startService(intent);
+            Intent bleIntent = new Intent(this.getApplicationContext(), AlarmBleService.class);
+            bleIntent.setPackage(getPackageName());
+            startService(bleIntent);
+            Intent venIntent = new Intent(this.getApplicationContext(), AlarmVentilatorService.class);
+            venIntent.setPackage(getPackageName());
+            startService(venIntent);
+
             SteamDataUtil.getSteamData(HomeActivity.this,"CQ928");//获取一体机数据
             SteamDataUtil.getDeviceErrorInfo(HomeActivity.this);//获取告警信息数据
         }).start();
