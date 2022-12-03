@@ -4,8 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/ventilator_ic_bg"
     tools:context=".ui.activity.SaleServiceActivity">
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/iv_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/common_ic_bg">
+
+    </pl.droidsonroids.gif.GifImageView>
     <include
         android:id="@+id/ll_title"
         layout="@layout/ventilator_view_layout_title"
@@ -41,7 +48,7 @@
         app:layout_constraintTop_toBottomOf="@id/tv_model"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="@id/ventilator_guideline"
-        android:text="@string/ventilator_sys_version"
+        android:text="@string/ventilator_app_version"
         android:textSize="@dimen/sp_34"
         android:textColor="@color/ventilator_white"/>
 

@@ -1,5 +1,6 @@
 package com.robam.ventilator.ui.activity;
 
+import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -16,6 +17,7 @@ import com.robam.ventilator.base.VentilatorBaseActivity;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.UserInfo;
 import com.robam.ventilator.constant.DialogConstant;
+import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.factory.VentilatorDialogFactory;
 import com.robam.ventilator.http.CloudHelper;
 import com.robam.ventilator.response.GetTokenRes;
@@ -27,6 +29,7 @@ public class LoginPasswordActivity extends VentilatorBaseActivity {
     //输入手机号和密码
     private EditText etPhone, etPwd;
     private IDialog waitDialog;
+    private boolean first;
 
     @Override
     protected int getLayoutId() {
@@ -35,12 +38,20 @@ public class LoginPasswordActivity extends VentilatorBaseActivity {
 
     @Override
     protected void initView() {
-        showLeft();
+        if (null != getIntent()) {
+            first = getIntent().getBooleanExtra(VentilatorConstant.EXTRA_FIRST, false);
+            if (first) { //首次登录
+                //跳过
+                setRight();
+            } else
+                showLeft();
+        } else
+            showLeft();
         setCenter(R.string.ventilator_login_password);
         etPhone = findViewById(R.id.et_phone);
         etPwd = findViewById(R.id.et_password);
 
-        setOnClickListener(R.id.bt_login, R.id.tv_login_qrcode, R.id.tv_login_phone);
+        setOnClickListener(R.id.bt_login, R.id.tv_login_qrcode, R.id.tv_login_phone, R.id.ll_right);
     }
 
     @Override
@@ -67,10 +78,14 @@ public class LoginPasswordActivity extends VentilatorBaseActivity {
         super.onClick(view);
         int id = view.getId();
         if (id == R.id.tv_login_qrcode) {
-            startActivity(LoginQrcodeActivity.class);
+            Intent intent = new Intent(LoginPasswordActivity.this, LoginQrcodeActivity.class);
+            intent.putExtra(VentilatorConstant.EXTRA_FIRST, first);
+            startActivity(intent);
             finish();
         } else if (id == R.id.tv_login_phone) {
-            startActivity(LoginPhoneActivity.class);
+            Intent intent = new Intent(LoginPasswordActivity.this, LoginPhoneActivity.class);
+            intent.putExtra(VentilatorConstant.EXTRA_FIRST, first);
+            startActivity(intent);
             finish();
         } else if (id == R.id.bt_login) { //登录
             String phone = etPhone.getText().toString();
@@ -87,6 +102,10 @@ public class LoginPasswordActivity extends VentilatorBaseActivity {
             showWaitDialog();
             //获取token
             getToken(phone, pwd);
+        } else if (id == R.id.ll_right) {
+            //跳转到首页
+            if (first)
+                HomeActivity.start(this);
         }
     }
     //获取token
@@ -126,6 +145,9 @@ public class LoginPasswordActivity extends VentilatorBaseActivity {
                     MMKVUtils.setUser(userJson);
                     //登录成功
                     AccountInfo.getInstance().getUser().setValue(info);
+                    //跳转到首页
+                    if (first)
+                        HomeActivity.start(LoginPasswordActivity.this);
                     finish();
                     //绑定设备
 //                    bindDevice(getUserInfoRes.getUser().id);

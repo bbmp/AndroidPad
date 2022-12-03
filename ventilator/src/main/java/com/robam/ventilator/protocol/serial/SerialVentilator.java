@@ -9,6 +9,7 @@ import com.robam.common.utils.ByteUtils;
 import com.robam.common.utils.Crc16Utils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.StringUtils;
+import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.device.HomeVentilator;
 
 import java.util.ArrayList;
@@ -576,7 +577,8 @@ public class SerialVentilator {
             //查询返回
             case MSG_TYPE_QUERY:
                 HomeVentilator.getInstance().startup = data[startupIndex - 1];
-//                HomeVentilator.getInstance().status  = data[startupIndex - 1]; //工作状态
+                if (HomeVentilator.getInstance().status != VentilatorConstant.FAN_LOCK) // 非油网清洗状态
+                    HomeVentilator.getInstance().status  = data[startupIndex - 1]; //工作状态
                 HomeVentilator.getInstance().lightOn = data[lightOnIndex - 1];
                 HomeVentilator.getInstance().gear    = data[gearIndex    - 1];
                 HomeVentilator.getInstance().beep    = data[beepIndex    - 1];

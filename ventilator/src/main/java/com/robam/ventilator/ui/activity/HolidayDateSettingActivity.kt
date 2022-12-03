@@ -109,7 +109,7 @@ class HolidayDateSettingActivity : VentilatorBaseActivity() {
     private fun textChange(day: String) {
         TextColorHelp.setHolidayTextColor(
             String.format(
-                context.getString(R.string.ventilator_holiday_desc_set),
+                getString(R.string.ventilator_holiday_desc_set),
                 day,
                 "$week$hour:$minute"
             ),

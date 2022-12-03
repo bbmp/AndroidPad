@@ -1,5 +1,6 @@
 package com.robam.ventilator.ui.activity;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -8,6 +9,9 @@ import com.robam.common.ui.activity.BaseActivity;
 import com.robam.ventilator.BuildConfig;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class AboutActivity extends VentilatorBaseActivity {
     private TextView tvSysV;
@@ -34,7 +38,10 @@ public class AboutActivity extends VentilatorBaseActivity {
 
     @Override
     protected void initData() {
-        tvSysV.setText(BuildConfig.VERSION_NAME);
+//        tvSysV.setText(BuildConfig.VERSION_NAME);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date(Build.TIME);
+        tvSysV.setText(simpleDateFormat.format(date));
         tvModelV.setText(BuildConfig.MODEL);
     }
 

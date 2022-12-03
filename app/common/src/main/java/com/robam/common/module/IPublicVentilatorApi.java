@@ -3,6 +3,9 @@ package com.robam.common.module;
 import android.content.Context;
 
 import com.robam.common.mqtt.IProtocol;
+import com.robam.common.mqtt.MqttMsg;
+
+import org.json.JSONArray;
 
 public interface IPublicVentilatorApi extends IPublicApi {
     String VENTILATOR_PUBLIC = "com.robam.ventilator.device.VentilatorFactory";
@@ -28,7 +31,7 @@ public interface IPublicVentilatorApi extends IPublicApi {
     //关闭定时任务
     void closeService(Context context);
     //开机
-    void powerOn();
+    void openVentilator();
     //启动定时任务
     void startService(Context context);
     //冷暖光切换
@@ -41,4 +44,6 @@ public interface IPublicVentilatorApi extends IPublicApi {
     void closeDelayDialog();
     //更新操作时间
     void updateOperationTime();
+    //获取烟机子设备
+    void setSubDevices(MqttMsg msg) throws Exception;
 }

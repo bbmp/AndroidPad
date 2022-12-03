@@ -53,9 +53,8 @@ public class MqttVentilator extends MqttPublic {
                     return;
                 if (HomeVentilator.getInstance().gear == (byte) 0xA0) { //不工作
                     if (HomeVentilator.getInstance().startup == (byte) 0x00) { //先开机
-                        VentilatorAbstractControl.getInstance().powerOnGear(VentilatorConstant.FAN_GEAR_FRY);
-                        Plat.getPlatform().screenOn();
-                        Plat.getPlatform().openPowerLamp();
+
+                        HomeVentilator.getInstance().openVentilatorGear(VentilatorConstant.FAN_GEAR_FRY);
                     } else
                         VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_FRY);
                 }
@@ -73,9 +72,8 @@ public class MqttVentilator extends MqttPublic {
                 //烟机开2挡
                 if (HomeVentilator.getInstance().gear == (byte) 0xA0) { //不工作
                     if (HomeVentilator.getInstance().startup == (byte) 0x00) { //先开机
-                        VentilatorAbstractControl.getInstance().powerOnGear(VentilatorConstant.FAN_GEAR_MID);
-                        Plat.getPlatform().screenOn();
-                        Plat.getPlatform().openPowerLamp();
+
+                        HomeVentilator.getInstance().openVentilatorGear(VentilatorConstant.FAN_GEAR_MID);
                     } else
                         VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_MID);
                 }
@@ -96,9 +94,7 @@ public class MqttVentilator extends MqttPublic {
                                 if (msg.getGuid().equals(device.guid) && device instanceof Pan) {
                                     if (/*MMKVUtils.getFanPan() && MMKVUtils.getFanPanGear() && */HomeVentilator.getInstance().isLock()) {//烟锅联动打开和自动匹配风量打开 非锁屏
                                         if (HomeVentilator.getInstance().startup == (byte) 0x00) { //先开机
-                                            VentilatorAbstractControl.getInstance().powerOnGear(gear);
-                                            Plat.getPlatform().screenOn();
-                                            Plat.getPlatform().openPowerLamp();
+                                            HomeVentilator.getInstance().openVentilatorGear(gear);
                                         } else {
                                             //请求联动，只升不降
                                             int curGear = VentilatorConstant.FAN_GEAR_CLOSE; //当前挡位
@@ -115,9 +111,7 @@ public class MqttVentilator extends MqttPublic {
                                 } else if (msg.getGuid().equals(device.guid) && device instanceof Stove) {
                                     if (MMKVUtils.getFanStove() && MMKVUtils.getFanStoveGear() && HomeVentilator.getInstance().isLock()) { //烟灶联动打开 非锁屏
                                         if (HomeVentilator.getInstance().startup == (byte) 0x00) { //先开机
-                                            VentilatorAbstractControl.getInstance().powerOnGear(gear);
-                                            Plat.getPlatform().screenOn();
-                                            Plat.getPlatform().openPowerLamp();
+                                            HomeVentilator.getInstance().openVentilatorGear(gear);
                                         } else {
                                             //请求联动，只升不降
                                             int curGear = VentilatorConstant.FAN_GEAR_CLOSE; //当前挡位
@@ -265,7 +259,8 @@ public class MqttVentilator extends MqttPublic {
 
                 buf.put(HomeVentilator.getInstance().gear); //挡位
 
-                buf.put(HomeVentilator.getInstance().lightOn); //灯开关
+                byte byteLight = (byte) (HomeVentilator.getInstance().lightOn == (byte) 0xA0 ? 0x00:0x01);
+                buf.put(byteLight); //灯开关
 
                 long runTime = MMKVUtils.getFanRuntime();
                 if (runTime >= 60 * 60 * 60 * 1000)
@@ -395,9 +390,8 @@ public class MqttVentilator extends MqttPublic {
                     short gear = ByteUtils.toShort(payload[offset++]);
 
                     if (HomeVentilator.getInstance().startup == (byte) 0x00) { //先开机
-                        VentilatorAbstractControl.getInstance().powerOnGear(gear);
-                        Plat.getPlatform().screenOn();
-                        Plat.getPlatform().openPowerLamp();
+
+                        HomeVentilator.getInstance().openVentilatorGear(gear);
                     } else
                         VentilatorAbstractControl.getInstance().setFanGear(gear);
                     //设置烟机挡位回复
@@ -415,12 +409,18 @@ public class MqttVentilator extends MqttPublic {
                     short terminalType = ByteUtils.toShort(payload[offset++]);
                     //
                     //userid
-                    ByteUtils.toString(payload, offset++, 10);
+                    ByteUtils.toString(payload, offset, 10);
                     offset += 10;
                     //灯开关
                     short light = ByteUtils.toShort(payload[offset++]);
 
-                    VentilatorAbstractControl.getInstance().setFanLight(light);
+                    if (light == VentilatorConstant.FAN_LIGHT_OPEN) {
+                        VentilatorAbstractControl.getInstance().setFanLight(light);
+                        Plat.getPlatform().openWaterLamp();
+                    } else {
+                        VentilatorAbstractControl.getInstance().setFanLight(light);
+                        Plat.getPlatform().closeWaterLamp();
+                    }
                     //设置烟机灯回复
                     MqttMsg newMsg = new MqttMsg.Builder()
                             .setMsgId(MsgKeys.SetFanLight_Rep)
@@ -435,7 +435,7 @@ public class MqttVentilator extends MqttPublic {
                     //控制端类型
                     short terminalType = ByteUtils.toShort(payload[offset++]);
                     //userid
-                    ByteUtils.toString(payload, offset++, 10);
+                    ByteUtils.toString(payload, offset, 10);
                     offset += 10;
                     //挡位
                     short gear = ByteUtils.toShort(payload[offset++]);
@@ -526,6 +526,24 @@ public class MqttVentilator extends MqttPublic {
                                 jsonArray.put(key);
                             }
                             break;
+                            case 6: {
+                                int isOpen = MsgUtils.getByte(payload[offset++]); //定时通风开关
+                                int holiday = MsgUtils.getByte(payload[offset++]); //定时天数
+                                MMKVUtils.setHoliday(isOpen == 1?true:false);
+                                MMKVUtils.setHolidayDay(holiday+"");
+                                jsonArray.put(key);
+                            }
+                            break;
+                            case 7: {
+                                int isOpen = MsgUtils.getByte(payload[offset++]); //定时通风开关
+                                int week = MsgUtils.getByte(payload[offset++]); //week
+                                int hour = MsgUtils.getByte(payload[offset++]); //hour
+                                int minute = MsgUtils.getByte(payload[offset++]); //minute
+                                MMKVUtils.setHoliday(isOpen == 1?true:false);
+                                MMKVUtils.setHolidayWeekTime(DateUtil.getWeekTime(week, hour, minute));
+                                jsonArray.put(key);
+                            }
+                            break;
                             case 17: { //智感恒吸
                                 int smart = MsgUtils.getByte(payload[offset++]);
                                 VentilatorAbstractControl.getInstance().setSmart(smart);
@@ -558,9 +576,8 @@ public class MqttVentilator extends MqttPublic {
                                     if (msg.getGuid().equals(device.guid) && device instanceof SteamOven) {
                                         if (MMKVUtils.getFanSteam() && MMKVUtils.getFanSteamGear() && HomeVentilator.getInstance().isLock()) {//烟蒸烤联动打开和自动匹配风量打开 非锁屏
                                             if (HomeVentilator.getInstance().startup == (byte) 0x00) { //先开机
-                                                VentilatorAbstractControl.getInstance().powerOnGear(gear);
-                                                Plat.getPlatform().screenOn();
-                                                Plat.getPlatform().openPowerLamp();
+
+                                                HomeVentilator.getInstance().openVentilatorGear(gear);
                                             } else {
                                                 //请求联动，只升不降
                                                 int curGear = VentilatorConstant.FAN_GEAR_CLOSE; //当前挡位

@@ -5,10 +5,10 @@
     <string name="pan_quick_frying">持续快炒中</string>
     <string name="pan_stir_fry">十秒翻炒</string>
     <string name="pan_stir_frying">十秒翻炒中</string>
-    <string name="pan_oil_temp">油温</string>
-    <string name="pan_oil_temp_hint1">℃：当前油温适合快炒、炝锅、干炸、酥炸</string>
-    <string name="pan_oil_temp_hint2">℃：当前油温适合爆炒、清炸、复炸、煎肉、泼油</string>
-    <string name="pan_oil_temp_hint3">℃：当前油温适合淋油、泼油</string>
+    <string name="pan_oil_temp">锅温</string>
+    <string name="pan_oil_temp_hint1">℃：当前温度适合快炒、炝锅、干炸、酥炸</string>
+    <string name="pan_oil_temp_hint2">℃：当前温度适合爆炒、清炸、复炸、煎肉、泼油</string>
+    <string name="pan_oil_temp_hint3">℃：当前温度适合淋油、泼油</string>
     <string name="pan_oil_temp_hint4">℃：锅温过热！完成该炉头关火</string>
     <string name="pan_standby_ing">待机中</string>
     <string name="pan_open_fire_hint">为确保安全，不能远程开火，请在左灶开火</string>

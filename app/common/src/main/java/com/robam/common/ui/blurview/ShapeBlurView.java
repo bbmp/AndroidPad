@@ -37,6 +37,7 @@ import com.robam.common.ui.blurview.impl.AndroidXBlurImpl;
 import com.robam.common.ui.blurview.impl.BlurImpl;
 import com.robam.common.ui.blurview.impl.EmptyBlurImpl;
 import com.robam.common.ui.blurview.impl.SupportLibraryBlurImpl;
+import com.robam.common.utils.LogUtils;
 
 public class ShapeBlurView extends View {
     private Context mContext;
@@ -108,7 +109,7 @@ public class ShapeBlurView extends View {
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.common_ShapeBlurView);
             mBlurRadius = a.getDimension(R.styleable.common_ShapeBlurView_common_blur_radius,
                     TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, context.getResources().getDisplayMetrics()));
-            mDownSampleFactor = a.getFloat(R.styleable.common_ShapeBlurView_common_blur_down_sample, 2);
+            mDownSampleFactor = a.getFloat(R.styleable.common_ShapeBlurView_common_blur_down_sample, 4);
             mOverlayColor = a.getColor(R.styleable.common_ShapeBlurView_common_blur_overlay_color, 0x000000);
 
             float cornerRadiusOverride =
@@ -201,6 +202,7 @@ public class ShapeBlurView extends View {
                     bmp.recycle();
                     BLUR_IMPL = 3;
                 } catch (Throwable e) {
+                    LogUtils.e("getBlurImpl" + e.getMessage());
                 }
             }
         }
@@ -494,7 +496,7 @@ public class ShapeBlurView extends View {
             final int[] locations = new int[2];
             Bitmap oldBmp = mBlurredBitmap;
             View decor = mDecorView;
-            if (decor != null && isShown() && prepare()) {
+            if (decor != null && isShown() && prepare() && getVisibility() == View.VISIBLE) {
                 boolean redrawBitmap = mBlurredBitmap != oldBmp;
                 oldBmp = null;
                 decor.getLocationOnScreen(locations);

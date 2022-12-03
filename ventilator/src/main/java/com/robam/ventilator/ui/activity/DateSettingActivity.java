@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.AlarmManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -18,6 +19,7 @@ import com.robam.common.ui.view.SwitchButton;
 import com.robam.common.utils.NetworkUtils;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
+import com.robam.ventilator.device.HomeVentilator;
 import com.robam.ventilator.ui.adapter.RvStringAdapter;
 
 import java.util.ArrayList;
@@ -71,21 +73,19 @@ public class DateSettingActivity extends VentilatorBaseActivity {
         btnSave = findViewById(R.id.btn_save);
         mHourView = findViewById(R.id.rv_time_hour);
         mMinuteView = findViewById(R.id.rv_time_minute);
-        switchButton.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(SwitchButton button, boolean checked) {
-                group.setVisibility(checked? View.GONE: View.VISIBLE);
-                llBorder.setVisibility(checked ? View.VISIBLE:View.GONE);
-            }
-        });
-        //已联网
-        if (NetworkUtils.isConnect(this)) {
-            switchButton.setChecked(true);
-            group.setVisibility(View.GONE);
-        } else {
-            switchButton.setChecked(false);
-            llBorder.setVisibility(View.GONE);
-        }
+//        switchButton.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(SwitchButton button, boolean checked) {
+//                group.setVisibility(checked? View.GONE: View.VISIBLE);
+//                llBorder.setVisibility(checked ? View.VISIBLE:View.GONE);
+//                if (checked) {
+//                    openAutoTime();
+//                } else {
+//                    closeAutoTime();
+//                }
+//            }
+//        });
+
         mHourAdapter = new RvStringAdapter();
         mMinuteAdapter = new RvStringAdapter();
 
@@ -111,6 +111,22 @@ public class DateSettingActivity extends VentilatorBaseActivity {
         mHourView.setAdapter(mHourAdapter);
         mMinuteView.setAdapter(mMinuteAdapter);
         setOnClickListener(R.id.btn_save);
+    }
+
+    private void closeAutoTime() {
+        try {
+            Settings.Global.putString(
+                    getContentResolver(),
+                    Settings.Global.AUTO_TIME, "0");
+        } catch (Exception e) {}
+    }
+
+    private void openAutoTime() {
+        try {
+            Settings.Global.putString(
+                    getContentResolver(),
+                    Settings.Global.AUTO_TIME,"1");
+        } catch (Exception e) {}
     }
 
     @Override
@@ -140,8 +156,9 @@ public class DateSettingActivity extends VentilatorBaseActivity {
     public void onClick(View view) {
         super.onClick(view);
         int id = view.getId();
-        if (id == R.id.btn_save)
-            setSysTime(Integer.parseInt(mHourAdapter.getItem(hourInt)) , Integer.parseInt(mMinuteAdapter.getItem(minuteInt)));
+        if (id == R.id.btn_save) {
+            setSysTime(Integer.parseInt(mHourAdapter.getItem(hourInt)), Integer.parseInt(mMinuteAdapter.getItem(minuteInt)));
+        }
     }
     public void setHour(int hour) {
         int index = hour;

@@ -36,8 +36,9 @@ public class VentilatorConstant {
 
 
     //开关机
-    public final static int FAN_POWERON = 0;
-    public final static int FAN_SHUTDOWN = 1;
+    public final static int FAN_SHUTDOWN = 0;
+    public final static int FAN_POWERON = 1;
+    public final static int FAN_LOCK = 4; //清洗锁定状态
 
     //挡位
     public final static int FAN_GEAR_CLOSE = 0; //关档

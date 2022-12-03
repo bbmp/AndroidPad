@@ -29,8 +29,8 @@
         app:layout_constraintBottom_toBottomOf="parent"/>
     <ImageView
         android:id="@+id/iv_delete"
-        android:layout_width="@dimen/dp_46"
-        android:layout_height="@dimen/dp_46"
+        android:layout_width="@dimen/dp_38"
+        android:layout_height="@dimen/dp_38"
         android:layout_marginRight="@dimen/dp_50"
         android:src="@drawable/ventilator_delete"
         app:layout_constraintTop_toTopOf="parent"

@@ -32,12 +32,14 @@ versions.multidex = "2.0.1"
 versions.ktx = "1.5.0"//kotlin扩展
 versions.utilcodex = "1.31.1"//工具类
 versions.gif_drawable = "1.2.25" //gif
+versions.swiperefreshlayout = "1.1.0"
+versions.xcrash = "3.0.0"
 
 
 ext.versions = versions
 
 def build_versions = [:]
 build_versions.min_sdk = 21
-build_versions.target_sdk = 30
-build_versions.compile_sdk = 30
+build_versions.target_sdk = 28
+build_versions.compile_sdk = 28
 ext.build_versions = build_versions

@@ -29,7 +29,7 @@ public class PadApp extends Application {
         super.onCreate();
         MultiDex.install(this);
         //崩溃注册
-//        CrashHandler.register(this);
+        xcrash.XCrash.init(this);
         //LitePal注册 数据库
         LitePal.initialize(this);
         //平台初始化

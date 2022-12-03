@@ -1,5 +1,7 @@
 package com.robam.common.ui.view;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -9,6 +11,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
+import android.widget.ImageView;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
+
+import com.robam.common.R;
 
 import java.util.Random;
 
@@ -39,21 +47,22 @@ public class AudioWaveView extends View {
         @Override
         public void handleMessage(Message msg) {
             invalidate();
+            handler.sendEmptyMessageDelayed(0, 200); //每间隔200毫秒发送消息刷新
         }
     };
 
     public AudioWaveView(Context context) {
         super(context);
-        init();
+        init(context, null);
     }
 
     public AudioWaveView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(context, attrs);
     }
 
-    public void setHeight(int maxHegith, int minHeight) {
-        this.maxHeight = maxHegith;
+    public void setHeight(int maxHeight, int minHeight) {
+        this.maxHeight = maxHeight;
         this.minHeight = minHeight;
     }
 
@@ -67,14 +76,25 @@ public class AudioWaveView extends View {
         rectWidth = (viewWidth - space * (columnCount - 1)) / columnCount;
     }
 
-    private void init() {
+    private void init(Context context, AttributeSet attrs) {
         paint = new Paint();
         paint.setAntiAlias(true);
         paint.setColor(Color.parseColor("#33ffffff"));
         paint.setStyle(Paint.Style.FILL);
+        paint.setStrokeCap(Paint.Cap.ROUND);
         random = new Random();
-
+//        View view = inflate(context, R.layout.common_layout_round_rect, this);
+//        View rect1 = view.findViewById(R.id.iv_rect1);
+//        rect1.setPivotX(0f);
+//        rect1.setPivotY(45f);
+//        ObjectAnimator scaleY = ObjectAnimator.ofFloat(rect1, "scaleY", 0.1f, 0.3f);
+//        scaleY.setDuration(500);
+//        scaleY.setRepeatMode(ValueAnimator.REVERSE);
+//        scaleY.setInterpolator(new LinearInterpolator());
+//        scaleY.setRepeatCount(ValueAnimator.INFINITE);
+//        scaleY.start();
         initRect();
+        handler.sendEmptyMessageDelayed(0, 200); //每间隔200毫秒发送消息刷新
     }
 
     private void initRect() {
@@ -86,6 +106,7 @@ public class AudioWaveView extends View {
         rectF6 = new RectF();
         rectF7 = new RectF();
         rectF8 = new RectF();
+
     }
 
     @Override
@@ -124,7 +145,12 @@ public class AudioWaveView extends View {
             canvas.drawRoundRect(rectF8, (float) (rectWidth / 2.0), (float) (rectWidth / 2.0), paint);
         }
 
-        handler.sendEmptyMessageDelayed(0, 200); //每间隔200毫秒发送消息刷新
+
     }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        handler.removeCallbacksAndMessages(null);
+    }
 }

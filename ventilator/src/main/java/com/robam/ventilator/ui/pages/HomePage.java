@@ -11,11 +11,13 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.Group;
+import androidx.customview.widget.ViewDragHelper;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.NetworkUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
@@ -164,14 +166,21 @@ public class HomePage extends VentilatorBasePage {
                 //抽屉滑动式回调的方法
 //                LogUtils.e("x" + drawerView.getWidth());
 //                LogUtils.e("---onDrawerSlide---"+slideOffset);
-                if (drawerView.getId() == R.id.drawer_left)
+                if (drawerView.getId() == R.id.drawer_left) { //拖动左边
                     llSetting.setX(slideOffset * drawerView.getWidth());
-                else {
+                    llSetting.setBackgroundColor(getContext().getResources().getColor(R.color.ventilator_color_menu));
+                    findViewById(R.id.sb_view_left).setVisibility(View.GONE); //模糊蒙版
+                    findViewById(R.id.sb_view_right).setVisibility(View.VISIBLE); //模糊蒙版
+                } else {
 //                    LogUtils.e("x" + llProducts.getX());
                     int width = ScreenUtils.getWidthPixels(getContext());
-                    llProducts.setX(width - slideOffset * drawerView.getWidth() - getContext().getResources().getDimension(com.robam.common.R.dimen.dp_90));
+                    llProducts.setX(width - slideOffset * drawerView.getWidth() - getContext().getResources().getDimension(com.robam.common.R.dimen.dp_90) - 0.3f); //不加0.3会有一条黑线
+                    llProducts.setBackgroundColor(getContext().getResources().getColor(R.color.ventilator_color_menu));
+                    findViewById(R.id.sb_view_left).setVisibility(View.VISIBLE);
+                    findViewById(R.id.sb_view_right).setVisibility(View.GONE);
                 }
-
+                //全屏蒙版
+                findViewById(R.id.sb_view).setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -201,15 +210,27 @@ public class HomePage extends VentilatorBasePage {
                 findViewById(R.id.iv_left_right).setVisibility(View.VISIBLE);
                 findViewById(R.id.iv_right_left).setVisibility(View.VISIBLE);
                 findViewById(R.id.iv_right_right).setVisibility(View.INVISIBLE);
-                findViewById(R.id.sb_view).setVisibility(View.GONE);
-                findViewById(R.id.sb_view_left).setVisibility(View.GONE);
-                findViewById(R.id.sb_view_right).setVisibility(View.GONE);
+
             }
 
             @Override
             public void onDrawerStateChanged(int newState) {
                 //抽屉的状态改变时会回调的方法
-                LogUtils.i("---onDrawerStateChanged---");
+                LogUtils.i("---onDrawerStateChanged--- " + newState);
+                if (newState == ViewDragHelper.STATE_IDLE) {
+                    if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
+
+                    } else if (drawerLayout.isDrawerOpen(Gravity.RIGHT)) {
+
+                    } else {
+                        //模糊蒙版关闭
+                        findViewById(R.id.sb_view).setVisibility(View.GONE);
+                        findViewById(R.id.sb_view_left).setVisibility(View.GONE);
+                        findViewById(R.id.sb_view_right).setVisibility(View.GONE);
+                        llSetting.setBackgroundColor(getContext().getResources().getColor(R.color.ventilator_transparent));
+                        llProducts.setBackgroundColor(getContext().getResources().getColor(R.color.ventilator_transparent));
+                    }
+                }
             }
         });
         //初始化
@@ -258,16 +279,6 @@ public class HomePage extends VentilatorBasePage {
         //左边菜单
         settingAdapter = new RvSettingAdapter();
         rvLeft.setAdapter(settingAdapter);
-        //设置功能
-        settingList.add(new VenFunBean(1, "个人中心", "", -1, "com.robam.ventilator.ui.activity.PersonalCenterActivity"));
-        settingList.add(new VenFunBean(2, "网络设置", "", -1, "com.robam.ventilator.ui.activity.WifiSettingActivity"));
-        settingList.add(new VenFunBean(3, "时间设定", "", -1, "com.robam.ventilator.ui.activity.DateSettingActivity"));
-        settingList.add(new VenFunBean(4, "屏幕亮度", "", -1, "com.robam.ventilator.ui.activity.ScreenBrightnessActivity"));
-        settingList.add(new VenFunBean(5, "恢复出厂", "", -1, "com.robam.ventilator.ui.activity.ResetActivity"));
-        settingList.add(new VenFunBean(6, "关于售后", "", -1, "com.robam.ventilator.ui.activity.SaleServiceActivity"));
-        settingList.add(new VenFunBean(7, "关于产品", "", -1, "com.robam.ventilator.ui.activity.AboutActivity"));
-        settingList.add(new VenFunBean(8, "智能设置", "", -1, "com.robam.ventilator.ui.activity.SmartSettingActivity"));
-        settingAdapter.setList(settingList);
 
         settingAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
@@ -291,8 +302,8 @@ public class HomePage extends VentilatorBasePage {
         rvRight.setAdapter(rvProductsAdapter);
 
         View head = LayoutInflater.from(getContext()).inflate(R.layout.ventilator_item_layout_image, null);
-        ImageView ivHead = head.findViewById(R.id.iv_head);
-        ivHead.setImageResource(R.drawable.ventilator_ic_bg);
+//        ImageView ivHead = head.findViewById(R.id.iv_head);
+//        ivHead.setImageResource(R.drawable.ventilator_ic_bg);
         rvProductsAdapter.addHeaderView(head);
         View foot = LayoutInflater.from(getContext()).inflate(R.layout.ventilator_item_layout_button, null);
         //添加产品
@@ -448,11 +459,11 @@ public class HomePage extends VentilatorBasePage {
                     }
                     //风阻
                     if (HomeVentilator.getInstance().gear == (byte) 0xA1) {
-                        viewFlow.setHeight(3, 1);
-                        viewSpeed.setHeight(3, 1);
+                        viewFlow.setHeight(5, 3);
+                        viewSpeed.setHeight(5, 3);
                     } else if (HomeVentilator.getInstance().gear == (byte) 0xA3) {
-                        viewFlow.setHeight(6, 4);
-                        viewSpeed.setHeight(6, 4);
+                        viewFlow.setHeight(7, 5);
+                        viewSpeed.setHeight(7, 5);
                     } else if (HomeVentilator.getInstance().gear == (byte) 0xA6) {
                         viewFlow.setHeight(9, 7);
                         viewSpeed.setHeight(9, 7);
@@ -475,8 +486,11 @@ public class HomePage extends VentilatorBasePage {
                     return;
                 LogUtils.e("onChanged " + s);
                 refreshTime = System.currentTimeMillis();
-                if (null != rvProductsAdapter)
+                if (null != rvProductsAdapter) {
+                    if (AccountInfo.getInstance().deviceList.size() > 0)
+                        rvProductsAdapter.removeHeaderView(head);
                     rvProductsAdapter.setList(AccountInfo.getInstance().deviceList);
+                }
             }
         });
         //油网清洗检查
@@ -487,6 +501,21 @@ public class HomePage extends VentilatorBasePage {
                     lockClean(R.string.ventilator_clean_oil_auto_hint);
             }
         });
+    }
+    //系统设置列表
+    private void settingFunList() {
+        //设置功能
+        settingList.clear();
+        settingList.add(new VenFunBean(1, "个人中心", "", -1, "com.robam.ventilator.ui.activity.PersonalCenterActivity"));
+        settingList.add(new VenFunBean(2, "网络设置", "", -1, "com.robam.ventilator.ui.activity.WifiSettingActivity"));
+        if (!NetworkUtils.isConnected())
+            settingList.add(new VenFunBean(3, "时间设定", "", -1, "com.robam.ventilator.ui.activity.DateSettingActivity"));
+        settingList.add(new VenFunBean(4, "屏幕亮度", "", -1, "com.robam.ventilator.ui.activity.ScreenBrightnessActivity"));
+        settingList.add(new VenFunBean(5, "恢复出厂", "", -1, "com.robam.ventilator.ui.activity.ResetActivity"));
+        settingList.add(new VenFunBean(6, "关于售后", "", -1, "com.robam.ventilator.ui.activity.SaleServiceActivity"));
+        settingList.add(new VenFunBean(7, "关于产品", "", -1, "com.robam.ventilator.ui.activity.AboutActivity"));
+        settingList.add(new VenFunBean(8, "智能设置", "", -1, "com.robam.ventilator.ui.activity.SmartSettingActivity"));
+        settingAdapter.setList(settingList);
     }
 
     /**
@@ -672,17 +701,12 @@ public class HomePage extends VentilatorBasePage {
         }
         else {
             if (gravity == Gravity.LEFT) { //左边打开
-                llSetting.setBackgroundColor(getContext().getResources().getColor(R.color.ventilator_color_menu));
-                findViewById(R.id.sb_view_left).setVisibility(View.GONE);
-                findViewById(R.id.sb_view_right).setVisibility(View.VISIBLE);
+                settingFunList();
             }
             if (gravity == Gravity.RIGHT) {
-                llProducts.setBackgroundColor(getContext().getResources().getColor(R.color.ventilator_color_menu));
-                findViewById(R.id.sb_view_left).setVisibility(View.VISIBLE);
-                findViewById(R.id.sb_view_right).setVisibility(View.GONE);
+
             }
             drawerLayout.openDrawer(gravity);
-            findViewById(R.id.sb_view).setVisibility(View.VISIBLE);
         }
     }
 
@@ -742,7 +766,7 @@ public class HomePage extends VentilatorBasePage {
         //开灯
         Plat.getPlatform().openWaterLamp();
 
-        HomeVentilator.getInstance().status = 4; //油网清洗状态
+        HomeVentilator.getInstance().status = VentilatorConstant.FAN_LOCK; //油网清洗状态
 
         //重新计算
         MMKVUtils.setFanRuntime(0);

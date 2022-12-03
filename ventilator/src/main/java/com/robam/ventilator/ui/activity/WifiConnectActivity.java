@@ -2,6 +2,7 @@ package com.robam.ventilator.ui.activity;
 
 import android.net.ConnectivityManager;
 import android.net.Network;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.PasswordEditText;
+import com.robam.common.utils.MMKVUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
@@ -38,8 +40,8 @@ public class WifiConnectActivity extends VentilatorBaseActivity {
         if (null != bundle) {
             String ssid = bundle.getString(VentilatorConstant.EXTRA_WIFI_SSID);
             tvName.setText(ssid);
+            etPassword.setText(MMKVUtils.getWifiPwd(ssid));
         }
-
         setOnClickListener(R.id.btn_join);
     }
 
@@ -55,32 +57,53 @@ public class WifiConnectActivity extends VentilatorBaseActivity {
         if (id == R.id.btn_join) {
             //连接网络
             connecting();
+            final int sdkVersion = getApplicationInfo().targetSdkVersion;
+            if (sdkVersion > Build.VERSION_CODES.P) {
+                VenWifiManager.connectWifiPws(getApplicationContext()
+                        , tvName.getText().toString()
+                        , etPassword.getText().toString(), new ConnectivityManager.NetworkCallback() {
+                            @Override
+                            public void onAvailable(Network network) {
+                                Log.i("onAvailable", "success");
+                                if (null != waitingDialog)
+                                    waitingDialog.dismiss();
+                                //connect success
+                                finish();
+                            }
 
-            VenWifiManager.connectWifiPws(getApplicationContext()
-                    , tvName.getText().toString()
-                    ,etPassword.getText().toString(), new ConnectivityManager.NetworkCallback() {
+                            @Override
+                            public void onUnavailable() {
+                                Log.i("onUnavailable", "failed");
+                                if (null != waitingDialog)
+                                    waitingDialog.dismiss();
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        ToastUtils.showShort(WifiConnectActivity.this, R.string.ventilator_connect_failed);
+                                    }
+                                });
+                            }
+                        });
+            } else {
+                if (VenWifiManager.connectWifiPws(getApplicationContext()
+                        , tvName.getText().toString()
+                        , etPassword.getText().toString())) {
+                    if (null != waitingDialog)
+                        waitingDialog.dismiss();
+                    //connect success
+                    MMKVUtils.setWifi(tvName.getText().toString(), etPassword.getText().toString());
+                    finish();
+                } else {
+                    if (null != waitingDialog)
+                        waitingDialog.dismiss();
+                    getActivity().runOnUiThread(new Runnable() {
                         @Override
-                        public void onAvailable(Network network) {
-                            Log.i("onAvailable", "success");
-                            if (null != waitingDialog)
-                                waitingDialog.dismiss();
-                            //connect success
-                            finish();
-                        }
-
-                        @Override
-                        public void onUnavailable() {
-                            Log.i("onUnavailable", "failed");
-                            if (null != waitingDialog)
-                                waitingDialog.dismiss();
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ToastUtils.showShort(WifiConnectActivity.this, R.string.ventilator_connect_failed);
-                                }
-                            });
+                        public void run() {
+                            ToastUtils.showShort(WifiConnectActivity.this, R.string.ventilator_connect_failed);
                         }
                     });
+                }
+            }
 
         }
     }

@@ -51,7 +51,7 @@ public class RvMainFunctonAdapter extends BaseQuickAdapter<VenFunBean, BaseViewH
     protected void convert(@NonNull BaseViewHolder baseViewHolder, VenFunBean venFun) {
         if (null != venFun) {
 //            baseViewHolder.setText(R.id.tv_fun, venFun.getTitle());
-            if (getItemPosition(venFun) == pickPosition) {
+            if (getItemPosition(venFun) == pickPosition && pickPosition != 0) {
                 baseViewHolder.getView(R.id.ventilator_main_item).setScaleX(1.6f);
                 baseViewHolder.getView(R.id.ventilator_main_item).setScaleY(1.6f);
                 ShapeBlurView blurView = baseViewHolder.getView(R.id.tv_fun_name);

@@ -9,10 +9,13 @@ import android.os.Handler;
 import android.os.Looper;
 import android.serialport.helper.SerialPortHelper;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.gson.Gson;
+import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.RTopic;
@@ -44,6 +47,9 @@ import com.robam.ventilator.ui.receiver.VentilatorReceiver;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -117,9 +123,8 @@ public class HomeVentilator {
                     //切换到弱档
 
                     if (startup == (byte)0x00) { //先开机
-                        VentilatorAbstractControl.getInstance().powerOnGear(VentilatorConstant.FAN_GEAR_WEAK);
-                        Plat.getPlatform().screenOn();
-                        Plat.getPlatform().openPowerLamp();
+
+                        openVentilatorGear(VentilatorConstant.FAN_GEAR_WEAK);
                     } else {
                         VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_WEAK); //弱档
 
@@ -141,17 +146,15 @@ public class HomeVentilator {
             int autoCountTime = 0;
             isAutoCountDown = false;
 
-            //切换到弱档
-            VentilatorAbstractControl.getInstance().powerOnGear(VentilatorConstant.FAN_GEAR_WEAK);
-            Plat.getPlatform().screenOn();
-            Plat.getPlatform().openPowerLamp();
+            //开机切换到弱档
+            openVentilatorGear(VentilatorConstant.FAN_GEAR_WEAK);
 
             while (!isAutoCountDown) {
-
                 try {
                     Thread.sleep(100);
                 } catch (Exception e) {}
                 autoCountTime++;
+                LogUtils.e("autoCountTime " + autoCountTime + "startup=" + startup);
 
                 if (autoCountTime >= 1800) { //3分钟
                     //关闭烟机
@@ -271,6 +274,37 @@ public class HomeVentilator {
             e.printStackTrace();
         }
     }
+    //获取烟机子设备
+    public void setSubDevices(MqttMsg msg) throws Exception{
+        JSONArray jsonArray = new JSONArray();
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if ((device instanceof Pan) || (device instanceof Stove)) { //其他存在的子设备
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.putOpt(VentilatorConstant.DEVICE_GUID, device.guid);
+                jsonObject.putOpt(VentilatorConstant.DEVICE_BIZ, device.bid);
+                jsonObject.putOpt(VentilatorConstant.DEVICE_STATUS, device.status);
+                jsonArray.put(jsonObject);
+            }
+        }
+        //读文件
+        if (jsonArray.length() == 0) {
+            Set<String> deviceSets = MMKVUtils.getSubDevice();
+            if (null != deviceSets) {
+                for (String json : deviceSets) {
+                    Device subDevice = new Gson().fromJson(json, Device.class);
+                    if (IDeviceType.RZNG.equals(subDevice.dc) || IDeviceType.RRQZ.equals(subDevice.dc)) {//锅
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.putOpt(VentilatorConstant.DEVICE_GUID, subDevice.guid);
+                        jsonObject.putOpt(VentilatorConstant.DEVICE_BIZ, subDevice.bid);
+                        jsonObject.putOpt(VentilatorConstant.DEVICE_STATUS, subDevice.status);
+                        jsonArray.put(jsonObject);
+                    }
+                }
+            }
+        }
+        msg.putOpt(ComnConstant.DEVICE_NUM, jsonArray.length() + 1); //设备个数
+        msg.putOpt(VentilatorConstant.SUB_DEVICES, jsonArray);
+    }
 
     //爆炒档开始倒计时
     private boolean isStopA6CountDown;
@@ -284,6 +318,8 @@ public class HomeVentilator {
     }
     //延时关机提示
     public void delayShutDown(boolean isLink) {  //是否联动关机
+        if (isLock())  //锁屏状态，不响应
+            return;
         if (gear == (byte) 0xA0 && isLink) //联动关机 挡位未开
             return; //不响应
         if (gear == (byte) 0xA0 || !MMKVUtils.getDelayShutdown()) { //挡位没开或者延时关机关闭 立即关机
@@ -300,7 +336,7 @@ public class HomeVentilator {
                 }
             }, 2000); //延时，防止自动跳转时覆盖
         } else {
-            VentilatorAbstractControl.getInstance().beep();
+
 
             shutDownHint(false);
         }
@@ -336,20 +372,37 @@ public class HomeVentilator {
                     if (currentSecond <= 0) {
                         cancleDelayShutDown();
                         //关机
-                        Plat.getPlatform().screenOff(); //熄灭ping
-                        Plat.getPlatform().closePowerLamp();//关灯
-                        Plat.getPlatform().closeWaterLamp(); //关左灯
-                        VentilatorAbstractControl.getInstance().shutDown();
+                        closeVentilator();
                     }
                 }
             });
             delayCloseDialog.tvCountdown.start();
 
+            if (!isLink)
+                VentilatorAbstractControl.getInstance().beep();
             delayCloseDialog.show();
+        } else {
+            if (!isLink) { //主动关机
+                //关机
+                closeVentilator();
+
+                if (null != delayCloseDialog)
+                    delayCloseDialog.tvCountdown.stop();
+                cancleDelayShutDown();
+            }
         }
+    }
+    //打开烟机并且开挡位 联动功能
+    public void openVentilatorGear(int gear) {
+        startup = 0x01;
+        VentilatorAbstractControl.getInstance().powerOnGear(gear);
+        Plat.getPlatform().screenOn();
+        Plat.getPlatform().openPowerLamp();
+        updateOperationTime(); //开机时间
     }
     //打开烟机
     public void openVentilator() {
+        startup = 0x01;
         VentilatorAbstractControl.getInstance().powerOn();
         Plat.getPlatform().screenOn();
         Plat.getPlatform().openPowerLamp();
@@ -362,6 +415,7 @@ public class HomeVentilator {
         Plat.getPlatform().closePowerLamp();//关灯
         Plat.getPlatform().closeWaterLamp(); //关左灯
         VentilatorAbstractControl.getInstance().shutDown();
+        startup = 0x00;
 
         Activity activity = AppActivityManager.getInstance().getCurrentActivity();
         if (null != activity) {
@@ -370,6 +424,9 @@ public class HomeVentilator {
             intent.setClass(activity, HomeActivity.class); //回首页
             activity.startActivity(intent);
         }
+//        activity = AppActivityManager.getInstance().getCurrentActivity();
+//        if (null != activity)
+//            activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 
     //关闭延时关机
@@ -399,9 +456,9 @@ public class HomeVentilator {
     public void startAutoCountDown() {
         autoCountDown.execute(runAutoCountDown);
     }
-    //停止自动同分
+    //停止自动通风
     public void stopAutoCountDown() {
-        isLevelCountDown = true;
+        isAutoCountDown = true;
     }
 
     //智能设置
@@ -421,7 +478,7 @@ public class HomeVentilator {
             }
             //记录风机最后运行时间
             MMKVUtils.setFanOffTime(curTime);
-            HomeVentilator.getInstance().fanOffTime = curTime;
+            fanOffTime = curTime;
         } else {
             if (fanStartTime == 0)
                 fanStartTime = curTime;
@@ -448,7 +505,7 @@ public class HomeVentilator {
                         //关灯
                         Plat.getPlatform().closeWaterLamp();
                         //取消油网清洗
-                        HomeVentilator.getInstance().status = HomeVentilator.getInstance().startup;
+                        status = startup;
                         return true;
                     }
                 });
@@ -476,6 +533,7 @@ public class HomeVentilator {
             filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);//监听wifi是开关变化的状态
             filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);//监听wifi连接状态
             filter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);//监听wifi列表变化（开启一个热点或者关闭一个热点）
+            filter.addAction(Intent.ACTION_TIME_CHANGED); //时间变化
             context.registerReceiver(ventilatorReceiver, filter);
         }
     }

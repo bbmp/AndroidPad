@@ -16,6 +16,7 @@ import androidx.navigation.NavController;
 import com.robam.common.R;
 import com.robam.common.device.Plat;
 import com.robam.common.http.ILife;
+import com.robam.common.manager.AppActivityManager;
 import com.robam.common.module.IPublicVentilatorApi;
 import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.skin.SkinStatusBarUtils;
@@ -149,6 +150,7 @@ public abstract class BaseActivity extends AbsActivity implements ActivityAction
                     Plat.getPlatform().closeWaterLamp();
                     iPublicVentilatorApi.setFanLight(0);
                 }
+                iPublicVentilatorApi.updateOperationTime(); //更新操作时间
                 return true;
             }
         } else if (keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE) {
@@ -158,10 +160,13 @@ public abstract class BaseActivity extends AbsActivity implements ActivityAction
                     //延时关机
                    iPublicVentilatorApi.delayShutDown();
                 } else {
-                    iPublicVentilatorApi.powerOn(); //开机
-                    Plat.getPlatform().screenOn();
-                    Plat.getPlatform().openPowerLamp();
+                    iPublicVentilatorApi.openVentilator(); //开机
+//                    Plat.getPlatform().screenOn();
+//                    Plat.getPlatform().openPowerLamp();
 //                    iPublicVentilatorApi.startService(this);
+//                    Activity activity = AppActivityManager.getInstance().getCurrentActivity();
+//                    if (null != activity)
+//                        activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 }
                 return true;
             }

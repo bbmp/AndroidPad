@@ -8,6 +8,7 @@ import com.blankj.utilcode.util.ActivityUtils
 import com.robam.common.bean.AccountInfo
 import com.robam.common.bean.BaseResponse
 import com.robam.common.bean.Device
+import com.robam.common.bean.MqttDirective
 import com.robam.common.device.Plat
 import com.robam.common.device.subdevice.Pan
 import com.robam.common.device.subdevice.Stove
@@ -64,7 +65,7 @@ class SmartSettingActivity : VentilatorBaseActivity() {
         setCenter(R.string.ventilator_smart_setting)
 
         recyclerView.apply {
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = LinearLayoutManager(this@SmartSettingActivity)
             addItemDecoration(
                 VerticalSpaceItemDecoration(
                     resources.getDimension(com.robam.common.R.dimen.dp_10).toInt()
@@ -119,7 +120,9 @@ class SmartSettingActivity : VentilatorBaseActivity() {
                 mAdapter.setList(mList)
             }
         }
+        MqttDirective.getInstance().directive.observe(this) {
 
+        }
     }
 
     /**
@@ -227,7 +230,7 @@ class SmartSettingActivity : VentilatorBaseActivity() {
                 true,
                 "假日模式",
                 String.format(
-                    context.getString(R.string.ventilator_holiday_desc_set),
+                    getString(R.string.ventilator_holiday_desc_set),
                     MMKVUtils.getHolidayDay(),
                     MMKVUtils.getHolidayWeekTime()
                 ),
@@ -247,7 +250,7 @@ class SmartSettingActivity : VentilatorBaseActivity() {
                 true,
                 "延时关机",
                 String.format(
-                    context.getString(R.string.ventilator_shutdown_delay_set),
+                    getString(R.string.ventilator_shutdown_delay_set),
                     MMKVUtils.getDelayShutdownTime()
                 ),
                 MMKVUtils.getDelayShutdown()

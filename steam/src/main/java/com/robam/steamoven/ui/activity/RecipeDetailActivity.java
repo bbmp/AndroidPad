@@ -25,7 +25,6 @@ import com.robam.common.utils.ImageUtils;
 import com.robam.common.utils.QrUtils;
 import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.bean.Material;
-import com.robam.steamoven.bean.model.RecipeStep;
 import com.robam.steamoven.bean.model.RecipeStep2;
 import com.robam.steamoven.bean.model.StoveRecipeDetail;
 import com.robam.steamoven.device.HomeSteamOven;
@@ -81,7 +80,7 @@ public class RecipeDetailActivity extends SteamBaseActivity {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.stove_activity_layout_recipe_detail;
+        return R.layout.steam_activity_layout_recipe_detail;
     }
 
     @Override

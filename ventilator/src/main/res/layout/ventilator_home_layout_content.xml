@@ -77,8 +77,8 @@
 
     <com.robam.common.ui.view.AudioWaveView
         android:id="@+id/iv_speed"
-        android:layout_width="@dimen/dp_120"
-        android:layout_height="@dimen/dp_60"
+        android:layout_width="@dimen/dp_90"
+        android:layout_height="@dimen/dp_45"
         android:layout_marginRight="@dimen/dp_56"
         android:layout_marginBottom="@dimen/dp_36"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -86,8 +86,8 @@
 
     <com.robam.common.ui.view.AudioWaveView
         android:id="@+id/iv_flow"
-        android:layout_width="@dimen/dp_120"
-        android:layout_height="@dimen/dp_60"
+        android:layout_width="@dimen/dp_90"
+        android:layout_height="@dimen/dp_45"
         android:layout_marginLeft="@dimen/dp_56"
         android:layout_marginBottom="@dimen/dp_36"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -118,7 +118,8 @@
         android:gravity="center"
         android:visibility="gone"
         app:common_blur_mode="rectangle"
-        app:common_blur_radius="@dimen/dp_10"
+        app:common_blur_radius="@dimen/dp_20"
+        app:common_blur_down_sample="2"
         app:common_blur_overlay_color="@color/ventilator_drawer_bg" />
     <FrameLayout
         android:id="@+id/ll_drawer_left"
@@ -136,6 +137,7 @@
                 android:id="@+id/iv_left_left"
                 android:layout_width="@dimen/dp_15"
                 android:layout_height="@dimen/dp_15"
+                android:layout_marginRight="@dimen/dp_2"
                 android:src="@drawable/ventilator_arrow_left"
                 android:visibility="invisible"/>
             <TextView
@@ -150,6 +152,7 @@
                 android:id="@+id/iv_left_right"
                 android:layout_width="@dimen/dp_15"
                 android:layout_height="@dimen/dp_15"
+                android:layout_marginLeft="@dimen/dp_2"
                 android:src="@drawable/ventilator_arrow_right"/>
         </LinearLayout>
         <com.robam.common.ui.blurview.ShapeBlurView
@@ -159,7 +162,8 @@
             android:gravity="center"
             android:visibility="gone"
             app:common_blur_mode="rectangle"
-            app:common_blur_radius="@dimen/dp_10"
+            app:common_blur_radius="@dimen/dp_20"
+            app:common_blur_down_sample="2"
             app:common_blur_overlay_color="@color/ventilator_drawer_bg" />
     </FrameLayout>
     <FrameLayout
@@ -178,6 +182,7 @@
                 android:id="@+id/iv_right_left"
                 android:layout_width="@dimen/dp_15"
                 android:layout_height="@dimen/dp_15"
+                android:layout_marginRight="@dimen/dp_2"
                 android:src="@drawable/ventilator_arrow_left"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -192,6 +197,7 @@
                 android:id="@+id/iv_right_right"
                 android:layout_width="@dimen/dp_15"
                 android:layout_height="@dimen/dp_15"
+                android:layout_marginLeft="@dimen/dp_2"
                 android:src="@drawable/ventilator_arrow_right"
                 android:visibility="invisible"/>
         </LinearLayout>
@@ -202,7 +208,8 @@
             android:gravity="center"
             android:visibility="gone"
             app:common_blur_mode="rectangle"
-            app:common_blur_radius="@dimen/dp_10"
+            app:common_blur_radius="@dimen/dp_20"
+            app:common_blur_down_sample="2"
             app:common_blur_overlay_color="@color/ventilator_drawer_bg" />
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

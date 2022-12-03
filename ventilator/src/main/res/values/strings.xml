@@ -39,11 +39,13 @@
     <string name="ventilator_reset_hint">恢复出厂设置后，\n将删除个人设置信息</string>
     <string name="ventilator_reset_ok">确认恢复出厂设置</string>
     <string name="ventilator_reset_ing">恢复中</string>
+    <string name="ventilator_reseted">已恢复出厂设置</string>
     <string name="ventilator_donot_cut_power">(请勿断电)</string>
     <string name="ventilator_about_saleservice">关于售后</string>
     <string name="ventilator_about_product">关于产品</string>
     <string name="ventilator_product_model">产品型号</string>
     <string name="ventilator_sys_version">固件版本号</string>
+    <string name="ventilator_app_version">系统版本号</string>
     <string name="ventilator_net">网络</string>
     <string name="ventilator_password">密码</string>
     <string name="ventilator_input_password">输入密码</string>
@@ -103,4 +105,5 @@
     <string name="ventilator_cleaning_completion">清洁完成</string>
     <string name="ventilator_disinfect_completion">消毒完成</string>
     <string name="ventilator_cabinet_completion">结束</string>
+    <string name="ventilator_products_center">欢迎使用\n双子星套系产品</string>
 </resources>

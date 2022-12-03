@@ -5,9 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.UiAutomation;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.robam.common.ui.dialog.IDialog;
+import com.robam.common.utils.MMKVUtils;
+import com.robam.common.utils.ToastUtils;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
 import com.robam.ventilator.constant.DialogConstant;
@@ -16,7 +20,9 @@ import com.robam.ventilator.factory.VentilatorDialogFactory;
 import java.io.File;
 
 public class ResetActivity extends VentilatorBaseActivity {
-    private IDialog resetDialog;
+    private IDialog resetDialog, progressDialog;
+    int curProgress = 0;
+    private Handler mHandler = new Handler();
 
     @Override
     protected int getLayoutId() {
@@ -54,8 +60,14 @@ public class ResetActivity extends VentilatorBaseActivity {
                 @Override
                 public void onClick(View v) {
                     if (v.getId() == R.id.tv_ok) {
+                        showProressDialog();
+
                         clearPublic(); //恢复中
                         clearPrivate();
+                        //清除智能设置
+                        MMKVUtils.resetSmartSet();
+
+                        mHandler.postDelayed(updateProgress, 100);
                     }
                 }
             }, R.id.tv_cancel, R.id.tv_ok);
@@ -63,13 +75,47 @@ public class ResetActivity extends VentilatorBaseActivity {
         resetDialog.show();
     }
 
+    private Runnable updateProgress = new Runnable() {
+        @Override
+        public void run() {
+            if (null != progressDialog) {
+                ProgressBar progressBar = progressDialog.getRootView().findViewById(R.id.sbr_progress);
+                curProgress+=2;
+                progressBar.setProgress(curProgress);
+                if (curProgress >= 100) {
+                    closeProgressDialog();
+                    ToastUtils.showShort(getApplicationContext(), R.string.ventilator_reseted);
+                    return;
+                }
+                mHandler.postDelayed(updateProgress, 100);
+            }
+        }
+    };
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if (null != resetDialog && resetDialog.isShow())
             resetDialog.dismiss();
+        closeProgressDialog();
+        mHandler.removeCallbacks(updateProgress);
+
+        mHandler.removeCallbacksAndMessages(null);
     }
 
+    private void showProressDialog() {
+        if (null == progressDialog) {
+            progressDialog = VentilatorDialogFactory.createDialogByType(getContext(), DialogConstant.DIALOG_UPDATE_VERSION);
+            progressDialog.setCancelable(false);
+        }
+        progressDialog.setContentText(R.string.ventilator_reset_ing);
+        progressDialog.show();
+    }
+
+    private void closeProgressDialog() {
+        if (null != progressDialog && progressDialog.isShow())
+            progressDialog.dismiss();
+    }
     /**
      * 清空公有目录
      */

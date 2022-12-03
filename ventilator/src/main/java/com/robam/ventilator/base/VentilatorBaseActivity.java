@@ -49,6 +49,16 @@ public abstract class VentilatorBaseActivity extends BaseActivity {
         textView.setText(res);
     }
 
+    public void setRight() {
+        findViewById(R.id.ll_right).setVisibility(View.VISIBLE);
+        findViewById(R.id.iv_right1).setVisibility(View.GONE);
+        findViewById(R.id.view_right1).setVisibility(View.GONE);
+        findViewById(R.id.view_right2).setVisibility(View.VISIBLE);
+        findViewById(R.id.iv_right2).setVisibility(View.VISIBLE);
+        TextView textView = findViewById(R.id.tv_right);
+        textView.setText(R.string.ventilator_skip);
+    }
+
     @Override
     public void onClick(View view) {
         int id = view.getId();

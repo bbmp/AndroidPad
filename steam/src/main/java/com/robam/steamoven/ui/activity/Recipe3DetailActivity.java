@@ -1,12 +1,10 @@
 package com.robam.steamoven.ui.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.Group;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -59,7 +57,7 @@ public class Recipe3DetailActivity extends SteamBaseActivity {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.steam_activity_layout_recipe_detail;
+        return R.layout.steam_activity_layout_recipe_detail_3;
     }
 
     @Override

@@ -11,6 +11,10 @@
         <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_password_on_ic.xml" value="0.2115" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_shape_button_mark.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_shape_counter_down.xml" value="0.2115" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_shape_rect_down.xml" value="0.196" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_shape_rect_up.xml" value="0.196" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_shape_round_rect.xml" value="0.196" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_shape_round_up.xml" value="0.193" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_shape_step_bg.xml" value="0.139" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/drawable/common_shape_triangle.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/layout/common_blurredview.xml" value="0.1" />
@@ -19,6 +23,10 @@
         <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/layout/common_layout_markview_add.xml" value="0.11788194444444444" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/layout/common_layout_markview_step.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/layout/common_layout_popwindow.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/layout/common_layout_rect.xml" value="0.25" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/layout/common_layout_rect_up.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/layout/common_layout_round_rect.xml" value="0.11788194444444444" />
+        <entry key="..\:/AndroidProjects/AndroidPad/app/common/src/main/res/layout/common_layout_wave_view.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/drawable/pan_main_item_bg.xml" value="0.1725" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/drawable/pan_recipe_img_bg.xml" value="0.261" />
         <entry key="..\:/AndroidProjects/AndroidPad/app/pan/src/main/res/drawable/pan_shape_border_bg.xml" value="0.1775" />
@@ -353,6 +361,7 @@
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_view_layout_tab_temp.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_view_layout_tab_time.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/steam_view_layout_title.xml" value="0.17682291666666666" />
+        <entry key="..\:/AndroidProjects/AndroidPad/steam/src/main/res/layout/stove_activity_layout_recipe_detail.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/stream/src/main/res/layout/activity_ble.xml" value="0.13333333333333333" />
         <entry key="..\:/AndroidProjects/AndroidPad/stream/src/main/res/layout/fragment_take_photo.xml" value="0.18177083333333333" />
         <entry key="..\:/AndroidProjects/AndroidPad/stream/src/main/res/layout/home_fragment.xml" value="0.175" />
@@ -382,6 +391,8 @@
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_shape_online_bg.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_shape_scrollbar_bg.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_shape_work_bg.xml" value="0.1775" />
+        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_shortcut_item_bg.xml" value="0.196" />
+        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_shortcut_item_selected.xml" value="0.1885" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_text_color_selected.xml" value="0.221" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_text_color_selector.xml" value="0.1775" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/drawable/ventilator_waiting_bg.xml" value="0.171" />
@@ -394,7 +405,7 @@
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_activity_holiday_date_setting.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_activity_layout_about.xml" value="0.22" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_activity_layout_add_device.xml" value="0.11788194444444444" />
-        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_activity_layout_date_setting.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_activity_layout_date_setting.xml" value="0.18" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_activity_layout_home.xml" value="0.14316239316239315" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_activity_layout_login_password.xml" value="0.18" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_activity_layout_login_phone.xml" value="0.1" />
@@ -421,7 +432,7 @@
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_dialog_layout_waiting.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_fragment_full_screen.xml" value="0.175" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_home_fragment.xml" value="0.175" />
-        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_home_layout_content.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_home_layout_content.xml" value="0.16728037874802734" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_item_device_normal.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_item_device_offline.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/ventilator/src/main/res/layout/ventilator_item_device_work.xml" value="0.1" />

@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         app:common_blur_mode="rectangle"
-        app:common_blur_radius="@dimen/dp_10"
+        app:common_blur_radius="@dimen/dp_20"
         app:common_blur_overlay_color="@color/stove_lock"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -59,9 +59,9 @@
 
     <ImageView
         android:id="@+id/iv_lock"
-        android:layout_width="@dimen/dp_60"
-        android:layout_height="@dimen/dp_60"
-        android:layout_marginBottom="@dimen/dp_24"
+        android:layout_width="@dimen/dp_108"
+        android:layout_height="@dimen/dp_108"
+        android:padding="@dimen/dp_24"
         android:src="@drawable/stove_screen_home_lock"
         app:layout_constraintBottom_toTopOf="@id/tv_lock"
         app:layout_constraintLeft_toLeftOf="parent"

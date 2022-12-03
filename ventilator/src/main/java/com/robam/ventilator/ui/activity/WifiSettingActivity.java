@@ -5,6 +5,7 @@ import androidx.constraintlayout.widget.Group;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.Manifest;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -38,6 +40,9 @@ public class WifiSettingActivity extends VentilatorBaseActivity {
 //    private VentilatorReceiver ventilatorReceiver;
     private Group group;
     private SwitchButton switchButton;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    //是否首次进入
+    private boolean first = false;
 
     @Override
     protected int getLayoutId() {
@@ -48,14 +53,15 @@ public class WifiSettingActivity extends VentilatorBaseActivity {
     protected void initView() {
         setCenter(R.string.ventilator_net_set);
         mWifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
-        boolean first = false;
+
         group = findViewById(R.id.ventilator_group2);
         Bundle bundle = getIntent().getExtras();
         if (null != bundle) {
             first = bundle.getBoolean(VentilatorConstant.EXTRA_FIRST, false);
             if (first) {
                 HomeVentilator.getInstance().registerWifiReceiver(this.getApplicationContext());
-                VenWifiManager.openWifi(mWifiManager);
+                //打开wifi
+                checkWifiPermmissions();
                 group.setVisibility(View.GONE);
                 //首次进入
                 setRight();
@@ -64,10 +70,19 @@ public class WifiSettingActivity extends VentilatorBaseActivity {
         if (!first)
             showLeft();
 
+        swipeRefreshLayout = findViewById(R.id.swipe_refresh);
+        swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.ventilator_white_20);
+        swipeRefreshLayout.setColorSchemeResources(R.color.ventilator_white);
         rvWifi = findViewById(R.id.rv_wifi);
         switchButton = findViewById(R.id.sb_auto_set);
         rvWifi.setLayoutManager(new GridLayoutManager(this , 2 ));
         setOnClickListener(R.id.ll_right);
+        try {
+            if (!mWifiManager.isWifiEnabled())
+                switchButton.setChecked(false);
+            else
+                switchButton.setChecked(true);
+        } catch (Exception e) {}
         switchButton.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(SwitchButton button, boolean checked) {
@@ -78,6 +93,39 @@ public class WifiSettingActivity extends VentilatorBaseActivity {
                 setWifiData();
             }
         });
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (null != mWifiManager)
+                    mWifiManager.startScan(); //开始扫描
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+        AccountInfo.getInstance().getWifi().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (true) {
+                    setWifiData(); //
+                }
+            }
+        });
+    }
+
+    //请求wifi权限
+    private void checkWifiPermmissions() {
+        //
+        PermissionUtils.requestPermission(this, new PermissionUtils.OnPermissionListener() {
+            @Override
+            public void onSucceed() {
+                //打开wifi
+                VenWifiManager.openWifi(mWifiManager);
+            }
+
+            @Override
+            public void onFailed() {
+
+            }
+        }, Manifest.permission.CHANGE_WIFI_STATE);
     }
 
     @Override
@@ -101,7 +149,10 @@ public class WifiSettingActivity extends VentilatorBaseActivity {
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 ScanResult result = (ScanResult) adapter.getItem(position);
                 Intent intent = new Intent();
-                intent.putExtra(VentilatorConstant.EXTRA_WIFI_SSID, result.SSID);
+                if (!TextUtils.isEmpty(result.SSID))
+                    intent.putExtra(VentilatorConstant.EXTRA_WIFI_SSID, result.SSID);
+                else
+                    intent.putExtra(VentilatorConstant.EXTRA_WIFI_SSID, result.BSSID);
                 intent.setClass(WifiSettingActivity.this, WifiConnectActivity.class);
                 startActivity(intent);
             }
@@ -152,16 +203,6 @@ public class WifiSettingActivity extends VentilatorBaseActivity {
         }
     }
 
-    public void setRight() {
-        findViewById(R.id.ll_right).setVisibility(View.VISIBLE);
-        findViewById(R.id.iv_right1).setVisibility(View.GONE);
-        findViewById(R.id.view_right1).setVisibility(View.GONE);
-        findViewById(R.id.view_right2).setVisibility(View.VISIBLE);
-        findViewById(R.id.iv_right2).setVisibility(View.VISIBLE);
-        TextView textView = findViewById(R.id.tv_right);
-        textView.setText(R.string.ventilator_skip);
-    }
-
     @Override
     public void onClick(View view) {
         super.onClick(view);
@@ -172,7 +213,9 @@ public class WifiSettingActivity extends VentilatorBaseActivity {
                 HomeActivity.start(this);
             else {
                 //login
-                startActivity(LoginPhoneActivity.class);
+                Intent intent = new Intent(WifiSettingActivity.this, LoginPhoneActivity.class);
+                intent.putExtra(VentilatorConstant.EXTRA_FIRST, first);
+                startActivity(intent);
                 finish();
             }
         }

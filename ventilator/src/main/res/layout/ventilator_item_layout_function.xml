@@ -4,18 +4,19 @@
     android:layout_height="match_parent"
     android:id="@+id/ventilator_main_item"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-<!--    <TextView-->
-<!--        android:id="@+id/tv_fun_name"-->
-<!--        android:layout_width="@dimen/dp_140"-->
-<!--        android:layout_height="@dimen/dp_140"-->
-<!--        android:gravity="center"-->
-<!--        android:textColor="@color/ventilator_white"-->
-<!--        android:background="@drawable/ventilator_main_item_bg"-->
-<!--        android:lineSpacingMultiplier="0.8"-->
-<!--        app:layout_constraintLeft_toLeftOf="parent"-->
-<!--        app:layout_constraintRight_toRightOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"/>-->
+    <TextView
+        android:id="@+id/tv_bg"
+        android:layout_width="@dimen/dp_140"
+        android:layout_height="@dimen/dp_140"
+        android:gravity="center"
+        android:textColor="@color/ventilator_white"
+        android:background="@drawable/ventilator_main_item_bg"
+        android:lineSpacingMultiplier="0.8"
+        android:visibility="visible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
     <com.robam.common.ui.blurview.ShapeBlurView
         android:id="@+id/tv_fun_name"
         android:layout_width="@dimen/dp_140"
@@ -25,8 +26,8 @@
         app:common_blur_mode="circle"
         app:common_blur_radius="@dimen/dp_10"
         app:common_blur_border_width="@dimen/dp_2"
-        app:common_blur_border_color="@color/stove_blur_border_color"
-        app:common_blur_overlay_color="@color/stove_blur_overlay_color"
+        app:common_blur_border_color="@color/ventilator_blur_border_color"
+        app:common_blur_overlay_color="@color/ventilator_blur_overlay_color"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
