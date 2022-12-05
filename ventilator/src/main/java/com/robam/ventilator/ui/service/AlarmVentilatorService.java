@@ -11,6 +11,7 @@ import android.serialport.helper.SerialPortHelper;
 import androidx.annotation.Nullable;
 
 import com.robam.common.device.Plat;
+import com.robam.common.manager.LiveDataBus;
 import com.robam.common.utils.DateUtil;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MMKVUtils;
@@ -134,7 +135,7 @@ public class AlarmVentilatorService extends Service {
         if (MMKVUtils.getOilClean() && HomeVentilator.getInstance().isStartUp()) {  //开机状态
             long runTime = MMKVUtils.getFanRuntime();
             if (runTime >= 60 * 60 * 60 * 1000) { //超过60小时
-                HomeVentilator.getInstance().oilClean.setValue(true);
+                LiveDataBus.get().with(VentilatorConstant.OIL_CLEAN, Boolean.class).setValue(true);
             }
         }
         //检查假日模式打开

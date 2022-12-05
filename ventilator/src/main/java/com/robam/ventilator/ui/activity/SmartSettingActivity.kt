@@ -103,7 +103,10 @@ class SmartSettingActivity : VentilatorBaseActivity() {
             (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         }
         //假日模式设置
-        HomeVentilator.getInstance().smartSet.observe(this) {
+        LiveDataBus.get().with(
+            VentilatorConstant.SMART_SET,
+                  Boolean::class.java
+        ).observe(this) {
             if (it) {
                 //选择时间后确认返回页面刷新
                 mList.clear()
@@ -112,7 +115,7 @@ class SmartSettingActivity : VentilatorBaseActivity() {
             }
         }
         LiveDataBus.get().with(
-            "dt",
+            VentilatorConstant.DT,
             String::class.java
         ).observe(
             this

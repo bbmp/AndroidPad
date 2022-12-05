@@ -60,7 +60,7 @@ class RelationDeviceActivity: VentilatorBaseActivity() {
                                         notifyDataSetChanged()
                                         //更新烟蒸烤
 //                                        SmartSettingActivity.act?.updateFanStream(mList[position].displayType)
-                                        LiveDataBus.get().with("dt", String::class.java).value =
+                                        LiveDataBus.get().with(VentilatorConstant.DT, String::class.java).value =
                                             mList[position].displayType
                                     }
                                 }

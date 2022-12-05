@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.blankj.utilcode.util.ShellUtils;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.utils.MMKVUtils;
 import com.robam.common.utils.ToastUtils;
@@ -21,8 +22,6 @@ import java.io.File;
 
 public class ResetActivity extends VentilatorBaseActivity {
     private IDialog resetDialog, progressDialog;
-    int curProgress = 0;
-    private Handler mHandler = new Handler();
 
     @Override
     protected int getLayoutId() {
@@ -62,12 +61,15 @@ public class ResetActivity extends VentilatorBaseActivity {
                     if (v.getId() == R.id.tv_ok) {
                         showProressDialog();
 
-                        clearPublic(); //恢复中
-                        clearPrivate();
-                        //清除智能设置
-                        MMKVUtils.resetSmartSet();
+//                        clearPublic(); //恢复中
+//                        clearPrivate();
+//                        //清除智能设置
+//                        MMKVUtils.resetSmartSet();
+                        ShellUtils.CommandResult commandResult=  ShellUtils.execCmd("'echo \"--wipe_data\\n--locale=en_US\" > /cache/recovery/command'"
+                                ,true,true);
+                        ShellUtils.CommandResult commandResult1=  ShellUtils.execCmd("setprop sys.powerctl reboot,recovery"
+                                ,true,true);
 
-                        mHandler.postDelayed(updateProgress, 100);
                     }
                 }
             }, R.id.tv_cancel, R.id.tv_ok);
@@ -75,32 +77,12 @@ public class ResetActivity extends VentilatorBaseActivity {
         resetDialog.show();
     }
 
-    private Runnable updateProgress = new Runnable() {
-        @Override
-        public void run() {
-            if (null != progressDialog) {
-                ProgressBar progressBar = progressDialog.getRootView().findViewById(R.id.sbr_progress);
-                curProgress+=2;
-                progressBar.setProgress(curProgress);
-                if (curProgress >= 100) {
-                    closeProgressDialog();
-                    ToastUtils.showShort(getApplicationContext(), R.string.ventilator_reseted);
-                    return;
-                }
-                mHandler.postDelayed(updateProgress, 100);
-            }
-        }
-    };
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if (null != resetDialog && resetDialog.isShow())
             resetDialog.dismiss();
         closeProgressDialog();
-        mHandler.removeCallbacks(updateProgress);
-
-        mHandler.removeCallbacksAndMessages(null);
     }
 
     private void showProressDialog() {

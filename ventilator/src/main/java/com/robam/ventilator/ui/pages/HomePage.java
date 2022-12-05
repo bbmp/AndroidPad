@@ -16,6 +16,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.blankj.utilcode.util.NetworkUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -33,6 +34,7 @@ import com.robam.common.constant.StoveConstant;
 import com.robam.common.device.Plat;
 import com.robam.common.manager.BlueToothManager;
 import com.robam.common.manager.DeviceWarnInfoManager;
+import com.robam.common.manager.LiveDataBus;
 import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.ui.blurview.ShapeBlurView;
 import com.robam.common.ui.view.AudioWaveView;
@@ -117,8 +119,10 @@ public class HomePage extends VentilatorBasePage {
     private FrameLayout llSetting, llProducts;
     //风阻
     private AudioWaveView viewFlow, viewSpeed;
+    //油网自动提醒
     private IDialog oilClean;
-
+    //刷新设备列表
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public static HomePage newInstance() {
         return new HomePage();
@@ -148,7 +152,9 @@ public class HomePage extends VentilatorBasePage {
         rvRight = findViewById(R.id.rv_right);
         viewFlow = findViewById(R.id.iv_flow);
         viewSpeed = findViewById(R.id.iv_speed);
-
+        swipeRefreshLayout = findViewById(R.id.products_refresh);
+        swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.ventilator_white_20);
+        swipeRefreshLayout.setColorSchemeResources(R.color.ventilator_white);
 
         rvLeft.setLayoutManager(new LinearLayoutManager(getContext()));
         rvRight.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -169,15 +175,13 @@ public class HomePage extends VentilatorBasePage {
                 if (drawerView.getId() == R.id.drawer_left) { //拖动左边
                     llSetting.setX(slideOffset * drawerView.getWidth());
                     llSetting.setBackgroundColor(getContext().getResources().getColor(R.color.ventilator_color_menu));
-                    findViewById(R.id.sb_view_left).setVisibility(View.GONE); //模糊蒙版
-                    findViewById(R.id.sb_view_right).setVisibility(View.VISIBLE); //模糊蒙版
+                    findViewById(R.id.ll_drawer_right).setVisibility(View.INVISIBLE);
                 } else {
 //                    LogUtils.e("x" + llProducts.getX());
                     int width = ScreenUtils.getWidthPixels(getContext());
                     llProducts.setX(width - slideOffset * drawerView.getWidth() - getContext().getResources().getDimension(com.robam.common.R.dimen.dp_90) - 0.3f); //不加0.3会有一条黑线
                     llProducts.setBackgroundColor(getContext().getResources().getColor(R.color.ventilator_color_menu));
-                    findViewById(R.id.sb_view_left).setVisibility(View.VISIBLE);
-                    findViewById(R.id.sb_view_right).setVisibility(View.GONE);
+                    findViewById(R.id.ll_drawer_left).setVisibility(View.INVISIBLE);
                 }
                 //全屏蒙版
                 findViewById(R.id.sb_view).setVisibility(View.VISIBLE);
@@ -225,11 +229,14 @@ public class HomePage extends VentilatorBasePage {
                     } else {
                         //模糊蒙版关闭
                         findViewById(R.id.sb_view).setVisibility(View.GONE);
-                        findViewById(R.id.sb_view_left).setVisibility(View.GONE);
-                        findViewById(R.id.sb_view_right).setVisibility(View.GONE);
+                        findViewById(R.id.ll_drawer_left).setVisibility(View.VISIBLE);
+                        findViewById(R.id.ll_drawer_right).setVisibility(View.VISIBLE);
                         llSetting.setBackgroundColor(getContext().getResources().getColor(R.color.ventilator_transparent));
                         llProducts.setBackgroundColor(getContext().getResources().getColor(R.color.ventilator_transparent));
                     }
+                } else if (newState == ViewDragHelper.STATE_DRAGGING) {
+                    if (!drawerLayout.isDrawerOpen(Gravity.LEFT))
+                        settingFunList();
                 }
             }
         });
@@ -243,6 +250,15 @@ public class HomePage extends VentilatorBasePage {
             tvComfort.setSelected(true);
             group.setVisibility(View.VISIBLE);
         }
+        //监听设备列表刷新
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getDeviceInfo(AccountInfo.getInstance().getUser().getValue());
+
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     @Override
@@ -261,7 +277,7 @@ public class HomePage extends VentilatorBasePage {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 if (position == 0) { //锁屏清洗提示
-                    lockClean(R.string.ventilator_clean_oil_hint);
+                    lockClean();
                 } else { //挡位选择
                     if (position == rvFunctionAdapter.getPickPosition()) {//已经选中了
                         position = -1;
@@ -487,18 +503,16 @@ public class HomePage extends VentilatorBasePage {
                 LogUtils.e("onChanged " + s);
                 refreshTime = System.currentTimeMillis();
                 if (null != rvProductsAdapter) {
-                    if (AccountInfo.getInstance().deviceList.size() > 0)
-                        rvProductsAdapter.removeHeaderView(head);
                     rvProductsAdapter.setList(AccountInfo.getInstance().deviceList);
                 }
             }
         });
         //油网清洗检查
-        HomeVentilator.getInstance().oilClean.observe(this, new Observer<Boolean>() {
+        LiveDataBus.get().with(VentilatorConstant.OIL_CLEAN, Boolean.class).observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean)
-                    lockClean(R.string.ventilator_clean_oil_auto_hint);
+                    autoOilClean();
             }
         });
     }
@@ -732,32 +746,36 @@ public class HomePage extends VentilatorBasePage {
         if (null != oilClean && oilClean.isShow())
             oilClean.dismiss();
     }
+    //油网自动清洗提示
+    private void autoOilClean() {
+        if (null == oilClean) {
+            oilClean = VentilatorDialogFactory.createDialogByType(getContext(), DialogConstant.DIALOG_TYPE_VENTILATOR_COMMON);
+            oilClean.setCancelable(false);
+            oilClean.setContentText(R.string.ventilator_clean_oil_auto_hint);
+            oilClean.setListeners(new IDialog.DialogOnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (v.getId() == R.id.tv_ok) {
+                        HomeVentilator.getInstance().screenLock();
+
+                        //打开油网清洗
+                        VentilatorAbstractControl.getInstance().openOilClean();
+                        //开灯
+                        Plat.getPlatform().openWaterLamp();
+
+                        HomeVentilator.getInstance().status = 4; //油网清洗状态
+
+                    }
+                    //重新计算
+                    MMKVUtils.setFanRuntime(0);
+                }
+            }, R.id.tv_cancel, R.id.tv_ok);
+        }
+        oilClean.show();
+
+    }
     //锁屏清洗提示
-    private void lockClean(int contentStrId) {
-//        if (null == oilClean) {
-//            oilClean = VentilatorDialogFactory.createDialogByType(getContext(), DialogConstant.DIALOG_TYPE_VENTILATOR_COMMON);
-//            oilClean.setCancelable(false);
-//            oilClean.setContentText(contentStrId);
-//            oilClean.setListeners(new IDialog.DialogOnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    if (v.getId() == R.id.tv_ok) {
-//                        HomeVentilator.getInstance().screenLock();
-//
-//                        //打开油网清洗
-//                        VentilatorAbstractControl.getInstance().openOilClean();
-//                        //开灯
-//                        Plat.getPlatform().openWaterLamp();
-//
-//                        HomeVentilator.getInstance().status = 4; //油网清洗状态
-//
-//                    }
-//                    //重新计算
-//                    MMKVUtils.setFanRuntime(0);
-//                }
-//            }, R.id.tv_cancel, R.id.tv_ok);
-//        }
-//        oilClean.show();
+    private void lockClean() {
 
         HomeVentilator.getInstance().screenLock();
 

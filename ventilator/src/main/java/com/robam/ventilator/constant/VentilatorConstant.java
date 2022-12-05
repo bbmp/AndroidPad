@@ -60,4 +60,10 @@ public class VentilatorConstant {
     public final static String KEYS = "keys";
     public final static String FAN_STEAM = "fan_steam";//烟蒸烤联动开关
     public final static String FAN_STEAM_GEAR = "fan_steam_gear";//烟蒸烤自动匹配风量
+    //livedata
+    //智能设置
+    public final static String SMART_SET = "smartset";
+    //油网清洗自动提示
+    public final static String OIL_CLEAN = "oilclean";
+    public final static String DT = "dt"; //设备类型
 }
