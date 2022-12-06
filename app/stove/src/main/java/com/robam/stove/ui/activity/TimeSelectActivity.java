@@ -110,17 +110,18 @@ public class TimeSelectActivity extends StoveBaseActivity {
             ModeBean modeBean = modeBeans.get(0);//取第一个模式
             for (int i = modeBean.minTime; i <= modeBean.maxTime; i++)
                 lists.add(i + "");
+            int offset = modeBean.defTime - modeBean.minTime;
+            int position = Integer.MAX_VALUE / 2-(Integer.MAX_VALUE / 2)%lists.size() + offset;
+            rvTimeAdapter = new RvTimeAdapter();
+            rvTime.setAdapter(rvTimeAdapter);
+            rvTimeAdapter.setList(lists);
+            //初始位置
+            pickerLayoutManager.scrollToPosition(position);
+            //默认第一个
+            tvNum.setText(rvTimeAdapter.getItem(position));
+            //工作时长
+            workHours = rvTimeAdapter.getItem(position);
         }
-        rvTimeAdapter = new RvTimeAdapter();
-        rvTime.setAdapter(rvTimeAdapter);
-        rvTimeAdapter.setList(lists);
-        //初始位置
-        int initPos = (Integer.MAX_VALUE/2) - (Integer.MAX_VALUE / 2) % lists.size();
-        pickerLayoutManager.scrollToPosition(initPos);
-        //默认第一个
-        tvNum.setText(lists.get(0));
-        //工作时长
-        workHours = lists.get(0);
     }
 
     @Override

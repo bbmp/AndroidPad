@@ -8,16 +8,16 @@
       {
       "code": 1,
       "name": "炖煮",
-      "defTime": 5,
+      "defTime": 60,
       "minTime": 1,
-      "maxTime" : 10
+      "maxTime" : 180
       },
       {
         "code": 2,
         "name": "清蒸",
-        "defTime": 10,
-        "minTime": 5,
-        "maxTime" : 15
+        "defTime": 20,
+        "minTime": 1,
+        "maxTime" : 90
       },
       {
         "code": 3,
@@ -51,9 +51,9 @@
       {
         "code": 1,
         "name": "定时",
-        "defTime": 20,
-        "minTime": 15,
-        "maxTime" : 25
+        "defTime": 15,
+        "minTime": 1,
+        "maxTime" : 180
       }
     ]
   }

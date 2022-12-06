@@ -267,6 +267,8 @@ public class MqttVentilator extends MqttPublic {
                     buf.put((byte) 1); //是否需要清洗
                 else
                     buf.put((byte) 0);
+                //定时时间
+                buf.put((byte) MMKVUtils.getTimingTime());
 
                 buf.put((byte) (AccountInfo.getInstance().getConnect().getValue()?1:0));//联网状态
                 buf.put((byte) 1);//参数个数
@@ -476,7 +478,17 @@ public class MqttVentilator extends MqttPublic {
                     //定时时间
                     short time = ByteUtils.toShort(payload[offset++]);
                     //参数个数
-                    short attributeNum = ByteUtils.toShort(payload[offset++]);
+//                    short attributeNum = ByteUtils.toShort(payload[offset++]);
+
+                    if (HomeVentilator.getInstance().startup == (byte) 0x00) { //先开机
+
+                        HomeVentilator.getInstance().openVentilatorGear(VentilatorConstant.FAN_GEAR_WEAK);
+                    } else
+                        VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_WEAK);
+                    //定时时间
+                    MMKVUtils.setTimingTime(time);
+                    //延时关机倒计时
+                    HomeVentilator.getInstance().timeShutdown(time);
                     //定时工作响应
                     MqttMsg newMsg = new MqttMsg.Builder()
                             .setMsgId(MsgKeys.SetFanTimeWork_Rep)

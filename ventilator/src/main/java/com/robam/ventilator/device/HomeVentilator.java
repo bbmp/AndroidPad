@@ -343,6 +343,43 @@ public class HomeVentilator {
     }
 
     private DelayCloseDialog delayCloseDialog;
+    //定时关机
+    public void timeShutdown(int timingTime) {
+        Activity activity = AppActivityManager.getInstance().getCurrentActivity();
+        if (null == delayCloseDialog && null != activity) {
+            delayCloseDialog = new DelayCloseDialog(activity);
+            delayCloseDialog.setCancelable(false);
+            delayCloseDialog.setListeners(new IDialog.DialogOnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (v.getId() == R.id.tv_ok) { //立即关机
+                        closeVentilator();
+                    }
+                    cancleDelayShutDown();
+                }
+            }, R.id.tv_cancel, R.id.tv_ok);
+
+            delayCloseDialog.tvCountdown.setTotalTime(timingTime * 60);
+
+            delayCloseDialog.setmContentVisible(View.GONE);
+            delayCloseDialog.tvCountdown.addOnCountDownListener(new MCountdownView.OnCountDownListener() {
+                @Override
+                public void onCountDown(int currentSecond) {
+
+                    delayCloseDialog.tvCountdown.setText(currentSecond + "s后关机");
+                    delayCloseDialog.setContentText(currentSecond + "s");
+                    if (currentSecond <= 0) {
+                        cancleDelayShutDown();
+                        //关机
+                        closeVentilator();
+                    }
+                }
+            });
+            delayCloseDialog.tvCountdown.start();
+
+            delayCloseDialog.show();
+        }
+    }
     public void shutDownHint(boolean isLink) { //是否联动关机
         Activity activity = AppActivityManager.getInstance().getCurrentActivity();
         if (null == delayCloseDialog && null != activity) {

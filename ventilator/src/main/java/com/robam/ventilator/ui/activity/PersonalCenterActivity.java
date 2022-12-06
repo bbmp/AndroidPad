@@ -139,9 +139,9 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
                                 return;
                             }
                         }
-                        //还没有绑定
-                        bindDevice(userInfo);
                     }
+                    //还没有绑定
+                    bindDevice(userInfo);
                 }
 
                 @Override

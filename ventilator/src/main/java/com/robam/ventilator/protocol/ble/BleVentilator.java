@@ -7,6 +7,8 @@ import android.bluetooth.BluetoothGattService;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -87,7 +89,7 @@ public class BleVentilator {
             @Override
             public void onLeScan(BleDevice bleDevice) {
                 super.onLeScan(bleDevice);
-                //LogUtils.e("onLeScan " + bleDevice.getName());
+                LogUtils.e("onLeScan " + bleDevice.getName());
             }
 
             @Override
@@ -114,7 +116,7 @@ public class BleVentilator {
 
     //连接设备
     public static void connect(String model, final BleDevice bleDevice) {
-        LogUtils.e("connect " + bleDevice.getMac());
+        LogUtils.e("connect " + bleDevice.getMac() + " " + bleDevice.getName());
         BlueToothManager.connect(bleDevice, new BleGattCallback() {
             @Override
             public void onStartConnect() {
@@ -174,9 +176,10 @@ public class BleVentilator {
         LogUtils.e("bleDevice mac " + bleDevice.getMac());
         String deviceNum = changeMac(bleDevice.getMac());
         for (Device device: AccountInfo.getInstance().deviceList) {
-            //已经存在锅或灶，mac地址判断
+            //已经存在锅或灶，mac地址判断,同一个锅或灶
+            LogUtils.e("device mac " + device.mac + " device guid " + device.guid);
             if (bleDevice.getMac().equals(device.mac) || deviceNum.equals(DeviceUtils.getDeviceNumber(device.guid))) {
-                if (device instanceof Pan) {
+                if (device instanceof Pan && IDeviceType.RZNG.equals(model)) {
                     BleDecoder bleDecoder = ((Pan) device).bleDecoder;
                     if (null != bleDecoder)
                         bleDecoder.init_decoder(0);
@@ -184,7 +187,7 @@ public class BleVentilator {
                         ((Pan) device).bleDecoder = new BleDecoder(0);
                     device.mac = bleDevice.getMac();
                     ((Pan) device).bleDevice = bleDevice;
-                } else if (device instanceof Stove) {
+                } else if (device instanceof Stove && IDeviceType.RRQZ.equals(model)) {
                     BleDecoder bleDecoder = ((Stove) device).bleDecoder;
                     if (null != bleDecoder)
                         bleDecoder.init_decoder(0);
@@ -196,24 +199,35 @@ public class BleVentilator {
                 return;
             }
         }
-        if (IDeviceType.RRQZ.equals(model)) {
-            Iterator<Device> iterator = AccountInfo.getInstance().deviceList.iterator();
-            while (iterator.hasNext()) {
-                Device device = iterator.next();
-                if (device instanceof Stove)
-                    iterator.remove();  //删除其他灶
+        //已经配过锅或灶
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device instanceof Pan && IDeviceType.RZNG.equals(model) && !TextUtils.isEmpty(device.guid)) {
+                LogUtils.e("pan guid " + device.guid);
+                return;
             }
+            if (device instanceof Stove && IDeviceType.RRQZ.equals(model) && !TextUtils.isEmpty(device.guid)) {
+                LogUtils.e("stove guid " + device.guid);
+                return;
+            }
+        }
+        if (IDeviceType.RRQZ.equals(model)) {
+//            Iterator<Device> iterator = AccountInfo.getInstance().deviceList.iterator();
+//            while (iterator.hasNext()) {
+//                Device device = iterator.next();
+//                if (device instanceof Stove)
+//                    iterator.remove();  //删除其他灶
+//            }
             Stove stove = new Stove("燃气灶", IDeviceType.RRQZ, "9B328");
             stove.mac = bleDevice.getMac();
             stove.bleDecoder = new BleDecoder(0);
             AccountInfo.getInstance().deviceList.add(stove);
         } else if (IDeviceType.RZNG.equals(model)) {
-            Iterator<Device> iterator = AccountInfo.getInstance().deviceList.iterator();
-            while (iterator.hasNext()) {
-                Device device = iterator.next();
-                if (device instanceof Pan)
-                    iterator.remove();  //删除其他锅
-            }
+//            Iterator<Device> iterator = AccountInfo.getInstance().deviceList.iterator();
+//            while (iterator.hasNext()) {
+//                Device device = iterator.next();
+//                if (device instanceof Pan)
+//                    iterator.remove();  //删除其他锅
+//            }
             Pan pan = new Pan("明火自动翻炒锅", IDeviceType.RZNG, "KP100");
             pan.mac = bleDevice.getMac();
             pan.bleDecoder = new BleDecoder(0);
@@ -312,17 +326,17 @@ public class BleVentilator {
                         for (Device device: AccountInfo.getInstance().deviceList) {
                             if (bleDevice.getMac().equals(device.mac)) {
                                 if (device instanceof Pan)
-                                    BleVentilator.bleParser(bleDevice, ((Pan) device).bleDecoder, data);
+                                    BleVentilator.bleParser(bleDevice, ((Pan) device).bleDecoder, data, 2);
                                 else if (device instanceof Stove)
-                                    BleVentilator.bleParser(bleDevice, ((Stove) device).bleDecoder, data);
-                                break;
+                                    BleVentilator.bleParser(bleDevice, ((Stove) device).bleDecoder, data, 1);
+//                                break;
                             }
                         }
                     }
                 });
     }
 
-    public static void bleParser(BleDevice bleDevice, BleDecoder decoder, byte[] data) {
+    public static void bleParser(BleDevice bleDevice, BleDecoder decoder, byte[] data, int bleType) {
         if (null == data)
             return;
 
@@ -356,28 +370,44 @@ public class BleVentilator {
                                             System.arraycopy(ret2, BleDecoder.DECODE_PAYLOAD_OFFSET + 5 + 1 + 3 + 1, biz_id, 0, biz_len);
                                             System.arraycopy(ret2, BleDecoder.DECODE_PAYLOAD_OFFSET + 5 + 1 + 3 + 1 + biz_len, guid, 5, 12);
                                             ble_type = ByteUtils.toInt(ret2[BleDecoder.DECODE_PAYLOAD_OFFSET + 5 + 1 + 3 + 1 + biz_len + 12]);
-                                            LogUtils.e("guid CMD_PAIRING_REQUEST_INT =" + new String(guid));
-
-                                            for(Device device: AccountInfo.getInstance().deviceList) {
-
-                                                if (device.bleType == ble_type) {
-                                                    response = false;
-                                                    break;
+                                            LogUtils.e("guid CMD_PAIRING_REQUEST_INT =" + new String(guid) + " bleType" + bleType + " ble_type" + ble_type);
+                                            if (ble_type != bleType) { //非目标设备
+                                                Iterator<Device> iterator = AccountInfo.getInstance().deviceList.iterator();
+                                                while (iterator.hasNext()) {
+                                                    Device device = iterator.next();
+                                                    if (bleDevice.getMac().equals(device.mac))
+                                                        iterator.remove();  //删除设备
                                                 }
-                                                //配对成功
-                                                if (bleDevice.getMac().equals(device.mac)) { //update info
+                                                response = false;
+                                            } else {
 
-                                                    device.guid = new String(guid);
+                                                for (Device device : AccountInfo.getInstance().deviceList) {
 
-                                                    device.int_guid = new String(int_guid);
+                                                    if (device.bleType == ble_type) {  //已有相同设备连接
+                                                        Iterator<Device> iterator = AccountInfo.getInstance().deviceList.iterator();
+                                                        while (iterator.hasNext()) {
+                                                            Device device1 = iterator.next();
+                                                            if (bleDevice.getMac().equals(device1.mac) && TextUtils.isEmpty(device1.guid))
+                                                                iterator.remove();  //删除设备
+                                                        }
+                                                        response = false;
+                                                        break;
+                                                    }
+                                                    //配对成功
+                                                    if (bleDevice.getMac().equals(device.mac)) { //update info
 
-                                                    device.bid = new String(biz_id);
+                                                        device.guid = new String(guid);
 
-                                                    device.bleType = ble_type;
+                                                        device.int_guid = new String(int_guid);
 
-                                                    break;
+                                                        device.bid = new String(biz_id);
+
+                                                        device.bleType = ble_type;
+
+                                                        break;
+                                                    }
+
                                                 }
-
                                             }
                                         }
                                     } else {

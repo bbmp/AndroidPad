@@ -489,14 +489,7 @@ public class HomePage extends VentilatorBasePage {
                     }
                     return;
                 }
-                for (Device device: AccountInfo.getInstance().deviceList) {
-                    if (device.guid.equals(s)) {
 
-//                        rvProductsAdapter.setList(AccountInfo.getInstance().deviceList);
-//                        return;
-                        break;
-                    }
-                }
                 //找不到设备
                 if (System.currentTimeMillis() - refreshTime < 2000 && refreshTime != 0) //防止频繁刷
                     return;

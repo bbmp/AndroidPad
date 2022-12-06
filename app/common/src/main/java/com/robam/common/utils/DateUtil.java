@@ -999,7 +999,15 @@ public class DateUtil {
                 curWeek = "周日";
                 break;
         }
-        return curWeek + hour+":" + minute;
+        if (hour < 10)
+            curWeek = curWeek + "0" + hour;
+        else
+            curWeek = curWeek + hour;
+        if (minute < 10)
+            curWeek = curWeek + ":" + "0" + minute;
+        else
+            curWeek = curWeek + ":" + minute;
+        return curWeek;
     }
     //获取周几 和时间
     public static String getWeek() {
