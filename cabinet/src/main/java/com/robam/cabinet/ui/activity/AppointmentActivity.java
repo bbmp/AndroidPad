@@ -118,7 +118,7 @@ public class AppointmentActivity extends CabinetBaseActivity {
             }
         });
 
-        MqttDirective.getInstance().getDirective().observe(this, s->{
+        /*MqttDirective.getInstance().getDirective().observe(this, s->{
             if(s != EventConstant.WARING_CODE_NONE){
                 showWaring(s);
             }
@@ -135,7 +135,7 @@ public class AppointmentActivity extends CabinetBaseActivity {
                     }
                     break;
             }
-        });
+        });*/
     }
 
     private void toAppointPage(Cabinet cabinet){
@@ -210,8 +210,18 @@ public class AppointmentActivity extends CabinetBaseActivity {
         if (id == R.id.btn_cancel) {
             finish();
         } else if (id == R.id.btn_ok) { //确认预约
-            CabinetCommonHelper.startPowerOn(directive_offset+POWER_ON_OFFSET);
-
+            if(this.checkDoorState()){//新增检查门状态
+                //CabinetCommonHelper.startPowerOn(directive_offset+POWER_ON_OFFSET);//指令压缩
+                try {
+                    CabinetCommonHelper.startAppointCommand(cabModeBean.code,
+                            cabModeBean.defTime,
+                            (int)getAppointingTimeMin(tvTime.getText().toString()),
+                            directive_offset + MsgKeys.SetSteriPowerOnOff_Req);
+                    //startWork();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
         } else if (id == R.id.ll_left) {
             finish();
         }

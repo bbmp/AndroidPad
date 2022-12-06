@@ -71,6 +71,10 @@ public class MqttCabinet extends MqttPublic {
                             offset++;//length
                             msg.putOpt(CabinetConstant.SMART_CRUISING,ByteUtils.toShort(payload[offset++]));
                             break;
+                        case 6://净存巡航模式
+                            offset++;//length
+                            msg.putOpt(CabinetConstant.PURE_CRUISING,ByteUtils.toShort(payload[offset++]));
+                            break;
                         default:
                             break;
 
@@ -154,6 +158,9 @@ public class MqttCabinet extends MqttPublic {
                 buf.put((byte) msg.optInt(CabinetConstant.SMART_CRUISING_KEY));
                 buf.put((byte) msg.optInt(CabinetConstant.SMART_CRUISING_LEN));
                 buf.put((byte) msg.optInt(CabinetConstant.SMART_CRUISING));
+                buf.put((byte) msg.optInt(CabinetConstant.PURE_CRUISING));
+                buf.put((byte) msg.optInt(CabinetConstant.PURE_CRUISING_KEY));
+                buf.put((byte) msg.optInt(CabinetConstant.PURE_CRUISING_LEN));
                 break;
 
 

@@ -10,6 +10,7 @@ import com.robam.cabinet.bean.CabModeBean;
 import com.robam.cabinet.bean.Cabinet;
 import com.robam.cabinet.bean.WorkModeBean;
 import com.robam.cabinet.constant.CabinetConstant;
+import com.robam.cabinet.constant.CabinetEnum;
 import com.robam.cabinet.constant.Constant;
 import com.robam.cabinet.constant.EventConstant;
 import com.robam.cabinet.device.HomeCabinet;
@@ -43,7 +44,6 @@ public class ModeSelectActivity extends CabinetBaseActivity {
         showLeft();
         showCenter();
         showRightCenter();
-        setRight(R.string.cabinet_appointment);
         rvMode = findViewById(R.id.rv_mode);
         tvMode = findViewById(R.id.tv_mode);
         tvNum = findViewById(R.id.tv_num);
@@ -75,14 +75,14 @@ public class ModeSelectActivity extends CabinetBaseActivity {
                         case CabinetConstant.FUN_FLUSH:
                         case CabinetConstant.FUN_SMART:
                         case CabinetConstant.FUN_WARING:
-                            toWorkPage(cabinet);
+                            toWorkingPage(cabinet);
                             break;
                     }
                 }
             }
         });
 
-        MqttDirective.getInstance().getDirective().observe(this, s->{
+       /* MqttDirective.getInstance().getDirective().observe(this, s->{
             if(s != EventConstant.WARING_CODE_NONE){
                 showWaring(s);
             }
@@ -92,20 +92,25 @@ public class ModeSelectActivity extends CabinetBaseActivity {
                             Integer.parseInt(rvTimeAdapter.getItem(pickerLayoutManager.getPickedPosition())),0,
                             directive_offset + MsgKeys.SetSteriPowerOnOff_Req);
             }
-        });
+        });*/
 
     }
 
-    private void toWorkPage(Cabinet cabinet){
-        Intent intent = new Intent(this,WorkActivity.class);
-        WorkModeBean workModeBean = new WorkModeBean(cabModeBean);
-        //workModeBean.orderSurplusTime = cabinet.remainingModeWorkTime;
-        workModeBean.orderSurplusTime = Integer.parseInt(rvTimeAdapter.getItem(pickerLayoutManager.getPickedPosition()));
-        intent.putExtra(Constant.EXTRA_MODE_BEAN,workModeBean);
-        startActivity(intent);
-        finish();
+    private void toWorkingPage(Cabinet cabinet) {
+        if(cabinet.remainingModeWorkTime > 0){//工作
+            WorkModeBean workModeBean = new WorkModeBean(cabinet.workMode,0, cabinet.remainingModeWorkTime);
+            Intent intent = new Intent(this,WorkActivity.class);
+            intent.putExtra(Constant.EXTRA_MODE_BEAN,workModeBean);
+            startActivity(intent);
+            finish();
+        }else if(cabinet.remainingAppointTime > 0){//预约 每次结束后，都有一段时间预约时间是1380，需与设备端一起排查问题
+            WorkModeBean workModeBean = new WorkModeBean(cabinet.workMode, cabinet.remainingModeWorkTime,cabinet.modeWorkTime);
+            Intent intent = new Intent(this,AppointingActivity.class);
+            intent.putExtra(Constant.EXTRA_MODE_BEAN,workModeBean);
+            startActivity(intent);
+            finish();
+        }
     }
-
 
     @Override
     protected void initData() {
@@ -122,6 +127,9 @@ public class ModeSelectActivity extends CabinetBaseActivity {
             for (int i = cabModeBean.minTime; i <= cabModeBean.maxTime; i += cabModeBean.stepTime)
                 lists.add(i + "");
 
+            if(cabModeBean.code != CabinetEnum.SMART.getCode()){
+                setRight(R.string.cabinet_appointment);
+            }
             rvTimeAdapter = new RvTimeAdapter();
             rvMode.setAdapter(rvTimeAdapter);
             rvTimeAdapter.setList(lists);
@@ -149,7 +157,12 @@ public class ModeSelectActivity extends CabinetBaseActivity {
         } else if (id == R.id.btn_start) {
             //开始工作
             //startWork();
-            CabinetCommonHelper.startPowerOn(POWER_ON_OFFSET + directive_offset);
+            if(this.checkDoorState()){//新增检查门状态
+                //CabinetCommonHelper.startPowerOn(POWER_ON_OFFSET + directive_offset);//指令压缩，无需再发送开机指令
+                CabinetCommonHelper.startAppointCommand(cabModeBean.code,
+                        Integer.parseInt(rvTimeAdapter.getItem(pickerLayoutManager.getPickedPosition())),0,
+                        directive_offset + MsgKeys.SetSteriPowerOnOff_Req);
+            }
         } else if (view.getId() == R.id.iv_float) {
             Intent intent = new Intent();
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);

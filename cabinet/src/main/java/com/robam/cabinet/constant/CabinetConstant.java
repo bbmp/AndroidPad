@@ -37,6 +37,13 @@ CabinetConstant {
     public final static String SMART_CRUISING_KEY = "smart_cruising_key";//智能巡航
     public final static String SMART_CRUISING_LEN = "smart_cruising_len";//智能巡航
 
+    /**
+     * 工作设定时间
+     */
+    public final static String PURE_CRUISING = "pure_cruising";//净存巡航
+    public final static String PURE_CRUISING_KEY = "pure_cruising_key";//净存巡航
+    public final static String PURE_CRUISING_LEN = "pure_cruising_len";//净存巡航
+
 
     /**
      * 报警码[1Byte]

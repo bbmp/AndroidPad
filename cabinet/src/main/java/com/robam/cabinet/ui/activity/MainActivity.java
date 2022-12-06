@@ -8,6 +8,7 @@ import com.robam.cabinet.base.CabinetBaseActivity;
 import com.robam.cabinet.bean.Cabinet;
 import com.robam.cabinet.bean.WorkModeBean;
 import com.robam.cabinet.constant.CabinetConstant;
+import com.robam.cabinet.constant.CabinetEnum;
 import com.robam.cabinet.constant.Constant;
 import com.robam.cabinet.constant.EventConstant;
 import com.robam.cabinet.device.CabinetAbstractControl;
@@ -56,8 +57,10 @@ public class MainActivity extends CabinetBaseActivity {
                     if(!CabinetCommonHelper.isSafe()){
                         return;
                     }
-                    if(cabinet.smartCruising == 1){//去往智能巡航页面
+                    if(cabinet.smartCruising == 1 || cabinet.pureCruising == 1){//去往智能巡航页面
                         Intent intent = new Intent(this,CruiseActivity.class);
+                        int model = cabinet.smartCruising == 1 ? CabinetEnum.SMART.getCode() : CabinetEnum.FLUSH.getCode();
+                        intent.putExtra(Constant.SMART_MODEL,model);
                         startActivity(intent);
                         return;
                     }

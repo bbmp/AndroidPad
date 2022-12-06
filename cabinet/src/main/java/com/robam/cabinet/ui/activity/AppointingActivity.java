@@ -82,6 +82,7 @@ public class AppointingActivity extends CabinetBaseActivity {
                         case CabinetConstant.FUN_DRY:
                         case CabinetConstant.FUN_FLUSH:
                         case CabinetConstant.FUN_SMART:
+                        case CabinetConstant.FUN_WARING://告警情况下，正常显示倒计时
                             updateAppointingView(cabinet);
                             break;
                         //case CabinetConstant.APPOINTMENT:

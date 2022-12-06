@@ -237,4 +237,21 @@ public abstract class CabinetBaseActivity extends BaseActivity {
         }
         return null;
     }
+
+    /**
+     * 提示消毒柜门是否关闭
+     * @return
+     */
+    public boolean checkDoorState(){
+        Cabinet cabinet = getCabinet();
+        if(cabinet == null){
+            return false;
+        }
+        if(cabinet.doorLock == 0){
+            ToastUtils.showLong(this,R.string.cabinet_waring_e0_content);
+            return false;
+        }
+        return true;
+    }
+
 }
