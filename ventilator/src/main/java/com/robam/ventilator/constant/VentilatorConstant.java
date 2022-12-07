@@ -66,4 +66,5 @@ public class VentilatorConstant {
     //油网清洗自动提示
     public final static String OIL_CLEAN = "oilclean";
     public final static String DT = "dt"; //设备类型
+    public final static String VENTILATOR_USER = "ventilator_user";//更新烟机用户
 }

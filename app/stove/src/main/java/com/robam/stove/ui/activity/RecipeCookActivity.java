@@ -14,6 +14,7 @@ import com.robam.common.module.IPublicVentilatorApi;
 import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.VerticalSpaceItemDecoration;
+import com.robam.common.utils.ClickUtils;
 import com.robam.common.utils.ImageUtils;
 import com.robam.common.utils.WindowsUtils;
 import com.robam.stove.R;
@@ -53,6 +54,9 @@ public class RecipeCookActivity extends StoveBaseActivity {
     private TextView tvPause, tvContinue, tvSwitch;
     private int curStep = 0;
 
+    private long mLastTime;
+    private long mCurTime;
+
     @Override
     protected int getLayoutId() {
         return R.layout.stove_activity_layout_recipe_cook;
@@ -82,7 +86,19 @@ public class RecipeCookActivity extends StoveBaseActivity {
         rvStep.setAdapter(rvStep2Adapter);
         //关闭动画
         ((SimpleItemAnimator)rvStep.getItemAnimator()).setSupportsChangeAnimations(false);
-        setOnClickListener(R.id.ll_left, R.id.tv_pause_cook, R.id.tv_continue_cook, R.id.tv_switch_step);
+        setOnClickListener(R.id.ll_left, R.id.tv_pause_cook, R.id.tv_continue_cook);
+        //双击事件
+        tvSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mLastTime = mCurTime;
+                mCurTime = System.currentTimeMillis();
+                if (mCurTime - mLastTime < 500) {
+                    //切换步骤
+                    nextStep();
+                }
+            }
+        });
     }
 
     @Override
@@ -165,9 +181,6 @@ public class RecipeCookActivity extends StoveBaseActivity {
                 }
             }
 
-        } else if (id == R.id.tv_switch_step) {
-          //切换步骤
-            nextStep();
         } else if (id == R.id.ll_left) {
             //返回
             stopCook();
