@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/cl_content"
+    android:background="@drawable/roki_shape_recipe_bg"
+    android:layout_margin="@dimen/dp_8">
+
+    <TextView
+        android:id="@+id/tv_theme_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:layout_marginStart="@dimen/dp_14"
+        android:layout_marginTop="@dimen/dp_20"
+        android:singleLine="true"
+        android:text="冬季养生进行时"
+        android:ems="8"
+        android:textStyle="bold"
+        android:textSize="@dimen/sp_20"
+        android:textColor="@color/roki_text_color_device_category"
+        app:layout_constraintBottom_toTopOf="@+id/tv_theme_subname"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_theme_subname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_6"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:singleLine="true"
+        android:ems="8"
+        android:text="全国各地特色趣味养生集合"
+        android:textColor="@color/roki_text_color_read_number"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_theme_title"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rv_recipe_pic_list"
+        android:layout_margin="@dimen/dp_13"
+        app:layout_constraintTop_toBottomOf="@id/tv_theme_subname"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:spanCount="3"
+        tools:listitem="@layout/roki_layout_item_recipe_theme" />
+</androidx.constraintlayout.widget.ConstraintLayout>

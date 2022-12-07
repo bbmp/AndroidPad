@@ -1,0 +1,135 @@
+package com.robam.pan.ui.activity;
+
+import android.view.View;
+import android.widget.TextView;
+
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.robam.common.manager.DynamicLineChartManager;
+import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.TimeUtils;
+import com.robam.pan.R;
+import com.robam.pan.base.PanBaseActivity;
+import com.robam.pan.bean.CurveStep;
+import com.robam.pan.bean.PanCurveDetail;
+import com.robam.common.constant.PanConstant;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+//曲线还原结束界面
+public class RestoreCompleteActivity extends PanBaseActivity {
+    private TextView tvRecipeName;
+    //火力
+    private TextView tvFire;
+    //温度
+    private TextView tvTemp;
+    //时间
+    private TextView tvTime;
+    //曲线详情
+    private PanCurveDetail panCurveDetail;
+    //
+    private LineChart cookChart;
+
+    private DynamicLineChartManager dm;
+
+    private ArrayList<Entry> restoreList;
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.pan_activity_layout_restore_complete;
+    }
+
+    @Override
+    protected void initView() {
+        showCenter();
+
+        if (null != getIntent()) {
+            panCurveDetail = (PanCurveDetail) getIntent().getSerializableExtra(PanConstant.EXTRA_CURVE_DETAIL);
+            restoreList = getIntent().getParcelableArrayListExtra(PanConstant.EXTRA_RESTORE_LIST);
+        }
+        tvRecipeName = findViewById(R.id.tv_recipe_name);
+        cookChart = findViewById(R.id.cook_chart);
+        cookChart.setNoDataText(getResources().getString(R.string.pan_no_curve_data)); //没有数据时显示的文字
+        tvFire = findViewById(R.id.tv_fire);
+        tvTemp = findViewById(R.id.tv_temp);
+        tvTime = findViewById(R.id.tv_time);
+
+        setOnClickListener(R.id.btn_back_home);
+    }
+
+    @Override
+    protected void initData() {
+        if (null != panCurveDetail) {
+            tvRecipeName.setText(panCurveDetail.name);
+            drawCurve(panCurveDetail);
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        super.onClick(view);
+        int id = view.getId();
+        if (id == R.id.btn_back_home) {
+            //返回锅首页
+            startActivity(MainActivity.class);
+        }
+    }
+    //曲线绘制
+    private void drawCurve(PanCurveDetail panCurveDetail) {
+        Map<String, String> params = null;
+        try {
+            String[] data = new String[3];
+            params = new Gson().fromJson(panCurveDetail.temperatureCurveParams, new TypeToken<LinkedHashMap<String, String>>(){}.getType());
+            Iterator<Map.Entry<String, String>> iterator = params.entrySet().iterator();
+            while (iterator.hasNext()) { //删除超出时间的点
+                if (Integer.parseInt(iterator.next().getKey()) > panCurveDetail.needTime)
+                    iterator.remove();
+            }
+
+            iterator = params.entrySet().iterator();
+            int i = 0;
+            ArrayList<Entry> entryList = new ArrayList<>();
+            Map.Entry<String, String> entry = null;
+            while (iterator.hasNext()) {
+                entry = iterator.next();
+                while (Integer.parseInt(entry.getKey()) >= i) { //补点
+                    data = entry.getValue().split("-");
+                    entryList.add(new Entry(i, Float.parseFloat(data[0]))); //时间和温度
+                    i += 2;
+                }
+
+            }
+            while (i <= panCurveDetail.needTime && null != entry) { //最后少的点
+                data = entry.getValue().split("-");
+                entryList.add(new Entry(i, Float.parseFloat(data[0]))); //时间和温度
+                i += 2;
+            }
+            List<CurveStep> stepList = panCurveDetail.stepList;
+            ArrayList<Entry> appointList = new ArrayList<>();
+            if (null != stepList) {
+                for (CurveStep curveStep: stepList) {
+                    appointList.add(new Entry(Float.parseFloat(curveStep.markTime), curveStep.markTemp));
+                }
+            }
+            dm = new DynamicLineChartManager(cookChart, this);
+            dm.setLabelCount(5, 5);
+            dm.setAxisLine(true, false);
+            dm.setGridLine(false, false);
+            dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.pan_chart), entryList, true, false);
+            cookChart.notifyDataSetChanged();
+            //最后一点
+            tvFire.setText("火力：" + data[1] + "档");
+            tvTemp.setText("温度：" + data[0] + "℃");
+            tvTime.setText("时间：" + TimeUtils.secToMinSecond(panCurveDetail.needTime));
+        } catch (Exception e) {
+            LogUtils.e(e.getMessage());
+            params = null;
+        }
+    }
+}

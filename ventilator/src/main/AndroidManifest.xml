@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.robam.ventilator">
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission
+        android:name="android.permission.SET_TIME"
+        tools:ignore="ProtectedPermissions" />
+
+    <application>
+        <activity
+            android:name=".ui.activity.AddDeviceActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.LoginPasswordActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.activity.ShortcutActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.MatchNetworkActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.ScreenBrightnessActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.ResetActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.PersonalCenterActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.LoginQrcodeActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.SmartSettingActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.HolidayDateSettingActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.ShutdownDelaySettingActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.RelationDeviceActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.SaleServiceActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.SimpleModeActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.DateSettingActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.WifiSettingActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.WifiConnectActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.LoginPhoneActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.AboutActivity"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.MainActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.HomeActivity"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape" />
+
+        <service android:name="org.eclipse.paho.android.service.MqttService" /> <!-- mqtt服务 -->
+        <service
+            android:name=".ui.service.AlarmMqttService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".ui.service.AlarmBleService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".ui.service.AlarmVentilatorService"
+            android:enabled="true"
+            android:exported="true" />
+    </application>
+
+</manifest>

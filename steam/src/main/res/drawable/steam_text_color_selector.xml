@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_selected="true" android:color="@color/steam_white" />
+    <item android:state_enabled="true" android:color="@color/steam_white_80" />
+    <item android:color="@color/steam_white_40" />
+</selector>

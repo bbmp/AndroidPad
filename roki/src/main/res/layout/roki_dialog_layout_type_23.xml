@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_gravity="center">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:background="@drawable/roki_shape_dialog_bg"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/common_dialog_title_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="温馨提示"
+                android:textSize="@dimen/sp_20"
+                android:textColor="@color/roki_text_color_net_err"/>
+        </LinearLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/dp_20"
+            android:scrollbars="none">
+
+
+            <TextView
+                android:id="@+id/common_dialog_content_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:lineSpacingMultiplier='1.1'
+                android:letterSpacing="0.08"
+                tools:text="9877777777777777777777777777777777"
+                android:scrollbars="vertical"
+                android:textSize="@dimen/sp_16"
+                android:textColor="@color/roki_text_color_net_err"/>
+        </ScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/common_dialog_cancel_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_45"
+                android:layout_margin="10dp"
+                android:layout_gravity="center"
+                android:layout_weight="0.5"
+                android:background="@drawable/roki_shape_button_left_selector"
+                android:textColor="@color/roki_text_color_online"
+                android:textSize="@dimen/sp_20"
+                android:gravity="center"
+                android:text="取消" />
+
+            <Button
+                android:id="@+id/common_dialog_ok_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_45"
+                android:background="@drawable/roki_shape_button_right_selector"
+                android:textColor="@color/roki_text_color_exit_login"
+                android:textSize="@dimen/sp_20"
+                android:layout_margin="10dp"
+                android:layout_weight="0.5"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="同意并继续" />
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

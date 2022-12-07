@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_48"
+    android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="菜谱分类"
+            android:textSize="@dimen/sp_24"
+            android:layout_marginStart="@dimen/dp_24"
+            android:textColor="@color/roki_text_color_device"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/home_recipe_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="全部"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/dp_21"
+            android:textColor="#ff61acff"
+            android:textSize="@dimen/sp_16"/>
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginHorizontal="@dimen/dp_4"
+        android:orientation="horizontal">
+        <!--灶具菜谱-->
+        <LinearLayout
+            android:id="@+id/home_recipe_ll_stove"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="@dimen/dp_60"
+                android:layout_height="@dimen/dp_60"
+                android:src="@mipmap/roki_icon_zj" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:text="@string/roki_home_stove_recipe_text"
+                android:textSize="@dimen/sp_12"
+                android:textColor="@color/roki_text_color_device_category" />
+
+        </LinearLayout>
+
+        <!--一体机菜谱-->
+        <LinearLayout
+            android:id="@+id/home_recipe_ll_combi_steam_oven"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="@dimen/dp_60"
+                android:layout_height="@dimen/dp_60"
+                android:src="@mipmap/roki_icon_ytj" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:text="@string/roki_home_combi_steam_oven_recipe_text"
+                android:textSize="@dimen/sp_12"
+                android:textColor="@color/roki_text_color_device_category" />
+        </LinearLayout>
+
+        <!--电烤箱菜谱-->
+        <LinearLayout
+            android:id="@+id/home_recipe_ll_oven"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imageView6"
+                android:layout_width="@dimen/dp_60"
+                android:layout_height="@dimen/dp_60"
+                android:src="@mipmap/roki_icon_kx" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:text="@string/roki_home_oven_recipe_text"
+                android:textSize="@dimen/sp_12"
+                android:textColor="@color/roki_text_color_device_category" />
+        </LinearLayout>
+
+        <!--微波炉菜谱-->
+        <LinearLayout
+            android:id="@+id/home_recipe_ll_steam_oven"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="@dimen/dp_60"
+                android:layout_height="@dimen/dp_60"
+                android:src="@mipmap/roki_icon_zx" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:text="@string/roki_home_steam_recipe_text"
+                android:textSize="@dimen/sp_12"
+                android:textColor="@color/roki_text_color_device_category"/>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
+

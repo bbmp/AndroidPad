@@ -1,0 +1,37 @@
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="ExtraTranslation">
+    <string name="roki_app_name">roki</string>
+    <string name="roki_hello_blank_fragment">Hello blank fragment</string>
+    <string name="roki_agree_privacy_policy_note">您需要同意后才能\n继续使用我们的服务哦！</string>
+    <string name="roki_privacy_policy_content">感谢您对老板电器的长期信任，我们非常重视您的个人信息和隐私保护，为了更好地保证您的个人权益，在您使用我们产品前，请务必仔细阅读
+        《ROKI用户协议》和《隐私政策》 内的所有条款。\n 其中隐私政策将向您说明：\n
+        1.为了向您提供发布服务，我们可能会申请手机存储、相册访问/存储权限、摄像头权限、麦克风权限；\n
+        2.为了给您提供注册登录服务，我们可能会申请获取手机号信息；\n
+        3.为了基于您所在的位置远程操控设备、向您推荐内容，我们可能会申请您的位置权限；\n
+        4.为了提供信息推送和账号安全服务，我们会申请系统设备权限、手机设备信息、日志信息；\n
+        5.未经您同意，我们不会从第三方处获取、共享或对外提供您的信息；\n
+        6.您还可以访问、更正、删除您的个人信息，我们也提供注销和意见反馈功能。\n</string>
+    <string name="roki_home_tab_personal">我的</string>
+    <string name="roki_home_tab_recipe">美食</string>
+    <string name="roki_home_tab_device">智能</string>
+    <string name="roki_device_intellectual_products">智能产品</string>
+    <string name="roki_fan_kitchen_knowledge">厨房知识</string>
+    <string name="roki_not_login">未登录</string>
+    <string name="roki_login_or_register">点击注册/登录</string>
+    <string name="roki_my_cook_line">烹饪曲线</string>
+    <string name="roki_my_setting">设置</string>
+    <string name="roki_my_about">关于ROKI</string>
+    <string name="roki_my_sale_service">一键售后</string>
+    <string name="roki_my_device">厨电管理</string>
+    <string name="roki_my_curve_list">烹饪曲线</string>
+    <string name="roki_after_reminding">您可通过下面两种方式</string>
+    <string name="roki_after_remindin_01">享受老板电器会员的专属服务哦~</string>
+    <string name="roki_my_sale_consulting">留言咨询</string>
+    <string name="roki_my_sale_one_key">一键售后</string>
+    <string name="roki_my_sale_one_key_call">一键售后未开通地区可拨打</string>
+    <string name="roki_home_stove_recipe_text">灶具菜谱</string>
+    <string name="roki_home_oven_recipe_text">电烤箱菜谱</string>
+    <string name="roki_home_combi_steam_oven_recipe_text">一体机菜谱</string>
+    <string name="roki_home_steam_recipe_text">电蒸箱菜谱</string>
+    <string name="roki_home_microwave_recipe_text">微波炉菜谱</string>
+    <string name="roki_home_pot_recipe_text">无人锅菜谱</string>
+</resources>

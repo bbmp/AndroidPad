@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.robam.steamoven">
+
+    <application>
+        <activity
+            android:name=".ui.activity.WorkCompleteActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".ui.activity.WaringActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".ui.activity.AuxModelWorkActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".ui.activity.CurveSaveActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".ui.activity.RecipeModeActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".ui.activity.AppointingActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".ui.activity.ModelWorkActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".ui.activity.AppointmentActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".ui.activity.DescalingActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".ui.activity.RecipeModeActivityOld"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".ui.activity.MultiWorkActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".ui.activity.MultiActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".ui.activity.CurveRestoreActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".ui.activity.WorkActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.RecipeDetailActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".ui.activity.CurveSelectedActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.RecipeActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.CurveActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.MainActivity"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape" /> <!-- 模式选择 -->
+        <activity
+            android:name=".ui.activity.ModeSelectActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="steamoven.modeselect" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

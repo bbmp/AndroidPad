@@ -1,0 +1,35 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.AndroidPad" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">@color/transparent</item>
+        <!-- Customize your theme here. -->
+
+        //背景透明
+<!--        <item name="android:background">@color/transparent</item>-->
+<!--        <item name="android:windowBackground">@color/transparent</item>-->
+<!--        <item name="android:windowIsTranslucent">true</item>-->
+
+        <item name="android:windowAnimationStyle">@style/Animation</item>
+        <item name="android:windowFullscreen">true</item>
+        //下划线颜色
+        <item name="colorControlNormal">#33FFFFFF</item>
+        <item name="colorControlActivated">#FFFFFF</item>
+        //光标
+        <item name="android:textCursorDrawable">@drawable/custom</item>
+        //软键盘
+        <item name="android:windowSoftInputMode">stateVisible|adjustPan</item>
+    </style>
+    <style name="Animation">
+        <item name="android:windowEnterAnimation">@null</item>
+        <item name="android:windowExitAnimation">@null</item>
+    </style>
+</resources>

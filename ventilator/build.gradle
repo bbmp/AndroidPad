@@ -1,0 +1,70 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-android-extensions'
+}
+apply from: '../versions.gradle'
+android {
+    compileSdk build_versions.compile_sdk
+
+    defaultConfig {
+        minSdk build_versions.min_sdk
+        targetSdk build_versions.target_sdk
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "MODEL", "\"5068S\""
+            buildConfigField "String", "VERSION_NAME", "\"V1.0.0\""
+            buildConfigField "int", "VERSION_CODE", "1"
+        }
+        debug {
+            buildConfigField "String", "MODEL", "\"5068S\""
+            buildConfigField "String", "VERSION_NAME", "\"V1.0.0\""
+            buildConfigField "int", "VERSION_CODE", "1"
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    resourcePrefix "ventilator_"   //资源前缀的名字
+}
+
+dependencies {
+
+    api "androidx.appcompat:appcompat:$versions.appcompat"
+    api "com.google.android.material:material:$versions.material"
+    api "androidx.constraintlayout:constraintlayout:$versions.constraintlayout"
+    api "androidx.navigation:navigation-fragment:$versions.navigation_fragment"
+    api "androidx.navigation:navigation-ui:$versions.navigation_ui"
+    api project(path: ':app:serialport')
+//    api project(path: ':app:foodmaterialdetect')
+    api project(path: ':app:common')
+    api project(path: ':steam')       //一体机
+    api project(path: ':dishwasher')   //洗碗机
+    api project(path: ':cabinet')        //消毒柜
+    api project(path: ':app:stove')       //灶具
+    api project(path: ':app:pan')        //锅
+    api "androidx.swiperefreshlayout:swiperefreshlayout:$versions.swiperefreshlayout"
+    testImplementation 'junit:junit:4.13.2'
+    api "com.squareup.retrofit2:retrofit:$versions.retrofit"
+    api "com.squareup.retrofit2:converter-gson:$versions.converter_gson"
+    api "com.github.CymChad:BaseRecyclerViewAdapterHelper:$versions.BaseRecyclerViewAdapterHelper"
+    //Mqtt集成
+    api "org.eclipse.paho:org.eclipse.paho.client.mqttv3:$versions.org_eclipse_paho_client_mqttv3"
+    api "org.eclipse.paho:org.eclipse.paho.android.service:$versions.org_eclipse_paho_android_service"
+    api "com.github.Jasonchenlijian:FastBle:$versions.FastBle"
+    // 腾讯 MMKV：https://github.com/Tencent/MMKV
+    api "com.tencent:mmkv-static:$versions.mmkv"
+
+    api "androidx.core:core-ktx:$versions.ktx"
+    api "pl.droidsonroids.gif:android-gif-drawable:$versions.gif_drawable"
+    //工具类
+    api "com.blankj:utilcodex:$versions.utilcodex"
+}

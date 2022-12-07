@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="common_RoundImageView">
+        <attr name="common_riv_corner_radius" format="dimension" />
+        <attr name="common_riv_left_top_corner_radius" format="dimension" />
+        <attr name="common_riv_right_top_corner_radius" format="dimension" />
+        <attr name="common_riv_left_bottom_corner_radius" format="dimension" />
+        <attr name="common_riv_right_bottom_corner_radius" format="dimension" />
+        <attr name="android:scaleType" />
+    </declare-styleable>
+
+    <declare-styleable name="common_CircleImageView">
+        <attr name="common_civ_border_width" format="dimension" />
+        <attr name="common_civ_border_color" format="color" />
+        <attr name="common_civ_border_overlay" format="boolean" />
+        <attr name="common_civ_circle_background_color" format="color" />
+    </declare-styleable>
+    <!-- 正则表达式编辑框 -->
+    <declare-styleable name="common_RegexEditText">
+        <!-- 正则输入限制 -->
+        <attr name="common_inputRegex" format="string" />
+        <!-- 常用正则类型 -->
+        <attr name="common_regexType" >
+            <!-- 手机号（只能以 1 开头）-->
+            <enum name="mobile" value="0x01" />
+            <!-- 中文（普通的中文字符）-->
+            <enum name="chinese" value="0x02" />
+            <!-- 英文（大写和小写的英文）-->
+            <enum name="english" value="0x03" />
+            <!-- 数字（只允许输入纯数字）-->
+            <enum name="number" value="0x04" />
+            <!-- 整数（非 0 开头的数字）-->
+            <enum name="count" value="0x05" />
+            <!-- 用户名（中文、英文、数字）-->
+            <enum name="name" value="0x06" />
+            <!-- 非空格字符 -->
+            <enum name="nonnull" value="0x07" />
+        </attr>
+    </declare-styleable>
+    <!-- 仿 ios 开关按钮 -->
+    <declare-styleable name="common_SwitchButton">
+        <!-- 是否选中 -->
+        <attr name="android:checked" />
+        <!-- 是否禁用 -->
+        <attr name="android:enabled" />
+    </declare-styleable>
+<!--    圆形进度条-->
+    <declare-styleable name="common_CircleProgressView">
+        <attr name="common_backWidth" format="dimension" />    <!--背景圆环宽度-->
+        <attr name="common_progWidth" format="dimension" />    <!--进度圆环宽度-->
+        <attr name="common_backColor" format="color" />        <!--背景圆环颜色-->
+        <attr name="common_progColor" format="color" />        <!--进度圆环颜色-->
+        <attr name="common_progStartColor" format="color" />   <!--进度圆环开始颜色-->
+        <attr name="common_progFirstColor" format="color" />   <!--进度圆环结束颜色-->
+        <attr name="common_progEndColor" format="color" />   <!--进度圆环结束颜色-->
+        <attr name="common_progress" format="integer" />       <!--圆环进度-->
+    </declare-styleable>
+<!--    模糊背景-->
+    <declare-styleable name="common_BlurredView">
+        <attr name="common_src" format="reference"/>
+        <attr name="common_move" format="boolean"/>
+        <attr name="common_disableBlurred" format="boolean"/>
+    </declare-styleable>
+
+    <declare-styleable name="common_ShapeBlurView">
+        <attr name="common_blur_radius" format="dimension" />
+        <attr name="common_blur_down_sample" format="float" />
+        <attr name="common_blur_overlay_color" format="color" />
+        <attr name="common_blur_corner_radius" format="dimension" />
+        <attr name="common_blur_corner_radius_top_left" format="dimension" />
+        <attr name="common_blur_corner_radius_top_right" format="dimension" />
+        <attr name="common_blur_corner_radius_bottom_left" format="dimension" />
+        <attr name="common_blur_corner_radius_bottom_right" format="dimension" />
+        <attr name="common_blur_border_width" format="dimension" />
+        <attr name="common_blur_border_color" format="color" />
+        <attr name="common_blur_mode">
+            <enum name="rectangle" value="0" />
+            <enum name="circle" value="1" />
+            <enum name="oval" value="2" />
+        </attr>
+    </declare-styleable>
+</resources>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+<!--    <ImageView-->
+<!--        android:id="@+id/iv_round_bg"-->
+<!--        android:layout_width="@dimen/dp_270"-->
+<!--        android:layout_height="@dimen/dp_270"-->
+<!--        android:background="@drawable/dishwasher_main_item_bg"-->
+<!--        android:layout_marginHorizontal="@dimen/dp_50"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintRight_toRightOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"/>-->
+
+    <com.robam.common.ui.blurview.ShapeBlurView
+        android:id="@+id/iv_round_bg"
+        android:layout_width="@dimen/dp_270"
+        android:layout_height="@dimen/dp_270"
+        android:layout_centerInParent="true"
+        android:layout_marginHorizontal="@dimen/dp_40"
+        android:gravity="center"
+        android:lineSpacingMultiplier="0.8"
+        app:common_blur_mode="circle"
+        app:common_blur_radius="@dimen/dp_10"
+        app:common_blur_border_width="@dimen/dp_2"
+        app:common_blur_border_color="@color/dishwasher_blur_border_color"
+        app:common_blur_overlay_color="@color/dishwasher_blur_overlay_color"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+    <TextView
+        android:id="@+id/tv_mode_name"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:textSize="@dimen/sp_80"
+        android:textColor="@color/dishwasher_white"
+        android:lineSpacingMultiplier="0.8"
+        app:layout_constraintLeft_toLeftOf="@id/iv_round_bg"
+        app:layout_constraintRight_toRightOf="@id/iv_round_bg"
+        app:layout_constraintTop_toTopOf="@id/iv_round_bg"
+        app:layout_constraintBottom_toBottomOf="@id/iv_round_bg"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

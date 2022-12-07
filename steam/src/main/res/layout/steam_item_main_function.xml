@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent">
+
+    <com.robam.common.ui.blurview.ShapeBlurView
+        android:layout_width="@dimen/dp_270"
+        android:layout_height="@dimen/dp_270"
+        android:layout_centerInParent="true"
+        android:layout_marginHorizontal="@dimen/dp_40"
+        android:gravity="center"
+        android:lineSpacingMultiplier="0.8"
+        app:common_blur_mode="circle"
+        app:common_blur_radius="@dimen/dp_10"
+        app:common_blur_border_width="@dimen/dp_2"
+        app:common_blur_border_color="@color/steam_blur_border_color"
+        app:common_blur_overlay_color="@color/steam_blur_overlay_color"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_funtion_name"
+        android:layout_width="@dimen/dp_270"
+        android:layout_height="@dimen/dp_270"
+        android:layout_centerInParent="true"
+        android:layout_marginHorizontal="@dimen/dp_40"
+        android:gravity="center"
+        android:textSize="@dimen/sp_80"
+        android:textColor="@color/steam_white"
+        android:lineSpacingMultiplier="0.8"
+        tools:text="烹饪\n曲线"/>
+</RelativeLayout>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.robam.dishwasher">
+
+    <application>
+        <activity android:name=".ui.activity.CompleteActivity"
+            android:exported="false"
+            android:screenOrientation="landscape">
+        </activity>
+        <activity
+            android:name=".ui.activity.WaringActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".ui.activity.ModeSelectActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".ui.activity.WorkActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".ui.activity.AppointingActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".ui.activity.AppointmentActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".ui.activity.MainActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:launchMode="singleTask"/>
+    </application>
+
+</manifest>

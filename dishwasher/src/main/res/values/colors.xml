@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="dishwasher_transparent">#00000000</color>
+    <color name="dishwasher_white">#FFFFFF</color>
+    <color name="dishwasher_white35">#59FFFFFF</color>
+    <color name="dishwasher_white25">#40FFFFFF</color>
+    <color name="dishwasher_white70">#B3ffffff</color>
+    <color name="dishwasher_mode70">#B3f6f6f6</color>
+    <color name="dishwasher_mode">#fff6f6f6</color>
+    <color name="dishwasher_white_50">#80ffffff</color>
+    <color name="dishwasher_white_20">#33ffffff</color>
+    <color name="dishwasher_lock">#ff72afff</color>
+    <color name="dishwasher_color_f6">#f6f6f6</color>
+    <color name="dishwasher_color_51">#51000D2A</color>
+    <color name="dishwasher_white_85">#D8FFFFFF</color>
+    <color name="dishwasher_black_33">#33000000</color>
+    <color name="dishwasher_blur_overlay_color">#33ffffff</color>
+    <color name="dishwasher_blur_border_color">#4dffffff</color>
+</resources>

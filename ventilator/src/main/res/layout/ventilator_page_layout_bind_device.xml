@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/iv_device"
+        android:layout_width="@dimen/dp_98"
+        android:layout_height="@dimen/dp_98"
+        android:layout_marginLeft="@dimen/dp_30"
+        android:layout_marginTop="@dimen/dp_5"
+        android:scaleType="centerInside"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_device_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_32"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:textColor="@color/ventilator_white"
+        app:layout_constraintTop_toTopOf="@id/iv_device"
+        app:layout_constraintBottom_toBottomOf="@id/iv_device"
+        app:layout_constraintLeft_toRightOf="@id/iv_device"/>
+    <TextView
+        android:id="@+id/tv_model"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_2"
+        android:textSize="@dimen/sp_24"
+        android:textColor="@color/ventilator_white_50"
+        app:layout_constraintLeft_toRightOf="@id/tv_device_name"
+        app:layout_constraintTop_toTopOf="@id/tv_device_name"
+        app:layout_constraintBottom_toBottomOf="@id/tv_device_name"/>
+
+    <TextView
+        android:id="@+id/btn_share"
+        android:layout_width="@dimen/dp_235"
+        android:layout_height="@dimen/dp_56"
+        android:gravity="center"
+        android:textSize="@dimen/sp_30"
+        android:text="@string/ventilator_share"
+        android:background="@drawable/pan_shape_button_bg_ok"
+        android:textColor="@color/ventilator_white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="@dimen/dp_28"
+        android:layout_marginRight="@dimen/dp_28"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_user"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_device"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/ventilator_ic_bg"
+    tools:context=".ui.pages.HomePage">
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/iv_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/ventilator_bg_normal">
+
+    </pl.droidsonroids.gif.GifImageView>
+    <include
+        android:id="@+id/ll_title"
+        layout="@layout/ventilator_view_layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_fun"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_230"
+        app:layout_constraintLeft_toRightOf="@id/ll_drawer_left"
+        app:layout_constraintRight_toLeftOf="@id/ll_drawer_right"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <LinearLayout
+        android:id="@+id/ll_select"
+        android:layout_width="@dimen/dp_260"
+        android:layout_height="@dimen/dp_56"
+        android:layout_marginBottom="@dimen/dp_24"
+        android:background="@drawable/ventilator_shape_button_unselected"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <TextView
+            android:id="@+id/tv_performance"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/ventilator_shape_button_selector"
+            android:gravity="center"
+            android:text="@string/ventilator_performance"
+            android:textColor="@drawable/ventilator_text_color_selector"
+            android:textSize="@dimen/sp_32" />
+
+        <TextView
+            android:id="@+id/tv_comfort"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/ventilator_shape_button_selector"
+            android:gravity="center"
+            android:text="@string/ventilator_comfort"
+            android:textColor="@drawable/ventilator_text_color_selector"
+            android:textSize="@dimen/sp_32" />
+    </LinearLayout>
+
+<!--    <TextView-->
+<!--        android:id="@+id/ventilator_textview"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginRight="@dimen/dp_30"-->
+<!--        android:layout_marginBottom="@dimen/sp_36"-->
+<!--        android:text="@string/ventilator_air_speed"-->
+<!--        android:textColor="@color/ventilator_white_50"-->
+<!--        android:textSize="@dimen/sp_32"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintRight_toLeftOf="@id/iv_speed" />-->
+
+    <com.robam.common.ui.view.AudioWaveView
+        android:id="@+id/iv_speed"
+        android:layout_width="@dimen/dp_90"
+        android:layout_height="@dimen/dp_45"
+        android:layout_marginRight="@dimen/dp_56"
+        android:layout_marginBottom="@dimen/dp_36"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/ll_select" />
+
+    <com.robam.common.ui.view.AudioWaveView
+        android:id="@+id/iv_flow"
+        android:layout_width="@dimen/dp_90"
+        android:layout_height="@dimen/dp_45"
+        android:layout_marginLeft="@dimen/dp_56"
+        android:layout_marginBottom="@dimen/dp_36"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/ll_select" />
+
+<!--    <TextView-->
+<!--        android:id="@+id/ventilator_textview2"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginLeft="@dimen/dp_30"-->
+<!--        android:layout_marginBottom="@dimen/sp_36"-->
+<!--        android:text="@string/ventilator_air_flow"-->
+<!--        android:textColor="@color/ventilator_white_50"-->
+<!--        android:textSize="@dimen/sp_32"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintLeft_toRightOf="@id/iv_flow" />-->
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/ventilator_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="iv_flow,iv_speed" />
+    <com.robam.common.ui.blurview.ShapeBlurView
+        android:id="@+id/sb_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone"
+        app:common_blur_mode="rectangle"
+        app:common_blur_radius="@dimen/dp_20"
+        app:common_blur_down_sample="2"
+        app:common_blur_overlay_color="@color/ventilator_drawer_bg" />
+    <FrameLayout
+        android:id="@+id/ll_drawer_left"
+        android:layout_width="@dimen/dp_90"
+        android:layout_height="match_parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <LinearLayout
+
+            android:orientation="horizontal"
+            android:layout_width="@dimen/dp_90"
+            android:layout_height="match_parent"
+            android:gravity="center">
+            <ImageView
+                android:id="@+id/iv_left_left"
+                android:layout_width="@dimen/dp_15"
+                android:layout_height="@dimen/dp_15"
+                android:layout_marginRight="@dimen/dp_2"
+                android:src="@drawable/ventilator_arrow_left"
+                android:visibility="invisible"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ventilator_settting"
+                android:textSize="@dimen/sp_30"
+                android:maxEms="1"
+                android:maxLines="4"
+                android:textColor="@color/cabinet_white"/>
+            <ImageView
+                android:id="@+id/iv_left_right"
+                android:layout_width="@dimen/dp_15"
+                android:layout_height="@dimen/dp_15"
+                android:layout_marginLeft="@dimen/dp_2"
+                android:src="@drawable/ventilator_arrow_right"/>
+        </LinearLayout>
+    </FrameLayout>
+    <FrameLayout
+        android:id="@+id/ll_drawer_right"
+        android:layout_width="@dimen/dp_90"
+        android:layout_height="match_parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <LinearLayout
+
+            android:orientation="horizontal"
+            android:layout_width="@dimen/dp_90"
+            android:layout_height="match_parent"
+            android:gravity="center">
+            <ImageView
+                android:id="@+id/iv_right_left"
+                android:layout_width="@dimen/dp_15"
+                android:layout_height="@dimen/dp_15"
+                android:layout_marginRight="@dimen/dp_2"
+                android:src="@drawable/ventilator_arrow_left"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ventilator_product"
+                android:gravity="right"
+                android:textSize="@dimen/sp_30"
+                android:maxEms="1"
+                android:maxLines="4"
+                android:textColor="@color/cabinet_white"/>
+            <ImageView
+                android:id="@+id/iv_right_right"
+                android:layout_width="@dimen/dp_15"
+                android:layout_height="@dimen/dp_15"
+                android:layout_marginLeft="@dimen/dp_2"
+                android:src="@drawable/ventilator_arrow_right"
+                android:visibility="invisible"/>
+        </LinearLayout>
+    </FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

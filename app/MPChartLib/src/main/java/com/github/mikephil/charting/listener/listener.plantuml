@@ -1,0 +1,176 @@
+@startuml
+
+title __LISTENER's Class Diagram__\n
+
+  namespace com.github.mikephil.charting.listener {
+    class com.github.mikephil.charting.listener.BarLineChartTouchListener {
+        - mDecelerationLastTime : long
+        - mDragTriggerDist : float
+        - mMatrix : Matrix
+        - mMinScalePointerDistance : float
+        - mSavedDist : float
+        - mSavedMatrix : Matrix
+        - mSavedXDist : float
+        - mSavedYDist : float
+        - mVelocityTracker : VelocityTracker
+        + BarLineChartTouchListener()
+        + computeScroll()
+        + getMatrix()
+        + getTrans()
+        + onDoubleTap()
+        + onFling()
+        + onLongPress()
+        + onSingleTapUp()
+        + onTouch()
+        + setDragTriggerDist()
+        + stopDeceleration()
+        {static} - getXDist()
+        {static} - getYDist()
+        - inverted()
+        {static} - midPoint()
+        - performDrag()
+        - performHighlightDrag()
+        - performZoom()
+        - saveTouchStart()
+        {static} - spacing()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.listener {
+    abstract class com.github.mikephil.charting.listener.ChartTouchListener {
+        {static} # DRAG : int
+        {static} # NONE : int
+        {static} # PINCH_ZOOM : int
+        {static} # POST_ZOOM : int
+        {static} # ROTATE : int
+        {static} # X_ZOOM : int
+        {static} # Y_ZOOM : int
+        # mGestureDetector : GestureDetector
+        # mTouchMode : int
+        + ChartTouchListener()
+        + endAction()
+        + getLastGesture()
+        + getTouchMode()
+        + moveAction()
+        + setLastHighlighted()
+        + startAction()
+        {static} # distance()
+        # performHighlight()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.listener {
+    enum ChartGesture {
+      DOUBLE_TAP
+      DRAG
+      FLING
+      LONG_PRESS
+      NONE
+      PINCH_ZOOM
+      ROTATE
+      SINGLE_TAP
+      X_ZOOM
+      Y_ZOOM
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.listener {
+    interface com.github.mikephil.charting.listener.OnChartGestureListener {
+        {abstract} + onChartDoubleTapped()
+        {abstract} + onChartFling()
+        {abstract} + onChartGestureEnd()
+        {abstract} + onChartGestureMove()
+        {abstract} + onChartGestureStart()
+        {abstract} + onChartLongPressed()
+        {abstract} + onChartScale()
+        {abstract} + onChartSingleTapped()
+        {abstract} + onChartTranslate()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.listener {
+    interface com.github.mikephil.charting.listener.OnChartValueSelectedListener {
+        {abstract} + onNothingSelected()
+        {abstract} + onValueSelected()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.listener {
+    class com.github.mikephil.charting.listener.OnDrawLineChartTouchListener {
+        + onTouch()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.listener {
+    interface com.github.mikephil.charting.listener.OnDrawListener {
+        {abstract} + onDrawFinished()
+        {abstract} + onEntryAdded()
+        {abstract} + onEntryMoved()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.listener {
+    class com.github.mikephil.charting.listener.PieRadarChartTouchListener {
+        - _velocitySamples : ArrayList<AngularVelocitySample>
+        - mDecelerationAngularVelocity : float
+        - mDecelerationLastTime : long
+        - mStartAngle : float
+        + PieRadarChartTouchListener()
+        + computeScroll()
+        + onLongPress()
+        + onSingleTapConfirmed()
+        + onSingleTapUp()
+        + onTouch()
+        + setGestureStartAngle()
+        + stopDeceleration()
+        + updateGestureRotation()
+        - calculateVelocity()
+        - resetVelocity()
+        - sampleVelocity()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.listener {
+    class com.github.mikephil.charting.listener.PieRadarChartTouchListener.AngularVelocitySample {
+        + angle : float
+        + time : long
+        + AngularVelocitySample()
+    }
+  }
+  
+
+  com.github.mikephil.charting.listener.BarLineChartTouchListener -up-|> com.github.mikephil.charting.listener.ChartTouchListener
+  com.github.mikephil.charting.listener.BarLineChartTouchListener o-- com.github.mikephil.charting.interfaces.datasets.IDataSet : mClosestDataSetToTouch
+  com.github.mikephil.charting.listener.BarLineChartTouchListener o-- com.github.mikephil.charting.utils.MPPointF : mDecelerationCurrentPoint
+  com.github.mikephil.charting.listener.BarLineChartTouchListener o-- com.github.mikephil.charting.utils.MPPointF : mDecelerationVelocity
+  com.github.mikephil.charting.listener.BarLineChartTouchListener o-- com.github.mikephil.charting.utils.MPPointF : mTouchPointCenter
+  com.github.mikephil.charting.listener.BarLineChartTouchListener o-- com.github.mikephil.charting.utils.MPPointF : mTouchStartPoint
+  com.github.mikephil.charting.listener.ChartTouchListener .up.|> android.view.View.OnTouchListener
+  com.github.mikephil.charting.listener.ChartTouchListener -up-|> android.view.GestureDetector.SimpleOnGestureListener
+  com.github.mikephil.charting.listener.ChartTouchListener o-- T : mChart
+  com.github.mikephil.charting.listener.ChartTouchListener o-- com.github.mikephil.charting.listener.ChartTouchListener.ChartGesture : mLastGesture
+  com.github.mikephil.charting.listener.ChartTouchListener o-- com.github.mikephil.charting.highlight.Highlight : mLastHighlighted
+  com.github.mikephil.charting.listener.ChartTouchListener +-down- com.github.mikephil.charting.listener.ChartTouchListener.ChartGesture
+  com.github.mikephil.charting.listener.OnDrawLineChartTouchListener .up.|> android.view.View.OnTouchListener
+  com.github.mikephil.charting.listener.OnDrawLineChartTouchListener -up-|> android.view.GestureDetector.SimpleOnGestureListener
+  com.github.mikephil.charting.listener.PieRadarChartTouchListener -up-|> com.github.mikephil.charting.listener.ChartTouchListener
+  com.github.mikephil.charting.listener.PieRadarChartTouchListener o-- com.github.mikephil.charting.utils.MPPointF : mTouchStartPoint
+  com.github.mikephil.charting.listener.PieRadarChartTouchListener +-down- com.github.mikephil.charting.listener.PieRadarChartTouchListener.AngularVelocitySample
+
+
+right footer
+
+
+PlantUML diagram generated by SketchIt! (https://bitbucket.org/pmesmeur/sketch.it)
+For more information about this tool, please contact philippe.mesmeur@gmail.com
+endfooter
+
+@enduml

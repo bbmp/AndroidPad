@@ -1,0 +1,30 @@
+[
+  {
+    "backgroundImg": "ventilator_ic_bg_steam",
+    "funtionCode": 1,
+    "funtionName": "蒸",
+    "into": "steamoven.modeselect",
+    "mode": "steam"
+  },
+  {
+    "backgroundImg": "ventilator_ic_bg_oven",
+    "funtionCode": 2,
+    "funtionName": "烤",
+    "into": "steamoven.modeselect",
+    "mode": "oven"
+  },
+  {
+    "backgroundImg": "ventilator_ic_bg_zha",
+    "funtionCode": 3,
+    "funtionName": "炸",
+    "into": "steamoven.modeselect",
+    "mode": "blow"
+  },
+  {
+    "backgroundImg": "ventilator_ic_bg_multi",
+    "funtionCode": 4,
+    "funtionName": "多段",
+    "into": "steamoven.mult",
+    "mode": "multimode"
+  }
+]

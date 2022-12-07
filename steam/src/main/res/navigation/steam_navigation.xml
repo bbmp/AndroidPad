@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/steam_navigation"
+    app:startDestination="@+id/navigation_home"
+    tools:ignore="ResourceName">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.robam.steamoven.ui.pages.HomePage"
+        android:label="@string/steam_app_name"
+        tools:layout="@layout/steam_page_layout_home">
+        <action
+            android:id="@+id/action_fullscreen"
+            app:destination="@id/fullscreenFragment"/>
+
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_takephoto"
+        android:name="com.robam.steamoven.ui.pages.TakePhotoFragment"
+        android:label="@string/steam_app_name"
+        tools:layout="@layout/steam_page_layout_take_photo">
+
+    </fragment>
+    <fragment
+
+        android:id="@+id/fullscreenFragment"
+        android:name="com.robam.steamoven.ui.pages.FullScreenFragment"
+        android:label="@string/steam_app_name"
+        tools:layout="@layout/steam_page_layout_full_screen">
+
+    </fragment>
+</navigation>

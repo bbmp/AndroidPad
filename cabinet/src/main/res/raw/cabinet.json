@@ -1,0 +1,72 @@
+[
+  {
+    "backgroundImg": "cabinet_bg_xd",
+    "funtionCode": 2,
+    "funtionName": "消毒",
+    "into": "com.robam.cabinet.ui.activity.ModeSelectActivity",
+    "mode": {
+        "code": 2,
+        "name": "消毒",
+        "defTime": 110,
+        "minTime": 40,
+        "maxTime" : 60,
+        "stepTime": 5
+      }
+  },
+  {
+    "backgroundImg": "cabinet_bg_kj",
+    "funtionCode": 3,
+    "funtionName": "快洁",
+    "into": "com.robam.cabinet.ui.activity.ModeSelectActivity",
+    "mode": {
+      "code": 3,
+      "name": "快洁",
+      "defTime": 3,
+      "minTime": 3,
+      "maxTime" : 15,
+      "stepTime": 1
+    }
+  },
+  {
+    "backgroundImg": "cabinet_bg_hg",
+    "funtionCode": 4,
+    "funtionName": "烘干",
+    "into": "com.robam.cabinet.ui.activity.ModeSelectActivity",
+    "mode": {
+      "code": 4,
+      "name": "烘干",
+      "defTime": 20,
+      "minTime": 20,
+      "maxTime" : 40,
+      "stepTime": 1
+    }
+  },
+  {
+    "backgroundImg": "cabinet_bg_jc",
+    "funtionCode": 13,
+    "funtionName": "净存",
+    "into": "com.robam.cabinet.ui.activity.ModeSelectActivity",
+    "mode": {
+      "code": 13,
+      "name": "净存",
+      "defTime": 20,
+      "minTime": 20,
+      "maxTime" : 30,
+      "stepTime": 5
+    }
+  },
+  {
+    "backgroundImg": "cabinet_bg_zn",
+    "funtionCode": 8,
+    "funtionName": "智能",
+    "into": "com.robam.cabinet.ui.activity.ModeSelectActivity",
+    "mode": {
+      "code": 8,
+      "name": "智能",
+      "defTime": 45,
+      "minTime": 45,
+      "maxTime" : 45,
+      "stepTime": 1
+    }
+  }
+]

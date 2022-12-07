@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/roki_shape_bg_main">
+    <com.robam.common.ui.view.NoScrollViewPager
+        android:id="@+id/pager"
+
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/rl_dot_container"/>
+
+
+    <RelativeLayout
+        android:id="@+id/rl_dot_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_88"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/roki_main_tab_background">
+    </RelativeLayout>
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:tabBackground="@color/roki_transparent"
+        app:tabRippleColor="@color/roki_transparent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/rl_dot_container"
+        app:layout_constraintBottom_toBottomOf="@id/rl_dot_container">
+
+    </com.google.android.material.tabs.TabLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

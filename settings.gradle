@@ -1,0 +1,33 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/jcenter' }
+        maven { url 'https://jitpack.io' }
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/jcenter' }
+        maven { url 'https://jitpack.io' }
+    }
+}
+rootProject.name = "AndroidPad"
+include ':app'
+include ':steam'
+include ':ventilator'
+include ':app:serialport'
+include ':app:foodmaterialdetect'
+include ':app:common'
+include ':roki'
+include ':dishwasher'
+include ':cabinet'
+include ':app:pan'
+include ':app:stove'
+include ':app:MPChartLib'

@@ -1,0 +1,672 @@
+@startuml
+
+title __CHARTS's Class Diagram__\n
+
+  namespace com.github.mikephil.charting.charts {
+    class com.github.mikephil.charting.charts.BarChart {
+        # mHighlightFullBarEnabled : boolean
+        - mDrawBarShadow : boolean
+        - mDrawValueAboveBar : boolean
+        - mFitBars : boolean
+        + BarChart()
+        + BarChart()
+        + BarChart()
+        + getBarBounds()
+        + getBarBounds()
+        + getBarData()
+        + getHighlightByTouchPoint()
+        + groupBars()
+        + highlightValue()
+        + isDrawBarShadowEnabled()
+        + isDrawValueAboveBarEnabled()
+        + isHighlightFullBarEnabled()
+        + setDrawBarShadow()
+        + setDrawValueAboveBar()
+        + setFitBars()
+        + setHighlightFullBarEnabled()
+        # calcMinMax()
+        # init()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.charts {
+    abstract class com.github.mikephil.charting.charts.BarLineChartBase {
+        # mAutoScaleMinMaxEnabled : boolean
+        # mBorderPaint : Paint
+        # mClipDataToContent : boolean
+        # mClipValuesToContent : boolean
+        # mDoubleTapToZoomEnabled : boolean
+        # mDrawBorders : boolean
+        # mDrawGridBackground : boolean
+        # mFitScreenMatrixBuffer : Matrix
+        # mGetPositionBuffer : float[]
+        # mGridBackgroundPaint : Paint
+        # mHighlightPerDragEnabled : boolean
+        # mKeepPositionOnRotation : boolean
+        # mMaxVisibleCount : int
+        # mMinOffset : float
+        # mOnSizeChangedBuffer : float[]
+        # mPinchZoomEnabled : boolean
+        # mZoomMatrixBuffer : Matrix
+        - drawCycles : long
+        - mCustomViewPortEnabled : boolean
+        - mDragXEnabled : boolean
+        - mDragYEnabled : boolean
+        - mOffsetsBuffer : RectF
+        - mScaleXEnabled : boolean
+        - mScaleYEnabled : boolean
+        - totalTime : long
+        + BarLineChartBase()
+        + BarLineChartBase()
+        + BarLineChartBase()
+        + calculateOffsets()
+        + centerViewTo()
+        + centerViewToAnimated()
+        + centerViewToY()
+        + computeScroll()
+        + fitScreen()
+        + getAxis()
+        + getAxisLeft()
+        + getAxisRight()
+        + getDataSetByTouchPoint()
+        + getDrawListener()
+        + getEntryByTouchPoint()
+        + getHighestVisibleX()
+        + getLowestVisibleX()
+        + getMaxVisibleCount()
+        + getMinOffset()
+        + getPaint()
+        + getPixelForValues()
+        + getPosition()
+        + getRendererLeftYAxis()
+        + getRendererRightYAxis()
+        + getRendererXAxis()
+        + getScaleX()
+        + getScaleY()
+        + getTransformer()
+        + getValuesByTouchPoint()
+        + getValuesByTouchPoint()
+        + getVisibleXRange()
+        + getYChartMax()
+        + getYChartMin()
+        + hasNoDragOffset()
+        + isAnyAxisInverted()
+        + isAutoScaleMinMaxEnabled()
+        + isClipDataToContentEnabled()
+        + isClipValuesToContentEnabled()
+        + isDoubleTapToZoomEnabled()
+        + isDragEnabled()
+        + isDragXEnabled()
+        + isDragYEnabled()
+        + isDrawBordersEnabled()
+        + isFullyZoomedOut()
+        + isHighlightPerDragEnabled()
+        + isInverted()
+        + isKeepPositionOnRotation()
+        + isPinchZoomEnabled()
+        + isScaleXEnabled()
+        + isScaleYEnabled()
+        + moveViewTo()
+        + moveViewToAnimated()
+        + moveViewToX()
+        + notifyDataSetChanged()
+        + onTouchEvent()
+        + resetTracking()
+        + resetViewPortOffsets()
+        + resetZoom()
+        + setAutoScaleMinMaxEnabled()
+        + setBorderColor()
+        + setBorderWidth()
+        + setClipDataToContent()
+        + setClipValuesToContent()
+        + setDoubleTapToZoomEnabled()
+        + setDragEnabled()
+        + setDragOffsetX()
+        + setDragOffsetY()
+        + setDragXEnabled()
+        + setDragYEnabled()
+        + setDrawBorders()
+        + setDrawGridBackground()
+        + setGridBackgroundColor()
+        + setHighlightPerDragEnabled()
+        + setKeepPositionOnRotation()
+        + setMaxVisibleValueCount()
+        + setMinOffset()
+        + setOnDrawListener()
+        + setPaint()
+        + setPinchZoom()
+        + setRendererLeftYAxis()
+        + setRendererRightYAxis()
+        + setScaleEnabled()
+        + setScaleMinima()
+        + setScaleXEnabled()
+        + setScaleYEnabled()
+        + setViewPortOffsets()
+        + setVisibleXRange()
+        + setVisibleXRangeMaximum()
+        + setVisibleXRangeMinimum()
+        + setVisibleYRange()
+        + setVisibleYRangeMaximum()
+        + setVisibleYRangeMinimum()
+        + setXAxisRenderer()
+        + zoom()
+        + zoom()
+        + zoomAndCenterAnimated()
+        + zoomIn()
+        + zoomOut()
+        + zoomToCenter()
+        # autoScale()
+        # calcMinMax()
+        # calculateLegendOffsets()
+        # drawGridBackground()
+        # getAxisRange()
+        # init()
+        # onDraw()
+        # onSizeChanged()
+        # prepareOffsetMatrix()
+        # prepareValuePxMatrix()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.charts {
+    class com.github.mikephil.charting.charts.BubbleChart {
+        + BubbleChart()
+        + BubbleChart()
+        + BubbleChart()
+        + getBubbleData()
+        # init()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.charts {
+    class com.github.mikephil.charting.charts.CandleStickChart {
+        + CandleStickChart()
+        + CandleStickChart()
+        + CandleStickChart()
+        + getCandleData()
+        # init()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.charts {
+    abstract class com.github.mikephil.charting.charts.Chart {
+        {static} + LOG_TAG : String
+        {static} + PAINT_CENTER_TEXT : int
+        {static} + PAINT_DESCRIPTION : int
+        {static} + PAINT_GRID_BACKGROUND : int
+        {static} + PAINT_HOLE : int
+        {static} + PAINT_INFO : int
+        {static} + PAINT_LEGEND_LABEL : int
+        # mDescPaint : Paint
+        # mDrawMarkers : boolean
+        # mHighLightPerTapEnabled : boolean
+        # mIndicesToHighlight : Highlight[]
+        # mInfoPaint : Paint
+        # mJobs : ArrayList<Runnable>
+        # mLogEnabled : boolean
+        # mMaxHighlightDistance : float
+        # mTouchEnabled : boolean
+        - mDragDecelerationEnabled : boolean
+        - mDragDecelerationFrictionCoef : float
+        - mExtraBottomOffset : float
+        - mExtraLeftOffset : float
+        - mExtraRightOffset : float
+        - mExtraTopOffset : float
+        - mNoDataText : String
+        - mOffsetsCalculated : boolean
+        - mUnbind : boolean
+        + Chart()
+        + Chart()
+        + Chart()
+        + addViewportJob()
+        + animateX()
+        + animateX()
+        + animateXY()
+        + animateXY()
+        + animateXY()
+        + animateY()
+        + animateY()
+        + clear()
+        + clearAllViewportJobs()
+        + clearValues()
+        + disableScroll()
+        + enableScroll()
+        + getAnimator()
+        + getCenter()
+        + getCenterOfView()
+        + getCenterOffsets()
+        + getChartBitmap()
+        + getContentRect()
+        + getData()
+        + getDefaultValueFormatter()
+        + getDescription()
+        + getDragDecelerationFrictionCoef()
+        + getExtraBottomOffset()
+        + getExtraLeftOffset()
+        + getExtraRightOffset()
+        + getExtraTopOffset()
+        + getHighlightByTouchPoint()
+        + getHighlighted()
+        + getHighlighter()
+        + getJobs()
+        + getLegend()
+        + getLegendRenderer()
+        + getMarker()
+        + getMarkerView()
+        + getMaxHighlightDistance()
+        + getOnChartGestureListener()
+        + getOnTouchListener()
+        + getPaint()
+        + getRenderer()
+        + getViewPortHandler()
+        + getXAxis()
+        + getXChartMax()
+        + getXChartMin()
+        + getXRange()
+        + getYMax()
+        + getYMin()
+        + highlightValue()
+        + highlightValue()
+        + highlightValue()
+        + highlightValue()
+        + highlightValue()
+        + highlightValue()
+        + highlightValue()
+        + highlightValue()
+        + highlightValue()
+        + highlightValue()
+        + highlightValues()
+        + isDragDecelerationEnabled()
+        + isDrawMarkerViewsEnabled()
+        + isDrawMarkersEnabled()
+        + isEmpty()
+        + isHighlightPerTapEnabled()
+        + isLogEnabled()
+        {abstract} + notifyDataSetChanged()
+        + removeViewportJob()
+        + saveToGallery()
+        + saveToGallery()
+        + saveToGallery()
+        + saveToPath()
+        + setData()
+        + setDescription()
+        + setDragDecelerationEnabled()
+        + setDragDecelerationFrictionCoef()
+        + setDrawMarkerViews()
+        + setDrawMarkers()
+        + setExtraBottomOffset()
+        + setExtraLeftOffset()
+        + setExtraOffsets()
+        + setExtraRightOffset()
+        + setExtraTopOffset()
+        + setHardwareAccelerationEnabled()
+        + setHighlightPerTapEnabled()
+        + setHighlighter()
+        + setLogEnabled()
+        + setMarker()
+        + setMarkerView()
+        + setMaxHighlightDistance()
+        + setNoDataText()
+        + setNoDataTextAlignment()
+        + setNoDataTextColor()
+        + setNoDataTextTypeface()
+        + setOnChartGestureListener()
+        + setOnChartValueSelectedListener()
+        + setOnTouchListener()
+        + setPaint()
+        + setRenderer()
+        + setTouchEnabled()
+        + setUnbindEnabled()
+        + valuesToHighlight()
+        {abstract} # calcMinMax()
+        {abstract} # calculateOffsets()
+        # drawDescription()
+        # drawMarkers()
+        # getMarkerPosition()
+        # init()
+        # onDetachedFromWindow()
+        # onDraw()
+        # onLayout()
+        # onMeasure()
+        # onSizeChanged()
+        # setLastHighlighted()
+        # setupDefaultFormatter()
+        - unbindDrawables()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.charts {
+    class com.github.mikephil.charting.charts.CombinedChart {
+        # mDrawOrder : DrawOrder[]
+        # mHighlightFullBarEnabled : boolean
+        - mDrawBarShadow : boolean
+        - mDrawValueAboveBar : boolean
+        + CombinedChart()
+        + CombinedChart()
+        + CombinedChart()
+        + getBarData()
+        + getBubbleData()
+        + getCandleData()
+        + getCombinedData()
+        + getDrawOrder()
+        + getHighlightByTouchPoint()
+        + getLineData()
+        + getScatterData()
+        + isDrawBarShadowEnabled()
+        + isDrawValueAboveBarEnabled()
+        + isHighlightFullBarEnabled()
+        + setData()
+        + setDrawBarShadow()
+        + setDrawOrder()
+        + setDrawValueAboveBar()
+        + setHighlightFullBarEnabled()
+        # drawMarkers()
+        # init()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.charts {
+    enum DrawOrder {
+      BAR
+      BUBBLE
+      CANDLE
+      LINE
+      SCATTER
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.charts {
+    class com.github.mikephil.charting.charts.HorizontalBarChart {
+        # mGetPositionBuffer : float[]
+        - mOffsetsBuffer : RectF
+        + HorizontalBarChart()
+        + HorizontalBarChart()
+        + HorizontalBarChart()
+        + calculateOffsets()
+        + getBarBounds()
+        + getHighestVisibleX()
+        + getHighlightByTouchPoint()
+        + getLowestVisibleX()
+        + getPosition()
+        + setVisibleXRange()
+        + setVisibleXRangeMaximum()
+        + setVisibleXRangeMinimum()
+        + setVisibleYRange()
+        + setVisibleYRangeMaximum()
+        + setVisibleYRangeMinimum()
+        # calculateLegendOffsets()
+        # getMarkerPosition()
+        # init()
+        # prepareValuePxMatrix()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.charts {
+    class com.github.mikephil.charting.charts.LineChart {
+        + LineChart()
+        + LineChart()
+        + LineChart()
+        + getLineData()
+        # init()
+        # onDetachedFromWindow()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.charts {
+    class com.github.mikephil.charting.charts.PieChart {
+        # mMaxAngle : float
+        # mTransparentCircleRadiusPercent : float
+        - mAbsoluteAngles : float[]
+        - mCenterText : CharSequence
+        - mCenterTextRadiusPercent : float
+        - mCircleBox : RectF
+        - mDrawAngles : float[]
+        - mDrawCenterText : boolean
+        - mDrawEntryLabels : boolean
+        - mDrawHole : boolean
+        - mDrawRoundedSlices : boolean
+        - mDrawSlicesUnderHole : boolean
+        - mHoleRadiusPercent : float
+        - mMinAngleForSlices : float
+        - mUsePercentValues : boolean
+        + PieChart()
+        + PieChart()
+        + PieChart()
+        + calculateOffsets()
+        + getAbsoluteAngles()
+        + getCenterCircleBox()
+        + getCenterText()
+        + getCenterTextOffset()
+        + getCenterTextRadiusPercent()
+        + getCircleBox()
+        + getDataSetIndexForIndex()
+        + getDrawAngles()
+        + getHoleRadius()
+        + getIndexForAngle()
+        + getMaxAngle()
+        + getMinAngleForSlices()
+        + getRadius()
+        + getTransparentCircleRadius()
+        + getXAxis()
+        + isDrawCenterTextEnabled()
+        + isDrawEntryLabelsEnabled()
+        + isDrawHoleEnabled()
+        + isDrawRoundedSlicesEnabled()
+        + isDrawSlicesUnderHoleEnabled()
+        + isUsePercentValuesEnabled()
+        + needsHighlight()
+        + setCenterText()
+        + setCenterTextColor()
+        + setCenterTextOffset()
+        + setCenterTextRadiusPercent()
+        + setCenterTextSize()
+        + setCenterTextSizePixels()
+        + setCenterTextTypeface()
+        + setDrawCenterText()
+        + setDrawEntryLabels()
+        + setDrawHoleEnabled()
+        + setDrawRoundedSlices()
+        + setDrawSliceText()
+        + setDrawSlicesUnderHole()
+        + setEntryLabelColor()
+        + setEntryLabelTextSize()
+        + setEntryLabelTypeface()
+        + setHoleColor()
+        + setHoleRadius()
+        + setMaxAngle()
+        + setMinAngleForSlices()
+        + setTransparentCircleAlpha()
+        + setTransparentCircleColor()
+        + setTransparentCircleRadius()
+        + setUsePercentValues()
+        # calcMinMax()
+        # getMarkerPosition()
+        # getRequiredBaseOffset()
+        # getRequiredLegendOffset()
+        # init()
+        # onDetachedFromWindow()
+        # onDraw()
+        - calcAngle()
+        - calcAngle()
+        - calcAngles()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.charts {
+    abstract class com.github.mikephil.charting.charts.PieRadarChartBase {
+        # mMinOffset : float
+        # mRotateEnabled : boolean
+        - mRawRotationAngle : float
+        - mRotationAngle : float
+        + PieRadarChartBase()
+        + PieRadarChartBase()
+        + PieRadarChartBase()
+        + calculateOffsets()
+        + computeScroll()
+        + distanceToCenter()
+        + getAngleForPoint()
+        + getDiameter()
+        {abstract} + getIndexForAngle()
+        + getMaxVisibleCount()
+        + getMinOffset()
+        + getPosition()
+        + getPosition()
+        {abstract} + getRadius()
+        + getRawRotationAngle()
+        + getRotationAngle()
+        + getYChartMax()
+        + getYChartMin()
+        + isRotationEnabled()
+        + notifyDataSetChanged()
+        + onTouchEvent()
+        + setMinOffset()
+        + setRotationAngle()
+        + setRotationEnabled()
+        + spin()
+        # calcMinMax()
+        {abstract} # getRequiredBaseOffset()
+        {abstract} # getRequiredLegendOffset()
+        # init()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.charts {
+    class com.github.mikephil.charting.charts.RadarChart {
+        - mDrawWeb : boolean
+        - mInnerWebLineWidth : float
+        - mSkipWebLineCount : int
+        - mWebAlpha : int
+        - mWebColor : int
+        - mWebColorInner : int
+        - mWebLineWidth : float
+        + RadarChart()
+        + RadarChart()
+        + RadarChart()
+        + getFactor()
+        + getIndexForAngle()
+        + getRadius()
+        + getSkipWebLineCount()
+        + getSliceAngle()
+        + getWebAlpha()
+        + getWebColor()
+        + getWebColorInner()
+        + getWebLineWidth()
+        + getWebLineWidthInner()
+        + getYAxis()
+        + getYChartMax()
+        + getYChartMin()
+        + getYRange()
+        + notifyDataSetChanged()
+        + setDrawWeb()
+        + setSkipWebLineCount()
+        + setWebAlpha()
+        + setWebColor()
+        + setWebColorInner()
+        + setWebLineWidth()
+        + setWebLineWidthInner()
+        # calcMinMax()
+        # getRequiredBaseOffset()
+        # getRequiredLegendOffset()
+        # init()
+        # onDraw()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.charts {
+    class com.github.mikephil.charting.charts.ScatterChart {
+        + ScatterChart()
+        + ScatterChart()
+        + ScatterChart()
+        + getScatterData()
+        # init()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.charts {
+    enum ScatterShape {
+      CHEVRON_DOWN
+      CHEVRON_UP
+      CIRCLE
+      CROSS
+      SQUARE
+      TRIANGLE
+      X
+      shapeIdentifier
+    }
+  }
+  
+
+  com.github.mikephil.charting.charts.BarChart .up.|> com.github.mikephil.charting.interfaces.dataprovider.BarDataProvider
+  com.github.mikephil.charting.charts.BarChart -up-|> com.github.mikephil.charting.charts.BarLineChartBase
+  com.github.mikephil.charting.charts.BarLineChartBase .up.|> com.github.mikephil.charting.interfaces.dataprovider.BarLineScatterCandleBubbleDataProvider
+  com.github.mikephil.charting.charts.BarLineChartBase -up-|> com.github.mikephil.charting.charts.Chart
+  com.github.mikephil.charting.charts.BarLineChartBase o-- com.github.mikephil.charting.jobs.MoveViewJob : job
+  com.github.mikephil.charting.charts.BarLineChartBase o-- com.github.mikephil.charting.components.YAxis : mAxisLeft
+  com.github.mikephil.charting.charts.BarLineChartBase o-- com.github.mikephil.charting.renderer.YAxisRenderer : mAxisRendererLeft
+  com.github.mikephil.charting.charts.BarLineChartBase o-- com.github.mikephil.charting.renderer.YAxisRenderer : mAxisRendererRight
+  com.github.mikephil.charting.charts.BarLineChartBase o-- com.github.mikephil.charting.components.YAxis : mAxisRight
+  com.github.mikephil.charting.charts.BarLineChartBase o-- com.github.mikephil.charting.listener.OnDrawListener : mDrawListener
+  com.github.mikephil.charting.charts.BarLineChartBase o-- com.github.mikephil.charting.utils.Transformer : mLeftAxisTransformer
+  com.github.mikephil.charting.charts.BarLineChartBase o-- com.github.mikephil.charting.utils.Transformer : mRightAxisTransformer
+  com.github.mikephil.charting.charts.BarLineChartBase o-- com.github.mikephil.charting.renderer.XAxisRenderer : mXAxisRenderer
+  com.github.mikephil.charting.charts.BarLineChartBase o-- com.github.mikephil.charting.utils.MPPointD : posForGetHighestVisibleX
+  com.github.mikephil.charting.charts.BarLineChartBase o-- com.github.mikephil.charting.utils.MPPointD : posForGetLowestVisibleX
+  com.github.mikephil.charting.charts.BubbleChart .up.|> com.github.mikephil.charting.interfaces.dataprovider.BubbleDataProvider
+  com.github.mikephil.charting.charts.BubbleChart -up-|> com.github.mikephil.charting.charts.BarLineChartBase
+  com.github.mikephil.charting.charts.CandleStickChart .up.|> com.github.mikephil.charting.interfaces.dataprovider.CandleDataProvider
+  com.github.mikephil.charting.charts.CandleStickChart -up-|> com.github.mikephil.charting.charts.BarLineChartBase
+  com.github.mikephil.charting.charts.Chart .up.|> com.github.mikephil.charting.interfaces.dataprovider.ChartInterface
+  com.github.mikephil.charting.charts.Chart -up-|> android.view.ViewGroup
+  com.github.mikephil.charting.charts.Chart o-- com.github.mikephil.charting.animation.ChartAnimator : mAnimator
+  com.github.mikephil.charting.charts.Chart o-- com.github.mikephil.charting.listener.ChartTouchListener : mChartTouchListener
+  com.github.mikephil.charting.charts.Chart o-- T : mData
+  com.github.mikephil.charting.charts.Chart o-- com.github.mikephil.charting.formatter.DefaultValueFormatter : mDefaultValueFormatter
+  com.github.mikephil.charting.charts.Chart o-- com.github.mikephil.charting.components.Description : mDescription
+  com.github.mikephil.charting.charts.Chart o-- com.github.mikephil.charting.highlight.IHighlighter : mHighlighter
+  com.github.mikephil.charting.charts.Chart o-- com.github.mikephil.charting.components.Legend : mLegend
+  com.github.mikephil.charting.charts.Chart o-- com.github.mikephil.charting.renderer.LegendRenderer : mLegendRenderer
+  com.github.mikephil.charting.charts.Chart o-- com.github.mikephil.charting.components.IMarker : mMarker
+  com.github.mikephil.charting.charts.Chart o-- com.github.mikephil.charting.renderer.DataRenderer : mRenderer
+  com.github.mikephil.charting.charts.Chart o-- com.github.mikephil.charting.listener.OnChartValueSelectedListener : mSelectionListener
+  com.github.mikephil.charting.charts.Chart o-- com.github.mikephil.charting.utils.ViewPortHandler : mViewPortHandler
+  com.github.mikephil.charting.charts.Chart o-- com.github.mikephil.charting.components.XAxis : mXAxis
+  com.github.mikephil.charting.charts.Chart o-- com.github.mikephil.charting.listener.OnChartGestureListener : mGestureListener
+  com.github.mikephil.charting.charts.CombinedChart .up.|> com.github.mikephil.charting.interfaces.dataprovider.CombinedDataProvider
+  com.github.mikephil.charting.charts.CombinedChart -up-|> com.github.mikephil.charting.charts.BarLineChartBase
+  com.github.mikephil.charting.charts.CombinedChart +-down- com.github.mikephil.charting.charts.CombinedChart.DrawOrder
+  com.github.mikephil.charting.charts.HorizontalBarChart -up-|> com.github.mikephil.charting.charts.BarChart
+  com.github.mikephil.charting.charts.LineChart .up.|> com.github.mikephil.charting.interfaces.dataprovider.LineDataProvider
+  com.github.mikephil.charting.charts.LineChart -up-|> com.github.mikephil.charting.charts.BarLineChartBase
+  com.github.mikephil.charting.charts.PieChart -up-|> com.github.mikephil.charting.charts.PieRadarChartBase
+  com.github.mikephil.charting.charts.PieChart o-- com.github.mikephil.charting.utils.MPPointF : mCenterTextOffset
+  com.github.mikephil.charting.charts.PieRadarChartBase -up-|> com.github.mikephil.charting.charts.Chart
+  com.github.mikephil.charting.charts.RadarChart -up-|> com.github.mikephil.charting.charts.PieRadarChartBase
+  com.github.mikephil.charting.charts.RadarChart o-- com.github.mikephil.charting.renderer.XAxisRendererRadarChart : mXAxisRenderer
+  com.github.mikephil.charting.charts.RadarChart o-- com.github.mikephil.charting.renderer.YAxisRendererRadarChart : mYAxisRenderer
+  com.github.mikephil.charting.charts.RadarChart o-- com.github.mikephil.charting.components.YAxis : mYAxis
+  com.github.mikephil.charting.charts.ScatterChart .up.|> com.github.mikephil.charting.interfaces.dataprovider.ScatterDataProvider
+  com.github.mikephil.charting.charts.ScatterChart -up-|> com.github.mikephil.charting.charts.BarLineChartBase
+  com.github.mikephil.charting.charts.ScatterChart +-down- com.github.mikephil.charting.charts.ScatterChart.ScatterShape
+
+
+right footer
+
+
+PlantUML diagram generated by SketchIt! (https://bitbucket.org/pmesmeur/sketch.it)
+For more information about this tool, please contact philippe.mesmeur@gmail.com
+endfooter
+
+@enduml

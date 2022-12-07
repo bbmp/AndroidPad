@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.robam.roki">
+
+    <application>
+        <activity
+            android:name=".ui.activity.WizardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activity.SaleServiceActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activity.RWebActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activity.HomeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activity.WebActivity"
+            android:exported="false" />
+    </application>
+
+</manifest>

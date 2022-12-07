@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/roki_shape_bg_main"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    tools:ignore="MissingDefaultResource">
+    <View
+        android:id="@+id/status_bar_fix"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/roki_transparent"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_44">
+
+        <ImageView
+            android:id="@+id/img_back"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:src="@mipmap/roki_ic_arrow_back" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/roki_my_sale_service"
+            android:textColor="@color/roki_text_color_device_category"
+            android:textSize="@dimen/sp_20"/>
+
+    </RelativeLayout>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dp_230"
+        android:maxLines="1"
+        android:maxWidth="310dp"
+        android:text="@string/roki_after_reminding"
+        android:textColor="@color/roki_text_color_net_err"
+        android:textSize="@dimen/sp_16"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:maxLines="1"
+        android:maxWidth="310dp"
+        android:text="@string/roki_after_remindin_01"
+        android:textColor="@color/roki_text_color_net_err"
+        android:textSize="@dimen/sp_16"/>
+
+    <LinearLayout
+        android:id="@+id/ll_message_consulting"
+        android:layout_width="@dimen/dp_166"
+        android:layout_height="@dimen/dp_44"
+        android:layout_marginTop="46dp"
+        android:background="@drawable/roki_shape_button_bg"
+        android:gravity="center">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/roki_my_sale_consulting"
+            android:textColor="@color/roki_text_color_exit_login"
+            android:textSize="@dimen/sp_20"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="25dp">
+
+            <TextView
+                android:id="@+id/roki_tv_red_dot"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:background="@drawable/roki_shape_red_dot"
+                android:visibility="gone"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_key_after_sales"
+        android:layout_width="@dimen/dp_166"
+        android:layout_height="@dimen/dp_44"
+        android:layout_marginTop="@dimen/dp_28"
+        android:background="@drawable/roki_shape_button_bg"
+        android:gravity="center">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/roki_my_sale_one_key"
+            android:textColor="@color/roki_text_color_exit_login"
+            android:textSize="@dimen/sp_20"/>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/dp_72">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/tv_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/roki_my_sale_one_key_call"
+                android:textColor="@color/roki_text_color_touch_retry"
+                android:textSize="@dimen/sp_12"/>
+            <TextView
+                android:id="@+id/tv_call_phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0571-86281080"
+                android:textColor="@color/roki_text_color_touch_retry"
+                android:textSize="@dimen/sp_12"/>
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+
+</LinearLayout>

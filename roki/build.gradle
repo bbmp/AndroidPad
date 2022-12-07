@@ -1,0 +1,47 @@
+plugins {
+    id 'com.android.library'
+}
+apply from: '../versions.gradle'
+android {
+    compileSdk build_versions.compile_sdk
+
+    defaultConfig {
+        minSdk build_versions.min_sdk
+        targetSdk build_versions.target_sdk
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    resourcePrefix "roki_"
+    buildFeatures {
+        viewBinding true
+    }   //资源前缀的名字
+}
+
+dependencies {
+
+    api "androidx.appcompat:appcompat:$versions.appcompat"
+    api "com.google.android.material:material:$versions.material"
+    api "androidx.constraintlayout:constraintlayout:$versions.constraintlayout"
+    api "androidx.navigation:navigation-fragment:$versions.navigation_fragment"
+    api "androidx.navigation:navigation-ui:$versions.navigation_ui"
+    api "androidx.lifecycle:lifecycle-livedata-ktx:$versions.lifecycle_livedata_ktx"
+    api "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle_viewmodel_ktx"
+    api "androidx.swiperefreshlayout:swiperefreshlayout:$versions.swiperefreshlayout"
+    api "io.github.youth5201314:banner:$versions.banner"
+    testImplementation 'junit:junit:4.13.2'
+    api project(path: ':app:common')
+    api "com.github.CymChad:BaseRecyclerViewAdapterHelper:$versions.BaseRecyclerViewAdapterHelper"
+
+}

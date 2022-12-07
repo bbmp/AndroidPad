@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+<!--    背景板-->
+    <View
+        android:id="@+id/view_board"
+        android:layout_width="@dimen/dp_300"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="@dimen/dp_10"
+        android:background="@drawable/ventilator_shape_border_bg"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_device_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_32"
+        android:layout_marginTop="@dimen/dp_30"
+        android:textColor="@color/ventilator_white"
+        android:maxEms="5"
+        android:ellipsize="end"
+        android:maxLines="1"
+        tools:text="name"
+        app:layout_constraintLeft_toLeftOf="@id/view_board"
+        app:layout_constraintRight_toLeftOf="@id/tv_model"
+        app:layout_constraintTop_toTopOf="@id/view_board"
+        app:layout_constraintHorizontal_chainStyle="packed"/>
+    <TextView
+        android:id="@+id/tv_model"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/ventilator_white_50"
+        android:textSize="@dimen/sp_24"
+        android:layout_marginLeft="@dimen/dp_5"
+        tools:text="5068S"
+        app:layout_constraintLeft_toRightOf="@id/tv_device_name"
+        app:layout_constraintRight_toRightOf="@id/view_board"
+        app:layout_constraintTop_toTopOf="@id/tv_device_name"
+        app:layout_constraintBottom_toBottomOf="@id/tv_device_name"/>
+
+    <ImageView
+        android:id="@+id/iv_device"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="@dimen/dp_55"
+        android:layout_marginVertical="@dimen/dp_18"
+        android:scaleType="centerInside"
+        app:layout_constraintTop_toBottomOf="@id/tv_device_name"
+        app:layout_constraintBottom_toTopOf="@id/btn_add"
+        app:layout_constraintLeft_toLeftOf="@id/view_board"
+        app:layout_constraintRight_toRightOf="@id/view_board"/>
+
+    <TextView
+        android:id="@+id/btn_add"
+        android:layout_width="@dimen/dp_175"
+        android:layout_height="@dimen/dp_56"
+        android:textColor="@color/ventilator_white"
+        android:gravity="center"
+        android:background="@drawable/stove_shape_button_selected"
+        android:textSize="@dimen/sp_30"
+        android:text="@string/ventilator_add"
+        android:layout_marginBottom="@dimen/dp_24"
+        app:layout_constraintLeft_toLeftOf="@id/view_board"
+        app:layout_constraintRight_toRightOf="@id/view_board"
+        app:layout_constraintBottom_toBottomOf="@id/view_board"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

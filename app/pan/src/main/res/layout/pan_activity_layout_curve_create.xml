@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.activity.CurveCreateActivity">
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/iv_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/common_ic_bg">
+
+    </pl.droidsonroids.gif.GifImageView>
+    <include
+        android:id="@+id/ll_title"
+        layout="@layout/pan_view_layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/cook_chart"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/dp_30"
+        android:layout_marginBottom="@dimen/dp_60"
+        android:layout_marginTop="@dimen/dp_100"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/pan_guideline7"
+        app:layout_constraintTop_toBottomOf="@id/ll_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:keepScreenOn="true" />
+    <TextView
+        android:id="@+id/tv_fire"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_100"
+        android:textSize="@dimen/sp_40"
+        tools:text=""
+        android:textColor="@color/pan_white"
+        app:layout_constraintLeft_toLeftOf="@id/pan_guideline7"
+        app:layout_constraintTop_toBottomOf="@id/ll_title"
+        app:layout_constraintBottom_toTopOf="@id/tv_time"
+        app:layout_constraintVertical_chainStyle="packed"/>
+    <TextView
+        android:id="@+id/tv_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/pan_white"
+        android:textSize="@dimen/sp_40"
+        android:layout_marginLeft="@dimen/dp_40"
+        tools:text=""
+        app:layout_constraintLeft_toRightOf="@id/tv_fire"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_fire"/>
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_60"
+        android:textSize="@dimen/sp_100"
+        tools:text=""
+        android:textColor="@color/pan_white"
+        app:layout_constraintLeft_toLeftOf="@id/tv_fire"
+        app:layout_constraintTop_toBottomOf="@id/tv_fire"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_time_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/pan_white"
+        android:textSize="@dimen/sp_60"
+        android:text=""
+        android:visibility="gone"
+        app:layout_constraintLeft_toRightOf="@id/tv_time"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_time"/>
+    <ImageView
+        android:id="@+id/iv_stop_create"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
+        android:layout_marginRight="@dimen/dp_95"
+        android:src="@drawable/pan_stop_create"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/tv_time"
+        app:layout_constraintBottom_toBottomOf="@id/tv_time"
+        app:layout_constraintRight_toRightOf="parent"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/pan_guideline7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

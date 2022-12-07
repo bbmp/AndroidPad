@@ -1,0 +1,413 @@
+@startuml
+
+title __UTILS's Class Diagram__\n
+
+  namespace com.github.mikephil.charting.utils {
+    class com.github.mikephil.charting.utils.ColorTemplate {
+        {static} + COLORFUL_COLORS : int[]
+        {static} + COLOR_NONE : int
+        {static} + COLOR_SKIP : int
+        {static} + JOYFUL_COLORS : int[]
+        {static} + LIBERTY_COLORS : int[]
+        {static} + MATERIAL_COLORS : int[]
+        {static} + PASTEL_COLORS : int[]
+        {static} + VORDIPLOM_COLORS : int[]
+        {static} + colorWithAlpha()
+        {static} + createColors()
+        {static} + createColors()
+        {static} + getHoloBlue()
+        {static} + rgb()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.utils {
+    class com.github.mikephil.charting.utils.EntryXComparator {
+        + compare()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.utils {
+    class com.github.mikephil.charting.utils.FSize {
+        + height : float
+        + width : float
+        {static} - pool : ObjectPool<FSize>
+        + FSize()
+        + FSize()
+        + equals()
+        {static} + getInstance()
+        + hashCode()
+        {static} + recycleInstance()
+        {static} + recycleInstances()
+        + toString()
+        # instantiate()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.utils {
+    class com.github.mikephil.charting.utils.FileUtils {
+        {static} - LOG : String
+        {static} + loadBarEntriesFromAssets()
+        {static} + loadEntriesFromAssets()
+        {static} + loadEntriesFromFile()
+        {static} + saveToSdCard()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.utils {
+    class com.github.mikephil.charting.utils.Fill {
+        # mDrawable : Drawable
+        - mAlpha : int
+        - mColor : Integer
+        - mFinalColor : Integer
+        - mGradientColors : int[]
+        - mGradientPositions : float[]
+        + Fill()
+        + Fill()
+        + Fill()
+        + Fill()
+        + Fill()
+        + Fill()
+        + fillPath()
+        + fillRect()
+        + getAlpha()
+        + getColor()
+        + getGradientColors()
+        + getGradientPositions()
+        + getType()
+        + setAlpha()
+        + setColor()
+        + setGradientColors()
+        + setGradientColors()
+        + setGradientPositions()
+        + setType()
+        - calculateFinalColor()
+        - ensureClipPathSupported()
+        - isClipPathSupported()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.utils {
+    enum Direction {
+      DOWN
+      LEFT
+      RIGHT
+      UP
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.utils {
+    enum Type {
+      COLOR
+      DRAWABLE
+      EMPTY
+      LINEAR_GRADIENT
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.utils {
+    class com.github.mikephil.charting.utils.HorizontalViewPortHandler {
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.utils {
+    class com.github.mikephil.charting.utils.MPPointD {
+        + x : double
+        + y : double
+        {static} - pool : ObjectPool<MPPointD>
+        {static} + getInstance()
+        {static} + recycleInstance()
+        {static} + recycleInstances()
+        + toString()
+        # instantiate()
+        - MPPointD()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.utils {
+    class com.github.mikephil.charting.utils.MPPointF {
+        {static} + CREATOR : Creator<MPPointF>
+        + x : float
+        + y : float
+        {static} - pool : ObjectPool<MPPointF>
+        + MPPointF()
+        + MPPointF()
+        {static} + getInstance()
+        {static} + getInstance()
+        {static} + getInstance()
+        + getX()
+        + getY()
+        + my_readFromParcel()
+        {static} + recycleInstance()
+        {static} + recycleInstances()
+        # instantiate()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.utils {
+    class com.github.mikephil.charting.utils.ObjectPool {
+        - desiredCapacity : int
+        {static} - ids : int
+        - objects : Object[]
+        - objectsPointer : int
+        - poolId : int
+        - replenishPercentage : float
+        {static} + create()
+        + get()
+        + getPoolCapacity()
+        + getPoolCount()
+        + getPoolId()
+        + getReplenishPercentage()
+        + recycle()
+        + recycle()
+        + removePool()
+        + setReplenishPercentage()
+        - ObjectPool()
+        - refillPool()
+        - refillPool()
+        - resizePool()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.utils {
+    abstract class com.github.mikephil.charting.utils.ObjectPool.Poolable {
+        {static} + NO_OWNER : int
+        ~ currentOwnerId : int
+        {abstract} # instantiate()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.utils {
+    class com.github.mikephil.charting.utils.Transformer {
+        # mMatrixOffset : Matrix
+        # mMatrixValueToPx : Matrix
+        # mPixelToValueMatrixBuffer : Matrix
+        # valuePointsForGenerateTransformedValuesBubble : float[]
+        # valuePointsForGenerateTransformedValuesCandle : float[]
+        # valuePointsForGenerateTransformedValuesLine : float[]
+        # valuePointsForGenerateTransformedValuesScatter : float[]
+        ~ ptsBuffer : float[]
+        - mMBuffer1 : Matrix
+        - mMBuffer2 : Matrix
+        + Transformer()
+        + generateTransformedValuesBubble()
+        + generateTransformedValuesCandle()
+        + generateTransformedValuesLine()
+        + generateTransformedValuesScatter()
+        + getOffsetMatrix()
+        + getPixelForValues()
+        + getPixelToValueMatrix()
+        + getValueMatrix()
+        + getValueToPixelMatrix()
+        + getValuesByTouchPoint()
+        + getValuesByTouchPoint()
+        + pathValueToPixel()
+        + pathValuesToPixel()
+        + pixelsToValue()
+        + pointValuesToPixel()
+        + prepareMatrixOffset()
+        + prepareMatrixValuePx()
+        + rectToPixelPhase()
+        + rectToPixelPhaseHorizontal()
+        + rectValueToPixel()
+        + rectValueToPixelHorizontal()
+        + rectValueToPixelHorizontal()
+        + rectValuesToPixel()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.utils {
+    class com.github.mikephil.charting.utils.TransformerHorizontalBarChart {
+        + TransformerHorizontalBarChart()
+        + prepareMatrixOffset()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.utils {
+    abstract class com.github.mikephil.charting.utils.Utils {
+        {static} + DEG2RAD : double
+        {static} + DOUBLE_EPSILON : double
+        {static} + FDEG2RAD : float
+        {static} + FLOAT_EPSILON : float
+        {static} - POW_10 : int[]
+        {static} - mCalcTextHeightRect : Rect
+        {static} - mCalcTextSizeRect : Rect
+        {static} - mDefaultValueFormatter : IValueFormatter
+        {static} - mDrawTextRectBuffer : Rect
+        {static} - mDrawableBoundsCache : Rect
+        {static} - mFontMetrics : FontMetrics
+        {static} - mFontMetricsBuffer : FontMetrics
+        {static} - mMaximumFlingVelocity : int
+        {static} - mMetrics : DisplayMetrics
+        {static} - mMinimumFlingVelocity : int
+        {static} + calcTextHeight()
+        {static} + calcTextSize()
+        {static} + calcTextSize()
+        {static} + calcTextWidth()
+        {static} + convertDpToPixel()
+        {static} + convertIntegers()
+        {static} + convertPixelsToDp()
+        {static} + convertStrings()
+        {static} + copyIntegers()
+        {static} + copyStrings()
+        {static} + drawImage()
+        {static} + drawMultilineText()
+        {static} + drawMultilineText()
+        {static} + drawXAxisValue()
+        {static} + formatNumber()
+        {static} + formatNumber()
+        {static} + getDecimals()
+        {static} + getDefaultValueFormatter()
+        {static} + getLineHeight()
+        {static} + getLineHeight()
+        {static} + getLineSpacing()
+        {static} + getLineSpacing()
+        {static} + getMaximumFlingVelocity()
+        {static} + getMinimumFlingVelocity()
+        {static} + getNormalizedAngle()
+        {static} + getPosition()
+        {static} + getPosition()
+        {static} + getSDKInt()
+        {static} + getSizeOfRotatedRectangleByDegrees()
+        {static} + getSizeOfRotatedRectangleByDegrees()
+        {static} + getSizeOfRotatedRectangleByRadians()
+        {static} + getSizeOfRotatedRectangleByRadians()
+        {static} + init()
+        {static} + init()
+        {static} + nextUp()
+        {static} + postInvalidateOnAnimation()
+        {static} + roundToNextSignificant()
+        {static} + velocityTrackerPointerUpCleanUpIfNecessary()
+        {static} - generateDefaultValueFormatter()
+    }
+  }
+  
+
+  namespace com.github.mikephil.charting.utils {
+    class com.github.mikephil.charting.utils.ViewPortHandler {
+        # mCenterViewPortMatrixBuffer : Matrix
+        # mChartHeight : float
+        # mChartWidth : float
+        # mContentRect : RectF
+        # mMatrixTouch : Matrix
+        # matrixBuffer : float[]
+        # valsBufferForFitScreen : float[]
+        - mMaxScaleX : float
+        - mMaxScaleY : float
+        - mMinScaleX : float
+        - mMinScaleY : float
+        - mScaleX : float
+        - mScaleY : float
+        - mTransOffsetX : float
+        - mTransOffsetY : float
+        - mTransX : float
+        - mTransY : float
+        + ViewPortHandler()
+        + canZoomInMoreX()
+        + canZoomInMoreY()
+        + canZoomOutMoreX()
+        + canZoomOutMoreY()
+        + centerViewPort()
+        + contentBottom()
+        + contentHeight()
+        + contentLeft()
+        + contentRight()
+        + contentTop()
+        + contentWidth()
+        + fitScreen()
+        + fitScreen()
+        + getChartHeight()
+        + getChartWidth()
+        + getContentCenter()
+        + getContentRect()
+        + getMatrixTouch()
+        + getMaxScaleX()
+        + getMaxScaleY()
+        + getMinScaleX()
+        + getMinScaleY()
+        + getScaleX()
+        + getScaleY()
+        + getSmallestContentExtension()
+        + getTransX()
+        + getTransY()
+        + hasChartDimens()
+        + hasNoDragOffset()
+        + isFullyZoomedOut()
+        + isFullyZoomedOutX()
+        + isFullyZoomedOutY()
+        + isInBounds()
+        + isInBoundsBottom()
+        + isInBoundsLeft()
+        + isInBoundsRight()
+        + isInBoundsTop()
+        + isInBoundsX()
+        + isInBoundsY()
+        + limitTransAndScale()
+        + offsetBottom()
+        + offsetLeft()
+        + offsetRight()
+        + offsetTop()
+        + refresh()
+        + resetZoom()
+        + restrainViewPort()
+        + setChartDimens()
+        + setDragOffsetX()
+        + setDragOffsetY()
+        + setMaximumScaleX()
+        + setMaximumScaleY()
+        + setMinMaxScaleX()
+        + setMinMaxScaleY()
+        + setMinimumScaleX()
+        + setMinimumScaleY()
+        + setZoom()
+        + setZoom()
+        + setZoom()
+        + translate()
+        + translate()
+        + zoom()
+        + zoom()
+        + zoom()
+        + zoom()
+        + zoomIn()
+        + zoomIn()
+        + zoomOut()
+        + zoomOut()
+    }
+  }
+  
+
+  com.github.mikephil.charting.utils.EntryXComparator .up.|> java.util.Comparator
+  com.github.mikephil.charting.utils.FSize -up-|> com.github.mikephil.charting.utils.ObjectPool.Poolable
+  com.github.mikephil.charting.utils.Fill o-- com.github.mikephil.charting.utils.Fill.Type : mType
+  com.github.mikephil.charting.utils.Fill +-down- com.github.mikephil.charting.utils.Fill.Direction
+  com.github.mikephil.charting.utils.Fill +-down- com.github.mikephil.charting.utils.Fill.Type
+  com.github.mikephil.charting.utils.HorizontalViewPortHandler -up-|> com.github.mikephil.charting.utils.ViewPortHandler
+  com.github.mikephil.charting.utils.MPPointD -up-|> com.github.mikephil.charting.utils.ObjectPool.Poolable
+  com.github.mikephil.charting.utils.MPPointF -up-|> com.github.mikephil.charting.utils.ObjectPool.Poolable
+  com.github.mikephil.charting.utils.ObjectPool o-- T : modelObject
+  com.github.mikephil.charting.utils.ObjectPool +-down- com.github.mikephil.charting.utils.ObjectPool.Poolable
+  com.github.mikephil.charting.utils.Transformer o-- com.github.mikephil.charting.utils.ViewPortHandler : mViewPortHandler
+  com.github.mikephil.charting.utils.TransformerHorizontalBarChart -up-|> com.github.mikephil.charting.utils.Transformer
+
+
+right footer
+
+
+PlantUML diagram generated by SketchIt! (https://bitbucket.org/pmesmeur/sketch.it)
+For more information about this tool, please contact philippe.mesmeur@gmail.com
+endfooter
+
+@enduml

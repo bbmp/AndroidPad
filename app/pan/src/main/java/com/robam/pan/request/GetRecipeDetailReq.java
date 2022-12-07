@@ -1,0 +1,22 @@
+package com.robam.pan.request;
+
+import com.google.gson.Gson;
+
+public class GetRecipeDetailReq {
+    //菜谱id
+    private long cookbookId;
+    private String entranceCode;
+    private String needStepsInfo;
+
+
+    public GetRecipeDetailReq(long cookbookId, String entranceCode, String needStepsInfo) {
+        this.cookbookId = cookbookId;
+        this.entranceCode = entranceCode;
+        this.needStepsInfo = needStepsInfo;
+    }
+
+    @Override
+    public String toString() {
+        return new Gson().toJson(this, GetRecipeDetailReq.class);
+    }
+}

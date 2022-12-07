@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_88"
+    tools:ignore="MissingDefaultResource"
+    >
+
+    <ImageView
+        android:id="@+id/imgTab"
+        android:layout_width="@dimen/dp_28"
+        android:layout_height="@dimen/dp_28"
+        android:layout_marginTop="@dimen/dp_10"
+        android:scaleType="fitXY"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+
+    <TextView
+        android:id="@+id/txtTab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_30"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:text="@string/roki_app_name"
+        android:textColor="@drawable/roki_home_tab_text_color_selector"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imgTab"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

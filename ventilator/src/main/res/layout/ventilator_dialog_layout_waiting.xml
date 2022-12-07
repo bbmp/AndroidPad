@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <View
+        android:id="@+id/view_board"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/ventilator_waiting_bg"
+        app:layout_constraintWidth_percent="0.33"
+        app:layout_constraintHeight_percent="0.33"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <ImageView
+        android:id="@+id/iv_waiting"
+        android:layout_width="@dimen/dp_55"
+        android:layout_height="@dimen/dp_55"
+        android:src="@drawable/ventilator_progress"
+        app:layout_constraintLeft_toLeftOf="@id/view_board"
+        app:layout_constraintRight_toRightOf="@id/view_board"
+        app:layout_constraintTop_toTopOf="@id/view_board"
+        app:layout_constraintBottom_toTopOf="@id/tv_connect"
+        app:layout_constraintVertical_chainStyle="packed"/>
+
+    <TextView
+        android:id="@+id/tv_connect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_27"
+        android:textColor="@color/ventilator_white"
+        android:textSize="@dimen/sp_36"
+        android:text="@string/ventilator_connectting"
+        app:layout_constraintTop_toBottomOf="@id/iv_waiting"
+        app:layout_constraintLeft_toLeftOf="@id/view_board"
+        app:layout_constraintRight_toRightOf="@id/view_board"
+        app:layout_constraintBottom_toBottomOf="@id/view_board"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

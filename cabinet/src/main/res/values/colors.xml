@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="cabinet_transparent">#00000000</color>
+    <color name="cabinet_white">#FFFFFF</color>
+    <color name="cabinet_white35">#59FFFFFF</color>
+    <color name="cabinet_white25">#40FFFFFF</color>
+    <color name="cabinet_white70">#B3FFFFFF</color>
+    <color name="cabinet_mode70">#B3f6f6f6</color>
+    <color name="cabinet_mode">#fff6f6f6</color>
+    <color name="cabinet_lock">#ff72afff</color>
+    <color name="cabinet_white80">#CCffffff</color>
+    <color name="cabinet_color_f6">#f6f6f6</color>
+    <color name="cabinet_blur_overlay_color">#33ffffff</color>
+    <color name="cabinet_blur_border_color">#4dffffff</color>
+</resources>

@@ -1,0 +1,41 @@
+plugins {
+    id 'com.android.library'
+}
+apply from: '../../versions.gradle'
+android {
+    compileSdk build_versions.compile_sdk
+
+    defaultConfig {
+        minSdk build_versions.min_sdk
+        targetSdk build_versions.target_sdk
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    resourcePrefix "pan_"   //资源前缀的名字
+}
+
+dependencies {
+
+    api "androidx.appcompat:appcompat:$versions.appcompat"
+    api "com.google.android.material:material:$versions.material"
+    api "androidx.constraintlayout:constraintlayout:$versions.constraintlayout"
+    api "androidx.navigation:navigation-fragment:$versions.navigation_fragment"
+    api "androidx.navigation:navigation-ui:$versions.navigation_ui"
+    testImplementation 'junit:junit:4.13.2'
+    api project(path: ':app:common')
+    api project(path: ':app:MPChartLib')
+    api "com.github.CymChad:BaseRecyclerViewAdapterHelper:$versions.BaseRecyclerViewAdapterHelper"
+    api "pl.droidsonroids.gif:android-gif-drawable:$versions.gif_drawable"
+}

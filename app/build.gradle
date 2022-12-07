@@ -1,0 +1,111 @@
+plugins {
+    id 'com.android.application'
+}
+apply from: '../versions.gradle'
+android {
+    compileSdk build_versions.compile_sdk
+
+    defaultConfig {
+        applicationId "com.robam.androidpad"
+        minSdk build_versions.min_sdk
+        targetSdk build_versions.target_sdk
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        flavorDimensions "versionCode"
+    }
+    signingConfigs {
+        debug {
+            storeFile file('topband_system.keystore')
+            storePassword 'topband123'
+            keyAlias 'key'
+            keyPassword 'topband123'
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    //用来配置APP的不同版本
+    productFlavors {
+        //roki
+//        roki {
+////            修改包名
+//            applicationId "com.robam.roki2"
+////            修改app名字,string资源下不能包含"app_name"
+//            resValue "string", "app_name", "roki"
+////            修改AndroidManifest.xml部分字段(包含logo)
+//            manifestPlaceholders = [app_icon: "@mipmap/logo"]
+//        }
+        //ventilator
+        ventilator {
+            applicationId "com.robam.ventilator"
+            resValue "string", "app_name", "ventilator"
+//            修改AndroidManifest.xml部分字段(包含logo)
+            manifestPlaceholders = [app_icon: "@mipmap/logo"]
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
+    implementation "androidx.appcompat:appcompat:$versions.appcompat"
+    implementation "com.google.android.material:material:$versions.material"
+    implementation "androidx.constraintlayout:constraintlayout:$versions.constraintlayout"
+    implementation project(path: ':app:serialport')
+//    implementation project(path: ':app:foodmaterialdetect')
+    implementation project(path: ':app:common')
+    implementation project(path: ':app:MPChartLib')
+    implementation project(path: ':ventilator')  //烟机
+    implementation project(path: ':steam')       //一体机
+    implementation project(path: ':dishwasher')   //洗碗机
+    implementation project(path: ':cabinet')     //消毒柜
+    implementation project(path: ':app:stove')      //灶具
+    implementation project(path: ':app:pan') //锅
+//    implementation "android.arch.persistence.room:runtime:$versions.room"
+//    implementation "android.arch.persistence.room:compiler:$versions.room"
+//    implementation project(path: ':roki')
+    testImplementation 'junit:junit:4.13.2'
+    implementation "androidx.navigation:navigation-fragment:$versions.navigation_fragment"
+    implementation "androidx.navigation:navigation-ui:$versions.navigation_ui"
+    implementation "com.squareup.retrofit2:retrofit:$versions.retrofit"
+    implementation "com.squareup.retrofit2:converter-gson:$versions.converter_gson"
+    //Mqtt集成
+    implementation "org.eclipse.paho:org.eclipse.paho.client.mqttv3:$versions.org_eclipse_paho_client_mqttv3"
+    implementation "org.eclipse.paho:org.eclipse.paho.android.service:$versions.org_eclipse_paho_android_service"
+    //权限申请
+    implementation "com.github.tbruyelle:rxpermissions:$versions.rxpermissions"
+    //蓝牙
+    implementation "com.github.Jasonchenlijian:FastBle:$versions.FastBle"
+    implementation "io.reactivex.rxjava3:rxjava:$versions.rxjava"
+    implementation "io.reactivex.rxjava3:rxandroid:$versions.rxandroid"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$versions.lifecycle_livedata_ktx"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle_viewmodel_ktx"
+    //下拉刷新
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:$versions.swiperefreshlayout"
+    //banner
+    implementation "io.github.youth5201314:banner:$versions.banner"
+    //图片加载
+    implementation "com.github.bumptech.glide:glide:$versions.glide"
+    annotationProcessor "com.github.bumptech.glide:compiler:$versions.glide"
+    // 内存泄漏监测框架：https://github.com/square/leakcanary
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$versions.leakcanary"
+    //适配器
+    implementation "com.github.CymChad:BaseRecyclerViewAdapterHelper:$versions.BaseRecyclerViewAdapterHelper"
+    implementation "org.litepal.guolindev:core:$versions.litepal"
+    // 腾讯 MMKV：https://github.com/Tencent/MMKV
+    implementation "com.tencent:mmkv-static:$versions.mmkv"
+    //二维码
+    implementation "com.google.zxing:core:$versions.zxing_core"
+    implementation "androidx.multidex:multidex:$versions.multidex"
+    implementation "com.blankj:utilcodex:$versions.utilcodex"
+    implementation "pl.droidsonroids.gif:android-gif-drawable:$versions.gif_drawable"
+    implementation "com.iqiyi.xcrash:xcrash-android-lib:$versions.xcrash"
+}

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/select_stove_dialog"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/stove_ic_bg">
+
+    <TextView
+        android:id="@+id/tv_work_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_104"
+        android:text="@string/stove_select_stove_hint"
+        android:textColor="@color/stove_white"
+        android:textSize="@dimen/sp_48"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/view_left"
+        android:layout_width="@dimen/dp_174"
+        android:layout_height="@dimen/dp_174"
+        android:layout_marginTop="@dimen/dp_42"
+        android:layout_marginRight="@dimen/dp_200"
+        android:background="@drawable/stove_shape_stove_bg_selector"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/view_right"
+        app:layout_constraintTop_toBottomOf="@id/tv_work_content" />
+
+    <TextView
+        android:id="@+id/tv_left_stove"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/stove_left_stove"
+        android:textColor="@drawable/stove_text_color_selector"
+        android:textSize="@dimen/sp_32"
+        app:layout_constraintBottom_toTopOf="@id/tv_left_status"
+        app:layout_constraintLeft_toLeftOf="@id/view_left"
+        app:layout_constraintRight_toRightOf="@id/view_left"
+        app:layout_constraintTop_toTopOf="@id/view_left"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/tv_left_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/stove_stove_leisure"
+        android:textColor="@drawable/stove_text_color_selector"
+        android:textSize="@dimen/sp_24"
+        app:layout_constraintBottom_toBottomOf="@id/view_left"
+        app:layout_constraintLeft_toLeftOf="@id/view_left"
+        app:layout_constraintRight_toRightOf="@id/view_left"
+        app:layout_constraintTop_toBottomOf="@id/tv_left_stove" />
+
+    <TextView
+        android:id="@+id/tv_left_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_26"
+        android:text="@string/stove_close_fire_use"
+        android:textColor="@color/stove_white"
+        android:textSize="@dimen/sp_32"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="@id/view_left"
+        app:layout_constraintRight_toRightOf="@id/view_left"
+        app:layout_constraintTop_toBottomOf="@id/view_left" />
+
+    <View
+        android:id="@+id/view_right"
+        android:layout_width="@dimen/dp_174"
+        android:layout_height="@dimen/dp_174"
+        android:layout_marginTop="@dimen/dp_42"
+        android:background="@drawable/stove_shape_stove_bg_selector"
+        app:layout_constraintBottom_toBottomOf="@id/view_left"
+        app:layout_constraintLeft_toRightOf="@id/view_left"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_right_stove"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/stove_right_stove"
+        android:textColor="@drawable/stove_text_color_selector"
+        android:textSize="@dimen/sp_32"
+        app:layout_constraintBottom_toTopOf="@id/tv_right_status"
+        app:layout_constraintLeft_toLeftOf="@id/view_right"
+        app:layout_constraintRight_toRightOf="@id/view_right"
+        app:layout_constraintTop_toTopOf="@id/view_right"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/tv_right_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/stove_stove_leisure"
+        android:textColor="@drawable/stove_text_color_selector"
+        android:textSize="@dimen/sp_24"
+        app:layout_constraintBottom_toBottomOf="@id/view_right"
+        app:layout_constraintLeft_toLeftOf="@id/view_right"
+        app:layout_constraintRight_toRightOf="@id/view_right"
+        app:layout_constraintTop_toBottomOf="@id/tv_right_stove" />
+
+    <TextView
+        android:id="@+id/tv_right_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_26"
+        android:text="@string/stove_close_fire_use"
+        android:textColor="@color/stove_white"
+        android:textSize="@dimen/sp_32"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="@id/view_right"
+        app:layout_constraintRight_toRightOf="@id/view_right"
+        app:layout_constraintTop_toBottomOf="@id/view_right" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/steam_ic_bg_xingkong"
+    tools:context=".ui.activity.RecipeActivity">
+
+    <pl.droidsonroids.gif.GifImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/common_ic_bg"/>
+
+    <include
+        android:id="@+id/ll_title"
+        layout="@layout/steam_view_layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:visibility="invisible"
+        android:id="@+id/descaling_prompt_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/descaling_index_2"
+            android:text="2"
+            android:textColor="@color/steam_white"
+            android:textSize="@dimen/sp_50"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/descaling_text_prompt"
+            android:layout_marginBottom="@dimen/dp_42"
+            android:layout_height="@dimen/dp_60"
+            android:layout_width="@dimen/dp_60"/>
+
+        <TextView
+            android:id="@+id/descaling_index_1"
+            android:text="1"
+            android:textColor="@color/steam_white"
+            android:textSize="@dimen/sp_50"
+            android:gravity="center"
+            android:background="@drawable/steam_indicator_selected_blue"
+            app:layout_constraintRight_toLeftOf="@id/descaling_index_2"
+            android:layout_marginRight="@dimen/dp_54"
+            app:layout_constraintBottom_toTopOf="@id/descaling_text_prompt"
+            android:layout_marginBottom="@dimen/dp_42"
+            android:layout_height="@dimen/dp_60"
+            android:layout_width="@dimen/dp_60"/>
+
+        <TextView
+            android:id="@+id/descaling_index_3"
+            android:text="3"
+            android:textColor="@color/steam_white"
+            android:textSize="@dimen/sp_50"
+            app:layout_constraintLeft_toRightOf="@id/descaling_index_2"
+            android:layout_marginLeft="@dimen/dp_54"
+            app:layout_constraintBottom_toTopOf="@id/descaling_text_prompt"
+            android:layout_marginBottom="@dimen/dp_42"
+            android:layout_height="@dimen/dp_60"
+            android:layout_width="@dimen/dp_60"/>
+
+        <TextView
+            android:id="@+id/descaling_text_prompt"
+            android:text="@string/steam_step2_hint"
+            android:textColor="@color/steam_white"
+            android:textSize="@dimen/sp_48"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"/>
+
+        <TextView
+            android:id="@+id/btn_start"
+            android:layout_width="@dimen/dp_175"
+            android:layout_height="@dimen/dp_56"
+            android:background="@drawable/steam_shape_button_selected"
+            android:gravity="center"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/descaling_text_prompt"
+            android:layout_marginTop="@dimen/dp_42"
+            android:text="@string/steam_multi_confirm"
+            android:textAlignment="center"
+            android:textColor="@color/steam_white"
+            android:textSize="@dimen/sp_30" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/descaling_progress_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"
+        tools:layout_editor_absoluteX="5dp">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="@dimen/dp_10"
+            android:layout_height="@dimen/dp_10"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.23" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="@dimen/dp_10"
+            android:layout_height="@dimen/dp_10"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/steam_descaling"
+            android:textColor="@color/steam_white_65"
+            android:textSize="@dimen/sp_40"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/guideline"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/descaling_segment_prompt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:textColor="@color/steam_white"
+            android:textSize="@dimen/sp_48"
+            app:layout_constraintBottom_toTopOf="@id/guideline2"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            tools:text="第一阶段"/>
+
+        <ProgressBar
+            android:id="@+id/descaling_progress_1"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="@dimen/dp_174"
+            android:layout_height="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_32"
+            android:layout_marginRight="@dimen/dp_18"
+            android:progressDrawable="@drawable/steam_progress_2"
+            app:layout_constraintRight_toLeftOf="@id/descaling_progress_2"
+            app:layout_constraintTop_toBottomOf="@id/guideline2" />
+
+        <ProgressBar
+            android:id="@+id/descaling_progress_2"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="@dimen/dp_174"
+            android:layout_height="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_32"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:progressDrawable="@drawable/steam_progress_2"
+            app:layout_constraintTop_toBottomOf="@id/guideline2" />
+
+        <ProgressBar
+            android:id="@+id/descaling_progress_3"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="@dimen/dp_174"
+            android:layout_height="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_18"
+            android:layout_marginTop="@dimen/dp_32"
+            android:progressDrawable="@drawable/steam_progress_3"
+            app:layout_constraintLeft_toRightOf="@id/descaling_progress_2"
+            app:layout_constraintTop_toBottomOf="@id/guideline2">
+
+        </ProgressBar>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_1"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5"
+        android:layout_height="@dimen/dp_1"
+        android:layout_width="match_parent"/>
+
+    <TextView
+        android:id="@+id/aux_work_model_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_100"
+        android:textColor="@color/steam_white"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="22min"/>
+
+    <TextView
+        android:id="@+id/aux_work_model_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_40"
+        android:textColor="@color/common_white65"
+        app:layout_constraintRight_toLeftOf="@id/aux_work_model_time"
+        android:layout_marginRight="@dimen/dp_104"
+        android:layout_marginTop="@dimen/dp_20"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="高温蒸"/>
+
+    <TextView
+        android:id="@+id/aux_work_model_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_40"
+        android:layout_marginTop="@dimen/dp_20"
+        android:textColor="@color/common_white65"
+        app:layout_constraintLeft_toRightOf="@id/aux_work_model_time"
+        android:layout_marginLeft="@dimen/dp_104"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="20C"/>
+
+    <ImageView
+        android:id="@+id/aux_work_model_pause"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
+        android:visibility="visible"
+        android:src="@drawable/steam_work_stop"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/aux_work_model_temp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <ImageView
+        android:id="@+id/aux_work_model_restart"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
+        android:visibility="invisible"
+        android:src="@drawable/steam_ic_start_blue"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/aux_work_model_temp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.activity.DateSettingActivity">
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/iv_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/common_ic_bg">
+
+    </pl.droidsonroids.gif.GifImageView>
+    <include
+        android:id="@+id/ll_title"
+        layout="@layout/ventilator_view_layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/ll_border"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_88"
+        android:layout_marginStart="@dimen/dp_88"
+        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginEnd="@dimen/dp_88"
+        android:background="@drawable/ventilator_shape_border_bg"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/dp_64"
+        android:paddingEnd="@dimen/dp_64"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_title">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ventilator_auto_set"
+            android:textColor="@color/ventilator_white"
+            android:textSize="@dimen/sp_34" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <com.robam.common.ui.view.SwitchButton
+            android:id="@+id/sb_auto_set"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_10"
+            android:checked="true" />
+    </LinearLayout>
+
+
+    <View
+        android:id="@+id/view_board"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="@dimen/dp_40"
+        android:background="@drawable/ventilator_shape_border_bg"
+        app:layout_constraintTop_toTopOf="@id/rv_time_hour"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/rv_time_hour" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_time_hour"
+        android:layout_width="@dimen/dp_220"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/btn_save"
+        app:layout_constraintRight_toLeftOf="@id/tv_colon"
+        app:layout_constraintTop_toBottomOf="@id/ll_title"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:itemCount="3"
+        tools:listitem="@layout/ventilator_item_layout_string" />
+
+    <TextView
+        android:id="@+id/tv_colon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=":"
+        android:textColor="@color/ventilator_white"
+        android:textSize="@dimen/sp_40"
+        app:layout_constraintBottom_toBottomOf="@id/view_board"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/view_board" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_time_minute"
+        android:layout_width="@dimen/dp_220"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/rv_time_hour"
+        app:layout_constraintLeft_toRightOf="@id/tv_colon"
+        app:layout_constraintTop_toTopOf="@id/rv_time_hour"
+        tools:itemCount="3"
+        tools:listitem="@layout/ventilator_item_layout_string" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_save"
+        android:layout_width="@dimen/dp_175"
+        android:layout_height="@dimen/dp_56"
+        android:layout_marginRight="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_24"
+        android:background="@drawable/ventilator_shape_button_bg_ok"
+        android:gravity="center"
+        android:text="@string/ventilator_save_set"
+        android:textColor="@color/ventilator_white"
+        android:textSize="@dimen/sp_30"
+        app:layout_constraintTop_toBottomOf="@id/rv_time_hour"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/ventilator_group5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="view_board,btn_save,rv_time_hour,rv_time_minute,tv_colon" />
+</androidx.constraintlayout.widget.ConstraintLayout>

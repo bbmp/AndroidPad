@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.robam.stove">
+
+    <application>
+        <activity
+            android:name=".ui.activity.CurveSelectedActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".ui.activity.CurveRestoreActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.RecipeCookActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.RecipeDetailActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.TimeSelectActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.ModeSelectActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.CurveSaveActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.CurveCreateActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.CurveActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.RecipeActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.activity.MainActivity"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape" />
+    </application>
+
+</manifest>

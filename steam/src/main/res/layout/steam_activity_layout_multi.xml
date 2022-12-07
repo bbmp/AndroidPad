@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/steam_ic_bg_duoduan"
+    tools:context=".ui.activity.RecipeActivity">
+
+    <include
+        android:id="@+id/ll_title"
+        layout="@layout/steam_view_layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+
+    <LinearLayout
+        android:id="@+id/multi_opt"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/dp_20"
+        android:paddingBottom="@dimen/dp_30"
+        app:layout_constraintTop_toBottomOf="@id/ll_title"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        app:layout_constraintBottom_toTopOf="@id/multi_bottom">
+        <View
+            android:layout_width="@dimen/dp_1"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/dp_76"
+            />
+       <include
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:layout_weight="1"
+          layout="@layout/steam_activity_layout_multi_opt_item"
+          />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2"
+            />
+
+        <include
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            layout="@layout/steam_activity_layout_multi_opt_item"
+            />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2"
+            />
+
+        <include
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            layout="@layout/steam_activity_layout_multi_opt_item"
+            />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2"
+            />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/multi_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_104"
+        android:background="@color/steam_color_foot"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:gravity="center_vertical"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:paddingLeft="@dimen/dp_96"
+        android:paddingRight="@dimen/dp_40"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/steam_total_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginEnd="@dimen/dp_40"
+            android:layout_centerVertical="true"
+            android:text="@string/steam_total_duration"
+            android:textColor="@color/steam_white"
+            android:textSize="@dimen/sp_24" />
+
+
+        <TextView
+            android:id="@+id/steam_total_duration_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/steam_total_duration"
+            android:textColor="@color/steam_white"
+            android:textSize="@dimen/sp_54"
+            tools:text="22min" />
+
+
+        <TextView
+            android:id="@+id/btn_start"
+            android:layout_width="@dimen/dp_175"
+            android:layout_height="@dimen/dp_56"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/steam_shape_button_unselected"
+            android:gravity="center"
+            android:text="@string/steam_start"
+            android:textAlignment="center"
+            android:textColor="@color/steam_white_72"
+            android:textSize="@dimen/sp_30" />
+
+    </RelativeLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

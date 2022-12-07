@@ -1,0 +1,60 @@
+[
+  {
+    "backgroundImg": "stove_bg_smart",
+    "funtionCode": 1,
+    "funtionName": "智能\n烹饪",
+    "into": "com.robam.stove.ui.activity.ModeSelectActivity",
+    "mode": [
+      {
+      "code": 1,
+      "name": "炖煮",
+      "defTime": 60,
+      "minTime": 1,
+      "maxTime" : 180
+      },
+      {
+        "code": 2,
+        "name": "清蒸",
+        "defTime": 20,
+        "minTime": 1,
+        "maxTime" : 90
+      },
+      {
+        "code": 3,
+        "name": "煎炸",
+        "defTemp": 2,
+        "minTemp": 1,
+        "maxTemp" : 3
+      }
+    ]
+  },
+  {
+    "backgroundImg": "stove_bg_curve",
+    "funtionCode": 2,
+    "funtionName": "烹饪\n曲线",
+    "into": "com.robam.stove.ui.activity.CurveActivity",
+    "mode": []
+  },
+  {
+    "backgroundImg": "stove_bg_recipe",
+    "funtionCode": 3,
+    "funtionName": "菜谱",
+    "into": "com.robam.stove.ui.activity.RecipeActivity",
+    "mode": []
+  },
+  {
+    "backgroundImg": "stove_bg_time",
+    "funtionCode": 4,
+    "funtionName": "定时",
+    "into": "com.robam.stove.ui.activity.TimeSelectActivity",
+    "mode": [
+      {
+        "code": 1,
+        "name": "定时",
+        "defTime": 15,
+        "minTime": 1,
+        "maxTime" : 180
+      }
+    ]
+  }
+]

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/ventilator_shape_border_bg"
+    android:orientation="vertical"
+    android:paddingStart="@dimen/dp_64"
+    android:paddingTop="@dimen/dp_20"
+    android:paddingEnd="@dimen/dp_64"
+    android:paddingBottom="@dimen/dp_20"
+    tools:context=".ui.activity.SmartSettingActivity">
+
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_mode"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:text="假日模式"
+            android:textColor="@color/ventilator_white"
+            android:textSize="@dimen/sp_34" />
+
+
+        <com.robam.common.ui.view.SwitchButton
+            android:id="@+id/sb_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/ll_mode_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_mode_desc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_20"
+            android:layout_weight="1"
+            android:text="关联产品:1111 \n7天未使用油烟机,自动开启换气"
+            android:textColor="@color/ventilator_white_50"
+            android:textSize="@dimen/sp_34" />
+
+        <com.robam.common.ui.view.SwitchButton
+            android:id="@+id/sb_mode_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:checked="false" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.appcompat.widget.LinearLayoutCompat>

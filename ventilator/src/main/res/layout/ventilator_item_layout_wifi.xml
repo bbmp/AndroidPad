@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_112"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/ventilator_shape_border_bg"
+    android:layout_margin="@dimen/dp_8">
+
+    <ImageView
+        android:id="@+id/iv_select"
+        android:src="@drawable/ventilator_icon_check"
+        android:layout_width="@dimen/dp_38"
+        android:layout_height="@dimen/dp_38"
+        android:layout_marginStart="@dimen/dp_12"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_wifi_name"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_34"
+        android:textColor="@color/ventilator_white"
+        android:maxLines="1"
+        android:ellipsize="end"
+        tools:text="物联研究院"
+        app:layout_constraintLeft_toRightOf="@id/iv_select"
+        app:layout_constraintRight_toLeftOf="@id/iv_lock"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <ImageView
+        android:id="@+id/iv_lock"
+        android:src="@drawable/ventilator_ic_lock"
+        android:layout_width="@dimen/dp_38"
+        android:layout_height="@dimen/dp_38"
+        android:visibility="invisible"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/iv_wifi"/>
+    <ImageView
+        android:id="@+id/iv_wifi"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/ventilator_net_wifi"
+        android:layout_marginStart="@dimen/dp_3"
+        android:layout_width="@dimen/dp_38"
+        android:layout_height="@dimen/dp_38"
+        android:layout_marginEnd="@dimen/dp_58"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

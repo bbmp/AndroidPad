@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.activity.AboutActivity">
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/iv_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/common_ic_bg">
+
+    </pl.droidsonroids.gif.GifImageView>
+    <include
+        android:id="@+id/ll_title"
+        layout="@layout/ventilator_view_layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/ventilator_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <TextView
+        android:id="@+id/tv_model"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tv_sys"
+        app:layout_constraintLeft_toLeftOf="@id/tv_sys"
+        android:text="@string/ventilator_product_model"
+        android:textSize="@dimen/sp_34"
+        android:textColor="@color/ventilator_white"
+        app:layout_constraintVertical_chainStyle="packed"/>
+    <TextView
+        android:id="@+id/tv_sys"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_40"
+        android:layout_marginRight="@dimen/dp_60"
+        app:layout_constraintTop_toBottomOf="@id/tv_model"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="@id/ventilator_guideline"
+        android:text="@string/ventilator_sys_version"
+        android:textSize="@dimen/sp_34"
+        android:textColor="@color/ventilator_white"/>
+
+
+    <TextView
+        android:id="@+id/tv_model_v"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_60"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tv_sys_v"
+        app:layout_constraintLeft_toLeftOf="@id/ventilator_guideline"
+        android:text=""
+        android:textSize="@dimen/sp_34"
+        android:textColor="@color/ventilator_white"
+        app:layout_constraintVertical_chainStyle="packed"/>
+    <TextView
+        android:id="@+id/tv_sys_v"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_60"
+        android:layout_marginTop="@dimen/dp_40"
+        app:layout_constraintTop_toBottomOf="@id/tv_model_v"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/ventilator_guideline"
+        android:text="V1.0"
+        android:textSize="@dimen/sp_34"
+        android:textColor="@color/ventilator_white"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

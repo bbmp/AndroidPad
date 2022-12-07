@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/steam_ic_bg"
+    tools:context=".ui.activity.CurveRestoreActivity">
+
+    <include
+        android:id="@+id/ll_title"
+        layout="@layout/steam_view_layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/cook_chart"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/dp_30"
+        android:layout_marginBottom="@dimen/dp_60"
+        android:layout_marginTop="@dimen/dp_100"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/stove_guideline"
+        app:layout_constraintTop_toBottomOf="@id/ll_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:keepScreenOn="true" />
+
+    <TextView
+        android:id="@+id/tv_fire"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_100"
+        android:textSize="@dimen/sp_40"
+        tools:text=""
+        android:textColor="@color/steam_white"
+        app:layout_constraintLeft_toLeftOf="@id/stove_guideline"
+        app:layout_constraintTop_toBottomOf="@id/ll_title"
+        app:layout_constraintBottom_toTopOf="@id/tv_time"
+        app:layout_constraintVertical_chainStyle="packed"/>
+    <TextView
+        android:id="@+id/tv_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/steam_white"
+        android:textSize="@dimen/sp_40"
+        android:layout_marginLeft="@dimen/dp_40"
+        tools:text=""
+        app:layout_constraintLeft_toRightOf="@id/tv_fire"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_fire"/>
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_60"
+        android:textSize="@dimen/sp_100"
+        tools:text=""
+        android:textColor="@color/steam_white"
+        app:layout_constraintLeft_toLeftOf="@id/tv_fire"
+        app:layout_constraintTop_toBottomOf="@id/tv_fire"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/steam_white"
+        android:textSize="@dimen/sp_60"
+        android:text="min"
+        app:layout_constraintLeft_toRightOf="@id/tv_time"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_time"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/stove_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

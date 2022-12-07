@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <!--主题-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+
+        >
+        <com.youth.banner.Banner
+            android:id="@+id/br_home"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_131"
+            app:banner_radius="@dimen/dp_10"
+            app:banner_indicator_selected_color="#ff61acff"
+            app:banner_indicator_normal_color="#80999999"
+            app:banner_indicator_height="@dimen/dp_2"
+            app:banner_indicator_normal_width="@dimen/dp_8"
+            app:banner_indicator_selected_width="@dimen/dp_8"
+            android:layout_marginHorizontal="@dimen/dp_20"
+            app:banner_indicator_space="@dimen/dp_2"/>
+
+
+        <include layout="@layout/roki_layout_device_recipe_list" />
+    </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/rl_select_theme_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_48"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/iv_selected_topics"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="@dimen/dp_24"
+            android:text="精选专题"
+            android:textColor="@color/roki_text_color_device"
+            android:textSize="@dimen/sp_24"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_theme_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/iv_selected_topics"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/dp_21"
+            android:gravity="center"
+            android:text="全部"
+            android:textColor="#ff61acff"
+            android:textSize="@dimen/sp_16" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_selected_topics"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_115"
+            android:layout_below="@id/iv_selected_topics"
+            android:layout_marginTop="@dimen/dp_20"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/roki_item_selected_topic" />
+    </RelativeLayout>
+
+
+
+    <RelativeLayout
+        android:id="@+id/rl_last_week_top_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_48"
+        android:visibility="visible"
+        >
+
+        <TextView
+            android:id="@+id/tv_last_week_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="@dimen/dp_24"
+            android:text="上周榜单"
+            android:textColor="@color/roki_text_color_device"
+            android:textSize="@dimen/sp_24"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_week_top_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/tv_last_week_top"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:gravity="center"
+            android:layout_marginEnd="@dimen/dp_21"
+            android:text="更多"
+            android:textColor="#ff61acff"
+            android:textSize="@dimen/sp_16" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_week_topics"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_188"
+            android:layout_below="@id/tv_last_week_top"
+            android:layout_marginTop="@dimen/dp_20"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/roki_item_lastweek_topic" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_guess_you_like"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_48"
+        android:layout_marginBottom="@dimen/dp_12"
+        >
+        <TextView
+            android:id="@+id/tv_guess_you_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_24"
+            android:text="猜你喜欢"
+            android:textSize="@dimen/sp_24"
+            android:textStyle="bold"
+            android:textColor="@color/roki_text_color_device"/>
+        <TextView
+            android:id="@+id/tv_more_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignBottom="@id/tv_guess_you_like"
+            android:gravity="center"
+            android:layout_marginEnd="@dimen/dp_21"
+            android:text="全部"
+            android:textSize="@dimen/sp_16"
+            android:textColor="#ff61acff"/>
+    </RelativeLayout>
+
+
+</LinearLayout>
+
+

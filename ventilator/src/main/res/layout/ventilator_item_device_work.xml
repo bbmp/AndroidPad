@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_mode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/ventilator_white"
+        android:textSize="@dimen/sp_50"
+        app:layout_constraintBottom_toTopOf="@id/tv_time"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:gravity="center"
+        android:textColor="@color/ventilator_white"
+        android:textSize="@dimen/sp_40"
+        app:layout_constraintBottom_toTopOf="@id/btn_work"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_mode" />
+
+    <TextView
+        android:id="@+id/btn_work"
+        android:layout_width="@dimen/dp_175"
+        android:layout_height="@dimen/dp_56"
+        android:layout_marginTop="@dimen/dp_20"
+        android:background="@drawable/ventilator_shape_button_bg_ok"
+        android:gravity="center"
+        android:textColor="@color/ventilator_white"
+        android:textSize="@dimen/sp_30"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_time" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/ventilator_guideline11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <TextView
+        android:id="@+id/tv_left_gear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/ventilator_white"
+        android:textSize="@dimen/sp_50"
+        app:layout_constraintBottom_toTopOf="@id/tv_left_stove"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/ventilator_guideline11"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/tv_left_stove"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:gravity="center"
+        android:textColor="@color/ventilator_white"
+        android:textSize="@dimen/sp_40"
+        android:text="@string/ventilator_left_stove"
+        app:layout_constraintBottom_toTopOf="@id/btn_left_close"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/ventilator_guideline11"
+        app:layout_constraintTop_toBottomOf="@id/tv_left_gear" />
+
+    <TextView
+        android:id="@+id/btn_left_close"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_56"
+        android:layout_marginTop="@dimen/dp_20"
+        android:paddingHorizontal="@dimen/dp_20"
+        android:background="@drawable/ventilator_shape_button_unselected"
+        android:gravity="center"
+        android:textColor="@color/ventilator_white_50"
+        android:textSize="@dimen/sp_30"
+        android:text="@string/ventilator_close_fire"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/ventilator_guideline11"
+        app:layout_constraintTop_toBottomOf="@id/tv_left_stove" />
+
+    <TextView
+        android:id="@+id/tv_right_gear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/ventilator_white"
+        android:textSize="@dimen/sp_50"
+        app:layout_constraintBottom_toTopOf="@id/tv_right_stove"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/ventilator_guideline11"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/tv_right_stove"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:gravity="center"
+        android:textColor="@color/ventilator_white"
+        android:textSize="@dimen/sp_40"
+        android:text="@string/ventilator_right_stove"
+        app:layout_constraintBottom_toTopOf="@id/btn_right_close"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/ventilator_guideline11"
+        app:layout_constraintTop_toBottomOf="@id/tv_right_gear" />
+
+    <TextView
+        android:id="@+id/btn_right_close"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_56"
+        android:layout_marginTop="@dimen/dp_20"
+        android:paddingHorizontal="@dimen/dp_20"
+        android:background="@drawable/ventilator_shape_button_unselected"
+        android:gravity="center"
+        android:textColor="@color/ventilator_white_50"
+        android:textSize="@dimen/sp_30"
+        android:text="@string/ventilator_close_fire"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/ventilator_guideline11"
+        app:layout_constraintTop_toBottomOf="@id/tv_right_stove" />
+<!--    其他设备-->
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/ventilator_group6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="tv_mode,tv_time,btn_work" />
+<!--灶具-->
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/ventilator_group7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="tv_left_gear,tv_left_stove,btn_left_close,tv_right_gear,tv_right_stove,btn_right_close" />
+</androidx.constraintlayout.widget.ConstraintLayout>

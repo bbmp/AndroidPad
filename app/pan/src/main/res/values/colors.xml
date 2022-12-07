@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="pan_transparent">#00000000</color>
+    <color name="pan_white">#FFFFFF</color>
+    <color name="pan_white35">#59FFFFFF</color>
+    <color name="pan_white25">#40FFFFFF</color>
+    <color name="pan_mode">#fff6f6f6</color>
+    <color name="pan_white_50">#80ffffff</color>
+    <color name="pan_white_20">#33ffffff</color>
+    <color name="pan_white_40">#66ffffff</color>
+    <color name="pan_step">#72AFFF</color>
+    <color name="pan_chart">#FF3D00</color>
+    <color name="pan_blur_overlay_color">#33ffffff</color>
+    <color name="pan_blur_border_color">#4dffffff</color>
+</resources>

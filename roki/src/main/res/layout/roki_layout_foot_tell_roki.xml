@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/load_more_loading_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ProgressBar
+            android:id="@+id/loading_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_marginRight="@dimen/dp_4"
+            android:indeterminateDrawable="@drawable/brvah_sample_footer_loading_progress"/>
+
+        <TextView
+            android:id="@+id/loading_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:text="加载中......"
+            android:textColor="@color/roki_text_color_touch_retry"
+            android:textSize="@dimen/sp_12"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_10"/>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/load_more_load_fail_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+
+        <TextView
+            android:id="@+id/tv_prompt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/roki_text_color_touch_retry"
+            android:textSize="@dimen/sp_12"
+            android:text="加载失败"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_10"/>
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/load_more_load_complete_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="加载更多"
+            android:textColor="@color/roki_text_color_touch_retry"
+            android:textSize="@dimen/sp_12"/>
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/load_more_load_end_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_theme_tell_roki"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="我是有底线的~"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/roki_text_color_touch_retry"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_10"/>
+    </FrameLayout>
+</FrameLayout>

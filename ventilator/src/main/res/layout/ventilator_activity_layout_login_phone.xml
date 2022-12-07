@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.activity.LoginPhoneActivity">
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/iv_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/common_ic_bg">
+
+    </pl.droidsonroids.gif.GifImageView>
+    <include
+        android:id="@+id/ll_title"
+        layout="@layout/ventilator_view_layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/ventilator_guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.3" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/ventilator_guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.7" />
+
+
+    <TextView
+        android:id="@+id/tv_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/ll_title"
+        app:layout_constraintBottom_toTopOf="@id/tv_verifycode"
+        app:layout_constraintLeft_toLeftOf="@id/ventilator_guideline2"
+        android:text="+86"
+        android:textSize="@dimen/sp_32"
+        android:textColor="@color/ventilator_white"
+        app:layout_constraintVertical_chainStyle="packed"/>
+    <com.robam.common.ui.view.ClearEditText
+        android:id="@+id/et_phone"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:maxLength="11"
+        app:layout_constraintLeft_toLeftOf="@id/et_verifycode"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_phone"
+        app:layout_constraintRight_toRightOf="@id/ventilator_guideline3"
+        android:textSize="@dimen/sp_32"
+        android:inputType="phone"
+        android:textColor="@color/ventilator_white"
+        android:textColorHint="@color/ventilator_white_20"
+        android:hint="@string/ventilator_input_phone_hint" />
+    <TextView
+        android:id="@+id/tv_verifycode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_54"
+        app:layout_constraintTop_toBottomOf="@id/tv_phone"
+        app:layout_constraintLeft_toLeftOf="@id/ventilator_guideline2"
+        app:layout_constraintBottom_toTopOf="@id/bt_login"
+        android:text="@string/ventilator_verifycode"
+        android:textSize="@dimen/sp_32"
+        android:textColor="@color/ventilator_white"/>
+
+    <com.robam.common.ui.view.ClearEditText
+        android:id="@+id/et_verifycode"
+        android:layout_width="@dimen/dp_210"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_32"
+        android:layout_marginLeft="@dimen/dp_32"
+        android:textColor="@color/ventilator_white"
+        android:hint="@string/ventilator_input_verifycode_hint"
+        android:inputType="number"
+        android:textColorHint="@color/ventilator_white_20"
+        app:layout_constraintLeft_toRightOf="@id/tv_verifycode"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_verifycode"/>
+    <com.robam.common.ui.view.MCountdownView
+        android:id="@+id/tv_getverifycode"
+        android:layout_width="0dp"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@id/et_verifycode"
+        app:layout_constraintRight_toRightOf="@id/ventilator_guideline3"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_verifycode"
+        android:textSize="@dimen/sp_32"
+        android:textColor="@color/ventilator_login"
+        android:text="@string/ventilator_get_verifycode"/>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/bt_login"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_56"
+        android:layout_marginTop="@dimen/dp_47"
+        app:layout_constraintTop_toBottomOf="@id/tv_verifycode"
+        app:layout_constraintLeft_toLeftOf="@id/ventilator_guideline2"
+        app:layout_constraintRight_toRightOf="@id/ventilator_guideline3"
+        app:layout_constraintBottom_toTopOf="@id/tv_login_qrcode"
+        android:text="@string/ventilator_login"
+        android:gravity="center"
+        android:textSize="@dimen/sp_30"
+        android:textColor="@color/ventilator_white"
+        android:background="@drawable/ventilator_shape_button_ok_bg"/>
+
+    <TextView
+        android:id="@+id/tv_login_qrcode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_30"
+        app:layout_constraintTop_toBottomOf="@id/bt_login"
+        app:layout_constraintLeft_toLeftOf="@id/ventilator_guideline2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:textColor="@color/ventilator_login"
+        android:textSize="@dimen/sp_32"
+        android:text="@string/ventilator_login_qrcode"/>
+
+    <TextView
+        android:id="@+id/tv_login_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/dp_10"
+        app:layout_constraintRight_toRightOf="@id/ventilator_guideline3"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_login_qrcode"
+        android:textColor="@color/ventilator_login"
+        android:textSize="@dimen/sp_32"
+        android:text="@string/ventilator_login_password"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

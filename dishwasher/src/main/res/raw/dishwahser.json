@@ -1,0 +1,217 @@
+[
+  {
+    "backgroundImg": "dishwasher_background_znx",
+    "code": 5,
+    "name": "智能洗",
+    "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
+    "desc" : "自动识别匹配餐具脏污程度进行清洗",
+    "time": 6000,
+    "temp": 70,
+    "auxCode": 0,
+    "auxList": [
+      {
+
+        "code": 6,
+        "name": "加强除菌",
+        "time": 6900
+      },
+      {
+        "code": 8,
+        "name": "长效净存",
+        "time": 6600
+      }
+    ]
+  },
+  {
+    "backgroundImg": "dishwasher_background_qlx",
+    "code": 1,
+    "name": "强力洗",
+    "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
+    "desc" : "清洗重度脏污餐具、残渣干结餐具",
+    "time": 9000,
+    "temp": 75,
+    "auxCode": 0,
+    "auxList": [
+      {
+        "code": 1,
+        "name": "锅具强洗",
+        "time": 11100
+      },
+      {
+        "code": 6,
+        "name": "加强除菌",
+        "time": 9900
+      },
+      {
+        "code": 8,
+        "name": "长效净存",
+        "time": 9600
+      },
+      {
+        "code": 3,
+        "name": "下层洗",
+        "time": 5940
+      }
+    ]
+  },
+  {
+    "backgroundImg": "dishwasher_background_ksx",
+    "code": 4,
+    "name": "快速洗",
+    "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
+    "desc" : "清洗轻度脏污餐具，无需干燥",
+    "time": 2100,
+    "temp": 50,
+    "auxCode": 0,
+    "auxList": [
+      {
+        "code": 6,
+        "name": "加强除菌",
+        "time": 3780
+      },
+      {
+        "code": 8,
+        "name": "长效净存",
+        "time": 3480
+      }
+    ]
+  },
+  {
+    "backgroundImg": "dishwasher_background_rcx",
+    "code": 2,
+    "name": "日常洗",
+    "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
+    "desc" : "清洗中度脏污餐具",
+    "time": 5880,
+    "temp": 72,
+    "auxCode": 0,
+    "auxList": [
+      {
+        "code": 1,
+        "name": "锅具强洗",
+        "time": 7980
+      },
+      {
+        "code": 6,
+        "name": "加强除菌",
+        "time": 6780
+      },
+      {
+        "code": 8,
+        "name": "长效净存",
+        "time": 6480
+      },
+      {
+        "code": 3,
+        "name": "下层洗",
+        "time": 4500
+      }
+    ]
+  },
+  {
+    "backgroundImg": "dishwasher_background_jnx",
+    "code": 3,
+    "name": "节能洗",
+    "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
+    "desc" : "清洗未干结的中度脏污餐具",
+    "time": 14280,
+    "temp": 50,
+    "auxCode": 0,
+    "auxList": [
+      {
+        "code": 1,
+        "name": "锅具强洗",
+        "time": 16080
+      },
+      {
+        "code": 6,
+        "name": "加强除菌",
+        "time": 15180
+      },
+      {
+        "code": 8,
+        "name": "长效净存",
+        "time": 14880
+      },
+      {
+        "code": 3,
+        "name": "下层洗",
+        "time": 6900
+      }
+    ]
+  },
+  {
+    "backgroundImg": "dishwasher_background_jlx",
+    "code": 6,
+    "name": "晶亮洗",
+    "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
+    "desc" : "清洗精致易碎、轻度脏污餐具",
+    "time": 5520,
+    "temp": 50,
+    "auxCode": 0,
+    "auxList": [
+      {
+        "code": 8,
+        "name": "长效净存",
+        "time": 6120
+      },
+      {
+        "code": 3,
+        "name": "下层洗",
+        "time": 4260
+      }
+    ]
+  },
+  {
+    "backgroundImg": "dishwasher_background_hyx",
+    "code": 14,
+    "name": "护婴洗",
+    "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
+    "desc" : "清洗需要持续高温除菌餐具",
+    "time": 7200,
+    "temp": 72,
+    "auxCode": 0,
+    "auxList": [
+      {
+        "code": 1,
+        "name": "锅具强洗",
+        "time": 9300
+      },
+      {
+        "code": 6,
+        "name": "加强除菌",
+        "time": 8100
+      },
+      {
+        "code": 8,
+        "name": "长效净存",
+        "time": 7800
+      },
+      {
+        "code": 3,
+        "name": "下层洗",
+        "time": 5520
+      }
+    ]
+  },
+  {
+    "backgroundImg": "dishwasher_background_zqj",
+    "code": 15,
+    "name": "自清洁",
+    "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
+    "desc" : "洗碗机内腔的清洁",
+    "time": 5040,
+    "temp": 65,
+    "auxCode": 0
+  },
+  {
+    "backgroundImg": "dishwasher_background_hyjc",
+    "code": 9,
+    "name": "护婴\n净存",
+    "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
+    "desc" : "餐具在洗碗机内部的储存",
+    "time": 432000,
+    "temp": 0,
+    "auxCode": 0
+  }
+]

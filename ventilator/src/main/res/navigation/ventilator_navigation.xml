@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ventilator_navigation"
+    app:startDestination="@+id/welcomepage"
+    tools:ignore="ResourceName">
+<!--主入口一般会有welcome-->
+    <fragment
+        android:id="@+id/welcomepage"
+        android:name="com.robam.ventilator.ui.pages.WelcomePage"
+        android:label="@string/ventilator_app_name"
+        tools:layout="@layout/ventilator_page_layout_welcome">
+
+    </fragment>
+
+</navigation>

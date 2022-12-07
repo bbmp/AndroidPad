@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/multi_item_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:padding="@dimen/dp_2"
+    tools:context=".ui.activity.RecipeActivity">
+
+    <View
+        android:background="@drawable/steam_ic_multi_item_bg2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+
+    <ImageView
+        android:id="@+id/multi_item_del"
+        android:src="@drawable/steam_ic_multi_del"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:visibility="invisible"
+        android:layout_width="@dimen/dp_56"
+        android:layout_height="@dimen/dp_56"/>
+
+    <TextView
+        android:id="@+id/multi_item_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_28"
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginLeft="@dimen/dp_24"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/steam_mode_d9"
+        tools:text="一段"/>
+
+    <ImageView
+        android:visibility="invisible"
+        android:id="@+id/multi_item_add"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/steam_ic_multi_item_add"/>
+
+    <TextView
+        android:id="@+id/multi_item_temperature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:textSize="@dimen/sp_40"
+        android:textColor="@color/steam_white"
+        tools:text="100C"/>
+
+
+    <TextView
+        android:id="@+id/multi_item_model"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_40"
+        android:layout_marginBottom="@dimen/dp_10"
+        app:layout_constraintBottom_toTopOf="@id/multi_item_temperature"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:textColor="@color/steam_white"
+        tools:text="高温蒸"/>
+
+
+    <TextView
+        android:id="@+id/multi_item_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_40"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_10"
+        app:layout_constraintTop_toBottomOf="@id/multi_item_temperature"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:textColor="@color/steam_white"
+        tools:text="20min"/>
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
