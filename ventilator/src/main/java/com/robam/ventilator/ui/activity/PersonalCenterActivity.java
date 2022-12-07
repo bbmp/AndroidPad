@@ -27,6 +27,7 @@ import com.robam.common.utils.ImageUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.device.subdevice.Pan;
 import com.robam.common.device.subdevice.Stove;
+import com.robam.common.utils.ToastUtils;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
 import com.robam.common.bean.AccountInfo;
@@ -157,6 +158,7 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
                 @Override
                 public void onFaild(String err) {
                     LogUtils.e("getDevices" + err);
+                    ToastUtils.showShort(getApplicationContext(), R.string.ventilator_net_err);
                 }
             });
         } else {

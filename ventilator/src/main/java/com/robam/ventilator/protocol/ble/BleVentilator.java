@@ -116,7 +116,7 @@ public class BleVentilator {
 
     //连接设备
     public static void connect(String model, final BleDevice bleDevice) {
-        LogUtils.e("connect " + bleDevice.getMac() + " " + bleDevice.getName());
+        LogUtils.e("connect " + bleDevice.getMac() + " " + bleDevice.getName() + " rssi " + bleDevice.getRssi());
         BlueToothManager.connect(bleDevice, new BleGattCallback() {
             @Override
             public void onStartConnect() {
@@ -199,7 +199,7 @@ public class BleVentilator {
                 return;
             }
         }
-        //已经配过锅或灶
+        //已经配过锅或灶,换了锅或灶
         for (Device device: AccountInfo.getInstance().deviceList) {
             if (device instanceof Pan && IDeviceType.RZNG.equals(model) && !TextUtils.isEmpty(device.guid)) {
                 LogUtils.e("pan guid " + device.guid);

@@ -15,15 +15,15 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/iv_qrcode"
-        android:layout_width="@dimen/dp_194"
-        android:layout_height="@dimen/dp_194"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_title"
-        app:layout_constraintBottom_toTopOf="@id/tv_work_content"
-        app:layout_constraintVertical_chainStyle="packed"/>
+<!--    <ImageView-->
+<!--        android:id="@+id/iv_qrcode"-->
+<!--        android:layout_width="@dimen/dp_194"-->
+<!--        android:layout_height="@dimen/dp_194"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintRight_toRightOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/ll_title"-->
+<!--        app:layout_constraintBottom_toTopOf="@id/tv_work_content"-->
+<!--        app:layout_constraintVertical_chainStyle="packed"/>-->
 
     <TextView
         android:id="@+id/tv_work_content"
@@ -31,12 +31,13 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_45"
         android:layout_marginBottom="@dimen/dp_30"
+        android:gravity="center"
         android:text="@string/pan_favorite_empty"
         android:textColor="@color/pan_white"
         android:textSize="@dimen/sp_32"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/iv_qrcode"
+        app:layout_constraintTop_toBottomOf="@id/ll_title"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -52,5 +53,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="iv_qrcode,tv_work_content" />
+        app:constraint_referenced_ids="tv_work_content" />
 </androidx.constraintlayout.widget.ConstraintLayout>

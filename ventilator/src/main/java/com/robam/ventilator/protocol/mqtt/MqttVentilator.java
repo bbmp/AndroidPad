@@ -256,8 +256,14 @@ public class MqttVentilator extends MqttPublic {
             break;
             case MsgKeys.GetFanStatus_Rep: //属性查询响应
                 buf.put(HomeVentilator.getInstance().status);//状态
-
-                buf.put(HomeVentilator.getInstance().gear); //挡位
+                if (HomeVentilator.getInstance().gear == (byte) 0xA6)
+                    buf.put((byte) 0x06);
+                else if (HomeVentilator.getInstance().gear == (byte) 0xA3)
+                    buf.put((byte) 0x03);
+                else if (HomeVentilator.getInstance().gear == (byte) 0xA1)
+                    buf.put((byte) 0x01);
+                else
+                    buf.put((byte) 0x00); //挡位
 
                 byte byteLight = (byte) (HomeVentilator.getInstance().lightOn == (byte) 0xA0 ? 0x00:0x01);
                 buf.put(byteLight); //灯开关
@@ -268,13 +274,16 @@ public class MqttVentilator extends MqttPublic {
                 else
                     buf.put((byte) 0);
                 //定时时间
-                buf.put((byte) MMKVUtils.getTimingTime());
+                buf.put((byte) 0);
 
                 buf.put((byte) (AccountInfo.getInstance().getConnect().getValue()?1:0));//联网状态
-                buf.put((byte) 1);//参数个数
+                buf.put((byte) 2);//参数个数
                 buf.put((byte) 0x05); //key
                 buf.put((byte) 0x01);
                 buf.put(HomeVentilator.getInstance().param7);//智感恒吸
+                buf.put((byte) 8);
+                buf.put((byte) 2);
+                buf.putShort((short) HomeVentilator.getInstance().remainTime);
 
                 break;
             case MsgKeys.SetFanStatus_Rep: //设置烟机应答
@@ -352,19 +361,24 @@ public class MqttVentilator extends MqttPublic {
                     short workStatus = ByteUtils.toShort(payload[offset++]);
                     switch (workStatus) {
                         case 0: //关机
-                            HomeVentilator.getInstance().closeVentilator();
+                            HomeVentilator.getInstance().cancleDelayShutDown();
+                            if (HomeVentilator.getInstance().startup == 0x01)
+                                HomeVentilator.getInstance().closeVentilator();
                             break;
                         case 1: //开机
-                            HomeVentilator.getInstance().openVentilator();
+                            if (HomeVentilator.getInstance().startup == 0x00)
+                                HomeVentilator.getInstance().openVentilator();
                             break;
                         case 4: //清洗锁定
-                            HomeVentilator.getInstance().screenLock();
-                            //打开油网清洗
-                            VentilatorAbstractControl.getInstance().openOilClean();
-                            //开灯
-                            Plat.getPlatform().openWaterLamp();
-                            //重新计算
-                            MMKVUtils.setFanRuntime(0);
+                            if (HomeVentilator.getInstance().startup == 0x01) {
+                                HomeVentilator.getInstance().screenLock();
+                                //打开油网清洗
+                                VentilatorAbstractControl.getInstance().openOilClean();
+                                //开灯
+                                Plat.getPlatform().openWaterLamp();
+                                //重新计算
+                                MMKVUtils.setFanRuntime(0);
+                            }
                             break;
                     }
                     short attributeNum = ByteUtils.toShort(payload[offset++]);

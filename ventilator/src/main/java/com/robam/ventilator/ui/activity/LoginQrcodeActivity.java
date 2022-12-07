@@ -3,6 +3,7 @@ package com.robam.ventilator.ui.activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -27,6 +28,8 @@ public class LoginQrcodeActivity extends VentilatorBaseActivity {
     private ImageView ivQrcode;
     private static final String QRCODE_LOGIN = "qrcode";
     private boolean first;
+    private Handler mHandler = new Handler();
+    private Runnable runnable;
 
     @Override
     protected int getLayoutId() {
@@ -53,7 +56,15 @@ public class LoginQrcodeActivity extends VentilatorBaseActivity {
 
     @Override
     protected void initData() {
-        getQrCode();
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                getQrCode();
+
+                mHandler.postDelayed(runnable, 60000);
+            }
+        };
+        mHandler.post(runnable);
     }
 
     @Override
@@ -113,7 +124,6 @@ public class LoginQrcodeActivity extends VentilatorBaseActivity {
             @Override
             public void onFaild(String err) {
                 LogUtils.e("getLoginStatus" + err);
-                getQrCode();
             }
         });
 
@@ -154,5 +164,8 @@ public class LoginQrcodeActivity extends VentilatorBaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mHandler.removeCallbacks(runnable);
+
+        mHandler.removeCallbacksAndMessages(null);
     }
 }

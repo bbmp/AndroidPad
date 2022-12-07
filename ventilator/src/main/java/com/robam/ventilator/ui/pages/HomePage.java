@@ -416,7 +416,7 @@ public class HomePage extends VentilatorBasePage {
                             SteamAbstractControl.getInstance().continueWork(device.guid);
                     } else if (device instanceof Pan) {
                         Pan pan = (Pan) device;
-                        if (pan.workStatus == 3 && null != iPublicPanApi) //电量不足
+                        if (pan.sysytemStatus == 3 && null != iPublicPanApi) //电量不足
                             iPublicPanApi.lowBatteryHint(getContext());
                     }else if(device instanceof DishWasher){
                         DishWasher dishWasher = (DishWasher) device;

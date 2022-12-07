@@ -343,6 +343,7 @@ public class HomeVentilator {
     }
 
     private DelayCloseDialog delayCloseDialog;
+    public int remainTime; //通风剩余时间
     //定时关机
     public void timeShutdown(int timingTime) {
         Activity activity = AppActivityManager.getInstance().getCurrentActivity();
@@ -365,7 +366,7 @@ public class HomeVentilator {
             delayCloseDialog.tvCountdown.addOnCountDownListener(new MCountdownView.OnCountDownListener() {
                 @Override
                 public void onCountDown(int currentSecond) {
-
+                    remainTime = currentSecond;
                     delayCloseDialog.tvCountdown.setText(currentSecond + "s后关机");
                     delayCloseDialog.setContentText(currentSecond + "s");
                     if (currentSecond <= 0) {
@@ -474,6 +475,7 @@ public class HomeVentilator {
             delayCloseDialog.dismiss();
             delayCloseDialog = null;
         }
+        remainTime = 0;
     }
 
     //灶具火力最小档计时

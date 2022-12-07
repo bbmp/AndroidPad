@@ -31,7 +31,7 @@
     <string name="pan_share_hint">打开ROKI APP，扫一扫分享</string>
     <string name="pan_input_curve_name_hint">请输入曲线名称</string>
     <string name="pan_ok">确认</string>
-    <string name="pan_favorite_empty">这里还是空空如也，请前往ROKI APP添加我的最爱菜谱</string>
+    <string name="pan_favorite_empty">这里还是空空如也，\n请前往ROKI APP添加我的最爱菜谱</string>
     <string name="pan_delete">删除</string>
     <string name="pan_select_all">全选</string>
     <string name="pan_qrcode">二维码</string>
