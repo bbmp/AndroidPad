@@ -96,6 +96,7 @@ public class LoginQrcodeActivity extends VentilatorBaseActivity {
      *
      */
     private void getLoginStatus(String key) {
+        LogUtils.e("getLoginStatus");
         CloudHelper.getLoginStatus(this, key, GetLoginStatusRes.class, new RetrofitCallback<GetLoginStatusRes>() {
             @Override
             public void onSuccess(GetLoginStatusRes getLoginStatusRes) {
@@ -112,6 +113,7 @@ public class LoginQrcodeActivity extends VentilatorBaseActivity {
             @Override
             public void onFaild(String err) {
                 LogUtils.e("getLoginStatus" + err);
+                getQrCode();
             }
         });
 
