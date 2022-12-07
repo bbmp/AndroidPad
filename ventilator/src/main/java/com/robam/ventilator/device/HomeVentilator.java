@@ -92,7 +92,7 @@ public class HomeVentilator {
                 } catch (Exception e) {}
                 a6CountTime++;
                 LogUtils.e("a6CountTime = " + a6CountTime);
-                if (a6CountTime >= 1800) {
+                if (a6CountTime >= 1760) {
                     //切换到高档
                     VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_MID);
                     return;
@@ -394,7 +394,6 @@ public class HomeVentilator {
     }
     //打开烟机并且开挡位 联动功能
     public void openVentilatorGear(int gear) {
-        startup = 0x01;
         VentilatorAbstractControl.getInstance().powerOnGear(gear);
         Plat.getPlatform().screenOn();
         Plat.getPlatform().openPowerLamp();
@@ -402,11 +401,14 @@ public class HomeVentilator {
     }
     //打开烟机
     public void openVentilator() {
-        startup = 0x01;
         VentilatorAbstractControl.getInstance().powerOn();
         Plat.getPlatform().screenOn();
         Plat.getPlatform().openPowerLamp();
         updateOperationTime(); //开机时间
+
+//        Activity activity = AppActivityManager.getInstance().getCurrentActivity();
+//        if (null != activity)
+//            activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
     //关闭烟机
     public void closeVentilator() {
@@ -415,7 +417,6 @@ public class HomeVentilator {
         Plat.getPlatform().closePowerLamp();//关灯
         Plat.getPlatform().closeWaterLamp(); //关左灯
         VentilatorAbstractControl.getInstance().shutDown();
-        startup = 0x00;
 
         Activity activity = AppActivityManager.getInstance().getCurrentActivity();
         if (null != activity) {
@@ -461,10 +462,6 @@ public class HomeVentilator {
         isAutoCountDown = true;
     }
 
-    //智能设置
-    public MutableLiveData<Boolean> smartSet = new MutableLiveData<>(false);
-    //油网清洗自动提示
-    public MutableLiveData<Boolean> oilClean = new MutableLiveData<>(false);
 
     //记录风机运行时间
     public void fanRunTime(int gear) {

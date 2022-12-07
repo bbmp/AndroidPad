@@ -38,6 +38,10 @@
         android:layout_height="match_parent"
         android:layout_gravity="end"
         android:background="@color/ventilator_color_menu">
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/products_refresh"
+            android:layout_width="@dimen/dp_640"
+            android:layout_height="match_parent">
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_right"
             android:layout_width="wrap_content"
@@ -49,6 +53,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             android:scrollbarThumbVertical="@drawable/ventilator_shape_scrollbar_bg"
             app:layout_constraintTop_toTopOf="parent"/>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </LinearLayout>
 
 

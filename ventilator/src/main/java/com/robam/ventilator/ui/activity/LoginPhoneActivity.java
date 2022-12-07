@@ -137,7 +137,10 @@ public class LoginPhoneActivity extends VentilatorBaseActivity {
                     @Override
                     public void onFaild(String err) {
                         cancelWaitDialog();
-                        ToastUtils.showShort(LoginPhoneActivity.this, R.string.ventilator_net_err);
+                        if (TextUtils.isEmpty(err))
+                            ToastUtils.showShort(LoginPhoneActivity.this, R.string.ventilator_net_err);
+                        else
+                            ToastUtils.showShort(LoginPhoneActivity.this, err);
                         LogUtils.e("getToken" + err);
                     }
                 });

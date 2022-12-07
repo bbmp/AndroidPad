@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/ventilator_ic_bg"
     tools:context=".ui.pages.HomePage">
     <pl.droidsonroids.gif.GifImageView
         android:id="@+id/iv_bg"
@@ -155,16 +156,6 @@
                 android:layout_marginLeft="@dimen/dp_2"
                 android:src="@drawable/ventilator_arrow_right"/>
         </LinearLayout>
-        <com.robam.common.ui.blurview.ShapeBlurView
-            android:id="@+id/sb_view_left"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:visibility="gone"
-            app:common_blur_mode="rectangle"
-            app:common_blur_radius="@dimen/dp_20"
-            app:common_blur_down_sample="2"
-            app:common_blur_overlay_color="@color/ventilator_drawer_bg" />
     </FrameLayout>
     <FrameLayout
         android:id="@+id/ll_drawer_right"
@@ -201,15 +192,5 @@
                 android:src="@drawable/ventilator_arrow_right"
                 android:visibility="invisible"/>
         </LinearLayout>
-        <com.robam.common.ui.blurview.ShapeBlurView
-            android:id="@+id/sb_view_right"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:visibility="gone"
-            app:common_blur_mode="rectangle"
-            app:common_blur_radius="@dimen/dp_20"
-            app:common_blur_down_sample="2"
-            app:common_blur_overlay_color="@color/ventilator_drawer_bg" />
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

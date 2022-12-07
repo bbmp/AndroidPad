@@ -38,6 +38,7 @@
         android:src="@drawable/ventilator_ic_lock"
         android:layout_width="@dimen/dp_38"
         android:layout_height="@dimen/dp_38"
+        android:visibility="invisible"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@id/iv_wifi"/>

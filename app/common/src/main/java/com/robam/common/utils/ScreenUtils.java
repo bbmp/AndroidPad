@@ -2,6 +2,8 @@ package com.robam.common.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.PowerManager;
+import android.provider.Settings;
 import android.util.DisplayMetrics;
 
 public class ScreenUtils {
@@ -38,5 +40,28 @@ public class ScreenUtils {
             result = context.getResources().getDimensionPixelSize(resourceId);
         }
         return result;
+    }
+
+    /**
+     * 获取屏幕是否开关
+     * @param context
+     * @return
+     */
+    public static boolean isScreenOn(Context context) {
+        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        boolean isScreenOn = pm.isInteractive();
+        return isScreenOn;
+    }
+    /**
+     * 获取屏幕亮度
+     */
+    public static int getScreenBrightness(Context context) {
+        int screenBrightness = 0;
+        try {
+            screenBrightness = Settings.System.getInt(context.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS);
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+        }
+        return screenBrightness;
     }
 }

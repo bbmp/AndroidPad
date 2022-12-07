@@ -22,6 +22,7 @@ import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.skin.SkinStatusBarUtils;
 import com.robam.common.ui.action.ActivityAction;
 import com.robam.common.ui.action.ClickAction;
+import com.robam.common.utils.ScreenUtils;
 import com.robam.common.utils.ToastUtils;
 
 public abstract class BaseActivity extends AbsActivity implements ActivityAction, ClickAction, ILife {
@@ -164,9 +165,6 @@ public abstract class BaseActivity extends AbsActivity implements ActivityAction
 //                    Plat.getPlatform().screenOn();
 //                    Plat.getPlatform().openPowerLamp();
 //                    iPublicVentilatorApi.startService(this);
-//                    Activity activity = AppActivityManager.getInstance().getCurrentActivity();
-//                    if (null != activity)
-//                        activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 }
                 return true;
             }
@@ -176,6 +174,8 @@ public abstract class BaseActivity extends AbsActivity implements ActivityAction
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (!iPublicVentilatorApi.isStartUp())  //关机状态
+            return true;
         //有触摸，更新操作时间
         if (null != iPublicVentilatorApi)
             iPublicVentilatorApi.updateOperationTime();
