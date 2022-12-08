@@ -57,6 +57,9 @@ public class MainActivity extends CabinetBaseActivity {
                     if(!CabinetCommonHelper.isSafe()){
                         return;
                     }
+                    if(toWaringPage(cabinet.faultId)){
+                        return;
+                    }
                     if(cabinet.smartCruising == 1 || cabinet.pureCruising == 1){//去往智能巡航页面
                         Intent intent = new Intent(this,CruiseActivity.class);
                         int model = cabinet.smartCruising == 1 ? CabinetEnum.SMART.getCode() : CabinetEnum.FLUSH.getCode();
@@ -78,11 +81,11 @@ public class MainActivity extends CabinetBaseActivity {
                 }
             }
         });
-        MqttDirective.getInstance().getDirective().observe(this, s->{
+        /*MqttDirective.getInstance().getDirective().observe(this, s->{
             if(s != EventConstant.WARING_CODE_NONE){
                 showWaring(s);
             }
-        });
+        });*/
     }
 
     private void toWorkingPage(Cabinet cabinet) {

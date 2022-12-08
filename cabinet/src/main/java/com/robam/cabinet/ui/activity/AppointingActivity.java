@@ -95,11 +95,11 @@ public class AppointingActivity extends CabinetBaseActivity {
                 }
             }
         });
-        MqttDirective.getInstance().getDirective().observe(this, s->{
+       /* MqttDirective.getInstance().getDirective().observe(this, s->{
             if(s != EventConstant.WARING_CODE_NONE){
                 showWaring(s);
             }
-        });
+        });*/
     }
 
 

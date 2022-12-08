@@ -65,9 +65,9 @@ public class ModeSelectActivity extends CabinetBaseActivity {
                 if (device.guid.equals(s) && device instanceof Cabinet && device.guid.equals(HomeCabinet.getInstance().guid)) {
                     Cabinet cabinet = (Cabinet) device;
                     setLock(cabinet.isChildLock == 1);
-//                    if(toWaringPage(cabinet.faultId)){
-//                        return;
-//                    }
+                    if(toWaringPage(cabinet.faultId)){
+                        return;
+                    }
                     switch (cabinet.workMode){
                         case CabinetConstant.FUN_DISINFECT:
                         case CabinetConstant.FUN_CLEAN:

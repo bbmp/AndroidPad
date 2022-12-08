@@ -64,7 +64,7 @@ public class Cabinet extends Device{
             int key = msg.getID();
             switch (key) {
                 case MsgKeys.SteriAlarm_Noti:
-                    waringCode = (short) msg.optInt(CabinetConstant.CABINET_ALARM_ID);
+                    faultId = (short) msg.optInt(CabinetConstant.CABINET_ALARM_ID);
                     break;
                 case MsgKeys.GetSteriStatus_Rep:
                     workMode = (short) msg.optInt(CabinetConstant.CABINET_STATUS);

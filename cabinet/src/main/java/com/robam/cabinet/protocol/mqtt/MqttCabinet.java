@@ -90,7 +90,8 @@ public class MqttCabinet extends MqttPublic {
             case MsgKeys.SteriAlarm_Noti:
                 short waringCodeNoti = ByteUtils.toShort(payload[offset++]);
                 msg.putOpt(CabinetConstant.CABINET_ALARM_ID, waringCodeNoti);
-                MqttDirective.getInstance().getDirective().setValue((int)waringCodeNoti);
+                //MqttDirective.getInstance().getDirective().setValue((int)waringCodeNoti);
+                //MqttDirective.getInstance().setStrLiveDataValue();
                 break;
             case MsgKeys.SteriEvent_Noti:
                 short eventId = ByteUtils.toShort(payload[offset++]);
