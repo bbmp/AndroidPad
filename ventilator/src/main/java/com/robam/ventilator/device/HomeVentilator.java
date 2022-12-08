@@ -64,11 +64,11 @@ public class HomeVentilator {
     //风机启动时间
     public long fanStartTime = 0;
     //假日模式
-    public boolean holiday = MMKVUtils.getHoliday(); //假日模式开关
+//    public boolean holiday = MMKVUtils.getHoliday(); //假日模式开关
     //假日模式每周通风时间
-    public String weekTime = MMKVUtils.getHolidayWeekTime(); //每周通风时间
+//    public String weekTime = MMKVUtils.getHolidayWeekTime(); //每周通风时间
     //假日模式天数
-    public String holidayDay = MMKVUtils.getHolidayDay(); //假日模式每隔几天通风
+//    public String holidayDay = MMKVUtils.getHolidayDay(); //假日模式每隔几天通风
     //风机最后运行时间
     public long fanOffTime = MMKVUtils.getFanOffTime();
     //烟机操作时间

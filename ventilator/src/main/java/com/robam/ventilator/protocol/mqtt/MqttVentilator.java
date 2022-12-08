@@ -278,7 +278,7 @@ public class MqttVentilator extends MqttPublic {
 
                 buf.put((byte) (AccountInfo.getInstance().getConnect().getValue()?1:0));//联网状态
                 buf.put((byte) 2);//参数个数
-                buf.put((byte) 0x05); //key
+                buf.put((byte) 15); //key
                 buf.put((byte) 0x01);
                 buf.put(HomeVentilator.getInstance().param7);//智感恒吸
                 buf.put((byte) 8);
@@ -381,10 +381,10 @@ public class MqttVentilator extends MqttPublic {
                             }
                             break;
                     }
-                    short attributeNum = ByteUtils.toShort(payload[offset++]);
-                    while (attributeNum > 0) {
-                        attributeNum--;
-                    }
+//                    short attributeNum = ByteUtils.toShort(payload[offset++]);
+//                    while (attributeNum > 0) {
+//                        attributeNum--;
+//                    }
                     //设置响应
                     MqttMsg newMsg = new MqttMsg.Builder()
                             .setMsgId(MsgKeys.SetFanStatus_Rep)
@@ -545,10 +545,28 @@ public class MqttVentilator extends MqttPublic {
                                 jsonArray.put(key);
                             }
                                 break;
-                            case 4: {  //延时关机设置
+                            case 2: {  //挡位联动开关
+                                boolean onOff = (MsgUtils.getByte(payload[offset++]) == 1 ? true : false); //开关
+                                MMKVUtils.setFanStoveGear(onOff);
+                                jsonArray.put(key);
+                            }
+                            break;
+                            case 3: { //延时关机开关
+                                boolean onOff = (MsgUtils.getByte(payload[offset++]) == 1 ? true : false); //开关
+                                MMKVUtils.setDelayShutdown(onOff);
+                                jsonArray.put(key);
+                            }
+                            break;
+                            case 4: {  //延时关机时间
                                 int minute = MsgUtils.getByte(payload[offset++]);
                                 if (minute >= 1 && minute <= 5)
                                     MMKVUtils.setDelayShutdownTime(minute + "");
+                                jsonArray.put(key);
+                            }
+                            break;
+                            case 5: { //油网提醒开关
+                                boolean onOff = (MsgUtils.getByte(payload[offset++]) == 1 ? true : false); //开关
+                                MMKVUtils.setOilClean(onOff);
                                 jsonArray.put(key);
                             }
                             break;
@@ -572,8 +590,10 @@ public class MqttVentilator extends MqttPublic {
                             break;
                             case 17: { //智感恒吸
                                 int smart = MsgUtils.getByte(payload[offset++]);
-                                VentilatorAbstractControl.getInstance().setSmart(smart);
-                                jsonArray.put(key);
+                                if (HomeVentilator.getInstance().isStartUp()) {//开机状态
+                                    VentilatorAbstractControl.getInstance().setSmart(smart);
+                                    jsonArray.put(key);
+                                }
                             }
                                 break;
                             case 18: {//烟灶挡位联动开关

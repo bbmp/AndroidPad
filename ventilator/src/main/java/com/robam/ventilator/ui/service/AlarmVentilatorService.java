@@ -139,10 +139,10 @@ public class AlarmVentilatorService extends Service {
             }
         }
         //检查假日模式打开
-        if (HomeVentilator.getInstance().holiday && (HomeVentilator.getInstance().startup == (byte) 0x00) //关机状态下
+        if (MMKVUtils.getHoliday() && (HomeVentilator.getInstance().startup == (byte) 0x00) //关机状态下
                 && Math.abs(System.currentTimeMillis() - HomeVentilator.getInstance().fanStartTime) > 60000) {  //一分钟内不重复
             String curWeek = DateUtil.getWeek();
-            String weekTime = HomeVentilator.getInstance().weekTime; //为了效率，不每次io
+            String weekTime = MMKVUtils.getHolidayWeekTime(); //为了效率，不每次io
             String week = weekTime.substring(0, 2);
 
             if (curWeek.equals(week) && DateUtil.isNowTime(weekTime)) {
@@ -154,8 +154,8 @@ public class AlarmVentilatorService extends Service {
             }
         }
         //超过天数未使用
-        int holidayDay = Integer.parseInt(HomeVentilator.getInstance().holidayDay);
-        if (HomeVentilator.getInstance().holiday
+        int holidayDay = Integer.parseInt(MMKVUtils.getHolidayDay());
+        if (MMKVUtils.getHoliday()
                 && (Math.abs(System.currentTimeMillis() - HomeVentilator.getInstance().fanOffTime) > holidayDay * 86400 * 1000)
                 && (HomeVentilator.getInstance().startup == (byte) 0x00) //关机状态下
                 && Math.abs(System.currentTimeMillis() - HomeVentilator.getInstance().fanStartTime) > 60000) {  //一分钟内不重复

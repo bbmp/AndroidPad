@@ -46,8 +46,8 @@ class HolidayDateSettingActivity : VentilatorBaseActivity() {
             MMKVUtils.setHolidayDay(day)
             MMKVUtils.setHolidayWeekTime("$week$hour:$minute")
             LiveDataBus.get().with(VentilatorConstant.SMART_SET, Boolean::class.java).value = true
-            HomeVentilator.getInstance().holidayDay = day
-            HomeVentilator.getInstance().weekTime = "$week$hour:$minute"
+//            HomeVentilator.getInstance().holidayDay = day
+//            HomeVentilator.getInstance().weekTime = "$week$hour:$minute"
             finish()
         }
     }

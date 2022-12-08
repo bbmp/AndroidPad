@@ -81,17 +81,18 @@ public class DeviceUserPage extends VentilatorBasePage {
                     if (null != userInfo ) {
                         //删除自己
                         if (userInfo.id == curUser.id) {
-                            if (device.dc.equals(IDeviceType.RYYJ) && device.guid.equals(Plat.getPlatform().getDeviceOnlySign())) { //当前烟机登录的账号
-                                ToastUtils.showShort(getContext(), R.string.ventilator_donot_delete_this);
+//                            if (device.dc.equals(IDeviceType.RYYJ) && device.guid.equals(Plat.getPlatform().getDeviceOnlySign())) { //当前烟机登录的账号
+                                ToastUtils.showShort(getContext().getApplicationContext(), R.string.ventilator_donot_delete_this);
                                 return;
-                            }
-                        } else {
-                            //非管理员
-                            if (curUser.id != device.ownerId) {
-                                ToastUtils.showShort(getContext(), R.string.ventilator_not_administrator);
-                                return;
-                            }
+//                            }
                         }
+//                        else {
+//                            //非管理员
+//                            if (curUser.id != device.ownerId) {
+//                                ToastUtils.showShort(getContext(), R.string.ventilator_not_administrator);
+//                                return;
+//                            }
+//                        }
                         deleteUserDialog(userInfo.id);
                     }
                 }
@@ -192,7 +193,7 @@ public class DeviceUserPage extends VentilatorBasePage {
     private void shareDialog() {
         IDialog iDialog = VentilatorDialogFactory.createDialogByType(getContext(), DialogConstant.DIALOG_TYPE_SHARE);
         iDialog.setCancelable(false);
-        iDialog.setContentText(device.guid);
+        iDialog.setContentText("GUID" + device.guid);
         iDialog.show();
     }
     //删除子设备

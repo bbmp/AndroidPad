@@ -131,7 +131,7 @@ class SmartSettingActivity : VentilatorBaseActivity() {
         when (modeName) {
             "假日模式" -> {
                 MMKVUtils.setHoliday(onOff)
-                HomeVentilator.getInstance().holiday = onOff
+//                HomeVentilator.getInstance().holiday = onOff
             }
             "油网清洗提醒功能" -> MMKVUtils.setOilClean(onOff)
             "延时关机" -> MMKVUtils.setDelayShutdown(onOff)
