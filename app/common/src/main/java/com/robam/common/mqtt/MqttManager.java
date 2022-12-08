@@ -169,7 +169,7 @@ public class MqttManager {
     public boolean isConnected() {
         try {
             return mqttAndroidClient.isConnected();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
         return false;

@@ -19,6 +19,7 @@ public class MMKVUtils {
     private static final String OIL_CLEAN = "oil_clean";//油网清洗提醒功能
     private static final String DELAY_SHUTDOWN = "delay_shutdown";//延时关机
     private static final String DELAY_SHUTDOWN_TIME = "delay_shutdown_time";//延时关机时间
+    private static final String TIMING_TIME = "timing_time"; //定时时间
     private static final String FAN_STOVE = "fan_stove";//烟灶联动
     private static final String FAN_PAN = "fan_pan";//烟锅联动
     private static final String FAN_STEAM = "fan_steam";//烟蒸烤联动
@@ -303,5 +304,15 @@ public class MMKVUtils {
     public static String getWifiPwd(String ssid) {
         MMKV mmkv = MMKV.defaultMMKV();
         return mmkv.decodeString(ssid, "");
+    }
+    //设置定时时间
+    public static void setTimingTime(int time) {
+        MMKV mmkv = MMKV.defaultMMKV();
+        mmkv.encode(TIMING_TIME, time);
+    }
+    //获取定时时间
+    public static int getTimingTime() {
+        MMKV mmkv = MMKV.defaultMMKV();
+        return mmkv.decodeInt(TIMING_TIME);
     }
 }

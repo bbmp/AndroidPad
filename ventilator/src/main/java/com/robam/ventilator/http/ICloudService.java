@@ -70,6 +70,7 @@ public interface ICloudService {
     Call<ResponseBody> getDevices(@Body RequestBody body);
 
     @GET(getLoginStatus)
+    @Headers({"CONNECT_TIMEOUT:30000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000"})
     Call<ResponseBody> getLoginStatus(@Query("key") String key);
 
     @POST(login)

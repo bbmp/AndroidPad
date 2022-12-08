@@ -16,6 +16,7 @@ import com.robam.common.bean.BaseResponse;
 import com.robam.common.device.Plat;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.manager.BlueToothManager;
+import com.robam.common.manager.LiveDataBus;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.GridSpaceItemDecoration;
@@ -30,6 +31,7 @@ import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.UserInfo;
 import com.robam.ventilator.constant.DialogConstant;
+import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.device.HomeVentilator;
 import com.robam.ventilator.factory.VentilatorDialogFactory;
 import com.robam.ventilator.http.CloudHelper;
@@ -167,6 +169,9 @@ public class DeviceUserPage extends VentilatorBasePage {
                     deleteDevice(device);
                     //重新获取设备列表
                     AccountInfo.getInstance().getGuid().setValue(device.guid);
+                    //删除烟机的用户
+                    if (Plat.getPlatform().getDeviceOnlySign().equals(device.guid))
+                        LiveDataBus.get().with(VentilatorConstant.VENTILATOR_USER, String.class).setValue(device.guid);
                 }
             }
 

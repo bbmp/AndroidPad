@@ -18,6 +18,7 @@ import com.robam.common.IDeviceType;
 import com.robam.common.bean.BaseResponse;
 import com.robam.common.device.Plat;
 import com.robam.common.http.RetrofitCallback;
+import com.robam.common.manager.LiveDataBus;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.PageIndicator;
@@ -26,12 +27,14 @@ import com.robam.common.utils.ImageUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.device.subdevice.Pan;
 import com.robam.common.device.subdevice.Stove;
+import com.robam.common.utils.ToastUtils;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.UserInfo;
 import com.robam.ventilator.constant.DialogConstant;
+import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.factory.VentilatorDialogFactory;
 import com.robam.ventilator.http.CloudHelper;
 import com.robam.ventilator.response.GetDeviceRes;
@@ -100,6 +103,14 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
                 getDeviceInfo(AccountInfo.getInstance().getUser().getValue());
             }
         });
+        //烟机用户更新
+        LiveDataBus.get().with(VentilatorConstant.VENTILATOR_USER, String.class).observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                if (Plat.getPlatform().getDeviceOnlySign().equals(s))
+                    getDeviceInfo(AccountInfo.getInstance().getUser().getValue());
+            }
+        });
     }
 
     private void setUserInfo(UserInfo userInfo) {
@@ -139,14 +150,15 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
                                 return;
                             }
                         }
-                        //还没有绑定
-                        bindDevice(userInfo);
                     }
+                    //还没有绑定
+                    bindDevice(userInfo);
                 }
 
                 @Override
                 public void onFaild(String err) {
                     LogUtils.e("getDevices" + err);
+                    ToastUtils.showShort(getApplicationContext(), R.string.ventilator_net_err);
                 }
             });
         } else {

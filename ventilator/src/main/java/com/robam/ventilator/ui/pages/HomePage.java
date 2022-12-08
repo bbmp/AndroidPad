@@ -416,7 +416,7 @@ public class HomePage extends VentilatorBasePage {
                             SteamAbstractControl.getInstance().continueWork(device.guid);
                     } else if (device instanceof Pan) {
                         Pan pan = (Pan) device;
-                        if (pan.workStatus == 3 && null != iPublicPanApi) //电量不足
+                        if (pan.sysytemStatus == 3 && null != iPublicPanApi) //电量不足
                             iPublicPanApi.lowBatteryHint(getContext());
                     }else if(device instanceof DishWasher){
                         DishWasher dishWasher = (DishWasher) device;
@@ -489,14 +489,7 @@ public class HomePage extends VentilatorBasePage {
                     }
                     return;
                 }
-                for (Device device: AccountInfo.getInstance().deviceList) {
-                    if (device.guid.equals(s)) {
 
-//                        rvProductsAdapter.setList(AccountInfo.getInstance().deviceList);
-//                        return;
-                        break;
-                    }
-                }
                 //找不到设备
                 if (System.currentTimeMillis() - refreshTime < 2000 && refreshTime != 0) //防止频繁刷
                     return;
