@@ -24,7 +24,7 @@
       "defTime": 3,
       "minTime": 3,
       "maxTime" : 15,
-      "stepTime": 1
+      "stepTime": 12
     }
   },
   {
@@ -37,8 +37,8 @@
       "name": "烘干",
       "defTime": 20,
       "minTime": 20,
-      "maxTime" : 40,
-      "stepTime": 1
+      "maxTime" : 60,
+      "stepTime": 20
     }
   },
   {

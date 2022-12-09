@@ -76,6 +76,9 @@ public abstract class CabinetBaseActivity extends BaseActivity {
         }
         rightCenter.setVisibility(View.VISIBLE);
         rightCenter.setOnClickListener(v -> {
+            if(isPowerOff()){
+                return;
+            }
             Map map = CabinetCommonHelper.getCommonMap(MsgKeys.SetSteriLock_Req);
             map.put(CabinetConstant.CABINET_LOCK,1);
             CabinetCommonHelper.sendCommonMsg(map);
@@ -86,6 +89,23 @@ public abstract class CabinetBaseActivity extends BaseActivity {
             CabinetCommonHelper.sendCommonMsg(map);
             return true;
         });
+    }
+
+    /**
+     * 是否已关机
+     * @return
+     */
+    private boolean isPowerOff(){
+        Cabinet cabinet = getCabinet();
+        if(cabinet == null){
+            ToastUtils.showLong(this,R.string.cabinet_off_line);
+            return true;
+        }
+        if(cabinet.workMode == 0){
+            ToastUtils.showLong(this,R.string.cabinet_power_off);
+            return true;
+        }
+        return false;
     }
 
     public void setRight(int res) {
@@ -237,4 +257,21 @@ public abstract class CabinetBaseActivity extends BaseActivity {
         }
         return null;
     }
+
+    /**
+     * 提示消毒柜门是否关闭
+     * @return
+     */
+    public boolean checkDoorState(){
+        Cabinet cabinet = getCabinet();
+        if(cabinet == null){
+            return false;
+        }
+        if(cabinet.doorLock == 0){
+            ToastUtils.showLong(this,R.string.cabinet_waring_e0_content);
+            return false;
+        }
+        return true;
+    }
+
 }

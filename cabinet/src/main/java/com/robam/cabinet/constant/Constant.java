@@ -22,5 +22,7 @@ public interface Constant {
 
     String WARING_CODE = "waring_code";
 
-     String EXTRA_MODE_BEAN = "modebean";
+    String EXTRA_MODE_BEAN = "modebean";
+
+    String SMART_MODEL = "smart_model";
 }

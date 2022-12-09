@@ -77,9 +77,9 @@ public class WorkActivity extends CabinetBaseActivity {
                     }
                     Cabinet cabinet = (Cabinet) device;
                     setLock(cabinet.isChildLock == 1);
-//                    if(toWaringPage(cabinet.alarmStatus)){
-//                        return;
-//                    }
+                    if(toWaringPage(cabinet.faultId)){
+                        return;
+                    }
                     switch (cabinet.workMode){
                         case CabinetConstant.FUN_DISINFECT:
                         case CabinetConstant.FUN_CLEAN:
@@ -88,6 +88,12 @@ public class WorkActivity extends CabinetBaseActivity {
                         case CabinetConstant.FUN_SMART:
                         case CabinetConstant.FUN_WARING:
                             if(cabinet.remainingModeWorkTime > 0){
+                                if(workFinish){
+                                    if(iDialog != null && iDialog.isShow()){
+                                        iDialog.dismiss();
+                                    }
+                                    workFinish = false;
+                                }
                                 tvMode.setText(CabinetEnum.match(cabinet.workMode));
                                 updateWorkTime(cabinet.remainingModeWorkTime);
                             }else{
@@ -110,11 +116,11 @@ public class WorkActivity extends CabinetBaseActivity {
             }
         });
 
-        MqttDirective.getInstance().getDirective().observe(this, s->{
+        /*MqttDirective.getInstance().getDirective().observe(this, s->{
             if(s != EventConstant.WARING_CODE_NONE){
                 showWaring(s);
             }
-        });
+        });*/
     }
 
     @Override
@@ -132,7 +138,8 @@ public class WorkActivity extends CabinetBaseActivity {
      * @param remainingTime
      */
     private void updateWorkTime(int remainingTime){
-        String time = TimeUtils.secToHourMinUp(remainingTime);
+        //String time = TimeUtils.secToHourMinUp(remainingTime);
+        String time =secToMinUp(remainingTime);
         SpannableString spannableString = new SpannableString(time);
         int pos = time.indexOf("h");
         if (pos >= 0)
@@ -141,6 +148,23 @@ public class WorkActivity extends CabinetBaseActivity {
         if (pos >= 0)
             spannableString.setSpan(new RelativeSizeSpan(0.5f), pos, pos + 3, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         tvCountdown.setText(spannableString);
+    }
+
+    /**
+     * 秒转分
+     * @param seconds
+     * @return
+     */
+    private  String secToMinUp(int seconds) {
+        int min = seconds / 60;
+        int sec = seconds % 60;
+        if(sec != 0){
+            min += 1;
+        }
+        if (min > 0)
+            return   min + "min";
+        else
+            return "0min";
     }
     /**
      * 设置倒计时
@@ -167,11 +191,12 @@ public class WorkActivity extends CabinetBaseActivity {
         tvCountdown.start();
     }
 
+    IDialog iDialog;
     private void workComplete() {
         //工作完成提示
-        IDialog iDialog = CabinetDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_WORK_COMPLETE);
+        iDialog = CabinetDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_WORK_COMPLETE);
         iDialog.setCancelable(false);
-        iDialog.setContentText(CabinetEnum.match(HomeCabinet.getInstance().workMode) + "完成");
+        iDialog.setContentText(CabinetEnum.match(workModeBean.code) + "完成");
         iDialog.setListeners(v -> {
             //结束工作
             if (v.getId() == R.id.tv_ok) {

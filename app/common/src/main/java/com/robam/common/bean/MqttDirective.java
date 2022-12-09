@@ -20,9 +20,15 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MqttDirective {
 
     private static final int MAX_WORK_TIME_OF_DURATION = 1000 * 60 * 10;//工作完成后，多长时间内显示完成状态
-    private static final int SAFE_UPDATE_INTERVAL = 1000 * 30;//安全更新时间 30秒
+    private static final int SAFE_UPDATE_INTERVAL = 1000 * 12;//安全更新时间 30秒
+
+    private static final String STR_LIVE_DATA_FLAG = "&:$:&";//安全更新时间 30秒
+
+    @Deprecated
     private BusMutableLiveData<Integer> directive = new BusMutableLiveData<>(-100); //设备状态变化
     private Map<String,WorkState> workModelState = new ConcurrentHashMap<>();
+
+    private BusMutableLiveData<String> strLiveData = new BusMutableLiveData<>(""); //设备状态变化
 
     private MqttDirective(){}
 
@@ -34,8 +40,17 @@ public class MqttDirective {
         return MqttDirective.Holder.instance;
     }
 
+    @Deprecated
     public MutableLiveData<Integer> getDirective() {
         return directive;
+    }
+
+    public BusMutableLiveData<String> getStrLiveData() {
+        return strLiveData;
+    }
+
+    public void setStrLiveDataValue(String guid, int code){
+        strLiveData.setValue(guid+STR_LIVE_DATA_FLAG+code);
     }
 
     private static class BusMutableLiveData<T> extends MutableLiveData {
