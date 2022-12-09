@@ -140,7 +140,7 @@ public class MqttManager {
                         number).getTopic();
             LogUtils.e("订阅主题" + topic);
             mqttAndroidClient.subscribe(topic, 2, null, mqttActionListener);//订阅主题，参数：主题、服务质量
-        } catch (Exception e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
     }
@@ -157,7 +157,7 @@ public class MqttManager {
                 topic = new RTopic(RTopic.TOPIC_BROADCAST, dt,
                         number).getTopic();
             mqttAndroidClient.unsubscribe(topic);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
     }
@@ -180,7 +180,7 @@ public class MqttManager {
     public void doConnect() {
         try {
             mqttAndroidClient.connect(mMqttConnectOptions, null, iMqttActionListener);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
     }
@@ -214,8 +214,8 @@ public class MqttManager {
                     LogUtils.e("重连失败");
                 }
             });
-        } catch (Exception e) {
-
+        } catch (Throwable e) {
+            e.printStackTrace();
         }
     }
 
@@ -243,7 +243,7 @@ public class MqttManager {
     public void stop() {
         try {
             mqttAndroidClient.disconnect(); //断开连接
-        } catch (Exception e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
     }
@@ -255,7 +255,7 @@ public class MqttManager {
             if (isConnected())
                 mqttAndroidClient.disconnect();
             mqttAndroidClient.close(); //关闭
-        } catch (Exception e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
     }
