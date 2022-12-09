@@ -63,16 +63,16 @@ public class MMKVUtils {
         MMKV mmkv = MMKV.defaultMMKV();
         mmkv.encode(HOLIDAY, holiday);
     }
-    //假日模式，默认打开
+    //假日模式，默认关闭
     public static boolean getHoliday() {
         MMKV mmkv = MMKV.defaultMMKV();
-        return mmkv.decodeBool(HOLIDAY, true);
+        return mmkv.decodeBool(HOLIDAY, false);
     }
 
-    //假日模式天数 默认7天
+    //假日模式天数 默认3天
     public static String getHolidayDay() {
         MMKV mmkv = MMKV.defaultMMKV();
-        return mmkv.decodeString(HOLIDAY_DAY,"7");
+        return mmkv.decodeString(HOLIDAY_DAY,"3");
     }
 
     public static void setHolidayDay(String holiday) {
@@ -80,10 +80,10 @@ public class MMKVUtils {
         mmkv.encode(HOLIDAY_DAY, holiday);
     }
 
-    //假日模式每周固定时间 默认 周日13:00
+    //假日模式每周固定时间 默认 周一12:30
     public static String getHolidayWeekTime() {
         MMKV mmkv = MMKV.defaultMMKV();
-        return mmkv.decodeString(HOLIDAY_WEEK_TIME,"周日13:00");
+        return mmkv.decodeString(HOLIDAY_WEEK_TIME,"周一12:30");
     }
 
     public static void setHolidayWeekTime(String holiday) {
