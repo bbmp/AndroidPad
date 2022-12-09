@@ -16,6 +16,7 @@ import com.robam.common.utils.LogUtils;
 import com.robam.pan.device.PanAbstractControl;
 import com.robam.common.device.subdevice.Stove;
 import com.robam.stove.device.StoveAbstractControl;
+import com.robam.ventilator.ui.receiver.AlarmBleReceiver;
 
 //定时查询蓝牙设备
 public class AlarmBleService extends Service {
@@ -25,15 +26,6 @@ public class AlarmBleService extends Service {
     private AlarmManager alarmManager;
     private PendingIntent pIntent;
 
-    private Handler mHandler = new Handler();
-    private Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            startService(new Intent(AlarmBleService.this, AlarmBleService.class));
-
-            mHandler.postDelayed(runnable, INTERVAL);
-        }
-    };
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -44,23 +36,22 @@ public class AlarmBleService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-//        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-//        Intent i = new Intent(this, AlarmBleReceiver.class);
-//        pIntent = PendingIntent.getBroadcast(this, PENDING_REQUEST, i, PendingIntent.FLAG_UPDATE_CURRENT);
-        mHandler.postDelayed(runnable, INTERVAL);
+        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        Intent i = new Intent(this, AlarmBleReceiver.class);
+        pIntent = PendingIntent.getBroadcast(this, PENDING_REQUEST, i, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         //通过AlarmManager定时启动广播
 
-//        if (null != alarmManager) {
-//            long triggerAtTime = SystemClock.elapsedRealtime() + INTERVAL;//从开机到现在的毫秒（手机睡眠(sleep)的时间也包括在内
-//            try {
-//                alarmManager.cancel(pIntent);
-//            } catch (Exception e) {}
-//            alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAtTime, pIntent);
-//        }
+        if (null != alarmManager) {
+            long triggerAtTime = SystemClock.elapsedRealtime() + INTERVAL;//从开机到现在的毫秒（手机睡眠(sleep)的时间也包括在内
+            try {
+                alarmManager.cancel(pIntent);
+            } catch (Exception e) {}
+            alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAtTime, pIntent);
+        }
 
         //循环查询
         for (Device device: AccountInfo.getInstance().deviceList) {
@@ -93,12 +84,9 @@ public class AlarmBleService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-//        if (null != alarmManager) {
-//            alarmManager.cancel(pIntent);
-//            alarmManager = null;
-//        }
-        mHandler.removeCallbacks(runnable);
-
-        mHandler.removeCallbacksAndMessages(null);
+        if (null != alarmManager) {
+            alarmManager.cancel(pIntent);
+            alarmManager = null;
+        }
     }
 }

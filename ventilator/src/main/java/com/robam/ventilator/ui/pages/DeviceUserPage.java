@@ -93,7 +93,7 @@ public class DeviceUserPage extends VentilatorBasePage {
 //                                return;
 //                            }
 //                        }
-                        deleteUserDialog(userInfo.id);
+                        deleteUserDialog(userInfo.id, R.string.ventilator_delete_user_hint);
                     }
                 }
             }
@@ -122,6 +122,10 @@ public class DeviceUserPage extends VentilatorBasePage {
 
     //获取设备绑定的用户
     private void getDeviceUsers(Device device) {
+        if (device.dc.equals(IDeviceType.RZNG) || device.dc.equals(IDeviceType.RRQZ)) { //子设备没有用户
+            btnShare.setText(R.string.ventilator_delete_device);
+            return;
+        }
         CloudHelper.getDeviceUsers(this, curUser.id, device.guid, GetDeviceUserRes.class, new RetrofitCallback<GetDeviceUserRes>() {
 
             @Override
@@ -137,10 +141,10 @@ public class DeviceUserPage extends VentilatorBasePage {
         });
     }
     //删除用户确认
-    private void deleteUserDialog(long userid) {
+    private void deleteUserDialog(long userid, int resId) {
         IDialog iDialog = VentilatorDialogFactory.createDialogByType(getContext(), DialogConstant.DIALOG_TYPE_VENTILATOR_COMMON);
         iDialog.setCancelable(false);
-        iDialog.setContentText(R.string.ventilator_delete_user_hint);
+        iDialog.setContentText(resId);
         iDialog.setListeners(new IDialog.DialogOnClickListener() {
             @Override
             public void onClick(View v) {
@@ -186,8 +190,12 @@ public class DeviceUserPage extends VentilatorBasePage {
     @Override
     public void onClick(View view) {
         int id = view.getId();
-        if (id == R.id.btn_share)
-            shareDialog();
+        if (id == R.id.btn_share) {
+            if (IDeviceType.RRQZ.equals(device.dc) || IDeviceType.RZNG.equals(device.dc)) //子设备
+                deleteUserDialog(curUser.id, R.string.ventilator_delete_device_hint);
+            else
+                shareDialog();
+        }
     }
     //分享控制权
     private void shareDialog() {

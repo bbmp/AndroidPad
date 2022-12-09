@@ -79,6 +79,7 @@
     <string name="ventilator_match_ing">配对中...</string>
     <string name="ventilator_rematch">重新配对</string>
     <string name="ventilator_delete_user_hint">确认删除该账号</string>
+    <string name="ventilator_delete_device_hint">确认删除该设备</string>
     <string name="ventilator_not_administrator">您不是管理员</string>
     <string name="ventilator_share_hint">请打开ROKI APP, 扫一扫分享</string>
     <string name="ventilator_smart_reset_hint">确认恢复初始设置</string>
@@ -106,4 +107,5 @@
     <string name="ventilator_disinfect_completion">消毒完成</string>
     <string name="ventilator_cabinet_completion">结束</string>
     <string name="ventilator_products_center">欢迎使用\n双子星套系产品</string>
+    <string name="ventilator_delete_device">删除设备</string>
 </resources>
