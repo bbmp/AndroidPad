@@ -21,6 +21,8 @@ import com.robam.common.bean.Device;
 import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.helper.PickerLayoutManager;
+import com.robam.common.utils.ClickUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -157,6 +159,9 @@ public class ModeSelectActivity extends CabinetBaseActivity {
         } else if (id == R.id.btn_start) {
             //开始工作
             //startWork();
+            if(ClickUtils.isFastClick()){
+                return;//防止快速重复点击
+            }
             if(this.checkDoorState()){//新增检查门状态
                 //CabinetCommonHelper.startPowerOn(POWER_ON_OFFSET + directive_offset);//指令压缩，无需再发送开机指令
                 CabinetCommonHelper.startAppointCommand(cabModeBean.code,

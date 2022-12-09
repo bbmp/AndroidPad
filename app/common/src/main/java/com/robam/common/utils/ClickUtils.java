@@ -77,4 +77,15 @@ public class ClickUtils {
         }
     }
 
+    private static final int MIN_CLICK_DELAY_TIME = 1000;//最小连续点击时间间隔
+    private static long lastClickTime;
+    public static boolean isFastClick() {//是否为快速重复点击
+        boolean flag = false;
+        long curClickTime = System.currentTimeMillis();
+        if ((curClickTime - lastClickTime) < MIN_CLICK_DELAY_TIME) {
+            flag = true;
+        }
+        lastClickTime = curClickTime;
+        return flag;
+    }
 }

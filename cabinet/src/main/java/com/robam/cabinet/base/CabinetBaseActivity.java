@@ -83,13 +83,9 @@ public abstract class CabinetBaseActivity extends BaseActivity {
             map.put(CabinetConstant.CABINET_LOCK,1);
             CabinetCommonHelper.sendCommonMsg(map);
         });
-        rightCenter.setOnLongClickListener(v->{
-            Map map = CabinetCommonHelper.getCommonMap(MsgKeys.SetSteriLock_Req);
-            map.put(CabinetConstant.CABINET_LOCK,0);
-            CabinetCommonHelper.sendCommonMsg(map);
-            return true;
-        });
+
     }
+
 
     /**
      * 是否已关机
@@ -128,6 +124,8 @@ public abstract class CabinetBaseActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         CabinetActivityManager.getInstance().removeActivity(this);
+        unLockHandler.removeCallbacks(unLockRunnable);
+        unLockHandler.removeCallbacksAndMessages(null);
     }
 
     //锁屏
@@ -163,13 +161,39 @@ public abstract class CabinetBaseActivity extends BaseActivity {
 
 
     private long lastTouchMil;
+    private int mLastMotionX;
+    private int mLastMotionY;
+    private int TOUCH_MAX = 50;
+    private Handler unLockHandler = new Handler();
+    private final Runnable unLockRunnable = () -> {
+        Map map = CabinetCommonHelper.getCommonMap(MsgKeys.SetSteriLock_Req);
+        map.put(CabinetConstant.CABINET_LOCK,0);
+        CabinetCommonHelper.sendCommonMsg(map);
+    };
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if(lock){
             boolean isTouchAble = lockTouchArea(ev);
-            //LogUtils.e("caTouch "+isTouchAble);
             if(isTouchAble){
+                int x = (int)ev.getX();
+                int y = (int)ev.getY();
+                switch (ev.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+                        mLastMotionX = x;
+                        mLastMotionY = y;
+                        unLockHandler.postDelayed(unLockRunnable,2000);
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        if(Math.abs(mLastMotionX - x) > TOUCH_MAX || Math.abs(mLastMotionY - y) > TOUCH_MAX){
+                            unLockHandler.removeCallbacks(unLockRunnable);
+                        }
+                        break;
+                    case MotionEvent.ACTION_CANCEL:
+                    case MotionEvent.ACTION_UP:
+                        unLockHandler.postDelayed(unLockRunnable,2000);
+                        break;
+                }
                 return super.dispatchTouchEvent(ev);
             }
             if(System.currentTimeMillis() - lastTouchMil >= 3000){
@@ -273,5 +297,7 @@ public abstract class CabinetBaseActivity extends BaseActivity {
         }
         return true;
     }
+
+
 
 }

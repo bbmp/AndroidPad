@@ -202,9 +202,18 @@ public class WorkActivity extends CabinetBaseActivity {
             if (v.getId() == R.id.tv_ok) {
                 Cabinet cabinet = getCabinet();
                 if(cabinet != null){
-                    MqttDirective.WorkState workState = MqttDirective.getInstance().getWorkState(cabinet.guid);
-                    if(workState != null && workState.isFinish() && workState.workModel == CabinetEnum.SMART.getCode()){
+                    boolean isSmart = false;
+                    //MqttDirective.WorkState workState = MqttDirective.getInstance().getWorkState(cabinet.guid);
+                    if(cabinet.smartCruising == 1 || cabinet.pureCruising == 1){
+                        isSmart = true;
+                    }
+                   /* else if(workState != null && workState.isFinish() && workState.workModel == CabinetEnum.SMART.getCode()){
+                        isSmart = true;
+                    }*/
+                    if(isSmart){
                         Intent intent = new Intent(WorkActivity.this,CruiseActivity.class);
+                        int model = cabinet.smartCruising == 1 ? CabinetEnum.SMART.getCode() : CabinetEnum.FLUSH.getCode();
+                        intent.putExtra(Constant.SMART_MODEL,model);
                         startActivity(intent);
                         return;
                     }

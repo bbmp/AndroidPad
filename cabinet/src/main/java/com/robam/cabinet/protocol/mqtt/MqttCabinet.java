@@ -102,6 +102,7 @@ public class MqttCabinet extends MqttPublic {
                 msg.putOpt(CabinetConstant.UserId, MsgUtils.getString(payload, offset++, 10));
                 if(eventId == EventConstant.WORK_FINISH && eventParam == 0){
                     MqttDirective.getInstance().finishWorkModelState(msg.getGuid());
+                    CabinetAbstractControl.getInstance().queryAttribute(msg.getGuid());
                 }
                 break;
         }
