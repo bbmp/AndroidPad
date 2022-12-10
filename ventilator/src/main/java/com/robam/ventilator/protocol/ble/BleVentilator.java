@@ -375,8 +375,10 @@ public class BleVentilator {
                                                 Iterator<Device> iterator = AccountInfo.getInstance().deviceList.iterator();
                                                 while (iterator.hasNext()) {
                                                     Device device = iterator.next();
-                                                    if (bleDevice.getMac().equals(device.mac))
+                                                    if (bleDevice.getMac().equals(device.mac)) {
+                                                        LogUtils.e("delete 1" + bleDevice.getMac());
                                                         iterator.remove();  //删除设备
+                                                    }
                                                 }
                                                 response = false;
                                             } else {
@@ -387,8 +389,10 @@ public class BleVentilator {
                                                         Iterator<Device> iterator = AccountInfo.getInstance().deviceList.iterator();
                                                         while (iterator.hasNext()) {
                                                             Device device1 = iterator.next();
-                                                            if (bleDevice.getMac().equals(device1.mac) && TextUtils.isEmpty(device1.guid))
+                                                            if (bleDevice.getMac().equals(device1.mac) && TextUtils.isEmpty(device1.guid)) {
+                                                                LogUtils.e("delete 2" + bleDevice.getMac());
                                                                 iterator.remove();  //删除设备
+                                                            }
                                                         }
                                                         response = false;
                                                         break;

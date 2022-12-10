@@ -16,6 +16,8 @@ import com.robam.common.utils.PermissionUtils;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
 import com.robam.ventilator.constant.VentilatorConstant;
+import com.robam.ventilator.protocol.ble.BleConnectPan;
+import com.robam.ventilator.protocol.ble.BleConnectStove;
 import com.robam.ventilator.protocol.ble.BleVentilator;
 
 public class MatchNetworkActivity extends VentilatorBaseActivity implements BleVentilator.BleCallBack{
@@ -136,11 +138,13 @@ public class MatchNetworkActivity extends VentilatorBaseActivity implements BleV
         if (model.equals(IDeviceType.RRQZ)) {
             String[] names = new String[]{BlueToothManager.stove};
             BlueToothManager.setScanRule(names);
+            BleConnectStove.startScan(this);
         } else if (model.equals(IDeviceType.RZNG)) {
             String[] names = new String[]{BlueToothManager.pan};
             BlueToothManager.setScanRule(names);
+            BleConnectPan.startScan(this);
         }
-        startScan();
+//        startScan();
     }
 
     @Override

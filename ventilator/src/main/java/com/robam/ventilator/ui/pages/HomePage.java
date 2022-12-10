@@ -1,6 +1,7 @@
 package com.robam.ventilator.ui.pages;
 
 import android.content.Intent;
+import android.os.Handler;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,6 +73,8 @@ import com.robam.ventilator.device.HomeVentilator;
 import com.robam.ventilator.device.VentilatorAbstractControl;
 import com.robam.ventilator.factory.VentilatorDialogFactory;
 import com.robam.ventilator.http.CloudHelper;
+import com.robam.ventilator.protocol.ble.BleConnectPan;
+import com.robam.ventilator.protocol.ble.BleConnectStove;
 import com.robam.ventilator.response.GetDeviceRes;
 import com.robam.ventilator.ui.activity.AddDeviceActivity;
 import com.robam.ventilator.ui.activity.MatchNetworkActivity;
@@ -491,11 +494,11 @@ public class HomePage extends VentilatorBasePage {
                 }
 
                 //找不到设备
-                if (System.currentTimeMillis() - refreshTime < 2000 && refreshTime != 0) //防止频繁刷
+                if (System.currentTimeMillis() - refreshTime < 200 && refreshTime != 0) //防止频繁刷
                     return;
-                LogUtils.e("onChanged " + s);
                 refreshTime = System.currentTimeMillis();
-                if (null != rvProductsAdapter) {
+                if (null != rvProductsAdapter && null != drawerLayout && drawerLayout.isDrawerOpen(Gravity.RIGHT)) {
+                    LogUtils.e("onChanged " + s);
                     rvProductsAdapter.setList(AccountInfo.getInstance().deviceList);
                 }
             }
@@ -630,23 +633,59 @@ public class HomePage extends VentilatorBasePage {
                 }
             }
         }
-//        List<String> names = new ArrayList();
-//
-//        for (Device device: AccountInfo.getInstance().deviceList) {
-//            if (device instanceof Pan && null == ((Pan) device).bleDevice)
-//                names.add(BlueToothManager.pan);
-//            else if (device instanceof Stove && null == ((Stove) device).bleDevice)
-//                names.add(BlueToothManager.stove);
-//        }
-//        if (names.size() > 0) {
-//            BlueToothManager.setScanRule(names.toArray(new String[names.size()]));
-//            BleVentilator.startScan("", null);
-//        }
+        //自动连接
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device instanceof Stove && null == ((Stove) device).bleDevice) {
+                String[] names = new String[]{BlueToothManager.stove};
+                BlueToothManager.setScanRule(names);
+                BleConnectStove.startScan(null);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        autoConnectBleDevice(IDeviceType.RZNG);
+                    }
+                }, 20* 1000);
+                break;
+            } else if (device instanceof Pan && null == ((Pan) device).bleDevice) {
+                String[] names = new String[]{BlueToothManager.pan};
+                BlueToothManager.setScanRule(names);
+                BleConnectPan.startScan(null);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        autoConnectBleDevice(IDeviceType.RRQZ);
+                    }
+                }, 20*1000);
+                break;
+            }
+        }
         //订阅设备主题
         subscribeDevice();
 
         if (null != rvProductsAdapter)
             rvProductsAdapter.setList(AccountInfo.getInstance().deviceList);
+    }
+    //开机自动连接蓝牙设备
+    private void autoConnectBleDevice(String dc) {
+        if (IDeviceType.RRQZ.equals(dc)) {
+            for (Device device: AccountInfo.getInstance().deviceList) {
+                if (device instanceof Stove && null == ((Stove) device).bleDevice) {
+                    String[] names = new String[]{BlueToothManager.stove};
+                    BlueToothManager.setScanRule(names);
+                    BleConnectStove.startScan(null);
+                    break;
+                }
+            }
+        } else if (IDeviceType.RZNG.equals(dc)) {
+            for (Device device: AccountInfo.getInstance().deviceList) {
+                if (device instanceof Pan && null == ((Pan) device).bleDevice) {
+                    String[] names = new String[]{BlueToothManager.pan};
+                    BlueToothManager.setScanRule(names);
+                    BleConnectPan.startScan(null);
+                    break;
+                }
+            }
+        }
     }
 
     //绑定设备 返回列表中无主设备
@@ -669,7 +708,6 @@ public class HomePage extends VentilatorBasePage {
 
                     }
                 });
-        //子设备绑定
     }
 
     //循环订阅
