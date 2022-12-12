@@ -151,7 +151,14 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
                         HomeVentilator.getInstance().startLevelCountDown();
                     } else
                         HomeVentilator.getInstance().stopLevelCountDown();
+                    //升档位
+                    if (((stove.leftLevel == 1 && stove.rightLevel <= 1 && (leftLevel > 1 || rightLevel > 1)) || (stove.rightLevel == 1 && stove.leftLevel <= 1
+                            && (leftLevel > 1 || rightLevel > 1))) && HomeVentilator.getInstance().autoWeak) {
+                        VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_MID); //切换强档
+                    }
+
                 }
+
                 break;
             }
         }
