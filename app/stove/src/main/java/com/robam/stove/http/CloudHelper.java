@@ -33,10 +33,10 @@ public class CloudHelper {
     private static ICloudService svr = RetrofitClient.getInstance().createApi(ICloudService.class, HostServer.apiHost);
 
     //获取灶具分类菜谱
-    public static <T extends BaseResponse> void getRecipesByDevice(ILife iLife, String dc, String recipeType, int start, int limit,
+    public static <T extends BaseResponse> void getRecipesByDevice(ILife iLife, long userId, String dc, String cookbookType, int start, int limit, String dp,
                                                                             Class<T> entity,
                                                               final RetrofitCallback<T> callback) {
-        String json = new GetRecipesByDeviceReq(dc, recipeType, start, limit).toString();
+        String json = new GetRecipesByDeviceReq(userId, dc, start, limit, cookbookType, dp).toString();
         RequestBody requestBody =
                 RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
         Call<ResponseBody> call = svr.getRecipesByDevice(requestBody);
