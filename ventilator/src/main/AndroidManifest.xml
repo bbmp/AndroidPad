@@ -121,6 +121,12 @@
             android:name=".ui.service.AlarmVentilatorService"
             android:enabled="true"
             android:exported="true" />
+        <receiver android:name=".ui.receiver.AlarmBleReceiver"
+            android:exported="false"/>
+        <receiver android:name=".ui.receiver.AlarmMqttReceiver"
+            android:exported="false"/>
+        <receiver android:name=".ui.receiver.AlarmSerialReceiver"
+            android:exported="false"/>
     </application>
 
 </manifest>

@@ -1,11 +1,14 @@
 package com.robam.ventilator.ui.service;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
+import android.os.Environment;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.os.SystemClock;
 import android.serialport.helper.SerialPortHelper;
 
 import androidx.annotation.Nullable;
@@ -13,19 +16,20 @@ import androidx.annotation.Nullable;
 import com.robam.common.device.Plat;
 import com.robam.common.manager.LiveDataBus;
 import com.robam.common.utils.DateUtil;
+import com.robam.common.utils.FileUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MMKVUtils;
 import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.device.HomeVentilator;
 import com.robam.ventilator.device.VentilatorAbstractControl;
 import com.robam.ventilator.protocol.serial.SerialVentilator;
+import com.robam.ventilator.ui.receiver.AlarmBleReceiver;
+import com.robam.ventilator.ui.receiver.AlarmSerialReceiver;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Calendar;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -34,20 +38,13 @@ import java.util.concurrent.TimeUnit;
 public class AlarmVentilatorService extends Service {
     private static final int INTERVAL = 3000;
     private byte data[] = SerialVentilator.packQueryCmd();
+    private AlarmManager alarmManager;
+    private PendingIntent pIntent;
+    private static final int PENDING_REQUEST = 0;
 
     //用于熄屏时读取按键
     private ThreadPoolExecutor keyMonitor = new ThreadPoolExecutor(1, 1, 0, TimeUnit.SECONDS, new SynchronousQueue<>(),
             new ThreadPoolExecutor.DiscardPolicy());//无法重复提交
-
-    private Handler mHandler = new Handler();
-    private Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            startService(new Intent(AlarmVentilatorService.this, AlarmVentilatorService.class));
-
-            mHandler.postDelayed(runnable, INTERVAL);
-        }
-    };
 
     @Nullable
     @Override
@@ -58,8 +55,10 @@ public class AlarmVentilatorService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        Intent i = new Intent(this, AlarmSerialReceiver.class);
+        pIntent = PendingIntent.getBroadcast(this, PENDING_REQUEST, i, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        mHandler.postDelayed(runnable, INTERVAL);
         keyMonitor.execute(new Runnable() {
             @Override
             public void run() {
@@ -120,6 +119,16 @@ public class AlarmVentilatorService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        //通过AlarmManager定时启动广播,用handler熄屏后会停止
+
+        if (null != alarmManager) {
+            long triggerAtTime = SystemClock.elapsedRealtime() + INTERVAL;//从开机到现在的毫秒（手机睡眠(sleep)的时间也包括在内
+            try {
+                alarmManager.cancel(pIntent);
+            } catch (Exception e) {}
+            alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAtTime, pIntent);
+        }
+
         //串口查询
         SerialPortHelper.getInstance().addCommands(data);
 
@@ -175,8 +184,9 @@ public class AlarmVentilatorService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mHandler.removeCallbacks(runnable);
-
-        mHandler.removeCallbacksAndMessages(null);
+        if (null != alarmManager) {
+            alarmManager.cancel(pIntent);
+            alarmManager = null;
+        }
     }
 }

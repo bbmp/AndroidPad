@@ -53,6 +53,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.SynchronousQueue;
@@ -63,7 +64,7 @@ import java.util.concurrent.TimeUnit;
 public class BleVentilator {
     private static ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(2, 2, 0, TimeUnit.MILLISECONDS,
             new SynchronousQueue<>());
-    private static WeakReference<BleCallBack> bleCallBackWeakReference;
+
     private static final int MSG_DELAY_DISCONNECT = 1;
     private static final int MSG_QUERY_FANPAN = 2; //烟锅联动查询
     private static final int MSG_QUERY_STOVEATTRIBUTE = 3;//查询灶具状态
@@ -76,9 +77,50 @@ public class BleVentilator {
         void onConnectSuccess();
     }
 
+    //开机自动扫描
+    public static void startScan() {
+
+        BlueToothManager.cancelScan();
+
+        BlueToothManager.startScan(new BleScanCallback() {
+            @Override
+            public void onScanStarted(boolean success) {
+                LogUtils.e("onScanStarted");
+            }
+
+            @Override
+            public void onLeScan(BleDevice bleDevice) {
+                super.onLeScan(bleDevice);
+                LogUtils.e("onLeScan " + bleDevice.getName());
+            }
+
+            @Override
+            public void onScanning(BleDevice bleDevice) {
+
+            }
+
+            @Override
+            public void onScanFinished(List<BleDevice> scanResultList) {
+                //LogUtils.e("onScanFinished ");
+
+                if (null != scanResultList && scanResultList.size() > 0) {
+                    for (BleDevice bleDevice: scanResultList) {
+                        String deviceNum = BleVentilator.changeMac(bleDevice.getMac());
+                        for (Device device: AccountInfo.getInstance().deviceList) {
+                            if (deviceNum.equals(DeviceUtils.getDeviceNumber(device.guid)) && device instanceof Stove)
+                                connect(IDeviceType.RRQZ, bleDevice, null);
+                            else if (deviceNum.equals(DeviceUtils.getDeviceNumber(device.guid)) && device instanceof Pan)
+                                connect(IDeviceType.RZNG, bleDevice, null);
+                        }
+                    }
+                }
+            }
+        });
+    }
+
     //开始扫描
     public static void startScan(String model, BleCallBack bleCallBack) {
-        bleCallBackWeakReference = new WeakReference<>(bleCallBack);
+        WeakReference<BleCallBack> bleCallBackWeakReference = new WeakReference<>(bleCallBack);
 
         BlueToothManager.startScan(new BleScanCallback() {
             @Override
@@ -104,7 +146,7 @@ public class BleVentilator {
                 if (null != scanResultList && scanResultList.size() > 0) {
                     for (BleDevice bleDevice: scanResultList) {
                         if (bleDevice.getName().contains(BlueToothManager.stove) || bleDevice.getName().contains(BlueToothManager.pan))
-                            connect(model, bleDevice);
+                            connect(model, bleDevice, bleCallBackWeakReference);
                     }
                 } else {
                     if (null != bleCallBackWeakReference && null != bleCallBackWeakReference.get())
@@ -115,7 +157,7 @@ public class BleVentilator {
     }
 
     //连接设备
-    public static void connect(String model, final BleDevice bleDevice) {
+    public static void connect(String model, final BleDevice bleDevice, WeakReference<BleVentilator.BleCallBack> bleCallBackWeakReference) {
         LogUtils.e("connect " + bleDevice.getMac() + " " + bleDevice.getName() + " rssi " + bleDevice.getRssi());
         BlueToothManager.connect(bleDevice, new BleGattCallback() {
             @Override
@@ -163,7 +205,7 @@ public class BleVentilator {
                                     Thread.sleep(2000);
                                 } catch (Exception e) {
                                 }
-                                connect(model, bleDevice);
+                                connect(model, bleDevice, bleCallBackWeakReference);
                             }
                         });
                     } catch (Exception e) {}
@@ -220,7 +262,12 @@ public class BleVentilator {
             Stove stove = new Stove("燃气灶", IDeviceType.RRQZ, "9B328");
             stove.mac = bleDevice.getMac();
             stove.bleDecoder = new BleDecoder(0);
-            AccountInfo.getInstance().deviceList.add(stove);
+            ListIterator<Device> iterator = AccountInfo.getInstance().deviceList.listIterator();
+            while (iterator.hasNext()) {
+                iterator.next();
+            }
+            iterator.add(stove);
+//            AccountInfo.getInstance().deviceList.add(stove);
         } else if (IDeviceType.RZNG.equals(model)) {
 //            Iterator<Device> iterator = AccountInfo.getInstance().deviceList.iterator();
 //            while (iterator.hasNext()) {
@@ -231,11 +278,16 @@ public class BleVentilator {
             Pan pan = new Pan("明火自动翻炒锅", IDeviceType.RZNG, "KP100");
             pan.mac = bleDevice.getMac();
             pan.bleDecoder = new BleDecoder(0);
-            AccountInfo.getInstance().deviceList.add(pan);
+            ListIterator<Device> iterator = AccountInfo.getInstance().deviceList.listIterator();
+            while (iterator.hasNext()) {
+                iterator.next();
+            }
+            iterator.add(pan);
+//            AccountInfo.getInstance().deviceList.add(pan);
         }
     }
     //转变bledevice mac地址
-    private static String changeMac(String mac) {
+    public static String changeMac(String mac) {
         String deviceNum = "";
         if (null != mac) {
             String[] data = mac.split(":");
@@ -375,8 +427,10 @@ public class BleVentilator {
                                                 Iterator<Device> iterator = AccountInfo.getInstance().deviceList.iterator();
                                                 while (iterator.hasNext()) {
                                                     Device device = iterator.next();
-                                                    if (bleDevice.getMac().equals(device.mac))
+                                                    if (bleDevice.getMac().equals(device.mac)) {
+                                                        LogUtils.e("delete 1" + bleDevice.getMac());
                                                         iterator.remove();  //删除设备
+                                                    }
                                                 }
                                                 response = false;
                                             } else {
@@ -387,8 +441,10 @@ public class BleVentilator {
                                                         Iterator<Device> iterator = AccountInfo.getInstance().deviceList.iterator();
                                                         while (iterator.hasNext()) {
                                                             Device device1 = iterator.next();
-                                                            if (bleDevice.getMac().equals(device1.mac) && TextUtils.isEmpty(device1.guid))
+                                                            if (bleDevice.getMac().equals(device1.mac) && TextUtils.isEmpty(device1.guid)) {
+                                                                LogUtils.e("delete 2" + bleDevice.getMac());
                                                                 iterator.remove();  //删除设备
+                                                            }
                                                         }
                                                         response = false;
                                                         break;

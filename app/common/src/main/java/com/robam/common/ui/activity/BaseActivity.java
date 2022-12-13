@@ -174,10 +174,6 @@ public abstract class BaseActivity extends AbsActivity implements ActivityAction
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        Activity activity = AppActivityManager.getInstance().getCurrentActivity();
-
-        if (!iPublicVentilatorApi.isStartUp() && null != activity && activity.getClass().getName().equals(IPublicVentilatorApi.VENTILATOR_HOME))  //关机状态且在首页
-            return true;
         //有触摸，更新操作时间
         if (null != iPublicVentilatorApi)
             iPublicVentilatorApi.updateOperationTime();

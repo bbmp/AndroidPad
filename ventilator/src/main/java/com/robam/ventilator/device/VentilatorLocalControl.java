@@ -20,12 +20,14 @@ public class VentilatorLocalControl implements VentilatorFunction{
         HomeVentilator.getInstance().stopA6CountDown(); //停止爆炒档计时
         HomeVentilator.getInstance().stopLevelCountDown(); //停止弱档计时
         HomeVentilator.getInstance().stopAutoCountDown(); //停止自动通风
+        HomeVentilator.getInstance().autoWeak = false;
     }
 
     @Override
     public void powerOn() {
         byte[] data = SerialVentilator.powerOn();
         SerialPortHelper.getInstance().addCommands(data);
+        HomeVentilator.getInstance().autoWeak = false;
     }
 
     @Override
@@ -53,6 +55,7 @@ public class VentilatorLocalControl implements VentilatorFunction{
             HomeVentilator.getInstance().stopA6CountDown();
         //记录时间
         HomeVentilator.getInstance().fanRunTime(gear);
+        HomeVentilator.getInstance().autoWeak = false;
     }
 
     @Override
@@ -71,6 +74,7 @@ public class VentilatorLocalControl implements VentilatorFunction{
         HomeVentilator.getInstance().stopA6CountDown(); //停止爆炒档计时
         HomeVentilator.getInstance().stopLevelCountDown(); //停止弱档计时
         HomeVentilator.getInstance().stopAutoCountDown(); //停止自动通风
+        HomeVentilator.getInstance().autoWeak = false;
     }
 
     @Override

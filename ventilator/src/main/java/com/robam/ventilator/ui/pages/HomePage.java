@@ -5,8 +5,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -36,7 +34,6 @@ import com.robam.common.manager.BlueToothManager;
 import com.robam.common.manager.DeviceWarnInfoManager;
 import com.robam.common.manager.LiveDataBus;
 import com.robam.common.module.ModulePubliclHelper;
-import com.robam.common.ui.blurview.ShapeBlurView;
 import com.robam.common.ui.view.AudioWaveView;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.MMKVUtils;
@@ -58,7 +55,6 @@ import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ScreenUtils;
-import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.stove.device.StoveAbstractControl;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBasePage;
@@ -72,6 +68,7 @@ import com.robam.ventilator.device.HomeVentilator;
 import com.robam.ventilator.device.VentilatorAbstractControl;
 import com.robam.ventilator.factory.VentilatorDialogFactory;
 import com.robam.ventilator.http.CloudHelper;
+import com.robam.ventilator.protocol.ble.BleVentilator;
 import com.robam.ventilator.response.GetDeviceRes;
 import com.robam.ventilator.ui.activity.AddDeviceActivity;
 import com.robam.ventilator.ui.activity.MatchNetworkActivity;
@@ -289,6 +286,7 @@ public class HomePage extends VentilatorBasePage {
                     } else if (position == 3) {
                         VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_FRY);
                     }
+                    HomeVentilator.getInstance().autoWeak = false;
                 }
             }
         });
@@ -491,11 +489,11 @@ public class HomePage extends VentilatorBasePage {
                 }
 
                 //找不到设备
-                if (System.currentTimeMillis() - refreshTime < 2000 && refreshTime != 0) //防止频繁刷
+                if (System.currentTimeMillis() - refreshTime < 200 && refreshTime != 0) //防止频繁刷
                     return;
-                LogUtils.e("onChanged " + s);
                 refreshTime = System.currentTimeMillis();
-                if (null != rvProductsAdapter) {
+                if (null != rvProductsAdapter && null != drawerLayout && drawerLayout.isDrawerOpen(Gravity.RIGHT)) {
+                    LogUtils.e("onChanged " + s);
                     rvProductsAdapter.setList(AccountInfo.getInstance().deviceList);
                 }
             }
@@ -630,18 +628,20 @@ public class HomePage extends VentilatorBasePage {
                 }
             }
         }
-//        List<String> names = new ArrayList();
-//
-//        for (Device device: AccountInfo.getInstance().deviceList) {
-//            if (device instanceof Pan && null == ((Pan) device).bleDevice)
-//                names.add(BlueToothManager.pan);
-//            else if (device instanceof Stove && null == ((Stove) device).bleDevice)
-//                names.add(BlueToothManager.stove);
-//        }
-//        if (names.size() > 0) {
-//            BlueToothManager.setScanRule(names.toArray(new String[names.size()]));
-//            BleVentilator.startScan("", null);
-//        }
+        //自动连接
+        List<String> names = new ArrayList();
+
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device instanceof Pan && null == ((Pan) device).bleDevice)
+                names.add(BlueToothManager.pan);
+            else if (device instanceof Stove && null == ((Stove) device).bleDevice)
+                names.add(BlueToothManager.stove);
+        }
+        if (names.size() > 0) {
+            BlueToothManager.setScanRule(names.toArray(new String[names.size()]));
+            BleVentilator.startScan();
+        }
+
         //订阅设备主题
         subscribeDevice();
 
@@ -669,7 +669,6 @@ public class HomePage extends VentilatorBasePage {
 
                     }
                 });
-        //子设备绑定
     }
 
     //循环订阅

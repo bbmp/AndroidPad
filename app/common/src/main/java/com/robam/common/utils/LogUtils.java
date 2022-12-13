@@ -1,8 +1,11 @@
 package com.robam.common.utils;
 
+import android.os.Environment;
 import android.util.Log;
 
 import com.robam.common.BuildConfig;
+
+import java.io.File;
 
 
 public class LogUtils {
@@ -39,7 +42,8 @@ public class LogUtils {
 
         // Throwable instance must be created before any methods
         getMethodNames(new Throwable().getStackTrace());
-        Log.e(className, createLog(message));
+        String result = createLog(message);
+        Log.e(className, result);
     }
 
 

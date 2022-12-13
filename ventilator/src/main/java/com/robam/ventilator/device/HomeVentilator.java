@@ -71,6 +71,8 @@ public class HomeVentilator {
 //    public String holidayDay = MMKVUtils.getHolidayDay(); //假日模式每隔几天通风
     //风机最后运行时间
     public long fanOffTime = MMKVUtils.getFanOffTime();
+    //触发5分钟降弱档
+    public boolean autoWeak;
     //烟机操作时间
     public long operationTime = 0;
 
@@ -121,6 +123,7 @@ public class HomeVentilator {
                 LogUtils.e("levelCountTime = " + levelCountTime);
                 if (levelCountTime >= 3000) { //5分钟
                     //切换到弱档
+                    autoWeak = true;
 
                     if (startup == (byte)0x00) { //先开机
 
