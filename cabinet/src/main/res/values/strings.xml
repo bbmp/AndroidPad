@@ -19,7 +19,7 @@
     <string name="cabinet_no_guid">缺少数据</string>
     <string name="cabinet_maintain_phone">维修电话：658889789</string>
 
-    <string name="cabinet_waring_e0_title">E0：门控告警</string>
+    <string name="cabinet_waring_e0_title">E1：门控告警</string>
     <string name="cabinet_waring_e1_title">E1：紫外线灯管未接通/传感器不良</string>
     <string name="cabinet_waring_e2_title">E2：温度传感器不良</string>
     <string name="cabinet_waring_e5_title">E5：传感器故障</string>
