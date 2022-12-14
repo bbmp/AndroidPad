@@ -163,7 +163,8 @@ public class DeviceUserPage extends VentilatorBasePage {
             //上报
             HomeVentilator.getInstance().notifyOnline(device.guid, device.bid, device.status);
             //重新获取设备列表
-            AccountInfo.getInstance().getGuid().setValue(device.guid);
+            AccountInfo.getInstance().getUser().setValue(AccountInfo.getInstance().getUser().getValue());
+//            AccountInfo.getInstance().getGuid().setValue(device.guid);
             return;
         }
         CloudHelper.unbindDevice(this, userid, device.guid, BaseResponse.class, new RetrofitCallback<BaseResponse>() {

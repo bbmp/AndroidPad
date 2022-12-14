@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 public final class PickerLayoutManager extends LinearLayoutManager {
 
-    private final PagerSnapHelper mLinearSnapHelper;
+    private final LinearSnapHelper mLinearSnapHelper;
     private final int mOrientation;
     private final int mMaxItem;
     private final float mScale;
@@ -34,7 +34,7 @@ public final class PickerLayoutManager extends LinearLayoutManager {
 
     private PickerLayoutManager(Context context, int orientation, boolean reverseLayout, int maxItem, float scale, boolean alpha) {
         super(context, orientation, reverseLayout);
-        mLinearSnapHelper = new PagerSnapHelper();
+        mLinearSnapHelper = new LinearSnapHelper();
         mMaxItem = maxItem;
         mOrientation = orientation;
         mAlpha = alpha;

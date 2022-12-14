@@ -325,7 +325,30 @@ public class MqttVentilator extends MqttPublic {
         if (targetGuid.equals(Plat.getPlatform().getDeviceOnlySign())) {
             switch (msg.getID()) {
                 case MsgKeys.DeviceConnected_Noti: { //子设备更新
-
+                    short deviceNum = ByteUtils.toShort(payload[offset++]); //子设备数量
+                    //userid
+                    ByteUtils.toString(payload, offset, 10);
+                    offset += 10;
+                    //mac
+                    ByteUtils.toString(payload, offset, 12);
+                    offset += 12;
+                    for (int i = 0; i<deviceNum; i++) {
+                        //guid
+                        String guid = ByteUtils.toString(payload, offset, 17); //子设备
+                        AccountInfo.getInstance().getGuid().setValue(guid);
+                        offset += 17;
+                        //bizlength
+                        short bizLength = ByteUtils.toShort(payload[offset++]);
+                        //biz
+                        ByteUtils.toString(payload, offset, bizLength);
+                        offset += bizLength;
+                        //固件版本
+                        ByteUtils.toShort(payload[offset++]);
+                        //设备架构类型
+                        ByteUtils.toShort(payload[offset++]);
+                        //是否在线
+                        ByteUtils.toShort(payload[offset++]);
+                    }
                 }
                 break;
                 case MsgKeys.GetSmartConfig_Req: { //读取智能互动模式
