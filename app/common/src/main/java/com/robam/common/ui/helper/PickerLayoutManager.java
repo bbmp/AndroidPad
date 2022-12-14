@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
+import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
@@ -19,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 public final class PickerLayoutManager extends LinearLayoutManager {
 
-    private final LinearSnapHelper mLinearSnapHelper;
+    private final PagerSnapHelper mLinearSnapHelper;
     private final int mOrientation;
     private final int mMaxItem;
     private final float mScale;
@@ -33,7 +34,7 @@ public final class PickerLayoutManager extends LinearLayoutManager {
 
     private PickerLayoutManager(Context context, int orientation, boolean reverseLayout, int maxItem, float scale, boolean alpha) {
         super(context, orientation, reverseLayout);
-        mLinearSnapHelper = new LinearSnapHelper();
+        mLinearSnapHelper = new PagerSnapHelper();
         mMaxItem = maxItem;
         mOrientation = orientation;
         mAlpha = alpha;

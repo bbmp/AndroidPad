@@ -644,7 +644,7 @@ public class MqttVentilator extends MqttPublic {
                                 int min = 0;
                                 min = MsgUtils.getByte(payload[offset++]); //请求定时关机时间
 
-                                if (min >=1 || min <= 5) //设置延时关机时间
+                                if (min >=1 && min <= 5) //设置延时关机时间
                                     MMKVUtils.setDelayShutdownTime(min + "");
                                 break;
                         }
