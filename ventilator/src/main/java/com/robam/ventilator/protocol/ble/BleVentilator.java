@@ -429,7 +429,8 @@ public class BleVentilator {
                                                     Device device = iterator.next();
                                                     if (bleDevice.getMac().equals(device.mac)) {
                                                         LogUtils.e("delete 1" + bleDevice.getMac());
-                                                        iterator.remove();  //删除设备
+                                                        device.dc = "unknown";
+//                                                        iterator.remove();  //删除设备
                                                     }
                                                 }
                                                 response = false;
@@ -443,7 +444,8 @@ public class BleVentilator {
                                                             Device device1 = iterator.next();
                                                             if (bleDevice.getMac().equals(device1.mac) && TextUtils.isEmpty(device1.guid)) {
                                                                 LogUtils.e("delete 2" + bleDevice.getMac());
-                                                                iterator.remove();  //删除设备
+                                                                device.dc = "unknown";
+//                                                                iterator.remove();  //删除设备
                                                             }
                                                         }
                                                         response = false;
@@ -508,7 +510,7 @@ public class BleVentilator {
                                                     if (device.status != Device.ONLINE) {
                                                         device.status = Device.ONLINE;
                                                         device.queryNum = 0;
-                                                        AccountInfo.getInstance().getGuid().setValue(device.guid);
+//                                                        AccountInfo.getInstance().getGuid().setValue(device.guid);
 
                                                         updateSubdevice(device);
                                                         //通知上线
@@ -516,11 +518,12 @@ public class BleVentilator {
                                                         //订阅主题
                                                         MqttManager.getInstance().subscribe(device.dc, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid));
                                                         //延时查询烟锅联动状态
-                                                        if (IDeviceType.RZNG.equals(device.dc)) {
+//                                                        if (IDeviceType.RZNG.equals(device.dc)) {
                                                             Message message = handler.obtainMessage();
                                                             message.arg1 = MSG_QUERY_FANPAN;
-                                                            handler.sendMessageDelayed(message, 200);
-                                                        }
+                                                            message.obj = device.dc;
+                                                            handler.sendMessageDelayed(message, 1000);
+//                                                        }
                                                     }
                                                     break;
                                                 }
@@ -789,9 +792,13 @@ public class BleVentilator {
                 delay_disconnect_ble((BleDevice) msg.obj);
             else if (null != msg && msg.arg1 == MSG_QUERY_FANPAN) {//烟锅联动状态查询
                 //查询烟锅联动开关
-                IPublicPanApi iPublicPanApi = ModulePubliclHelper.getModulePublic(IPublicPanApi.class, IPublicPanApi.PAN_PUBLIC);
-                if (null != iPublicPanApi)
-                    iPublicPanApi.queryFanPan();
+                if (IDeviceType.RZNG.equals(msg.obj)) {
+                    IPublicPanApi iPublicPanApi = ModulePubliclHelper.getModulePublic(IPublicPanApi.class, IPublicPanApi.PAN_PUBLIC);
+                    if (null != iPublicPanApi)
+                        iPublicPanApi.queryFanPan();
+                }
+                //重新获取列表
+                AccountInfo.getInstance().getUser().setValue(AccountInfo.getInstance().getUser().getValue());
             } else if (null != msg && msg.arg1 == MSG_QUERY_STOVEATTRIBUTE) {
                 IPublicStoveApi iPublicStoveApi = ModulePubliclHelper.getModulePublic(IPublicStoveApi.class,
                         IPublicStoveApi.STOVE_PUBLIC);
