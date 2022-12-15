@@ -47,6 +47,7 @@ public class Pan extends Device {
         this.bid = device.bid;
         this.dc = device.dc;
         this.dt = device.dt;
+        this.dp = device.dp;
         this.displayType = device.displayType;
         this.categoryName = device.categoryName;
         this.subDevices = device.subDevices;

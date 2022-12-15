@@ -6,6 +6,7 @@ import java.util.List;
 //step参数
 public class StepParams implements Serializable {
     public String deviceCategory;
+    public String platCode; //平台
     public List<Params> params;
 
     //挡位参数

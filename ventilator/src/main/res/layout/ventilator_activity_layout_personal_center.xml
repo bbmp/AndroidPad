@@ -161,5 +161,6 @@
         android:id="@+id/ventilator_group4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:constraint_referenced_ids="iv_head_img, tv_not_login, tv_login" />
 </androidx.constraintlayout.widget.ConstraintLayout>

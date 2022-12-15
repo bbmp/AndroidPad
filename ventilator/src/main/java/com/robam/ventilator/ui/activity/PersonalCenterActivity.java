@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.lifecycle.Observer;
 import androidx.viewpager.widget.ViewPager;
 
+import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -58,6 +59,7 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
     //昵称和手机
     private TextView tvName, tvPhone;
     private IDialog exitDialog;
+    private Handler mHandler = new Handler();
 
 
     @Override
@@ -86,7 +88,12 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
         AccountInfo.getInstance().getUser().observe(this, new Observer<UserInfo>() {
             @Override
             public void onChanged(UserInfo userInfo) {
-                setUserInfo(userInfo);
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        setUserInfo(userInfo);
+                    }
+                }, 200); //延时200ms
             }
         });
         //删除设备监听
@@ -317,5 +324,7 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
         super.onDestroy();
         if (null != exitDialog && exitDialog.isShow())
             exitDialog.dismiss();
+
+        mHandler.removeCallbacksAndMessages(null);
     }
 }

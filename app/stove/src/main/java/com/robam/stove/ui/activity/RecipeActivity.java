@@ -15,6 +15,8 @@ import android.widget.TextView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.robam.common.IDeviceType;
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.UserInfo;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.common.utils.ToastUtils;
@@ -22,6 +24,7 @@ import com.robam.stove.R;
 import com.robam.stove.base.StoveBaseActivity;
 import com.robam.stove.bean.StoveRecipe;
 import com.robam.common.constant.StoveConstant;
+import com.robam.stove.device.HomeStove;
 import com.robam.stove.http.CloudHelper;
 import com.robam.stove.response.GetRecipesByDeviceRes;
 import com.robam.stove.ui.adapter.RvRecipeAdapter;
@@ -112,7 +115,9 @@ public class RecipeActivity extends StoveBaseActivity {
     }
     //获取灶具菜谱
     private void getStoveRecipe() {
-        CloudHelper.getRecipesByDevice(this, IDeviceType.RRQZ, "all", 1, 20, GetRecipesByDeviceRes.class,
+        UserInfo userInfo = AccountInfo.getInstance().getUser().getValue();
+        String dp = HomeStove.getInstance().getDp();
+        CloudHelper.getRecipesByDevice(this, (userInfo != null)?userInfo.id:0, IDeviceType.RRQZ, "all", 1, 20, dp, GetRecipesByDeviceRes.class,
                 new RetrofitCallback<GetRecipesByDeviceRes>() {
                     @Override
                     public void onSuccess(GetRecipesByDeviceRes getRecipesByDeviceRes) {
