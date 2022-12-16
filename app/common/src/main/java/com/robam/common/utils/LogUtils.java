@@ -43,6 +43,7 @@ public class LogUtils {
         // Throwable instance must be created before any methods
         getMethodNames(new Throwable().getStackTrace());
         String result = createLog(message);
+//        FileUtils.writeFile(result, Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "test.log", true);
         Log.e(className, result);
     }
 

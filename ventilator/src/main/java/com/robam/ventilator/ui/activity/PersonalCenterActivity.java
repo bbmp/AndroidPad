@@ -111,13 +111,13 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
             }
         });
         //烟机用户更新
-        LiveDataBus.get().with(VentilatorConstant.VENTILATOR_USER, String.class).observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                if (Plat.getPlatform().getDeviceOnlySign().equals(s))
-                    getDeviceInfo(AccountInfo.getInstance().getUser().getValue());
-            }
-        });
+//        LiveDataBus.get().with(VentilatorConstant.VENTILATOR_USER, String.class).observe(this, new Observer<String>() {
+//            @Override
+//            public void onChanged(String s) {
+//                if (Plat.getPlatform().getDeviceOnlySign().equals(s))
+//                    getDeviceInfo(AccountInfo.getInstance().getUser().getValue());
+//            }
+//        });
     }
 
     private void setUserInfo(UserInfo userInfo) {

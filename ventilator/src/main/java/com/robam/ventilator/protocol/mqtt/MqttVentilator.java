@@ -140,7 +140,7 @@ public class MqttVentilator extends MqttPublic {
                                 offset += 4;
                             }
                             msg.putOpt(VentilatorConstant.DelayTime, min);
-                            if (min >=1 || min <= 5) //设置延时关机时间
+                            if (min >=1 && min <= 5) //设置延时关机时间
                                 MMKVUtils.setDelayShutdownTime(min + "");
                         }
                             break;

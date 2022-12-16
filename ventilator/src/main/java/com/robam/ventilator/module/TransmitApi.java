@@ -87,7 +87,7 @@ public class TransmitApi implements IProtocol {
             MqttMsg msg = null;
             //分发到各设备
             for (Device device: AccountInfo.getInstance().deviceList) {
-                if (device.guid.equals(srcGuid)) {
+                if (null != device.guid && device.guid.equals(srcGuid)) {
                     if (device instanceof SteamOven) {
                         msg = SteamFactory.getProtocol().decode(topic, payload);
                         //是否更新设备状态

@@ -174,10 +174,11 @@ public class DeviceUserPage extends VentilatorBasePage {
                     //解绑成功
                     deleteDevice(device);
                     //重新获取设备列表
-                    AccountInfo.getInstance().getGuid().setValue(device.guid);
+//                    AccountInfo.getInstance().getGuid().setValue(device.guid);
+                    AccountInfo.getInstance().getUser().setValue(AccountInfo.getInstance().getUser().getValue());
                     //删除烟机的用户
-                    if (Plat.getPlatform().getDeviceOnlySign().equals(device.guid))
-                        LiveDataBus.get().with(VentilatorConstant.VENTILATOR_USER, String.class).setValue(device.guid);
+//                    if (Plat.getPlatform().getDeviceOnlySign().equals(device.guid))
+//                        LiveDataBus.get().with(VentilatorConstant.VENTILATOR_USER, String.class).setValue(device.guid);
                 }
             }
 

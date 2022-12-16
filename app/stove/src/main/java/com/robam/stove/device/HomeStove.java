@@ -38,7 +38,7 @@ public class HomeStove {
     //获取设备平台
     public String getDp() {
         for (Device device: AccountInfo.getInstance().deviceList) {
-            if (null != device.guid && device.guid.equals(guid))
+            if (null != device.guid && device.guid.equals(guid) && null != device.dp)
                 return device.dp;
         }
         return "";

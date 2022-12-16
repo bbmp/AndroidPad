@@ -254,13 +254,15 @@ public class HomeVentilator {
                     .build();
             JSONArray jsonArray = new JSONArray();
             for (Device device: AccountInfo.getInstance().deviceList) {
-                if (guid.equals(device.guid) && ((device instanceof Pan) || (device instanceof Stove))) { //已经存在该子设备
+                if (guid.equals(device.guid) && ((device instanceof Pan && IDeviceType.RZNG.equals(device.dc))
+                        || (device instanceof Stove && IDeviceType.RRQZ.equals(device.dc)))) { //已经存在该子设备
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.putOpt(VentilatorConstant.DEVICE_GUID, guid);
                     jsonObject.putOpt(VentilatorConstant.DEVICE_BIZ, biz);
                     jsonObject.putOpt(VentilatorConstant.DEVICE_STATUS, status);
                     jsonArray.put(jsonObject);
-                } else if ((device instanceof Pan) || (device instanceof Stove)) { //其他存在的子设备
+                } else if ((device instanceof Pan && IDeviceType.RZNG.equals(device.dc))
+                        || (device instanceof Stove && IDeviceType.RRQZ.equals(device.dc))) { //其他存在的子设备
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.putOpt(VentilatorConstant.DEVICE_GUID, device.guid);
                     jsonObject.putOpt(VentilatorConstant.DEVICE_BIZ, device.bid);

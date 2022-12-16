@@ -110,7 +110,7 @@ public class HomePage extends StoveBasePage {
             public void onChanged(String s) {
 
                 for (Device device: AccountInfo.getInstance().deviceList) {
-                    if (device.guid.equals(s) && device instanceof Stove && device.guid.equals(HomeStove.getInstance().guid)) {
+                    if (null != device.guid && device.guid.equals(s) && device instanceof Stove && device.guid.equals(HomeStove.getInstance().guid)) {
                         Stove stove = (Stove) device;
                         if (stove.lockStatus == StoveConstant.LOCK) { //锁屏状态
                             screenLock();
