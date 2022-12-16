@@ -65,6 +65,8 @@ public class BleVentilator {
     private static ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(2, 2, 0, TimeUnit.MILLISECONDS,
             new SynchronousQueue<>());
 
+    public static long scanTime;
+
     private static final int MSG_DELAY_DISCONNECT = 1;
     private static final int MSG_QUERY_FANPAN = 2; //烟锅联动查询
     private static final int MSG_QUERY_STOVEATTRIBUTE = 3;//查询灶具状态
@@ -79,6 +81,9 @@ public class BleVentilator {
 
     //开机自动扫描
     public static void startScan() {
+        if (Math.abs(System.currentTimeMillis() - scanTime) < 30000) //30s不重复扫描
+            return;
+        scanTime = System.currentTimeMillis();
 
         BlueToothManager.cancelScan();
 
@@ -120,6 +125,10 @@ public class BleVentilator {
 
     //开始扫描
     public static void startScan(String model, BleCallBack bleCallBack) {
+        scanTime = System.currentTimeMillis();
+
+        BlueToothManager.cancelScan();
+
         WeakReference<BleCallBack> bleCallBackWeakReference = new WeakReference<>(bleCallBack);
 
         BlueToothManager.startScan(new BleScanCallback() {
@@ -169,6 +178,8 @@ public class BleVentilator {
             public void onConnectFail(BleDevice bleDevice, BleException exception) {
 
                 LogUtils.e("onConnectFail " + exception.getDescription());
+                setBleDevice(bleDevice.getMac(), null, null);
+
                 if (null != bleCallBackWeakReference && null != bleCallBackWeakReference.get())
                     bleCallBackWeakReference.get().onConnectFail();
             }
@@ -195,14 +206,14 @@ public class BleVentilator {
                 if (null != gatt)
                     gatt.close();
                 //清除设备蓝牙信息
-                if (setBleDevice(bleDevice.getMac(), null, null)) {
+                if (resetBleDevice(bleDevice.getMac())) {
                     //重新连接
                     try {
                         threadPoolExecutor.execute(new Runnable() {
                             @Override
                             public void run() {
                                 try {
-                                    Thread.sleep(2000);
+                                    Thread.sleep(200);
                                 } catch (Exception e) {
                                 }
                                 connect(model, bleDevice, bleCallBackWeakReference);
@@ -261,7 +272,6 @@ public class BleVentilator {
 //            }
             Stove stove = new Stove("燃气灶", IDeviceType.RRQZ, "9B328");
             stove.mac = bleDevice.getMac();
-            stove.dp = "RQZ06";
             stove.bleDecoder = new BleDecoder(0);
             ListIterator<Device> iterator = AccountInfo.getInstance().deviceList.listIterator();
             while (iterator.hasNext()) {
@@ -299,6 +309,23 @@ public class BleVentilator {
             }
         }
         return deviceNum;
+    }
+    //重置蓝牙设备类型
+    private static boolean resetBleDevice(String mac) {
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (mac.equals(device.mac)) {
+                if (device instanceof Pan) {
+
+                    device.bleType = 0;
+                    return true;
+                } else if (device instanceof Stove) {
+                    device.bleType = 0;
+                    return true;
+                }
+                break;
+            }
+        }
+        return false;
     }
 
     //设置蓝牙设备的读写特征符
@@ -375,7 +402,7 @@ public class BleVentilator {
                     @Override
                     public void onCharacteristicChanged(byte[] data) {
                         // 打开通知后，设备发过来的数据将在这里出现（UI线程）
-                        LogUtils.e("Thread " + Thread.currentThread() + " onCharacteristicChanged " + StringUtils.bytes2Hex(data));
+                        LogUtils.e("RSSI " + bleDevice.getRssi() + " onCharacteristicChanged " + StringUtils.bytes2Hex(data));
                         for (Device device: AccountInfo.getInstance().deviceList) {
                             if (bleDevice.getMac().equals(device.mac)) {
                                 if (device instanceof Pan)

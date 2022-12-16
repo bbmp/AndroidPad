@@ -127,7 +127,7 @@ public class HomePage extends PanBasePage {
                         else if (pan.panTemp > 240 && pan.panTemp <= 280)
                             tvTempHint.setText(getString(R.string.pan_oil_temp) + pan.panTemp + getString(R.string.pan_oil_temp_hint3));
                         else
-                            tvTempHint.setText(R.string.pan_oil_temp_hint4);
+                            tvTempHint.setText(getString(R.string.pan_oil_temp) + pan.panTemp + R.string.pan_oil_temp_hint4);
                         break;
                     }
                 }

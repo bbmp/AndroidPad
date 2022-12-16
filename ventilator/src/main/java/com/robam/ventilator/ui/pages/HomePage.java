@@ -628,19 +628,6 @@ public class HomePage extends VentilatorBasePage {
                 }
             }
         }
-        //自动连接
-        List<String> names = new ArrayList();
-
-        for (Device device: AccountInfo.getInstance().deviceList) {
-            if (device instanceof Pan && null == ((Pan) device).bleDevice)
-                names.add(BlueToothManager.pan);
-            else if (device instanceof Stove && null == ((Stove) device).bleDevice)
-                names.add(BlueToothManager.stove);
-        }
-        if (names.size() > 0) {
-            BlueToothManager.setScanRule(names.toArray(new String[names.size()]));
-            BleVentilator.startScan();
-        }
 
         //订阅设备主题
         subscribeDevice();

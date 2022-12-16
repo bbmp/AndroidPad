@@ -13,7 +13,12 @@ import android.serialport.helper.SerialPortHelper;
 
 import androidx.annotation.Nullable;
 
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
 import com.robam.common.device.Plat;
+import com.robam.common.device.subdevice.Pan;
+import com.robam.common.device.subdevice.Stove;
+import com.robam.common.manager.BlueToothManager;
 import com.robam.common.manager.LiveDataBus;
 import com.robam.common.utils.DateUtil;
 import com.robam.common.utils.FileUtils;
@@ -22,6 +27,7 @@ import com.robam.common.utils.MMKVUtils;
 import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.device.HomeVentilator;
 import com.robam.ventilator.device.VentilatorAbstractControl;
+import com.robam.ventilator.protocol.ble.BleVentilator;
 import com.robam.ventilator.protocol.serial.SerialVentilator;
 import com.robam.ventilator.ui.receiver.AlarmBleReceiver;
 import com.robam.ventilator.ui.receiver.AlarmSerialReceiver;
@@ -30,6 +36,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -73,6 +81,9 @@ public class AlarmVentilatorService extends Service {
                             PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
                             boolean isScreenOn = pm.isInteractive();
                             if (!isScreenOn && null != line) { //熄屏状态
+                                try {
+                                    Thread.sleep(10);
+                                } catch (Exception e) {}
                                 if (line.contains("00a5")) { //左键
                                     if (line.contains("00000001")) {//down事件
                                         downTime = System.currentTimeMillis();
@@ -131,6 +142,9 @@ public class AlarmVentilatorService extends Service {
 
         //串口查询
         SerialPortHelper.getInstance().addCommands(data);
+        //自动连接蓝牙
+        //自动连接
+        autoConnectBle();
 
         //5分钟未操作自动关机
         if ((Math.abs(System.currentTimeMillis() - HomeVentilator.getInstance().operationTime) >= 5*60*1000)
@@ -179,6 +193,21 @@ public class AlarmVentilatorService extends Service {
         }
 
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    private void autoConnectBle() {
+        List<String> names = new ArrayList();
+
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device instanceof Pan && null == ((Pan) device).bleDevice)
+                names.add(BlueToothManager.pan);
+            else if (device instanceof Stove && null == ((Stove) device).bleDevice)
+                names.add(BlueToothManager.stove);
+        }
+        if (names.size() > 0) {
+            BlueToothManager.setScanRule(names.toArray(new String[names.size()]));
+            BleVentilator.startScan();
+        }
     }
 
     @Override

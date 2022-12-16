@@ -103,7 +103,7 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
                 if (Plat.getPlatform().getDeviceOnlySign().equals(s)) //当前烟机
                     return;
                 for (Device device: AccountInfo.getInstance().deviceList) {
-                    if (device.guid.equals(s))
+                    if (null != device.guid && device.guid.equals(s))
                         return;
                 }
                 //找不到设备
