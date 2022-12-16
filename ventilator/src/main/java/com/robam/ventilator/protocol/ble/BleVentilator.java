@@ -261,6 +261,7 @@ public class BleVentilator {
 //            }
             Stove stove = new Stove("燃气灶", IDeviceType.RRQZ, "9B328");
             stove.mac = bleDevice.getMac();
+            stove.dp = "RQZ06";
             stove.bleDecoder = new BleDecoder(0);
             ListIterator<Device> iterator = AccountInfo.getInstance().deviceList.listIterator();
             while (iterator.hasNext()) {

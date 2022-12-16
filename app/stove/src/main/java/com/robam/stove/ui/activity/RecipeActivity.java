@@ -117,19 +117,22 @@ public class RecipeActivity extends StoveBaseActivity {
     private void getStoveRecipe() {
         UserInfo userInfo = AccountInfo.getInstance().getUser().getValue();
         String dp = HomeStove.getInstance().getDp();
-        CloudHelper.getRecipesByDevice(this, (userInfo != null)?userInfo.id:0, IDeviceType.RRQZ, "all", 1, 20, dp, GetRecipesByDeviceRes.class,
-                new RetrofitCallback<GetRecipesByDeviceRes>() {
-                    @Override
-                    public void onSuccess(GetRecipesByDeviceRes getRecipesByDeviceRes) {
+        if (!TextUtils.isEmpty(dp)) {
+            CloudHelper.getRecipesByDevice(this, (userInfo != null) ? userInfo.id : 0, IDeviceType.RRQZ, "all", 1, 20, dp, GetRecipesByDeviceRes.class,
+                    new RetrofitCallback<GetRecipesByDeviceRes>() {
+                        @Override
+                        public void onSuccess(GetRecipesByDeviceRes getRecipesByDeviceRes) {
 
-                        setData(getRecipesByDeviceRes);
-                    }
+                            setData(getRecipesByDeviceRes);
+                        }
 
-                    @Override
-                    public void onFaild(String err) {
-                        setData(null);
-                    }
-                });
+                        @Override
+                        public void onFaild(String err) {
+                            setData(null);
+                        }
+                    });
+        } else
+            setData(null);
     }
 
     //设置菜谱列表
