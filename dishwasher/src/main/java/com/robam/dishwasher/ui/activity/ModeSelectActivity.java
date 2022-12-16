@@ -25,6 +25,7 @@ import com.robam.dishwasher.constant.DishWasherEnum;
 import com.robam.dishwasher.constant.DishWasherState;
 import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.util.DishWasherCommandHelper;
+import com.robam.dishwasher.util.DishWasherModelUtil;
 
 public class ModeSelectActivity extends DishWasherBaseActivity {
     private RadioGroup radioGroup;
@@ -88,7 +89,7 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
                             //case DishWasherState.WAIT://启动设置成功后，设备powerStatus在一段时间内，仍然在待机状态
                             case DishWasherState.WORKING:
                             case DishWasherState.PAUSE:
-                                toWorkPage();
+                                toWorkPage(dishWasher);
                         }
                     }
                 }
@@ -108,15 +109,16 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
 
     }
 
-    private void toWorkPage(){
+    private void toWorkPage(DishWasher dishWasher){
         Intent intent = new Intent();
         DishWasherModeBean newMode = modeBean.getNewMode();
-        DishWasherAuxBean auxBean = getAuxBean(getAuxCode());
+       /* DishWasherAuxBean auxBean = getAuxBean(getAuxCode());
         if(auxBean != null){
             newMode.time = auxBean.time;
             newMode.auxCode = auxBean.code;
         }
-        newMode.restTime = newMode.time;
+        newMode.restTime = newMode.time;*/
+        DishWasherModelUtil.initWorkingInfo(newMode,dishWasher);
         intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, newMode);
         intent.setClass(ModeSelectActivity.this, WorkActivity.class);
         startActivity(intent);

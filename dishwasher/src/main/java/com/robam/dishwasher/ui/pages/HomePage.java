@@ -66,7 +66,11 @@ public class HomePage extends DishWasherBasePage {
                     rvMain.postDelayed(() -> {
                         group.setVisibility(View.VISIBLE);
                         rvDot.setVisibility(View.INVISIBLE);
-                        tvTempUnit.setVisibility(item.temp > 0?View.VISIBLE:View.INVISIBLE);
+                        if(item.code == DishWasherConstant.MODE_SMART){//智能模式，不显示时间与温度
+                            tvTempUnit.setVisibility(View.INVISIBLE);
+                        }else{
+                            tvTempUnit.setVisibility(item.temp > 0?View.VISIBLE:View.INVISIBLE);
+                        }
                     },1000);
                 }).setOnSlideListener((recyclerView, position) -> {
                     group.setVisibility(View.INVISIBLE);
@@ -86,25 +90,34 @@ public class HomePage extends DishWasherBasePage {
     }
     //模式参数设置
     private void setData(DishWasherModeBean modeBean) {
+
+
+
         if (null != modeBean) {
             tvFunhint.setText(modeBean.desc);
-            String time = TimeUtils.secToHourMinH(modeBean.time);
-            SpannableString spannableString = new SpannableString(time);
-            int pos = time.indexOf("h");
-            if (pos >= 0)
-                spannableString.setSpan(new RelativeSizeSpan(0.5f), pos, pos + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            pos = time.indexOf("min");
-            if (pos >= 0)
-                spannableString.setSpan(new RelativeSizeSpan(0.5f), pos, pos + 3, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            tvTime.setText(spannableString);
-            int temp = modeBean.temp;
-            if (temp > 0) {
-                tvTemp.setText(temp + "");
-                //
-            } else {
+            if(modeBean.code == DishWasherConstant.MODE_SMART){//智能模式，不显示时间与温度
+                tvTime.setText("");
                 tvTemp.setText("");
-                //
+            }else{
+                String time = TimeUtils.secToHourMinH(modeBean.time);
+                SpannableString spannableString = new SpannableString(time);
+                int pos = time.indexOf("h");
+                if (pos >= 0)
+                    spannableString.setSpan(new RelativeSizeSpan(0.5f), pos, pos + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                pos = time.indexOf("min");
+                if (pos >= 0)
+                    spannableString.setSpan(new RelativeSizeSpan(0.5f), pos, pos + 3, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                tvTime.setText(spannableString);
+                int temp = modeBean.temp;
+                if (temp > 0) {
+                    tvTemp.setText(temp + "");
+                    //
+                } else {
+                    tvTemp.setText("");
+                    //
+                }
             }
+
         }
     }
 

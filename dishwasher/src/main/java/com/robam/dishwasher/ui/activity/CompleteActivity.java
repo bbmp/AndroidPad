@@ -20,7 +20,7 @@ public class CompleteActivity extends DishWasherBaseActivity {
 
     @Override
     protected void initData() {
-        countDownTimer = new CountDownTimer(1000 * 5, 1000) {
+        countDownTimer = new CountDownTimer(1000 * 15, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
 

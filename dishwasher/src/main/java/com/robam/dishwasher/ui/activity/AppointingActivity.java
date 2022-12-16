@@ -127,8 +127,10 @@ public class AppointingActivity extends DishWasherBaseActivity {
     private void dealWasherWorkingState(DishWasher dishWasher){
         switch (dishWasher.AppointmentSwitchStatus){
             case DishWasherState.APPOINTMENT_OFF:
-                //List<DishWasherModeBean> modeBeanList = FunctionManager.getFuntionList(getContext(), DishWasherModeBean.class,R.raw.dishwahser);
-                //DishWasherModeBean dishWasherModeBean = DishWasherModelUtil.getDishWasher(modeBeanList,dishWasher.workMode);
+                if(dishWasher.workMode == 0){
+                    goHome();
+                    return;
+                }
                 Intent intent = new Intent();
                 DishWasherModeBean newMode = modeBean.getNewMode();
                 DishWasherModelUtil.initWorkingInfo(newMode,dishWasher);
@@ -260,10 +262,10 @@ public class AppointingActivity extends DishWasherBaseActivity {
         IDialog iDialog = DishWasherDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_COMMON_DIALOG);
         iDialog.setCancelable(false);
         iDialog.setContentText(R.string.dishwasher_cancel_appointment_hint);
-        iDialog.setCancelText(R.string.dishwasher_cancel);
-        iDialog.setOKText(R.string.dishwasher_cancel_appointment);
+        iDialog.setCancelText(R.string.dishwasher_cancel_appointment);
+        iDialog.setOKText(R.string.dishwasher_continue_appointment);
         iDialog.setListeners(v -> {
-            if (v.getId() == R.id.tv_ok) {
+            if (v.getId() == R.id.tv_cancel) {
                 DishWasherCommandHelper.sendPowerState(powerMode);
             }
         }, R.id.tv_cancel, R.id.tv_ok);

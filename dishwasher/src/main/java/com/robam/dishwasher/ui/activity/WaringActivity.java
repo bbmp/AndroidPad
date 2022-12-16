@@ -36,6 +36,13 @@ public class WaringActivity extends DishWasherBaseActivity {
                     DishWasher dishWasher = (DishWasher) device;
                     if(dishWasher.abnormalAlarmStatus == DishWasherWaringEnum.E0.getCode()){
                         finish();
+                    }else{
+                        DishWasherWaringEnum washerWaringEnum = DishWasherWaringEnum.match(dishWasher.abnormalAlarmStatus);
+                        if(washerWaringEnum.getCode() == 0){
+                            return;
+                        }
+                        titleTv.setText(washerWaringEnum.getPromptTitleRes());
+                        descTv.setText(washerWaringEnum.getPromptContentRes());
                     }
                 }
             }

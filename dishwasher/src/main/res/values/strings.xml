@@ -3,12 +3,13 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="dishwasher_back">返回</string>
     <string name="dishwasher_cancel_appointment">取消预约</string>
+    <string name="dishwasher_continue_appointment">继续预约</string>
     <string name="dishwasher_ok">确认</string>
     <string name="dishwasher_appointment_time">预约启动时间</string>
     <string name="dishwasher_work_order_hint2">次日 %s</string>
     <string name="dishwasher_work_order_hint3">今日 %s</string>
-    <string name="dishwasher_stop_work_hint">确认结束当前工作吗？</string>
-    <string name="dishwasher_stop_ok">确认结束</string>
+    <string name="dishwasher_stop_work_hint">确认结束当前工作</string>
+    <string name="dishwasher_stop_ok">结束工作</string>
     <string name="dishwasher_cancel">取消</string>
     <string name="dishwasher_work_stop_hint">清洁完成</string>
     <string name="dishwasher_complete">%s秒后返回主界面</string>
@@ -31,15 +32,15 @@
     <string name="dishwasher_kill_powfull">加强除菌</string>
     <string name="dishwasher_flush">长效净存</string>
     <string name="dishwasher_down_wash">下层洗</string>
-    <string name="dishwasher_start_working">启动</string>
+    <string name="dishwasher_start_working">开始工作</string>
     <string name="dishwasher_appointment">预约</string>
-    <string name="dishwasher_start_hint">是否立即启动？</string>
+    <string name="dishwasher_start_hint">是否立即开始工作？</string>
     <string name="dishwasher_cancel_appointment_hint">确认取消预约工作</string>
     <string name="dishwasher_start_work_hint">将在%s后启动工作</string>
     <string name="dishwasher_pausing">暂停中</string>
     <string name="dishwasher_unlock_hint">请长按2s童锁解除锁定</string>
-    <string name="dishwasher_prompt_down_wash">适用于清洗少量餐具，餐具应放于下层碗蓝</string>
-    <string name="dishwasher_prompt_flush">餐具在洗碗机内部进行存储，最长达120小时</string>
+    <string name="dishwasher_prompt_down_wash">清洗少量餐具，餐具应放于下层碗篮</string>
+    <string name="dishwasher_prompt_flush">洗涤程序结束后，对餐具进行长期储存</string>
     <string name="dishwasher_prompt_kill_powfull">对餐具进行加强除菌</string>
     <string name="dishwasher_prompt_pan_powfull">对锅具等重油污餐具进行加强清洗</string>
     <string name="dishwasher_waring_e1_title">E1：进水异常报警</string>
@@ -51,7 +52,7 @@
     <string name="dishwasher_waring_e9_title">E9：分水阀异常报警</string>
     <string name="dishwasher_waring_e10_title">E10：电机故障报警</string>
 
-    <string name="dishwasher_waring_e1_content">检测到您的设备进水异常，请检查进水阀是否开启</string>
+    <string name="dishwasher_waring_e1_content">请检查进水阀是否开启。如果洗碗机还不能正常工作，请联系专业技术人员咨询或维修</string>
     <string name="dishwasher_waring_e3_content">加热异常，请联系专业技术人员咨询或维修</string>
     <string name="dishwasher_waring_e4_content">溢水报警，断电后请联系专业技术人员咨询或维修</string>
     <string name="dishwasher_waring_e5_content">温度传感器故障，请联系专业技术人员咨询或维修</string>
@@ -59,7 +60,7 @@
     <string name="dishwasher_waring_e7_content">流量计报警</string>
     <string name="dishwasher_waring_e9_content">分水阀异常报警，请联系专业技术人员咨询或维修</string>
     <string name="dishwasher_waring_e10_content">电机故障，请联系专业技术人员咨询或维修</string>
-    <string name="dishwasher_maintain_phone">维修电话：658889789</string>
+    <string name="dishwasher_maintain_phone">维修电话：95105855</string>
     <string name="dishwasher_lock">童锁</string>
     <string name="dishwasher_no_longer_remind">不再提醒</string>
     <string name="dishwasher_offline">洗碗机已离线</string>

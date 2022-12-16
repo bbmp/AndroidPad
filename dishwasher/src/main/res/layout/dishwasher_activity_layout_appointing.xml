@@ -70,6 +70,7 @@
         android:id="@+id/tv_appointment_hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="invisible"
         android:text="后启动工作"
         android:textColor="@color/dishwasher_white35"
         android:textSize="@dimen/sp_24"

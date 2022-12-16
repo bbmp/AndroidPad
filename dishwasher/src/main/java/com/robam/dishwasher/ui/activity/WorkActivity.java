@@ -77,8 +77,8 @@ public class WorkActivity extends DishWasherBaseActivity {
         cpgBar = findViewById(R.id.progress);
         tvTime = findViewById(R.id.tv_time);
         tvDuration = findViewById(R.id.tv_duration);
-        tvMode = findViewById(R.id.tv_mode);
         tvModeCur = findViewById(R.id.tv_mode_cur);
+        tvMode = findViewById(R.id.tv_mode);
         tvAuxMode = findViewById(R.id.tv_aux_mode);
         startIcon = findViewById(R.id.iv_start);
         pauseIcon = findViewById(R.id.iv_pause);
@@ -172,6 +172,7 @@ public class WorkActivity extends DishWasherBaseActivity {
             tvAriTime.setVisibility(View.INVISIBLE);
             tvTime.setVisibility(View.VISIBLE);
             progressBg.setVisibility(View.VISIBLE);
+            tvMode.setVisibility(View.VISIBLE);
             tvMode.setText(DishWasherEnum.match(code));
             cpgBar.setVisibility(View.VISIBLE);
             tvModeCur.setVisibility(View.VISIBLE);
@@ -204,6 +205,12 @@ public class WorkActivity extends DishWasherBaseActivity {
         tvMode.setText(modeBean.name);
         tvAuxMode.setText(DishWasherAuxEnum.match(modeBean.auxCode));
         tvTime.setText(getSpan(modeBean.time));
+        if(DishWasherConstant.MODE_FLUSH == modeBean.code){
+            tvModeCur.setText(R.string.dishwasher_aeration);
+        }else{
+            tvModeCur.setText(R.string.dishwasher_washer);
+        }
+
     }
 
     @Override
@@ -273,7 +280,7 @@ public class WorkActivity extends DishWasherBaseActivity {
         }else if(dishWasher.powerStatus == DishWasherState.PAUSE){
             tvDuration.setText(getSpan(dishWasher.remainingWorkingTime*60));
         }
-        if(dishWasher.workMode == DishWasherConstant.MODE_AUTO_AERATION){//自定换气
+        if(dishWasher.workMode == DishWasherConstant.MODE_AUTO_AERATION){//自动换气
             if(dishWasher.powerStatus == DishWasherState.WORKING){
                 tvAriTime.setText(getSpan(preRemainingTime));
             }
@@ -378,9 +385,10 @@ public class WorkActivity extends DishWasherBaseActivity {
         commonDialog.setOKText(R.string.dishwasher_ok);
         commonDialog.setListeners(v->{
             isReminding = false;
-            if(v.getId() == R.id.tv_cancel){
+            isNoLongerRemind = true;
+            /*if(v.getId() == R.id.tv_cancel){
                 isNoLongerRemind = true;
-            }
+            }*/
         },R.id.tv_cancel,R.id.tv_ok);
         commonDialog.show();
     }

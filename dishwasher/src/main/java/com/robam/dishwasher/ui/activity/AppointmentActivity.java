@@ -21,6 +21,8 @@ import com.robam.dishwasher.constant.DishWasherState;
 import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.ui.adapter.RvStringAdapter;
 import com.robam.dishwasher.util.DishWasherCommandHelper;
+import com.robam.dishwasher.util.DishWasherModelUtil;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -113,10 +115,25 @@ public class AppointmentActivity extends DishWasherBaseActivity {
                         case DishWasherState.PAUSE:
                             if(dishWasher.AppointmentSwitchStatus == DishWasherState.APPOINTMENT_ON){
                                 Intent intent = new Intent();
-                                intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, modeBean);
+                                DishWasherModeBean newMode = modeBean.getNewMode();
+                                DishWasherModelUtil.initWorkingInfo(newMode,dishWasher);
+                                intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, newMode);
                                 intent.setClass(AppointmentActivity.this, AppointingActivity.class);
                                 startActivity(intent);
                                 finish();
+                            }else{
+                                if(dishWasher.powerStatus == DishWasherState.WAIT){//待机状态下，无工作模式
+                                    return;
+                                }
+                                if(dishWasher.workMode == 0){
+                                    return;
+                                }
+                                Intent intent = new Intent();
+                                DishWasherModeBean newMode = modeBean.getNewMode();
+                                DishWasherModelUtil.initWorkingInfo(newMode,dishWasher);
+                                intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, newMode);
+                                intent.setClass(this, WorkActivity.class);
+                                startActivity(intent);
                             }
                     }
                     break;
