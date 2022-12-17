@@ -337,7 +337,7 @@ public class HomeVentilator {
         }
 
         if (isLink) {
-            new Handler().postDelayed(new Runnable() {
+            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     shutDownHint(isLink);
@@ -599,5 +599,17 @@ public class HomeVentilator {
     public void updateOperationTime() {
         operationTime = System.currentTimeMillis();
         LogUtils.i("operationTime = " + operationTime);
+    }
+    //本地读取子设备
+    public List<Device> readSubDevices() {
+        Set<String> deviceSets = MMKVUtils.getSubDevice();
+        List<Device> subDevices = new ArrayList<>();
+        if (null != deviceSets) {
+            for (String json: deviceSets) {
+                Device subDevice = new Gson().fromJson(json, Device.class);
+                subDevices.add(subDevice);
+            }
+        }
+        return subDevices;
     }
 }

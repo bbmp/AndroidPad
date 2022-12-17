@@ -10,11 +10,13 @@ import androidx.lifecycle.Observer;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Handler;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.BaseResponse;
 import com.robam.common.device.Plat;
@@ -28,14 +30,17 @@ import com.robam.common.utils.ImageUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.device.subdevice.Pan;
 import com.robam.common.device.subdevice.Stove;
+import com.robam.common.utils.MMKVUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.UserInfo;
+import com.robam.ventilator.bean.Ventilator;
 import com.robam.ventilator.constant.DialogConstant;
 import com.robam.ventilator.constant.VentilatorConstant;
+import com.robam.ventilator.device.HomeVentilator;
 import com.robam.ventilator.factory.VentilatorDialogFactory;
 import com.robam.ventilator.http.CloudHelper;
 import com.robam.ventilator.response.GetDeviceRes;
@@ -45,6 +50,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public class PersonalCenterActivity extends VentilatorBaseActivity {
     private TextView tvLogin;
@@ -53,7 +59,6 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
     //弱引用，防止内存泄漏
     private List<WeakReference<Fragment>> fragments = new ArrayList<>();
     private ViewPager vpDevice;
-    private Group group1, group2;
     //头像
     private ImageView ivHead;
     //昵称和手机
@@ -73,12 +78,12 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
         showCenter();
         vpDevice = findViewById(R.id.vp_device);
         llDot = findViewById(R.id.ll_dot);
-        group1 = findViewById(R.id.ventilator_group3); //登录
-        group2 = findViewById(R.id.ventilator_group4); //未登录
+        tvLogin = findViewById(R.id.btn_exit_login);
+
         ivHead = findViewById(R.id.iv_head);
         tvName = findViewById(R.id.tv_nickname);
         tvPhone = findViewById(R.id.tv_phone);
-        setOnClickListener(R.id.tv_login, R.id.btn_exit_login);
+        setOnClickListener(R.id.btn_exit_login);
 
     }
 
@@ -88,12 +93,8 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
         AccountInfo.getInstance().getUser().observe(this, new Observer<UserInfo>() {
             @Override
             public void onChanged(UserInfo userInfo) {
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        setUserInfo(userInfo);
-                    }
-                }, 200); //延时200ms
+                setUserInfo(userInfo);
+
             }
         });
         //删除设备监听
@@ -122,20 +123,17 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
 
     private void setUserInfo(UserInfo userInfo) {
         if (null == userInfo) { //未登录
-            group1.setVisibility(View.GONE);
-            group2.setVisibility(View.VISIBLE);
             vpDevice.setVisibility(View.GONE);
             llDot.setVisibility(View.GONE);
-            tvName.setText("");
+            tvName.setText(R.string.ventilator_not_login);
             tvPhone.setText("");
-            ivHead.setImageDrawable(null);
+            tvLogin.setText(R.string.ventilator_login);
+            ivHead.setImageResource(R.drawable.ventilator_unlogin_head);
         } else {
             ImageUtils.loadImage(this, userInfo.figureUrl, ivHead);
             tvName.setText(userInfo.nickname);
             tvPhone.setText(userInfo.phone);
-            group1.setVisibility(View.VISIBLE);
-            group2.setVisibility(View.GONE);
-
+            tvLogin.setText(R.string.ventilator_login_exit);
         }
         //获取绑定的设备
         getDeviceInfo(userInfo);
@@ -166,11 +164,14 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
                 public void onFaild(String err) {
                     LogUtils.e("getDevices" + err);
                     ToastUtils.showShort(getApplicationContext(), R.string.ventilator_net_err);
+                    setDeviceUserData(null, userInfo);
                 }
             });
         } else {
             //取消所有订阅 除子设备
             unSubscribeDevices();
+
+            setDeviceUserData(null, null);
             //logout
 //            AccountInfo.getInstance().deviceList.clear();
         }
@@ -178,25 +179,32 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
 
     private void setDeviceUserData(List<Device> devices, UserInfo userInfo) {
         List<Fragment> fragments = new ArrayList<>();
-        for (Device device: devices) {
-            if (device.dc.equals(IDeviceType.RXWJ) ||
-                    (device.dc.equals(IDeviceType.RYYJ) && (Plat.getPlatform().getDeviceOnlySign()).equals(device.guid)) ||   //当前烟机
-                    device.dc.equals(IDeviceType.RXDG) ||
-                    device.dc.equals(IDeviceType.RZKY)) { //过滤套系外设备
-                DeviceUserPage deviceUserPage = new DeviceUserPage(device, userInfo);
-                fragments.add(deviceUserPage);
-                List<Device> subDevices = device.subDevices;
-                if ((Plat.getPlatform().getDeviceOnlySign()).equals(device.guid) && null != subDevices) { //当前烟机子设备
-                    for (Device subDevice : subDevices) {
-                        if (IDeviceType.RZNG.equals(subDevice.dc)) {//锅
-                            DeviceUserPage panUserPage = new DeviceUserPage(subDevice, userInfo);
-                            fragments.add(panUserPage);
-                        }
-                        else if (IDeviceType.RRQZ.equals(subDevice.dc)) {//灶具
-                            DeviceUserPage stoveUserPage = new DeviceUserPage(subDevice, userInfo);
-                            fragments.add(stoveUserPage);
-                        }
-                    }
+        if (null != devices) {
+            for (Device device : devices) {
+                if (device.dc.equals(IDeviceType.RXWJ) ||
+                        (device.dc.equals(IDeviceType.RYYJ) && (Plat.getPlatform().getDeviceOnlySign()).equals(device.guid)) ||   //当前烟机
+                        device.dc.equals(IDeviceType.RXDG) ||
+                        device.dc.equals(IDeviceType.RZKY)) { //过滤套系外设备
+                    DeviceUserPage deviceUserPage = new DeviceUserPage(device, userInfo);
+                    fragments.add(deviceUserPage);
+                }
+            }
+        } else { //烟机
+            Device device = new Ventilator("油烟机", IDeviceType.RYYJ, Plat.getPlatform().getDt());
+            DeviceUserPage deviceUserPage = new DeviceUserPage(device, userInfo);
+            fragments.add(deviceUserPage);
+        }
+        //本地子设备
+        List<Device> subDevices = HomeVentilator.getInstance().readSubDevices();
+        if (null != subDevices) {
+            for (Device subDevice : subDevices) {
+                if (IDeviceType.RZNG.equals(subDevice.dc)) {//锅
+                    DeviceUserPage panUserPage = new DeviceUserPage(subDevice, userInfo);
+                    fragments.add(panUserPage);
+                }
+                else if (IDeviceType.RRQZ.equals(subDevice.dc)) {//灶具
+                    DeviceUserPage stoveUserPage = new DeviceUserPage(subDevice, userInfo);
+                    fragments.add(stoveUserPage);
                 }
             }
         }
@@ -252,7 +260,7 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
         Iterator<Device> iterator = AccountInfo.getInstance().deviceList.iterator();
         while (iterator.hasNext()) {
             Device device = iterator.next();
-            if (device instanceof Pan || device instanceof Stove)
+            if (IDeviceType.RZNG.equals(device.dc) || IDeviceType.RRQZ.equals(device.dc))
                 continue;
             iterator.remove();
             deleteGuid = device.guid;  //删除的设备
@@ -267,10 +275,11 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
     public void onClick(View view) {
         super.onClick(view);
         int id = view.getId();
-        if (id == R.id.tv_login) {  //默认手机登录
-            startActivity(LoginPhoneActivity.class);
-        } else if (id == R.id.btn_exit_login) { //退出登录
-            exitLogin();
+        if (id == R.id.btn_exit_login) { //退出登录
+            if (TextUtils.isEmpty(tvPhone.getText())) //默认手机登录
+                startActivity(LoginPhoneActivity.class);
+            else
+                exitLogin();
         }
     }
 

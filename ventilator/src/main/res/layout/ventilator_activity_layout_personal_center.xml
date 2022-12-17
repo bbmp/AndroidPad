@@ -21,44 +21,44 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.robam.common.ui.view.CircleImageView
-        android:id="@+id/iv_head_img"
-        android:layout_width="@dimen/dp_110"
-        android:layout_height="@dimen/dp_110"
-        android:src="@drawable/ventilator_unlogin_head"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_title"
-        app:layout_constraintBottom_toTopOf="@id/tv_not_login"
-        app:layout_constraintVertical_chainStyle="packed"/>
+<!--    <com.robam.common.ui.view.CircleImageView-->
+<!--        android:id="@+id/iv_head_img"-->
+<!--        android:layout_width="@dimen/dp_110"-->
+<!--        android:layout_height="@dimen/dp_110"-->
+<!--        android:src="@drawable/ventilator_unlogin_head"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintRight_toRightOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/ll_title"-->
+<!--        app:layout_constraintBottom_toTopOf="@id/tv_not_login"-->
+<!--        app:layout_constraintVertical_chainStyle="packed"/>-->
 
-    <TextView
-        android:id="@+id/tv_not_login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_30"
-        android:text="@string/ventilator_not_login"
-        android:textColor="@color/ventilator_white"
-        android:textSize="@dimen/sp_34"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/iv_head_img"
-        app:layout_constraintBottom_toTopOf="@id/tv_login"/>
+<!--    <TextView-->
+<!--        android:id="@+id/tv_not_login"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="@dimen/dp_30"-->
+<!--        android:text="@string/ventilator_not_login"-->
+<!--        android:textColor="@color/ventilator_white"-->
+<!--        android:textSize="@dimen/sp_34"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintRight_toRightOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/iv_head_img"-->
+<!--        app:layout_constraintBottom_toTopOf="@id/tv_login"/>-->
 
-    <TextView
-        android:id="@+id/tv_login"
-        android:layout_width="@dimen/dp_175"
-        android:layout_height="@dimen/dp_56"
-        android:layout_marginTop="@dimen/dp_60"
-        android:background="@drawable/ventilator_shape_button_ok_bg"
-        android:gravity="center"
-        android:text="@string/ventilator_login"
-        android:textColor="@color/ventilator_white"
-        android:textSize="@dimen/sp_30"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_not_login"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+<!--    <TextView-->
+<!--        android:id="@+id/tv_login"-->
+<!--        android:layout_width="@dimen/dp_175"-->
+<!--        android:layout_height="@dimen/dp_56"-->
+<!--        android:layout_marginTop="@dimen/dp_60"-->
+<!--        android:background="@drawable/ventilator_shape_button_ok_bg"-->
+<!--        android:gravity="center"-->
+<!--        android:text="@string/ventilator_login"-->
+<!--        android:textColor="@color/ventilator_white"-->
+<!--        android:textSize="@dimen/sp_30"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintRight_toRightOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/tv_not_login"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"/>-->
 
     <com.robam.common.ui.view.CircleImageView
         android:id="@+id/iv_head"
@@ -150,17 +150,17 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.34" />
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/ventilator_group3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:constraint_referenced_ids="iv_head,tv_nickname,tv_phone,btn_exit_login,view_board" />
+<!--    <androidx.constraintlayout.widget.Group-->
+<!--        android:id="@+id/ventilator_group3"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:visibility="gone"-->
+<!--        app:constraint_referenced_ids="iv_head,tv_nickname,tv_phone,btn_exit_login,view_board" />-->
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/ventilator_group4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:constraint_referenced_ids="iv_head_img, tv_not_login, tv_login" />
+<!--    <androidx.constraintlayout.widget.Group-->
+<!--        android:id="@+id/ventilator_group4"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:visibility="gone"-->
+<!--        app:constraint_referenced_ids="iv_head_img, tv_not_login, tv_login" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>

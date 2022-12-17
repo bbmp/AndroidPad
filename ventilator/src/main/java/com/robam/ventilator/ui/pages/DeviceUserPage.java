@@ -126,19 +126,21 @@ public class DeviceUserPage extends VentilatorBasePage {
             btnShare.setText(R.string.ventilator_delete_device);
             return;
         }
-        CloudHelper.getDeviceUsers(this, curUser.id, device.guid, GetDeviceUserRes.class, new RetrofitCallback<GetDeviceUserRes>() {
+        if (null != curUser) {
+            CloudHelper.getDeviceUsers(this, curUser.id, device.guid, GetDeviceUserRes.class, new RetrofitCallback<GetDeviceUserRes>() {
 
-            @Override
-            public void onSuccess(GetDeviceUserRes getDeviceUserRes) {
-                if (null != getDeviceUserRes && null != getDeviceUserRes.users)
-                    rvDeviceUserAdapter.setList(getDeviceUserRes.users);
-            }
+                @Override
+                public void onSuccess(GetDeviceUserRes getDeviceUserRes) {
+                    if (null != getDeviceUserRes && null != getDeviceUserRes.users)
+                        rvDeviceUserAdapter.setList(getDeviceUserRes.users);
+                }
 
-            @Override
-            public void onFaild(String err) {
+                @Override
+                public void onFaild(String err) {
 
-            }
-        });
+                }
+            });
+        }
     }
     //删除用户确认
     private void deleteUserDialog(long userid, int resId) {
@@ -194,7 +196,7 @@ public class DeviceUserPage extends VentilatorBasePage {
         int id = view.getId();
         if (id == R.id.btn_share) {
             if (IDeviceType.RRQZ.equals(device.dc) || IDeviceType.RZNG.equals(device.dc)) //子设备
-                deleteUserDialog(curUser.id, R.string.ventilator_delete_device_hint);
+                deleteUserDialog((curUser != null)?curUser.id:0, R.string.ventilator_delete_device_hint);
             else
                 shareDialog();
         }
@@ -214,7 +216,8 @@ public class DeviceUserPage extends VentilatorBasePage {
             while (iterator.hasNext()) {
                 String json = iterator.next();
                 Device subDevice = new Gson().fromJson(json, Device.class);
-                if (device.guid.equals(subDevice.guid)) {
+                if ((device.guid != null && device.guid.equals(subDevice.guid))
+                        || (device.mac != null && device.mac.equals(subDevice.mac))) {
                     iterator.remove();//已经有记录 删除
 
                     deleteDevice(device);

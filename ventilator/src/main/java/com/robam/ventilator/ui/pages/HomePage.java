@@ -555,7 +555,7 @@ public class HomePage extends VentilatorBasePage {
 
                                     }
                                 }
-                                MMKVUtils.setSubDevice(sets);  //设备更新，子设备覆盖
+//                                MMKVUtils.setSubDevice(sets);  //设备更新，子设备覆盖
                             }
                         }
                         //绑定设备
@@ -563,34 +563,22 @@ public class HomePage extends VentilatorBasePage {
 
                     }
                     //获取子设备
-                    getSubDevices(readSubDevices());
+                    getSubDevices(HomeVentilator.getInstance().readSubDevices());
                 }
 
                 @Override
                 public void onFaild(String err) {
                     LogUtils.e("getDevices" + err);
                     //获取子设备
-                    getSubDevices(readSubDevices());
+                    getSubDevices(HomeVentilator.getInstance().readSubDevices());
                 }
             });
         } else {
             //logout
             clearDevice();
             //获取子设备
-            getSubDevices(readSubDevices());
+            getSubDevices(HomeVentilator.getInstance().readSubDevices());
         }
-    }
-    //本地读取子设备
-    private List<Device> readSubDevices() {
-        Set<String> deviceSets = MMKVUtils.getSubDevice();
-        List<Device> subDevices = new ArrayList<>();
-        if (null != deviceSets) {
-            for (String json: deviceSets) {
-                Device subDevice = new Gson().fromJson(json, Device.class);
-                subDevices.add(subDevice);
-            }
-        }
-        return subDevices;
     }
     //获取子设备
     private void getSubDevices(List<Device> subDevices) {
@@ -789,7 +777,7 @@ public class HomePage extends VentilatorBasePage {
         Iterator<Device> iterator = AccountInfo.getInstance().deviceList.iterator();
         while (iterator.hasNext()) {
             Device device = iterator.next();
-            if (device instanceof Pan || device instanceof Stove)
+            if (IDeviceType.RZNG.equals(device.dc) || IDeviceType.RRQZ.equals(device.dc))
                 continue;
             iterator.remove();
         }

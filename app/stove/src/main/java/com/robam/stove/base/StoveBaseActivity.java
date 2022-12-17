@@ -51,7 +51,7 @@ public abstract class StoveBaseActivity extends BaseActivity {
                 if (Plat.getPlatform().getDeviceOnlySign().equals(s)) //烟机
                     return;
                 for (Device device: AccountInfo.getInstance().deviceList) {
-                    if (null != device.guid && device.guid.equals(s) && device.guid.equals(HomeStove.getInstance().guid) && device instanceof Stove) {
+                    if (null != device.guid && device.guid.equals(s) && device.guid.equals(HomeStove.getInstance().guid) && IDeviceType.RRQZ.equals(device.dc)) {
                         Stove stove = (Stove) device;
                         if (stove.lockStatus == StoveConstant.LOCK) {
                             screenLock();

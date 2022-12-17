@@ -123,51 +123,49 @@ public abstract class BaseActivity extends AbsActivity implements ActivityAction
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_MEDIA_PREVIOUS) {
-            if (event.getRepeatCount() == 0) {
-                lockLongPressKey = false;
-                event.startTracking();
-            } else
-                lockLongPressKey = true;
-            return true;
-        }
+//        if (keyCode == KeyEvent.KEYCODE_MEDIA_PREVIOUS) {
+//            if (event.getRepeatCount() == 0) {
+//                lockLongPressKey = false;
+//                event.startTracking();
+//            } else
+//                lockLongPressKey = true;
+//            return true;
+//        }
         return super.onKeyDown(keyCode, event);
     }
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_MEDIA_PREVIOUS) {
-            if (lockLongPressKey) {
-                lockLongPressKey = false;
-                return true;
-            }
-            if (null != iPublicVentilatorApi) {
-//                ToastUtils.showShort(this, "light " + iPublicVentilatorApi.getFanLight());
-                if (iPublicVentilatorApi.getFanLight() == 0) {
-                    Plat.getPlatform().openWaterLamp();
-                    iPublicVentilatorApi.setFanLight(1);
-                } else {
-                    Plat.getPlatform().closeWaterLamp();
-                    iPublicVentilatorApi.setFanLight(0);
-                }
-                iPublicVentilatorApi.updateOperationTime(); //更新操作时间
-                return true;
-            }
-        } else if (keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE) {
-            if (null != iPublicVentilatorApi) {
-                if (iPublicVentilatorApi.isStartUp()) {
-
-                    //延时关机
-                   iPublicVentilatorApi.delayShutDown();
-                } else {
-                    iPublicVentilatorApi.openVentilator(); //开机
-//                    Plat.getPlatform().screenOn();
-//                    Plat.getPlatform().openPowerLamp();
-//                    iPublicVentilatorApi.startService(this);
-                }
-                return true;
-            }
-        }
+//        if (keyCode == KeyEvent.KEYCODE_MEDIA_PREVIOUS) {
+//            if (lockLongPressKey) {
+//                lockLongPressKey = false;
+//                return true;
+//            }
+//            if (null != iPublicVentilatorApi) {
+////                ToastUtils.showShort(this, "light " + iPublicVentilatorApi.getFanLight());
+//                if (iPublicVentilatorApi.getFanLight() == 0) {
+//                    Plat.getPlatform().openWaterLamp();
+//                    iPublicVentilatorApi.setFanLight(1);
+//                } else {
+//                    Plat.getPlatform().closeWaterLamp();
+//                    iPublicVentilatorApi.setFanLight(0);
+//                }
+//                iPublicVentilatorApi.updateOperationTime(); //更新操作时间
+//                return true;
+//            }
+//        } else if (keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE) {
+//            if (null != iPublicVentilatorApi) {
+//                if (iPublicVentilatorApi.isStartUp()) {
+//
+//                    //延时关机
+//                   iPublicVentilatorApi.delayShutDown();
+//                } else {
+//                    iPublicVentilatorApi.openVentilator(); //开机
+//
+//                }
+//                return true;
+//            }
+//        }
         return super.onKeyUp(keyCode, event);
     }
 
