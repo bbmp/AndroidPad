@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
+import com.clj.fastble.data.BleDevice;
 import com.google.gson.Gson;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.BaseResponse;
@@ -17,6 +18,9 @@ import com.robam.common.device.Plat;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.manager.BlueToothManager;
 import com.robam.common.manager.LiveDataBus;
+import com.robam.common.module.IPublicPanApi;
+import com.robam.common.module.IPublicStoveApi;
+import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.GridSpaceItemDecoration;
@@ -159,14 +163,30 @@ public class DeviceUserPage extends VentilatorBasePage {
     }
     //解绑用户
     private void unbindDeviceUser(long userid) {
-        if (IDeviceType.RRQZ.equals(device.dc) || IDeviceType.RZNG.equals(device.dc)) {  //解绑子设备
-            //先删
-            deleteSubdevice(device);
-            //上报
-            HomeVentilator.getInstance().notifyOnline(device.guid, device.bid, device.status);
-            //重新获取设备列表
-            AccountInfo.getInstance().getUser().setValue(AccountInfo.getInstance().getUser().getValue());
-//            AccountInfo.getInstance().getGuid().setValue(device.guid);
+        if (IDeviceType.RRQZ.equals(device.dc)) {  //解绑子设备
+
+            //断开灶
+            if (device.status == Device.ONLINE) {
+                IPublicStoveApi iPublicStoveApi = ModulePubliclHelper.getModulePublic(IPublicStoveApi.class, IPublicStoveApi.STOVE_PUBLIC);
+                if (null != iPublicStoveApi)
+                    iPublicStoveApi.disConnectBle(device.guid);
+            } else {
+                deleteSubdevice(device);
+                //重新获取设备列表
+                AccountInfo.getInstance().getUser().setValue(AccountInfo.getInstance().getUser().getValue());
+            }
+            return;
+        } else if (IDeviceType.RZNG.equals(device.dc)) {
+            //断开锅
+            if (device.status == Device.ONLINE) {
+                IPublicPanApi iPublicPanApi = ModulePubliclHelper.getModulePublic(IPublicPanApi.class, IPublicPanApi.PAN_PUBLIC);
+                if (null != iPublicPanApi)
+                    iPublicPanApi.disConnectBle(device.guid);
+            } else {
+                deleteSubdevice(device);
+                //重新获取设备列表
+                AccountInfo.getInstance().getUser().setValue(AccountInfo.getInstance().getUser().getValue());
+            }
             return;
         }
         CloudHelper.unbindDevice(this, userid, device.guid, BaseResponse.class, new RetrofitCallback<BaseResponse>() {
@@ -220,7 +240,10 @@ public class DeviceUserPage extends VentilatorBasePage {
                         || (device.mac != null && device.mac.equals(subDevice.mac))) {
                     iterator.remove();//已经有记录 删除
 
-                    deleteDevice(device);
+                    //通知上报
+                    HomeVentilator.getInstance().notifyOnline(subDevice.guid, subDevice.bid, -1); //删除
+                    //取消订阅
+                    MqttManager.getInstance().unSubscribe(subDevice.dc, DeviceUtils.getDeviceTypeId(subDevice.guid), DeviceUtils.getDeviceNumber(subDevice.guid));
                     break;
                 }
             }
@@ -228,6 +251,7 @@ public class DeviceUserPage extends VentilatorBasePage {
             MMKVUtils.setSubDevice(subDevices);
         }
     }
+
     //从列表中删除设备
     private void deleteDevice(Device curDevice) {
         Iterator<Device> iterator = AccountInfo.getInstance().deviceList.iterator();

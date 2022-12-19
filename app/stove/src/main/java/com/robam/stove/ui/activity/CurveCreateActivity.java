@@ -130,7 +130,8 @@ public class CurveCreateActivity extends StoveBaseActivity {
             @Override
             public void onChanged(String s) {
                 for (Device device: AccountInfo.getInstance().deviceList) {
-                    if (device.guid.equals(s) && device.guid.equals(HomeStove.getInstance().guid) && device instanceof Stove && curTime > 0) { //当前灶且创建已开始
+                    if (device.guid.equals(s) && device.guid.equals(HomeStove.getInstance().guid) && device instanceof Stove
+                            && IDeviceType.RRQZ.equals(device.dc) && curTime > 0) { //当前灶且创建已开始
                         Stove stove = (Stove) device;
                         LogUtils.e("stove.leftStatus " + stove.leftStatus);
                         LogUtils.e("stove.leftLevel " + stove.leftLevel);
@@ -147,7 +148,7 @@ public class CurveCreateActivity extends StoveBaseActivity {
                         }
 
                         break;
-                    } else if (device.guid.equals(s) && device instanceof Pan && curTime > 0) { //检查锅状态锅
+                    } else if (device.guid.equals(s) && device instanceof Pan && IDeviceType.RZNG.equals(device.dc) && curTime > 0) { //检查锅状态锅
                         Pan pan = (Pan) device;
                         if (pan.status == Device.OFFLINE) { //锅已离线
 

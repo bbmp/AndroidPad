@@ -162,7 +162,7 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
                     //在线
                     baseViewHolder.setText(R.id.tv_online, R.string.ventilator_online);
                     baseViewHolder.setImageResource(R.id.iv_online, R.drawable.ventilator_shape_online_bg);
-                    if (pan.sysytemStatus == 0) {
+                    if (pan.sysytemStatus == 0 || pan.sysytemStatus == 1) {
                         baseViewHolder.setVisible(R.id.layout_offline, true);
                         baseViewHolder.setGone(R.id.layout_work, true);
                         baseViewHolder.setGone(R.id.btn_detail, true);
@@ -174,6 +174,10 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
                         baseViewHolder.setText(R.id.btn_work, R.string.ventilator_detail);
                     } else {
                         //故障
+                        baseViewHolder.setGone(R.id.layout_offline, true);
+                        baseViewHolder.setVisible(R.id.layout_work, true);
+                        baseViewHolder.setText(R.id.tv_mode, R.string.ventilator_product_failure);
+                        baseViewHolder.setText(R.id.btn_work, R.string.ventilator_detail);
                     }
                 }
             } else if (IDeviceType.RYYJ.equals(device.dc)) {//油烟机

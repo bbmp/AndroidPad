@@ -28,4 +28,6 @@ public interface StoveFunction {
     void setStoveInteraction(String targetGuid, int stoveId);
     //远程控制命令
     void remoteControl(String targetGuid, byte[] payload);
+    //断开蓝牙
+    void disConnectBle(String targetGuid);
 }

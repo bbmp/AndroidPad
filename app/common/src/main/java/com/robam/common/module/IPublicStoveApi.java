@@ -15,4 +15,6 @@ public interface IPublicStoveApi extends IPublicApi {
     void setAttribute(String targetGuid, int stoveId, int isCook, int workStatus);
     //查询灶具状态
     void queryAttribute(String targetGuid);
+    //断开蓝牙
+    void disConnectBle(String targetGuid);
 }

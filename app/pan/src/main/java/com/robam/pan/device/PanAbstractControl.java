@@ -77,4 +77,9 @@ public class PanAbstractControl implements PanFunction{
     public void remoteControl(String targetGuid, byte[] payload) {
         function.remoteControl(targetGuid, payload);
     }
+
+    @Override
+    public void disConnectBle(String targetGuid) {
+        function.disConnectBle(targetGuid);
+    }
 }

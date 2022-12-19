@@ -257,7 +257,9 @@ public class HomeVentilator {
                     .build();
             JSONArray jsonArray = new JSONArray();
             for (Device device: AccountInfo.getInstance().deviceList) {
-                if (guid.equals(device.guid) && ((device instanceof Pan && IDeviceType.RZNG.equals(device.dc))
+                if (guid.equals(device.guid) && status == -1) { //删除的设备
+                    continue;
+                } else if (guid.equals(device.guid) && ((device instanceof Pan && IDeviceType.RZNG.equals(device.dc))
                         || (device instanceof Stove && IDeviceType.RRQZ.equals(device.dc)))) { //已经存在该子设备
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.putOpt(VentilatorConstant.DEVICE_GUID, guid);
@@ -286,7 +288,7 @@ public class HomeVentilator {
     public void setSubDevices(MqttMsg msg) throws Exception{
         JSONArray jsonArray = new JSONArray();
         for (Device device: AccountInfo.getInstance().deviceList) {
-            if ((device instanceof Pan) || (device instanceof Stove)) { //其他存在的子设备
+            if ((device instanceof Pan && IDeviceType.RZNG.equals(device.dc)) || (device instanceof Stove && IDeviceType.RRQZ.equals(device.dc))) { //其他存在的子设备
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.putOpt(VentilatorConstant.DEVICE_GUID, device.guid);
                 jsonObject.putOpt(VentilatorConstant.DEVICE_BIZ, device.bid);
@@ -337,7 +339,7 @@ public class HomeVentilator {
         }
 
         if (isLink) {
-            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     shutDownHint(isLink);

@@ -136,7 +136,7 @@ public class CurveActivity extends PanBaseActivity {
             @Override
             public void onChanged(String s) {
                 for (Device device: AccountInfo.getInstance().deviceList) {
-                    if (null != device.guid && device.guid.equals(s) && device instanceof Stove) { //当前灶
+                    if (null != device.guid && device.guid.equals(s) && IDeviceType.RRQZ.equals(device.dc)) { //当前灶
                         Stove stove = (Stove) device;
                         //开火提示状态
                         if (null != openDialog && openDialog.isShow()) {
@@ -250,7 +250,7 @@ public class CurveActivity extends PanBaseActivity {
     private void openFire(int stove) {
 
         for (Device device: AccountInfo.getInstance().deviceList) {
-            if (device instanceof Pan && device.guid.equals(HomePan.getInstance().guid)) {
+            if (device instanceof Pan && IDeviceType.RZNG.equals(device.dc) && device.guid.equals(HomePan.getInstance().guid)) {
                 if (null == openDialog) {
                     openDialog = PanDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_OPEN_FIRE);
                     openDialog.setCancelable(false);

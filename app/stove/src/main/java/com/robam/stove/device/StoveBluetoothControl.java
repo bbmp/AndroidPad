@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import com.clj.fastble.callback.BleWriteCallback;
 import com.clj.fastble.data.BleDevice;
 import com.clj.fastble.exception.BleException;
+import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.RTopic;
@@ -287,7 +288,7 @@ public class StoveBluetoothControl implements StoveFunction{
     public void setStoveParams(int cmd, byte[] payload) {
         try {
             for (Device device : AccountInfo.getInstance().deviceList) {
-                if (device instanceof Stove) { //这里没有guid校验
+                if (device instanceof Stove && IDeviceType.RRQZ.equals(device.dc)) { //这里没有guid校验
                     //加密数据
                     Byte[] data = BleDecoder.mcu_uart_pack(BleDecoder.byteArraysToByteArrays(payload));
 
@@ -345,5 +346,32 @@ public class StoveBluetoothControl implements StoveFunction{
                 }
             }
         } catch (Exception e) {}
+    }
+
+    @Override
+    public void disConnectBle(String targetGuid) {
+        try {
+            for (Device device: AccountInfo.getInstance().deviceList) {
+                if (IDeviceType.RRQZ.equals(device.dc) && targetGuid.equals(device.guid)) {
+                    Byte [] resp_payload = new Byte[] {BleDecoder.RC_FAIL};
+                    Byte [] resp = BleDecoder.make_internal_send_packet(BleDecoder.CMD_DISCONNECT_BLE_PRIOR_NOTICE, resp_payload);
+                    //发送蓝牙数据
+                    BlueToothManager.write_no_response(((Stove) device).bleDevice, ((Stove) device).characteristic, BleDecoder.ByteArraysTobyteArrays(resp), new BleWriteCallback() {
+                        @Override
+                        public void onWriteSuccess(int current, int total, byte[] justWrite) {
+
+                        }
+
+                        @Override
+                        public void onWriteFailure(BleException exception) {
+
+                        }
+                    });
+                    break;
+                }
+            }
+        } catch (Exception e) {
+
+        }
     }
 }

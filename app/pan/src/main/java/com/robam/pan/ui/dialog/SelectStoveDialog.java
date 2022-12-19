@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.constant.StoveConstant;
@@ -49,7 +50,7 @@ public class SelectStoveDialog extends BaseDialog {
     //检查炉头状态
     public void checkStoveStatus() {
         for (Device device: AccountInfo.getInstance().deviceList) {
-            if (device instanceof Stove) {
+            if (device instanceof Stove && IDeviceType.RRQZ.equals(device.dc)) {
                 Stove stove = (Stove) device;
                 if (stove.leftStatus != StoveConstant.STOVE_CLOSE && stove.leftLevel != 0) {  //工作中
                     viewLeft.setEnabled(false);

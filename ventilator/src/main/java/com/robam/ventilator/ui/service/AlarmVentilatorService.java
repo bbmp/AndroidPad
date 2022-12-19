@@ -1,5 +1,6 @@
 package com.robam.ventilator.ui.service;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -13,11 +14,13 @@ import android.serialport.helper.SerialPortHelper;
 
 import androidx.annotation.Nullable;
 
+import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.device.Plat;
 import com.robam.common.device.subdevice.Pan;
 import com.robam.common.device.subdevice.Stove;
+import com.robam.common.manager.AppActivityManager;
 import com.robam.common.manager.BlueToothManager;
 import com.robam.common.manager.LiveDataBus;
 import com.robam.common.utils.DateUtil;
@@ -108,7 +111,14 @@ public class AlarmVentilatorService extends Service {
                                     } else if (line.contains("00000000")) { //up事件
                                         if (HomeVentilator.getInstance().isStartUp()) { //开机状态
                                             //延时关机
-                                            HomeVentilator.getInstance().delayShutDown(false); //主动关机
+                                            Activity activity = AppActivityManager.getInstance().getCurrentActivity();
+                                            if (null != activity)
+                                                activity.runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        HomeVentilator.getInstance().delayShutDown(false); //主动关机
+                                                    }
+                                                });
                                         } else {
                                             //开机
                                             HomeVentilator.getInstance().openVentilator();
@@ -196,9 +206,9 @@ public class AlarmVentilatorService extends Service {
         List<String> names = new ArrayList();
 
         for (Device device: AccountInfo.getInstance().deviceList) {
-            if (device instanceof Pan && null == ((Pan) device).bleDevice)
+            if (device instanceof Pan && IDeviceType.RZNG.equals(device.dc) && null == ((Pan) device).bleDevice)
                 names.add(BlueToothManager.pan);
-            else if (device instanceof Stove && null == ((Stove) device).bleDevice)
+            else if (device instanceof Stove && IDeviceType.RRQZ.equals(device.dc) && null == ((Stove) device).bleDevice)
                 names.add(BlueToothManager.stove);
         }
         if (names.size() > 0) {

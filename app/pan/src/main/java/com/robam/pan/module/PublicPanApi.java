@@ -59,4 +59,9 @@ public class PublicPanApi implements IPublicPanApi {
     public void setFanPan(int onOff) {
         PanAbstractControl.getInstance().setFanPan(onOff);
     }
+
+    @Override
+    public void disConnectBle(String targetGuid) {
+        PanAbstractControl.getInstance().disConnectBle(targetGuid);
+    }
 }
