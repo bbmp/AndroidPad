@@ -89,6 +89,9 @@ public class MainActivity extends DishWasherBaseActivity {
                 if(dishWasher.powerStatus == DishWasherState.WAIT){//待机状态下，无工作模式
                     return;
                 }
+                if(dishWasher.remainingWorkingTime == 0){//无剩余工作时间
+                    return;
+                }
                 Intent intent = new Intent();
                 DishWasherModeBean dishWasherModeBean = DishWasherModelUtil.getDishWasher(modeBeanList,dishWasher.workMode);
                 if(dishWasherModeBean == null){

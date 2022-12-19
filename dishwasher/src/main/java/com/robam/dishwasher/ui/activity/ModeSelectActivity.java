@@ -13,7 +13,9 @@ import com.robam.common.bean.Device;
 import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.view.CancelRadioButton;
+import com.robam.common.utils.ClickUtils;
 import com.robam.common.utils.TimeUtils;
+import com.robam.common.utils.ToastUtils;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.base.DishWasherBaseActivity;
 import com.robam.dishwasher.bean.DishWasher;
@@ -84,7 +86,7 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
                     DishWasher dishWasher = (DishWasher) device;
                     setLock(dishWasher.StoveLock == 1);
                     boolean toWaringPage = toWaringPage(dishWasher.abnormalAlarmStatus);
-                    if(!toWaringPage && dishWasher.workMode != 0){
+                    if(!toWaringPage && dishWasher.workMode != 0 && dishWasher.remainingWorkingTime != 0){
                         switch (dishWasher.powerStatus){
                             //case DishWasherState.WAIT://启动设置成功后，设备powerStatus在一段时间内，仍然在待机状态
                             case DishWasherState.WORKING:
@@ -139,6 +141,7 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
 
             tvTime.setTextColor(getResources().getColor(R.color.dishwasher_lock));
             tvMode.setTextColor(getResources().getColor(R.color.dishwasher_white70));
+            tvTemp.setText(auxBean.temp+"");
             tvTemp.setTextColor(getResources().getColor(R.color.dishwasher_white70));
             tvTempUnit.setTextColor(getResources().getColor(R.color.dishwasher_white70));
 
@@ -148,6 +151,7 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
             }
         }else{
             tvAuxPrompt.setText("");
+            tvTemp.setText(modeBean .temp+"");
             tvTime.setText(getSpan(modeBean.time));
             tvTime.setTextColor(getResources().getColor(R.color.dishwasher_white));
             tvMode.setTextColor(getResources().getColor(R.color.dishwasher_white));
@@ -223,10 +227,11 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
 
     //模式参数设置
     private void setData(DishWasherModeBean modeBean) {
-        tvMode.setText(modeBean.name);
-
-
-
+        if(modeBean.code == DishWasherEnum.AUTO_AERATION.FLUSH.getCode()){
+            tvMode.setText(DishWasherEnum.AUTO_AERATION.FLUSH.getValue());//护婴净存，不换行显示
+        }else{
+            tvMode.setText(modeBean.name);
+        }
         tvTime.setText(getSpan(modeBean.time));
         int temp = modeBean.temp;
         if (temp > 0) {
@@ -255,6 +260,10 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
             intent.setClass(this, AppointmentActivity.class);
             startActivity(intent);
         } else if (id == R.id.btn_start) {
+            if(ClickUtils.isFastClick()){
+                ToastUtils.showLong(this,"被重复点击了");
+                return;//防止快速重复点击
+            }
             startWork();
         } else if (id == R.id.ll_left) {
             //返回

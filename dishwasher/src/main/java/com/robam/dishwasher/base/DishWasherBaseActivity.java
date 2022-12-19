@@ -2,6 +2,7 @@ package com.robam.dishwasher.base;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,7 +14,9 @@ import androidx.lifecycle.Observer;
 
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
+import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.activity.BaseActivity;
+import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.bean.DishWasher;
@@ -25,6 +28,8 @@ import com.robam.dishwasher.manager.DishwasherActivityManager;
 import com.robam.dishwasher.ui.activity.MainActivity;
 import com.robam.dishwasher.ui.activity.WaringActivity;
 import com.robam.dishwasher.util.DishWasherCommandHelper;
+
+import java.util.Map;
 
 
 public abstract class DishWasherBaseActivity extends BaseActivity {
@@ -83,6 +88,8 @@ public abstract class DishWasherBaseActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         DishwasherActivityManager.getInstance().removeActivity(this);
+        unLockHandler.removeCallbacks(unLockRunnable);
+        unLockHandler.removeCallbacksAndMessages(null);
         //LogUtils.i("washer onDestroy stack size = " + AppManager.getInstance().getActivityStackSize());
     }
 
@@ -93,10 +100,18 @@ public abstract class DishWasherBaseActivity extends BaseActivity {
         }
         rightCenter.setVisibility(View.VISIBLE);
         rightCenter.setOnClickListener(v -> {
+            DishWasher curDevice = getCurDevice();
+            if(curDevice == null){
+                return ;
+            }
+            if(touchDownTimeMil != 0 && System.currentTimeMillis() - touchDownTimeMil > 1000){
+                return;
+            }
             DishWasherCommandHelper.sendCtrlLockCommand(true,LOCK_FLAG);
+            LogUtils.i("dispatchTouchEvent setOnClickListener runnable");
             //setLock(true);
         });
-        rightCenter.setOnLongClickListener(v->{
+        /*rightCenter.setOnLongClickListener(v->{
             DishWasher curDevice = getCurDevice();
             if(curDevice == null){
                 return true;
@@ -104,19 +119,53 @@ public abstract class DishWasherBaseActivity extends BaseActivity {
             DishWasherCommandHelper.sendCtrlLockCommand(false,LOCK_FLAG);
             //setLock(false);
             return true;
-        });
+        });*/
         View iconView = findViewById(R.id.iv_right_center);
         ((ImageView) iconView).setImageResource(HomeDishWasher.getInstance().lock ? R.drawable.dishwasher_screen_lock : R.drawable.dishwasher_screen_unlock);
     }
 
 
+    private int mLastMotionX;
+    private int mLastMotionY;
+    private int TOUCH_MAX = 50;
+    private Handler unLockHandler = new Handler();
+    private long touchDownTimeMil;
+    private final Runnable unLockRunnable = () -> {
+        DishWasher curDevice = getCurDevice();
+        if(curDevice == null){
+            return ;
+        }
+        LogUtils.i("dispatchTouchEvent unLockRunnable runnable");
+        DishWasherCommandHelper.sendCtrlLockCommand(false,LOCK_FLAG);
+    };
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if(lock){
             boolean isTouchAble = lockTouchArea(ev);
-            //LogUtils.e("caTouch "+isTouchAble);
+            //
             if(isTouchAble){
+                //LogUtils.i("dispatchTouchEvent isTouchAble:"+isTouchAble);
+                int x = (int)ev.getX();
+                int y = (int)ev.getY();
+                switch (ev.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+                        LogUtils.i("dispatchTouchEvent isTouchAble down");
+                        touchDownTimeMil = System.currentTimeMillis();
+                        mLastMotionX = x;
+                        mLastMotionY = y;
+                        unLockHandler.postDelayed(unLockRunnable,2000);
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        if(Math.abs(mLastMotionX - x) > TOUCH_MAX || Math.abs(mLastMotionY - y) > TOUCH_MAX){
+                            unLockHandler.removeCallbacks(unLockRunnable);
+                        }
+                        break;
+                    case MotionEvent.ACTION_CANCEL:
+                    case MotionEvent.ACTION_UP:
+                        unLockHandler.removeCallbacks(unLockRunnable);
+                        break;
+                }
                 return super.dispatchTouchEvent(ev);
             }
             if(System.currentTimeMillis() - lastTouchMil >= 3000){

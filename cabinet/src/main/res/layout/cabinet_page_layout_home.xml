@@ -27,7 +27,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.robam.common.ui.view.RecyclerSpeedView
         android:id="@+id/rv_main"
         android:layout_width="match_parent"
         android:layout_height="0dp"

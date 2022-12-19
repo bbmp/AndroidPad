@@ -274,6 +274,7 @@ public class WorkActivity extends DishWasherBaseActivity {
     private void setWorkingState(DishWasher dishWasher){
         changeViewsState(dishWasher.powerStatus);
         setModelTextState(dishWasher.workMode);
+        tvAuxMode.setText(DishWasherAuxEnum.match(dishWasher.auxMode));//附加模式
         if(dishWasher.powerStatus == DishWasherState.WORKING){
             preRemainingTime = dishWasher.remainingWorkingTime *60;
             tvTime.setText(getSpan(preRemainingTime));
@@ -294,15 +295,17 @@ public class WorkActivity extends DishWasherBaseActivity {
         }else if(dishWasher.workMode == DishWasherConstant.MODE_AUTO_AERATION){
             return;
         }else{
-            if(modeBean.time != 0){
+            /*if(modeBean.time != 0){
                 progress =  (dishWasher.remainingWorkingTime*60f/modeBean.time) * 100;
+            }*/
+            if(dishWasher.SetWorkTimeValue != 0){
+                progress =  (dishWasher.remainingWorkingTime*1f/dishWasher.SetWorkTimeValue) * 100;
             }
         }
         if(progress > MAX_PROGRESS){
             progress = MAX_PROGRESS;
         }
         cpgBar.setProgress(progress);
-        tvAuxMode.setText(DishWasherAuxEnum.match(dishWasher.auxMode));//附加模式
         if(dishWasher.workMode != DishWasherConstant.MODE_FLUSH){
             showRemindDialog(dishWasher);
         }
@@ -365,7 +368,7 @@ public class WorkActivity extends DishWasherBaseActivity {
             }
             return;
         }
-        if((isReminding || isNoLongerRemind)){
+        if((isReminding || isNoLongerRemind || HomeDishWasher.getInstance().isNoLongerRemind)){
             return;
         }
         isReminding = true;
@@ -386,9 +389,9 @@ public class WorkActivity extends DishWasherBaseActivity {
         commonDialog.setListeners(v->{
             isReminding = false;
             isNoLongerRemind = true;
-            /*if(v.getId() == R.id.tv_cancel){
-                isNoLongerRemind = true;
-            }*/
+            if(v.getId() == R.id.tv_cancel){
+                HomeDishWasher.getInstance().isNoLongerRemind = true;
+            }
         },R.id.tv_cancel,R.id.tv_ok);
         commonDialog.show();
     }

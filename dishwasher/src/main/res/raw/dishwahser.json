@@ -6,17 +6,19 @@
     "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
     "desc" : "智能识别餐具脏污程度，自动匹配对应程序进行清洗",
     "time": 6000,
-    "temp": 70,
+    "temp": 72,
     "auxCode": 0,
     "auxList": [
       {
 
         "code": 6,
+        "temp": 72,
         "name": "加强除菌",
         "time": 6900
       },
       {
-        "code": 8,
+        "code": 23,
+        "temp": 72,
         "name": "长效净存",
         "time": 6600
       }
@@ -34,21 +36,25 @@
     "auxList": [
       {
         "code": 1,
+        "temp": 75,
         "name": "锅具强洗",
         "time": 11100
       },
       {
         "code": 6,
+        "temp": 75,
         "name": "加强除菌",
         "time": 9900
       },
       {
-        "code": 8,
+        "code": 23,
+        "temp": 75,
         "name": "长效净存",
         "time": 9600
       },
       {
         "code": 3,
+        "temp": 75,
         "name": "下层洗",
         "time": 5940
       }
@@ -66,11 +72,13 @@
     "auxList": [
       {
         "code": 6,
+        "temp": 70,
         "name": "加强除菌",
         "time": 3780
       },
       {
-        "code": 8,
+        "code": 23,
+        "temp": 70,
         "name": "长效净存",
         "time": 3480
       }
@@ -88,21 +96,25 @@
     "auxList": [
       {
         "code": 1,
+        "temp": 72,
         "name": "锅具强洗",
         "time": 7980
       },
       {
         "code": 6,
+        "temp": 72,
         "name": "加强除菌",
         "time": 6780
       },
       {
-        "code": 8,
+        "code": 23,
+        "temp": 72,
         "name": "长效净存",
         "time": 6480
       },
       {
         "code": 3,
+        "temp": 72,
         "name": "下层洗",
         "time": 4500
       }
@@ -121,21 +133,25 @@
       {
         "code": 1,
         "name": "锅具强洗",
+        "temp": 72,
         "time": 16080
       },
       {
         "code": 6,
         "name": "加强除菌",
+        "temp": 72,
         "time": 15180
       },
       {
-        "code": 8,
+        "code": 23,
         "name": "长效净存",
+        "temp": 72,
         "time": 14880
       },
       {
         "code": 3,
         "name": "下层洗",
+        "temp": 72,
         "time": 6900
       }
     ]
@@ -151,12 +167,14 @@
     "auxCode": 0,
     "auxList": [
       {
-        "code": 8,
+        "code": 23,
+        "temp": 50,
         "name": "长效净存",
         "time": 6120
       },
       {
         "code": 3,
+        "temp": 50,
         "name": "下层洗",
         "time": 4260
       }
@@ -174,21 +192,25 @@
     "auxList": [
       {
         "code": 1,
+        "temp": 72,
         "name": "锅具强洗",
         "time": 9300
       },
       {
         "code": 6,
+        "temp": 72,
         "name": "加强除菌",
         "time": 8100
       },
       {
-        "code": 8,
+        "code": 23,
+        "temp": 72,
         "name": "长效净存",
         "time": 7800
       },
       {
         "code": 3,
+        "temp": 72,
         "name": "下层洗",
         "time": 5520
       }
@@ -206,7 +228,7 @@
   },
   {
     "backgroundImg": "dishwasher_background_hyjc",
-    "code": 9,
+    "code": 21,
     "name": "护婴\n净存",
     "into": "com.robam.dishwasher.ui.activity.ModeSelectActivity",
     "desc" : "对餐具进行长期储存",

@@ -45,5 +45,11 @@ public class HomeDishWasher {
     public boolean isTurnOff = false;
 
 
+    /**
+     *是否不再提醒
+     */
+    public boolean isNoLongerRemind = false;
+
+
 
 }

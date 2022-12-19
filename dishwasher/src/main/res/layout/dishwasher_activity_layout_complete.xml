@@ -14,7 +14,7 @@
         android:src="@drawable/common_ic_bg"/>
 
     <TextView
-        android:id="@+id/waring_title"
+        android:id="@+id/complete_title"
         android:layout_marginTop="@dimen/dp_168"
         android:textSize="@dimen/sp_48"
         android:textColor="@color/dishwasher_color_f6"
@@ -26,14 +26,14 @@
         android:layout_height="wrap_content"/>
 
     <TextView
-        android:id="@+id/waring_desc"
+        android:id="@+id/complete_finish"
         android:layout_marginTop="@dimen/dp_64"
         android:textSize="@dimen/sp_32"
         android:gravity="center"
         android:textColor="@color/dishwasher_color_f6"
         android:text="@string/dishwasher_finish"
         android:background="@drawable/dishwasher_shape_button_bg_ok"
-        app:layout_constraintTop_toBottomOf="@id/waring_title"
+        app:layout_constraintTop_toBottomOf="@id/complete_title"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_width="@dimen/dp_175"

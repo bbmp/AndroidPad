@@ -35,6 +35,7 @@ import com.robam.common.device.subdevice.Pan;
 import com.robam.common.device.subdevice.Stove;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MMKVUtils;
+import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.ventilator.R;
 import com.robam.ventilator.constant.DialogConstant;
 import com.robam.ventilator.constant.VentilatorConstant;
@@ -468,6 +469,7 @@ public class HomeVentilator {
             intent.setClass(activity, HomeActivity.class); //回首页
             activity.startActivity(intent);
         }
+        HomeDishWasher.getInstance().isNoLongerRemind = false;
 //        activity = AppActivityManager.getInstance().getCurrentActivity();
 //        if (null != activity)
 //            activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);

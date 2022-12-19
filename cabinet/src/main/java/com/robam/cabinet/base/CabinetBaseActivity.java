@@ -79,6 +79,9 @@ public abstract class CabinetBaseActivity extends BaseActivity {
             if(isPowerOff()){
                 return;
             }
+            if(touchDownTimeMil != 0 && System.currentTimeMillis() - touchDownTimeMil > 500){
+                return;
+            }
             Map map = CabinetCommonHelper.getCommonMap(MsgKeys.SetSteriLock_Req);
             map.put(CabinetConstant.CABINET_LOCK,1);
             CabinetCommonHelper.sendCommonMsg(map);
@@ -165,6 +168,7 @@ public abstract class CabinetBaseActivity extends BaseActivity {
     private int mLastMotionY;
     private int TOUCH_MAX = 50;
     private Handler unLockHandler = new Handler();
+    private long touchDownTimeMil;
     private final Runnable unLockRunnable = () -> {
         Map map = CabinetCommonHelper.getCommonMap(MsgKeys.SetSteriLock_Req);
         map.put(CabinetConstant.CABINET_LOCK,0);
@@ -180,6 +184,7 @@ public abstract class CabinetBaseActivity extends BaseActivity {
                 int y = (int)ev.getY();
                 switch (ev.getAction()){
                     case MotionEvent.ACTION_DOWN:
+                        touchDownTimeMil = System.currentTimeMillis();
                         mLastMotionX = x;
                         mLastMotionY = y;
                         unLockHandler.postDelayed(unLockRunnable,2000);
@@ -191,7 +196,7 @@ public abstract class CabinetBaseActivity extends BaseActivity {
                         break;
                     case MotionEvent.ACTION_CANCEL:
                     case MotionEvent.ACTION_UP:
-                        unLockHandler.postDelayed(unLockRunnable,2000);
+                        unLockHandler.removeCallbacks(unLockRunnable,2000);
                         break;
                 }
                 return super.dispatchTouchEvent(ev);

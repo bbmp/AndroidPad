@@ -37,14 +37,15 @@ public class DishWasherModelUtil {
     public static void initWorkingInfo( DishWasherModeBean curWasherModel,DishWasher dishWasher){
         curWasherModel.restTime = dishWasher.remainingWorkingTime * 60;
         curWasherModel.auxCode = dishWasher.auxMode;
-        if(dishWasher.auxMode != 0 && curWasherModel != null && curWasherModel.auxList.size() != 0){
+        curWasherModel.time = dishWasher.SetWorkTimeValue * 60;
+        /*if(dishWasher.auxMode != 0 && curWasherModel != null && curWasherModel.auxList.size() != 0){
             for(int i = 0; i < curWasherModel.auxList.size() ;i++){
                 if(dishWasher.auxMode == curWasherModel.auxList.get(i).auxCode){
                     curWasherModel.time = curWasherModel.auxList.get(i).time;
                     break;
                 }
             }
-        }
+        }*/
     }
 
 

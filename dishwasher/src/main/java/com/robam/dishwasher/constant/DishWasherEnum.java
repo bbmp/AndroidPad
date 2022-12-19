@@ -10,10 +10,16 @@ public enum DishWasherEnum {
     BRIGHT(DishWasherConstant.MODE_BRIGHT,"晶亮洗"),
     BABYCARE(DishWasherConstant.MODE_BABYCARE,"护婴洗"),
     SELFCLEAN(DishWasherConstant.MODE_SELFCLEAN,"自清洁"),
-    FLUSH(DishWasherConstant.MODE_FLUSH,"护婴净存"),
     DRAIN_WATER(DishWasherConstant.MODE_DRAIN_WATER,"排水"),
     SELF_INSPECTION(DishWasherConstant.MODE_SELF_INSPECTION,"自检"),
-    AUTO_AERATION(DishWasherConstant.MODE_AUTO_AERATION,"换气等待");
+    AUTO_AERATION(DishWasherConstant.MODE_AUTO_AERATION,"换气等待"),
+    AUTO_AERATION_AWAIT(DishWasherConstant.MODE_AUTO_AERATION_AWAIT,"换气等待"),
+    PRE_RINSE(DishWasherConstant.MODE_PRE_RINSE,"预冲洗"),
+    SILENT_WASH(DishWasherConstant.MODE_SILENT_WASH,"静音洗"),
+    FLUSH(DishWasherConstant.MODE_FLUSH,"护婴净存"),
+    FLUSH_AWAIT(DishWasherConstant.MODE_FLUSH_AWAIT,"护婴净存等待"),
+    LONG_STORAGE(DishWasherConstant.MODE_LONG_STORAGE,"长效净存"),
+    LONG_STORAGE_AWAIT(DishWasherConstant.MODE_LONG_STORAGE_AWAIT,"长效净存等待");
 
     private int code;
     private String value;

@@ -131,13 +131,15 @@ public class AppointingActivity extends DishWasherBaseActivity {
                     goHome();
                     return;
                 }
-                Intent intent = new Intent();
-                DishWasherModeBean newMode = modeBean.getNewMode();
-                DishWasherModelUtil.initWorkingInfo(newMode,dishWasher);
-                intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, newMode);
-                intent.setClass(this, WorkActivity.class);
-                startActivity(intent);
-                finish();
+                if(dishWasher.remainingWorkingTime != 0){
+                    Intent intent = new Intent();
+                    DishWasherModeBean newMode = modeBean.getNewMode();
+                    DishWasherModelUtil.initWorkingInfo(newMode,dishWasher);
+                    intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, newMode);
+                    intent.setClass(this, WorkActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
                 break;
             case DishWasherState.APPOINTMENT_ON:
                 setViewsContent(dishWasher);
