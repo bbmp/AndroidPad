@@ -103,6 +103,7 @@ public class FileUtils {
             }
             FileOutputStream f = new FileOutputStream(fileStr, isAppend);
             f.write(DateUtil.getCurrentTime().getBytes());
+            f.write(' ');
             f.write(text.getBytes());
             f.write("\n".getBytes());
             f.close();

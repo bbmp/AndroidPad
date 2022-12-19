@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.serialport.helper.SerialPortHelper;
@@ -33,6 +34,7 @@ import com.robam.common.utils.ClickUtils;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.device.subdevice.Pan;
 import com.robam.common.device.subdevice.Stove;
+import com.robam.common.utils.FileUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MMKVUtils;
 import com.robam.dishwasher.device.HomeDishWasher;
@@ -48,6 +50,7 @@ import com.robam.ventilator.ui.receiver.VentilatorReceiver;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -335,7 +338,7 @@ public class HomeVentilator {
         }
 
         if (isLink) {
-            new Handler().postDelayed(new Runnable() {
+            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     shutDownHint(isLink);
@@ -598,5 +601,17 @@ public class HomeVentilator {
     public void updateOperationTime() {
         operationTime = System.currentTimeMillis();
         LogUtils.i("operationTime = " + operationTime);
+    }
+    //本地读取子设备
+    public List<Device> readSubDevices() {
+        Set<String> deviceSets = MMKVUtils.getSubDevice();
+        List<Device> subDevices = new ArrayList<>();
+        if (null != deviceSets) {
+            for (String json: deviceSets) {
+                Device subDevice = new Gson().fromJson(json, Device.class);
+                subDevices.add(subDevice);
+            }
+        }
+        return subDevices;
     }
 }

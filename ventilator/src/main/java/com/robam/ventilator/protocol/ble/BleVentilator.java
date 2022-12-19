@@ -65,6 +65,8 @@ public class BleVentilator {
     private static ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(2, 2, 0, TimeUnit.MILLISECONDS,
             new SynchronousQueue<>());
 
+    public static long scanTime;
+
     private static final int MSG_DELAY_DISCONNECT = 1;
     private static final int MSG_QUERY_FANPAN = 2; //烟锅联动查询
     private static final int MSG_QUERY_STOVEATTRIBUTE = 3;//查询灶具状态
@@ -79,6 +81,9 @@ public class BleVentilator {
 
     //开机自动扫描
     public static void startScan() {
+        if (Math.abs(System.currentTimeMillis() - scanTime) < 30000) //30s不重复扫描
+            return;
+        scanTime = System.currentTimeMillis();
 
         BlueToothManager.cancelScan();
 
@@ -107,9 +112,9 @@ public class BleVentilator {
                     for (BleDevice bleDevice: scanResultList) {
                         String deviceNum = BleVentilator.changeMac(bleDevice.getMac());
                         for (Device device: AccountInfo.getInstance().deviceList) {
-                            if (deviceNum.equals(DeviceUtils.getDeviceNumber(device.guid)) && device instanceof Stove)
+                            if (deviceNum.equals(DeviceUtils.getDeviceNumber(device.guid)) && IDeviceType.RRQZ.equals(device.dc))
                                 connect(IDeviceType.RRQZ, bleDevice, null);
-                            else if (deviceNum.equals(DeviceUtils.getDeviceNumber(device.guid)) && device instanceof Pan)
+                            else if (deviceNum.equals(DeviceUtils.getDeviceNumber(device.guid)) && IDeviceType.RZNG.equals(device.dc))
                                 connect(IDeviceType.RZNG, bleDevice, null);
                         }
                     }
@@ -120,6 +125,10 @@ public class BleVentilator {
 
     //开始扫描
     public static void startScan(String model, BleCallBack bleCallBack) {
+        scanTime = System.currentTimeMillis();
+
+        BlueToothManager.cancelScan();
+
         WeakReference<BleCallBack> bleCallBackWeakReference = new WeakReference<>(bleCallBack);
 
         BlueToothManager.startScan(new BleScanCallback() {
@@ -169,6 +178,8 @@ public class BleVentilator {
             public void onConnectFail(BleDevice bleDevice, BleException exception) {
 
                 LogUtils.e("onConnectFail " + exception.getDescription());
+                setBleDevice(bleDevice.getMac(), null, null);
+
                 if (null != bleCallBackWeakReference && null != bleCallBackWeakReference.get())
                     bleCallBackWeakReference.get().onConnectFail();
             }
@@ -190,12 +201,12 @@ public class BleVentilator {
             @SuppressLint("MissingPermission")
             @Override
             public void onDisConnected(boolean isActiveDisConnected, BleDevice bleDevice, BluetoothGatt gatt, int status) {
-                LogUtils.e("onDisConnected");
+                LogUtils.e("onDisConnected " + isActiveDisConnected);
                 //掉线
                 if (null != gatt)
                     gatt.close();
                 //清除设备蓝牙信息
-                if (setBleDevice(bleDevice.getMac(), null, null)) {
+                if (resetBleDevice(bleDevice.getMac()) && !isActiveDisConnected) { //非主动断开
                     //重新连接
                     try {
                         threadPoolExecutor.execute(new Runnable() {
@@ -243,11 +254,11 @@ public class BleVentilator {
         }
         //已经配过锅或灶,换了锅或灶
         for (Device device: AccountInfo.getInstance().deviceList) {
-            if (device instanceof Pan && IDeviceType.RZNG.equals(model) && !TextUtils.isEmpty(device.guid)) {
+            if (device instanceof Pan && IDeviceType.RZNG.equals(model) && !bleDevice.getMac().equals(device.mac)) {
                 LogUtils.e("pan guid " + device.guid);
                 return;
             }
-            if (device instanceof Stove && IDeviceType.RRQZ.equals(model) && !TextUtils.isEmpty(device.guid)) {
+            if (device instanceof Stove && IDeviceType.RRQZ.equals(model) && !bleDevice.getMac().equals(device.mac)) {
                 LogUtils.e("stove guid " + device.guid);
                 return;
             }
@@ -261,6 +272,8 @@ public class BleVentilator {
 //            }
             Stove stove = new Stove("燃气灶", IDeviceType.RRQZ, "9B328");
             stove.mac = bleDevice.getMac();
+            stove.dp = "RQZ06";
+            stove.dc = "unknown";
             stove.bleDecoder = new BleDecoder(0);
             ListIterator<Device> iterator = AccountInfo.getInstance().deviceList.listIterator();
             while (iterator.hasNext()) {
@@ -277,6 +290,7 @@ public class BleVentilator {
 //            }
             Pan pan = new Pan("明火自动翻炒锅", IDeviceType.RZNG, "KP100");
             pan.mac = bleDevice.getMac();
+            pan.dc = "unknown";
             pan.bleDecoder = new BleDecoder(0);
             ListIterator<Device> iterator = AccountInfo.getInstance().deviceList.listIterator();
             while (iterator.hasNext()) {
@@ -298,6 +312,23 @@ public class BleVentilator {
             }
         }
         return deviceNum;
+    }
+    //重置蓝牙设备类型
+    private static boolean resetBleDevice(String mac) {
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (mac.equals(device.mac)) {
+                if (device instanceof Pan) {
+
+                    device.bleType = 0;
+                    return true;
+                } else if (device instanceof Stove) {
+                    device.bleType = 0;
+                    return true;
+                }
+                break;
+            }
+        }
+        return false;
     }
 
     //设置蓝牙设备的读写特征符
@@ -374,7 +405,7 @@ public class BleVentilator {
                     @Override
                     public void onCharacteristicChanged(byte[] data) {
                         // 打开通知后，设备发过来的数据将在这里出现（UI线程）
-                        LogUtils.e("Thread " + Thread.currentThread() + " onCharacteristicChanged " + StringUtils.bytes2Hex(data));
+                        LogUtils.e("RSSI " + bleDevice.getRssi() + " onCharacteristicChanged " + StringUtils.bytes2Hex(data));
                         for (Device device: AccountInfo.getInstance().deviceList) {
                             if (bleDevice.getMac().equals(device.mac)) {
                                 if (device instanceof Pan)
@@ -424,30 +455,13 @@ public class BleVentilator {
                                             ble_type = ByteUtils.toInt(ret2[BleDecoder.DECODE_PAYLOAD_OFFSET + 5 + 1 + 3 + 1 + biz_len + 12]);
                                             LogUtils.e("guid CMD_PAIRING_REQUEST_INT =" + new String(guid) + " bleType" + bleType + " ble_type" + ble_type);
                                             if (ble_type != bleType) { //非目标设备
-                                                Iterator<Device> iterator = AccountInfo.getInstance().deviceList.iterator();
-                                                while (iterator.hasNext()) {
-                                                    Device device = iterator.next();
-                                                    if (bleDevice.getMac().equals(device.mac)) {
-                                                        LogUtils.e("delete 1" + bleDevice.getMac());
-                                                        device.dc = "unknown";
-//                                                        iterator.remove();  //删除设备
-                                                    }
-                                                }
                                                 response = false;
                                             } else {
 
                                                 for (Device device : AccountInfo.getInstance().deviceList) {
 
                                                     if (device.bleType == ble_type) {  //已有相同设备连接
-                                                        Iterator<Device> iterator = AccountInfo.getInstance().deviceList.iterator();
-                                                        while (iterator.hasNext()) {
-                                                            Device device1 = iterator.next();
-                                                            if (bleDevice.getMac().equals(device1.mac) && TextUtils.isEmpty(device1.guid)) {
-                                                                LogUtils.e("delete 2" + bleDevice.getMac());
-                                                                device.dc = "unknown";
-//                                                                iterator.remove();  //删除设备
-                                                            }
-                                                        }
+
                                                         response = false;
                                                         break;
                                                     }
@@ -461,6 +475,10 @@ public class BleVentilator {
                                                         device.bid = new String(biz_id);
 
                                                         device.bleType = ble_type;
+                                                        if (ble_type == 1)
+                                                            device.dc = IDeviceType.RRQZ;
+                                                        if (ble_type == 2)
+                                                            device.dc = IDeviceType.RZNG;
 
                                                         break;
                                                     }
@@ -720,7 +738,10 @@ public class BleVentilator {
             while (iterator.hasNext()) {
                 String json = iterator.next();
                 Device subDevice = new Gson().fromJson(json, Device.class);
-                if (device.guid.equals(subDevice.guid))  //已经有记录
+                if ((null != device.guid && device.guid.equals(subDevice.guid))
+                    || (null != device.mac && device.mac.equals(subDevice.mac))
+                    || (IDeviceType.RRQZ.equals(subDevice.dc) && IDeviceType.RRQZ.equals(device.dc))
+                    || (IDeviceType.RZNG.equals(subDevice.dc) && IDeviceType.RZNG.equals(device.dc)))  //已经有记录
                     return;
             }
             subDevices.add(new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().toJson(device));

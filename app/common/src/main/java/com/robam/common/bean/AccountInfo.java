@@ -64,7 +64,7 @@ public class AccountInfo {
     public boolean isExist(List<Device> devices, Device device) {
         if (null != device && null != devices) {
             for (Device device1 : devices) {
-                if (device1.guid.equals(device.guid))
+                if (null != device1.guid && device1.guid.equals(device.guid))
                     return true;
             }
         }

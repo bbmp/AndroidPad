@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.module.IPublicStoveApi;
@@ -77,7 +78,7 @@ public class TimeSelectActivity extends StoveBaseActivity {
             @Override
             public void onChanged(String s) {
                 for (Device device: AccountInfo.getInstance().deviceList) {
-                    if (device.guid.equals(s) && device.guid.equals(HomeStove.getInstance().guid) && device instanceof Stove) { //当前灶
+                    if (device.guid.equals(s) && device.guid.equals(HomeStove.getInstance().guid) && IDeviceType.RRQZ.equals(device.dc)) { //当前灶
                         Stove stove = (Stove) device;
                         //开火提示状态
                         if (null != openDialog && openDialog.isShow()) {
@@ -165,7 +166,7 @@ public class TimeSelectActivity extends StoveBaseActivity {
     //点火提示
     private void openFire(int stove) {
         for (Device device: AccountInfo.getInstance().deviceList) {
-            if (device instanceof Stove && device.guid.equals(HomeStove.getInstance().guid)) {
+            if (null != device.guid && IDeviceType.RRQZ.equals(device.dc) && device.guid.equals(HomeStove.getInstance().guid)) {
                 Stove stove1 = (Stove) device;
                 if (null == openDialog) {
                     openDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_OPEN_FIRE);

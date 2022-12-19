@@ -140,7 +140,8 @@ public class MatchNetworkActivity extends VentilatorBaseActivity implements BleV
             String[] names = new String[]{BlueToothManager.pan};
             BlueToothManager.setScanRule(names);
         }
-        startScan();
+
+        BleVentilator.startScan(model, this);
     }
 
     @Override

@@ -10,7 +10,8 @@ public class DeviceUtils {
 
     //设备类型
     public static String getDeviceTypeId(String guid) {
-
+        if (null == guid)
+            return "";
         int venderLen = VENDOR_LENGTH;
         if (guid.length() == GUID_LENGTH) {
             venderLen = 0;
