@@ -23,6 +23,8 @@ import com.robam.ventilator.R
 import com.robam.ventilator.base.VentilatorBaseActivity
 import com.robam.ventilator.constant.DialogConstant
 import com.robam.ventilator.constant.VentilatorConstant
+import com.robam.ventilator.databinding.VentilatorActivityLayoutSmartSettingBinding
+import com.robam.ventilator.databinding.VentilatorActivityShutdownDelaySettingBinding
 import com.robam.ventilator.device.HomeVentilator
 import com.robam.ventilator.factory.VentilatorDialogFactory
 import com.robam.ventilator.http.CloudHelper
@@ -30,12 +32,13 @@ import com.robam.ventilator.request.LinkageConfigReq
 import com.robam.ventilator.response.GetLinkageConfigRes
 import com.robam.ventilator.ui.adapter.RvSmartSetAdapter
 import com.robam.ventilator.ui.adapter.SmartSetBean
-import kotlinx.android.synthetic.main.ventilator_activity_layout_smart_setting.*
 
 /**
  * 智能设置页码
  */
 class SmartSettingActivity : VentilatorBaseActivity() {
+    private lateinit var binding: VentilatorActivityLayoutSmartSettingBinding
+
     private var resetDialog: IDialog? = null
     private val mList: MutableList<SmartSetBean> = mutableListOf()
 
@@ -43,6 +46,10 @@ class SmartSettingActivity : VentilatorBaseActivity() {
 
     private var linkageConfig: LinkageConfigReq? = null
 
+    override fun setContentView(layoutResID: Int) {
+        binding = VentilatorActivityLayoutSmartSettingBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+    }
     override fun getLayoutId() = R.layout.ventilator_activity_layout_smart_setting
 
     //烟锅联动状态查询
@@ -55,7 +62,7 @@ class SmartSettingActivity : VentilatorBaseActivity() {
         showLeft()
         setCenter(R.string.ventilator_smart_setting)
 
-        recyclerView.apply {
+        binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(this@SmartSettingActivity)
             addItemDecoration(
                 VerticalSpaceItemDecoration(
@@ -342,9 +349,9 @@ class SmartSettingActivity : VentilatorBaseActivity() {
 
     override fun initData() {
         //设备名字
-        tv_device_name.text = "油烟机" + BuildConfig.MODEL
+        binding.tvDeviceName.text = "油烟机" + BuildConfig.MODEL
 
-        bt_reset.setOnClickListener {
+        binding.btReset.setOnClickListener {
             //恢复初始提示
             resetDialog()
         }

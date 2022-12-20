@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
-    id 'kotlin-android-extensions'
+//    id 'kotlin-android-extensions'
 }
 apply from: '../versions.gradle'
 android {
@@ -33,6 +33,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    viewBinding {
+        enabled = true
+    }
     resourcePrefix "ventilator_"   //资源前缀的名字
 }
 
@@ -63,7 +66,7 @@ dependencies {
     // 腾讯 MMKV：https://github.com/Tencent/MMKV
     api "com.tencent:mmkv-static:$versions.mmkv"
 
-    api "androidx.core:core-ktx:$versions.ktx"
+//    api "androidx.core:core-ktx:$versions.ktx"
     api "pl.droidsonroids.gif:android-gif-drawable:$versions.gif_drawable"
     //工具类
     api "com.blankj:utilcodex:$versions.utilcodex"

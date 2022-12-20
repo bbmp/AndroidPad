@@ -485,7 +485,7 @@ public class HomePage extends VentilatorBasePage {
                         viewFlow.setHeight(0, 0);
                         viewSpeed.setHeight(0, 0);
                     }
-                    return;
+//                    return;
                 }
 
                 //找不到设备
@@ -773,12 +773,11 @@ public class HomePage extends VentilatorBasePage {
     }
     //删除设备。保留子设备
     private void clearDevice() {
-        Iterator<Device> iterator = AccountInfo.getInstance().deviceList.iterator();
-        while (iterator.hasNext()) {
-            Device device = iterator.next();
+        for (Device device: AccountInfo.getInstance().deviceList) {
+
             if (IDeviceType.RZNG.equals(device.dc) || IDeviceType.RRQZ.equals(device.dc))
                 continue;
-            iterator.remove();
+            AccountInfo.getInstance().deviceList.remove(device);
         }
     }
 

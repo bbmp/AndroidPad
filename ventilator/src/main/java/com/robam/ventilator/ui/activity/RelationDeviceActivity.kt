@@ -12,18 +12,25 @@ import com.robam.common.manager.LiveDataBus
 import com.robam.ventilator.R
 import com.robam.ventilator.base.VentilatorBaseActivity
 import com.robam.ventilator.constant.VentilatorConstant
+import com.robam.ventilator.databinding.VentilatorActivityLayoutRelationDeviceBinding
 import com.robam.ventilator.http.CloudHelper
 import com.robam.ventilator.ui.adapter.RvRelationDeviceAdapter
-import kotlinx.android.synthetic.main.ventilator_activity_layout_relation_device.*
 
 //烟蒸烤关联设备
 class RelationDeviceActivity: VentilatorBaseActivity() {
+
+    private lateinit var binding: VentilatorActivityLayoutRelationDeviceBinding
+
     private val mList: MutableList<Device> = mutableListOf()
 
     private val mAdapter by lazy { RvRelationDeviceAdapter(R.layout.ventilator_item_layout_relation_device, null) }
 
     override fun getLayoutId(): Int = R.layout.ventilator_activity_layout_relation_device
 
+    override fun setContentView(layoutResID: Int) {
+        binding = VentilatorActivityLayoutRelationDeviceBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+    }
     override fun initView() {
         showLeft()
         showCenter()
@@ -31,7 +38,7 @@ class RelationDeviceActivity: VentilatorBaseActivity() {
         val fanSteam = intent?.getBooleanExtra(VentilatorConstant.FAN_STEAM, false)?:false
         val fanSteamGear = intent?.getBooleanExtra(VentilatorConstant.FAN_STEAM_GEAR, false)?:false
 
-        rv_device.apply {
+        binding.rvDevice.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
 
             adapter = mAdapter.apply {

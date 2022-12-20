@@ -27,7 +27,7 @@ public class AccountInfo {
 
     public String topGuid = Plat.getPlatform().getDeviceOnlySign();//当前设备
     //设备列表
-    public List<Device> deviceList = new CopyOnWriteArrayList<>();
+    public CopyOnWriteArrayList<Device> deviceList = new CopyOnWriteArrayList<>();
 
     private static class Holder {
         private static AccountInfo instance = new AccountInfo();

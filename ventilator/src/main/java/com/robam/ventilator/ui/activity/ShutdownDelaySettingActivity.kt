@@ -5,29 +5,33 @@ import com.robam.common.utils.MMKVUtils
 import com.robam.ventilator.R
 import com.robam.ventilator.base.VentilatorBaseActivity
 import com.robam.ventilator.constant.VentilatorConstant
+import com.robam.ventilator.databinding.VentilatorActivityLayoutRelationDeviceBinding
+import com.robam.ventilator.databinding.VentilatorActivityShutdownDelaySettingBinding
 import com.robam.ventilator.device.HomeVentilator
 import com.robam.ventilator.ext.TextColorHelp
-import kotlinx.android.synthetic.main.ventilator_activity_holiday_date_setting.btn_cancel
-import kotlinx.android.synthetic.main.ventilator_activity_holiday_date_setting.btn_sure
-import kotlinx.android.synthetic.main.ventilator_activity_holiday_date_setting.mPickerMinuteLayout
-import kotlinx.android.synthetic.main.ventilator_activity_shutdown_delay_setting.*
 
 /**
  * 延时关机
  */
 class ShutdownDelaySettingActivity : VentilatorBaseActivity() {
 
+    private lateinit var binding: VentilatorActivityShutdownDelaySettingBinding
+
     private var minute: String? = null
 
     override fun getLayoutId(): Int = R.layout.ventilator_activity_shutdown_delay_setting
 
+    override fun setContentView(layoutResID: Int) {
+        binding = VentilatorActivityShutdownDelaySettingBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+    }
 
     override fun initView() {
         showLeft()
         showCenter()
 
-        btn_cancel.setOnClickListener { finish() }
-        btn_sure.setOnClickListener {
+        binding.btnCancel.setOnClickListener { finish() }
+        binding.btnSure.setOnClickListener {
             minute?.let {
                 MMKVUtils.setDelayShutdownTime(minute)
                 LiveDataBus.get().with(VentilatorConstant.SMART_SET, Boolean::class.java).value = true
@@ -42,7 +46,7 @@ class ShutdownDelaySettingActivity : VentilatorBaseActivity() {
 
         textChange(delayShutdownTime)
         //分钟选择器
-        mPickerMinuteLayout.apply {
+        binding.mPickerMinuteLayout.apply {
             setNum(5, false, false)
             setOnPickerListener { text, position ->
                 minute = text
@@ -64,7 +68,7 @@ class ShutdownDelaySettingActivity : VentilatorBaseActivity() {
                 context.getString(R.string.ventilator_shutdown_delay_set),
                 delayShutdownTime
             ),
-            tv_shutdown_desc
+            binding.tvShutdownDesc
         )
     }
 }

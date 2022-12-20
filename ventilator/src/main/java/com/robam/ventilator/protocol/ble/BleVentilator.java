@@ -126,11 +126,9 @@ public class BleVentilator {
     }
     //扫描前删除非目标设备
     private static void deleteBleDevice() {
-        Iterator<Device> iterator = AccountInfo.getInstance().deviceList.iterator();
-        while (iterator.hasNext()) {
-            Device device = iterator.next();
+        for (Device device: AccountInfo.getInstance().deviceList) {
             if (device.dc.equals("unknown"))
-                iterator.remove();
+                AccountInfo.getInstance().deviceList.remove(device);
         }
     }
     //开始扫描
@@ -585,14 +583,14 @@ public class BleVentilator {
                                 case BleDecoder.RESP_DISCONNECT_BLE_PRIOR_NOTICE: {//收到BLE从机的断开预通知响应
                                     //烟机发起的断开
                                     //删除设备
-                                    deleteSubdevice(null, bleDevice.getMac());
+//                                    deleteSubdevice(null, bleDevice.getMac());
 
 //                                    Message message = handler.obtainMessage();
 //                                    message.arg1 = MSG_DELAY_DISCONNECT;
 //                                    message.obj = bleDevice;
 //                                    handler.sendMessageDelayed(message, 1000);
-                                    delay_disconnect_ble(bleDevice);
-                                    AccountInfo.getInstance().getUser().setValue(AccountInfo.getInstance().getUser().getValue());
+//                                    delay_disconnect_ble(bleDevice);
+//                                    AccountInfo.getInstance().getUser().setValue(AccountInfo.getInstance().getUser().getValue());
                                 }
                                     //通知下线
                                     break;
@@ -746,7 +744,7 @@ public class BleVentilator {
         }
     }
     //删除子设备
-    private static void deleteSubdevice(String guid, String mac) {
+    public static void deleteSubdevice(String guid, String mac) {
         Set<String> subDevices = MMKVUtils.getSubDevice();
         if (null != subDevices) {
             Iterator<String> iterator = subDevices.iterator();

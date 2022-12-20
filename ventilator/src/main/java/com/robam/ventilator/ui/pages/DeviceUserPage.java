@@ -39,6 +39,7 @@ import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.device.HomeVentilator;
 import com.robam.ventilator.factory.VentilatorDialogFactory;
 import com.robam.ventilator.http.CloudHelper;
+import com.robam.ventilator.protocol.ble.BleVentilator;
 import com.robam.ventilator.response.GetDeviceUserRes;
 import com.robam.ventilator.ui.adapter.RvDeviceUserAdapter;
 
@@ -166,27 +167,27 @@ public class DeviceUserPage extends VentilatorBasePage {
         if (IDeviceType.RRQZ.equals(device.dc)) {  //解绑子设备
 
             //断开灶
-            if (device.status == Device.ONLINE) {
-                IPublicStoveApi iPublicStoveApi = ModulePubliclHelper.getModulePublic(IPublicStoveApi.class, IPublicStoveApi.STOVE_PUBLIC);
-                if (null != iPublicStoveApi)
-                    iPublicStoveApi.disConnectBle(device.guid);
-            } else {
-                deleteSubdevice(device);
-                //重新获取设备列表
-                AccountInfo.getInstance().getUser().setValue(AccountInfo.getInstance().getUser().getValue());
-            }
+            IPublicStoveApi iPublicStoveApi = ModulePubliclHelper.getModulePublic(IPublicStoveApi.class, IPublicStoveApi.STOVE_PUBLIC);
+            if (null != iPublicStoveApi)
+                iPublicStoveApi.disConnectBle(device.guid);
+            //删除
+            deleteSubdevice(device);
+            //上报
+            HomeVentilator.getInstance().notifyOnline(device.guid, device.bid, -1);
+            //重新获取设备列表
+            AccountInfo.getInstance().getUser().setValue(AccountInfo.getInstance().getUser().getValue());
             return;
         } else if (IDeviceType.RZNG.equals(device.dc)) {
             //断开锅
-            if (device.status == Device.ONLINE) {
-                IPublicPanApi iPublicPanApi = ModulePubliclHelper.getModulePublic(IPublicPanApi.class, IPublicPanApi.PAN_PUBLIC);
-                if (null != iPublicPanApi)
-                    iPublicPanApi.disConnectBle(device.guid);
-            } else {
-                deleteSubdevice(device);
-                //重新获取设备列表
-                AccountInfo.getInstance().getUser().setValue(AccountInfo.getInstance().getUser().getValue());
-            }
+            IPublicPanApi iPublicPanApi = ModulePubliclHelper.getModulePublic(IPublicPanApi.class, IPublicPanApi.PAN_PUBLIC);
+            if (null != iPublicPanApi)
+                iPublicPanApi.disConnectBle(device.guid);
+            //删除
+            deleteSubdevice(device);
+            //上报
+            HomeVentilator.getInstance().notifyOnline(device.guid, device.bid, -1);
+            //重新获取设备列表
+            AccountInfo.getInstance().getUser().setValue(AccountInfo.getInstance().getUser().getValue());
             return;
         }
         CloudHelper.unbindDevice(this, userid, device.guid, BaseResponse.class, new RetrofitCallback<BaseResponse>() {
@@ -240,10 +241,7 @@ public class DeviceUserPage extends VentilatorBasePage {
                         || (device.mac != null && device.mac.equals(subDevice.mac))) {
                     iterator.remove();//已经有记录 删除
 
-                    //通知上报
-                    HomeVentilator.getInstance().notifyOnline(subDevice.guid, subDevice.bid, -1); //删除
-                    //取消订阅
-                    MqttManager.getInstance().unSubscribe(subDevice.dc, DeviceUtils.getDeviceTypeId(subDevice.guid), DeviceUtils.getDeviceNumber(subDevice.guid));
+                    deleteDevice(device);
                     break;
                 }
             }
@@ -251,14 +249,14 @@ public class DeviceUserPage extends VentilatorBasePage {
             MMKVUtils.setSubDevice(subDevices);
         }
     }
-
     //从列表中删除设备
     private void deleteDevice(Device curDevice) {
-        Iterator<Device> iterator = AccountInfo.getInstance().deviceList.iterator();
-        while (iterator.hasNext()) {
-            Device device = iterator.next();
+
+        for (Device device: AccountInfo.getInstance().deviceList) {
+
             if (curDevice.guid.equals(device.guid)) {
-                iterator.remove();
+                AccountInfo.getInstance().deviceList.remove(device);
+
                 if (device instanceof Pan) {
                     BlueToothManager.disConnect(((Pan) device).bleDevice); //断开蓝牙
                 } else if (device instanceof Stove) {
