@@ -24,4 +24,6 @@ public interface IPublicPanApi extends IPublicApi {
     void queryFanPan();
     //烟锅联动开关设置
     void setFanPan(int onOff);
+    //断开蓝牙
+    void disConnectBle(String targetGuid);
 }

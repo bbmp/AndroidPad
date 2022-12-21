@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.constant.StoveConstant;
@@ -98,7 +99,7 @@ public class HomePage extends PanBasePage {
             @Override
             public void onChanged(String s) {
                 for (Device device: AccountInfo.getInstance().deviceList) {
-                    if (device.guid.equals(s) && device instanceof Pan && device.guid.equals(HomePan.getInstance().guid)) { //当前锅
+                    if (device.guid.equals(s) && device instanceof Pan && IDeviceType.RZNG.equals(device.dc) && device.guid.equals(HomePan.getInstance().guid)) { //当前锅
                         Pan pan = (Pan) device;
                         if (pan.fryMode == PanConstant.MODE_QUICK_FRY) {
                             llQuick.setSelected(true);
@@ -134,7 +135,7 @@ public class HomePage extends PanBasePage {
             }
         });
         for (Device device: AccountInfo.getInstance().deviceList) {
-            if (device instanceof Pan) {
+            if (device instanceof Pan && IDeviceType.RZNG.equals(device.dc)) {
                 Pan pan = (Pan) device;
                 if (pan.mode == 1) { //曲线创建中
                     getCurveDetail();

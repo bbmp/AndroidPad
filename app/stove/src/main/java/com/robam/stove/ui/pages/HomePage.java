@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.constant.PanConstant;
@@ -110,7 +111,8 @@ public class HomePage extends StoveBasePage {
             public void onChanged(String s) {
 
                 for (Device device: AccountInfo.getInstance().deviceList) {
-                    if (null != device.guid && device.guid.equals(s) && device instanceof Stove && device.guid.equals(HomeStove.getInstance().guid)) {
+                    if (null != device.guid && device.guid.equals(s) && device instanceof Stove
+                            && IDeviceType.RRQZ.equals(device.dc) && device.guid.equals(HomeStove.getInstance().guid)) {
                         Stove stove = (Stove) device;
                         if (stove.lockStatus == StoveConstant.LOCK) { //锁屏状态
                             screenLock();
@@ -168,7 +170,7 @@ public class HomePage extends StoveBasePage {
             }
         });
         for (Device device: AccountInfo.getInstance().deviceList) {
-            if (device instanceof Pan) {
+            if (device instanceof Pan && IDeviceType.RZNG.equals(device.dc)) {
                 Pan pan = (Pan) device;
                 if (pan.mode == 1) { //曲线创建中
                     getCurveDetail(pan.guid);
@@ -314,7 +316,7 @@ public class HomePage extends StoveBasePage {
     //关火
     private void closeFire(int stoveId) {
         for (Device device: AccountInfo.getInstance().deviceList) {
-            if (device instanceof Stove && null != device.guid) {
+            if (IDeviceType.RRQZ.equals(device.dc) && null != device.guid) {
                 StoveAbstractControl.getInstance().setAttribute(device.guid, (byte) stoveId, (byte) 0x00, (byte) StoveConstant.STOVE_CLOSE);
                 break;
             }

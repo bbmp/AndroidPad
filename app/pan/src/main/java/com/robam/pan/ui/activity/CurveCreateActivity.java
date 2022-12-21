@@ -17,6 +17,7 @@ import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.BaseResponse;
 import com.robam.common.bean.Device;
@@ -112,9 +113,9 @@ public class CurveCreateActivity extends PanBaseActivity {
 
         //查找锅和灶
         for (Device device: AccountInfo.getInstance().deviceList) {
-            if (device instanceof Pan)
+            if (device instanceof Pan && IDeviceType.RZNG.equals(device.dc))
                 pan = (Pan) device;
-            else if (device instanceof Stove)
+            else if (device instanceof Stove && IDeviceType.RRQZ.equals(device.dc))
                 stove = (Stove) device;
         }
         if (null == pan || null == stove) //锅或灶不存在
@@ -129,7 +130,7 @@ public class CurveCreateActivity extends PanBaseActivity {
             @Override
             public void onChanged(String s) {
                 for (Device device: AccountInfo.getInstance().deviceList) {
-                    if (device.guid.equals(s) && device instanceof Stove && curTime > 0) { //当前灶且创建已开始
+                    if (device.guid.equals(s) && device instanceof Stove && IDeviceType.RRQZ.equals(device.dc) && curTime > 0) { //当前灶且创建已开始
                         Stove stove = (Stove) device;
                         //开火提示状态
                         if (stoveId == IPublicStoveApi.STOVE_LEFT && stove.leftStatus == StoveConstant.WORK_CLOSE) { //左灶已关火
@@ -143,7 +144,7 @@ public class CurveCreateActivity extends PanBaseActivity {
                         }
 
                         break;
-                    } else if (device.guid.equals(s) && device instanceof Pan && curTime > 0) { //检查锅状态锅
+                    } else if (device.guid.equals(s) && device instanceof Pan && IDeviceType.RZNG.equals(device.dc) && curTime > 0) { //检查锅状态锅
                         Pan pan = (Pan) device;
                         if (pan.status == Device.OFFLINE) { //锅已离线
 

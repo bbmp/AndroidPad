@@ -382,14 +382,14 @@ public class HomePage extends VentilatorBasePage {
             public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                 if (view.getId() == R.id.btn_left_close) {
                     Device device = (Device) adapter.getItem(position);
-                    if (device instanceof Stove) {
+                    if (device instanceof Stove && IDeviceType.RRQZ.equals(device.dc)) {
                         Stove stove = (Stove) device;
                         if (stove.leftLevel != 0) //关左灶
                             StoveAbstractControl.getInstance().setAttribute(device.guid, IPublicStoveApi.STOVE_LEFT, 0x00, StoveConstant.STOVE_CLOSE);
                     }
                 } else if (view.getId() == R.id.btn_right_close) {
                     Device device = (Device) adapter.getItem(position);
-                    if (device instanceof Stove) {
+                    if (device instanceof Stove && IDeviceType.RRQZ.equals(device.dc)) {
                         Stove stove = (Stove) device;
                         if (stove.rightLevel != 0) //关右灶
                             StoveAbstractControl.getInstance().setAttribute(device.guid, IPublicStoveApi.STOVE_RIGHT, 0x00, StoveConstant.STOVE_CLOSE);
@@ -412,7 +412,7 @@ public class HomePage extends VentilatorBasePage {
                             SteamAbstractControl.getInstance().pauseWork(device.guid);
                         else if (steamOven.workStatus == 5 || steamOven.workStatus == 3)  //暂停中
                             SteamAbstractControl.getInstance().continueWork(device.guid);
-                    } else if (device instanceof Pan) {
+                    } else if (device instanceof Pan && IDeviceType.RZNG.equals(device.dc)) {
                         Pan pan = (Pan) device;
                         if (pan.sysytemStatus == 3 && null != iPublicPanApi) //电量不足
                             iPublicPanApi.lowBatteryHint(getContext());
@@ -485,7 +485,7 @@ public class HomePage extends VentilatorBasePage {
                         viewFlow.setHeight(0, 0);
                         viewSpeed.setHeight(0, 0);
                     }
-                    return;
+//                    return;
                 }
 
                 //找不到设备
@@ -601,18 +601,17 @@ public class HomePage extends VentilatorBasePage {
             }
         }
         //删除减少的设备
-        Iterator<Device> iterator = AccountInfo.getInstance().deviceList.iterator();
-        while (iterator.hasNext()) {
-            Device device = iterator.next();
+        for (Device device: AccountInfo.getInstance().deviceList) {
+
             if (!AccountInfo.getInstance().isExist(subDevices, device)) { //不存在
                 if (device instanceof Pan) {
                     //断开蓝牙
                     BlueToothManager.disConnect(((Pan) device).bleDevice);
-                    iterator.remove();
+                    AccountInfo.getInstance().deviceList.remove(device);
                 } else if (device instanceof Stove) {
                     //断开蓝牙
                     BlueToothManager.disConnect(((Stove) device).bleDevice);
-                    iterator.remove();
+                    AccountInfo.getInstance().deviceList.remove(device);
                 }
             }
         }
@@ -774,12 +773,11 @@ public class HomePage extends VentilatorBasePage {
     }
     //删除设备。保留子设备
     private void clearDevice() {
-        Iterator<Device> iterator = AccountInfo.getInstance().deviceList.iterator();
-        while (iterator.hasNext()) {
-            Device device = iterator.next();
+        for (Device device: AccountInfo.getInstance().deviceList) {
+
             if (IDeviceType.RZNG.equals(device.dc) || IDeviceType.RRQZ.equals(device.dc))
                 continue;
-            iterator.remove();
+            AccountInfo.getInstance().deviceList.remove(device);
         }
     }
 

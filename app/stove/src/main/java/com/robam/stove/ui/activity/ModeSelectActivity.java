@@ -231,7 +231,7 @@ public class ModeSelectActivity extends StoveBaseActivity implements IModeSelect
     private void openFire(int stove) {
 
         for (Device device: AccountInfo.getInstance().deviceList) {
-            if (device instanceof Stove && device.guid.equals(HomeStove.getInstance().guid)) {
+            if (device instanceof Stove && IDeviceType.RRQZ.equals(device.dc) && null != device.guid && device.guid.equals(HomeStove.getInstance().guid)) {
 
                 if (null == openDialog) {
                     openDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_OPEN_FIRE);

@@ -1,5 +1,6 @@
 package com.robam.ventilator.protocol.mqtt;
 
+import com.robam.common.IDeviceType;
 import com.robam.common.ITerminalType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
@@ -108,7 +109,7 @@ public class MqttVentilator extends MqttPublic {
                                                 VentilatorAbstractControl.getInstance().setFanGear(gear);
                                         }
                                     }
-                                } else if (msg.getGuid().equals(device.guid) && device instanceof Stove) {
+                                } else if (msg.getGuid().equals(device.guid) && device instanceof Stove && IDeviceType.RRQZ.equals(device.dc)) {
                                     if (MMKVUtils.getFanStove() && MMKVUtils.getFanStoveGear() && HomeVentilator.getInstance().isLock()) { //烟灶联动打开 非锁屏
                                         if (HomeVentilator.getInstance().startup == (byte) 0x00) { //先开机
                                             HomeVentilator.getInstance().openVentilatorGear(gear);

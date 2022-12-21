@@ -137,7 +137,8 @@ public class CurveActivity extends StoveBaseActivity {
             @Override
             public void onChanged(String s) {
                 for (Device device: AccountInfo.getInstance().deviceList) {
-                    if (null != device.guid && device.guid.equals(s) && device.guid.equals(HomeStove.getInstance().guid) && device instanceof Stove) { //当前灶
+                    if (null != device.guid && device.guid.equals(s) && device.guid.equals(HomeStove.getInstance().guid) && device instanceof Stove
+                        && IDeviceType.RRQZ.equals(device.dc)) { //当前灶
                         Stove stove = (Stove) device;
                         //开火提示状态
                         if (null != openDialog && openDialog.isShow()) {
@@ -253,7 +254,7 @@ public class CurveActivity extends StoveBaseActivity {
     private void openFire(int stove) {
 
         for (Device device: AccountInfo.getInstance().deviceList) {
-            if (device instanceof Stove && device.guid.equals(HomeStove.getInstance().guid)) {
+            if (device instanceof Stove && null != device.guid && device.guid.equals(HomeStove.getInstance().guid)) {
                 if (null == openDialog) {
                     openDialog = StoveDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_OPEN_FIRE);
                     openDialog.setCancelable(false);

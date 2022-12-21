@@ -17,6 +17,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.constant.PanConstant;
@@ -162,9 +163,9 @@ public class CurveSelectedActivity extends StoveBaseActivity {
             return;
         //查找锅和灶
         for (Device device: AccountInfo.getInstance().deviceList) {
-            if (device instanceof Pan)
+            if (device instanceof Pan && IDeviceType.RZNG.equals(device.dc))
                 pan = (Pan) device;
-            else if (device instanceof Stove)
+            else if (device instanceof Stove && IDeviceType.RRQZ.equals(device.dc))
                 stove = (Stove) device;
         }
         if (null == pan || null == stove)

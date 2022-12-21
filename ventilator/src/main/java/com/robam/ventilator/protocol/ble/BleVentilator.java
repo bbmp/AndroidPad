@@ -85,6 +85,8 @@ public class BleVentilator {
             return;
         scanTime = System.currentTimeMillis();
 
+        deleteBleDevice();
+
         BlueToothManager.cancelScan();
 
         BlueToothManager.startScan(new BleScanCallback() {
@@ -122,10 +124,18 @@ public class BleVentilator {
             }
         });
     }
-
+    //扫描前删除非目标设备
+    private static void deleteBleDevice() {
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device.dc.equals("unknown"))
+                AccountInfo.getInstance().deviceList.remove(device);
+        }
+    }
     //开始扫描
     public static void startScan(String model, BleCallBack bleCallBack) {
         scanTime = System.currentTimeMillis();
+
+        deleteBleDevice();
 
         BlueToothManager.cancelScan();
 
@@ -232,7 +242,7 @@ public class BleVentilator {
             //已经存在锅或灶，mac地址判断,同一个锅或灶
             LogUtils.e("device mac " + device.mac + " device guid " + device.guid);
             if (bleDevice.getMac().equals(device.mac) || deviceNum.equals(DeviceUtils.getDeviceNumber(device.guid))) {
-                if (device instanceof Pan && IDeviceType.RZNG.equals(model)) {
+                if (device instanceof Pan && IDeviceType.RZNG.equals(model) && IDeviceType.RZNG.equals(device.dc)) {
                     BleDecoder bleDecoder = ((Pan) device).bleDecoder;
                     if (null != bleDecoder)
                         bleDecoder.init_decoder(0);
@@ -240,7 +250,7 @@ public class BleVentilator {
                         ((Pan) device).bleDecoder = new BleDecoder(0);
                     device.mac = bleDevice.getMac();
                     ((Pan) device).bleDevice = bleDevice;
-                } else if (device instanceof Stove && IDeviceType.RRQZ.equals(model)) {
+                } else if (device instanceof Stove && IDeviceType.RRQZ.equals(model) && IDeviceType.RRQZ.equals(device.dc)) {
                     BleDecoder bleDecoder = ((Stove) device).bleDecoder;
                     if (null != bleDecoder)
                         bleDecoder.init_decoder(0);
@@ -254,11 +264,11 @@ public class BleVentilator {
         }
         //已经配过锅或灶,换了锅或灶
         for (Device device: AccountInfo.getInstance().deviceList) {
-            if (device instanceof Pan && IDeviceType.RZNG.equals(model) && !bleDevice.getMac().equals(device.mac)) {
+            if (device instanceof Pan && IDeviceType.RZNG.equals(model) && !bleDevice.getMac().equals(device.mac) && IDeviceType.RZNG.equals(device.dc)) {
                 LogUtils.e("pan guid " + device.guid);
                 return;
             }
-            if (device instanceof Stove && IDeviceType.RRQZ.equals(model) && !bleDevice.getMac().equals(device.mac)) {
+            if (device instanceof Stove && IDeviceType.RRQZ.equals(model) && !bleDevice.getMac().equals(device.mac) && IDeviceType.RRQZ.equals(device.dc)) {
                 LogUtils.e("stove guid " + device.guid);
                 return;
             }
@@ -275,12 +285,7 @@ public class BleVentilator {
             stove.dp = "RQZ06";
             stove.dc = "unknown";
             stove.bleDecoder = new BleDecoder(0);
-            ListIterator<Device> iterator = AccountInfo.getInstance().deviceList.listIterator();
-            while (iterator.hasNext()) {
-                iterator.next();
-            }
-            iterator.add(stove);
-//            AccountInfo.getInstance().deviceList.add(stove);
+            AccountInfo.getInstance().deviceList.add(stove);
         } else if (IDeviceType.RZNG.equals(model)) {
 //            Iterator<Device> iterator = AccountInfo.getInstance().deviceList.iterator();
 //            while (iterator.hasNext()) {
@@ -292,12 +297,8 @@ public class BleVentilator {
             pan.mac = bleDevice.getMac();
             pan.dc = "unknown";
             pan.bleDecoder = new BleDecoder(0);
-            ListIterator<Device> iterator = AccountInfo.getInstance().deviceList.listIterator();
-            while (iterator.hasNext()) {
-                iterator.next();
-            }
-            iterator.add(pan);
-//            AccountInfo.getInstance().deviceList.add(pan);
+
+            AccountInfo.getInstance().deviceList.add(pan);
         }
     }
     //转变bledevice mac地址
@@ -405,7 +406,7 @@ public class BleVentilator {
                     @Override
                     public void onCharacteristicChanged(byte[] data) {
                         // 打开通知后，设备发过来的数据将在这里出现（UI线程）
-                        LogUtils.e("RSSI " + bleDevice.getRssi() + " onCharacteristicChanged " + StringUtils.bytes2Hex(data));
+                        LogUtils.e("mac " + bleDevice.getMac() + " onCharacteristicChanged " + StringUtils.bytes2Hex(data));
                         for (Device device: AccountInfo.getInstance().deviceList) {
                             if (bleDevice.getMac().equals(device.mac)) {
                                 if (device instanceof Pan)
@@ -564,20 +565,32 @@ public class BleVentilator {
                                         delay_disconnect_ble(bleDevice);//若响应失败,则延迟一会强制主动断开该通道
                                     }
                                     break;
-                                case BleDecoder.CMD_DISCONNECT_BLE_PRIOR_NOTICE://收到BLE从机的断开预通知请求
-                                    resp_payload = new Byte[] {BleDecoder.RC_SUCCESS};
+                                case BleDecoder.CMD_DISCONNECT_BLE_PRIOR_NOTICE: {//收到BLE从机的断开预通知请求
+                                    //子设备发起的断开
+                                    resp_payload = new Byte[]{BleDecoder.RC_SUCCESS};
                                     resp = BleDecoder.make_internal_send_packet(BleDecoder.RESP_DISCONNECT_BLE_PRIOR_NOTICE, resp_payload);
                                     ble_write_no_resp(bleDevice, BleDecoder.ByteArraysTobyteArrays(resp));
-//                                    listRemove(channel);
+
+                                    deleteSubdevice(null, bleDevice.getMac());
+//                                    Message message = handler.obtainMessage();
+//                                    message.arg1 = MSG_DELAY_DISCONNECT;
+//                                    message.obj = bleDevice;
+//                                    handler.sendMessageDelayed(message, 1000);
+                                    delay_disconnect_ble(bleDevice); //断开蓝牙
+                                    AccountInfo.getInstance().getUser().setValue(AccountInfo.getInstance().getUser().getValue());
+                                }
                                     break;
                                 case BleDecoder.RESP_DISCONNECT_BLE_PRIOR_NOTICE: {//收到BLE从机的断开预通知响应
-//                                    listRemove(channel);
-//                                    BleDeviceInfo.getInstance().removeDeviceFromMap(bleDevice);
-                                    Message message = handler.obtainMessage();
-                                    message.arg1 = MSG_DELAY_DISCONNECT;
-                                    message.obj = bleDevice;
-                                    handler.sendMessageDelayed(message, 1000);
+                                    //烟机发起的断开
+                                    //删除设备
+//                                    deleteSubdevice(null, bleDevice.getMac());
 
+//                                    Message message = handler.obtainMessage();
+//                                    message.arg1 = MSG_DELAY_DISCONNECT;
+//                                    message.obj = bleDevice;
+//                                    handler.sendMessageDelayed(message, 1000);
+//                                    delay_disconnect_ble(bleDevice);
+//                                    AccountInfo.getInstance().getUser().setValue(AccountInfo.getInstance().getUser().getValue());
                                 }
                                     //通知下线
                                     break;
@@ -730,6 +743,30 @@ public class BleVentilator {
             } while(ret != null);
         }
     }
+    //删除子设备
+    public static void deleteSubdevice(String guid, String mac) {
+        Set<String> subDevices = MMKVUtils.getSubDevice();
+        if (null != subDevices) {
+            Iterator<String> iterator = subDevices.iterator();
+            while (iterator.hasNext()) {
+                String json = iterator.next();
+                Device subDevice = new Gson().fromJson(json, Device.class);
+                if ((guid != null && guid.equals(subDevice.guid))
+                        || (mac != null && mac.equals(subDevice.mac))) {
+                    iterator.remove();//已经有记录 删除
+
+                    //通知上报
+                    HomeVentilator.getInstance().notifyOnline(subDevice.guid, subDevice.bid, -1); //删除
+                    //取消订阅
+                    MqttManager.getInstance().unSubscribe(subDevice.dc, DeviceUtils.getDeviceTypeId(subDevice.guid), DeviceUtils.getDeviceNumber(subDevice.guid));
+                    break;
+                }
+            }
+            //写回去
+            MMKVUtils.setSubDevice(subDevices);
+        }
+    }
+
     //更新本地子设备信息
     public static void updateSubdevice(Device device) {
         Set<String> subDevices = MMKVUtils.getSubDevice();
@@ -809,9 +846,10 @@ public class BleVentilator {
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
-            if (null != msg && msg.arg1 == MSG_DELAY_DISCONNECT) //延时断开
+            if (null != msg && msg.arg1 == MSG_DELAY_DISCONNECT) {//延时断开
                 delay_disconnect_ble((BleDevice) msg.obj);
-            else if (null != msg && msg.arg1 == MSG_QUERY_FANPAN) {//烟锅联动状态查询
+                AccountInfo.getInstance().getUser().setValue(AccountInfo.getInstance().getUser().getValue());
+            } else if (null != msg && msg.arg1 == MSG_QUERY_FANPAN) {//烟锅联动状态查询
                 //查询烟锅联动开关
                 if (IDeviceType.RZNG.equals(msg.obj)) {
                     IPublicPanApi iPublicPanApi = ModulePubliclHelper.getModulePublic(IPublicPanApi.class, IPublicPanApi.PAN_PUBLIC);

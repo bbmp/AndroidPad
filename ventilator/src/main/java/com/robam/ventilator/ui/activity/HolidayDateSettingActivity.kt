@@ -5,9 +5,9 @@ import com.robam.common.utils.MMKVUtils
 import com.robam.ventilator.R
 import com.robam.ventilator.base.VentilatorBaseActivity
 import com.robam.ventilator.constant.VentilatorConstant
+import com.robam.ventilator.databinding.VentilatorActivityHolidayDateSettingBinding
 import com.robam.ventilator.device.HomeVentilator
 import com.robam.ventilator.ext.TextColorHelp
-import kotlinx.android.synthetic.main.ventilator_activity_holiday_date_setting.*
 
 /**
  * 假日模式
@@ -34,15 +34,23 @@ class HolidayDateSettingActivity : VentilatorBaseActivity() {
      */
     private lateinit var minute: String
 
+    private lateinit var binding: VentilatorActivityHolidayDateSettingBinding
+
     override fun getLayoutId(): Int = R.layout.ventilator_activity_holiday_date_setting
 
+    override fun setContentView(layoutResID: Int) {
+        binding = VentilatorActivityHolidayDateSettingBinding.inflate(layoutInflater)
+
+        setContentView(binding.root)
+    }
 
     override fun initView() {
+
         showLeft()
         showCenter()
 
-        btn_cancel.setOnClickListener { finish() }
-        btn_sure.setOnClickListener {
+        binding.btnCancel.setOnClickListener { finish() }
+        binding.btnSure.setOnClickListener {
             MMKVUtils.setHolidayDay(day)
             MMKVUtils.setHolidayWeekTime("$week$hour:$minute")
             LiveDataBus.get().with(VentilatorConstant.SMART_SET, Boolean::class.java).value = true
@@ -62,7 +70,7 @@ class HolidayDateSettingActivity : VentilatorBaseActivity() {
 
         textChange(day)
         //天
-        mPickerDayLayout.apply {
+        binding.mPickerDayLayout.apply {
             setNum(7, false, false)
             setOnPickerListener { text, position ->
                 day = text
@@ -73,7 +81,7 @@ class HolidayDateSettingActivity : VentilatorBaseActivity() {
         }
 
         //周
-        mPickerWeekLayout.apply {
+        binding.mPickerWeekLayout.apply {
             setWeek()
             setOnPickerListener { text, position ->
                 week = text
@@ -83,7 +91,7 @@ class HolidayDateSettingActivity : VentilatorBaseActivity() {
             scrollToPosition(week)
         }
         //小时
-        mPickerHourLayout.apply {
+        binding.mPickerHourLayout.apply {
             setNum(24)
             setOnPickerListener { text, position ->
                 hour = text
@@ -93,7 +101,7 @@ class HolidayDateSettingActivity : VentilatorBaseActivity() {
             scrollToPosition(hour)
         }
         //分钟
-        mPickerMinuteLayout.apply {
+        binding.mPickerMinuteLayout.apply {
             setNum(60)
             setOnPickerListener { text, position ->
                 minute = text
@@ -115,7 +123,7 @@ class HolidayDateSettingActivity : VentilatorBaseActivity() {
                 day,
                 "$week$hour:$minute"
             ),
-            tv_mode_desc
+            binding.tvModeDesc
         )
     }
 }

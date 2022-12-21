@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class AccountInfo {
     private static AccountInfo instance;
@@ -26,7 +27,7 @@ public class AccountInfo {
 
     public String topGuid = Plat.getPlatform().getDeviceOnlySign();//当前设备
     //设备列表
-    public List<Device> deviceList = new ArrayList<>();
+    public CopyOnWriteArrayList<Device> deviceList = new CopyOnWriteArrayList<>();
 
     private static class Holder {
         private static AccountInfo instance = new AccountInfo();

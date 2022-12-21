@@ -30,4 +30,6 @@ public interface PanFunction {
     void setFanPan(int onOff);
     //远程控制命令
     void remoteControl(String targetGuid, byte[] payload);
+    //断开蓝牙
+    void disConnectBle(String targetGuid);
 }

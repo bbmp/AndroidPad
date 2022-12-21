@@ -15,4 +15,9 @@ public class PublicStoveApi implements IPublicStoveApi {
     public void queryAttribute(String targetGuid) {
         StoveAbstractControl.getInstance().queryAttribute(targetGuid);
     }
+
+    @Override
+    public void disConnectBle(String targetGuid) {
+        StoveAbstractControl.getInstance().disConnectBle(targetGuid);
+    }
 }

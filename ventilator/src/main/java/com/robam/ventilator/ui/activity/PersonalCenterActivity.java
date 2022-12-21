@@ -257,12 +257,12 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
 
     private void unSubscribeDevices() {
         String deleteGuid = null;
-        Iterator<Device> iterator = AccountInfo.getInstance().deviceList.iterator();
-        while (iterator.hasNext()) {
-            Device device = iterator.next();
+
+        for (Device device: AccountInfo.getInstance().deviceList) {
+
             if (IDeviceType.RZNG.equals(device.dc) || IDeviceType.RRQZ.equals(device.dc))
                 continue;
-            iterator.remove();
+            AccountInfo.getInstance().deviceList.remove(device);
             deleteGuid = device.guid;  //删除的设备
             MqttManager.getInstance().unSubscribe(device.dc, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)); //取消订阅
         }

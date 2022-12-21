@@ -74,4 +74,9 @@ public class StoveAbstractControl implements StoveFunction{
     public void remoteControl(String targetGuid, byte[] payload) {
         function.remoteControl(targetGuid, payload);
     }
+
+    @Override
+    public void disConnectBle(String targetGuid) {
+        function.disConnectBle(targetGuid);
+    }
 }
