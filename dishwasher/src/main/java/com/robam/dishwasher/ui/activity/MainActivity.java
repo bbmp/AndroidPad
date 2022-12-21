@@ -8,6 +8,7 @@ import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.constant.ComnConstant;
 import com.robam.common.manager.FunctionManager;
+import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.StringUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.dishwasher.R;
@@ -42,10 +43,12 @@ public class MainActivity extends DishWasherBaseActivity {
             setLock(HomeDishWasher.getInstance().lock);
         },DishWasherConstant.TIME_DELAYED);
 
-        final List<DishWasherModeBean> modeBeanList = FunctionManager.getFuntionList(getContext(), DishWasherModeBean.class,R.raw.dishwahser);
+        //final List<DishWasherModeBean> modeBeanList = FunctionManager.getFuntionList(getContext(), DishWasherModeBean.class,R.raw.dishwahser);
         AccountInfo.getInstance().getGuid().observe(this, s -> {
+            LogUtils.i("MainActivity observe out ...");
             for (Device device: AccountInfo.getInstance().deviceList) {
                 if (device.guid.equals(s) && device instanceof DishWasher && device.guid.equals(HomeDishWasher.getInstance().guid)) {
+                    LogUtils.i("MainActivity observe in ....");
                     DishWasher dishWasher = (DishWasher) device;
                     if(toWaringPage(dishWasher.abnormalAlarmStatus)){
                         return;
@@ -59,7 +62,7 @@ public class MainActivity extends DishWasherBaseActivity {
                         case DishWasherState.WAIT:
                         case DishWasherState.WORKING:
                         case DishWasherState.PAUSE:
-                            dealWasherWorkingState(modeBeanList,dishWasher);
+                            dealWasherWorkingState(dishWasher);
                     }
                     break;
                 }
@@ -80,7 +83,7 @@ public class MainActivity extends DishWasherBaseActivity {
         DishWasherAbstractControl.getInstance().queryAttribute(HomeDishWasher.getInstance().guid);
     }
 
-    private void dealWasherWorkingState(List<DishWasherModeBean> modeBeanList ,DishWasher dishWasher){
+    private void dealWasherWorkingState(DishWasher dishWasher){
         if(dishWasher.workMode == 0){
             return;
         }
@@ -93,28 +96,23 @@ public class MainActivity extends DishWasherBaseActivity {
                     return;
                 }
                 Intent intent = new Intent();
-                DishWasherModeBean dishWasherModeBean = DishWasherModelUtil.getDishWasher(modeBeanList,dishWasher.workMode);
-                if(dishWasherModeBean == null){
-                    return;
-                }
-                DishWasherModeBean newMode = dishWasherModeBean.getNewMode();
-                DishWasherModelUtil.initWorkingInfo(dishWasherModeBean,dishWasher);
+                DishWasherModeBean newMode  = new DishWasherModeBean();
+                DishWasherModelUtil.initWorkingInfo(newMode,dishWasher);
                 intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, newMode);
                 intent.setClass(this, WorkActivity.class);
                 startActivity(intent);
                 break;
             case DishWasherState.APPOINTMENT_ON:
-                Intent appointingIntent = new Intent();
-                DishWasherModeBean curWasherModel = DishWasherModelUtil.getDishWasher(modeBeanList,dishWasher.workMode);
-                if(curWasherModel == null){
+                if( dishWasher.AppointmentRemainingTime == 0){
                     return;
                 }
-                DishWasherModeBean needDish = curWasherModel.getNewMode();
-                DishWasherModelUtil.initWorkingInfo(needDish,dishWasher);
-                appointingIntent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, needDish);
+                Intent appointingIntent = new Intent();
+                DishWasherModeBean curMode  = new DishWasherModeBean();
+                DishWasherModelUtil.initWorkingInfo(curMode,dishWasher);
+                appointingIntent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, curMode);
                 appointingIntent.setClass(this, AppointingActivity.class);
                 startActivity(appointingIntent);
-                HomeDishWasher.getInstance().workHours = needDish.time;
+                HomeDishWasher.getInstance().workHours = curMode.time;
                 HomeDishWasher.getInstance().orderWorkTime = dishWasher.AppointmentRemainingTime;
                 break;
         }

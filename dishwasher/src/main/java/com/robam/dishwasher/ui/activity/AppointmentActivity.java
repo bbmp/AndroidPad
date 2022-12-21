@@ -66,6 +66,8 @@ public class AppointmentActivity extends DishWasherBaseActivity {
 
     public int directive_offset = 20000;
 
+    private boolean needToAppointing = false;//是否跳转到预约倒计时
+
     @Override
     protected int getLayoutId() {
         return R.layout.dishwasher_activity_layout_appointment;
@@ -96,11 +98,27 @@ public class AppointmentActivity extends DishWasherBaseActivity {
 
         setOnClickListener(R.id.btn_cancel, R.id.btn_ok,R.id.ll_left);
 
-        MqttDirective.getInstance().getDirective().observe(this, s -> {
+       /* MqttDirective.getInstance().getDirective().observe(this, s -> {
             switch (s.shortValue()){
                 case MsgKeys.getDishWasherPower:
                     sendAppointingCommand();
                     break;
+            }
+        });*/
+
+        MqttDirective.getInstance().getStrLiveData().observe(this,s->{
+            if(s == null || s.trim().length() == 0){
+                return ;
+            }
+            String[] split = s.split(MqttDirective.STR_LIVE_DATA_FLAG);
+            if(split == null || split.length != 2){
+                return;
+            }
+            if (split[0].equals(HomeDishWasher.getInstance().guid)) {
+                int code = Integer.parseInt(split[1]);
+                if(code == MsgKeys.getDishWasherPower){
+                    sendAppointingCommand();
+                }
             }
         });
 
@@ -191,11 +209,11 @@ public class AppointmentActivity extends DishWasherBaseActivity {
             hourScrollP = hour;
             minScrollP = (min / 10)+1;
         }
+
         mHourView.scrollToPosition(hourScrollP);
         mMinuteView.scrollToPosition(minScrollP);
-
         String curOrderTime = hourData.get(hourScrollP)+":"+minuteData.get(minScrollP);
-        if(hour >= 23 && min >= 50){
+        if((hour >= 23 && min >= 50) || (hour == hourScrollP && min == minScrollP)){
             tvTime.setText(String.format(getString(R.string.dishwasher_work_order_hint2), curOrderTime ));
         }{
             tvTime.setText(String.format(getString(R.string.dishwasher_work_order_hint3), curOrderTime ));
@@ -210,10 +228,29 @@ public class AppointmentActivity extends DishWasherBaseActivity {
         if (id == R.id.btn_cancel)
             finish();
         else if (id == R.id.btn_ok) { //确认预约
-            startAppointing();
+            //startAppointing();
+            startSetResult();
         }else if(id == R.id.ll_left){
             finish();
         }
+    }
+
+
+    private void startSetResult(){
+        DishWasher curDevice = getCurDevice();
+        if(curDevice == null){
+            return;
+        }
+        if(curDevice.AppointmentSwitchStatus == DishWasherState.APPOINTMENT_ON){
+            //修改预约时间
+        }else{
+            //设置预约时间
+            Intent result = new Intent();
+            result.putExtra(DishWasherConstant.APPOINTMENT_RESULT,tvTime.getText().toString());
+            setResult(RESULT_OK,result);
+            finish();
+        }
+
     }
 
     /**

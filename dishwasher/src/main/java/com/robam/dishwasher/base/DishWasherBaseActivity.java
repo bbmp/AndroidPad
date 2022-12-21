@@ -73,6 +73,14 @@ public abstract class DishWasherBaseActivity extends BaseActivity {
         textView.setText(res);
     }
 
+
+    public void setRight(String value) {
+        findViewById(R.id.ll_right).setVisibility(View.VISIBLE);
+        TextView textView = findViewById(R.id.tv_right);
+        textView.setText(value);
+    }
+
+
     public void hideRight(){
         findViewById(R.id.ll_right).setVisibility(View.INVISIBLE);
     }

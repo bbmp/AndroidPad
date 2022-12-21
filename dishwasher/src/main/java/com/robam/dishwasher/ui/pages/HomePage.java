@@ -52,7 +52,7 @@ public class HomePage extends DishWasherBasePage {
         group = findViewById(R.id.mode_prompt_group);
         pickerLayoutManager = new PickerLayoutManager.Builder(getContext())
                 .setOrientation(RecyclerView.HORIZONTAL)
-                .setMaxItem(3)
+                .setMaxItem(5)
                 .setScale(0.66f)
                 .setAlpha(false)
                 .setOnPickerListener((recyclerView, position) -> {

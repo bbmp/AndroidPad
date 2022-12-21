@@ -36,6 +36,7 @@ public class DishWasherModelUtil {
 
     public static void initWorkingInfo( DishWasherModeBean curWasherModel,DishWasher dishWasher){
         curWasherModel.restTime = dishWasher.remainingWorkingTime * 60;
+        curWasherModel.code = (short) dishWasher.workMode;
         curWasherModel.auxCode = dishWasher.auxMode;
         curWasherModel.time = dishWasher.SetWorkTimeValue * 60;
         /*if(dishWasher.auxMode != 0 && curWasherModel != null && curWasherModel.auxList.size() != 0){

@@ -104,7 +104,7 @@ public class AppointingActivity extends DishWasherBaseActivity {
                 }
             }
         });
-        MqttDirective.getInstance().getDirective().observe(this,s->{
+       /* MqttDirective.getInstance().getDirective().observe(this,s->{
             switch (s.intValue()){
                 case MsgKeys.getDishWasherPower:
                     startActivity(MainActivity.class);
@@ -121,6 +121,30 @@ public class AppointingActivity extends DishWasherBaseActivity {
                     break;
             }
 
+        });*/
+
+        MqttDirective.getInstance().getStrLiveData().observe(this,s->{
+            if(s == null || s.trim().length() == 0){
+                return ;
+            }
+            String[] split = s.split(MqttDirective.STR_LIVE_DATA_FLAG);
+            if(split == null || split.length != 2){
+                return;
+            }
+            if (split[0].equals(HomeDishWasher.getInstance().guid)) {
+                int code = Integer.parseInt(split[1]);
+                if(code == MsgKeys.getDishWasherPower){
+                   goHome();
+                }else if(code == MsgKeys.getDishWasherWorkMode){
+                    List<DishWasherModeBean> modeBeanList = FunctionManager.getFuntionList(getContext(), DishWasherModeBean.class,R.raw.dishwahser);
+                    Intent intent = new Intent();
+                    DishWasherModeBean dishWasherModeBean = DishWasherModelUtil.getDishWasher(modeBeanList,modeBean.code);
+                    intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, dishWasherModeBean);
+                    intent.setClass(AppointingActivity.this, WorkActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }
         });
     }
 

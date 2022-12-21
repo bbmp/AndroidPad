@@ -14,6 +14,7 @@ import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.view.CancelRadioButton;
 import com.robam.common.utils.ClickUtils;
+import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.TimeUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.dishwasher.R;
@@ -29,6 +30,13 @@ import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.util.DishWasherCommandHelper;
 import com.robam.dishwasher.util.DishWasherModelUtil;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 public class ModeSelectActivity extends DishWasherBaseActivity {
     private RadioGroup radioGroup;
     //模式
@@ -42,6 +50,7 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
 
     public int directive_offset = 10000;
     public static final int START_P = 22;
+    private TextView btStart;
 
     @Override
     protected int getLayoutId() {
@@ -66,6 +75,7 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
         rButton4 = findViewById(R.id.rb_button4);
         tvStartHint = findViewById(R.id.tv_start);
         tvAuxPrompt = findViewById(R.id.aux_prompt_tv);
+        btStart = findViewById(R.id.btn_start);
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             setTvAuxPrompt(group,checkedId);
             if (checkedId == R.id.rb_button1) {
@@ -86,46 +96,72 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
                     DishWasher dishWasher = (DishWasher) device;
                     setLock(dishWasher.StoveLock == 1);
                     boolean toWaringPage = toWaringPage(dishWasher.abnormalAlarmStatus);
-                    if(!toWaringPage && dishWasher.workMode != 0 && dishWasher.remainingWorkingTime != 0){
+                    if(!toWaringPage && dishWasher.workMode != 0){
                         switch (dishWasher.powerStatus){
-                            //case DishWasherState.WAIT://启动设置成功后，设备powerStatus在一段时间内，仍然在待机状态
+                            case DishWasherState.WAIT://启动设置成功后，设备powerStatus在一段时间内，仍然在待机状态
                             case DishWasherState.WORKING:
                             case DishWasherState.PAUSE:
-                                toWorkPage(dishWasher);
+                                dealWasherWorkingState(dishWasher);
                         }
                     }
                 }
             }
         });
 
-        MqttDirective.getInstance().getDirective().observe(this, s -> {
-            switch (s.shortValue()){
-                case MsgKeys.getDishWasherPower:
-                    sendStartWorkCommand();
-                    break;
-                case MsgKeys.getDishWasherWorkMode:
-                    //toWorkPage();
-                    break;
+        MqttDirective.getInstance().getStrLiveData().observe(this,s->{
+            LogUtils.i("MqttDishWasher onDecodeMsg  guid : arrvice "+s+"");
+            if(s == null || s.trim().length() == 0){
+                return ;
+            }
+            LogUtils.i("MqttDishWasher onDecodeMsg  guid : arrvice "+s+"");
+            String[] split = s.split(MqttDirective.STR_LIVE_DATA_FLAG);
+            if(split == null || split.length != 2){
+                return;
+            }
+            if (split[0].equals(HomeDishWasher.getInstance().guid)) {
+                int code = Integer.parseInt(split[1]);
+                if(code == MsgKeys.getDishWasherPower){
+                    sendStartWorkOrAppointCommand();
+                }
             }
         });
-
     }
 
-    private void toWorkPage(DishWasher dishWasher){
-        Intent intent = new Intent();
-        DishWasherModeBean newMode = modeBean.getNewMode();
-       /* DishWasherAuxBean auxBean = getAuxBean(getAuxCode());
-        if(auxBean != null){
-            newMode.time = auxBean.time;
-            newMode.auxCode = auxBean.code;
+    private void dealWasherWorkingState(DishWasher dishWasher){
+        if(dishWasher.workMode == 0){
+            return;
         }
-        newMode.restTime = newMode.time;*/
-        DishWasherModelUtil.initWorkingInfo(newMode,dishWasher);
-        intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, newMode);
-        intent.setClass(ModeSelectActivity.this, WorkActivity.class);
-        startActivity(intent);
-        finish();
+        switch (dishWasher.AppointmentSwitchStatus){
+            case DishWasherState.APPOINTMENT_OFF:
+                if(dishWasher.powerStatus == DishWasherState.WAIT){//待机状态下，无工作模式
+                    return;
+                }
+                if(dishWasher.remainingWorkingTime == 0){//无剩余工作时间
+                    return;
+                }
+                Intent intent = new Intent();
+                DishWasherModeBean newMode = modeBean.getNewMode();
+                DishWasherModelUtil.initWorkingInfo(modeBean,dishWasher);
+                intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, newMode);
+                intent.setClass(this, WorkActivity.class);
+                startActivity(intent);
+                break;
+            case DishWasherState.APPOINTMENT_ON:
+                if(dishWasher.AppointmentRemainingTime == 0){
+                    return;
+                }
+                Intent appointingIntent = new Intent();
+                DishWasherModeBean needDish = modeBean.getNewMode();
+                DishWasherModelUtil.initWorkingInfo(needDish,dishWasher);
+                appointingIntent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, needDish);
+                appointingIntent.setClass(this, AppointingActivity.class);
+                startActivity(appointingIntent);
+                HomeDishWasher.getInstance().workHours = needDish.time;
+                HomeDishWasher.getInstance().orderWorkTime = dishWasher.AppointmentRemainingTime;
+                break;
+        }
     }
+
 
     private void setTvAuxPrompt(RadioGroup group, int checkedId){
         if(checkedId != -1){
@@ -258,7 +294,8 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
             }
             intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, newMode);
             intent.setClass(this, AppointmentActivity.class);
-            startActivity(intent);
+            //startActivity(intent);
+            startActivityForResult(intent,DishWasherConstant.APPOINTMENT_CODE);
         } else if (id == R.id.btn_start) {
             if(ClickUtils.isFastClick()){
                 ToastUtils.showLong(this,"被重复点击了");
@@ -270,6 +307,9 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
             finish();
         }
     }
+
+
+
 
     private void startWork(){
         DishWasher curDevice = getCurDevice();
@@ -286,8 +326,80 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
     }
 
 
+    private void sendStartWorkOrAppointCommand(){
+        boolean isAppointing = false;
+        String s = btStart.getText().toString();
+        if(getResources().getString(R.string.dishwasher_start_appoint).equals(s)){
+            isAppointing = true;
+        }
+        if(isAppointing){
+            sendAppointingCommand();
+        }else{
+            DishWasherCommandHelper.sendStartWork(modeBean.code,(short) getAuxCode(),directive_offset + MsgKeys.setDishWasherWorkMode);
+        }
+
+    }
+
+
     private void sendStartWorkCommand(){
         DishWasherCommandHelper.sendStartWork(modeBean.code,(short) getAuxCode(),directive_offset + MsgKeys.setDishWasherWorkMode);
+    }
+
+    /**
+     * 发送预约命令
+     */
+    private void sendAppointingCommand(){
+        try {
+            TextView viewById = findViewById(R.id.tv_right);
+            long appointingTime = getAppointingTimeMin(viewById.getText().toString());
+            Map map = DishWasherCommandHelper.getModelMap(MsgKeys.setDishWasherWorkMode, modeBean.code,(short) 1, (int)appointingTime);
+            map.put(DishWasherConstant.AutoVentilation, 0);
+            map.put(DishWasherConstant.EnhancedDrySwitch, 0);
+            map.put(DishWasherConstant.ArgumentNumber, 1);
+            map.put(DishWasherConstant.ADD_AUX, modeBean.auxCode);
+            DishWasherCommandHelper.getInstance().sendCommonMsg(map,MsgKeys.setDishWasherWorkMode + directive_offset);
+
+            HomeDishWasher.getInstance().workHours = modeBean.time;
+            HomeDishWasher.getInstance().orderWorkTime = (int) appointingTime;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * 获取预约执行时间
+     * @param timeText
+     * @return 预约执行时间（单位：分钟）
+     * @throws ParseException
+     */
+    private long getAppointingTimeMin(String timeText) throws ParseException {
+        String time = timeText.substring("次日".length()).trim()+":00";
+        Date curTime = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  //HH:24小时制  hh:12小时制
+        String curTimeStr = dateFormat.format(curTime);
+        String curTimeText = curTimeStr.substring("yyyy-MM-dd".length()).trim();
+        if(time.compareTo(curTimeText) > 0){//今日
+            String orderTimeStr = curTimeStr.split(" ")[0].trim() + " " + time;
+            Date orderTime = dateFormat.parse(orderTimeStr);
+            long timeDur = (orderTime.getTime() - curTime.getTime())/60/1000;
+            if((orderTime.getTime() - curTime.getTime())% 60 != 0){
+                return timeDur + 1;
+            }
+            return timeDur;
+        }else{//次日
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(curTime);
+            calendar.add(Calendar.DAY_OF_MONTH,1);
+            String destTime = dateFormat.format(calendar.getTime());
+            String orderTimeStr = destTime.split(" ")[0].trim() + " " + time;
+            Date orderTime = dateFormat.parse(orderTimeStr);
+            long timeDur = (orderTime.getTime() - curTime.getTime())/60/1000;
+            if((orderTime.getTime() - curTime.getTime())% 60 != 0){
+                return timeDur + 1;
+            }
+            return timeDur;
+        }
     }
 
     /**
@@ -324,7 +436,13 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
         return spannableString;
     }
 
-
-
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == DishWasherConstant.APPOINTMENT_CODE && resultCode == RESULT_OK){
+            String timeValue = data.getStringExtra(DishWasherConstant.APPOINTMENT_RESULT);
+            setRight(timeValue);
+            btStart.setText(R.string.dishwasher_start_appoint);
+        }
+    }
 }

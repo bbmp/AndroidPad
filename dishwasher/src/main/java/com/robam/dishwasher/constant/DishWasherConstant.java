@@ -10,14 +10,14 @@ public class DishWasherConstant {
     public final static int MODE_BRIGHT = 6;//晶亮洗
     public final static int MODE_DRAIN_WATER = 7;//排水
     public final static int MODE_SELF_INSPECTION = 8;//自检测试
-    public final static int MODE_FLUSH = 21;//护婴净存
-    public final static int MODE_FLUSH_AWAIT = 22;//护婴净存等待
     public final static int MODE_AUTO_AERATION = 9;//自动换气
     public final static int MODE_AUTO_AERATION_AWAIT = 10;//自动换气等待
     public final static int MODE_BABYCARE = 14;// 护婴洗
     public final static int MODE_SELFCLEAN = 15;//自清洁
     public final static int MODE_PRE_RINSE = 16;//预冲洗Silent wash
     public final static int MODE_SILENT_WASH = 13;//静音洗
+    public final static int MODE_FLUSH = 21;//护婴净存
+    public final static int MODE_FLUSH_AWAIT = 22;//护婴净存等待
     public final static int MODE_LONG_STORAGE = 23;//长效净存
     public final static int MODE_LONG_STORAGE_AWAIT = 24;//长效净存等待
 
@@ -25,7 +25,7 @@ public class DishWasherConstant {
     public final static int AUX_NONE = 0;//无
     public final static int AUX_PAN_POWFULL = 1;//锅具强洗
     public final static int AUX_KILL_POWFULL = 6;//加强除菌
-    public final static int AUX_FLUSH = 23;//长效净存
+    public final static int AUX_FLUSH = 10;//长效净存
     public final static int AUX_DOWN_WASH = 3;//下层洗
 
     public final static int DEVICE_WARING_E0 = 0;//
@@ -117,6 +117,10 @@ public class DishWasherConstant {
     public final static String WATER_CONSUMPTION = "waterConsumption";
 
     public final static int ZERO = 0;//无
+
+    public final static int APPOINTMENT_CODE = 102;//无
+    public final static String APPOINTMENT_RESULT = "appointment_result";//无
+    public final static String NEED_TO_APPOINTING = "need_to_appointing";//无
 
 
 
