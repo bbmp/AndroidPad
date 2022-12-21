@@ -433,6 +433,8 @@ public interface MsgKeys {
 
     short SMART_CRUISING = 155;//智能巡航
 
+    short SMART_CRUISING_REPLAY = 156;//智能巡航设置应答
+
     /**
      * 查询消毒柜温度／湿度／细菌数（请求）
      */

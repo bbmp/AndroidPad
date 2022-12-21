@@ -72,11 +72,11 @@ public class WorkActivity extends CabinetBaseActivity {
         AccountInfo.getInstance().getGuid().observe(this, s -> {
             for (Device device: AccountInfo.getInstance().deviceList) {
                 if (device.guid.equals(s) && device instanceof Cabinet && device.guid.equals(HomeCabinet.getInstance().guid)) { //当前锅
+                    Cabinet cabinet = (Cabinet) device;
+                    setLock(cabinet.isChildLock == 1);
                     if(!CabinetCommonHelper.isSafe()){
                         return;
                     }
-                    Cabinet cabinet = (Cabinet) device;
-                    setLock(cabinet.isChildLock == 1);
                     if(toWaringPage(cabinet.faultId)){
                         return;
                     }

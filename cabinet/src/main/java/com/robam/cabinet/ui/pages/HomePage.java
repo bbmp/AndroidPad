@@ -53,7 +53,7 @@ public class HomePage extends CabinetBasePage {
         gifImageView = findViewById(R.id.iv_bg);
         pickerLayoutManager = new PickerLayoutManager.Builder(getContext())
                 .setOrientation(RecyclerView.HORIZONTAL)
-                .setMaxItem(3)
+                .setMaxItem(5)
                 .setScale(0.66f)
                 .setAlpha(false)
                 .setOnPickerListener((recyclerView, position) -> {
