@@ -86,7 +86,12 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
                     Stove stove = (Stove) device;
                     baseViewHolder.setText(R.id.tv_online, R.string.ventilator_online);
                     baseViewHolder.setImageResource(R.id.iv_online, R.drawable.ventilator_shape_online_bg);
-                    if (stove.leftLevel == 0 && stove.rightLevel == 0) {  //未工作
+                    if (stove.leftAlarm != 0xff || stove.rightAlarm != 0xff) {  //故障
+                        baseViewHolder.setVisible(R.id.layout_offline, true);
+                        baseViewHolder.setGone(R.id.layout_work, true);
+                        baseViewHolder.setVisible(R.id.btn_detail, true);
+                        baseViewHolder.setText(R.id.tv_hint, R.string.ventilator_product_failure);
+                    } else if (stove.leftLevel == 0 && stove.rightLevel == 0) {  //未工作
                         baseViewHolder.setVisible(R.id.layout_offline, true);
                         baseViewHolder.setGone(R.id.layout_work, true);
                         baseViewHolder.setGone(R.id.btn_detail, true);
@@ -168,16 +173,16 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
                         baseViewHolder.setGone(R.id.btn_detail, true);
                         baseViewHolder.setText(R.id.tv_hint, "轻松烹饪\n智享厨房");
                     } else if (pan.sysytemStatus == 3) { //低电量
-                        baseViewHolder.setGone(R.id.layout_offline, true);
-                        baseViewHolder.setVisible(R.id.layout_work, true);
-                        baseViewHolder.setText(R.id.tv_mode, R.string.ventilator_low_battery);
-                        baseViewHolder.setText(R.id.btn_work, R.string.ventilator_detail);
+                        baseViewHolder.setVisible(R.id.layout_offline, true);
+                        baseViewHolder.setGone(R.id.layout_work, true);
+                        baseViewHolder.setVisible(R.id.btn_detail, true);
+                        baseViewHolder.setText(R.id.tv_hint, R.string.ventilator_low_battery);
                     } else {
                         //故障
-                        baseViewHolder.setGone(R.id.layout_offline, true);
-                        baseViewHolder.setVisible(R.id.layout_work, true);
-                        baseViewHolder.setText(R.id.tv_mode, R.string.ventilator_product_failure);
-                        baseViewHolder.setText(R.id.btn_work, R.string.ventilator_detail);
+                        baseViewHolder.setVisible(R.id.layout_offline, true);
+                        baseViewHolder.setGone(R.id.layout_work, true);
+                        baseViewHolder.setVisible(R.id.btn_detail, true);
+                        baseViewHolder.setText(R.id.tv_hint, R.string.ventilator_product_failure);
                     }
                 }
             } else if (IDeviceType.RYYJ.equals(device.dc)) {//油烟机

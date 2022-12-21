@@ -62,6 +62,10 @@ public class RvCurveAdapter extends BaseQuickAdapter<PanCurveDetail, BaseViewHol
         }
 
         ImageView imageView = baseViewHolder.getView(R.id.iv_recipe);
+        if (panCurveDetail.curveCookbookId == 0 && panCurveDetail.needTime == 0)
+            baseViewHolder.setVisible(R.id.iv_add, true);
+        else
+            baseViewHolder.setGone(R.id.iv_add, true);
         ImageUtils.loadImage(getContext(), panCurveDetail.imageCover, maskOption, imageView);
         baseViewHolder.setText(R.id.tv_recipe, panCurveDetail.name);
     }

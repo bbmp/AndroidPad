@@ -86,7 +86,7 @@ public class Stove extends Device {
     //左灶
     public int leftStove;
     //
-    public int leftAlarm;
+    public int leftAlarm = 255;
     /**
      * 右灶工作模式
      */
@@ -104,7 +104,7 @@ public class Stove extends Device {
     //右灶
     public int rightStove;
     //
-    public int rightAlarm;
+    public int rightAlarm = 255;
 
     @Override
     public boolean onMsgReceived(MqttMsg msg) {
@@ -147,6 +147,8 @@ public class Stove extends Device {
                 leftLevel = msg.optInt(StoveConstant.leftLevel);
             if (msg.has(StoveConstant.leftTime))
                 leftTimeHours = msg.optInt(StoveConstant.leftTime);
+            if (msg.has(StoveConstant.leftAlarm))
+                leftAlarm = msg.optInt(StoveConstant.leftAlarm);
             if (msg.has(StoveConstant.leftTemp))
                 leftWorkTemp = (float) msg.opt(StoveConstant.leftTemp);
             if (msg.has(StoveConstant.leftMode))
@@ -158,6 +160,8 @@ public class Stove extends Device {
                 rightLevel = msg.optInt(StoveConstant.rightLevel);
             if (msg.has(StoveConstant.rightTime))
                 rightTimeHours = msg.optInt(StoveConstant.rightTime);
+            if (msg.has(StoveConstant.rightAlarm))
+                rightAlarm = msg.optInt(StoveConstant.rightAlarm);
             if (msg.has(StoveConstant.rightTemp))
                 rightWorkTemp = (float) msg.opt(StoveConstant.rightTemp);
             if (msg.has(StoveConstant.rightMode))

@@ -1,5 +1,6 @@
 package com.robam.stove.ui.adapter;
 
+import android.text.TextUtils;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -62,6 +63,10 @@ public class RvCurveAdapter extends BaseQuickAdapter<StoveCurveDetail, BaseViewH
         }
 
         ImageView imageView = baseViewHolder.getView(R.id.iv_recipe);
+        if (stoveCurveDetail.curveCookbookId == 0 && stoveCurveDetail.needTime == 0)
+            baseViewHolder.setVisible(R.id.iv_add, true);
+        else
+            baseViewHolder.setGone(R.id.iv_add, true);
         ImageUtils.loadImage(getContext(), stoveCurveDetail.imageCover, maskOption, imageView);
         baseViewHolder.setText(R.id.tv_recipe, stoveCurveDetail.name);
     }

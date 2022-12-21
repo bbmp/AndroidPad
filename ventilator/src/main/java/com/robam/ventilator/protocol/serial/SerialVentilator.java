@@ -581,7 +581,7 @@ public class SerialVentilator {
                     HomeVentilator.getInstance().status  = data[startupIndex - 1]; //工作状态
                 HomeVentilator.getInstance().lightOn = data[lightOnIndex - 1];
                 HomeVentilator.getInstance().gear    = data[gearIndex    - 1];
-                HomeVentilator.getInstance().beep    = data[beepIndex    - 1];
+                HomeVentilator.getInstance().alarm   = data[beepIndex    - 1];
                 HomeVentilator.getInstance().baffle  = data[baffleIndex  - 1];
                 HomeVentilator.getInstance().param1  = data[param1Index  - 1];
                 HomeVentilator.getInstance().param2  = data[param2Index  - 1];

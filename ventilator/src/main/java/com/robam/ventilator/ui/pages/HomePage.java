@@ -73,6 +73,7 @@ import com.robam.ventilator.response.GetDeviceRes;
 import com.robam.ventilator.ui.activity.AddDeviceActivity;
 import com.robam.ventilator.ui.activity.MatchNetworkActivity;
 import com.robam.ventilator.ui.activity.SimpleModeActivity;
+import com.robam.ventilator.ui.activity.WarningActivity;
 import com.robam.ventilator.ui.adapter.RvMainFunctonAdapter;
 import com.robam.ventilator.ui.adapter.RvProductsAdapter;
 import com.robam.ventilator.ui.adapter.RvSettingAdapter;
@@ -486,6 +487,14 @@ public class HomePage extends VentilatorBasePage {
                         viewSpeed.setHeight(0, 0);
                     }
 //                    return;
+                    //检查报警信息
+                    if (HomeVentilator.getInstance().isStartUp() && !HomeVentilator.getInstance().isLock()) {
+                        if (HomeVentilator.getInstance().alarm != 0x00) {
+                            Intent intent = new Intent();
+                            intent.setClass(getContext(), WarningActivity.class);
+                            startActivity(intent);
+                        }
+                    }
                 }
 
                 //找不到设备
@@ -815,6 +824,14 @@ public class HomePage extends VentilatorBasePage {
                 Intent intent = new Intent(getContext(), com.robam.steamoven.ui.activity.WaringActivity.class);
                 intent.putExtra(ComnConstant.WARING_FROM,1);
                 intent.putExtra(ComnConstant.WARING_CODE,device.faultId);
+                return true;
+            }
+        } else if (device instanceof Stove && IDeviceType.RRQZ.equals(device.dc)) {
+            if (((Stove) device).leftAlarm != 0xff || ((Stove) device).rightAlarm != 0xff) {
+                Intent intent = new Intent();
+                intent.putExtra(ComnConstant.EXTRA_GUID, device.guid); //传入启动设备
+                intent.setClassName(getContext(), IPublicStoveApi.STOVE_WARNING);
+                startActivity(intent);
                 return true;
             }
         }

@@ -108,4 +108,12 @@
     <string name="ventilator_cabinet_completion">结束</string>
     <string name="ventilator_products_center">欢迎使用\n双子星套系产品</string>
     <string name="ventilator_delete_device">删除设备</string>
+    <string name="ventilator_maintain_phone">维修电话：658889789</string>
+    <string name="ventilator_warning_e1_title">报警信息</string>
+    <string name="ventilator_warning_e1_content">电源电压异常</string>
+    <string name="ventilator_warning_e2_content">点击启动故障</string>
+    <string name="ventilator_warning_e3_content">电机运行故障</string>
+    <string name="ventilator_warning_e4_content">电源板故障</string>
+    <string name="ventilator_warning_e5_content">灯光故障</string>
+    <string name="ventilator_warning_e6_content">推杆电机故障</string>
 </resources>

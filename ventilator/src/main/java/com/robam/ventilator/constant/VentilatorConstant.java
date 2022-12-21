@@ -20,6 +20,16 @@ public class VentilatorConstant {
     public final static String EXTRA_WIFI_SSID = "ssid";
     public final static String EXTRA_MODEL = "model";// 设备类型
     public final static String EXTRA_CLASSNAME = "classname";//当前activity classname
+    public final static String EXTRA_WARNING_CODE = "warning_code";
+
+    //告警信息
+    public final static int DEVICE_WARING_E0 = 0;
+    public final static int DEVICE_WARING_E1 = 1;
+    public final static int DEVICE_WARING_E2 = 2;
+    public final static int DEVICE_WARING_E3 = 3;
+    public final static int DEVICE_WARING_E4 = 4;
+    public final static int DEVICE_WARING_E5 = 5;
+    public final static int DEVICE_WARING_E6 = 6;
 
     /**
      * 工作状态[1Byte]（0关机，1开机）
