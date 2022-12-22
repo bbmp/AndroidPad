@@ -65,6 +65,7 @@
     <string name="ventilator_match_hint4">1.燃气灶点火。 \n2.长按燃气灶面板上[ ]2秒至滴声响，屏幕内智能符号\" \"闪烁。\n完成上述操作后点击下一步。</string>
     <string name="ventilator_match_hint6">1.开启洗碗机。 \n2.在洗碗机上登录当前ROKI账户。 \n完成上述操作后点击下一步。</string>
     <string name="ventilator_match_hint7">1.开启一体机。 \n2.在一体机上登录当前ROKI账户。 \n完成上述操作后点击下一步。</string>
+    <string name="ventilator_match_hint8">1.开启消毒柜。 \n2.在消毒柜上登录当前ROKI账户。 \n完成上述操作后点击下一步。</string>
     <string name="ventilator_lock">长按2s解锁</string>
     <string name="ventilator_connectting">网络连接中</string>
     <string name="ventilator_account">账号</string>

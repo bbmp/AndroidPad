@@ -113,8 +113,10 @@ public abstract class DishWasherBaseActivity extends BaseActivity {
                 return ;
             }
             if(touchDownTimeMil != 0 && System.currentTimeMillis() - touchDownTimeMil > 1000){
+                touchDownTimeMil = System.currentTimeMillis();
                 return;
             }
+            touchDownTimeMil = System.currentTimeMillis();
             DishWasherCommandHelper.sendCtrlLockCommand(true,LOCK_FLAG);
             LogUtils.i("dispatchTouchEvent setOnClickListener runnable");
             //setLock(true);
@@ -149,6 +151,9 @@ public abstract class DishWasherBaseActivity extends BaseActivity {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
+        if(ev.getAction() == MotionEvent.ACTION_DOWN){
+            touchDownTimeMil = System.currentTimeMillis();
+        }
         if(lock){
             boolean isTouchAble = lockTouchArea(ev);
             //
@@ -159,7 +164,6 @@ public abstract class DishWasherBaseActivity extends BaseActivity {
                 switch (ev.getAction()){
                     case MotionEvent.ACTION_DOWN:
                         LogUtils.i("dispatchTouchEvent isTouchAble down");
-                        touchDownTimeMil = System.currentTimeMillis();
                         mLastMotionX = x;
                         mLastMotionY = y;
                         unLockHandler.postDelayed(unLockRunnable,2000);

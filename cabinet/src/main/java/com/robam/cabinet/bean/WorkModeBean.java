@@ -17,7 +17,7 @@ public class WorkModeBean extends CabModeBean{
     }
 
 
-    public int orderSurplusTime;//预约时间
+    public int orderSurplusTime;//预约剩余时间
     public int modelSurplusTime;//模式剩余运行时间
 
 }

@@ -1,6 +1,7 @@
 package com.robam.cabinet.ui.activity;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,8 +23,13 @@ import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.common.utils.ClickUtils;
+import com.robam.common.utils.LogUtils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class ModeSelectActivity extends CabinetBaseActivity {
@@ -35,6 +41,7 @@ public class ModeSelectActivity extends CabinetBaseActivity {
 
     public int directive_offset = 30000;
     public static   final int  POWER_ON_OFFSET=  300;
+    private TextView btStart;
 
     @Override
     protected int getLayoutId() {
@@ -49,6 +56,7 @@ public class ModeSelectActivity extends CabinetBaseActivity {
         rvMode = findViewById(R.id.rv_mode);
         tvMode = findViewById(R.id.tv_mode);
         tvNum = findViewById(R.id.tv_num);
+        btStart = findViewById(R.id.btn_start);
         pickerLayoutManager = new PickerLayoutManager.Builder(getContext())
                 .setOrientation(RecyclerView.HORIZONTAL)
                 .setMaxItem(5)
@@ -106,7 +114,7 @@ public class ModeSelectActivity extends CabinetBaseActivity {
             startActivity(intent);
             finish();
         }else if(cabinet.remainingAppointTime > 0){//预约 每次结束后，都有一段时间预约时间是1380，需与设备端一起排查问题
-            WorkModeBean workModeBean = new WorkModeBean(cabinet.workMode, cabinet.remainingModeWorkTime,cabinet.modeWorkTime);
+            WorkModeBean workModeBean = new WorkModeBean(cabinet.workMode, cabinet.remainingAppointTime,cabinet.modeWorkTime);
             Intent intent = new Intent(this,AppointingActivity.class);
             intent.putExtra(Constant.EXTRA_MODE_BEAN,workModeBean);
             startActivity(intent);
@@ -155,19 +163,14 @@ public class ModeSelectActivity extends CabinetBaseActivity {
             CabModeBean cabModeBean = this.cabModeBean.newCab();
             cabModeBean.defTime = Integer.parseInt(rvTimeAdapter.getItem(pickerLayoutManager.getPickedPosition()));
             intent.putExtra(Constant.EXTRA_MODE_BEAN, cabModeBean);
-            startActivity(intent);
+            startActivityForResult(intent,Constant.APPOINT_CODE);
         } else if (id == R.id.btn_start) {
             //开始工作
             //startWork();
             if(ClickUtils.isFastClick()){
                 return;//防止快速重复点击
             }
-            if(this.checkDoorState()){//新增检查门状态
-                //CabinetCommonHelper.startPowerOn(POWER_ON_OFFSET + directive_offset);//指令压缩，无需再发送开机指令
-                CabinetCommonHelper.startAppointCommand(cabModeBean.code,
-                        Integer.parseInt(rvTimeAdapter.getItem(pickerLayoutManager.getPickedPosition())),0,
-                        directive_offset + MsgKeys.SetSteriPowerOnOff_Req);
-            }
+           this.startAppointOrWork();
         } else if (view.getId() == R.id.iv_float) {
             Intent intent = new Intent();
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -175,6 +178,80 @@ public class ModeSelectActivity extends CabinetBaseActivity {
             startActivity(intent);
         } else if (id == R.id.ll_left) {
             finish();
+        }
+    }
+
+
+    private void startAppointOrWork(){
+        if(!this.checkDoorState()){//新增检查门状态
+            return;
+        }
+        String text = btStart.getText().toString();
+
+        if(getResources().getText(R.string.cabinet_start_appoint).equals(text)){//预约
+            try {
+                TextView time = findViewById(R.id.tv_right);
+                int appointingTimeMin = (int) getAppointingTimeMin(time.getText().toString());
+                CabinetCommonHelper.startAppointCommand(cabModeBean.code,
+                        cabModeBean.defTime,
+                        appointingTimeMin,
+                        directive_offset + MsgKeys.SetSteriPowerOnOff_Req);
+                //LogUtils.i("startAppointOrWork ...appointingTimeMin "+appointingTimeMin);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }else{//开始工作
+            CabinetCommonHelper.startAppointCommand(cabModeBean.code,
+                    Integer.parseInt(rvTimeAdapter.getItem(pickerLayoutManager.getPickedPosition())),0,
+                    directive_offset + MsgKeys.SetSteriPowerOnOff_Req);
+        }
+
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Constant.APPOINT_CODE && resultCode == RESULT_OK) {
+            //展示预约设计时间
+            String result = data.getStringExtra(Constant.APPOINTMENT_RESULT);
+            setRight(result);
+            btStart.setText(R.string.cabinet_start_appoint);
+        }
+    }
+
+    /**
+     * 获取预约执行时间
+     * @param timeText
+     * @return 预约执行时间（单位：分钟）
+     * @throws ParseException
+     */
+    private long getAppointingTimeMin(String timeText) throws ParseException {
+        String time = timeText.substring("次日".length()).trim()+":00";
+        Date curTime = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  //HH:24小时制  hh:12小时制
+        String curTimeStr = dateFormat.format(curTime);
+        String curTimeText = curTimeStr.substring("yyyy-MM-dd".length()).trim();
+        if(time.compareTo(curTimeText) > 0){//今日
+            String orderTimeStr = curTimeStr.split(" ")[0].trim() + " " + time;
+            Date orderTime = dateFormat.parse(orderTimeStr);
+            long timeDur = (orderTime.getTime() - curTime.getTime())/60/1000;
+            if((orderTime.getTime() - curTime.getTime())% 60 != 0){
+                return timeDur + 1;
+            }
+            return timeDur;
+        }else{//次日
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(curTime);
+            calendar.add(Calendar.DAY_OF_MONTH,1);
+            String destTime = dateFormat.format(calendar.getTime());
+            String orderTimeStr = destTime.split(" ")[0].trim() + " " + time;
+            Date orderTime = dateFormat.parse(orderTimeStr);
+            long timeDur = (orderTime.getTime() - curTime.getTime())/60/1000;
+            if((orderTime.getTime() - curTime.getTime())% 60 != 0){
+                return timeDur + 1;
+            }
+            return timeDur;
         }
     }
 }

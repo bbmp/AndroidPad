@@ -1,5 +1,9 @@
 package com.robam.cabinet.util;
 
+import android.util.Log;
+
+import com.robam.common.utils.LogUtils;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -27,10 +31,16 @@ public class CabinetAppointmentUtil {
         Calendar calendar = GregorianCalendar.getInstance();
         calendar.setTime(new Date());
         int day = calendar.get(Calendar.DAY_OF_MONTH);
-        calendar.add(Calendar.SECOND,remainingTime*60);
+        calendar.add(Calendar.MINUTE,remainingTime);
+        /*int seconds = calendar.get(Calendar.SECOND);
+        if(seconds != 0){//秒不为0,分钟加1
+            calendar.add(Calendar.MINUTE,1);
+        }*/
         int totalHour = calendar.get(Calendar.HOUR_OF_DAY);
         int totalMin = calendar.get(Calendar.MINUTE);
+
         int totalDay = calendar.get(Calendar.DAY_OF_MONTH);
+        //LogUtils.i(" startTimePoint "+remainingTime + " setTime "+ setTime);
         if (day != totalDay) {
             return "将在次日" + (totalHour <= 9 ? ("0" + totalHour) : totalHour) + ":" + (totalMin <= 9 ? ("0" + totalMin) : totalMin) + "启动工作";
         } else {

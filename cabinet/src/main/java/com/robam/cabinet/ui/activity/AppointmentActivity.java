@@ -11,13 +11,11 @@ import com.robam.cabinet.bean.Cabinet;
 import com.robam.cabinet.bean.WorkModeBean;
 import com.robam.cabinet.constant.CabinetConstant;
 import com.robam.cabinet.constant.Constant;
-import com.robam.cabinet.constant.EventConstant;
 import com.robam.cabinet.device.HomeCabinet;
 import com.robam.cabinet.ui.adapter.RvStringAdapter;
 import com.robam.cabinet.util.CabinetCommonHelper;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
-import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.common.utils.DateUtil;
@@ -118,30 +116,13 @@ public class AppointmentActivity extends CabinetBaseActivity {
             }
         });
 
-        /*MqttDirective.getInstance().getDirective().observe(this, s->{
-            if(s != EventConstant.WARING_CODE_NONE){
-                showWaring(s);
-            }
-            switch (s - directive_offset){
-                case POWER_ON_OFFSET:
-                    try {
-                        CabinetCommonHelper.startAppointCommand(cabModeBean.code,
-                                cabModeBean.defTime,
-                                (int)getAppointingTimeMin(tvTime.getText().toString()),
-                                directive_offset + MsgKeys.SetSteriPowerOnOff_Req);
-                        //startWork();
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-            }
-        });*/
     }
 
     private void toAppointPage(Cabinet cabinet){
         Intent intent = new Intent(this,AppointingActivity.class);
         WorkModeBean workModeBean = new WorkModeBean(this.cabModeBean);
-        workModeBean.modelSurplusTime = cabinet.modeWorkTime;
+        //workModeBean.modelSurplusTime = cabinet.modeWorkTime;
+        workModeBean.modelSurplusTime = cabinet.remainingAppointTime;
         intent.putExtra(Constant.EXTRA_MODE_BEAN, workModeBean);
         startActivity(intent);
         finish();
@@ -210,7 +191,7 @@ public class AppointmentActivity extends CabinetBaseActivity {
         if (id == R.id.btn_cancel) {
             finish();
         } else if (id == R.id.btn_ok) { //确认预约
-            if(this.checkDoorState()){//新增检查门状态
+            /*if(this.checkDoorState()){//新增检查门状态
                 //CabinetCommonHelper.startPowerOn(directive_offset+POWER_ON_OFFSET);//指令压缩
                 try {
                     CabinetCommonHelper.startAppointCommand(cabModeBean.code,
@@ -221,10 +202,19 @@ public class AppointmentActivity extends CabinetBaseActivity {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-            }
+            }*/
+            startAppointment();
         } else if (id == R.id.ll_left) {
             finish();
         }
+    }
+
+
+    private void startAppointment(){
+        Intent result = new Intent();
+        result.putExtra(Constant.APPOINTMENT_RESULT,tvTime.getText().toString());
+        setResult(RESULT_OK,result);
+        finish();
     }
 
     /**
@@ -234,7 +224,7 @@ public class AppointmentActivity extends CabinetBaseActivity {
         String hour = mHourAdapter.getItem(mHourManager.getPickedPosition());
         String minute = mMinuteAdapter.getItem(mMinuteManager.getPickedPosition());
         orderTime = hour + ":" + minute;
-        if (DateUtil.compareTime(DateUtil.getCurrentTime(DateUtil.PATTERN), orderTime, DateUtil.PATTERN) == 1) {
+        if (DateUtil.compareTime(DateUtil.getCurrentTime(DateUtil.PATTERN), orderTime, DateUtil.PATTERN) >= 0) {
             tvTime.setText(String.format(getString(R.string.cabinet_work_order_hint2), orderTime));
         } else {
             tvTime.setText(String.format(getString(R.string.cabinet_work_order_hint3), orderTime));

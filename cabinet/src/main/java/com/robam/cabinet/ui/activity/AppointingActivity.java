@@ -29,6 +29,9 @@ import com.robam.common.ui.view.MCountdownView;
 import com.robam.common.utils.DateUtil;
 import com.robam.common.utils.TimeUtils;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Map;
 
 /**
@@ -128,9 +131,40 @@ public class AppointingActivity extends CabinetBaseActivity {
             int totalTime = cabinet.remainingAppointTime * 60;
             tvCountdown.setTotalTime(totalTime);
             tvCountdown.setText(CabinetAppointmentUtil.getTimeStr(cabinet.remainingAppointTime));
-            tvAppointmentHint.setText(CabinetAppointmentUtil.startTimePoint(cabinet.remainingAppointTime));
+            tvAppointmentHint.setText(startTimePoint(cabinet.remainingAppointTime));
+        }
+    }
+
+    private String preTime = "";
+    private int preTimeMin = 0;
+    private String startTimePoint(int remainingTime){
+        Calendar calendar = GregorianCalendar.getInstance();
+        calendar.setTime(new Date());
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        calendar.add(Calendar.MINUTE,remainingTime);
+        int totalHour = calendar.get(Calendar.HOUR_OF_DAY);
+        int totalMin = calendar.get(Calendar.MINUTE);
+
+        int totalDay = calendar.get(Calendar.DAY_OF_MONTH);
+        String time = (totalHour <= 9 ? ("0" + totalHour) : totalHour) + ":" + (totalMin <= 9 ? ("0" + totalMin) : totalMin);
+        // 问题：返回的剩余时间单位是分钟，若剩余时间为2分钟，本地时间是 12:02,计算结果为12：04，
+        // 若10秒后本地时间为12：03,这时剩余时间仍然为2分钟，计算结果为12:05
+        //兼容性处理 以下逻辑未屏蔽上面 时间来回切换的情况
+        if(preTime.equals("")){
+            preTime = time;
+            preTimeMin = totalMin;
+        }
+        if(time.compareTo(preTime) != 0){
+            if(Math.abs(preTimeMin - totalMin) <= 1){//只相差一分钟的情况下，生效
+                time = preTime;
+            }
         }
 
+        if (day != totalDay) {
+            return "将在次日" + time + "启动工作";
+        } else {
+            return "将在" +time + "启动工作";
+        }
     }
 
 

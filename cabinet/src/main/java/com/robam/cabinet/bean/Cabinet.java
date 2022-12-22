@@ -35,7 +35,7 @@ public class Cabinet extends Device{
      */
     public int modeWorkTime;//模式工作设定时间
     public int remainingModeWorkTime; //模式剩余工作时间
-    public int orderTime;//预约设定时间
+    public int appointSetTime;//预约设定时间
     public int remainingAppointTime;//预约剩余时间
 
     public short isChildLock;
@@ -80,6 +80,7 @@ public class Cabinet extends Device{
                     argumentNumber = (short) msg.optInt(CabinetConstant.ArgumentNumber);
                     // 预约剩余时间
                     remainingAppointTime = msg.optInt(CabinetConstant.REMAINING_APPOINT_TIME);
+                    appointSetTime =  msg.optInt(CabinetConstant.REMAINING_APPOINT_SET_TIME);
                     //停止工作时是否进入安全锁
                     steriSecurityLock = (short) msg.optInt(CabinetConstant.CABINET_SAFE_LOCK);
                     smartCruising = (short) msg.optInt(CabinetConstant.SMART_CRUISING);

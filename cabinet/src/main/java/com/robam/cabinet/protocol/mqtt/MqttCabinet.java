@@ -59,7 +59,8 @@ public class MqttCabinet extends MqttPublic {
                             break;
                         case 3://预约设定时间
                             offset++;//length
-                            offset++;//value
+                            int opponentSetTime = ByteUtils.toInt16(payload, offset++,ByteOrder.LITTLE_ENDIAN);
+                            msg.putOpt(CabinetConstant.REMAINING_APPOINT_SET_TIME,opponentSetTime);
                             offset++;//value
                             break;
                         case 4://工作设定时间

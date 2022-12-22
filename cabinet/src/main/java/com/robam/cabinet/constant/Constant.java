@@ -25,4 +25,10 @@ public interface Constant {
     String EXTRA_MODE_BEAN = "modebean";
 
     String SMART_MODEL = "smart_model";
+
+    String MODE_CODE = "mode_code";
+
+    int APPOINT_CODE = 1003;
+
+    String APPOINTMENT_RESULT = "appointment_result";
 }

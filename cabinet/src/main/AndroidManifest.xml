@@ -4,6 +4,11 @@
 
     <application>
         <activity
+            android:name=".ui.activity.CompleteActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape"/>
+        <activity
             android:name=".ui.activity.WaringActivity"
             android:exported="false"
             android:screenOrientation="landscape"/>

@@ -31,6 +31,7 @@ import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.activity.BaseActivity;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.utils.ClickUtils;
+import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ToastUtils;
 
 import java.util.Map;
@@ -76,17 +77,31 @@ public abstract class CabinetBaseActivity extends BaseActivity {
         }
         rightCenter.setVisibility(View.VISIBLE);
         rightCenter.setOnClickListener(v -> {
+            LogUtils.i("rightCenter  onClick....");
             if(isPowerOff()){
                 return;
             }
-            if(touchDownTimeMil != 0 && System.currentTimeMillis() - touchDownTimeMil > 500){
+            if(lock){//本身是锁状态
                 return;
             }
+            LogUtils.i("rightCenter  onClick timeDevider ....."+(System.currentTimeMillis() - touchDownTimeMil));
+            if(touchDownTimeMil != 0 && System.currentTimeMillis() - touchDownTimeMil > 1000){
+                touchDownTimeMil = System.currentTimeMillis();
+                return;
+            }
+            touchDownTimeMil = System.currentTimeMillis();
+            LogUtils.i("rightCenter  onClick lock .....");
             Map map = CabinetCommonHelper.getCommonMap(MsgKeys.SetSteriLock_Req);
             map.put(CabinetConstant.CABINET_LOCK,1);
             CabinetCommonHelper.sendCommonMsg(map);
         });
 
+    }
+
+    public void setRight(String value) {
+        findViewById(R.id.ll_right).setVisibility(View.VISIBLE);
+        TextView textView = findViewById(R.id.tv_right);
+        textView.setText(value);
     }
 
 
@@ -170,6 +185,10 @@ public abstract class CabinetBaseActivity extends BaseActivity {
     private Handler unLockHandler = new Handler();
     private long touchDownTimeMil;
     private final Runnable unLockRunnable = () -> {
+        if(isPowerOff()){
+            return;
+        }
+        LogUtils.i("rightCenter unLockRunnable .....");
         Map map = CabinetCommonHelper.getCommonMap(MsgKeys.SetSteriLock_Req);
         map.put(CabinetConstant.CABINET_LOCK,0);
         CabinetCommonHelper.sendCommonMsg(map);
@@ -177,6 +196,9 @@ public abstract class CabinetBaseActivity extends BaseActivity {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
+        if(ev.getAction() == MotionEvent.ACTION_DOWN){
+            touchDownTimeMil = System.currentTimeMillis();
+        }
         if(lock){
             boolean isTouchAble = lockTouchArea(ev);
             if(isTouchAble){
@@ -184,7 +206,6 @@ public abstract class CabinetBaseActivity extends BaseActivity {
                 int y = (int)ev.getY();
                 switch (ev.getAction()){
                     case MotionEvent.ACTION_DOWN:
-                        touchDownTimeMil = System.currentTimeMillis();
                         mLastMotionX = x;
                         mLastMotionY = y;
                         unLockHandler.postDelayed(unLockRunnable,2000);
@@ -196,7 +217,7 @@ public abstract class CabinetBaseActivity extends BaseActivity {
                         break;
                     case MotionEvent.ACTION_CANCEL:
                     case MotionEvent.ACTION_UP:
-                        unLockHandler.removeCallbacks(unLockRunnable,2000);
+                        unLockHandler.removeCallbacks(unLockRunnable);
                         break;
                 }
                 return super.dispatchTouchEvent(ev);
@@ -294,10 +315,11 @@ public abstract class CabinetBaseActivity extends BaseActivity {
     public boolean checkDoorState(){
         Cabinet cabinet = getCabinet();
         if(cabinet == null){
+            ToastUtils.showLong(this,R.string.cabinet_off_line);
             return false;
         }
         if(cabinet.doorLock == 0){
-            ToastUtils.showLong(this,R.string.cabinet_waring_e0_content);
+            ToastUtils.showLong(this,R.string.cabinet_waring_e1_content);
             return false;
         }
         return true;

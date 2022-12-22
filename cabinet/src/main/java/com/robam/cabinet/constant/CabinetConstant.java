@@ -26,6 +26,10 @@ CabinetConstant {
      */
     public final static String REMAINING_APPOINT_TIME = "remaining_appoint_time";
     /**
+     * 预约设定时间
+     */
+    public final static String REMAINING_APPOINT_SET_TIME = "remaining_appoint_set_time";
+    /**
      * 工作设定时间
      */
     public final static String WORK_SETTING_TIME = "work_setting_time";

@@ -4,8 +4,8 @@ import com.robam.cabinet.R;
 
 public enum CabinetWaringEnum {
     //主模式
-    E0(Constant.DEVICE_WARING_E0,"",R.string.cabinet_waring_e0_title,R.string.cabinet_waring_e0_content),
-    E1(Constant.DEVICE_WARING_E1,"",R.string.cabinet_waring_e1_title ,R.string.cabinet_waring_e1_content),
+    E0(Constant.DEVICE_WARING_E0,"",R.string.cabinet_waring_e1_title,R.string.cabinet_waring_e1_content),
+    E1(Constant.DEVICE_WARING_E1,"",R.string.cabinet_waring_e3_title ,R.string.cabinet_waring_e3_content),
     E3(Constant.DEVICE_WARING_E2,"",R.string.cabinet_waring_e2_title,R.string.cabinet_waring_e2_content),
     E5(Constant.DEVICE_WARING_E5,"",R.string.cabinet_waring_e5_title,R.string.cabinet_waring_e5_content),
     E6(Constant.DEVICE_WARING_E6,"",R.string.cabinet_waring_e6_title,R.string.cabinet_waring_e6_content),

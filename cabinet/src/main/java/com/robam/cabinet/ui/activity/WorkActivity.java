@@ -15,10 +15,8 @@ import com.robam.cabinet.constant.CabinetConstant;
 import com.robam.cabinet.constant.CabinetEnum;
 import com.robam.cabinet.constant.Constant;
 import com.robam.cabinet.constant.DialogConstant;
-import com.robam.cabinet.constant.EventConstant;
 import com.robam.cabinet.device.HomeCabinet;
 import com.robam.cabinet.factory.CabinetDialogFactory;
-import com.robam.cabinet.ui.dialog.WorkCompleteDialog;
 import com.robam.cabinet.util.CabinetCommonHelper;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
@@ -27,7 +25,6 @@ import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.MCountdownView;
 import com.robam.common.utils.DateUtil;
-import com.robam.common.utils.TimeUtils;
 import java.util.Map;
 
 /**
@@ -51,7 +48,9 @@ public class WorkActivity extends CabinetBaseActivity {
     private boolean workFinish = false;
 
     private WorkModeBean workModeBean;
-    //private int workModeCode;
+    private int workModeCode;
+    private static int FINISH_DIALOG_MIN_TIME = 3 * 60 * 1000;
+
 
 
     @Override
@@ -87,27 +86,25 @@ public class WorkActivity extends CabinetBaseActivity {
                         case CabinetConstant.FUN_FLUSH:
                         case CabinetConstant.FUN_SMART:
                         case CabinetConstant.FUN_WARING:
+                            if(finishDialog != null && finishDialog.isShow() &&
+                                    System.currentTimeMillis() - showFinishTimeMil >= FINISH_DIALOG_MIN_TIME){
+                                dismissFinishDialog();
+                            }
                             if(cabinet.remainingModeWorkTime > 0){
-                                if(workFinish){
-                                    if(iDialog != null && iDialog.isShow()){
-                                        iDialog.dismiss();
-                                    }
-                                    workFinish = false;
+                                if(cabinet.workMode != 0){
+                                    workModeCode = cabinet.workMode;
                                 }
                                 tvMode.setText(CabinetEnum.match(cabinet.workMode));
                                 updateWorkTime(cabinet.remainingModeWorkTime);
                             }else{
-                                if(!workFinish){
-                                    workFinish = true;
-                                    //workFinish();
-                                    workComplete();
-                                }
+                                toComplete(workModeCode);
                             }
                             break;
                         default:
-                            if(!workFinish){
+                            goHome();
+                            /*if(!workFinish){
                                 goHome();
-                            }
+                            }*/
                             break;
                     }
 
@@ -115,13 +112,10 @@ public class WorkActivity extends CabinetBaseActivity {
                 }
             }
         });
-
-        /*MqttDirective.getInstance().getDirective().observe(this, s->{
-            if(s != EventConstant.WARING_CODE_NONE){
-                showWaring(s);
-            }
-        });*/
     }
+
+
+
 
     @Override
     protected void initData() {
@@ -131,6 +125,12 @@ public class WorkActivity extends CabinetBaseActivity {
         //工作时长
         updateWorkTime(workModeBean.modelSurplusTime);
         //setCountDownTime();
+    }
+
+    private void toComplete(int modeCode){
+        Intent intent = new Intent(this,CompleteActivity.class);
+        intent.putExtra(Constant.MODE_CODE,modeCode);
+        startActivity(intent);
     }
 
     /**
@@ -236,14 +236,17 @@ public class WorkActivity extends CabinetBaseActivity {
         }
     }
 
+    private IDialog finishDialog;
+    private long showFinishTimeMil;
     /**
      * 展示主动结束弹窗
      */
     private void workStop() {
         //工作结束提示
-        IDialog iDialog = CabinetDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_WORK_STOP);
-        iDialog.setCancelable(false);
-        iDialog.setListeners(v -> {
+        showFinishTimeMil = System.currentTimeMillis();
+        finishDialog = CabinetDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_WORK_STOP);
+        finishDialog.setCancelable(false);
+        finishDialog.setListeners(v -> {
             //结束工作
             if (v.getId() == R.id.tv_ok) {
                 Map map = CabinetCommonHelper.getCommonMap(MsgKeys.SetSteriPowerOnOff_Req);
@@ -254,7 +257,7 @@ public class WorkActivity extends CabinetBaseActivity {
                 CabinetCommonHelper.sendCommonMsg(map);
             }
         }, R.id.tv_cancel, R.id.tv_ok);
-        iDialog.show();
+        finishDialog.show();
     }
 
 
@@ -282,8 +285,19 @@ public class WorkActivity extends CabinetBaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //tvCountdown.stop();
+       this.dismissFinishDialog();
     }
+
+
+    private void dismissFinishDialog(){
+        if(finishDialog != null && finishDialog.isShow()){
+            finishDialog.dismiss();
+            finishDialog = null;
+        }
+    }
+
+
+
 
 
 }

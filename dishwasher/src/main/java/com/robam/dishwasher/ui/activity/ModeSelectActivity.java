@@ -298,7 +298,7 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
             startActivityForResult(intent,DishWasherConstant.APPOINTMENT_CODE);
         } else if (id == R.id.btn_start) {
             if(ClickUtils.isFastClick()){
-                ToastUtils.showLong(this,"被重复点击了");
+                //ToastUtils.showLong(this,"被重复点击了");
                 return;//防止快速重复点击
             }
             startWork();

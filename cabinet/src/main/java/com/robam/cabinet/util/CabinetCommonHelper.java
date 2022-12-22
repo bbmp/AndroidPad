@@ -66,7 +66,7 @@ public class CabinetCommonHelper {
         //TODO(若不加，设备无法正常获取预约时间，待设备方查找问题，暂时先设置上)
         map.put(CabinetConstant.warmDishKey,1);
         map.put(CabinetConstant.warmDishLength,1);
-        map.put(CabinetConstant.warmDishTempValue,35);
+        map.put(CabinetConstant.warmDishTempValue,0);
 
         //预约时间
         map.put(CabinetConstant.Key,2);//附加参数 - 预约放在附加参数中

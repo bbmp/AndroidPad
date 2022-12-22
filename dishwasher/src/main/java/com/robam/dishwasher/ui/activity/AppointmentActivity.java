@@ -343,7 +343,7 @@ public class AppointmentActivity extends DishWasherBaseActivity {
         String hour = mHourAdapter.getItem(mHourManager.getPickedPosition());
         String minute = mMinuteAdapter.getItem(mMinuteManager.getPickedPosition());
         orderTime = hour + ":" + minute;
-        if (DateUtil.compareTime(DateUtil.getCurrentTime(DateUtil.PATTERN), orderTime, DateUtil.PATTERN) == 1) {
+        if (DateUtil.compareTime(DateUtil.getCurrentTime(DateUtil.PATTERN), orderTime, DateUtil.PATTERN) >= 0) {
             tvTime.setText(String.format(getString(R.string.dishwasher_work_order_hint2), orderTime ));
         } else {
             tvTime.setText(String.format(getString(R.string.dishwasher_work_order_hint3), orderTime ));

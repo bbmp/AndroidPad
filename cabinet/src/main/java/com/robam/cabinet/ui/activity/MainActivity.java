@@ -96,7 +96,7 @@ public class MainActivity extends CabinetBaseActivity {
             intent.putExtra(Constant.EXTRA_MODE_BEAN,workModeBean);
             startActivity(intent);
         }else if(cabinet.remainingAppointTime > 0){//预约 每次结束后，都有一段时间预约时间是1380，需与设备端一起排查问题
-            WorkModeBean workModeBean = new WorkModeBean(cabinet.workMode, cabinet.remainingModeWorkTime,cabinet.modeWorkTime);
+            WorkModeBean workModeBean = new WorkModeBean(cabinet.workMode, cabinet.remainingAppointTime,cabinet.modeWorkTime);
             Intent intent = new Intent(this,AppointingActivity.class);
             intent.putExtra(Constant.EXTRA_MODE_BEAN,workModeBean);
             startActivity(intent);
