@@ -8,6 +8,7 @@ import com.robam.common.mqtt.IProtocol;
 public interface IPublicStoveApi extends IPublicApi {
     String STOVE_HOME = "com.robam.stove.ui.activity.MainActivity";
     String STOVE_PUBLIC = "com.robam.stove.device.StoveFactory";
+    String STOVE_WARNING = "com.robam.stove.ui.activity.WarningActivity";
 
     int STOVE_LEFT = 0;
     int STOVE_RIGHT = 1;

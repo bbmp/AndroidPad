@@ -55,4 +55,16 @@
     <string name="stove_stove_offline">智能灶已离线</string>
     <string name="stove_offline">智能灶已离线</string>
     <string name="stove_pan_working">智能锅工作中</string>
+    <string name="stove_maintain_phone">维修电话：658889789</string>
+    <string name="stove_warning_e1_title">报警信息</string>
+    <string name="stove_warning_e1_content">点火失败</string>
+    <string name="stove_warning_e2_content">意外熄火</string>
+    <string name="stove_warning_e3_content">电磁阀异常</string>
+    <string name="stove_warning_e4_content">霍尔电路异常</string>
+    <string name="stove_warning_e5_content">热电偶异常</string>
+    <string name="stove_warning_e6_content">传感器异常</string>
+    <string name="stove_warning_e7_content">防干烧</string>
+    <string name="stove_warning_e8_content">通讯异常</string>
+    <string name="stove_warning_e9_content">点火板通讯异常</string>
+    <string name="stove_warning_e10_content">明火自动翻炒锅掉线</string>
 </resources>

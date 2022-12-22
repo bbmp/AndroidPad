@@ -16,6 +16,16 @@
         app:layout_constraintBottom_toTopOf="@id/tv_recipe"
         app:layout_constraintVertical_chainStyle="packed"/>
     <ImageView
+        android:id="@+id/iv_add"
+        android:layout_width="@dimen/dp_114"
+        android:layout_height="@dimen/dp_114"
+        app:layout_constraintLeft_toLeftOf="@id/iv_recipe"
+        app:layout_constraintRight_toRightOf="@id/iv_recipe"
+        app:layout_constraintTop_toTopOf="@id/iv_recipe"
+        app:layout_constraintBottom_toBottomOf="@id/iv_recipe"
+        android:visibility="gone"
+        android:src="@drawable/pan_add"/>
+    <ImageView
         android:id="@+id/iv_select"
         android:layout_width="@dimen/dp_38"
         android:layout_height="@dimen/dp_38"

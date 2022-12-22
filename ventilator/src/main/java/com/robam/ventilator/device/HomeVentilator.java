@@ -201,6 +201,10 @@ public class HomeVentilator {
      */
     public byte beep = 0x00;
     /**
+     *  byte9 报警信息
+     */
+    public byte alarm = 0x00;
+    /**
      * byte10 风门挡板
      */
     public byte baffle = (byte) 0xA0;

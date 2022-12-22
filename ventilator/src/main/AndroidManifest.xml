@@ -12,6 +12,11 @@
 
     <application>
         <activity
+            android:name=".ui.activity.WarningActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:launchMode="singleTop"/>
+        <activity
             android:name=".ui.activity.AddDeviceActivity"
             android:exported="false"
             android:screenOrientation="landscape" />
