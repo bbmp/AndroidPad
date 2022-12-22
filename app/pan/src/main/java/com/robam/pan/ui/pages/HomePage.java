@@ -99,7 +99,7 @@ public class HomePage extends PanBasePage {
             @Override
             public void onChanged(String s) {
                 for (Device device: AccountInfo.getInstance().deviceList) {
-                    if (device.guid.equals(s) && device instanceof Pan && IDeviceType.RZNG.equals(device.dc) && device.guid.equals(HomePan.getInstance().guid)) { //当前锅
+                    if (null != device.guid && device.guid.equals(s) && device instanceof Pan && IDeviceType.RZNG.equals(device.dc) && device.guid.equals(HomePan.getInstance().guid)) { //当前锅
                         Pan pan = (Pan) device;
                         if (pan.fryMode == PanConstant.MODE_QUICK_FRY) {
                             llQuick.setSelected(true);

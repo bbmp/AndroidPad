@@ -64,4 +64,8 @@
     <string name="pan_pan_offline">智能锅已离线</string>
     <string name="pan_connect_failed">网络连接失败</string>
     <string name="pan_pan_working">智能锅工作中</string>
+    <string name="pan_maintain_phone">维修电话：658889789</string>
+    <string name="pan_warning_e1_title">报警信息</string>
+    <string name="pan_warning_e4_content">温度传感器故障</string>
+    <string name="pan_warning_e5_content">电机故障</string>
 </resources>

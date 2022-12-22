@@ -65,4 +65,5 @@ public class PanConstant {
     public final static String key = "key";//
     public final static String value = "value";
     public final static String fanpan = "fan_pan";//烟锅联动状态
+
 }

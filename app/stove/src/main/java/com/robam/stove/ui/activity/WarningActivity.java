@@ -2,7 +2,6 @@ package com.robam.stove.ui.activity;
 
 import android.os.Bundle;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -11,11 +10,10 @@ import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.constant.ComnConstant;
+import com.robam.common.constant.StoveConstant;
 import com.robam.common.device.subdevice.Stove;
 import com.robam.common.ui.activity.BaseActivity;
 import com.robam.stove.R;
-import com.robam.stove.base.StoveBaseActivity;
-import com.robam.stove.constant.StoveConstant;
 import com.robam.stove.constant.StoveWarningEnum;
 import com.robam.stove.device.HomeStove;
 import com.robam.stove.manager.StoveActivityManager;
@@ -31,7 +29,7 @@ public class WarningActivity extends BaseActivity { //锁屏不处理
 
     @Override
     protected int getLayoutId() {
-        return R.layout.stove_activity_layout_waring;
+        return R.layout.stove_activity_layout_warning;
     }
 
     @Override

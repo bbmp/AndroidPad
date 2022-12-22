@@ -1,5 +1,6 @@
 package com.robam.stove.constant;
 
+import com.robam.common.constant.StoveConstant;
 import com.robam.stove.R;
 
 public enum StoveWarningEnum {
