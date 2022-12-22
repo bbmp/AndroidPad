@@ -138,7 +138,6 @@
         <entry key="..\:/AndroidProjects/AndroidPad/cabinet/src/main/res/layout/cabinet_activity_layout_appoint_ment.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/cabinet/src/main/res/layout/cabinet_activity_layout_appointing.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/cabinet/src/main/res/layout/cabinet_activity_layout_appointment.xml" value="0.1" />
-        <entry key="..\:/AndroidProjects/AndroidPad/cabinet/src/main/res/layout/cabinet_activity_layout_cruise.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/AndroidPad/cabinet/src/main/res/layout/cabinet_activity_layout_disinfect.xml" value="0.11788194444444444" />
         <entry key="..\:/AndroidProjects/AndroidPad/cabinet/src/main/res/layout/cabinet_activity_layout_main.xml" value="0.10208333333333333" />
         <entry key="..\:/AndroidProjects/AndroidPad/cabinet/src/main/res/layout/cabinet_activity_layout_modeselect.xml" value="0.1" />
@@ -582,10 +581,13 @@
         <entry key="..\:/code/AndroidPad/app/pan/src/main/res/layout/pan_page_layout_home.xml" value="0.231722958529286" />
         <entry key="..\:/code/AndroidPad/app/src/main/res/layout/activity_main.xml" value="0.2989583333333333" />
         <entry key="..\:/code/AndroidPad/app/stove/src/main/res/layout/stove_activity_layout_recipe.xml" value="0.3142368533561351" />
+        <entry key="..\:/code/AndroidPad/app/stove/src/main/res/layout/stove_page_layout_home.xml" value="0.31765711842667804" />
         <entry key="..\:/code/AndroidPad/cabinet/src/main/res/layout/cabinet_activity_layout_appointing.xml" value="0.23685335613510047" />
         <entry key="..\:/code/AndroidPad/cabinet/src/main/res/layout/cabinet_activity_layout_appointment.xml" value="0.23685335613510047" />
         <entry key="..\:/code/AndroidPad/cabinet/src/main/res/layout/cabinet_activity_layout_cruise.xml" value="0.3142368533561351" />
-        <entry key="..\:/code/AndroidPad/cabinet/src/main/res/layout/cabinet_page_layout_home.xml" value="0.22282608695652173" />
+        <entry key="..\:/code/AndroidPad/cabinet/src/main/res/layout/cabinet_item_main_function.xml" value="0.271483539974348" />
+        <entry key="..\:/code/AndroidPad/cabinet/src/main/res/layout/cabinet_layout_work_complete.xml" value="0.1576923076923077" />
+        <entry key="..\:/code/AndroidPad/cabinet/src/main/res/layout/cabinet_page_layout_home.xml" value="0.1" />
         <entry key="..\:/code/AndroidPad/cabinet/src/main/res/layout/cabinet_picker_item.xml" value="0.23685335613510047" />
         <entry key="..\:/code/AndroidPad/cabinet/src/main/res/layout/cabinet_view_layout_title.xml" value="0.22282608695652173" />
         <entry key="..\:/code/AndroidPad/dishwasher/src/main/res/drawable/dishwasher_main_item_bg.xml" value="0.2965" />
@@ -595,9 +597,13 @@
         <entry key="..\:/code/AndroidPad/dishwasher/src/main/res/drawable/dishwasher_shape_button_bg_ok.xml" value="0.2965" />
         <entry key="..\:/code/AndroidPad/dishwasher/src/main/res/layout/dishwasher_activity_layout_appointing.xml" value="0.23086789226165028" />
         <entry key="..\:/code/AndroidPad/dishwasher/src/main/res/layout/dishwasher_activity_layout_appointment.xml" value="0.23086789226165028" />
+        <entry key="..\:/code/AndroidPad/dishwasher/src/main/res/layout/dishwasher_activity_layout_complete.xml" value="0.11011282908483076" />
         <entry key="..\:/code/AndroidPad/dishwasher/src/main/res/layout/dishwasher_activity_layout_main.xml" value="0.31765711842667804" />
+        <entry key="..\:/code/AndroidPad/dishwasher/src/main/res/layout/dishwasher_activity_layout_waring.xml" value="0.31765711842667804" />
         <entry key="..\:/code/AndroidPad/dishwasher/src/main/res/layout/dishwasher_activity_layout_work.xml" value="0.3142368533561351" />
         <entry key="..\:/code/AndroidPad/dishwasher/src/main/res/layout/dishwasher_activity_mode_select.xml" value="0.26934587430525864" />
+        <entry key="..\:/code/AndroidPad/dishwasher/src/main/res/layout/dishwasher_dialog_layout_common.xml" value="0.31765711842667804" />
+        <entry key="..\:/code/AndroidPad/dishwasher/src/main/res/layout/dishwasher_item_main_mode.xml" value="0.31765711842667804" />
         <entry key="..\:/code/AndroidPad/dishwasher/src/main/res/layout/dishwasher_page_layout_home.xml" value="0.17229585292860197" />
         <entry key="..\:/code/AndroidPad/dishwasher/src/main/res/layout/dishwasher_view_layout_title.xml" value="0.2479692176143651" />
         <entry key="..\:/code/AndroidPad/steam/src/main/res/drawable-xxhdpi/steam_ic_launcher_foreground.xml" value="0.2415" />
@@ -671,7 +677,7 @@
   <component name="VisualizationToolProject">
     <option name="state">
       <ProjectState>
-        <option name="scale" value="0.1" />
+        <option name="scale" value="0.3142368533561351" />
       </ProjectState>
     </option>
   </component>
