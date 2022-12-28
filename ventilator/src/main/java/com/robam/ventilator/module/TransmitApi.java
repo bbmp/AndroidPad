@@ -6,6 +6,7 @@ import androidx.core.util.Preconditions;
 
 import com.robam.cabinet.bean.Cabinet;
 import com.robam.cabinet.device.CabinetFactory;
+import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.RTopic;
@@ -49,9 +50,9 @@ public class TransmitApi implements IProtocol {
                     // data params
                     if (device instanceof SteamOven)
                         return SteamFactory.getProtocol().encode(msg);
-                    else if (device instanceof Stove)
+                    else if (device instanceof Stove && IDeviceType.RRQZ.equals(device.dc))
                         return StoveFactory.getProtocol().encode(msg);
-                    else if (device instanceof Pan)
+                    else if (device instanceof Pan && IDeviceType.RZNG.equals(device.dc))
                         return PanFactory.getProtocol().encode(msg);
                     else if (device instanceof DishWasher)
                         return DishWasherFactory.getProtocol().encode(msg);
@@ -95,12 +96,12 @@ public class TransmitApi implements IProtocol {
                             AccountInfo.getInstance().getGuid().setValue(device.guid);  //更新设备状态
 
                         return msg;
-                    } else if (device instanceof Stove) {
+                    } else if (device instanceof Stove && IDeviceType.RRQZ.equals(device.dc)) {
                         msg = StoveFactory.getProtocol().decode(topic, payload);
                         //
                         device.onMsgReceived(msg);
                         return msg;
-                    } else if (device instanceof Pan) {
+                    } else if (device instanceof Pan && IDeviceType.RZNG.equals(device.dc)) {
                         msg = PanFactory.getProtocol().decode(topic, payload);
                         device.onMsgReceived(msg);
                         return msg;

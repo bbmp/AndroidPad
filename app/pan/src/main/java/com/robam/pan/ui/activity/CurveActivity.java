@@ -314,7 +314,7 @@ public class CurveActivity extends PanBaseActivity {
             //确认删除
             delete();
             //设置非删除状态
-            if (panCurveDetails.size() <= 1)
+            if (panCurveDetails.size() < 1)
                 hideRight();
             tvRight.setText(R.string.pan_delete);
             ivRight.setImageResource(R.drawable.pan_delete);

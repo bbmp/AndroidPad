@@ -90,7 +90,7 @@ public class CurveSaveActivity extends StoveBaseActivity {
 
                     @Override
                     public void onSuccess(BaseResponse baseResponse) {
-                        ToastUtils.showShort(CurveSaveActivity.this, R.string.stove_save_success);
+                        ToastUtils.showShort(getApplicationContext(), R.string.stove_save_success);
                     }
 
                     @Override

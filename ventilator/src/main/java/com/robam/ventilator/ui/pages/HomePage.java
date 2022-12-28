@@ -28,6 +28,7 @@ import com.robam.common.IDeviceType;
 import com.robam.common.bean.BaseResponse;
 import com.robam.common.bean.DeviceErrorInfo;
 import com.robam.common.constant.ComnConstant;
+import com.robam.common.constant.PanConstant;
 import com.robam.common.constant.StoveConstant;
 import com.robam.common.device.Plat;
 import com.robam.common.manager.BlueToothManager;
@@ -413,11 +414,7 @@ public class HomePage extends VentilatorBasePage {
                             SteamAbstractControl.getInstance().pauseWork(device.guid);
                         else if (steamOven.workStatus == 5 || steamOven.workStatus == 3)  //暂停中
                             SteamAbstractControl.getInstance().continueWork(device.guid);
-                    } else if (device instanceof Pan && IDeviceType.RZNG.equals(device.dc)) {
-                        Pan pan = (Pan) device;
-                        if (pan.sysytemStatus == 3 && null != iPublicPanApi) //电量不足
-                            iPublicPanApi.lowBatteryHint(getContext());
-                    }else if(device instanceof DishWasher){
+                    } else if(device instanceof DishWasher){
                         DishWasher dishWasher = (DishWasher) device;
                         if (dishWasher.workStatus == 2)   //工作中和预热中
                             DishWasherAbstractControl.getInstance().pauseWork(device.guid);
@@ -488,13 +485,13 @@ public class HomePage extends VentilatorBasePage {
                     }
 //                    return;
                     //检查报警信息
-                    if (HomeVentilator.getInstance().isStartUp() && !HomeVentilator.getInstance().isLock()) {
-                        if (HomeVentilator.getInstance().alarm != 0x00) {
-                            Intent intent = new Intent();
-                            intent.setClass(getContext(), WarningActivity.class);
-                            startActivity(intent);
-                        }
-                    }
+//                    if (HomeVentilator.getInstance().isStartUp() && !HomeVentilator.getInstance().isLock()) {
+//                        if (HomeVentilator.getInstance().alarm != 0x00) {
+//                            Intent intent = new Intent();
+//                            intent.setClass(getContext(), WarningActivity.class);
+//                            startActivity(intent);
+//                        }
+//                    }
                 }
 
                 //找不到设备
@@ -831,6 +828,17 @@ public class HomePage extends VentilatorBasePage {
                 Intent intent = new Intent();
                 intent.putExtra(ComnConstant.EXTRA_GUID, device.guid); //传入启动设备
                 intent.setClassName(getContext(), IPublicStoveApi.STOVE_WARNING);
+                startActivity(intent);
+                return true;
+            }
+        } else if (device instanceof Pan && IDeviceType.RZNG.equals(device.dc)) {
+            if (((Pan) device).sysytemStatus == PanConstant.WORK_3 && null != iPublicPanApi) { //电量不足
+                iPublicPanApi.lowBatteryHint(getContext());
+                return true;
+            } else if (((Pan) device).sysytemStatus == PanConstant.WORK_4 || ((Pan) device).sysytemStatus == PanConstant.WORK_5) {
+                Intent intent = new Intent();
+                intent.putExtra(ComnConstant.EXTRA_GUID, device.guid); //传入启动设备
+                intent.setClassName(getContext(), IPublicPanApi.PAN_WARNING);
                 startActivity(intent);
                 return true;
             }

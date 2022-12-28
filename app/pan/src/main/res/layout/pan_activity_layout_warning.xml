@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/pan_ic_bg"
+    tools:context=".ui.activity.WarningActivity">
+
+    <include
+        android:id="@+id/ll_title"
+        layout="@layout/pan_view_layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/waring_ic"
+        android:src="@drawable/pan_icon_error"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/waring_title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        android:layout_marginTop="@dimen/dp_5"
+        android:layout_width="@dimen/dp_114"
+        android:layout_height="@dimen/dp_114"/>
+
+    <TextView
+        android:id="@+id/waring_title"
+        android:layout_marginTop="@dimen/dp_20"
+        android:textSize="@dimen/sp_48"
+        android:textColor="@color/pan_mode"
+        app:layout_constraintTop_toBottomOf="@id/waring_ic"
+        app:layout_constraintBottom_toTopOf="@id/waring_desc"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/waring_desc"
+        android:layout_marginTop="@dimen/dp_36"
+        android:textSize="@dimen/sp_32"
+        android:textColor="@color/pan_mode"
+        app:layout_constraintTop_toBottomOf="@id/waring_title"
+        app:layout_constraintBottom_toTopOf="@id/waring_phone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/waring_phone"
+        android:layout_marginTop="@dimen/dp_36"
+        android:textSize="@dimen/sp_32"
+        android:text="@string/pan_maintain_phone"
+        android:textColor="@color/pan_mode"
+        app:layout_constraintTop_toBottomOf="@id/waring_desc"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

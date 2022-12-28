@@ -90,7 +90,7 @@ public class CurveRestoreActivity extends StoveBaseActivity {
             @Override
             public void onChanged(String s) {
                 for (Device device: AccountInfo.getInstance().deviceList) {
-                    if (device.guid.equals(s) && device.guid.equals(HomeStove.getInstance().guid) && device instanceof Stove
+                    if (null != device.guid && device.guid.equals(s) && device.guid.equals(HomeStove.getInstance().guid) && device instanceof Stove
                             && IDeviceType.RRQZ.equals(device.dc) && curTime > 0) { //当前灶且还原开始
                         Stove stove = (Stove) device;
                         //开火提示状态
@@ -105,7 +105,7 @@ public class CurveRestoreActivity extends StoveBaseActivity {
                         }
 
                         break;
-                    } else if (device.guid.equals(s) && device instanceof Pan && IDeviceType.RZNG.equals(device.dc) && curTime > 0) { //检查锅状态锅
+                    } else if (null != device.guid && device.guid.equals(s) && device instanceof Pan && IDeviceType.RZNG.equals(device.dc) && curTime > 0) { //检查锅状态锅
                         Pan pan = (Pan) device;
                         if (pan.status == Device.OFFLINE) { //锅已离线
 

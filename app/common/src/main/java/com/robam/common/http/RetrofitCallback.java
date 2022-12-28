@@ -8,3 +8,4 @@ public interface RetrofitCallback<T extends BaseResponse> {
 
     void onFaild(String err);
 }
+

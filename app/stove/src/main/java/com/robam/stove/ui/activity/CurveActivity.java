@@ -322,7 +322,7 @@ public class CurveActivity extends StoveBaseActivity {
             //确认删除
             delete();
             //设置非删除状态
-            if (stoveCurveDetails.size() <= 1)
+            if (stoveCurveDetails.size() < 1)
                 hideRight();
             tvRight.setText(R.string.stove_delete);
             ivRight.setImageResource(R.drawable.stove_delete);

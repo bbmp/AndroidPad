@@ -338,8 +338,16 @@ public class HomeVentilator {
         if (gear == (byte) 0xA0 && isLink) //联动关机 挡位未开
             return; //不响应
         if (gear == (byte) 0xA0 || !MMKVUtils.getDelayShutdown()) { //挡位没开或者延时关机关闭 立即关机
-            //关机
-            closeVentilator();
+            //联动关机
+            if (isLink) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        closeVentilator();
+                    }
+                }, 2000);
+            } else
+                closeVentilator();
             return;
         }
 

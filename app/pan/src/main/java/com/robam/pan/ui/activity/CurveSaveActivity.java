@@ -89,7 +89,7 @@ public class CurveSaveActivity extends PanBaseActivity {
 
                     @Override
                     public void onSuccess(BaseResponse baseResponse) {
-                        ToastUtils.showShort(CurveSaveActivity.this, R.string.pan_save_success);
+                        ToastUtils.showShort(getApplicationContext(), R.string.pan_save_success);
                     }
 
                     @Override
