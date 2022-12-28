@@ -167,9 +167,13 @@ public class ModelWorkActivity extends SteamBaseActivity {
         return recipeId != 0;
     }
 
+    private ImageView iconView;
+    private TextView tvView;
     private void setRotationView(boolean rotation){
-        ImageView iconView = findViewById(R.id.iv_left_center);
-        TextView tvView = findViewById(R.id.tv_left_center);
+        if(iconView == null){
+            iconView = findViewById(R.id.iv_left_center);
+            tvView = findViewById(R.id.tv_left_center);
+        }
         if(iconView == null || tvView == null){
             return;
         }

@@ -10,8 +10,8 @@
     <string name="cabinet_work_order_hint2">次日 %s</string>
     <string name="cabinet_work_order_hint3">今日 %s</string>
     <string name="cabinet_cancel">取消</string>
-    <string name="cabinet_stop">结束</string>
-    <string name="cabinet_work_stop_hint">确认结束当前工作？</string>
+    <string name="cabinet_stop">结束工作</string>
+    <string name="cabinet_work_stop_hint">确认结束当前工作</string>
     <string name="cabinet_complete">完成</string>
     <string name="cabinet_screen_lock_hint">屏幕已锁定，长按本图标进行解锁</string>
     <string name="cabinet_screen_lock">童锁</string>
@@ -35,4 +35,8 @@
     <string name="cabinet_power_off">设备已关机</string>
     <string name="cabinet_work_complete">消毒完成</string>
     <string name="cabinet_start_appoint">开始预约</string>
+    <string name="cabinet_waring_prompt">设备异常，暂不能使用童锁功能</string>
+    <string name="cabinet_match_hint8">1.开启消毒柜。 \n2.在消毒柜上登录当前ROKI账户。 \n完成上述操作后点击下一步。</string>
+    <string name="cabinet_next_step">下一步</string>
+    <string name="cabinet_ok">确定</string>
 </resources>

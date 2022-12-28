@@ -9,10 +9,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
-
 import com.robam.cabinet.R;
 import com.robam.cabinet.bean.Cabinet;
 import com.robam.cabinet.constant.CabinetConstant;
@@ -22,6 +20,7 @@ import com.robam.cabinet.constant.EventConstant;
 import com.robam.cabinet.device.HomeCabinet;
 import com.robam.cabinet.manager.CabinetActivityManager;
 import com.robam.cabinet.ui.activity.MainActivity;
+import com.robam.cabinet.ui.activity.MatchNetworkActivity;
 import com.robam.cabinet.ui.activity.WaringActivity;
 import com.robam.cabinet.ui.dialog.LockDialog;
 import com.robam.cabinet.util.CabinetCommonHelper;
@@ -33,8 +32,9 @@ import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.utils.ClickUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ToastUtils;
-
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public abstract class CabinetBaseActivity extends BaseActivity {
     private IDialog ilockDialog;
@@ -81,10 +81,17 @@ public abstract class CabinetBaseActivity extends BaseActivity {
             if(isPowerOff()){
                 return;
             }
-            if(lock){//本身是锁状态
+            if(isWaring()) {
                 return;
             }
-            LogUtils.i("rightCenter  onClick timeDevider ....."+(System.currentTimeMillis() - touchDownTimeMil));
+            if(lock){//本身是锁状态
+                if(touchDownTimeMil != 0 && System.currentTimeMillis() - touchDownTimeMil > 1000){
+                    touchDownTimeMil = System.currentTimeMillis();
+                    ToastUtils.showShort(getContext(), R.string.cabinet_unlock_hint);
+                }
+                return;
+            }
+            LogUtils.i("rightCenter  onClick timeSpacing ....."+(System.currentTimeMillis() - touchDownTimeMil));
             if(touchDownTimeMil != 0 && System.currentTimeMillis() - touchDownTimeMil > 1000){
                 touchDownTimeMil = System.currentTimeMillis();
                 return;
@@ -121,6 +128,20 @@ public abstract class CabinetBaseActivity extends BaseActivity {
         }
         return false;
     }
+
+    private boolean isWaring(){
+        Cabinet cabinet = getCabinet();
+        if(cabinet == null){
+            return true;
+        }
+        int waringCode = cabinet.faultId;
+        if(waringCode != CabinetWaringEnum.E255.getCode() && CabinetWaringEnum.match(waringCode).getCode() != CabinetWaringEnum.E255.getCode()){{
+            ToastUtils.showLong(this,R.string.cabinet_waring_prompt);
+            return true;
+        }}
+        return false;
+    }
+
 
     public void setRight(int res) {
         findViewById(R.id.ll_right).setVisibility(View.VISIBLE);
@@ -186,6 +207,9 @@ public abstract class CabinetBaseActivity extends BaseActivity {
     private long touchDownTimeMil;
     private final Runnable unLockRunnable = () -> {
         if(isPowerOff()){
+            return;
+        }
+        if(isWaring()) {
             return;
         }
         LogUtils.i("rightCenter unLockRunnable .....");
@@ -325,6 +349,51 @@ public abstract class CabinetBaseActivity extends BaseActivity {
         return true;
     }
 
+    /**
+     * 调整到离线页面
+     * @return
+     */
+    public boolean toOffLinePage(Cabinet cabinet){
+        if(cabinet == null || cabinet.status == Device.OFFLINE){
+            Intent intent = new Intent();
+            intent.setClass(getContext(), MatchNetworkActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return false;
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //startDeviceStateTask();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        //stopDeviceStateTask();
+    }
+
+//    private Timer timer;
+//    protected void startDeviceStateTask(){
+//        if(timer != null){
+//            timer.cancel();
+//        }
+//        timer  = new Timer();
+//        timer.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                Cabinet cabinet = getCabinet();
+//                toOffLinePage(cabinet);
+//            }
+//        },1000,5000);
+//    }
+//
+//    public void stopDeviceStateTask(){
+//        if(timer != null){
+//            timer.cancel();
+//        }
+//    }
 
 }

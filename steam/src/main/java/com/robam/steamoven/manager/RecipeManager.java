@@ -1,6 +1,8 @@
 package com.robam.steamoven.manager;
 
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.robam.common.utils.StringUtils;
 import com.robam.steamoven.bean.DeviceConfigurationFunctions;
@@ -8,6 +10,10 @@ import com.robam.steamoven.bean.OtherFunc;
 import com.robam.steamoven.bean.SubViewModelMapSubView;
 import com.robam.steamoven.response.GetDeviceParamsRes;
 import com.robam.steamoven.utils.SteamDataUtil;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -66,7 +72,19 @@ public class RecipeManager {
                 SubViewModelMapSubView subViewModelMapSubView = deviceConfigurationFunctions.subView.modelMap.subView;
                 if (null != subViewModelMapSubView && null != subViewModelMapSubView.deviceConfigurationFunctions) {
                     for (DeviceConfigurationFunctions recepItem : subViewModelMapSubView.deviceConfigurationFunctions) {
-                        map.put(recepItem.id,recepItem.functionName);
+                        String functionParams = recepItem.functionParams;
+                        if(StringUtils.isNotBlank(functionParams)){
+                            try {
+                                JSONObject object = new JSONObject(functionParams);
+                                JSONObject model = object.getJSONObject("model");
+                                String value = model.getString("value");
+                                map.put(Long.parseLong(value),recepItem.functionName);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }else{
+                            map.put(recepItem.id,recepItem.functionName);
+                        }
                     }
                 }
             }

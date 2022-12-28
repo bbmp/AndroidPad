@@ -57,11 +57,12 @@ public class HomePage extends DishWasherBasePage {
                 .setAlpha(false)
                 .setOnPickerListener((recyclerView, position) -> {
                     setBackground(position);
-                    //指示器更新
-                    rvMainModeAdapter.setPickPosition(position);
+
+                    //rvMainModeAdapter.setPickPosition(position);
                     //设置参数
                     DishWasherModeBean item = rvMainModeAdapter.getItem(position);
                     setData(item);
+                    //指示器更新
                     rvDotAdapter.setPickPosition(position);
                     rvMain.postDelayed(() -> {
                         group.setVisibility(View.VISIBLE);

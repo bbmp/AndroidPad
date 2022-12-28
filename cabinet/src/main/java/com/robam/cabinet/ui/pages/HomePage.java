@@ -60,7 +60,7 @@ public class HomePage extends CabinetBasePage {
                     setBackground(position);
                     //指示器更新
                     rvDotAdapter.setPickPosition(position);
-                    rvMainFunctionAdapter.setPickPosition(position);
+                    //rvMainFunctionAdapter.setPickPosition(position);
                 }).build();
         rvMain.setLayoutManager(pickerLayoutManager);
         rvDot.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));

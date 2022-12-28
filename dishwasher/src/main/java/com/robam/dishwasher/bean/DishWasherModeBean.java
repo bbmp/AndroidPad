@@ -40,6 +40,7 @@ public class DishWasherModeBean implements Serializable {
         modeBean.time = time;
         modeBean.auxCode = auxCode;
         modeBean.auxList = auxList;
+        modeBean.restTime = restTime;
         return modeBean;
     }
 

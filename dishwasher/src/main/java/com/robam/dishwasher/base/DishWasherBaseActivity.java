@@ -16,6 +16,7 @@ import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.activity.BaseActivity;
+import com.robam.common.utils.ClickUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.dishwasher.R;
@@ -108,6 +109,12 @@ public abstract class DishWasherBaseActivity extends BaseActivity {
         }
         rightCenter.setVisibility(View.VISIBLE);
         rightCenter.setOnClickListener(v -> {
+            if(ClickUtils.isFastClick()){
+                return;
+            }
+            if(lock){
+                return;
+            }
             DishWasher curDevice = getCurDevice();
             if(curDevice == null){
                 return ;
@@ -118,18 +125,9 @@ public abstract class DishWasherBaseActivity extends BaseActivity {
             }
             touchDownTimeMil = System.currentTimeMillis();
             DishWasherCommandHelper.sendCtrlLockCommand(true,LOCK_FLAG);
-            LogUtils.i("dispatchTouchEvent setOnClickListener runnable");
+            LogUtils.i("dispatchTouchEvent setOnClickListener");
             //setLock(true);
         });
-        /*rightCenter.setOnLongClickListener(v->{
-            DishWasher curDevice = getCurDevice();
-            if(curDevice == null){
-                return true;
-            }
-            DishWasherCommandHelper.sendCtrlLockCommand(false,LOCK_FLAG);
-            //setLock(false);
-            return true;
-        });*/
         View iconView = findViewById(R.id.iv_right_center);
         ((ImageView) iconView).setImageResource(HomeDishWasher.getInstance().lock ? R.drawable.dishwasher_screen_lock : R.drawable.dishwasher_screen_unlock);
     }
@@ -141,11 +139,14 @@ public abstract class DishWasherBaseActivity extends BaseActivity {
     private Handler unLockHandler = new Handler();
     private long touchDownTimeMil;
     private final Runnable unLockRunnable = () -> {
+        if(!lock){
+            return;
+        }
         DishWasher curDevice = getCurDevice();
         if(curDevice == null){
             return ;
         }
-        LogUtils.i("dispatchTouchEvent unLockRunnable runnable");
+        LogUtils.i("dispatchTouchEvent  runnable");
         DishWasherCommandHelper.sendCtrlLockCommand(false,LOCK_FLAG);
     };
 
@@ -163,7 +164,7 @@ public abstract class DishWasherBaseActivity extends BaseActivity {
                 int y = (int)ev.getY();
                 switch (ev.getAction()){
                     case MotionEvent.ACTION_DOWN:
-                        LogUtils.i("dispatchTouchEvent isTouchAble down");
+                        //LogUtils.i("dispatchTouchEvent isTouchAble down");
                         mLastMotionX = x;
                         mLastMotionY = y;
                         unLockHandler.postDelayed(unLockRunnable,2000);

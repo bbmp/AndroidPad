@@ -147,7 +147,8 @@ public enum SteamModeEnum {
                 modeCode == SteamModeEnum.FENGSHANKAO.getMode() ||
                 modeCode == SteamModeEnum.QIANGSHAOKAO.getMode() ||
                 modeCode == SteamModeEnum.SHAOKAO.getMode() ||
-                modeCode == SteamModeEnum.EXP.getMode()){
+                modeCode == SteamModeEnum.EXP.getMode() ||
+                modeCode == SteamModeEnum.KONGQIZHA.getMode()){
             return true;
         }
         return false;

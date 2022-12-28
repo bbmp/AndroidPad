@@ -79,6 +79,9 @@ public class WorkActivity extends CabinetBaseActivity {
                     if(toWaringPage(cabinet.faultId)){
                         return;
                     }
+                    if(toOffLinePage(cabinet)){
+                        return;
+                    }
                     switch (cabinet.workMode){
                         case CabinetConstant.FUN_DISINFECT:
                         case CabinetConstant.FUN_CLEAN:

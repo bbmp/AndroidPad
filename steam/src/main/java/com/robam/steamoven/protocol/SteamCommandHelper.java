@@ -27,7 +27,7 @@ import java.util.Map;
 public class SteamCommandHelper {
 
     private  long perOrderTimeMin = System.currentTimeMillis() ;
-    private  final float COMMON_DELAY_DUR = 2f * 1000 ;
+    private  final float COMMON_DELAY_DUR = 0.1f * 1000 ;
 
     private SteamCommandHelper(){
 
@@ -570,6 +570,10 @@ public class SteamCommandHelper {
                 ToastUtils.showLong(context, R.string.steam_working_prompt);
                 //return false;
             }
+        }
+        if(curDevice.powerState == SteamStateConstant.POWER_STATE_OFF){
+            ToastUtils.showLong(context, R.string.steam_power_off);
+            return false;
         }
         if(curDevice.doorState != 0){//门状态检测
             ToastUtils.showLong(context,R.string.steam_close_door_prompt);

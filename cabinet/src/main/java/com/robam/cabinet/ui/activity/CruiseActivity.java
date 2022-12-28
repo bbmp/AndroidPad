@@ -61,6 +61,9 @@ public class CruiseActivity extends CabinetBaseActivity {
                         goHome();
                         return;
                     }
+                    if(toOffLinePage(cabinet)){
+                        return;
+                    }
                     switch (cabinet.workMode){
                         case CabinetConstant.FUN_DISINFECT:
                         case CabinetConstant.FUN_CLEAN:

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.RelativeSizeSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -99,9 +100,9 @@ public class WorkActivity extends DishWasherBaseActivity {
                     if(toWaringPage(dishWasher.abnormalAlarmStatus)){
                         return;
                     }
-                    if(!DishWasherCommandHelper.getInstance().isSafe()){
-                        return;
-                    }
+//                    if(!DishWasherCommandHelper.getInstance().isSafe()){
+//                        return;
+//                    }
 //                    if(isWorkingFinish(dishWasher)){
 //                        finish();
 //                        return;
@@ -165,7 +166,7 @@ public class WorkActivity extends DishWasherBaseActivity {
             if(modeBean.time == 0){
                 progress = MAX_PROGRESS;
             }else{
-                progress = modeBean.restTime / modeBean.time * 100;
+                progress = modeBean.restTime * 1f / modeBean.time * 100;
             }
             if(progress > MAX_PROGRESS){
                 progress = MAX_PROGRESS;
@@ -175,7 +176,9 @@ public class WorkActivity extends DishWasherBaseActivity {
     }
 
     private void setModelTextState(int code){
-        if(DishWasherEnum.FLUSH.getCode() == code){//护婴净存
+        if(DishWasherEnum.FLUSH.getCode() == code ||
+                DishWasherEnum.AUTO_AERATION.getCode() == code ||
+                DishWasherEnum.LONG_STORAGE.getCode() == code){
             tvAirMode.setVisibility(View.INVISIBLE);
             tvAriTime.setVisibility(View.INVISIBLE);
             tvTime.setVisibility(View.VISIBLE);
@@ -186,7 +189,7 @@ public class WorkActivity extends DishWasherBaseActivity {
             tvModeCur.setVisibility(View.VISIBLE);
             tvModeCur.setText(R.string.dishwasher_aeration);
 
-        }else if(DishWasherEnum.AUTO_AERATION.getCode() == code ||
+        }else if(DishWasherEnum.AUTO_AERATION_AWAIT.getCode() == code ||
                 DishWasherEnum.FLUSH_AWAIT.getCode() == code ||
                 DishWasherEnum.LONG_STORAGE_AWAIT.getCode() == code){//换气等待
             tvAirMode.setVisibility(View.VISIBLE);
@@ -296,7 +299,7 @@ public class WorkActivity extends DishWasherBaseActivity {
         }else if(dishWasher.powerStatus == DishWasherState.PAUSE){
             tvDuration.setText(getSpan(dishWasher.remainingWorkingTime*60));
         }
-        if(DishWasherEnum.AUTO_AERATION.getCode() == dishWasher.workMode ||
+        if(DishWasherEnum.AUTO_AERATION_AWAIT.getCode() == dishWasher.workMode ||
                 DishWasherEnum.FLUSH_AWAIT.getCode() == dishWasher.workMode ||
                 DishWasherEnum.LONG_STORAGE_AWAIT.getCode() == dishWasher.workMode){//自动换气
             if(dishWasher.powerStatus == DishWasherState.WORKING){
@@ -305,16 +308,14 @@ public class WorkActivity extends DishWasherBaseActivity {
             return;
         }
         float progress = MAX_PROGRESS;
-        if(dishWasher.workMode == DishWasherConstant.MODE_FLUSH){//护婴净存/自动换气
+        if(dishWasher.workMode == DishWasherConstant.MODE_LONG_STORAGE ||
+                dishWasher.workMode == DishWasherConstant.MODE_AUTO_AERATION){//护婴净存/自动换气
             //获取分钟数
             int residueTimeM = dishWasher.remainingWorkingTime % 60;
             progress = residueTimeM / 60f * 100;
-        }else if(dishWasher.workMode == DishWasherConstant.MODE_AUTO_AERATION){
+        }else if(dishWasher.workMode == DishWasherConstant.MODE_LONG_STORAGE_AWAIT){
             return;
         }else{
-            /*if(modeBean.time != 0){
-                progress =  (dishWasher.remainingWorkingTime*60f/modeBean.time) * 100;
-            }*/
             if(dishWasher.SetWorkTimeValue != 0){
                 progress =  (dishWasher.remainingWorkingTime*1f/dishWasher.SetWorkTimeValue) * 100;
             }

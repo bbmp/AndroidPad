@@ -1170,7 +1170,7 @@
     <string name="steam_work_order_hint3">今日 %s</string>
     <string name="steam_appointment_time">预约启动时间</string>
     <string name="steam_ok_appointment">确认预约</string>
-    <string name="steam_mode_rotate">旋转</string>
+    <string name="steam_mode_rotate">旋转烤</string>
     <string name="steam_mode_stream">加湿中</string>
     <string name="steam_input_name">请填写曲线名称</string>
     <string name="steam_go_home">回到主页</string>
@@ -1188,6 +1188,8 @@
     <string name="steam_section_1">一段</string>
     <string name="steam_section_2">二段</string>
     <string name="steam_section_3">三段</string>
-    <string name="steam_temp_prompt">澎湃蒸不能调节温度</string>
+    <string name="steam_temp_prompt">澎湃蒸不需要调节温度</string>
+    <string name="steam_exp_pre_down">下</string>
+    <string name="steam_power_off">设备已关机</string>
 
 </resources>

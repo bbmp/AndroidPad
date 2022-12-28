@@ -3,6 +3,8 @@ package com.robam.cabinet.ui.activity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import android.content.Intent;
+import android.util.Log;
+
 import com.robam.cabinet.R;
 import com.robam.cabinet.base.CabinetBaseActivity;
 import com.robam.cabinet.bean.Cabinet;
@@ -52,9 +54,13 @@ public class MainActivity extends CabinetBaseActivity {
         AccountInfo.getInstance().getGuid().observe(this, s -> {
             for (Device device: AccountInfo.getInstance().deviceList) {
                 if (device.guid.equals(s) && device instanceof Cabinet && device.guid.equals(HomeCabinet.getInstance().guid)) { //当前锅
+                    Log.i("cabinet","msgArrive");
                     Cabinet cabinet = (Cabinet) device;
                     setLock(cabinet.isChildLock == 1);
                     if(!CabinetCommonHelper.isSafe()){
+                        return;
+                    }
+                    if(toOffLinePage(cabinet)){
                         return;
                     }
                     if(toWaringPage(cabinet.faultId)){
@@ -81,11 +87,6 @@ public class MainActivity extends CabinetBaseActivity {
                 }
             }
         });
-        /*MqttDirective.getInstance().getDirective().observe(this, s->{
-            if(s != EventConstant.WARING_CODE_NONE){
-                showWaring(s);
-            }
-        });*/
     }
 
     private void toWorkingPage(Cabinet cabinet) {

@@ -19,6 +19,7 @@ public class Cabinet extends Device{
         this.displayType = device.displayType;
         this.categoryName = device.categoryName;
         this.subDevices = device.subDevices;
+        this.name = device.name;
     }
 
     public Cabinet(String name, String dc, String displayType) {

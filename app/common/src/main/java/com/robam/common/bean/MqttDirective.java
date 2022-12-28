@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class MqttDirective {
 
-    private static final int MAX_WORK_TIME_OF_DURATION = 1000 * 60 * 10;//工作完成后，多长时间内显示完成状态
+    private static final int MAX_WORK_TIME_OF_DURATION = 1000 * 60 * 5;//工作完成后，多长时间内显示完成状态
     private static final int SAFE_UPDATE_INTERVAL = 1000 * 12;//安全更新时间 30秒
 
     public static final String STR_LIVE_DATA_FLAG = "&:&:&";//安全更新时间 30秒

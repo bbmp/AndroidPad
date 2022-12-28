@@ -20,6 +20,7 @@ public class DishWasher extends Device{
         this.displayType = device.displayType;
         this.categoryName = device.categoryName;
         this.subDevices = device.subDevices;
+        this.name = device.name;
     }
 
     public DishWasher(String name, String dc, String displayType) {

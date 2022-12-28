@@ -90,6 +90,10 @@ public class Device {
     @Expose
     public String int_guid;
 
+    //设备名称
+    @Expose
+    public String name;
+
     public Device() {
     }
     //带蓝牙的设备
@@ -128,5 +132,9 @@ public class Device {
     //更新设备参数用
     public boolean onMsgReceived(MqttMsg msg) {
         return false;
+    }
+
+    public String getName() {
+        return name;
     }
 }

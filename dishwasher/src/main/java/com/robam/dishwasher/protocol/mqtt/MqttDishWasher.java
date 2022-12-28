@@ -1,5 +1,7 @@
 package com.robam.dishwasher.protocol.mqtt;
 
+import android.util.Log;
+
 import com.robam.common.ITerminalType;
 import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MqttMsg;
@@ -27,6 +29,7 @@ public class MqttDishWasher extends MqttPublic {
                 //LogUtils.i("MqttDishWasher onDecodeMsg  guid : "+msg.getGuid());
                 MqttDirective.getInstance().setStrLiveDataValue(msg.getGuid(),msg.getID());
                 DishWasherAbstractControl.getInstance().queryAttribute(msg.getGuid());
+                //Log.i("startWork"," ReQuery" );
                 break;
             case MsgKeys.getDishWasherStatus:
                 short powerStatus =  ByteUtils.toShort(payload[offset++]);
@@ -53,7 +56,7 @@ public class MqttDishWasher extends MqttPublic {
                 short abnormalAlarmStatus = ByteUtils.toShort(payload[offset++]);
                 short ADD_AUX = ByteUtils.toShort(payload[payload.length - 1]);
                 short argument = ByteUtils.toShort(payload[offset++]);
-                LogUtils.i("MqttDishWasher dishWasherWorkMode  : "+dishWasherWorkMode);
+                //LogUtils.i("MqttDishWasher dishWasherWorkMode  : "+dishWasherWorkMode);
                 while (argument > 0) {
                     short argument_key = ByteUtils.toShort(payload[offset++]);
                     short arg_length = ByteUtils.toShort(payload[offset++]);
@@ -83,15 +86,15 @@ public class MqttDishWasher extends MqttPublic {
                             //offset++;
                             int value3 = ByteUtils.toShort(payload[offset++]);
                             msg.putOpt(DishWasherConstant.ADD_AUX,value3);
-                            LogUtils.i("MqttDishWasher onDecodeMsg 3 value : "+value3);
+                            //LogUtils.i("MqttDishWasher onDecodeMsg 3 value : "+value3);
                             break;
                         case 4:
                             int value4 = ByteUtils.toShort(payload[offset++]);
-                            LogUtils.i("MqttDishWasher onDecodeMsg 4 value : "+value4);
+                            //LogUtils.i("MqttDishWasher onDecodeMsg 4 value : "+value4);
                             break;
                         case 5:
                             int value5 = ByteUtils.toShort(payload[offset++]);
-                            LogUtils.i("MqttDishWasher onDecodeMsg 5 value : "+value5);
+                            //LogUtils.i("MqttDishWasher onDecodeMsg 5 value : "+value5);
                             break;
                         default:
                             offset += arg_length ;

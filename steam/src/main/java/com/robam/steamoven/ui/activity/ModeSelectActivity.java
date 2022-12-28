@@ -325,6 +325,8 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             downTempTab.setId(3);
             View downView = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab_temp, null);
             TextView downTemp = downView.findViewById(R.id.tv_mode);
+            TextView preTv = downView.findViewById(R.id.tv_mode_pre);
+            preTv.setText(R.string.steam_exp_pre_down);
             //downTemp.setText(defaultBean.defTemp + "");
             downTemp.setText(downTempMode.defTemp+"");
             downTempTab.setCustomView(downView);
@@ -488,10 +490,14 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
                         ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(4).setVisibility(View.VISIBLE); //时间
                         if(curModeBean.code == SteamModeEnum.EXP.getMode()){
                             ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(3).setVisibility(View.VISIBLE); //下温度
+                            ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(3).findViewById(R.id.tv_mode_pre).setVisibility(View.VISIBLE);
                             ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.VISIBLE);  //上温度
+                            ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).findViewById(R.id.tv_mode_pre).setVisibility(View.VISIBLE);
                         }else{
                             ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(3).setVisibility(View.GONE); //下温度
+                            ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(3).findViewById(R.id.tv_mode_pre).setVisibility(View.GONE);
                             ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.VISIBLE);  //上温度
+                            ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).findViewById(R.id.tv_mode_pre).setVisibility(View.GONE);
                         }
                         ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(1).setVisibility(View.GONE); //蒸汽
                     } else if (mode == SteamConstant.SHOUDONGJIASHIKAO || mode == SteamConstant.JIASHIBEIKAO || mode == SteamConstant.JIASHIFENGBEIKAO) {

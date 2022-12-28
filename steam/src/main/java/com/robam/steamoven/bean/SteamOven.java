@@ -18,6 +18,7 @@ public class SteamOven extends Device {
         this.displayType = device.displayType;
         this.categoryName = device.categoryName;
         this.subDevices = device.subDevices;
+        this.name = device.name;
     }
 
     public SteamOven(String name, String dc, String displayType) {

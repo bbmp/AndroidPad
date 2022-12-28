@@ -152,7 +152,7 @@
             android:button="@drawable/dishwasher_radiobutton_selector"/>
     </RadioGroup>
 
-    <androidx.appcompat.widget.AppCompatButton
+    <TextView
         android:id="@+id/btn_start"
         android:layout_width="@dimen/dp_175"
         android:layout_height="@dimen/dp_56"

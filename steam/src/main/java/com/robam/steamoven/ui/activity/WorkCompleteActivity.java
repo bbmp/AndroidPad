@@ -81,9 +81,9 @@ public class WorkCompleteActivity extends SteamBaseActivity {
             for (Device device: AccountInfo.getInstance().deviceList) {
                 if (device.guid.equals(s) && device instanceof SteamOven && device.guid.equals(HomeSteamOven.getInstance().guid)) {
                     SteamOven steamOven = (SteamOven) device;
-                    if(!SteamCommandHelper.getInstance().isSafe()){
-                        return;
-                    }
+//                    if(!SteamCommandHelper.getInstance().isSafe()){
+//                        return;
+//                    }
                     if(toWaringPage(steamOven)){
                         return;
                     }
@@ -199,7 +199,7 @@ public class WorkCompleteActivity extends SteamBaseActivity {
         timeDialog.setListeners(v -> {
             if(v.getId() == R.id.tv_ok){//确认加时
                 //发送结束请求并跳转到保存曲线界面
-                addTime = Integer.parseInt(timeDialog.getCurValue())*60;
+                addTime = Integer.parseInt(timeDialog.getCurValue());
                 sendOverTimeCommand(addTime);
             }else if(v.getId() == R.id.tv_cancel) {//取消
                 //sendWorkFinishCommand(DIRECTIVE_OFFSET_WORK_FINISH);

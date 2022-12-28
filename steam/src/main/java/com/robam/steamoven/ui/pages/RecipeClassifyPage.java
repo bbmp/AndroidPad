@@ -59,8 +59,10 @@ public class RecipeClassifyPage extends SteamBasePage {
                 //Intent intent = new Intent(getContext(), RecipeDetailActivity.class);
                 Intent intent = new Intent(getContext(), RecipeModeActivity.class);
                 Bundle dataBundle = new Bundle();
-                dataBundle.putLong(SteamConstant.EXTRA_RECIPE_ID,stoveRecipe.id);
-                dataBundle.putSerializable(SteamConstant.EXTRA_MODE_LIST, getModeBeans(stoveRecipe));
+                ArrayList<ModeBean> modeBeans = getModeBeans(stoveRecipe);
+                //dataBundle.putLong(SteamConstant.EXTRA_RECIPE_ID,stoveRecipe.id);
+                dataBundle.putLong(SteamConstant.EXTRA_RECIPE_ID,modeBeans.get(0).code);
+                dataBundle.putSerializable(SteamConstant.EXTRA_MODE_LIST, modeBeans);
                 intent.putExtras(dataBundle);
                 startActivity(intent);
             } catch (JSONException e) {

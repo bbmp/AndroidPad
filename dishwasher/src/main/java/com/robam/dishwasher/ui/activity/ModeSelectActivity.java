@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.RelativeSizeSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -96,6 +97,7 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
                     DishWasher dishWasher = (DishWasher) device;
                     setLock(dishWasher.StoveLock == 1);
                     boolean toWaringPage = toWaringPage(dishWasher.abnormalAlarmStatus);
+
                     if(!toWaringPage && dishWasher.workMode != 0){
                         switch (dishWasher.powerStatus){
                             case DishWasherState.WAIT://启动设置成功后，设备powerStatus在一段时间内，仍然在待机状态
@@ -141,7 +143,7 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
                 }
                 Intent intent = new Intent();
                 DishWasherModeBean newMode = modeBean.getNewMode();
-                DishWasherModelUtil.initWorkingInfo(modeBean,dishWasher);
+                DishWasherModelUtil.initWorkingInfo(newMode,dishWasher);
                 intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, newMode);
                 intent.setClass(this, WorkActivity.class);
                 startActivity(intent);
@@ -297,7 +299,9 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
             //startActivity(intent);
             startActivityForResult(intent,DishWasherConstant.APPOINTMENT_CODE);
         } else if (id == R.id.btn_start) {
+            Log.i("startWork"," onclick ");
             if(ClickUtils.isFastClick()){
+                Log.i("startWork"," 被重复点击了 " );
                 //ToastUtils.showLong(this,"被重复点击了");
                 return;//防止快速重复点击
             }
@@ -317,12 +321,13 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
             getLastState();
             return;
         }
-        DishWasherCommandHelper.sendPowerState(DishWasherState.WAIT);
-//        if((curDevice.powerStatus == DishWasherState.OFF)){
-//            sendSetPowerStateCommand();
-//        }else {
-//            sendStartWorkCommand();
-//        }
+        Log.i("startWork"," off " +(curDevice.powerStatus == DishWasherState.OFF));
+        if((curDevice.powerStatus == DishWasherState.OFF)){
+            DishWasherCommandHelper.sendPowerState(DishWasherState.WAIT);
+        }else {
+            //sendStartWorkCommand();
+            sendStartWorkOrAppointCommand();
+        }
     }
 
 

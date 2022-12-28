@@ -12,6 +12,18 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
     <TextView
+        android:id="@+id/tv_mode_pre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:text="上"
+        android:visibility="gone"
+        android:textColor="@drawable/steam_text_color_selector"
+        android:textSize="@dimen/sp_48"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_mode"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintHorizontal_chainStyle="packed"/>
+    <TextView
         android:id="@+id/tv_mode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,7 +31,7 @@
         android:text="temp"
         android:textColor="@drawable/steam_text_color_selector"
         android:textSize="@dimen/sp_48"
-        app:layout_constraintLeft_toLeftOf="@id/view"
+        app:layout_constraintLeft_toRightOf="@id/tv_mode_pre"
         app:layout_constraintRight_toLeftOf="@id/tv_temp"
         app:layout_constraintTop_toTopOf="@id/view"
         app:layout_constraintBottom_toTopOf="@id/iv_select"

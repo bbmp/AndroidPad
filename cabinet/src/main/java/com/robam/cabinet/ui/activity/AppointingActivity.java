@@ -79,6 +79,9 @@ public class AppointingActivity extends CabinetBaseActivity {
 //                    if(toWaringPage(cabinet.alarmStatus)){
 //                        return;
 //                    }
+                    if(toOffLinePage(cabinet)){
+                        return;
+                    }
                     switch (cabinet.workMode){
                         case CabinetConstant.FUN_DISINFECT:
                         case CabinetConstant.FUN_CLEAN:
