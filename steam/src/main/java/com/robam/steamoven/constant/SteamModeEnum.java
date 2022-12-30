@@ -135,23 +135,36 @@ public enum SteamModeEnum {
         return false;
     }
 
+
+
     /**
-     * 是否是烤模式
+     * 非旋转烤模式
      * @param modeCode
      * @return
      */
-    public static boolean isOvenModel(int modeCode){
-        if(modeCode == SteamModeEnum.KUAIRE.getMode() ||
-                modeCode == SteamModeEnum.FENGBEIKAO.getMode() ||
-                modeCode == SteamModeEnum.BEIKAO.getMode() ||
-                modeCode == SteamModeEnum.FENGSHANKAO.getMode() ||
-                modeCode == SteamModeEnum.QIANGSHAOKAO.getMode() ||
-                modeCode == SteamModeEnum.SHAOKAO.getMode() ||
-                modeCode == SteamModeEnum.EXP.getMode() ||
-                modeCode == SteamModeEnum.KONGQIZHA.getMode()){
+    public static boolean isNotRotation(int modeCode){
+        if(modeCode == SteamModeEnum.EXP.getMode()){
             return true;
         }
         return false;
     }
+
+    /**
+     * 是否显示加蒸汽
+     * @param modeCode
+     * @return
+     */
+    public static boolean isAddStream(int modeCode){
+        if(modeCode == SteamModeEnum.BEIKAO.getMode() ||
+                modeCode == SteamModeEnum.FENGSHANKAO.getMode() ||
+                modeCode == SteamModeEnum.QIANGSHAOKAO.getMode() ||
+                modeCode == SteamModeEnum.KUAIRE.getMode() ||
+                modeCode == SteamModeEnum.FENGSHANKAO.getMode() ||
+                modeCode == SteamModeEnum.EXP.getMode()){
+            return true;
+        }
+        return false;
+    }
+
 
 }

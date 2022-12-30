@@ -56,7 +56,11 @@ public class MainActivity extends DishWasherBaseActivity {
                     if(!DishWasherCommandHelper.getInstance().isSafe()){//防止历史消息扰乱逻辑
                         return;
                     }
+                    if(toOffLinePage(dishWasher)){
+                        return;
+                    }
                     setLock(dishWasher.StoveLock == DishWasherState.LOCK);
+                    setState(dishWasher.LackSaltStatus == 1,dishWasher.LackRinseStatus == 1);
                     HomeDishWasher.getInstance().isTurnOff = (dishWasher.powerStatus == DishWasherState.OFF);
                     switch (dishWasher.powerStatus){
                         case DishWasherState.WAIT:

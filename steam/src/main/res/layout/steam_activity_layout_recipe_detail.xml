@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/steam_ic_bg"
-    tools:context=".ui.activity.Recipe3DetailActivity">
+    tools:context=".ui.activity.recipe3DetailActivityOld">
 
     <include
         android:id="@+id/ll_title"

@@ -11,10 +11,9 @@ import android.widget.TextView;
 
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
-import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.view.MCountdownView;
-import com.robam.common.utils.DateUtil;
+import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.TimeUtils;
 import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.R;
@@ -23,11 +22,11 @@ import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.SteamConstant;
 import com.robam.steamoven.constant.SteamModeEnum;
+import com.robam.steamoven.constant.SteamOvenSteamEnum;
 import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.ui.dialog.SteamCommonDialog;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -47,6 +46,8 @@ public class AppointingActivity extends SteamBaseActivity {
     private TextView tvAppointmentHint;
     //工作模式
     private TextView tvMode;
+    //蒸汽模式
+    private TextView tvSteam;
     //工作时长
     private TextView tvWorkHours;
 
@@ -66,12 +67,12 @@ public class AppointingActivity extends SteamBaseActivity {
     protected void initView() {
         showLeft();
         showCenter();
-        //showRightCenter();
         tvCountdown = findViewById(R.id.tv_countdown);
         tvAppointmentHint = findViewById(R.id.tv_appointment_hint);
         tvMode = findViewById(R.id.tv_mode);
         tvWorkHours = findViewById(R.id.tv_time);
         defTemp = findViewById(R.id.tv_temp);
+        tvSteam = findViewById(R.id.tv_steam);
         setOnClickListener(R.id.ll_left, R.id.iv_start);
 
         AccountInfo.getInstance().getGuid().observe(this, s -> {
@@ -79,6 +80,9 @@ public class AppointingActivity extends SteamBaseActivity {
                 if (device.guid.equals(s) && device instanceof SteamOven && device.guid.equals(HomeSteamOven.getInstance().guid)) {
                     SteamOven steamOven = (SteamOven) device;
                     if(!SteamCommandHelper.getInstance().isSafe()){
+                        return;
+                    }
+                    if(toOffLinePage(steamOven)){
                         return;
                     }
                     switch (steamOven.powerState){
@@ -141,6 +145,10 @@ public class AppointingActivity extends SteamBaseActivity {
         //setCountDownTime();
         tvMode.setText(SteamModeEnum.match(segment.code));
         defTemp.setText(getSpanTemp(segment.defTemp+""));
+        tvSteam.setVisibility(segment.steam != 0 ? View.VISIBLE:View.GONE);
+        if(segment.steam != 0){
+            tvSteam.setText(SteamOvenSteamEnum.match(segment.steam)+"蒸汽");
+        }
         tvWorkHours.setText(getSpan(segment.duration*60));
         int totalTime =segment.workRemaining * 60;
         tvCountdown.setTotalTime(totalTime);
@@ -164,44 +172,10 @@ public class AppointingActivity extends SteamBaseActivity {
     }
 
 
-    /**
-     * 设置倒计时
-     */
-    private void setCountDownTime() {
-        String orderTime = HomeSteamOven.getInstance().orderTime +"";
-
-        tvAppointmentHint.setText(String.format(getString(R.string.steam_work_order_hint1), orderTime ));
-        int housGap = DateUtil.getHousGap(orderTime);
-        int minGap = DateUtil.getMinGap(orderTime);
-        int totalTime = housGap * 60 * 60 + minGap * 60;
-//        SteamOven.getInstance().orderTime = totalTime;
-        tvCountdown.setTotalTime(totalTime);
-
-        tvCountdown.addOnCountDownListener(currentSecond -> {
-            //SteamOven.getInstance().orderLeftTime = currentSecond;
-            String time = DateUtil.secForMatTime2(currentSecond);
-
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    tvCountdown.setText(time);
-                    if (currentSecond <= 0)
-                        toStartWork();
-                }
-            });
-        });
-        tvCountdown.start();
-    }
-
-    private void toStartWork() {
-//        CabinetAbstractControl.getInstance().startWork();
-        startActivity(WorkActivity.class);
-        finish();
-    }
-
     @Override
     public void onClick(View view) {
         super.onClick(view);
+        LogUtils.i("AppointingActivity onClick ...");
         int id = view.getId();
         if (id == R.id.ll_left) {
             //结束倒计时

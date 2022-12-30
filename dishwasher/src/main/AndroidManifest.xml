@@ -3,17 +3,25 @@
     package="com.robam.dishwasher">
 
     <application>
+        <activity android:name=".ui.activity.MatchNetworkActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape">
+        </activity>
         <activity android:name=".ui.activity.CompleteActivity"
             android:exported="false"
+            android:launchMode="singleTop"
             android:screenOrientation="landscape">
         </activity>
         <activity
             android:name=".ui.activity.WaringActivity"
             android:exported="false"
+            android:launchMode="singleTop"
             android:screenOrientation="landscape"/>
         <activity
             android:name=".ui.activity.ModeSelectActivity"
             android:exported="false"
+            android:launchMode="singleTop"
             android:screenOrientation="landscape"/>
         <activity
             android:name=".ui.activity.WorkActivity"
@@ -23,10 +31,12 @@
         <activity
             android:name=".ui.activity.AppointingActivity"
             android:exported="false"
+            android:launchMode="singleTop"
             android:screenOrientation="landscape"/>
         <activity
             android:name=".ui.activity.AppointmentActivity"
             android:exported="false"
+            android:launchMode="singleTop"
             android:screenOrientation="landscape"/>
         <activity
             android:name=".ui.activity.MainActivity"

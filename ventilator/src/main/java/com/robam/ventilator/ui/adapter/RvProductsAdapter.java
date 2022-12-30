@@ -54,6 +54,7 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
     protected void convert(@NonNull BaseViewHolder baseViewHolder, Device device) {
         if (null != device) {
             baseViewHolder.setText(R.id.tv_device_name, device.getCategoryName());
+            //baseViewHolder.setText(R.id.tv_model, (StringUtils.isNotBlank(device.getName()) ? device.getName() : device.getDisplayType()));
             baseViewHolder.setText(R.id.tv_model, device.getDisplayType());
             ImageView ivDevice = baseViewHolder.getView(R.id.iv_device);
             if (IDeviceType.RXDG.equals(device.dc)) {
@@ -277,10 +278,14 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
         }
         MqttDirective.WorkState workState = MqttDirective.getInstance().getWorkState(dishWasher.guid);
         boolean isWork = false;
+        boolean isAppoint = false;//是否正在预约
         if((dishWasher.powerStatus == DishWasherState.WORKING  ||
                 dishWasher.powerStatus == DishWasherState.PAUSE) &&
                 dishWasher.remainingWorkingTime > 0){
             isWork = true;
+            if(dishWasher.AppointmentRemainingTime  > 0){
+                isAppoint = true;
+            }
         }
         if(isWork){
             baseViewHolder.setGone(R.id.layout_offline, true);
@@ -288,13 +293,18 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
             baseViewHolder.setGone(R.id.ventilator_group7, true);
             baseViewHolder.setVisible(R.id.ventilator_group6, true);
             baseViewHolder.setText(R.id.tv_mode, DishWasherEnum.match(dishWasher.workMode));
-            baseViewHolder.setText(R.id.tv_time, getSpan(dishWasher.remainingWorkingTime * 60));
-            if (dishWasher.getWorkStatus() == 2) //工作中
-                baseViewHolder.setText(R.id.btn_work, R.string.ventilator_pause);
-            else if (dishWasher.getWorkStatus() == 3) //暂停中
-                baseViewHolder.setText(R.id.btn_work, R.string.ventilator_continue);
-            else
-                baseViewHolder.setGone(R.id.btn_work, true);
+            if(isAppoint){
+                baseViewHolder.setText(R.id.tv_time, getSpan(dishWasher.AppointmentRemainingTime * 60));
+                baseViewHolder.setText(R.id.btn_work, R.string.ventilator_appoint_finish);
+            }else{
+                baseViewHolder.setText(R.id.tv_time, getSpan(dishWasher.remainingWorkingTime * 60));
+                if (dishWasher.getWorkStatus() == 2) //工作中
+                    baseViewHolder.setText(R.id.btn_work, R.string.ventilator_pause);
+                else if (dishWasher.getWorkStatus() == 3) //暂停中
+                    baseViewHolder.setText(R.id.btn_work, R.string.ventilator_continue);
+                else
+                    baseViewHolder.setGone(R.id.btn_work, true);
+            }
         }else{
             boolean isWorkFinish = false;
             if(workState != null && workState.isFinish()) {
@@ -426,6 +436,7 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
         }
         boolean isWork = false;
         boolean workFinish = false;
+        boolean isAppoint = cabinet.remainingAppointTime > 0;
         if((cabinet.workMode == CabinetConstant.FUN_DISINFECT || cabinet.workMode == CabinetConstant.FUN_CLEAN
            || cabinet.workMode == CabinetConstant.FUN_DRY || cabinet.workMode == CabinetConstant.FUN_FLUSH
             || cabinet.workMode == CabinetConstant.FUN_SMART) && cabinet.remainingModeWorkTime != 0 ){
@@ -447,10 +458,15 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
             baseViewHolder.setVisible(R.id.layout_work, true);
             baseViewHolder.setGone(R.id.ventilator_group7, true);
             baseViewHolder.setVisible(R.id.ventilator_group6, true);
-
             baseViewHolder.setText(R.id.tv_mode, CabinetEnum.match(cabinet.workMode));
-            baseViewHolder.setText(R.id.tv_time, DateUtil.secForMatTime3(cabinet.remainingModeWorkTime) + "min");
-            baseViewHolder.setText(R.id.btn_work, R.string.ventilator_cabinet_completion);
+            if(isAppoint){
+                baseViewHolder.setText(R.id.tv_time, DateUtil.secForMatTime3(cabinet.remainingAppointTime) + "min");
+                baseViewHolder.setText(R.id.btn_work, R.string.ventilator_appoint_finish);
+            }else{
+                baseViewHolder.setText(R.id.tv_time, DateUtil.secForMatTime3(cabinet.remainingModeWorkTime) + "min");
+                baseViewHolder.setText(R.id.btn_work, R.string.ventilator_cabinet_completion);
+            }
+
         }
     }
 }

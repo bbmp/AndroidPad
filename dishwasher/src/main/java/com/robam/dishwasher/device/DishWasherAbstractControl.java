@@ -48,6 +48,11 @@ public class DishWasherAbstractControl implements DishWasherFunction{
     }
 
     @Override
+    public void endAppoint(String targetGuid) {
+        function.endAppoint(targetGuid);
+    }
+
+    @Override
     public void orderWork() {
         function.orderWork();
     }

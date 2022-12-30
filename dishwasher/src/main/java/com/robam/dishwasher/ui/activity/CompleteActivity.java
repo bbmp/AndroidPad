@@ -17,6 +17,8 @@ public class CompleteActivity extends DishWasherBaseActivity {
     protected void initView() {
         View completeView = findViewById(R.id.complete_finish);
         setOnClickListener(completeView);
+
+
     }
 
 

@@ -52,7 +52,7 @@
     <string name="dishwasher_waring_e9_title">E9：分水阀异常报警</string>
     <string name="dishwasher_waring_e10_title">E10：电机故障报警</string>
 
-    <string name="dishwasher_waring_e1_content">请检查进水阀是否开启。如果洗碗机还不能正常工作，请联系专业技术人员咨询或维修</string>
+    <string name="dishwasher_waring_e1_content">请检查进水阀是否开启。\n如果洗碗机还不能正常工作，请联系专业技术人员咨询或维修</string>
     <string name="dishwasher_waring_e3_content">加热异常，请联系专业技术人员咨询或维修</string>
     <string name="dishwasher_waring_e4_content">溢水报警，断电后请联系专业技术人员咨询或维修</string>
     <string name="dishwasher_waring_e5_content">温度传感器故障，请联系专业技术人员咨询或维修</string>
@@ -71,5 +71,7 @@
     <string name="dishwasher_aeration_await">换气等待</string>
     <string name="dishwasher_no_guid">缺失数据</string>
     <string name="dishwasher_start_appoint">开始预约</string>
+    <string name="dishwasher_match_hint8">1.开启洗碗机。 \n2.在洗碗机上登录当前ROKI账户。 \n完成上述操作后点击下一步。</string>
+
 
 </resources>

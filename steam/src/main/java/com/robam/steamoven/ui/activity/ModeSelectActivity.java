@@ -2,6 +2,7 @@ package com.robam.steamoven.ui.activity;
 
 import android.content.Intent;
 import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,16 +13,20 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
-import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.IModeSelect;
+import com.robam.common.ui.helper.PickerLayoutManager;
+import com.robam.common.utils.ClickUtils;
+import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
+import com.robam.steamoven.base.SteamBasePage;
 import com.robam.steamoven.bean.ModeBean;
 import com.robam.steamoven.bean.MultiSegment;
 import com.robam.steamoven.bean.SteamOven;
@@ -38,10 +43,13 @@ import com.robam.steamoven.ui.pages.ModeSelectPage;
 import com.robam.steamoven.ui.pages.SteamSelectPage;
 import com.robam.steamoven.ui.pages.TempSelectPage;
 import com.robam.steamoven.ui.pages.TimeSelectPage;
-import com.robam.steamoven.utils.MultiSegmentUtil;
-
+import com.robam.steamoven.utils.SkipUtil;
 import java.lang.ref.WeakReference;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect {
@@ -77,9 +85,11 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
 
     private int directive_offset = 10000000;
     private static final int DIRECTIVE_OFFSET_AUX_MODEL = 800;
+    private static final int START = 11;
 
     private TabLayout.Tab preSelectTab = null;
     private int sectionResId;
+    private TextView btStart;
 
     @Override
     protected int getLayoutId() {
@@ -91,6 +101,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
         showLeft();
         showCenter();
         //showRightCenter();
+        btStart = findViewById(R.id.btn_start);
         tabLayout = findViewById(R.id.tabLayout);
         noScrollViewPager = findViewById(R.id.pager);
         tabLayout.setSelectedTabIndicatorHeight(0);
@@ -103,6 +114,17 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
                     }
                     ToastUtils.showLong(ModeSelectActivity.this,R.string.steam_temp_prompt);
                     return;
+                }
+                //暂停之前的滚动
+                if(preSelectTab != null && preSelectTab.getId() != tab.getId()){
+                    //noScrollViewPager.setCurrentItem(preSelectTab.getId(),false);
+                    WeakReference<Fragment> fragmentWeakReference = fragments.get(preSelectTab.getId());
+                    Fragment fragment = fragmentWeakReference.get();
+                    if(fragment instanceof SteamBasePage){
+                        ViewGroup pageView = ((SteamBasePage)fragment).findViewById(R.id.rv_select);
+                        RecyclerView recyclerView = pageView.findViewById(R.id.rv_select);
+                        recyclerView.stopScroll();
+                    }
                 }
                 preSelectTab = tab;
                 //tab选中放大
@@ -149,18 +171,6 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
                 }
             }
         });
-//        MqttDirective.getInstance().getDirective().observe(this, s -> {
-//            switch (s - directive_offset){
-//                case MsgKeys.setDeviceAttribute_Req:
-//                    toWorkPage();
-//                    break;
-//                case DIRECTIVE_OFFSET_AUX_MODEL:
-//                    toAxuWorkPage();
-//                    break;
-//            }
-//        });
-
-
     }
 
 
@@ -172,22 +182,9 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
         if(steamOven.mode == 0){
             return;
         }
-        switch (steamOven.workState){
-            case SteamStateConstant.WORK_STATE_LEISURE:
-            case SteamStateConstant.WORK_STATE_APPOINTMENT://预约页面
-                break;
-            case SteamStateConstant.WORK_STATE_PREHEAT:
-            case SteamStateConstant.WORK_STATE_PREHEAT_PAUSE:
-            case SteamStateConstant.WORK_STATE_WORKING:
-            case SteamStateConstant.WORK_STATE_WORKING_PAUSE:
-                if(SteamModeEnum.isAuxModel(steamOven.mode)){
-                    toAxuWorkPage();
-                    return;
-                }
-                toWorkPage();
-                break;
-        }
+        SkipUtil.toWorkPage(steamOven,this);
     }
+
 
     /**
      * 判断模式对应的参数是否可调节（澎湃蒸模式下温度不能调节）
@@ -261,10 +258,10 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             finish();
             return;
         }
-        if(modes.get(0).funCode != SteamEnum.AUX.fun){
-           //showLeftCenter();
-            setRight(R.string.steam_makeAnAppointment);
-        }
+//        if(modes.get(0).funCode != SteamEnum.AUX.fun){
+//           showLeftCenter();
+//            setRight(R.string.steam_makeAnAppointment);
+//        }
         sectionResId = getIntent().getIntExtra(Constant.SEGMENT_SECTION,-1);
         if(sectionResId != -1){
             findViewById(R.id.section_value).setVisibility(View.VISIBLE);
@@ -303,7 +300,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             tabLayout.addTab(steamTab);
             steamSelectPage = new SteamSelectPage(steamTab, defaultBean);
             if(modes.get(0).funCode == SteamEnum.STEAM.fun){
-                steamSelectPage.removeSteam("小");
+                steamSelectPage.setSteamValue(partStreamList);
             }
 
             fragments.add(new WeakReference<>(steamSelectPage));
@@ -320,18 +317,16 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             fragments.add(new WeakReference<>(upTempSelectPage));
 
             //下温度
-            ModeBean downTempMode = getDownTempMode();
+            ModeBean downTempMode = getDownTempMode(defaultBean);
             downTempTab = tabLayout.newTab();
             downTempTab.setId(3);
             View downView = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab_temp, null);
             TextView downTemp = downView.findViewById(R.id.tv_mode);
             TextView preTv = downView.findViewById(R.id.tv_mode_pre);
             preTv.setText(R.string.steam_exp_pre_down);
-            //downTemp.setText(defaultBean.defTemp + "");
             downTemp.setText(downTempMode.defTemp+"");
             downTempTab.setCustomView(downView);
             tabLayout.addTab(downTempTab);
-            //downTempSelectPage = new TempSelectPage(downTempTab, defaultBean);
             downTempSelectPage = new TempSelectPage(downTempTab, downTempMode);
             fragments.add(new WeakReference<>(downTempSelectPage));
             //时间
@@ -351,6 +346,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
 
             preSelectTab = modeTab;
 
+            initOtherViews(defaultBean);
         }
 
 //        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(noScrollViewPager));
@@ -364,13 +360,14 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             SteamAbstractControl.getInstance().queryAttribute(steamOven.guid);
         }
 
+
     }
 
-    private ModeBean getDownTempMode(){
+    private ModeBean getDownTempMode(ModeBean defaultBean){
         ModeBean modeBean =new ModeBean();
-        modeBean.defTemp = 160;
-        modeBean.minTemp = 160;
-        modeBean.maxTemp = 200;
+        modeBean.defTemp = defaultBean.defDownTemp;
+        modeBean.minTemp = defaultBean.minDownTemp;
+        modeBean.maxTemp = defaultBean.maxDownTemp;
         return modeBean;
     }
 
@@ -379,26 +376,62 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
 
     @Override
     public void onClick(View view) {
+        LogUtils.i("ModeSelectActivity onClick ...");
         if (R.id.ll_left == view.getId()) {
             finish();
         }else if(R.id.btn_start == view.getId()){
             if(needSetResult){
                 this.startSetResult();
             }else{
-                startWork();
+                //startWork();
+                if(ClickUtils.isFastClick()){
+                    return;
+                }
+                startWorkOrAppointment();
             }
         }else if(R.id.ll_right == view.getId()){
             Intent intent = new Intent(this,AppointmentActivity.class);
             intent.putExtra(Constant.SEGMENT_DATA_FLAG,getResult());
-            startActivity(intent);
+            startActivityForResult(intent,Constant.APPOINT_CODE);
         }
     }
 
-    private void startWork(){
-        MultiSegment result = getResult();
-        if(!SteamCommandHelper.checkSteamState(this,getSteamOven(),result.code)){
+    private void startWorkOrAppointment(){
+        if(!SteamCommandHelper.checkSteamState(this,getSteamOven(),curModeBean.code)){
             return;
         }
+        String text = btStart.getText().toString();
+        if(getResources().getText(R.string.steam_start_appoint).equals(text)){//预约
+            startAppointment();
+        }else{//开始工作
+            startWork();
+        }
+    }
+
+    /**
+     * 发送预约指令
+     */
+    private void startAppointment(){
+        try {
+            TextView timeVt = findViewById(R.id.tv_right);
+            MultiSegment multiSegment = getResult();
+            multiSegment.workRemaining = (int) getAppointingTimeMin(timeVt.getText().toString()) * 60;
+            if(SteamModeEnum.EXP.getMode() == multiSegment.code){
+                SteamCommandHelper.sendCommandForExp(multiSegment, multiSegment.workRemaining,directive_offset + START);
+            }else{
+                SteamCommandHelper.sendAppointCommand(multiSegment,multiSegment.workRemaining,directive_offset + START);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * 发送工作指令
+     */
+    private void startWork(){
+        MultiSegment result = getResult();
         if(SteamModeEnum.EXP.getMode() == result.code){
             SteamCommandHelper.sendCommandForExp(result,0,MsgKeys.setDeviceAttribute_Req+directive_offset);
         }else{
@@ -464,6 +497,8 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             for (ModeBean modeBean: modes) {
                 if (mode == modeBean.code) {  //当前模式
                     curModeBean = modeBean;
+                    this.initOtherViews(curModeBean);
+                    this.initStreamPageData(curModeBean);
                     if (mode == SteamConstant.XIANNENZHENG || mode == SteamConstant.YIYANGZHENG || mode == SteamConstant.GAOWENZHENG || mode == SteamConstant.ZHIKONGZHENG) { //蒸模式
 
                         timeSelectPage.updateTimeTab(modeBean);
@@ -545,6 +580,33 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
         }
     }
 
+    private void initOtherViews(ModeBean modeBean){
+        if(modeBean.rotate == 1 && !needSetResult){
+            showLeftCenter();
+            setOnClickListener(R.id.ll_left_center);
+        }else{
+            hideLeftCenter();
+        }
+        if(modeBean.order == 1 && !needSetResult){
+            setRight(R.string.steam_makeAnAppointment);
+            setOnClickListener(R.id.ll_right);
+        }else{
+            hideRight();
+        }
+    }
+
+    private String[] partStreamList = {"中","大"};
+    private String[] allStreamList = {"小","中","大"};
+    private void initStreamPageData(ModeBean modeBean){
+        if(modeBean.funCode == SteamEnum.STEAM.fun){
+            steamSelectPage.setSteamValue(partStreamList);
+        }else{
+            steamSelectPage.setSteamValue(allStreamList);
+        }
+    }
+
+
+
 
     @Override
     public void updateTab(int mode) {
@@ -580,7 +642,51 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == Constant.APPOINT_CODE && resultCode == RESULT_OK){
+            String result = data.getStringExtra(Constant.APPOINTMENT_RESULT);
+            if(result.contains("今日")){
+                result = result.substring("今日".length());
+            }
+            setRight(result);
+            btStart.setText(R.string.steam_start_appoint);
+        }
+    }
 
-
-
+    /**
+     * 获取预约执行时间
+     * @param timeText
+     * @return 预约执行时间（单位：分钟）
+     * @throws ParseException
+     */
+    private long getAppointingTimeMin(String timeText) throws ParseException {
+        String time = timeText.substring("次日".length()).trim()+":00";
+        Date curTime = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  //HH:24小时制  hh:12小时制
+        String curTimeStr = dateFormat.format(curTime);
+        String curTimeText = curTimeStr.substring("yyyy-MM-dd".length()).trim();
+        if(time.compareTo(curTimeText) > 0){//今日
+            String orderTimeStr = curTimeStr.split(" ")[0].trim() + " " + time;
+            Date orderTime = dateFormat.parse(orderTimeStr);
+            long timeDur = (orderTime.getTime() - curTime.getTime())/60/1000;
+            if((orderTime.getTime() - curTime.getTime())% 60 != 0){
+                return timeDur + 1;
+            }
+            return timeDur;
+        }else{//次日
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(curTime);
+            calendar.add(Calendar.DAY_OF_MONTH,1);
+            String destTime = dateFormat.format(calendar.getTime());
+            String orderTimeStr = destTime.split(" ")[0].trim() + " " + time;
+            Date orderTime = dateFormat.parse(orderTimeStr);
+            long timeDur = (orderTime.getTime() - curTime.getTime())/60/1000;
+            if((orderTime.getTime() - curTime.getTime())% 60 != 0){
+                return timeDur + 1;
+            }
+            return timeDur;
+        }
+    }
 }

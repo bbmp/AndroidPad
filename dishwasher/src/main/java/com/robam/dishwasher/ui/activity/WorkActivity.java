@@ -6,6 +6,7 @@ import android.text.Spanned;
 import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.constraintlayout.widget.Group;
@@ -17,6 +18,7 @@ import com.robam.common.manager.FunctionManager;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.CircleProgressView;
+import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.TimeUtils;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.base.DishWasherBaseActivity;
@@ -52,6 +54,8 @@ public class WorkActivity extends DishWasherBaseActivity {
     private TextView tvAirMode;
     private TextView tvAriTime;
     private View progressBg;
+    private ImageView ivPxj;// 缺漂洗剂
+    private ImageView ivZyy;// 缺专用盐
 
     private View startIcon,pauseIcon;
     //当前模式 - 注意该对象可能未空
@@ -91,23 +95,23 @@ public class WorkActivity extends DishWasherBaseActivity {
         tvAriTime = findViewById(R.id.tv_time_air);
         progressBg = findViewById(R.id.prgress_bg);
         cpgBar.setProgress(MAX_PROGRESS);
+        ivPxj = findViewById(R.id.tv_pxj);
+        ivZyy = findViewById(R.id.tv_zyy);
         setOnClickListener(R.id.ll_left, R.id.iv_float,R.id.iv_start,R.id.iv_pause);
 
         AccountInfo.getInstance().getGuid().observe(this, s -> {
+            LogUtils.i("WorkActivity AccountInfo arrive");
             for (Device device: AccountInfo.getInstance().deviceList) {
                 if (device.guid.equals(s) && device instanceof DishWasher && device.guid.equals(HomeDishWasher.getInstance().guid)) { //当前锅
                     DishWasher dishWasher = (DishWasher) device;
                     if(toWaringPage(dishWasher.abnormalAlarmStatus)){
                         return;
                     }
-//                    if(!DishWasherCommandHelper.getInstance().isSafe()){
-//                        return;
-//                    }
-//                    if(isWorkingFinish(dishWasher)){
-//                        finish();
-//                        return;
-//                    }
+                    if(toOffLinePage(dishWasher)){
+                        return;
+                    }
                     setLock(dishWasher.StoveLock == 1);
+                    setState(dishWasher.LackSaltStatus == 1,dishWasher.LackRinseStatus == 1);
                     switch (dishWasher.powerStatus){
                         case DishWasherState.WORKING:
                         case DishWasherState.PAUSE:
@@ -394,10 +398,12 @@ public class WorkActivity extends DishWasherBaseActivity {
         sBuffer.append("缺少");
         if(dishWasher.LackRinseStatus == 1){
             sBuffer.append("漂洗剂");
+            //ivPxj.setVisibility(View.VISIBLE);
         }
         if(dishWasher.LackSaltStatus == 1){
             if(sBuffer.length() > "缺少".length()){
                 sBuffer.append("、专用盐");
+                //ivZyy.setVisibility(View.VISIBLE);
             }
         }
         commonDialog = new DiashWasherCommonDialog(this);
@@ -425,6 +431,9 @@ public class WorkActivity extends DishWasherBaseActivity {
         startActivity(intent);
         finish();
     }
+
+
+
 
 
 

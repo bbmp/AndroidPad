@@ -8,8 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
-import com.robam.common.bean.MqttDirective;
-import com.robam.common.mqtt.MsgKeys;
+import com.robam.common.utils.LogUtils;
 import com.robam.steamoven.R;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.common.utils.DateUtil;
@@ -17,10 +16,8 @@ import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.bean.MultiSegment;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.Constant;
-import com.robam.steamoven.constant.SteamModeEnum;
 import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
-import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.ui.adapter.RvStringAdapter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -169,23 +166,22 @@ public class AppointmentActivity extends SteamBaseActivity {
     @Override
     public void onClick(View view) {
         super.onClick(view);
+        LogUtils.i("AppointmentActivity onClick .");
         int id = view.getId();
         if (id == R.id.btn_cancel) {
             finish();
         } else if (id == R.id.btn_ok) { //确认预约
-            try {
-                multiSegment.workRemaining = (int) getAppointingTimeMin(tvTime.getText().toString()) * 60;
-                if(SteamModeEnum.EXP.getMode() == multiSegment.code){
-                    SteamCommandHelper.sendCommandForExp(multiSegment, multiSegment.workRemaining,directive_offset + START);
-                }else{
-                    SteamCommandHelper.sendAppointCommand(multiSegment,multiSegment.workRemaining,directive_offset + START);
-                }
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+            startAppointment();
         } else if (id == R.id.ll_left) {
             finish();
         }
+    }
+
+    private void startAppointment(){
+        Intent result = new Intent();
+        result.putExtra(Constant.APPOINTMENT_RESULT,tvTime.getText().toString());
+        setResult(RESULT_OK,result);
+        finish();
     }
 
 

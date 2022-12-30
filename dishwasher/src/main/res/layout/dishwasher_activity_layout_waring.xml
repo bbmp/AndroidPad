@@ -44,9 +44,10 @@
 
     <TextView
         android:id="@+id/waring_desc"
-        android:layout_marginTop="@dimen/dp_36"
+        android:layout_marginTop="@dimen/dp_16"
         android:textSize="@dimen/sp_32"
         android:textColor="@color/dishwasher_color_f6"
+        android:gravity="center"
         app:layout_constraintTop_toBottomOf="@id/waring_title"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -55,7 +56,7 @@
 
     <TextView
         android:id="@+id/waring_phone"
-        android:layout_marginTop="@dimen/dp_36"
+        android:layout_marginTop="@dimen/dp_16"
         android:textSize="@dimen/sp_32"
         android:text="@string/dishwasher_maintain_phone"
         android:textColor="@color/dishwasher_color_f6"

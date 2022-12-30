@@ -26,6 +26,8 @@ import com.robam.steamoven.http.CloudHelper;
 import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.response.GetCurveDetailRes;
 import com.robam.steamoven.ui.dialog.SteamCommonDialog;
+import com.robam.steamoven.utils.CurveDataUtil;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
@@ -76,7 +78,7 @@ public class CurveSaveActivity extends SteamBaseActivity {
     protected void initView() {
         //showLeft();
         showCenter();
-        showRightCenter();
+        //showRightCenter();
         cookChart = findViewById(R.id.cook_chart);
         finishTv = findViewById(R.id.multi_work_finish_prompt);
         finishOptView = findViewById(R.id.multi_work_finish_opt);
@@ -162,13 +164,21 @@ public class CurveSaveActivity extends SteamBaseActivity {
         if(StringUtils.isNotBlank(promptText)){
             finishTv.setText(promptText);
         }
-        if(curveId == 0){
-            getCurveByGuid(getSteamOven().guid);
-        }else{
-            getCurveById();
-        }
+        initCurveData();
+//        if(curveId == 0){
+//            getCurveByGuid(getSteamOven().guid);
+//        }else{
+//            getCurveById();
+//        }
 
     }
+
+    private void initCurveData(){
+        entryList.addAll(CurveDataUtil.getEntryList());
+        CurveDataUtil.getEntryList().clear();
+        initLineChart();
+    }
+
 
     @Override
     public void onClick(View view) {

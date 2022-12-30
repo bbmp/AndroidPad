@@ -20,7 +20,7 @@ import com.robam.steamoven.constant.SteamConstant;
 import com.robam.steamoven.ui.adapter.RvMaterialAdapter;
 import com.robam.steamoven.ui.adapter.RvStepAdapter;
 
-public class Recipe3DetailActivity extends SteamBaseActivity {
+public class recipe3DetailActivityOld extends SteamBaseActivity {
     private RecyclerView rvMaterial;
     private Group group1, group2, group3;
     private TextView tvQrcode, tvMaterial, tvStep;

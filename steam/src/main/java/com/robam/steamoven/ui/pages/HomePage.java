@@ -120,7 +120,7 @@ public class HomePage extends SteamBasePage {
         for (FuntionBean funtionBean: funtionBeans) {
             dotList.add(funtionBean.funtionName);
         }
-        int selectIndex = Integer.MAX_VALUE / dotList.size() / 2 * dotList.size() + 2;
+        int selectIndex = Integer.MAX_VALUE / dotList.size() / 2 * dotList.size() + 1;
         rvDotAdapter.setList(dotList);
         rvDotAdapter.setPickPosition(selectIndex);
         pickerLayoutManager.scrollToPosition(selectIndex);

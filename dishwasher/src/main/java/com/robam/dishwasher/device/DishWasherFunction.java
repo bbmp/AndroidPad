@@ -13,6 +13,12 @@ public interface DishWasherFunction {
 
     void powerOn(String targetGuid);
 
+    /**
+     * 结束预约
+     * @param targetGuid
+     */
+    void endAppoint(String targetGuid);
+
     void orderWork();
 
     void stopWork();

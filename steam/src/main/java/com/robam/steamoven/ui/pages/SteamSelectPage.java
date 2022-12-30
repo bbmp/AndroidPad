@@ -12,6 +12,9 @@ import com.robam.steamoven.bean.ModeBean;
 import com.robam.steamoven.ui.adapter.RvTimeAdapter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class SteamSelectPage extends SteamBasePage {
     private RecyclerView rvSelect;
@@ -33,10 +36,16 @@ public class SteamSelectPage extends SteamBasePage {
         }
     };
 
-    public void removeSteam(String steamValue){
-        steamList.remove(steamValue);
+
+
+
+
+    public void setSteamValue(String[] values){
+        steamList.clear();
+        steamList.addAll(Arrays.asList(values));
         if(rvSteamAdapter != null){
             rvSteamAdapter.setList(steamList);
+            rvSteamAdapter.notifyDataSetChanged();
         }
     }
 

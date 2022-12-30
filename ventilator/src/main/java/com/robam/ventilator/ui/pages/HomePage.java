@@ -416,12 +416,23 @@ public class HomePage extends VentilatorBasePage {
                             SteamAbstractControl.getInstance().continueWork(device.guid);
                     } else if(device instanceof DishWasher){
                         DishWasher dishWasher = (DishWasher) device;
-                        if (dishWasher.workStatus == 2)   //工作中和预热中
-                            DishWasherAbstractControl.getInstance().pauseWork(device.guid);
-                        else if (dishWasher.workStatus == 3)  //暂停中
-                            DishWasherAbstractControl.getInstance().continueWork(device.guid);
+                        if(dishWasher.AppointmentRemainingTime > 0){//结束预约
+                            DishWasherAbstractControl.getInstance().endAppoint(device.guid);
+                        }else{
+                            if (dishWasher.workStatus == 2)   //工作中和预热中
+                                DishWasherAbstractControl.getInstance().pauseWork(device.guid);
+                            else if (dishWasher.workStatus == 3)  //暂停中
+                                DishWasherAbstractControl.getInstance().continueWork(device.guid);
+                        }
+
                     }else if(device instanceof Cabinet){
+                        Cabinet cabinet = (Cabinet) device;
+                        if(cabinet.remainingAppointTime > 0){//结束预约
+                            CabinetAbstractControl.getInstance().endAppoint(device.guid);
+                        }else{
                             CabinetAbstractControl.getInstance().shutDown(device.guid);
+                        }
+
                     }
                 }
                 //close products menu

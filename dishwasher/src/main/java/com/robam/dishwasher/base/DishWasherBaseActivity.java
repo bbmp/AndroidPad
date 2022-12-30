@@ -27,6 +27,7 @@ import com.robam.dishwasher.device.DishWasherAbstractControl;
 import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.manager.DishwasherActivityManager;
 import com.robam.dishwasher.ui.activity.MainActivity;
+import com.robam.dishwasher.ui.activity.MatchNetworkActivity;
 import com.robam.dishwasher.ui.activity.WaringActivity;
 import com.robam.dishwasher.util.DishWasherCommandHelper;
 
@@ -42,6 +43,7 @@ public abstract class DishWasherBaseActivity extends BaseActivity {
     private boolean lock;
     private long lastTouchMil;
     public static final int LOCK_FLAG = 9999;
+    private long preLockTimeMil;
 
     public void showLeft() {
         findViewById(R.id.ll_left).setVisibility(View.VISIBLE);
@@ -124,6 +126,10 @@ public abstract class DishWasherBaseActivity extends BaseActivity {
                 return;
             }
             touchDownTimeMil = System.currentTimeMillis();
+            preLockTimeMil = System.currentTimeMillis();
+//            if(System.currentTimeMillis() - preLockTimeMil <= 2000){//执行一次加锁功能后，2秒之类不能在执行加锁，防止加锁被执行多次，的临时解决方案
+//                return;
+//            }
             DishWasherCommandHelper.sendCtrlLockCommand(true,LOCK_FLAG);
             LogUtils.i("dispatchTouchEvent setOnClickListener");
             //setLock(true);
@@ -223,6 +229,18 @@ public abstract class DishWasherBaseActivity extends BaseActivity {
     }
 
     /**
+     *
+     * @param isShowZyy 是否缺漂洗剂
+     * @param isSHowPyy 是否缺占用盐
+     */
+    protected void setState(boolean isShowZyy,boolean isSHowPyy){
+        findViewById(R.id.tv_zyy).setVisibility(isShowZyy?View.VISIBLE:View.GONE);
+        findViewById(R.id.tv_pxj).setVisibility(isSHowPyy?View.VISIBLE:View.GONE);
+    }
+
+
+
+    /**
      * 获取当前设备实体
      * @return
      */
@@ -262,6 +280,19 @@ public abstract class DishWasherBaseActivity extends BaseActivity {
         startActivity(intent);
         finish();
     }
+
+
+    protected boolean toOffLinePage(DishWasher dishWasher){
+        if(dishWasher.queryNum > 2 && dishWasher.status == Device.OFFLINE){
+            Intent intent = new Intent(this, MatchNetworkActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return false;
+    }
+
+
+
 
 
 }

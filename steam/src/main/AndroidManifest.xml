@@ -5,6 +5,16 @@
 
     <application>
         <activity
+            android:name=".ui.activity.MatchNetworkActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".ui.activity.AuxWorkCompleteActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape"/>
+        <activity
             android:name=".ui.activity.WorkCompleteActivity"
             android:exported="false"
             android:launchMode="singleTop"

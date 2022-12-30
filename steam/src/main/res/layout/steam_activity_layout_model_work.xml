@@ -159,10 +159,19 @@
         <TextView
             android:id="@+id/multi_item_cur_model"
             android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="@color/steam_white_65"
+            android:textSize="@dimen/sp_40"
+            tools:text="高温蒸" />
+
+        <TextView
+            android:id="@+id/multi_item_cur_steam"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/sp_40"
             android:textSize="@dimen/sp_40"
             android:textColor="@color/steam_white_65"
-            tools:text="高温蒸"/>
+            tools:text="中蒸汽"/>
 
         <TextView
             android:id="@+id/multi_item_cur_temperature"

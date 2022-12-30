@@ -95,9 +95,15 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
             for (Device device: AccountInfo.getInstance().deviceList) {
                 if (device.guid.equals(s) && device instanceof DishWasher && device.guid.equals(HomeDishWasher.getInstance().guid)) {
                     DishWasher dishWasher = (DishWasher) device;
+                    if(toWaringPage(dishWasher.abnormalAlarmStatus)){
+                        return;
+                    }
+                    if(toOffLinePage(dishWasher)){
+                        return;
+                    }
                     setLock(dishWasher.StoveLock == 1);
                     boolean toWaringPage = toWaringPage(dishWasher.abnormalAlarmStatus);
-
+                    setState(dishWasher.LackSaltStatus == 1,dishWasher.LackRinseStatus == 1);
                     if(!toWaringPage && dishWasher.workMode != 0){
                         switch (dishWasher.powerStatus){
                             case DishWasherState.WAIT://启动设置成功后，设备powerStatus在一段时间内，仍然在待机状态
@@ -379,7 +385,12 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
      * @throws ParseException
      */
     private long getAppointingTimeMin(String timeText) throws ParseException {
-        String time = timeText.substring("次日".length()).trim()+":00";
+        String time;
+        if(timeText.contains("日")){
+            time = timeText.substring("次日".length()).trim()+":00";
+        }else{
+            time = timeText.trim()+":00";
+        }
         Date curTime = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  //HH:24小时制  hh:12小时制
         String curTimeStr = dateFormat.format(curTime);
@@ -446,6 +457,9 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == DishWasherConstant.APPOINTMENT_CODE && resultCode == RESULT_OK){
             String timeValue = data.getStringExtra(DishWasherConstant.APPOINTMENT_RESULT);
+            if(timeValue.contains("今日")){
+                timeValue = timeValue.substring("今日".length());
+            }
             setRight(timeValue);
             btStart.setText(R.string.dishwasher_start_appoint);
         }

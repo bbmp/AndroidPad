@@ -1191,5 +1191,10 @@
     <string name="steam_temp_prompt">澎湃蒸不需要调节温度</string>
     <string name="steam_exp_pre_down">下</string>
     <string name="steam_power_off">设备已关机</string>
+    <string name="steam_start_appoint">开始预约</string>
+    <string name="steam_recipe_json_parse_fail">菜谱数据异常,请稍后在试</string>
+
+    <string name="steam_match_hint8">1.开启一体机。 \n2.在一体机上登录当前ROKI账户。 \n完成上述操作后点击下一步。</string>
+
 
 </resources>

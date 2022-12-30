@@ -82,6 +82,13 @@ public abstract class SteamBaseActivity extends BaseActivity {
         setOnClickListener(R.id.ll_right_center);
     }
 
+    public void setRight(String value) {
+        findViewById(R.id.ll_right).setVisibility(View.VISIBLE);
+        TextView textView = findViewById(R.id.tv_right);
+        textView.setText(value);
+    }
+
+
     public void setRight(int res) {
         findViewById(R.id.ll_right).setVisibility(View.VISIBLE);
         TextView textView = findViewById(R.id.tv_right);
@@ -138,6 +145,19 @@ public abstract class SteamBaseActivity extends BaseActivity {
         super.onDestroy();
         SteamActivityManager.getInstance().removeActivity(this);
     }
+
+    /**
+     * 去往离线提示页面
+     * @param steamOven
+     * @return
+     */
+    protected boolean toOffLinePage(SteamOven steamOven){
+        if(steamOven.status == Device.OFFLINE && steamOven.queryNum >= 0){
+            return true;
+        }
+        return false;
+    }
+
 
 
 }

@@ -68,7 +68,8 @@ public class MultiSegmentUtil {
         segment.code = steamOven.mode;
         segment.model = "";
         segment.steam = steamOven.steam;
-        segment.defTemp = steamOven.curTemp;
+        segment.curTemp = steamOven.curTemp;
+        segment.defTemp = steamOven.setUpTemp;
         segment.downTemp = steamOven.setDownTemp;
         int setTime = steamOven.setTimeH * 256 + steamOven.setTime;
         segment.duration = setTime/60 + (setTime%60 == 0 ? 0 : 1);
@@ -86,4 +87,6 @@ public class MultiSegmentUtil {
         segment.setCookState(isWorking?MultiSegment.COOK_STATE_START:MultiSegment.COOK_STATE_PAUSE);
         return segment;
     }
+
+
 }

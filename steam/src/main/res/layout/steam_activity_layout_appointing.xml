@@ -23,6 +23,19 @@
         android:text="消毒"
         android:layout_marginBottom="@dimen/dp_44"
         app:layout_constraintLeft_toLeftOf="@id/tv_temp"
+        app:layout_constraintBottom_toTopOf="@id/tv_steam"
+        app:layout_constraintVertical_chainStyle="packed"/>
+
+    <TextView
+        android:id="@+id/tv_steam"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_40"
+        android:textColor="@color/steam_mode70"
+        android:text="中蒸汽"
+        android:visibility="gone"
+        android:layout_marginBottom="@dimen/dp_44"
+        app:layout_constraintLeft_toLeftOf="@id/tv_temp"
         app:layout_constraintBottom_toTopOf="@id/tv_temp"
         app:layout_constraintVertical_chainStyle="packed"/>
 

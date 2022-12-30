@@ -40,6 +40,23 @@ public class DishWasherMqttControl implements DishWasherFunction{
     }
 
     @Override
+    public void endAppoint(String targetGuid) {
+        try{
+            MqttMsg msg = new MqttMsg.Builder()
+                    .setMsgId(MsgKeys.setDishWasherPower)
+                    .setGuid(Plat.getPlatform().getDeviceOnlySign())
+                    .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(targetGuid),
+                            DeviceUtils.getDeviceNumber(targetGuid)))
+                    .build();
+            msg.put(DishWasherConstant.UserId, AccountInfo.getInstance().getUserString());
+            msg.put(DishWasherConstant.PowerMode, DishWasherState.OFF);
+            MqttManager.getInstance().publish(msg, DishWasherFactory.getProtocol());
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void orderWork() {
 
     }

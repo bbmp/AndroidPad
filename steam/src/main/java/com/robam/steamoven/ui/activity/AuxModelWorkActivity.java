@@ -46,6 +46,7 @@ public class AuxModelWorkActivity extends SteamBaseActivity {
     private long workTimeMS;
     private ImageView pauseIv,reStartIv;
     public static final int EDN_FLAG = 33;
+    private int curModeCode;
 
     @Override
     protected int getLayoutId() {
@@ -54,9 +55,8 @@ public class AuxModelWorkActivity extends SteamBaseActivity {
 
     @Override
     protected void initView() {
-        //showLeft();
+        showLeft();
         showCenter();
-        //showLight();
         promptParentView = findViewById(R.id.descaling_prompt_parent);
         promptTvInd1 = findViewById(R.id.descaling_index_1);
         promptTvInd2 = findViewById(R.id.descaling_index_2);
@@ -114,27 +114,34 @@ public class AuxModelWorkActivity extends SteamBaseActivity {
             case SteamStateConstant.WORK_STATE_APPOINTMENT:
             case SteamStateConstant.WORK_STATE_LEISURE://空闲
             case SteamStateConstant.WORK_STATE_WORKING_FINISH:
-                goHome();
+                toWorkCompletePage();
                 break;
             case SteamStateConstant.WORK_STATE_PREHEAT:
             case SteamStateConstant.WORK_STATE_PREHEAT_PAUSE:
             case SteamStateConstant.WORK_STATE_WORKING:
             case SteamStateConstant.WORK_STATE_WORKING_PAUSE:
                 if(steamOven.mode != segment.code){//工作模式已切换
-                    goHome();
+                    toWorkCompletePage();
                     return;
                 }
+                if(steamOven.mode != 0){
+                    curModeCode = steamOven.mode;
+                }
+                boolean isPause = (steamOven.workState == SteamStateConstant.WORK_STATE_WORKING_PAUSE);
+                pauseIv.setVisibility(isPause?View.INVISIBLE:View.VISIBLE);
+                reStartIv.setVisibility(isPause?View.VISIBLE:View.INVISIBLE);
                 if(steamOven.mode != SteamModeEnum.CHUGOU.getMode()){
                     modelNameTv.setVisibility(View.VISIBLE);
                     modelTempTv.setVisibility(View.VISIBLE);
                     modelTimeTv.setVisibility(View.VISIBLE);
-                    int restTime = steamOven.restTimeH * 256 + steamOven.restTime;
-                    modelTimeTv.setText(TextSpanUtil.getSpan(restTime,Constant.UNIT_TIME_MIN));
+                    if(isPause){
+                        modelTimeTv.setText(R.string.steam_cook_in_pause);
+                    }else{
+                        int restTime = steamOven.restTimeH * 256 + steamOven.restTime;
+                        modelTimeTv.setText(TextSpanUtil.getSpan(restTime,Constant.UNIT_TIME_MIN));
+                    }
                     return;
                 }
-                //boolean isPause = (steamOven.workState == SteamStateConstant.WORK_STATE_WORKING_PAUSE)
-                //pauseIv.setVisibility(isPause?View.INVISIBLE:View.VISIBLE);
-                //reStartIv.setVisibility(isPause?View.VISIBLE:View.INVISIBLE);
                 progressPromptTv.setText(getProgressTitle(steamOven.chugouType));
                 setProgressIndex(steamOven.chugouType,true);
                 modelNameTv.setVisibility(View.INVISIBLE);
@@ -156,6 +163,13 @@ public class AuxModelWorkActivity extends SteamBaseActivity {
         }
         return null;
     }
+
+    private void toWorkCompletePage(){
+        Intent intent = new Intent(this,AuxWorkCompleteActivity.class);
+        intent.putExtra(Constant.AUX_MODEL,curModeCode);
+        startActivity(intent);
+    }
+
 
 
     private void setProgressIndex(int curTemp,boolean isProgress){
@@ -219,16 +233,15 @@ public class AuxModelWorkActivity extends SteamBaseActivity {
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.ll_left) {
-
+            showEndDialog();
         }else if(id == R.id.btn_start){
             curTemp += 1;
             isProgress = true;
             setProgressIndex(curTemp,isProgress);
         }else if(id == R.id.aux_work_model_pause){
-            //SteamCommandHelper.sendWorkCtrCommand(true,0);
-            showEndDialog();
-        }else if(id == R.id.aux_work_model_pause){
-            //SteamCommandHelper.sendWorkCtrCommand(false,0);
+            SteamCommandHelper.sendWorkCtrCommand(false);
+        }else if(id == R.id.aux_work_model_restart){
+            SteamCommandHelper.sendWorkCtrCommand(true);
         }
     }
 

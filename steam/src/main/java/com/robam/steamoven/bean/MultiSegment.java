@@ -24,6 +24,8 @@ public class MultiSegment implements Parcelable {
     //蒸汽量
     public int steam;
 
+    public int curTemp;//当前设备温度
+
     public int defTemp;//上温度
 
     public int downTemp;//下温度
@@ -34,6 +36,8 @@ public class MultiSegment implements Parcelable {
      * 剩余工作时间,单位秒
      */
     public int workRemaining;
+
+
 
     private int cookState = 1;//1 默认 未开始;3(<<1) 开始烹饪; 4(<<2) 暂停烹饪;8(<<3) 烹饪结束
     public static final int COOK_STATE_START = 1 << 1;
@@ -69,6 +73,7 @@ public class MultiSegment implements Parcelable {
         code = in.readInt();
         workRemaining = in.readInt();
         recipeId = in.readLong();
+        curTemp = in.readInt();
     }
 
     public static final Creator<MultiSegment> CREATOR = new Creator<MultiSegment>() {
@@ -146,5 +151,6 @@ public class MultiSegment implements Parcelable {
         parcel.writeInt(code);
         parcel.writeInt(workRemaining);
         parcel.writeLong(recipeId);
+        parcel.writeInt(curTemp);
     }
 }

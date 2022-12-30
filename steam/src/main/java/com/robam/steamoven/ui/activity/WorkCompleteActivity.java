@@ -115,16 +115,21 @@ public class WorkCompleteActivity extends SteamBaseActivity {
             case SteamStateConstant.WORK_STATE_PREHEAT_PAUSE:
             case SteamStateConstant.WORK_STATE_WORKING:
             case SteamStateConstant.WORK_STATE_WORKING_PAUSE:
-                Intent result = new Intent();
-                result.putExtra(Constant.ADD_TIME,addTime);
-                setResult(RESULT_OK,result);
-                finish();
+
                 break;
             case SteamStateConstant.WORK_STATE_WORKING_FINISH:
                //dealWorkFinish(steamOven);
                break;
         }
     }
+
+    private void setResult(){
+        Intent result = new Intent();
+        result.putExtra(Constant.ADD_TIME,addTime);
+        setResult(RESULT_OK,result);
+        finish();
+    }
+
 
     /**
      * 跳转到曲线保存界面
@@ -201,6 +206,7 @@ public class WorkCompleteActivity extends SteamBaseActivity {
                 //发送结束请求并跳转到保存曲线界面
                 addTime = Integer.parseInt(timeDialog.getCurValue());
                 sendOverTimeCommand(addTime);
+                setResult();
             }else if(v.getId() == R.id.tv_cancel) {//取消
                 //sendWorkFinishCommand(DIRECTIVE_OFFSET_WORK_FINISH);
                 //timeDialog.dismiss();

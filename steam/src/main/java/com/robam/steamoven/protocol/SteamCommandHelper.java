@@ -549,6 +549,9 @@ public class SteamCommandHelper {
         getInstance().sendCommonMsg(commonMap);
     }
 
+    public static long preShowTimeMil;
+
+
     /**
      * 检测洗碗是否处于开门或者离线状态，若处于离线或开门状态，则提示并返回false，否则返回true
      * @param context
@@ -556,57 +559,147 @@ public class SteamCommandHelper {
      * @return
      */
     public static boolean checkSteamState(Context context, SteamOven curDevice,int modeCode){
+        boolean state = true;
         if(curDevice == null || curDevice.status != Device.ONLINE){
-            ToastUtils.showLong(context, R.string.steam_offline);
-            return false;
-        }
-        if(curDevice.mode != 0 && (curDevice.powerState == SteamStateConstant.POWER_STATE_AWAIT
-                || curDevice.powerState == SteamStateConstant.POWER_STATE_ON
-                || curDevice.powerState == SteamStateConstant.POWER_STATE_TROUBLE)){
-            if(curDevice.workState == SteamStateConstant.WORK_STATE_PREHEAT ||
-                    curDevice.workState == SteamStateConstant.WORK_STATE_PREHEAT_PAUSE ||
-                    curDevice.workState == SteamStateConstant.WORK_STATE_WORKING ||
-                    curDevice.workState == SteamStateConstant.WORK_STATE_WORKING_PAUSE){
-                ToastUtils.showLong(context, R.string.steam_working_prompt);
-                //return false;
+            if(needShowPrompt()){
+                ToastUtils.showLong(context, R.string.steam_offline);
             }
+            state = false;
         }
-        if(curDevice.powerState == SteamStateConstant.POWER_STATE_OFF){
-            ToastUtils.showLong(context, R.string.steam_power_off);
-            return false;
+//        if(curDevice.mode != 0 && (curDevice.powerState == SteamStateConstant.POWER_STATE_AWAIT
+//                || curDevice.powerState == SteamStateConstant.POWER_STATE_ON
+//                || curDevice.powerState == SteamStateConstant.POWER_STATE_TROUBLE)){
+//            if(curDevice.workState == SteamStateConstant.WORK_STATE_PREHEAT ||
+//                    curDevice.workState == SteamStateConstant.WORK_STATE_PREHEAT_PAUSE ||
+//                    curDevice.workState == SteamStateConstant.WORK_STATE_WORKING ||
+//                    curDevice.workState == SteamStateConstant.WORK_STATE_WORKING_PAUSE){
+//                ToastUtils.showLong(context, R.string.steam_working_prompt);
+//                return false;
+//            }
+//        }
+        if(state && curDevice.powerState == SteamStateConstant.POWER_STATE_OFF){
+            if(needShowPrompt()){
+                ToastUtils.showLong(context, R.string.steam_power_off);
+            }
+            state = false;
         }
-        if(curDevice.doorState != 0){//门状态检测
-            ToastUtils.showLong(context,R.string.steam_close_door_prompt);
-            return false;
+        if(state && curDevice.doorState != 0 && (modeCode != SteamConstant.CHUGOU || modeCode != SteamConstant.GANZAO)){//门状态检测
+            if(needShowPrompt()){
+                ToastUtils.showLong(context,R.string.steam_close_door_prompt);
+            }
+            state = false;
         }
-        if(curDevice.descaleFlag == 1 || curDevice.waterLevelState == 1){
+        if(state && (curDevice.descaleFlag == 1 || curDevice.waterLevelState == 1)){
             if (modeCode == SteamConstant.XIANNENZHENG
                     || modeCode == SteamConstant.YIYANGZHENG
                     || modeCode == SteamConstant.GAOWENZHENG
                     || modeCode == SteamConstant.WEIBOZHENG
                     || modeCode == SteamConstant.ZHIKONGZHENG
+                    || modeCode == SteamConstant.SHOUDONGJIASHIKAO
                     || modeCode == SteamConstant.JIASHIBEIKAO
+                    || modeCode == SteamConstant.JIASHIFENGBEIKAO
                     || modeCode == SteamConstant.SHAJUN
                     || modeCode == SteamConstant.JIEDONG
                     || modeCode == SteamConstant.FAJIAO
+                    || modeCode == SteamConstant.QINGJIE
+                    || modeCode == SteamConstant.CHUGOU
             ){
-                if(curDevice.waterBoxState != 0){
-                    ToastUtils.show(context,R.string.steam_water_box_prompt,Toast.LENGTH_LONG);
-                    return false;
+                if(state && curDevice.waterLevelState == 1){
+                    if(needShowPrompt()){
+                        ToastUtils.showLong(context, R.string.steam_water_deficient);
+                    }
+                    state = false;
                 }
-
-                if(curDevice.waterLevelState == 1){
-                    ToastUtils.showLong(context, R.string.steam_water_deficient);
-                    return false;
+                if(state && curDevice.descaleFlag == 1){//除垢
+                    if(needShowPrompt()){
+                        ToastUtils.showLong(context, R.string.steam_descaling_prompt);
+                    }
+                    state = false;
                 }
-
-                if(curDevice.descaleFlag == 1){//除垢
-                    ToastUtils.showLong(context, R.string.steam_descaling_prompt);
-                    return false;
+                if(state && (curDevice.waterBoxState ==1 || curDevice.waterBoxState ==3)){
+                    if(needShowPrompt()){
+                        ToastUtils.show(context,R.string.steam_water_box_prompt,Toast.LENGTH_LONG);
+                    }
+                    state = false;
                 }
             }
         }
-        return true;
+        if(!state){
+            preShowTimeMil = System.currentTimeMillis();
+        }
+        return state;
+    }
+
+    private static boolean needShowPrompt(){
+        return System.currentTimeMillis() - preShowTimeMil >= 2000;
+    }
+
+
+    /**
+     * 检测菜谱工作前的状态
+     * @param context
+     * @param curDevice
+     * @param needWater 是否需要水
+     * @return
+     */
+    public static boolean checkRecipeState(Context context, SteamOven curDevice,boolean needWater){
+        boolean state = true;
+        if(state && (curDevice == null || curDevice.status != Device.ONLINE)){
+            if(needShowPrompt()){
+                ToastUtils.showLong(context, R.string.steam_offline);
+            }
+            state = false;
+        }
+//        if(curDevice.mode != 0 && (curDevice.powerState == SteamStateConstant.POWER_STATE_AWAIT
+//                || curDevice.powerState == SteamStateConstant.POWER_STATE_ON
+//                || curDevice.powerState == SteamStateConstant.POWER_STATE_TROUBLE)){
+//            if(curDevice.workState == SteamStateConstant.WORK_STATE_PREHEAT ||
+//                    curDevice.workState == SteamStateConstant.WORK_STATE_PREHEAT_PAUSE ||
+//                    curDevice.workState == SteamStateConstant.WORK_STATE_WORKING ||
+//                    curDevice.workState == SteamStateConstant.WORK_STATE_WORKING_PAUSE){
+//                ToastUtils.showLong(context, R.string.steam_working_prompt);
+//                return false;
+//            }
+//        }
+        if(state && curDevice.powerState == SteamStateConstant.POWER_STATE_OFF){
+            if(needShowPrompt()){
+                ToastUtils.showLong(context, R.string.steam_power_off);
+            }
+            state = false;
+        }
+        if(state &&  curDevice.doorState != 0){//门状态检测
+            if(needShowPrompt()){
+                ToastUtils.showLong(context,R.string.steam_close_door_prompt);
+            }
+            state = false;
+        }
+        if(state &&  (curDevice.descaleFlag == 1 || curDevice.waterLevelState == 1)){
+            if(needWater){
+                if(state && curDevice.waterLevelState == 1){
+                    if(needShowPrompt()){
+                        ToastUtils.showLong(context, R.string.steam_water_deficient);
+                    }
+                    state = false;
+                }
+                if(state && curDevice.descaleFlag == 1){//除垢
+                    if(needShowPrompt()){
+                        ToastUtils.showLong(context, R.string.steam_descaling_prompt);
+                    }
+                    state = false;
+                }
+
+                if(state && (curDevice.waterBoxState ==1 || curDevice.waterBoxState ==3)){
+                    if(needShowPrompt()){
+                        ToastUtils.show(context,R.string.steam_water_box_prompt,Toast.LENGTH_LONG);
+                    }
+                    state = false;
+                }
+            }
+        }
+        if(!state){
+            preShowTimeMil = System.currentTimeMillis();
+        }
+        return state;
     }
 
     public static void sendWorkCtrCommand(boolean isWork){

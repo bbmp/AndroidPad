@@ -223,7 +223,7 @@
         android:layout_width="@dimen/dp_60"
         android:layout_height="@dimen/dp_60"
         android:visibility="visible"
-        android:src="@drawable/steam_work_stop"
+        android:src="@drawable/steam_work_pause"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toRightOf="@id/aux_work_model_temp"
         app:layout_constraintTop_toTopOf="parent"

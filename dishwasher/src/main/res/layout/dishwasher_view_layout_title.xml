@@ -72,6 +72,18 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toRightOf="@id/ll_left_center"
         app:layout_constraintRight_toLeftOf="@id/ll_right_center">
+        <ImageView
+            android:id="@+id/tv_pxj"
+            android:visibility="gone"
+            android:src="@drawable/dishwasher_ic_pxj"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <ImageView
+            android:id="@+id/tv_zyy"
+            android:visibility="gone"
+            android:src="@drawable/dishwasher_ic_zyy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
         <TextClock
             android:id="@+id/tc_center"
             android:layout_width="wrap_content"

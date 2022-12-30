@@ -85,7 +85,11 @@ public class AppointingActivity extends DishWasherBaseActivity {
                     if(toWaringPage(dishWasher.abnormalAlarmStatus)){
                         return;
                     }
+                    if(toOffLinePage(dishWasher)){
+                        return;
+                    }
                     setLock(dishWasher.StoveLock == DishWasherState.LOCK);
+                    setState(dishWasher.LackSaltStatus == 1,dishWasher.LackRinseStatus == 1);
                     switch (dishWasher.powerStatus){
                         case DishWasherState.WAIT:
                         case DishWasherState.WORKING:
@@ -151,7 +155,7 @@ public class AppointingActivity extends DishWasherBaseActivity {
     private void dealWasherWorkingState(DishWasher dishWasher){
         switch (dishWasher.AppointmentSwitchStatus){
             case DishWasherState.APPOINTMENT_OFF:
-                if(dishWasher.workMode == 0){
+                if(dishWasher.workMode == 0 || dishWasher.powerStatus == DishWasherState.WAIT){//待机状态下，无工作模式
                     goHome();
                     return;
                 }
@@ -288,10 +292,10 @@ public class AppointingActivity extends DishWasherBaseActivity {
         IDialog iDialog = DishWasherDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_COMMON_DIALOG);
         iDialog.setCancelable(false);
         iDialog.setContentText(R.string.dishwasher_cancel_appointment_hint);
-        iDialog.setCancelText(R.string.dishwasher_cancel_appointment);
-        iDialog.setOKText(R.string.dishwasher_continue_appointment);
+        iDialog.setCancelText(R.string.dishwasher_continue_appointment);
+        iDialog.setOKText(R.string.dishwasher_cancel_appointment);
         iDialog.setListeners(v -> {
-            if (v.getId() == R.id.tv_cancel) {
+            if (v.getId() == R.id.tv_ok) {
                 DishWasherCommandHelper.sendPowerState(powerMode);
             }
         }, R.id.tv_cancel, R.id.tv_ok);

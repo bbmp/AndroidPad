@@ -9,6 +9,8 @@ public interface CabinetFunction {
 
     void powerOn();
 
+    void endAppoint(String targetGuid);
+
     void queryAttribute(String targetGuid);
 
     void sendCommonMsg(Map<String,Object> params, String targetGuid, short msg_id);

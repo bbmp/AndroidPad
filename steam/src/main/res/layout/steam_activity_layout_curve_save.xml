@@ -53,6 +53,7 @@
         android:visibility="visible"
         android:layout_marginLeft="@dimen/dp_120"
         android:layout_marginTop="@dimen/dp_180"
+        android:maxLength="10"
         android:textColor="@color/steam_white"
         app:layout_constraintLeft_toRightOf="@id/cook_chart"
         app:layout_constraintTop_toTopOf="parent"

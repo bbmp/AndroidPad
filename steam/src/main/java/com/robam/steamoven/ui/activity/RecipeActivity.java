@@ -158,24 +158,6 @@ public class RecipeActivity extends SteamBaseActivity {
                 setRecipeData(getDeviceParamsRes);
             }
         }
-//        UserInfo info = AccountInfo.getInstance().getUser().getValue();
-//        CloudHelper.getDeviceParams(this, (info != null) ? info.id:0, deviceTypeId, IDeviceType.RZKY, GetDeviceParamsRes.class,
-//                new RetrofitCallback<GetDeviceParamsRes>() {
-//                    @Override
-//                    public void onSuccess(GetDeviceParamsRes getDeviceParamsRes) {
-//                        if (null != getDeviceParamsRes && null != getDeviceParamsRes.modelMap){
-//                            if(StringUtils.isBlank(steamContent)){
-//                                setRecipeData(getDeviceParamsRes);
-//                            }
-//                            SteamDataUtil.saveSteam(deviceTypeId,new Gson().toJson(getDeviceParamsRes, GetDeviceParamsRes.class));
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onFaild(String err) {
-//
-//                    }
-//                });
     }
     //菜谱数据
     private void setRecipeData(GetDeviceParamsRes getDeviceParamsRes) {

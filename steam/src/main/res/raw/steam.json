@@ -17,7 +17,10 @@
         "maxTime": 180,
         "openDoorWork": 0,
         "needWater": 1,
-        "addSteam": 0
+        "addSteam": 0 ,
+        "rotate": 1,
+        "mult" : 1,
+        "order": 1
       },
       {
         "funCode":1,
@@ -31,7 +34,10 @@
         "maxTime": 180,
         "openDoorWork": 0,
         "needWater": 1,
-        "addSteam": 0
+        "addSteam": 0 ,
+        "rotate": 1,
+        "mult" : 1,
+        "order": 1
       },
       {
         "funCode":1,
@@ -39,16 +45,19 @@
         "name": "澎湃蒸",
         "defTemp": 100,
         "defTime": 10,
-        "minTemp": 30,
+        "minTemp": 100,
         "maxTemp": 100,
         "minTime": 1,
         "maxTime": 180,
-        "minSteam": 1,
-        "maxSteam": 2,
+        "minSteam": 2,
+        "maxSteam": 3,
         "defSteam": 2,
         "openDoorWork": 0,
         "needWater": 1,
-        "addSteam": 0
+        "addSteam": 0 ,
+        "rotate": 1,
+        "mult" : 1,
+        "order": 1
       }
     ]
   },
@@ -58,6 +67,23 @@
     "funtionName": "烤",
     "into": "com.robam.steamoven.ui.activity.ModeSelectActivity",
     "mode": [
+      {
+        "funCode":2,
+        "code": 8,
+        "name": "焙烤",
+        "defTemp": 160,
+        "defTime": 30,
+        "minTemp": 35,
+        "maxTemp": 230,
+        "minTime": 1,
+        "maxTime": 120,
+        "openDoorWork": 0,
+        "needWater": 0,
+        "addSteam": 1,
+        "rotate": 1,
+        "mult" : 1,
+        "order": 1
+      },
       {
         "funCode":2,
         "code": 7,
@@ -70,49 +96,27 @@
         "maxTime": 120,
         "openDoorWork": 0,
         "needWater": 0,
-        "addSteam": 1
-      },
-      {
-        "funCode":2,
-        "code": 9,
-        "name": "风扇烤",
-        "defTemp": 160,
-        "defTime": 30,
-        "minTemp": 35,
-        "maxTemp": 250,
-        "minTime": 1,
-        "maxTime": 120,
-        "openDoorWork": 0,
-        "needWater": 0,
-        "addSteam": 1
+        "addSteam": 1 ,
+        "rotate": 1,
+        "mult" : 1,
+        "order": 1
       },
       {
         "funCode":2,
         "code": 10,
         "name": "强烤烧",
         "defTemp": 200,
-        "defTime": 26,
+        "defTime": 30,
         "minTemp": 35,
-        "maxTemp": 250,
+        "maxTemp": 230,
         "minTime": 1,
         "maxTime": 120,
         "openDoorWork": 0,
         "needWater": 0,
-        "addSteam": 1
-      },
-      {
-        "funCode":2,
-        "code": 14,
-        "name": "EXP",
-        "defTemp": 180,
-        "defTime": 20,
-        "minTemp": 100,
-        "maxTemp": 200,
-        "minTime": 1,
-        "maxTime": 120,
-        "openDoorWork": 0,
-        "needWater": 0,
-        "addSteam": 1
+        "addSteam": 1,
+        "rotate": 1,
+        "mult" : 1,
+        "order": 1
       },
       {
         "funCode":2,
@@ -126,21 +130,47 @@
         "maxTime": 120,
         "openDoorWork": 0,
         "needWater": 0,
-        "addSteam": 1
+        "addSteam": 1,
+        "rotate": 1,
+        "mult" : 1,
+        "order": 1
       },
       {
         "funCode":2,
-        "code": 8,
-        "name": "焙烤",
-        "defTemp": 60,
-        "defTime": 1,
+        "code": 9,
+        "name": "风扇烤",
+        "defTemp": 160,
+        "defTime": 30,
         "minTemp": 35,
         "maxTemp": 250,
         "minTime": 1,
         "maxTime": 120,
         "openDoorWork": 0,
         "needWater": 0,
-        "addSteam": 1
+        "addSteam": 1,
+        "rotate": 1,
+        "mult" : 1,
+        "order": 1
+      },
+      {
+        "funCode":2,
+        "code": 14,
+        "name": "EXP",
+        "defTemp": 180,
+        "defTime": 20,
+        "defDownTemp": 160,
+        "minTemp": 100,
+        "maxTemp": 200,
+        "minDownTemp": 80,
+        "maxDownTemp": 180,
+        "minTime": 1,
+        "maxTime": 120,
+        "openDoorWork": 0,
+        "needWater": 0,
+        "addSteam": 1,
+        "rotate": 0,
+        "mult" : 0,
+        "order": 1
       }
     ]
   },
@@ -154,14 +184,17 @@
         "funCode":3,
         "code": 18,
         "name": "空气炸",
-        "defTemp": 160,
+        "defTemp": 200,
         "defTime": 30,
         "minTemp": 35,
-        "maxTemp": 250,
+        "maxTemp": 230,
         "minTime": 1,
-        "maxTime": 180,
+        "maxTime": 120,
         "openDoorWork": 0,
-        "needWater": 0
+        "needWater": 0,
+        "rotate": 1,
+        "mult" : 1,
+        "order": 1
       }
     ]
   },
@@ -175,10 +208,10 @@
         "funCode":4,
         "code": 22,
         "name": "焙烤",
-        "defTemp": 60,
-        "defTime": 1,
-        "minTemp": 35,
-        "maxTemp": 250,
+        "defTemp": 160,
+        "defTime": 30,
+        "minTemp": 100,
+        "maxTemp": 230,
         "minTime": 1,
         "maxTime": 120,
         "minSteam": 1,
@@ -186,7 +219,10 @@
         "defSteam": 2,
         "openDoorWork": 0,
         "needWater": 1,
-        "addSteam": 0
+        "addSteam": 0,
+        "rotate": 1,
+        "mult" : 1,
+        "order": 1
       },
       {
         "funCode":4,
@@ -194,7 +230,7 @@
         "name": "风焙烤",
         "defTemp": 200,
         "defTime": 30,
-        "minTemp": 35,
+        "minTemp": 100,
         "maxTemp": 250,
         "minTime": 1,
         "maxTime": 120,
@@ -203,16 +239,19 @@
         "defSteam": 2,
         "openDoorWork": 0,
         "needWater": 1,
-        "addSteam": 0
+        "addSteam": 0,
+        "rotate": 1,
+        "mult" : 1,
+        "order": 1
       },
       {
         "funCode":4,
         "code": 24,
         "name": "强烤烧",
-        "defTemp": 180,
+        "defTemp": 200,
         "defTime": 30,
-        "minTemp": 35,
-        "maxTemp": 250,
+        "minTemp": 100,
+        "maxTemp": 230,
         "minTime": 1,
         "maxTime": 120,
         "minSteam": 1,
@@ -220,7 +259,10 @@
         "defSteam": 2,
         "openDoorWork": 0,
         "needWater": 1,
-        "addSteam": 0
+        "addSteam": 0,
+        "rotate": 1,
+        "mult" : 1,
+        "order": 1
       }
     ]
   },
@@ -239,36 +281,88 @@
     "mode": []
   },
   {
+    "backgroundImg": "steam_ic_bg_carve",
+    "funtionCode": 8,
+    "funtionName": "烹饪\n曲线",
+    "into": "com.robam.steamoven.ui.activity.CurveActivity",
+    "mode": []
+  },
+  {
     "backgroundImg": "steam_ic_bg_aux",
     "funtionCode": 7,
-    "funtionName": "辅助",
+    "funtionName": "辅助\n功能",
     "into": "com.robam.steamoven.ui.activity.ModeSelectActivity",
     "mode": [
+      {
+        "funCode": 7,
+        "code": 37,
+        "name": "解冻",
+        "defTemp": 50,
+        "defTime": 25,
+        "minTemp": 40,
+        "maxTemp": 60,
+        "minTime": 1,
+        "maxTime": 180,
+        "openDoorWork": 0,
+        "needWater": 1,
+        "rotate": 0
+      },
       {
         "funCode": 7,
         "code": 32,
         "name": "发酵",
         "defTemp": 35,
-        "defTime": 15,
-        "minTemp": 35,
-        "maxTemp": 40,
+        "defTime": 40,
+        "minTemp": 30,
+        "maxTemp": 45,
         "minTime": 1,
         "maxTime": 720,
         "openDoorWork": 0,
-        "needWater": 1
+        "needWater": 1,
+        "rotate": 0,
+        "order": 1
+      },
+      {
+        "funCode": 7,
+        "code": 36,
+        "name": "保温",
+        "defTemp": 60,
+        "defTime": 360,
+        "minTemp": 50,
+        "maxTemp": 80,
+        "minTime": 360,
+        "maxTime": 360,
+        "openDoorWork": 0,
+        "needWater": 0,
+        "rotate": 0
+      },
+      {
+        "funCode": 7,
+        "code": 38,
+        "name": "清洁",
+        "defTemp": 100,
+        "defTime": 10,
+        "minTemp": 100,
+        "maxTemp": 100,
+        "minTime": 10,
+        "maxTime": 10,
+        "openDoorWork": 0,
+        "needWater": 1,
+        "rotate": 0
       },
       {
         "funCode": 7,
         "code": 33,
         "name": "干燥",
-        "defTemp": 250,
+        "defTemp": 150,
         "defTime": 10,
-        "minTemp": 250,
-        "maxTemp": 250,
+        "minTemp": 150,
+        "maxTemp": 150,
         "minTime": 10,
         "maxTime": 10,
         "openDoorWork": 1,
-        "needWater": 0
+        "needWater": 0,
+        "rotate": 0
       },
       {
         "funCode": 7,
@@ -276,59 +370,14 @@
         "name": "杀菌",
         "defTemp": 100,
         "defTime": 30,
-        "minTemp": 30,
-        "maxTemp": 100,
-        "minTime": 1,
-        "maxTime": 180,
-        "openDoorWork": 0,
-        "needWater": 1
-      },
-      {
-        "funCode": 7,
-        "code": 36,
-        "name": "保温",
-        "defTemp": 60,
-        "defTime": 120,
-        "minTemp": 50,
-        "maxTemp": 80,
-        "minTime": 120,
-        "maxTime": 120,
-        "openDoorWork": 0,
-        "needWater": 0
-      },
-      {
-        "funCode": 7,
-        "code": 37,
-        "name": "解冻",
-        "defTemp": 55,
-        "defTime": 25,
-        "minTemp": 40,
-        "maxTemp": 60,
-        "minTime": 1,
-        "maxTime": 180,
-        "openDoorWork": 0,
-        "needWater": 1
-      },
-      {
-        "funCode": 7,
-        "code": 38,
-        "name": "清洁",
-        "defTemp": 100,
-        "defTime": 15,
         "minTemp": 100,
         "maxTemp": 100,
-        "minTime": 15,
-        "maxTime": 15,
+        "minTime": 30,
+        "maxTime": 30,
         "openDoorWork": 0,
-        "needWater": 1
+        "needWater": 1,
+        "rotate": 0
       }
     ]
-  },
-  {
-    "backgroundImg": "steam_ic_bg_carve",
-    "funtionCode": 8,
-    "funtionName": "烹饪\n曲线",
-    "into": "com.robam.steamoven.ui.activity.CurveActivity",
-    "mode": []
   }
 ]

@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.robam.common.constant.StoveConstant;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
+import com.robam.common.utils.ToastUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBasePage;
 import com.robam.steamoven.bean.DeviceConfigurationFunctions;
@@ -67,6 +68,7 @@ public class RecipeClassifyPage extends SteamBasePage {
                 startActivity(intent);
             } catch (JSONException e) {
                 e.printStackTrace();
+                ToastUtils.showLong(rvRecipe.getContext(),R.string.steam_recipe_json_parse_fail);
             }
 
         });
@@ -74,18 +76,20 @@ public class RecipeClassifyPage extends SteamBasePage {
 
     private ArrayList<ModeBean> getModeBeans(SteamRecipe stoveRecipe) throws JSONException {
         JSONObject jsonObject = new JSONObject(stoveRecipe.functionParams);
-        JSONObject modeObj = jsonObject.optJSONObject("model");
+        JSONObject modeObj = jsonObject.getJSONObject("model");
         int code = Integer.parseInt(modeObj.getString("value"));
-        JSONObject timeDefObj = jsonObject.optJSONObject("setTimeDef");
+        JSONObject timeDefObj = jsonObject.getJSONObject("setTimeDef");
         int defTime = Integer.parseInt(timeDefObj.getString("value"));
-        JSONObject timeRuleObj = jsonObject.optJSONObject("setTime");
+        JSONObject timeRuleObj = jsonObject.getJSONObject("setTime");
         JSONArray ruleArray = timeRuleObj.getJSONArray("value");
+        JSONObject needWaterObj = jsonObject.getJSONObject("needWater");
+        String needWaterValue = needWaterObj.getString("value");
         ModeBean modeBean = new ModeBean();
         modeBean.code = code;
         modeBean.defTime = defTime;
         modeBean.minTime = ruleArray.getInt(0);
         modeBean.maxTime = ruleArray.getInt(1);
-
+        modeBean.needWater = Integer.parseInt(needWaterValue);
         ArrayList<ModeBean> modeBeanList = new ArrayList<>();
         modeBeanList.add(modeBean);
         return modeBeanList;

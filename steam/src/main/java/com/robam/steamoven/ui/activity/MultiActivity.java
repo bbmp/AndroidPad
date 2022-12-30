@@ -24,10 +24,14 @@ import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.MultiSegmentEnum;
 import com.robam.steamoven.constant.SteamConstant;
 import com.robam.steamoven.constant.SteamEnum;
+import com.robam.steamoven.constant.SteamModeEnum;
 import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.ui.dialog.SteamCommonDialog;
+import com.robam.steamoven.utils.MultiSegmentUtil;
+import com.robam.steamoven.utils.SkipUtil;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -113,28 +117,7 @@ public class MultiActivity extends SteamBaseActivity {
         if(steamOven.mode == 0){
             return;
         }
-        switch (steamOven.workState){
-            case SteamStateConstant.WORK_STATE_LEISURE:
-            case SteamStateConstant.WORK_STATE_APPOINTMENT://预约页面
-                break;
-            case SteamStateConstant.WORK_STATE_PREHEAT:
-            case SteamStateConstant.WORK_STATE_PREHEAT_PAUSE:
-            case SteamStateConstant.WORK_STATE_WORKING:
-            case SteamStateConstant.WORK_STATE_WORKING_PAUSE:
-                toMultiWorkPage();
-                break;
-        }
-    }
-
-    private void toMultiWorkPage(){
-        if(!isStart){
-            isStart = true;
-            multiSegments.get(0).setCookState(MultiSegment.COOK_STATE_START);
-        }
-        Intent intent = new Intent(this,MultiWorkActivity.class);
-        intent.putParcelableArrayListExtra(Constant.SEGMENT_DATA_FLAG, (ArrayList<? extends Parcelable>) multiSegments);
-        startActivityForResult(intent,START_WORK_CODE);
-        finish();
+        SkipUtil.toWorkPage(steamOven,this);
     }
 
     private void showLight(){
@@ -142,8 +125,6 @@ public class MultiActivity extends SteamBaseActivity {
         ((TextView)findViewById(R.id.tv_right_center)).setText(R.string.steam_light);
         ((ImageView)findViewById(R.id.iv_right_center)).setImageResource(R.drawable.steam_ic_light_max);
     }
-
-
 
     /**
      * 设置删除文本与删除按钮图标

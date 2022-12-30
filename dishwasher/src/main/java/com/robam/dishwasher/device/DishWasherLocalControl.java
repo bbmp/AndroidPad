@@ -28,6 +28,11 @@ public class DishWasherLocalControl implements DishWasherFunction{
     }
 
     @Override
+    public void endAppoint(String targetGuid) {
+
+    }
+
+    @Override
     public void orderWork() {
 
     }

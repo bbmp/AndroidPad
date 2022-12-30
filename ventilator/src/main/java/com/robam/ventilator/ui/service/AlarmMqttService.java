@@ -91,7 +91,7 @@ public class AlarmMqttService extends Service {
         for (Device device: AccountInfo.getInstance().deviceList) {
             if (IDeviceType.RRQZ.equals(device.dc) || IDeviceType.RZNG.equals(device.dc))
                 continue;
-            if (device.queryNum == 1 && device.status == Device.ONLINE) { //已经查过一次
+            if (device.queryNum > 1) {//device.status == Device.ONLINE //已经查过一次
                 device.status = Device.OFFLINE;
                 AccountInfo.getInstance().getGuid().setValue(device.guid); //更新设备状态
             }

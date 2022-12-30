@@ -1,10 +1,6 @@
 package com.robam.steamoven.bean;
 
-import com.robam.steamoven.constant.SteamModeEnum;
-
 import org.litepal.annotation.Column;
-import org.litepal.crud.LitePalSupport;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -89,6 +85,33 @@ public class ModeBean implements Serializable {
      */
     @Column
     public int addSteam ;
+
+    /**
+     * 是否支持旋转烤
+     */
+    @Column
+    public int rotate ;
+
+    /**
+     * 是否支持多段
+     */
+    @Column
+    public int mult ;
+
+    /**
+     * 是否支持预约
+     */
+    @Column
+    public int order ;
+
+    @Column
+    public int defDownTemp;
+
+    @Column
+    public int minDownTemp;
+
+    @Column
+    public int maxDownTemp;
 
     public int getDefDownTemp(int selectTemp){
         return selectTemp - 20 > minTemp ? selectTemp - 20 : minTemp ;

@@ -1,38 +1,22 @@
 package com.robam.steamoven.ui.activity;
 
-import android.content.Intent;
-import android.os.Parcelable;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-
-import com.google.gson.Gson;
-import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
-import com.robam.common.bean.UserInfo;
 import com.robam.common.constant.ComnConstant;
-import com.robam.common.http.RetrofitCallback;
-import com.robam.common.manager.DeviceWarnInfoManager;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.StringUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
-import com.robam.steamoven.bean.MultiSegment;
 import com.robam.steamoven.bean.SteamOven;
-import com.robam.steamoven.constant.Constant;
-import com.robam.steamoven.constant.SteamModeEnum;
 import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.device.SteamAbstractControl;
-import com.robam.steamoven.http.CloudHelper;
 import com.robam.steamoven.protocol.SteamCommandHelper;
-import com.robam.steamoven.response.GetDeviceErrorRes;
-import com.robam.steamoven.response.GetDeviceParamsRes;
-import com.robam.steamoven.utils.MultiSegmentUtil;
+import com.robam.steamoven.utils.SkipUtil;
 import com.robam.steamoven.utils.SteamDataUtil;
-import java.util.ArrayList;
-import java.util.List;
 
 //非主入口调用入口
 public class MainActivity extends SteamBaseActivity {
@@ -57,11 +41,14 @@ public class MainActivity extends SteamBaseActivity {
                     if(toWaringPage(steamOven)){
                         return;
                     }
+                    if(toOffLinePage(steamOven)){
+                        return;
+                    }
                     switch (steamOven.powerState){
                         case SteamStateConstant.POWER_STATE_AWAIT:
                         case SteamStateConstant.POWER_STATE_ON:
                         case SteamStateConstant.POWER_STATE_TROUBLE:
-                            toWorkPage(steamOven);
+                            SkipUtil.toWorkPage(steamOven,MainActivity.this);
                             break;
                         case SteamStateConstant.POWER_STATE_OFF:
                             break;
@@ -92,64 +79,7 @@ public class MainActivity extends SteamBaseActivity {
         SteamDataUtil.getDeviceErrorInfo(this);
     }
 
-    /**
-     * 跳转到指定业务页面
-     * @param steamOven
-     */
-    private void toWorkPage(SteamOven steamOven){
-        switch (steamOven.workState){
-            case SteamStateConstant.WORK_STATE_LEISURE:
-                break;
-            case SteamStateConstant.WORK_STATE_APPOINTMENT://预约页面
-                HomeSteamOven.getInstance().orderTime = steamOven.orderLeftTime;
-                Intent appointIntent = new Intent(this,AppointingActivity.class);
-                MultiSegment segment = MultiSegmentUtil.getSkipResult(steamOven);
-                segment.workRemaining = steamOven.orderLeftTime;
-                appointIntent.putExtra(Constant.SEGMENT_DATA_FLAG, segment);
-                startActivity(appointIntent);
-                break;
-            case SteamStateConstant.WORK_STATE_PREHEAT:
-            case SteamStateConstant.WORK_STATE_PREHEAT_PAUSE:
-            case SteamStateConstant.WORK_STATE_WORKING:
-            case SteamStateConstant.WORK_STATE_WORKING_PAUSE:
-                //辅助模式工作页面
-                if(SteamModeEnum.isAuxModel(steamOven.mode)){
-                    Intent intent = new Intent(this,AuxModelWorkActivity.class);
-                    intent.putExtra(Constant.SEGMENT_DATA_FLAG,MultiSegmentUtil.getSkipResult(steamOven));
-                    startActivity(intent);
-                    return;
-                }
 
-                Intent intent;
-                List<MultiSegment> list;
-                if(steamOven.sectionNumber >= 2){
-                    //多段工作页面
-                    intent = new Intent(this, MultiWorkActivity.class);
-                    list = getMultiWorkResult(steamOven);
-                }else{
-                    //基础模式工作页面
-                    intent = new Intent(this, ModelWorkActivity.class);
-                    list = new ArrayList<>();
-                    list.add(MultiSegmentUtil.getSkipResult(steamOven));
-                }
-                intent.putParcelableArrayListExtra(Constant.SEGMENT_DATA_FLAG, (ArrayList<? extends Parcelable>) list);
-                startActivity(intent);
-                break;
-        }
-    }
-
-
-    /**
-     * 获取多段数据集合
-     * @return
-     */
-    private List<MultiSegment> getMultiWorkResult(SteamOven steamOven){
-        List<MultiSegment> multiSegments = new ArrayList<>();
-        for(int i = 0;i < steamOven.sectionNumber;i++){
-            multiSegments.add(MultiSegmentUtil.getCurSegment(steamOven,i+1));
-        }
-        return multiSegments;
-    }
 
 
 

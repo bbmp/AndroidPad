@@ -127,6 +127,7 @@ public class AppointmentActivity extends DishWasherBaseActivity {
                 if (device.guid.equals(s) && device instanceof DishWasher && device.guid.equals(HomeDishWasher.getInstance().guid)) {
                     DishWasher dishWasher = (DishWasher) device;
                     setLock(dishWasher.StoveLock == DishWasherState.LOCK);
+                    setState(dishWasher.LackSaltStatus == 1,dishWasher.LackRinseStatus == 1);
                     switch (dishWasher.powerStatus){
                         case DishWasherState.WAIT:
                         case DishWasherState.WORKING:

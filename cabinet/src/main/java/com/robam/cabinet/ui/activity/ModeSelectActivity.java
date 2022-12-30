@@ -218,6 +218,9 @@ public class ModeSelectActivity extends CabinetBaseActivity {
         if (requestCode == Constant.APPOINT_CODE && resultCode == RESULT_OK) {
             //展示预约设计时间
             String result = data.getStringExtra(Constant.APPOINTMENT_RESULT);
+            if(result.contains("今日")){
+                result = result.substring("今日".length());
+            }
             setRight(result);
             btStart.setText(R.string.cabinet_start_appoint);
         }
@@ -230,7 +233,12 @@ public class ModeSelectActivity extends CabinetBaseActivity {
      * @throws ParseException
      */
     private long getAppointingTimeMin(String timeText) throws ParseException {
-        String time = timeText.substring("次日".length()).trim()+":00";
+        String time;
+        if(timeText.contains("日")){
+            time = timeText.substring("次日".length()).trim()+":00";
+        }else{
+            time = timeText.trim() + ":00";
+        }
         Date curTime = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  //HH:24小时制  hh:12小时制
         String curTimeStr = dateFormat.format(curTime);

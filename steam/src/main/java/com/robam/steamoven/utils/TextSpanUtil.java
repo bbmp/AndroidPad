@@ -18,7 +18,12 @@ public class TextSpanUtil {
      */
     public  static SpannableString getSpan(int value, String unit){
         if(unit.equals(Constant.UNIT_TIME_MIN)){
-            String time = TimeUtils.secToHourMinUp(value);
+            int min = value/60;
+            int sec = value % 60;
+            if(sec != 0){
+                min += 1;
+            }
+            String time = min+"min";//TimeUtils.secToHourMinUp(value);
             SpannableString spannableString = new SpannableString(time);
             int pos = time.indexOf(Constant.UNIT_TIME_H);
             if (pos >= 0)

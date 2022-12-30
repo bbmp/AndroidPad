@@ -121,5 +121,9 @@ public interface Constant {
     String AUX_MODEL = "aux_model";
     String MAIN_MODEL = "aux_model";
 
+    int APPOINT_CODE = 1005;
+
+    String APPOINTMENT_RESULT = "appointment_result";
+
 
 }
