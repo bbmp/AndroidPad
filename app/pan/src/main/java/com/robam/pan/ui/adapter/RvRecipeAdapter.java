@@ -9,13 +9,14 @@ import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.module.LoadMoreModule;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.robam.common.utils.ImageUtils;
 import com.robam.pan.R;
 import com.robam.pan.bean.PanRecipe;
 
 //云端菜谱
-public class RvRecipeAdapter extends BaseQuickAdapter<PanRecipe, BaseViewHolder> {
+public class RvRecipeAdapter extends BaseQuickAdapter<PanRecipe, BaseViewHolder> implements LoadMoreModule {
     private RequestOptions maskOption = new RequestOptions()
             .centerCrop()
             .placeholder(R.drawable.pan_main_item_bg) //预加载图片
