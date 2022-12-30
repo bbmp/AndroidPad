@@ -14,9 +14,11 @@ import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.robam.common.IDeviceType;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
+import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.pan.R;
 import com.robam.pan.base.PanBaseActivity;
@@ -36,6 +38,7 @@ public class RecipeActivity extends PanBaseActivity {
     private RvRecipeAdapter rvRecipeAdapter;
     private EditText etSearch;
     private TextView tvEmpty;
+    private int pageNo;
 
 
     @Override
@@ -65,6 +68,13 @@ public class RecipeActivity extends PanBaseActivity {
                 startActivity(intent);
             }
         });
+        rvRecipeAdapter.getLoadMoreModule().setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                LogUtils.e("onLoadMore");
+                getPanRecipe();
+            }
+        });
         etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -90,10 +100,12 @@ public class RecipeActivity extends PanBaseActivity {
 
     //获取锅菜谱
     private void getPanRecipe() {
-        CloudHelper.getRecipesByDevice(this, IDeviceType.RZNG, "all", 1, 20, GetRecipesByDeviceRes.class,
+        CloudHelper.getRecipesByDevice(this, IDeviceType.RZNG, "all", 1 + pageNo * 20, 20, GetRecipesByDeviceRes.class,
                 new RetrofitCallback<GetRecipesByDeviceRes>() {
                     @Override
                     public void onSuccess(GetRecipesByDeviceRes getRecipesByDeviceRes) {
+                        if (null == getRecipesByDeviceRes || null == getRecipesByDeviceRes.cookbooks)
+                            rvRecipeAdapter.getLoadMoreModule().loadMoreEnd();
 
                         setData(getRecipesByDeviceRes);
                     }
@@ -101,6 +113,7 @@ public class RecipeActivity extends PanBaseActivity {
                     @Override
                     public void onFaild(String err) {
                         setData(null);
+                        rvRecipeAdapter.getLoadMoreModule().loadMoreFail();
                     }
                 });
     }
@@ -121,9 +134,11 @@ public class RecipeActivity extends PanBaseActivity {
                     }
                 }
             }
+            pageNo++;
+            rvRecipeAdapter.getLoadMoreModule().loadMoreComplete();
         }
         if (panRecipes.size() > 0) {
-            rvRecipeAdapter.setList(panRecipes);
+            rvRecipeAdapter.addData(panRecipes);
             hideEmpty();
         }
         else
@@ -147,7 +162,8 @@ public class RecipeActivity extends PanBaseActivity {
 
                     @Override
                     public void onSuccess(GetRecipesByDeviceRes getRecipesByDeviceRes) {
-
+                        rvRecipeAdapter.setNewInstance(new ArrayList<>());
+                        pageNo = 0;
                         setData(getRecipesByDeviceRes);
                     }
 
