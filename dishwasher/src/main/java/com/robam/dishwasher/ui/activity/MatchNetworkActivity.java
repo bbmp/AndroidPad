@@ -25,7 +25,7 @@ public class MatchNetworkActivity extends DishWasherBaseActivity {
 
     @Override
     protected void initView() {
-        showLeft();
+        //showLeft();
         showCenter();
         model = IDeviceType.RXDG;
         tvHint = findViewById(R.id.tv_match_hint);

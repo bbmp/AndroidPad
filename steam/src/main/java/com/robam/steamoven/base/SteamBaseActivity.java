@@ -2,6 +2,7 @@ package com.robam.steamoven.base;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.service.autofill.FieldClassification;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,6 +25,7 @@ import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.manager.SteamActivityManager;
 import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.ui.activity.MainActivity;
+import com.robam.steamoven.ui.activity.MatchNetworkActivity;
 import com.robam.steamoven.ui.activity.WaringActivity;
 
 
@@ -152,7 +154,9 @@ public abstract class SteamBaseActivity extends BaseActivity {
      * @return
      */
     protected boolean toOffLinePage(SteamOven steamOven){
-        if(steamOven.status == Device.OFFLINE && steamOven.queryNum >= 0){
+        if(steamOven.status == Device.OFFLINE && steamOven.queryNum > 2){
+            Intent intent = new Intent(this, MatchNetworkActivity.class);
+            startActivity(intent);
             return true;
         }
         return false;

@@ -47,7 +47,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/dishwasher_white70"
         android:textSize="@dimen/sp_48"
-        android:text="洗涤"
+        android:text="@string/dishwasher_working"
         android:gravity="center"
         app:layout_constraintLeft_toLeftOf="@id/progress"
         app:layout_constraintTop_toTopOf="@id/progress"

@@ -1185,15 +1185,17 @@
     <string name="steam_working_prompt">设备工作中</string>
     <string name="steam_curve_no_data">无曲线数据</string>
     <string name="steam_maintain_phone">维修电话：658889789</string>
-    <string name="steam_section_1">一段</string>
-    <string name="steam_section_2">二段</string>
-    <string name="steam_section_3">三段</string>
-    <string name="steam_temp_prompt">澎湃蒸不需要调节温度</string>
+    <string name="steam_section_1">第一段</string>
+    <string name="steam_section_2">第二段</string>
+    <string name="steam_section_3">第三段</string>
+    <string name="steam_temp_prompt">当前模式不需要调节温度参数</string>
+    <string name="steam_time_prompt">当前模式不需要调节时间参数</string>
+    <string name="steam_temp_time_prompt">当前模式不需要调节温度和时间参数</string>
     <string name="steam_exp_pre_down">下</string>
     <string name="steam_power_off">设备已关机</string>
     <string name="steam_start_appoint">开始预约</string>
     <string name="steam_recipe_json_parse_fail">菜谱数据异常,请稍后在试</string>
-
+    <string name="steam_end_appoint">是否结束当前预约工作</string>
     <string name="steam_match_hint8">1.开启一体机。 \n2.在一体机上登录当前ROKI账户。 \n完成上述操作后点击下一步。</string>
 
 

@@ -67,6 +67,7 @@
     <string name="dishwasher_close_door_prompt">请检查洗碗机门是否关闭</string>
     <string name="dishwasher_finish">完成</string>
     <string name="dishwasher_washer">洗涤</string>
+    <string name="dishwasher_working">工作中</string>
     <string name="dishwasher_aeration">换气</string>
     <string name="dishwasher_aeration_await">换气等待</string>
     <string name="dishwasher_no_guid">缺失数据</string>

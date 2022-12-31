@@ -91,6 +91,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
     private int sectionResId;
     private TextView btStart;
 
+
     @Override
     protected int getLayoutId() {
         return R.layout.steam_activity_layout_mode_select;
@@ -100,7 +101,6 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
     protected void initView() {
         showLeft();
         showCenter();
-        //showRightCenter();
         btStart = findViewById(R.id.btn_start);
         tabLayout = findViewById(R.id.tabLayout);
         noScrollViewPager = findViewById(R.id.pager);
@@ -112,7 +112,6 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
                     if(preSelectTab.getId() != tab.getId()){
                         tabLayout.selectTab(preSelectTab);
                     }
-                    ToastUtils.showLong(ModeSelectActivity.this,R.string.steam_temp_prompt);
                     return;
                 }
                 //暂停之前的滚动
@@ -186,6 +185,8 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
     }
 
 
+    //上次显示Toast 的时间搓
+    private long preShowTimeMin;
     /**
      * 判断模式对应的参数是否可调节（澎湃蒸模式下温度不能调节）
      * @param tab
@@ -194,10 +195,31 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
     private boolean isClickAble(TabLayout.Tab tab){
         TabLayout.Tab tabAt = tabLayout.getTabAt(0);
         TextView tv = tabAt.getCustomView().findViewById(R.id.tv_mode);
-        if(SteamModeEnum.matchCode(tv.getText().toString()) == SteamConstant.ZHIKONGZHENG){//澎湃蒸
-            return tab.getId() != 2;
+        int modeCode = SteamModeEnum.matchCode(tv.getText().toString());
+        boolean isClickAble = true;
+        for (ModeBean modeBean: modes) {
+            if (modeCode == modeBean.code) {
+                int promptResId = 0;
+                if (tab.getId() == 2) {
+                    isClickAble = modeBean.maxTemp != modeBean.minTemp;
+                    promptResId = R.string.steam_temp_prompt;
+                } else if (tab.getId() == 4) {
+                    isClickAble = modeBean.maxTemp != modeBean.minTemp;
+                    promptResId = R.string.steam_time_prompt;
+                }
+                if(!isClickAble){
+                    if(modeBean.maxTemp == modeBean.minTemp && modeBean.maxTemp == modeBean.minTemp){
+                        promptResId = R.string.steam_temp_time_prompt;
+                    }
+                    if(System.currentTimeMillis() - preShowTimeMin >= 2000){//防止用户多次点击，弹出太多的Toast
+                        preShowTimeMin = System.currentTimeMillis();
+                        ToastUtils.showLong(ModeSelectActivity.this,promptResId);
+                    }
+                }
+                break;
+            }
         }
-        return true;
+        return isClickAble;
     }
 
     /**
@@ -345,7 +367,9 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             noScrollViewPager.setOffscreenPageLimit(fragments.size());
 
             preSelectTab = modeTab;
-
+            if(!needSetResult){
+                setRight(R.string.steam_makeAnAppointment);
+            }
             initOtherViews(defaultBean);
         }
 
@@ -488,7 +512,6 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
        finish();
     }
 
-
     /**
      * 根据当前模式设置温度和时间
      */
@@ -499,6 +522,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
                     curModeBean = modeBean;
                     this.initOtherViews(curModeBean);
                     this.initStreamPageData(curModeBean);
+                    //this.initAppointView(curModeBean);
                     if (mode == SteamConstant.XIANNENZHENG || mode == SteamConstant.YIYANGZHENG || mode == SteamConstant.GAOWENZHENG || mode == SteamConstant.ZHIKONGZHENG) { //蒸模式
 
                         timeSelectPage.updateTimeTab(modeBean);
@@ -588,12 +612,20 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             hideLeftCenter();
         }
         if(modeBean.order == 1 && !needSetResult){
-            setRight(R.string.steam_makeAnAppointment);
-            setOnClickListener(R.id.ll_right);
+            showRight();
+            TextView textView = findViewById(R.id.tv_right);
+            if("预约".equals(textView.getText().toString())){
+                btStart.setText(R.string.steam_start_cook);
+            }else{
+                btStart.setText(R.string.steam_start_appoint);
+            }
         }else{
             hideRight();
+            btStart.setText(R.string.steam_start_cook);
         }
     }
+
+
 
     private String[] partStreamList = {"中","大"};
     private String[] allStreamList = {"小","中","大"};
@@ -604,6 +636,20 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             steamSelectPage.setSteamValue(allStreamList);
         }
     }
+
+    private void initAppointView(ModeBean modeBean){
+        if(modeBean.order == 1){
+            TextView textView = findViewById(R.id.tv_right);
+            if("预约".equals(textView.getText().toString())){
+                btStart.setText(R.string.steam_start_cook);
+            }else{
+                btStart.setText(R.string.steam_start_appoint);
+            }
+        }else{
+            btStart.setText(R.string.steam_start_cook);
+        }
+    }
+
 
 
 
@@ -647,11 +693,17 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == Constant.APPOINT_CODE && resultCode == RESULT_OK){
             String result = data.getStringExtra(Constant.APPOINTMENT_RESULT);
-            if(result.contains("今日")){
-                result = result.substring("今日".length());
+            if(result.equals("")){
+                setRight(R.string.steam_makeAnAppointment);
+                btStart.setText(R.string.steam_start_cook);
+            }else{
+                if(result.contains("今日")){
+                    result = result.substring("今日".length());
+                }
+                setRight(result);
+                btStart.setText(R.string.steam_start_appoint);
             }
-            setRight(result);
-            btStart.setText(R.string.steam_start_appoint);
+
         }
     }
 

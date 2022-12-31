@@ -165,11 +165,12 @@ public class AppointmentActivity extends SteamBaseActivity {
 
     @Override
     public void onClick(View view) {
-        super.onClick(view);
+        //super.onClick(view);
         LogUtils.i("AppointmentActivity onClick .");
         int id = view.getId();
         if (id == R.id.btn_cancel) {
-            finish();
+            //finish();
+            cancelAppointment();
         } else if (id == R.id.btn_ok) { //确认预约
             startAppointment();
         } else if (id == R.id.ll_left) {
@@ -183,6 +184,14 @@ public class AppointmentActivity extends SteamBaseActivity {
         setResult(RESULT_OK,result);
         finish();
     }
+
+    private void cancelAppointment(){
+        Intent result = new Intent();
+        result.putExtra(Constant.APPOINTMENT_RESULT,"");
+        setResult(RESULT_OK,result);
+        finish();
+    }
+
 
 
 

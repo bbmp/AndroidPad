@@ -19,7 +19,7 @@
         android:id="@+id/cook_chart"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/multi_work_total"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ll_title"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -91,6 +91,18 @@
         app:layout_constraintBottom_toBottomOf="@id/guideline"
         app:layout_constraintLeft_toRightOf="@id/multi_work_model_list"
         android:text="22min"/>
+
+<!--    <TextView-->
+<!--        android:id="@+id/multi_work_temp"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:textSize="@dimen/sp_100"-->
+<!--        android:layout_marginLeft="@dimen/dp_67"-->
+<!--        android:textColor="@color/steam_white"-->
+<!--        app:layout_constraintTop_toTopOf="@id/guideline"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/guideline"-->
+<!--        app:layout_constraintLeft_toRightOf="@id/multi_work_model_list"-->
+<!--        android:text="22min"/>-->
 
     <ImageView
         android:id="@+id/multi_work_pause"

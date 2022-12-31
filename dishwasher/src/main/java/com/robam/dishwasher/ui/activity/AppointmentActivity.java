@@ -226,9 +226,9 @@ public class AppointmentActivity extends DishWasherBaseActivity {
     public void onClick(View view) {
         super.onClick(view);
         int id = view.getId();
-        if (id == R.id.btn_cancel)
-            finish();
-        else if (id == R.id.btn_ok) { //确认预约
+        if (id == R.id.btn_cancel){
+            cancelAppoint();
+        }else if (id == R.id.btn_ok) { //确认预约
             //startAppointing();
             startSetResult();
         }else if(id == R.id.ll_left){
@@ -238,21 +238,33 @@ public class AppointmentActivity extends DishWasherBaseActivity {
 
 
     private void startSetResult(){
-        DishWasher curDevice = getCurDevice();
-        if(curDevice == null){
-            return;
-        }
-        if(curDevice.AppointmentSwitchStatus == DishWasherState.APPOINTMENT_ON){
-            //修改预约时间
-        }else{
-            //设置预约时间
-            Intent result = new Intent();
-            result.putExtra(DishWasherConstant.APPOINTMENT_RESULT,tvTime.getText().toString());
-            setResult(RESULT_OK,result);
-            finish();
-        }
+//        DishWasher curDevice = getCurDevice();
+//        if(curDevice == null){
+//            return;
+//        }
+//        if(curDevice.AppointmentSwitchStatus == DishWasherState.APPOINTMENT_ON){
+//            //修改预约时间
+//        }else{
+//            //设置预约时间
+//            Intent result = new Intent();
+//            result.putExtra(DishWasherConstant.APPOINTMENT_RESULT,tvTime.getText().toString());
+//            setResult(RESULT_OK,result);
+//            finish();
+//        }
+        Intent result = new Intent();
+        result.putExtra(DishWasherConstant.APPOINTMENT_RESULT,tvTime.getText().toString());
+        setResult(RESULT_OK,result);
+        finish();
 
     }
+
+    private void cancelAppoint(){
+        Intent result = new Intent();
+        result.putExtra(DishWasherConstant.APPOINTMENT_RESULT,"");
+        setResult(RESULT_OK,result);
+        finish();
+    }
+
 
     /**
      * 开始预约

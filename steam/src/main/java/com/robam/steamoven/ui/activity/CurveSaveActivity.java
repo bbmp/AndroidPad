@@ -1,7 +1,6 @@
 package com.robam.steamoven.ui.activity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -11,6 +10,7 @@ import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.BaseResponse;
+import com.robam.common.bean.Device;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.manager.DynamicLineChartManager;
 import com.robam.common.mqtt.MsgKeys;
@@ -22,12 +22,14 @@ import com.robam.steamoven.bean.CurveStep;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.SteamConstant;
+import com.robam.steamoven.constant.SteamStateConstant;
+import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.http.CloudHelper;
 import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.response.GetCurveDetailRes;
 import com.robam.steamoven.ui.dialog.SteamCommonDialog;
 import com.robam.steamoven.utils.CurveDataUtil;
-
+import com.robam.steamoven.utils.SkipUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
@@ -85,6 +87,33 @@ public class CurveSaveActivity extends SteamBaseActivity {
         finishGoHomeTv = findViewById(R.id.finish_go_home);
         finishSaveCurve = findViewById(R.id.finish_save_curve);
         setOnClickListener(R.id.multi_work_finish_opt,R.id.finish_go_home,R.id.finish_save_curve);
+        AccountInfo.getInstance().getGuid().observe(this, s -> {
+            for (Device device: AccountInfo.getInstance().deviceList) {
+                if (device.guid.equals(s) && device instanceof SteamOven && device.guid.equals(HomeSteamOven.getInstance().guid)) {
+                    SteamOven steamOven = (SteamOven) device;
+                    if(!SteamCommandHelper.getInstance().isSafe()){
+                        return;
+                    }
+                    if(toWaringPage(steamOven)){
+                        return;
+                    }
+                    if(toOffLinePage(steamOven)){
+                        return;
+                    }
+                    switch (steamOven.powerState){
+                        case SteamStateConstant.POWER_STATE_AWAIT:
+                        case SteamStateConstant.POWER_STATE_ON:
+                        case SteamStateConstant.POWER_STATE_TROUBLE:
+                            SkipUtil.toWorkPage(steamOven,CurveSaveActivity.this);
+                            break;
+                        case SteamStateConstant.POWER_STATE_OFF:
+                            break;
+                    }
+
+
+                }
+            }
+        });
     }
 
 
@@ -351,25 +380,9 @@ public class CurveSaveActivity extends SteamBaseActivity {
     }
 
 
-
-
-
-    private void showWorkFinishDialog(){
-        SteamCommonDialog steamCommonDialog = new SteamCommonDialog(this);
-        steamCommonDialog.setCancelText(R.string.steam_work_complete_add_time);
-        steamCommonDialog.setContentText(R.string.steam_work_complete);
-        steamCommonDialog.setOKText(R.string.steam_common_step_complete);
-        steamCommonDialog.setListeners(v -> {
-            steamCommonDialog.dismiss();
-            if(v.getId() == R.id.tv_ok){//完成
-                //切换到烹饪结束状态
-            }else if(v.getId() == R.id.tv_cancel) {//加时
-
-            }
-        },R.id.tv_cancel,R.id.tv_ok);
-        steamCommonDialog.show();
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        CurveDataUtil.clearList();
     }
-
-
-
 }

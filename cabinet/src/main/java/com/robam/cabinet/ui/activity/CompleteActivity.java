@@ -11,6 +11,7 @@ import com.robam.cabinet.bean.Cabinet;
 import com.robam.cabinet.constant.CabinetConstant;
 import com.robam.cabinet.constant.CabinetEnum;
 import com.robam.cabinet.constant.Constant;
+import com.robam.cabinet.device.CabinetAbstractControl;
 import com.robam.cabinet.device.HomeCabinet;
 import com.robam.cabinet.util.CabinetCommonHelper;
 import com.robam.common.bean.AccountInfo;
@@ -29,7 +30,7 @@ public class CompleteActivity extends CabinetBaseActivity {
     protected void initView() {
         View completeView = findViewById(R.id.complete_finish);
         setOnClickListener(completeView);
-
+        CabinetAbstractControl.getInstance().queryAttribute(HomeCabinet.getInstance().guid);
         AccountInfo.getInstance().getGuid().observe(this, s -> {
             for (Device device: AccountInfo.getInstance().deviceList) {
                 if (device.guid.equals(s) && device instanceof Cabinet && device.guid.equals(HomeCabinet.getInstance().guid)) { //当前锅
@@ -95,7 +96,7 @@ public class CompleteActivity extends CabinetBaseActivity {
             TextView title = findViewById(R.id.complete_title);
             title.setText(CabinetEnum.match(modelCode)+"完成");
         }
-        countDownTimer = new CountDownTimer(1000 * 60 * 10, 1000) {
+        countDownTimer = new CountDownTimer(1000 * 60 * 3, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
 

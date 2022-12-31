@@ -354,7 +354,7 @@ public abstract class CabinetBaseActivity extends BaseActivity {
      * @return
      */
     public boolean toOffLinePage(Cabinet cabinet){
-        if(cabinet == null || cabinet.status == Device.OFFLINE){
+        if(isOffLine(cabinet)){
             Intent intent = new Intent();
             intent.setClass(getContext(), MatchNetworkActivity.class);
             startActivity(intent);
@@ -362,6 +362,11 @@ public abstract class CabinetBaseActivity extends BaseActivity {
         }
         return false;
     }
+
+    protected boolean isOffLine(Cabinet cabinet){
+        return (cabinet.queryNum > 2 || cabinet.status == Device.OFFLINE) ? true :false;
+    }
+
 
     @Override
     protected void onResume() {

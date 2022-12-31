@@ -27,6 +27,8 @@ import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.ui.dialog.SteamCommonDialog;
+import com.robam.steamoven.utils.SkipUtil;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -85,6 +87,9 @@ public class AppointingActivity extends SteamBaseActivity {
                     if(toOffLinePage(steamOven)){
                         return;
                     }
+                    if(toWaringPage(steamOven)){
+                        return;
+                    }
                     switch (steamOven.powerState){
                         case SteamStateConstant.POWER_STATE_AWAIT:
                         case SteamStateConstant.POWER_STATE_ON:
@@ -95,7 +100,8 @@ public class AppointingActivity extends SteamBaseActivity {
                                     steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT_PAUSE  ||
                                     steamOven.workState == SteamStateConstant.WORK_STATE_WORKING ||
                                     steamOven.workState == SteamStateConstant.WORK_STATE_WORKING ){
-                                toWorkPage();
+                                //toWorkPage();
+                                SkipUtil.toWorkPage(steamOven,AppointingActivity.this);
                             }else{
                                 goHome();
                             }
@@ -193,7 +199,7 @@ public class AppointingActivity extends SteamBaseActivity {
      */
     private void showFinishAppointDialog(){
         SteamCommonDialog steamCommonDialog = new SteamCommonDialog(this);
-        steamCommonDialog.setContentText(R.string.steam_work_multi_back_message);
+        steamCommonDialog.setContentText(R.string.steam_end_appoint);
         steamCommonDialog.setOKText(R.string.steam_finish_now);
         steamCommonDialog.setListeners(v -> {
             steamCommonDialog.dismiss();

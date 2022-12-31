@@ -9,7 +9,6 @@ import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.LogUtils;
-import com.robam.common.utils.StringUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.bean.SteamOven;
@@ -81,9 +80,6 @@ public class WorkCompleteActivity extends SteamBaseActivity {
             for (Device device: AccountInfo.getInstance().deviceList) {
                 if (device.guid.equals(s) && device instanceof SteamOven && device.guid.equals(HomeSteamOven.getInstance().guid)) {
                     SteamOven steamOven = (SteamOven) device;
-//                    if(!SteamCommandHelper.getInstance().isSafe()){
-//                        return;
-//                    }
                     if(toWaringPage(steamOven)){
                         return;
                     }
@@ -115,10 +111,11 @@ public class WorkCompleteActivity extends SteamBaseActivity {
             case SteamStateConstant.WORK_STATE_PREHEAT_PAUSE:
             case SteamStateConstant.WORK_STATE_WORKING:
             case SteamStateConstant.WORK_STATE_WORKING_PAUSE:
-
+                if(steamOven.restTime > 0){
+                    finish();
+                }
                 break;
             case SteamStateConstant.WORK_STATE_WORKING_FINISH:
-               //dealWorkFinish(steamOven);
                break;
         }
     }
@@ -199,6 +196,7 @@ public class WorkCompleteActivity extends SteamBaseActivity {
         }
         timeDialog = new SteamOverTimeDialog(this);
         timeDialog.setContentText(R.string.steam_work_complete_add_time);
+        timeDialog.setCancelable(false);
         timeDialog.setOKText(R.string.steam_sure);
         timeDialog.setData();
         timeDialog.setListeners(v -> {
@@ -206,11 +204,10 @@ public class WorkCompleteActivity extends SteamBaseActivity {
                 //发送结束请求并跳转到保存曲线界面
                 addTime = Integer.parseInt(timeDialog.getCurValue());
                 sendOverTimeCommand(addTime);
-                setResult();
+
+                //setResult();
             }else if(v.getId() == R.id.tv_cancel) {//取消
-                //sendWorkFinishCommand(DIRECTIVE_OFFSET_WORK_FINISH);
-                //timeDialog.dismiss();
-                //SteamCommandHelper.sendWorkFinishCommand(directive_offset+DIRECTIVE_OFFSET_WORK_FINISH);
+                timeDialog.dismiss();
             }
         },R.id.tv_cancel,R.id.tv_ok);
         timeDialog.show();
@@ -272,5 +269,6 @@ public class WorkCompleteActivity extends SteamBaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        dismissAllDialog();
     }
 }

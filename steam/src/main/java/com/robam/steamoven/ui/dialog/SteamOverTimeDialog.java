@@ -2,6 +2,7 @@ package com.robam.steamoven.ui.dialog;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 import com.robam.common.ui.dialog.BaseDialog;
@@ -106,4 +107,15 @@ public class SteamOverTimeDialog extends BaseDialog {
     }
 
 
+    @Override
+    public void setListeners(DialogOnClickListener onClickListener, int... viewIds) {
+        if (null != rootView) {
+            for (int i = 0; i < viewIds.length; i++) {
+                rootView.findViewById(viewIds[i]).setOnClickListener(v -> {
+                    if (null != onClickListener)
+                        onClickListener.onClick(v);
+                });
+            }
+        }
+    }
 }

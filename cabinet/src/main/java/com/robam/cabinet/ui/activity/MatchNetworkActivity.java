@@ -6,7 +6,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.robam.cabinet.R;
 import com.robam.cabinet.base.CabinetBaseActivity;
+import com.robam.cabinet.bean.Cabinet;
+import com.robam.cabinet.constant.CabinetConstant;
+import com.robam.cabinet.device.HomeCabinet;
+import com.robam.cabinet.util.CabinetCommonHelper;
 import com.robam.common.IDeviceType;
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
 
 public class MatchNetworkActivity extends CabinetBaseActivity{
     private TextView tvHint;
@@ -21,7 +27,7 @@ public class MatchNetworkActivity extends CabinetBaseActivity{
 
     @Override
     protected void initView() {
-        showLeft();
+        //showLeft();
         showCenter();
         model = IDeviceType.RXDG;
         tvHint = findViewById(R.id.tv_match_hint);
@@ -30,6 +36,24 @@ public class MatchNetworkActivity extends CabinetBaseActivity{
         ivDevice = findViewById(R.id.iv_device);
 
         setOnClickListener(R.id.tv_next, R.id.tv_ok);
+
+        AccountInfo.getInstance().getGuid().observe(this, s -> {
+            for (Device device: AccountInfo.getInstance().deviceList) {
+                if (device.guid.equals(s) && device instanceof Cabinet && device.guid.equals(HomeCabinet.getInstance().guid)) { //当前锅
+                    Cabinet cabinet = (Cabinet) device;
+                    setLock(cabinet.isChildLock == 1);
+                    if(!CabinetCommonHelper.isSafe()){
+                        return;
+                    }
+                    if(toWaringPage(cabinet.faultId)){
+                        return;
+                    }
+                    if(!isOffLine(cabinet)){
+                        goHome();
+                    }
+                }
+            }
+        });
     }
 
 

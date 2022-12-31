@@ -192,7 +192,8 @@ public class AppointmentActivity extends CabinetBaseActivity {
         super.onClick(view);
         int id = view.getId();
         if (id == R.id.btn_cancel) {
-            finish();
+            //finish();
+            cancelAppointment();
         } else if (id == R.id.btn_ok) { //确认预约
             /*if(this.checkDoorState()){//新增检查门状态
                 //CabinetCommonHelper.startPowerOn(directive_offset+POWER_ON_OFFSET);//指令压缩
@@ -214,6 +215,13 @@ public class AppointmentActivity extends CabinetBaseActivity {
 
 
     private void startAppointment(){
+        Intent result = new Intent();
+        result.putExtra(Constant.APPOINTMENT_RESULT,tvTime.getText().toString());
+        setResult(RESULT_OK,result);
+        finish();
+    }
+
+    private void cancelAppointment(){
         Intent result = new Intent();
         result.putExtra(Constant.APPOINTMENT_RESULT,tvTime.getText().toString());
         setResult(RESULT_OK,result);

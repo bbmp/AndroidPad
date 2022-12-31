@@ -17,4 +17,9 @@ public class CurveDataUtil {
     public static List getEntryList() {
         return entryList;
     }
+
+    public static void clearList(){
+        entryList.clear();
+    }
+
 }

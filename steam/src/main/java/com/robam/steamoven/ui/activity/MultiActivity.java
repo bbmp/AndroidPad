@@ -81,13 +81,6 @@ public class MultiActivity extends SteamBaseActivity {
         initOptContent();
         initDelBtnView();
         setOnClickListener(R.id.btn_start);
-//        MqttDirective.getInstance().getDirective().observe(this, s -> {
-//            switch (s - directive_offset){
-//                case MsgKeys.setDeviceAttribute_Req:
-//                    toMultiWorkPage();
-//                    break;
-//            }
-//        });
         AccountInfo.getInstance().getGuid().observe(this, s -> {
             for (Device device: AccountInfo.getInstance().deviceList) {
                 if (device.guid.equals(s) && device instanceof SteamOven && device.guid.equals(HomeSteamOven.getInstance().guid)) {
@@ -241,20 +234,6 @@ public class MultiActivity extends SteamBaseActivity {
 
 
 
-
-
-    private FuntionBean getFuntionBean(int code){
-//        for(int i = 0;i < funtionBeans.size() ;i++){
-//            if(code == funtionBeans.get(i).funtionCode){
-//                return funtionBeans.get(i);
-//            }
-//        }
-//        return null;
-        return null;
-    }
-
-
-
     private boolean checkSegmentState(View view){
         String tag = (String) view.getTag();
         int indexTag = Integer.parseInt(tag);
@@ -361,11 +340,11 @@ public class MultiActivity extends SteamBaseActivity {
     private String getSegmentName(int index){
         switch (index){
             case 0:
-                return "一段";
+                return "第一段";
             case 1:
-                return "二段";
+                return "第二段";
             case 2:
-                return "三段";
+                return "第三段";
             default:
                 return "";
         }
@@ -396,6 +375,7 @@ public class MultiActivity extends SteamBaseActivity {
         if (id == R.id.ll_left) {
             if(isDelState()){
                 setDelBtnItemState(false);
+                setDelBtnState(true);
                 return;
             }
             finish();
@@ -408,6 +388,8 @@ public class MultiActivity extends SteamBaseActivity {
             startWork();
         }
     }
+
+
 
     private void toWorkAc(){
         if(!multiSegments.get(0).isStart() && multiSegments.size() < 2){

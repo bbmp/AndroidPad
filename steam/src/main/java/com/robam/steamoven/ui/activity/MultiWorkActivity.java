@@ -9,23 +9,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.highlight.Highlight;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
-import com.robam.common.bean.MqttDirective;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.manager.DynamicLineChartManager;
 import com.robam.common.mqtt.MsgKeys;
-import com.robam.common.ui.view.MarkViewStep;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
-import com.robam.steamoven.bean.CurveStep;
 import com.robam.steamoven.bean.MultiSegment;
-import com.robam.steamoven.bean.SteamCurveDetail;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.SteamConstant;
@@ -36,6 +29,7 @@ import com.robam.steamoven.http.CloudHelper;
 import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.response.GetCurveDetailRes;
 import com.robam.steamoven.ui.dialog.SteamCommonDialog;
+import com.robam.steamoven.utils.CurveDataUtil;
 import com.robam.steamoven.utils.MultiSegmentUtil;
 import com.robam.steamoven.utils.TextSpanUtil;
 import org.json.JSONException;
@@ -43,7 +37,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -74,6 +67,8 @@ public class MultiWorkActivity extends SteamBaseActivity {
     private static final int DIRECTIVE_OFFSET_PAUSE_CONTINUE = 20;
     private static final int DIRECTIVE_OFFSET_WORK_FINISH = 60;
     private static final int DIRECTIVE_OFFSET_GO_HOME = 80;
+    private static final int WORK_COMPLETE_CODE = 301;
+    private static final int ADD_TIME_MIN_TIME = 1000 * 6;//加时最大等待时长
 
     private static final int DEVICE_IDLE_DUR = 1000 * 60 * 10;//页面空闲最大时长
     private static final int DEVICE_IDLE_SHOW = (int) (1000 * 60 * 0.1f);//页面空闲最大时长
@@ -177,7 +172,8 @@ public class MultiWorkActivity extends SteamBaseActivity {
                 updateSegmentInfo(steamOven);
                 break;
             case SteamStateConstant.WORK_STATE_WORKING_FINISH:
-                dealWorkFinish(steamOven);
+                //dealWorkFinish(steamOven);
+                toAddTimePage(steamOven);
                 break;
         }
     }
@@ -485,9 +481,22 @@ public class MultiWorkActivity extends SteamBaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         LogUtils.e("MultiActivity onActivityResult " + resultCode);
         if(resultCode == RESULT_OK){
+            if(requestCode == WORK_COMPLETE_CODE){
+                return;
+            }
             dealResult(requestCode,data);
             //setDelBtnState(multiSegments.size() > 0 ? true:false);
         }
+    }
+
+    private boolean isAddTime = false;
+    private long addTimeMil;
+    private boolean isWaringAddTimeSuccess(){
+        if(isAddTime && System.currentTimeMillis() - addTimeMil  <= ADD_TIME_MIN_TIME) {
+            return  true;
+        }
+        isAddTime = false;
+        return false;
     }
 
 
@@ -716,6 +725,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
      * 跳转到曲线保存界面
      */
     private void toCurveSavePage(){
+        CurveDataUtil.initList((ArrayList<Entry>) entryList);
         Intent intent = new Intent(this,CurveSaveActivity.class);
         intent.putExtra(Constant.CURVE_ID,curveId);
         intent.putExtra(Constant.CARVE_NAME,"多段模式");
@@ -758,6 +768,19 @@ public class MultiWorkActivity extends SteamBaseActivity {
             return;
         }
         showWorkFinishDialog();
+    }
+
+    /**
+     * 烹饪完成
+     * @param steamOven
+     */
+    private void toAddTimePage(SteamOven steamOven){
+        CurveDataUtil.initList((ArrayList<Entry>) entryList);
+        Intent intent = new Intent(this,WorkCompleteActivity.class);
+        intent.putExtra(Constant.RECIPE_ID,0);
+        intent.putExtra(Constant.CURVE_ID,curveId);
+        intent.putExtra(Constant.CARVE_NAME,"多段烹饪");
+        startActivity(intent);
     }
 
     @Override

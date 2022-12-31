@@ -457,11 +457,16 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == DishWasherConstant.APPOINTMENT_CODE && resultCode == RESULT_OK){
             String timeValue = data.getStringExtra(DishWasherConstant.APPOINTMENT_RESULT);
-            if(timeValue.contains("今日")){
-                timeValue = timeValue.substring("今日".length());
+            if("".equals(timeValue)){
+                setRight(R.string.dishwasher_appointment);
+                btStart.setText(R.string.dishwasher_start_working);
+            }else{
+                if(timeValue.contains("今日")){
+                    timeValue = timeValue.substring("今日".length());
+                }
+                setRight(timeValue);
+                btStart.setText(R.string.dishwasher_start_appoint);
             }
-            setRight(timeValue);
-            btStart.setText(R.string.dishwasher_start_appoint);
         }
     }
 }

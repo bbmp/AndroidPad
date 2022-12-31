@@ -72,7 +72,7 @@ public class ModelWorkActivity extends SteamBaseActivity {
     private static final int DEVICE_IDLE_DUR = 1000 * 60 * 10;//页面空闲最大时长
     private static final int DEVICE_IDLE_SHOW = (int) (1000 * 60 * 0.05f);//页面空闲最大时长
     private static final int ADD_STEAM_MIN_TIME = 60 * 2;//运行时间小于2分钟，不允许加湿
-    private static final int ADD_TIME_MIN_TIME = 1000 * 6;//运行时间小于2分钟，不允许加湿
+    private static final int ADD_TIME_MIN_TIME = 1000 * 6;//加时最大等待时长
     private List entryList = new ArrayList<Entry>();//数据集合
     private SteamOverTimeDialog timeDialog;//加时弹窗
     private float maxYValue = 250;
@@ -85,7 +85,7 @@ public class ModelWorkActivity extends SteamBaseActivity {
     private boolean isInitiativeEnd = false;//是否主动结束
     private boolean showRotation = false;//展示旋转按钮
     private boolean showAddStream = false;//展示加蒸汽
-    private static final int WORK_COMPLETE_CODE = 301;//展示旋转按钮
+    private static final int WORK_COMPLETE_CODE = 301;
     private boolean isPageHide = false;//页面是否已经不显示
     private TextView  setModelTv,setTempTv,setDurationTv,setSteamTv;
     private boolean isAddTime = false;//是否加时
@@ -410,15 +410,12 @@ public class ModelWorkActivity extends SteamBaseActivity {
      * @param steamOven
      */
     private void dealWorkFinish(SteamOven steamOven){
-        if(showDialog){
-            return;
-        }
-        //新方式：跳页面
+        CurveDataUtil.initList((ArrayList<Entry>) entryList);
         Intent intent = new Intent(this,WorkCompleteActivity.class);
         intent.putExtra(Constant.RECIPE_ID,recipeId);
         intent.putExtra(Constant.CURVE_ID,curveId);
         intent.putExtra(Constant.CARVE_NAME,getCurveDefaultName(recipeId));
-        startActivityForResult(intent,WORK_COMPLETE_CODE);
+        startActivity(intent);//WORK_COMPLETE_CODE
     }
 
 
@@ -656,11 +653,11 @@ public class ModelWorkActivity extends SteamBaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == RESULT_OK){
             if(requestCode == WORK_COMPLETE_CODE){
+                //isAddTime = true;
+                //addTimeMil = System.currentTimeMillis();
                 //continueCreateCurve();
                 return;
             }
-            isAddTime = true;
-            addTimeMil = System.currentTimeMillis();
             dealResult(requestCode,data);
             //setDelBtnState(multiSegments.size() > 0 ? true:false);
         }

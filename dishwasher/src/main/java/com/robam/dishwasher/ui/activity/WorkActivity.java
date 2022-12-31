@@ -212,7 +212,7 @@ public class WorkActivity extends DishWasherBaseActivity {
             tvMode.setText(DishWasherEnum.match(code));
             cpgBar.setVisibility(View.VISIBLE);
             tvModeCur.setVisibility(View.VISIBLE);
-            tvModeCur.setText(R.string.dishwasher_washer);
+            tvModeCur.setText(R.string.dishwasher_working);
         }
     }
 

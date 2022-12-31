@@ -218,11 +218,17 @@ public class ModeSelectActivity extends CabinetBaseActivity {
         if (requestCode == Constant.APPOINT_CODE && resultCode == RESULT_OK) {
             //展示预约设计时间
             String result = data.getStringExtra(Constant.APPOINTMENT_RESULT);
-            if(result.contains("今日")){
-                result = result.substring("今日".length());
+            if("".equals(result)){
+                setRight(R.string.cabinet_appointment);
+                btStart.setText(R.string.cabinet_start_working);
+            }else{
+                if(result.contains("今日")){
+                    result = result.substring("今日".length());
+                }
+                setRight(result);
+                btStart.setText(R.string.cabinet_start_appoint);
             }
-            setRight(result);
-            btStart.setText(R.string.cabinet_start_appoint);
+
         }
     }
 

@@ -124,33 +124,9 @@ public class RecipeModeActivityOld extends SteamBaseActivity implements IModeSel
             ModeBean defaultBean = modes.get(0);
             //当前模式
             HomeSteamOven.getInstance().workMode = (short) defaultBean.code;
-            //模式
-            modeTab = tabLayout.newTab();
-            modeTab.setId(0);
-            View modeView = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab_mode, null);
-            TextView tvMode = modeView.findViewById(R.id.tv_mode);
-            tvMode.setText(defaultBean.name);
-            modeTab.setCustomView(modeView);
-            tabLayout.addTab(modeTab);
-            modeSelectPage = new ModeSelectPage(modeTab, modes, this);
-            fragments.add(new WeakReference<>(modeSelectPage));
-
-
-            //蒸汽
-            steamTab = tabLayout.newTab();
-            steamTab.setId(1);
-            View steamView = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab_steam, null);
-            TextView tvSteam = steamView.findViewById(R.id.tv_mode);
-            tvSteam.setText(SteamOvenSteamEnum.match(defaultBean.defSteam));
-            steamTab.setCustomView(steamView);
-            tabLayout.addTab(steamTab);
-            steamSelectPage = new SteamSelectPage(steamTab, defaultBean);
-
-            fragments.add(new WeakReference<>(steamSelectPage));
-
             //上温度
             upTempTab = tabLayout.newTab();
-            upTempTab.setId(2);
+            upTempTab.setId(0);
             View upView = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab_temp, null);
             TextView upTemp = upView.findViewById(R.id.tv_mode);
             upTemp.setText(defaultBean.defTemp + "");
@@ -159,19 +135,9 @@ public class RecipeModeActivityOld extends SteamBaseActivity implements IModeSel
             upTempSelectPage = new TempSelectPage(upTempTab, defaultBean);
             fragments.add(new WeakReference<>(upTempSelectPage));
 
-            //下温度
-            downTempTab = tabLayout.newTab();
-            downTempTab.setId(3);
-            View downView = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab_temp, null);
-            TextView downTemp = downView.findViewById(R.id.tv_mode);
-            downTemp.setText(defaultBean.defTemp + "");
-            downTempTab.setCustomView(downView);
-            tabLayout.addTab(downTempTab);
-            downTempSelectPage = new TempSelectPage(downTempTab, defaultBean);
-            fragments.add(new WeakReference<>(downTempSelectPage));
             //时间
             timeTab = tabLayout.newTab();
-            timeTab.setId(4);
+            timeTab.setId(1);
             View timeView = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab_time, null);
             TextView tvTime = timeView.findViewById(R.id.tv_mode);
             tvTime.setText(defaultBean.defTime + "");
@@ -179,20 +145,16 @@ public class RecipeModeActivityOld extends SteamBaseActivity implements IModeSel
             tabLayout.addTab(timeTab);
             timeSelectPage = new TimeSelectPage(timeTab, defaultBean);
             fragments.add(new WeakReference<>(timeSelectPage));
-//添加设置适配器
+            //添加设置适配器
             selectPagerAdapter = new SelectPagerAdapter(getSupportFragmentManager());
             noScrollViewPager.setAdapter(selectPagerAdapter);
             noScrollViewPager.setOffscreenPageLimit(fragments.size());
 
         }
-
-//        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(noScrollViewPager));
-//        noScrollViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         setOnClickListener(R.id.ll_left, R.id.ll_right, R.id.btn_start);
         if(needSetResult){
             ((TextView)findViewById(R.id.btn_start)).setText(R.string.steam_sure);
         }
-
     }
 
 
@@ -274,8 +236,6 @@ public class RecipeModeActivityOld extends SteamBaseActivity implements IModeSel
 
                         timeSelectPage.updateTimeTab(modeBean);
                         upTempSelectPage.updateTempTab(modeBean);
-                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(4).setVisibility(View.VISIBLE); //时间
-                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(3).setVisibility(View.GONE); //下温度
                         ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.VISIBLE); //上温度
                         ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(1).setVisibility(View.GONE); //蒸汽
                     } else if (mode == SteamConstant.FENGBEIKAO || mode == SteamConstant.FENGSHANKAO || mode == SteamConstant.QIANGSHAOKAO || mode == SteamConstant.EXP
@@ -283,46 +243,32 @@ public class RecipeModeActivityOld extends SteamBaseActivity implements IModeSel
 
                         timeSelectPage.updateTimeTab(modeBean);
                         upTempSelectPage.updateTempTab(modeBean);
-                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(4).setVisibility(View.VISIBLE); //时间
-                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(3).setVisibility(View.GONE); //下温度
                         ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.VISIBLE);  //上温度
                         ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(1).setVisibility(View.GONE); //蒸汽
                     } else if (mode == SteamConstant.SHOUDONGJIASHIKAO || mode == SteamConstant.JIASHIBEIKAO || mode == SteamConstant.JIASHIFENGBEIKAO) {
                         timeSelectPage.updateTimeTab(modeBean);
                         upTempSelectPage.updateTempTab(modeBean);
                         steamSelectPage.updateSteamTab(modeBean);
-                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(4).setVisibility(View.VISIBLE); //时间
-                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(3).setVisibility(View.GONE); //下温度
                         ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.VISIBLE);  //上温度
                         ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(1).setVisibility(View.VISIBLE); //蒸汽
                     } else if (mode == SteamConstant.KONGQIZHA) {
                         timeSelectPage.updateTimeTab(modeBean);
                         upTempSelectPage.updateTempTab(modeBean);
-                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(4).setVisibility(View.VISIBLE); //时间
-                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(3).setVisibility(View.GONE); //下温度
                         ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.VISIBLE); //上温度
                         ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(1).setVisibility(View.GONE); //蒸汽
                     } else if (mode == SteamConstant.FAJIAO || mode == SteamConstant.GANZAO
                             || mode == SteamConstant.BAOWEN || mode == SteamConstant.JIEDONG || mode == SteamConstant.QINGJIE) {
                         timeSelectPage.updateTimeTab(modeBean);
                         upTempSelectPage.updateTempTab(modeBean);
-                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(4).setVisibility(View.VISIBLE); //时间
-                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(3).setVisibility(View.GONE); //下温度
                         ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.VISIBLE); //上温度
                         ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(1).setVisibility(View.GONE); //蒸汽
                     } else if (mode == SteamConstant.CHUGOU ) {
-                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(4).setVisibility(View.INVISIBLE); //时间
-                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(3).setVisibility(View.GONE); //下温度
                         ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.INVISIBLE); //上温度
                         ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(1).setVisibility(View.GONE); //蒸汽
                     } else if (mode == SteamConstant.SHAJUN) { //杀菌模式不能调节
                         timeSelectPage.updateTimeTab(modeBean);
                         upTempSelectPage.updateTempTab(modeBean);
-//                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(4).setEnabled(false);
-                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(4).setVisibility(View.VISIBLE); //时间
-                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(3).setVisibility(View.GONE); //下温度
                         ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.VISIBLE); //上温度
-//                        ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setEnabled(false);
                         ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(1).setVisibility(View.GONE); //蒸汽
                     }
 
