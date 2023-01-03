@@ -6,5 +6,5 @@ import com.robam.stove.bean.StoveRecipe;
 import java.util.List;
 
 public class GetRecipesByDeviceRes extends BaseResponse {
-    public List<StoveRecipe> cookbooks;
+    public List<StoveRecipe> data;
 }

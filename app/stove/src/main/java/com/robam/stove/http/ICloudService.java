@@ -13,7 +13,7 @@ import retrofit2.http.Query;
 
 public interface ICloudService {
     //根据设备品类获取所有菜谱(只包括导航菜谱)
-    String getRecipesByDevice = "/rest/api/cookbook/grounding/get-by-dc";
+    String getRecipesByDevice = "/rest/cook/api/cookbook/random/getCookbook";
     //获取菜谱详情
     String getRecipeDetail ="/rest/cks/api/cookbook/details/get-by-id";
     //获取//烹饪曲线列表
@@ -23,7 +23,7 @@ public interface ICloudService {
     //曲线详情
     String curveCookDetailUrl= "/rest/cks/api/curve_cookbook/v2/cooking_curve/query";
     //菜谱搜索
-    String getCookbooksByName = "/rest/cks/api/cookbook/by-name/search";
+    String getCookbooksByName = "/rest/cook/api/cookbook/search/query";
     //曲线创建开始记录
     String createCurveStart = "/rest/cks/api/curve_cookbook/v2/cooking_curve/save";
     //曲线保存

@@ -295,6 +295,7 @@ public class BleVentilator {
 //            }
             Pan pan = new Pan("明火自动翻炒锅", IDeviceType.RZNG, "KP100");
             pan.mac = bleDevice.getMac();
+            pan.dp = "ZNG01";
             pan.dc = "unknown";
             pan.bleDecoder = new BleDecoder(0);
 
