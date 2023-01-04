@@ -28,9 +28,9 @@ public enum SteamModeEnum {
 //    WEIBO(24,"微波 "),
 //    CESHI(25,"节能测试模式 "),
 
-    SHOUDONGJIASHIKAO(SteamConstant.SHOUDONGJIASHIKAO,"加湿烤焙烤"),
-    JIASHIBEIKAO(SteamConstant.JIASHIBEIKAO,"加湿烤风焙烤"),
-    JIASHIFENGBEIKAO(SteamConstant.JIASHIFENGBEIKAO,"加湿烤强烤烧"),
+    SHOUDONGJIASHIKAO(SteamConstant.SHOUDONGJIASHIKAO,"焙烤"),
+    JIASHIBEIKAO(SteamConstant.JIASHIBEIKAO,"风焙烤"),
+    JIASHIFENGBEIKAO(SteamConstant.JIASHIFENGBEIKAO,"强烤烧"),
 
 
     FAJIAO(SteamConstant.FAJIAO,"发酵"),

@@ -605,13 +605,13 @@ public class SteamCommandHelper {
                     }
                     state = false;
                 }
-                if(state && (curDevice.waterBoxState ==1 || curDevice.waterBoxState ==3)){
-                    if(needShowPrompt()){
-                        ToastUtils.show(context,R.string.steam_water_box_prompt,Toast.LENGTH_LONG);
-                    }
-                    state = false;
-                }
             }
+        }
+        if(state && (curDevice.waterBoxState ==1 || curDevice.waterBoxState ==3)){
+            if(needShowPrompt()){
+                ToastUtils.show(context,R.string.steam_water_box_prompt,Toast.LENGTH_LONG);
+            }
+            state = false;
         }
         if(state && needWater && curDevice.wasteWaterLevel == 1){
             if(needShowPrompt()){

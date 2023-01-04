@@ -29,7 +29,7 @@
         android:textSize="@dimen/sp_30"
         android:visibility="invisible"
         android:text="@string/steam_common_step_complete"
-        android:background="@drawable/steam_shape_button_bg_ok"
+
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_work_content"/>
@@ -43,7 +43,7 @@
         android:textColor="@color/steam_white"
         android:textSize="@dimen/sp_30"
         android:text="@string/steam_back_home"
-        android:background="@drawable/steam_shape_button_bg_cancel"
+        android:background="@drawable/steam_shape_button_bg_ok"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_work_content"

@@ -507,17 +507,23 @@ public class ModelWorkActivity extends SteamBaseActivity {
      * @param modeCode
      */
     private void initOtherViewState(int modeCode){
-        if(SteamModeEnum.isNotRotation(modeCode) || !isRecipe()){ //菜谱不显示旋转烤
+        if(SteamModeEnum.isNotRotation(modeCode)){ //菜谱不显示旋转烤
             showRotation = false;
             hideLeftCenter();
         }else{
             showRotation = true;
             showLeftCenter();
         }
-        if(SteamModeEnum.isAddStream(modeCode) && !isRecipe()){//菜谱不显示加蒸汽
+
+        if(SteamModeEnum.isAddStream(modeCode)){//菜谱不显示加蒸汽
             showAddStream = true;
         }else{
             showAddStream = false;
+        }
+        if(isRecipe()){
+            showAddStream = false;
+            showRotation = false;
+            hideLeftCenter();
         }
     }
 
