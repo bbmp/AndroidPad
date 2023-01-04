@@ -216,8 +216,8 @@ public class WindowsUtils {
                         tranX = nowX - lastX;
 
                         tranY = nowY - lastY;
-                        //当水平或者垂直滑动距离大于10,才算拖动事件
-                        if (Math.abs(tranX) > 10 || Math.abs(tranY) > 10) {
+                        //当水平或者垂直滑动距离大于20,才算拖动事件
+                        if (Math.abs(tranX) > 20 || Math.abs(tranY) > 20) {
                             drag = true;
                             params.x += tranX;
 

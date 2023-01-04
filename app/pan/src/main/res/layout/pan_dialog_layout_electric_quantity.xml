@@ -5,8 +5,18 @@
     android:layout_height="match_parent"
     android:background="@drawable/pan_ic_bg">
 
-    <ImageView
-        android:id="@+id/iv_recharge"
+<!--    <ImageView-->
+<!--        android:id="@+id/iv_recharge"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:layout_marginLeft="@dimen/dp_48"-->
+<!--        android:layout_marginVertical="@dimen/dp_55"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintRight_toRightOf="@id/pan_guideline"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"/>-->
+    <com.youth.banner.Banner
+        android:id="@+id/banner_recharge"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginLeft="@dimen/dp_48"
@@ -14,7 +24,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="@id/pan_guideline"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:banner_radius="@dimen/dp_10"/>
 
     <TextView
         android:id="@+id/tv_work_content"

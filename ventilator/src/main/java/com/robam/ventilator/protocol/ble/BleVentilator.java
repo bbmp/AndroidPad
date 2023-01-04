@@ -219,16 +219,22 @@ public class BleVentilator {
                 if (resetBleDevice(bleDevice.getMac()) && !isActiveDisConnected) { //非主动断开
                     //重新连接
                     try {
-                        threadPoolExecutor.execute(new Runnable() {
+//                        threadPoolExecutor.execute(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                try {
+//                                    Thread.sleep(2000);
+//                                } catch (Exception e) {
+//                                }
+//
+//                            }
+//                        });
+                        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                try {
-                                    Thread.sleep(2000);
-                                } catch (Exception e) {
-                                }
                                 connect(model, bleDevice, bleCallBackWeakReference);
                             }
-                        });
+                        }, 2000);
                     } catch (Exception e) {}
                 }
             }
