@@ -43,6 +43,7 @@ public class TimeSelectPage extends SteamBasePage {
         this.curMode = modeBean;
     }
 
+
     @Override
     protected int getLayoutId() {
         return R.layout.steam_page_layout_mode_select;

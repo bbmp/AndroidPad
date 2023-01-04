@@ -125,5 +125,12 @@ public interface Constant {
 
     String APPOINTMENT_RESULT = "appointment_result";
 
+    String REMIND_BUS_CODE = "remind_bus_code";
+
+    /**
+     * 菜谱id
+     */
+    String WORK_MODE  = "work_mode";
+
 
 }

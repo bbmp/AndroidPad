@@ -326,6 +326,16 @@ public class SteamOven extends Device {
      */
     public String workGuid ;
 
+    /**
+     * 废水箱状态（1- 关闭；1 - 打开）
+     */
+    public short wasteWaterBox = 35;
+
+    /**
+     * 废水箱水位（0表示正常,1表示水满）
+     */
+    public short wasteWaterLevel = 36;
+
     private SteamOven() {
 
     }
@@ -510,6 +520,8 @@ public class SteamOven extends Device {
             //this.totalRemainSecondsH = (short) msg.optInt(SteamConstant.totalRemainSeconds2);
             this.totalRemain = msg.optInt(SteamConstant.totalRemain);
             this.descaleFlag = (short) msg.optInt(SteamConstant.descaleFlag);
+            this.wasteWaterBox = (short) msg.optInt(SteamConstant.wasteWaterBox);
+            this.wasteWaterLevel = (short) msg.optInt(SteamConstant.wasteWaterLevel);
 
             this.chugouType = (short) msg.optInt(SteamConstant.chugouType);
             this.curSectionNbr = (short) msg.optInt(SteamConstant.curSectionNbr);

@@ -685,5 +685,15 @@ public class SteamConstant {
 
 
 
+    /**
+     * 废水箱状态（1- 关闭；1 - 打开）
+     */
+    public final static String wasteWaterBox = "wasteWaterBox" ;
+    /**
+     * 废水箱水位（0表示正常,1表示水满）
+     */
+    public final static String wasteWaterLevel = "wasteWaterLevel" ;
+
+
 
 }

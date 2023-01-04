@@ -58,7 +58,7 @@ public class ModeSelectPage extends SteamBasePage {
         rvModeAdapter.setList(selectList);
 
         //初始位置
-        int initPos = selectIndex != -1 ? selectIndex : 0;
+        int initPos = selectIndex >= 0 ? selectIndex : 0;
         if(needLoop){
              initPos = selectIndex != -1 ? selectIndex : (Integer.MAX_VALUE / 2 - (Integer.MAX_VALUE/2) % selectList.size());
         }

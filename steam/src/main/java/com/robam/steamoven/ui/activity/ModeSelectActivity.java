@@ -43,6 +43,7 @@ import com.robam.steamoven.ui.pages.ModeSelectPage;
 import com.robam.steamoven.ui.pages.SteamSelectPage;
 import com.robam.steamoven.ui.pages.TempSelectPage;
 import com.robam.steamoven.ui.pages.TimeSelectPage;
+import com.robam.steamoven.utils.ModelUtil;
 import com.robam.steamoven.utils.SkipUtil;
 import java.lang.ref.WeakReference;
 import java.text.ParseException;
@@ -158,6 +159,9 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
                     if(toWaringPage(steamOven)){
                         return;
                     }
+                    if(toOffLinePage(steamOven)){
+                        return;
+                    }
                     switch (steamOven.powerState){
                         case SteamStateConstant.POWER_STATE_AWAIT:
                         case SteamStateConstant.POWER_STATE_ON:
@@ -259,6 +263,9 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
         return -1;
     }
 
+
+
+
     private ModeBean getCurModeBean(int selectIndex){
         if(selectIndex == -1){
             return modes.get(0);
@@ -292,12 +299,20 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
 
         needSetResult =  getIntent().getBooleanExtra(Constant.NEED_SET_RESULT,false);
         preSegment =  getIntent().getParcelableExtra(Constant.SEGMENT_DATA_FLAG);
-
         int checkIndex = getPreCheckIndex();
+        initCurModelList();
         if (null != modes && modes.size() > 0) {
             //默认模式
+
             ModeBean defaultBean = getCurModeBean(checkIndex);//modes.get(checkIndex != -1 ? checkIndex:0);
             curModeBean = defaultBean;
+            if(!needSetResult){
+                checkIndex = getModelIndex(ModelUtil.getModelCategoryRecord(curModeBean.funCode),curModeBean);
+                if(checkIndex != -1){
+                    defaultBean = modes.get(checkIndex);//modes.get(checkIndex != -1 ? checkIndex:0);
+                    curModeBean = defaultBean;
+                }
+            }
             //当前模式
             HomeSteamOven.getInstance().workMode = (short) defaultBean.code;
             //模式
@@ -309,6 +324,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             modeTab.setCustomView(modeView);
             tabLayout.addTab(modeTab);
             modeSelectPage = new ModeSelectPage(modeTab, modes, this,checkIndex);
+
             fragments.add(new WeakReference<>(modeSelectPage));
 
 
@@ -340,6 +356,12 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
 
             //下温度
             ModeBean downTempMode = getDownTempMode(defaultBean);
+            if(!needSetResult){
+                ModelUtil.ModelRecord modelRecord = ModelUtil.getModelRecord(SteamConstant.EXP);
+                if(modelRecord != null && modelRecord.downTemp != 0){
+                    downTempMode.defTemp = modelRecord.downTemp;
+                }
+            }
             downTempTab = tabLayout.newTab();
             downTempTab.setId(3);
             View downView = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab_temp, null);
@@ -383,17 +405,52 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
         if(steamOven != null){
             SteamAbstractControl.getInstance().queryAttribute(steamOven.guid);
         }
+    }
 
-
+    private void initCurModelList(){
+        if(modes != null && !needSetResult){
+            for(int i = 0;i < modes.size();i++){
+                ModelUtil.ModelRecord modelRecord = ModelUtil.getModelRecord(modes.get(i).code);
+                if(modelRecord != null){
+                    if(modelRecord.stream != 0){
+                        modes.get(i).defSteam =modelRecord.stream;
+                    }
+                    if(modelRecord.temp != 0){
+                        modes.get(i).defTemp =modelRecord.temp;
+                    }
+                    if(modelRecord.downTemp != 0){
+                        modes.get(i).defDownTemp =modelRecord.downTemp;
+                    }
+                    if(modelRecord.time != 0){
+                        modes.get(i).defTime =modelRecord.time;
+                    }
+                }
+            }
+        }
     }
 
     private ModeBean getDownTempMode(ModeBean defaultBean){
         ModeBean modeBean =new ModeBean();
-        modeBean.defTemp = defaultBean.defDownTemp;
-        modeBean.minTemp = defaultBean.minDownTemp;
-        modeBean.maxTemp = defaultBean.maxDownTemp;
+        modeBean.defTemp = 160;
+        modeBean.minTemp = 80;
+        modeBean.maxTemp = 180;
         return modeBean;
     }
+
+    private int getModelIndex(ModelUtil.ModelRecord modelCategoryRecord, ModeBean defaultBean){
+        if(modelCategoryRecord == null){
+            return -1;
+        }
+        for(int i = 0;i < modes.size();i++){
+            if(modes.get(i).code == modelCategoryRecord.modeCode){
+                return  i;
+            }
+        }
+        return -1;
+    }
+
+
+
 
 
 
@@ -412,6 +469,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
                     return;
                 }
                 startWorkOrAppointment();
+                saveReCode();
             }
         }else if(R.id.ll_right == view.getId()){
             Intent intent = new Intent(this,AppointmentActivity.class);
@@ -419,6 +477,16 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             startActivityForResult(intent,Constant.APPOINT_CODE);
         }
     }
+
+    private void saveReCode(){
+        if(needSetResult){
+            return;
+        }
+        MultiSegment result = getResult();
+        ModelUtil.saveModelCategoryRecord(result.funCode,result.code,result.steam,result.defTemp,result.downTemp,result.duration);
+        ModelUtil.saveModelRecord(result.funCode,result.code,result.steam,result.defTemp,result.downTemp,result.duration);
+    }
+
 
     private void startWorkOrAppointment(){
         if(!SteamCommandHelper.checkSteamState(this,getSteamOven(),curModeBean.code)){
@@ -532,6 +600,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
                         //((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.VISIBLE); //上温度
                        if(curModeBean.code == SteamModeEnum.ZHIKONGZHENG.getMode()){
                            //上温度不可点击
+                           steamSelectPage.updateSteamTab(modeBean);
                            ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(2).setVisibility(View.VISIBLE); //上温度
                            ((ViewGroup)tabLayout.getChildAt(0)).getChildAt(1).setVisibility(View.VISIBLE); //蒸汽
                        }else{
@@ -714,7 +783,12 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
      * @throws ParseException
      */
     private long getAppointingTimeMin(String timeText) throws ParseException {
-        String time = timeText.substring("次日".length()).trim()+":00";
+        String time;
+        if(timeText.contains("日")){
+            time = timeText.substring("次日".length()).trim()+":00";
+        }else{
+            time = timeText.trim()+":00";
+        }
         Date curTime = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  //HH:24小时制  hh:12小时制
         String curTimeStr = dateFormat.format(curTime);

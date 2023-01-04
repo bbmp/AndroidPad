@@ -53,12 +53,13 @@
         android:visibility="visible"
         android:layout_marginLeft="@dimen/dp_120"
         android:layout_marginTop="@dimen/dp_180"
-        android:maxLength="10"
         android:textColor="@color/steam_white"
+        android:maxLength="10"
         app:layout_constraintLeft_toRightOf="@id/cook_chart"
         app:layout_constraintTop_toTopOf="parent"
         android:textColorHint="@color/common_white"
-        android:hint="@string/steam_input_name"/>
+        android:hint="@string/steam_input_name"
+        android:drawableRight="@drawable/steam_ic_editor"/>
 
     <View
         android:id="@+id/multi_work_finish_opt"
@@ -67,7 +68,7 @@
         app:layout_constraintTop_toTopOf="@id/multi_work_finish_prompt"
         app:layout_constraintBottom_toBottomOf="@id/multi_work_finish_prompt"
         android:layout_marginLeft="@dimen/dp_24"
-        android:visibility="visible"
+        android:visibility="invisible"
         android:layout_height="@dimen/dp_48"
         android:layout_width="@dimen/dp_48"/>
 

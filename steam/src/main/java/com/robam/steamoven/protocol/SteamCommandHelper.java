@@ -566,17 +566,6 @@ public class SteamCommandHelper {
             }
             state = false;
         }
-//        if(curDevice.mode != 0 && (curDevice.powerState == SteamStateConstant.POWER_STATE_AWAIT
-//                || curDevice.powerState == SteamStateConstant.POWER_STATE_ON
-//                || curDevice.powerState == SteamStateConstant.POWER_STATE_TROUBLE)){
-//            if(curDevice.workState == SteamStateConstant.WORK_STATE_PREHEAT ||
-//                    curDevice.workState == SteamStateConstant.WORK_STATE_PREHEAT_PAUSE ||
-//                    curDevice.workState == SteamStateConstant.WORK_STATE_WORKING ||
-//                    curDevice.workState == SteamStateConstant.WORK_STATE_WORKING_PAUSE){
-//                ToastUtils.showLong(context, R.string.steam_working_prompt);
-//                return false;
-//            }
-//        }
         if(state && curDevice.powerState == SteamStateConstant.POWER_STATE_OFF){
             if(needShowPrompt()){
                 ToastUtils.showLong(context, R.string.steam_power_off);
@@ -589,21 +578,21 @@ public class SteamCommandHelper {
             }
             state = false;
         }
+        boolean needWater = (modeCode == SteamConstant.XIANNENZHENG
+                || modeCode == SteamConstant.YIYANGZHENG
+                || modeCode == SteamConstant.GAOWENZHENG
+                || modeCode == SteamConstant.WEIBOZHENG
+                || modeCode == SteamConstant.ZHIKONGZHENG
+                || modeCode == SteamConstant.SHOUDONGJIASHIKAO
+                || modeCode == SteamConstant.JIASHIBEIKAO
+                || modeCode == SteamConstant.JIASHIFENGBEIKAO
+                || modeCode == SteamConstant.SHAJUN
+                || modeCode == SteamConstant.JIEDONG
+                || modeCode == SteamConstant.FAJIAO
+                || modeCode == SteamConstant.QINGJIE
+                || modeCode == SteamConstant.CHUGOU);
         if(state && (curDevice.descaleFlag == 1 || curDevice.waterLevelState == 1)){
-            if (modeCode == SteamConstant.XIANNENZHENG
-                    || modeCode == SteamConstant.YIYANGZHENG
-                    || modeCode == SteamConstant.GAOWENZHENG
-                    || modeCode == SteamConstant.WEIBOZHENG
-                    || modeCode == SteamConstant.ZHIKONGZHENG
-                    || modeCode == SteamConstant.SHOUDONGJIASHIKAO
-                    || modeCode == SteamConstant.JIASHIBEIKAO
-                    || modeCode == SteamConstant.JIASHIFENGBEIKAO
-                    || modeCode == SteamConstant.SHAJUN
-                    || modeCode == SteamConstant.JIEDONG
-                    || modeCode == SteamConstant.FAJIAO
-                    || modeCode == SteamConstant.QINGJIE
-                    || modeCode == SteamConstant.CHUGOU
-            ){
+            if (needWater){
                 if(state && curDevice.waterLevelState == 1){
                     if(needShowPrompt()){
                         ToastUtils.showLong(context, R.string.steam_water_deficient);
@@ -624,10 +613,50 @@ public class SteamCommandHelper {
                 }
             }
         }
+        if(state && needWater && curDevice.wasteWaterLevel == 1){
+            if(needShowPrompt()){
+                ToastUtils.showLong(context, R.string.steam_waste_water);
+            }
+            state = false;
+        }
         if(!state){
             preShowTimeMil = System.currentTimeMillis();
         }
         return state;
+    }
+
+    public static int getRemindResId(SteamOven curDevice){
+        int modeCode = curDevice.mode;
+        if(curDevice.doorState != 0 && (curDevice.mode != SteamConstant.CHUGOU || curDevice.mode != SteamConstant.GANZAO)){//门状态检测
+            return R.string.steam_close_door_prompt;
+        }
+        if(curDevice.descaleFlag == 1 || curDevice.waterLevelState == 1){
+            if (modeCode == SteamConstant.XIANNENZHENG
+                    || modeCode == SteamConstant.YIYANGZHENG
+                    || modeCode == SteamConstant.GAOWENZHENG
+                    || modeCode == SteamConstant.WEIBOZHENG
+                    || modeCode == SteamConstant.ZHIKONGZHENG
+                    || modeCode == SteamConstant.SHOUDONGJIASHIKAO
+                    || modeCode == SteamConstant.JIASHIBEIKAO
+                    || modeCode == SteamConstant.JIASHIFENGBEIKAO
+                    || modeCode == SteamConstant.SHAJUN
+                    || modeCode == SteamConstant.JIEDONG
+                    || modeCode == SteamConstant.FAJIAO
+                    || modeCode == SteamConstant.QINGJIE
+                    || modeCode == SteamConstant.CHUGOU
+            ){
+                if(curDevice.waterLevelState == 1){
+                    return R.string.steam_water_deficient;
+                }
+//                if(curDevice.descaleFlag == 1){//除垢
+//                    ToastUtils.showLong(this, R.string.steam_descaling_prompt);
+//                }
+                if(curDevice.waterBoxState ==1 || curDevice.waterBoxState ==3){
+                    return R.string.steam_water_box_prompt;
+                }
+            }
+        }
+        return 0;
     }
 
     private static boolean needShowPrompt(){
@@ -687,15 +716,21 @@ public class SteamCommandHelper {
                     }
                     state = false;
                 }
-
-                if(state && (curDevice.waterBoxState ==1 || curDevice.waterBoxState ==3)){
-                    if(needShowPrompt()){
-                        ToastUtils.show(context,R.string.steam_water_box_prompt,Toast.LENGTH_LONG);
-                    }
-                    state = false;
-                }
             }
         }
+        if(state && needWater && curDevice.wasteWaterLevel == 1){
+            if(needShowPrompt()){
+                ToastUtils.showLong(context, R.string.steam_waste_water);
+            }
+            state = false;
+        }
+        if(state && (curDevice.waterBoxState ==1 || curDevice.waterBoxState ==3)){
+            if(needShowPrompt()){
+                ToastUtils.show(context,R.string.steam_water_box_prompt,Toast.LENGTH_LONG);
+            }
+            state = false;
+        }
+
         if(!state){
             preShowTimeMil = System.currentTimeMillis();
         }

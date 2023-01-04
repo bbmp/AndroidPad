@@ -28,11 +28,19 @@ public class TempSelectPage extends SteamBasePage {
     private ModeBean curMode;
     //当前温度
     private String curTemp;
+    int defaultValue;
 
     public TempSelectPage(TabLayout.Tab tab, ModeBean modeBean) {
         this.tab = tab;
         this.curMode = modeBean;
     }
+    public TempSelectPage(TabLayout.Tab tab, ModeBean modeBean,int defaultValue) {
+        this.tab = tab;
+        this.curMode = modeBean;
+        this.defaultValue = defaultValue;
+    }
+
+
 
     public void setTempList(List<String> selectList, int offset) {
         if (null == rvTempAdapter)
@@ -87,6 +95,9 @@ public class TempSelectPage extends SteamBasePage {
         rvTempAdapter.setList(tempList);
 
         int offset = modeBean.defTemp - modeBean.minTemp;
+        if(defaultValue > 0){
+            offset = defaultValue - modeBean.minSteam;
+        }
         int position = offset;
         if(needLoop){
             position = Integer.MAX_VALUE / 2-(Integer.MAX_VALUE / 2)%tempList.size() + offset;

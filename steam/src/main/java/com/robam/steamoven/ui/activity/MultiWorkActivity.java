@@ -76,6 +76,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
     private boolean isInitiativeEnd = false;//是否主动结束
     private long workTimeMS = System.currentTimeMillis();
     private boolean isPageHide = false;//页面是否已经不显示
+    private int workMode;
 
     @Override
     protected int getLayoutId() {
@@ -107,6 +108,9 @@ public class MultiWorkActivity extends SteamBaseActivity {
                         return;
                     }
                     if(toOffLinePage(steamOven)){
+                        return;
+                    }
+                    if(toRemandPage(steamOven)){
                         return;
                     }
                     switch (steamOven.powerState){
@@ -189,6 +193,17 @@ public class MultiWorkActivity extends SteamBaseActivity {
         for(int i = maxCount; i < CUR_ITEM_VIEW_COUNT;i++){
             ViewGroup itemGroup = optContentParentView.findViewWithTag(i+"");
             itemGroup.setVisibility(View.INVISIBLE);
+        }
+        switch (steamOven.sectionNumber){
+            case 0:
+            case 1:
+                workMode = steamOven.mode;
+                break;
+            case 2:
+                workMode = steamOven.mode2;
+                break;
+            default:
+                workMode = steamOven.mode3;
         }
     }
 
@@ -341,6 +356,9 @@ public class MultiWorkActivity extends SteamBaseActivity {
         setOptContent(multiSegments);
         //cookChart.setNoDataText(getResources().getString(R.string.steam_no_curve_data));
         //setOptViewsState()
+        if(multiSegments != null && multiSegments.size() > 0){
+            workMode = multiSegments.get(multiSegments.size() -1).code;
+        }
         preTotalTime = getTotalTime();
         SteamOven steamOven = getSteamOven();
         if(steamOven != null){
@@ -779,6 +797,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
         Intent intent = new Intent(this,WorkCompleteActivity.class);
         intent.putExtra(Constant.RECIPE_ID,0);
         intent.putExtra(Constant.CURVE_ID,curveId);
+        intent.putExtra(Constant.WORK_MODE,workMode);
         intent.putExtra(Constant.CARVE_NAME,"多段烹饪");
         startActivity(intent);
     }

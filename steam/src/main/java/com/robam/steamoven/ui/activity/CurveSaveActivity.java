@@ -61,9 +61,9 @@ public class CurveSaveActivity extends SteamBaseActivity {
     private static final int DIRECTIVE_OFFSET_OVER_TIME = 40;
 
     //数据集合
-    private List entryList = new ArrayList<Entry>();
+    private List<Entry> entryList = new ArrayList<Entry>();
 
-    private float maxYValue = 0;
+    private float maxYValue = 200;
     //曲线ID
     private long curveId;
 
@@ -204,6 +204,13 @@ public class CurveSaveActivity extends SteamBaseActivity {
 
     private void initCurveData(){
         entryList.addAll(CurveDataUtil.getEntryList());
+        if(entryList != null && entryList.size() > 0){
+            for(int i = 0;i < entryList.size();i++){
+                if(entryList.get(i).getY() > maxYValue){
+                    maxYValue = entryList.get(i).getY();
+                }
+            }
+        }
         CurveDataUtil.getEntryList().clear();
         initLineChart();
     }

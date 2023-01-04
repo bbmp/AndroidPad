@@ -184,8 +184,7 @@ public class AppointingActivity extends DishWasherBaseActivity {
         tvCountdown.setText(getTimeStr(dishWasher.AppointmentRemainingTime));
         tvAppointmentHint.setText(startTimePoint(dishWasher.AppointmentRemainingTime));
         tvModeAux.setText(DishWasherAuxEnum.match(dishWasher.auxMode));
-
-
+        tvMode.setText(DishWasherEnum.match(dishWasher.workMode));
     }
 
     private String  getTimeStr(int remainingTime){

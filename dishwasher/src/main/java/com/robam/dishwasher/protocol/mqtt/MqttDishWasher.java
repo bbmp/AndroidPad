@@ -35,7 +35,7 @@ public class MqttDishWasher extends MqttPublic {
                 short powerStatus =  ByteUtils.toShort(payload[offset++]);
                 short stoveLock = ByteUtils.toShort(payload[offset++]);
                 short dishWasherWorkMode = ByteUtils.toShort(payload[offset++]);
-
+                //LogUtils.i("MqttDishWasher workMode "+dishWasherWorkMode);
                 int remainingWorkingTime = ByteUtils.toInt32(payload, offset++, ByteUtils.BYTE_ORDER);
                 offset++;
                 short lowerLayerWasher = ByteUtils.toShort(payload[offset++]);

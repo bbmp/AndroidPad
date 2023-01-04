@@ -76,6 +76,7 @@ public class HomePage extends DishWasherBasePage {
                 }).setOnSlideListener((recyclerView, position) -> {
                     group.setVisibility(View.INVISIBLE);
                     rvDot.setVisibility(View.VISIBLE);
+                    rvDotAdapter.setPickPosition(position);
                 }).build();
 
         rvMain.setLayoutManager(pickerLayoutManager);

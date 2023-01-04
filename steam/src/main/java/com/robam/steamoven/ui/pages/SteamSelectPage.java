@@ -28,6 +28,7 @@ public class SteamSelectPage extends SteamBasePage {
     private ModeBean curMode;
     //当前蒸汽
     private String curSteam;
+    private int defValue = -1;
     private ArrayList<String> steamList = new ArrayList<String>() {
         {
             add("小");
@@ -52,6 +53,12 @@ public class SteamSelectPage extends SteamBasePage {
     public SteamSelectPage(TabLayout.Tab tab, ModeBean curMode) {
         this.tab = tab;
         this.curMode = curMode;
+    }
+
+    public SteamSelectPage(TabLayout.Tab tab, ModeBean curMode,int defValue) {
+        this.tab = tab;
+        this.curMode = curMode;
+        this.defValue = defValue;
     }
 
     @Override
@@ -79,7 +86,11 @@ public class SteamSelectPage extends SteamBasePage {
     public void updateSteamTab(ModeBean modeBean) {
         if (null == rvSteamAdapter)
             return;
+
         int offset = modeBean.defSteam - modeBean.minSteam;
+        if(defValue != -1){
+            offset = defValue - modeBean.minSteam;
+        }
         int position = offset;
         if(needLoop){
              position = Integer.MAX_VALUE / 2-(Integer.MAX_VALUE / 2)%steamList.size() + offset;

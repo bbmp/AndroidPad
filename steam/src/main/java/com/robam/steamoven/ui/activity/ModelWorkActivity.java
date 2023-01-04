@@ -90,6 +90,7 @@ public class ModelWorkActivity extends SteamBaseActivity {
     private TextView  setModelTv,setTempTv,setDurationTv,setSteamTv;
     private boolean isAddTime = false;//是否加时
     private Long addTimeMil;//加时指令发起的时间戳
+    private int workMode = 0;
 
     @Override
     protected int getLayoutId() {
@@ -144,6 +145,9 @@ public class ModelWorkActivity extends SteamBaseActivity {
                         return;
                     }
                     if(toOffLinePage(steamOven)){
+                        return;
+                    }
+                    if(toRemandPage(steamOven)){
                         return;
                     }
                     if(showRotation){
@@ -360,11 +364,7 @@ public class ModelWorkActivity extends SteamBaseActivity {
                 if(isWaringAddTimeSuccess()){
                     return;
                 }
-                if(recipeId != 0){
-                    goHome();
-                }else{
-                    toCurveSavePage();
-                }
+                toCurveSavePage();
                 break;
             case SteamStateConstant.WORK_STATE_APPOINTMENT:
                 goHome();
@@ -385,6 +385,7 @@ public class ModelWorkActivity extends SteamBaseActivity {
                 isAddTime = false;
                 dismissDialog();
                 showDialog = false;
+                workMode = steamOven.mode;
                 updateViewsPreheat(steamOven,false,false);
                 break;
             case SteamStateConstant.WORK_STATE_WORKING_FINISH:
@@ -414,6 +415,7 @@ public class ModelWorkActivity extends SteamBaseActivity {
         Intent intent = new Intent(this,WorkCompleteActivity.class);
         intent.putExtra(Constant.RECIPE_ID,recipeId);
         intent.putExtra(Constant.CURVE_ID,curveId);
+        intent.putExtra(Constant.WORK_MODE,workMode);
         intent.putExtra(Constant.CARVE_NAME,getCurveDefaultName(recipeId));
         startActivity(intent);//WORK_COMPLETE_CODE
     }
@@ -490,6 +492,7 @@ public class ModelWorkActivity extends SteamBaseActivity {
         }
         initOtherViewState(multiSegments.get(0).code);
         recipeId = multiSegments.get(0).recipeId;
+        workMode = multiSegments.get(0).code;
         multiSegments.get(0).workRemaining = multiSegments.get(0).workRemaining == 0 ? multiSegments.get(0).duration : multiSegments.get(0).workRemaining;
         initViewInfo(multiSegments.get(0));
         initLineChart();
@@ -504,14 +507,14 @@ public class ModelWorkActivity extends SteamBaseActivity {
      * @param modeCode
      */
     private void initOtherViewState(int modeCode){
-        if(SteamModeEnum.isNotRotation(modeCode)){
+        if(SteamModeEnum.isNotRotation(modeCode) || !isRecipe()){ //菜谱不显示旋转烤
             showRotation = false;
             hideLeftCenter();
         }else{
             showRotation = true;
             showLeftCenter();
         }
-        if(SteamModeEnum.isAddStream(modeCode)){
+        if(SteamModeEnum.isAddStream(modeCode) && !isRecipe()){//菜谱不显示加蒸汽
             showAddStream = true;
         }else{
             showAddStream = false;
@@ -637,7 +640,12 @@ public class ModelWorkActivity extends SteamBaseActivity {
         setModelTv.setText(getModelName(segment.code,recipeId));
         //LogUtils.e("ModelWork name recipeId " + recipeId + " modelCode "+segment.code + " name "+getModelName(segment.code,recipeId));
         //设置温度
-        setTempTv.setText(TextSpanUtil.getSpan(segment.defTemp,Constant.UNIT_TEMP));
+        if(isRecipe()){
+            setTempTv.setVisibility(View.GONE);
+            setSteamTv.setVisibility(View.GONE);
+        }else{
+            setTempTv.setText(TextSpanUtil.getSpan(segment.defTemp,Constant.UNIT_TEMP));
+        }
         //设置的工作时间 (秒)
         setDurationTv.setText(TextSpanUtil.getSpan(segment.duration,Constant.UNIT_TIME_MIN));
         setSteamTv.setVisibility(segment.steam != 0 ? View.VISIBLE:View.GONE);
@@ -861,4 +869,15 @@ public class ModelWorkActivity extends SteamBaseActivity {
         }
         return "";
     }
+
+    /**
+     * 是否菜谱工作
+     * @return
+     */
+    private boolean isRecipe(){
+        return recipeId != 0;
+    }
+
+
+
 }

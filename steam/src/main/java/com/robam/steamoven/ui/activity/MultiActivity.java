@@ -24,12 +24,10 @@ import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.MultiSegmentEnum;
 import com.robam.steamoven.constant.SteamConstant;
 import com.robam.steamoven.constant.SteamEnum;
-import com.robam.steamoven.constant.SteamModeEnum;
 import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.ui.dialog.SteamCommonDialog;
-import com.robam.steamoven.utils.MultiSegmentUtil;
 import com.robam.steamoven.utils.SkipUtil;
 
 import java.util.ArrayList;
@@ -86,6 +84,9 @@ public class MultiActivity extends SteamBaseActivity {
                 if (device.guid.equals(s) && device instanceof SteamOven && device.guid.equals(HomeSteamOven.getInstance().guid)) {
                     SteamOven steamOven = (SteamOven) device;
                     if(toWaringPage(steamOven)){
+                        return;
+                    }
+                    if(toOffLinePage(steamOven)){
                         return;
                     }
                     switch (steamOven.powerState){
@@ -543,7 +544,7 @@ public class MultiActivity extends SteamBaseActivity {
         if(multiSegments.size() == 0){
             return;
         }
-        startCookBtn.setVisibility(isDelState() ?View.INVISIBLE:View.VISIBLE);
+        //startCookBtn.setVisibility(isDelState() ?View.INVISIBLE:View.VISIBLE);
         if(multiSegments.get(0).isStart()){
             startCookBtn.setText(R.string.steam_work_continue);
             startCookBtn.setTextColor(getResources().getColor(R.color.steam_white));

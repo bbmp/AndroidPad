@@ -20,6 +20,8 @@ import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.ui.adapter.RvTimeAdapter;
+import com.robam.steamoven.utils.SkipUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,11 +85,15 @@ public class RecipeModeActivity extends SteamBaseActivity {
                     if(toWaringPage(steamOven)){
                         return;
                     }
+                    if(toOffLinePage(steamOven)){
+                        return;
+                    }
                     switch (steamOven.powerState){
                         case SteamStateConstant.POWER_STATE_AWAIT:
                         case SteamStateConstant.POWER_STATE_ON:
                         case SteamStateConstant.POWER_STATE_TROUBLE:
-                            toWorkPage(steamOven);
+                            //toWorkPage(steamOven);
+                            SkipUtil.toWorkPage(steamOven,RecipeModeActivity.this);
                             break;
                         case SteamStateConstant.POWER_STATE_OFF:
                             break;

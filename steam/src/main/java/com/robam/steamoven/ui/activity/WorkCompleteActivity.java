@@ -17,6 +17,7 @@ import com.robam.steamoven.constant.SteamConstant;
 import com.robam.steamoven.constant.SteamModeEnum;
 import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
+import com.robam.steamoven.manager.RecipeManager;
 import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.ui.dialog.SteamOverTimeDialog;
 import com.robam.steamoven.utils.SteamDataUtil;
@@ -45,6 +46,7 @@ public class WorkCompleteActivity extends SteamBaseActivity {
     private long recipeId = 0;//菜谱ID ； 若菜谱ID非 0 ； 则当前工作模式来源与菜谱
     private int addTime = 0;
     private String curveDefaultName;//曲线默认名称
+    private int workMode = 0;
 
 
     @Override
@@ -83,6 +85,9 @@ public class WorkCompleteActivity extends SteamBaseActivity {
                     if(toWaringPage(steamOven)){
                         return;
                     }
+                    if(toOffLinePage(steamOven)){
+                        return;
+                    }
                     switch (steamOven.powerState){
                         case SteamStateConstant.POWER_STATE_AWAIT:
                         case SteamStateConstant.POWER_STATE_ON:
@@ -103,7 +108,6 @@ public class WorkCompleteActivity extends SteamBaseActivity {
 
     private void updateViews(SteamOven steamOven){
         switch (steamOven.workState){
-            case SteamStateConstant.WORK_STATE_LEISURE://空闲
             case SteamStateConstant.WORK_STATE_APPOINTMENT:
                 goHome();
                 break;
@@ -144,12 +148,13 @@ public class WorkCompleteActivity extends SteamBaseActivity {
     protected void initData() {
         curveId = getIntent().getLongExtra(Constant.CURVE_ID,0);
         recipeId = getIntent().getLongExtra(Constant.RECIPE_ID,0);
+        workMode = getIntent().getIntExtra(Constant.WORK_MODE,0);
         curveDefaultName = getIntent().getStringExtra(Constant.CARVE_NAME);
-        if(recipeId != 0){
-            mCancelTv.setVisibility(View.INVISIBLE);
-            mOkTv.setVisibility(View.INVISIBLE);
-            mSingleOkTv.setVisibility(View.VISIBLE);
-        }
+//        if(recipeId != 0){
+//            mCancelTv.setVisibility(View.INVISIBLE);
+//            mOkTv.setVisibility(View.INVISIBLE);
+//            mSingleOkTv.setVisibility(View.VISIBLE);
+//        }
     }
 
     @Override
@@ -202,9 +207,23 @@ public class WorkCompleteActivity extends SteamBaseActivity {
         timeDialog.setListeners(v -> {
             if(v.getId() == R.id.tv_ok){//确认加时
                 //发送结束请求并跳转到保存曲线界面
+                if(recipeId != 0){//菜谱加时 缺水判断
+                    SteamOven steamOven = getSteamOven();
+                    boolean needWater = false;
+                    if(steamOven != null){
+                        String deviceTypeId = DeviceUtils.getDeviceTypeId(steamOven.guid);
+                        needWater = RecipeManager.getInstance().needWater(deviceTypeId, recipeId);
+                    }
+                    if(!SteamCommandHelper.checkRecipeState(this,steamOven,needWater)){
+                        return;
+                    }
+                }else{//模式加时 缺水判断
+                    if(!SteamCommandHelper.checkSteamState(this,getSteamOven(),workMode)){
+                        return;
+                    }
+                }
                 addTime = Integer.parseInt(timeDialog.getCurValue());
                 sendOverTimeCommand(addTime);
-
                 //setResult();
             }else if(v.getId() == R.id.tv_cancel) {//取消
                 timeDialog.dismiss();

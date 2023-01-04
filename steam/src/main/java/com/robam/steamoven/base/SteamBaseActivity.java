@@ -6,6 +6,8 @@ import android.service.autofill.FieldClassification;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 
@@ -17,15 +19,19 @@ import com.robam.common.constant.ComnConstant;
 import com.robam.common.manager.DeviceWarnInfoManager;
 import com.robam.common.ui.activity.BaseActivity;
 import com.robam.common.utils.DeviceUtils;
+import com.robam.common.utils.ToastUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.bean.SteamOven;
+import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.QualityKeys;
 import com.robam.steamoven.constant.SteamConstant;
+import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.manager.SteamActivityManager;
 import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.ui.activity.MainActivity;
 import com.robam.steamoven.ui.activity.MatchNetworkActivity;
+import com.robam.steamoven.ui.activity.RemindActivity;
 import com.robam.steamoven.ui.activity.WaringActivity;
 
 
@@ -136,6 +142,25 @@ public abstract class SteamBaseActivity extends BaseActivity {
             }
             Intent intent = new Intent(this, WaringActivity.class);
             intent.putExtra(ComnConstant.WARING_CODE,steamOven.faultId);
+            startActivity(intent);
+            return true;
+        }
+        return false;
+    }
+
+
+
+
+    /**
+     * 调整到提醒页面
+     * @param curDevice
+     * @return
+     */
+    public boolean toRemandPage(SteamOven curDevice){
+        int remindResId = SteamCommandHelper.getRemindResId(curDevice);
+        if(remindResId != 0){
+            Intent intent = new Intent(this, RemindActivity.class);
+            intent.putExtra(Constant.REMIND_BUS_CODE,remindResId);
             startActivity(intent);
             return true;
         }

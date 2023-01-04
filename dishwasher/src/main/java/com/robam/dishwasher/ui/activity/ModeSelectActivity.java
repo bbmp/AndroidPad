@@ -15,9 +15,7 @@ import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.view.CancelRadioButton;
 import com.robam.common.utils.ClickUtils;
-import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.TimeUtils;
-import com.robam.common.utils.ToastUtils;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.base.DishWasherBaseActivity;
 import com.robam.dishwasher.bean.DishWasher;
@@ -30,12 +28,10 @@ import com.robam.dishwasher.constant.DishWasherState;
 import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.util.DishWasherCommandHelper;
 import com.robam.dishwasher.util.DishWasherModelUtil;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 public class ModeSelectActivity extends DishWasherBaseActivity {
@@ -117,11 +113,11 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
         });
 
         MqttDirective.getInstance().getStrLiveData().observe(this,s->{
-            LogUtils.i("MqttDishWasher onDecodeMsg  guid : arrvice "+s+"");
+            //LogUtils.i("MqttDishWasher onDecodeMsg  guid : arrvice "+s+"");
             if(s == null || s.trim().length() == 0){
                 return ;
             }
-            LogUtils.i("MqttDishWasher onDecodeMsg  guid : arrvice "+s+"");
+            //LogUtils.i("MqttDishWasher onDecodeMsg  guid : arrvice "+s+"");
             String[] split = s.split(MqttDirective.STR_LIVE_DATA_FLAG);
             if(split == null || split.length != 2){
                 return;

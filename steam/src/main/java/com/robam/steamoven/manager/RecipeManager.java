@@ -30,22 +30,24 @@ public class RecipeManager {
     }
 
     private Map<String,Map<Long,String>> recipeName = new ConcurrentHashMap<>();
+    private Map<String,Map<Long,Boolean>> needWaterMap = new ConcurrentHashMap<>();
 
     public void setRecipeInfo(String guidType,GetDeviceParamsRes getDeviceParamsRes){
         SteamDataUtil.saveSteam(guidType,new Gson().toJson(getDeviceParamsRes, GetDeviceParamsRes.class));
         Map<Long, String> integerStringMap = recipeName.get(guidType);
         if(integerStringMap == null){
             recipeName.put(guidType,new HashMap<>());
+            needWaterMap.put(guidType,new HashMap<>());
         }
-        initRecipeInfo(getDeviceParamsRes,recipeName.get(guidType));
+        initRecipeInfo(getDeviceParamsRes,recipeName.get(guidType),needWaterMap.get(guidType));
     }
-    private void initRecipeInfo(GetDeviceParamsRes getDeviceParamsRes,Map<Long,String> map){
+    private void initRecipeInfo(GetDeviceParamsRes getDeviceParamsRes,Map<Long,String> map,Map<Long,Boolean> needWater){
         if (null != getDeviceParamsRes && null != getDeviceParamsRes.modelMap){
-            setRecipeData(getDeviceParamsRes,map);
+            setRecipeData(getDeviceParamsRes,map,needWater);
         }
     }
 
-    private void setRecipeData(GetDeviceParamsRes getDeviceParamsRes,Map<Long,String> map) {
+    private void setRecipeData(GetDeviceParamsRes getDeviceParamsRes,Map<Long,String> map,Map<Long,Boolean> needWater) {
         List<DeviceConfigurationFunctions> deviceConfigurationFunctionsList = new ArrayList<>();
         OtherFunc otherFunc = getDeviceParamsRes.modelMap.otherFunc;
         if (null != otherFunc && null != otherFunc.deviceConfigurationFunctions) {
@@ -78,7 +80,10 @@ public class RecipeManager {
                                 JSONObject object = new JSONObject(functionParams);
                                 JSONObject model = object.getJSONObject("model");
                                 String value = model.getString("value");
+                                JSONObject needWaterObj = object.getJSONObject("needWater");
+                                String needWaterValue = needWaterObj.getString("value");
                                 map.put(Long.parseLong(value),recepItem.functionName);
+                                needWater.put(Long.parseLong(value),"1".equals(needWaterValue));
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -102,6 +107,18 @@ public class RecipeManager {
         String recipeName = longStringMap.get(recipeId);
         return StringUtils.isBlank(recipeName) ? "" : recipeName;
     }
+
+    public Boolean needWater(String guidType,long recipeId){
+        if(recipeId == 0){
+            return false;
+        }
+        Map<Long, Boolean> longStringMap = needWaterMap.get(guidType);
+        if(longStringMap == null){
+            return false;
+        }
+        return longStringMap.get(recipeId);
+    }
+
 
 
 }

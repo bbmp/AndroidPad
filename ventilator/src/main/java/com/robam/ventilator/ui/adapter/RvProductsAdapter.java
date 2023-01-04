@@ -437,9 +437,9 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
         boolean isWork = false;
         boolean workFinish = false;
         boolean isAppoint = cabinet.remainingAppointTime > 0;
-        if((cabinet.workMode == CabinetConstant.FUN_DISINFECT || cabinet.workMode == CabinetConstant.FUN_CLEAN
+        if(cabinet.workMode == CabinetConstant.FUN_DISINFECT || cabinet.workMode == CabinetConstant.FUN_CLEAN
            || cabinet.workMode == CabinetConstant.FUN_DRY || cabinet.workMode == CabinetConstant.FUN_FLUSH
-            || cabinet.workMode == CabinetConstant.FUN_SMART) && cabinet.remainingModeWorkTime != 0 ){
+            || cabinet.workMode == CabinetConstant.FUN_SMART){
             isWork = true;
         }
 
@@ -460,7 +460,7 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
             baseViewHolder.setVisible(R.id.ventilator_group6, true);
             baseViewHolder.setText(R.id.tv_mode, CabinetEnum.match(cabinet.workMode));
             if(isAppoint){
-                baseViewHolder.setText(R.id.tv_time, DateUtil.secForMatTime3(cabinet.remainingAppointTime) + "min");
+                baseViewHolder.setText(R.id.tv_time, DateUtil.secForMatTime3(cabinet.remainingAppointTime*60) + "min");
                 baseViewHolder.setText(R.id.btn_work, R.string.ventilator_appoint_finish);
             }else{
                 baseViewHolder.setText(R.id.tv_time, DateUtil.secForMatTime3(cabinet.remainingModeWorkTime) + "min");

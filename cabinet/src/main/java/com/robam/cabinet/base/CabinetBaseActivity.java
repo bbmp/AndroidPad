@@ -87,6 +87,7 @@ public abstract class CabinetBaseActivity extends BaseActivity {
             if(lock){//本身是锁状态
                 if(touchDownTimeMil != 0 && System.currentTimeMillis() - touchDownTimeMil > 1000){
                     touchDownTimeMil = System.currentTimeMillis();
+                }else{
                     ToastUtils.showShort(getContext(), R.string.cabinet_unlock_hint);
                 }
                 return;
@@ -94,6 +95,7 @@ public abstract class CabinetBaseActivity extends BaseActivity {
             LogUtils.i("rightCenter  onClick timeSpacing ....."+(System.currentTimeMillis() - touchDownTimeMil));
             if(touchDownTimeMil != 0 && System.currentTimeMillis() - touchDownTimeMil > 1000){
                 touchDownTimeMil = System.currentTimeMillis();
+                ToastUtils.showShort(getContext(), R.string.cabinet_unlock_hint);
                 return;
             }
             touchDownTimeMil = System.currentTimeMillis();

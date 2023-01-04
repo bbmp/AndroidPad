@@ -70,6 +70,7 @@ public class WorkActivity extends DishWasherBaseActivity {
 
     public static final int MAX_PROGRESS = 97;
 
+
     //private Group huanqiGroup,progressGroup;
 
     @Override
@@ -140,7 +141,10 @@ public class WorkActivity extends DishWasherBaseActivity {
             if (split[0].equals(HomeDishWasher.getInstance().guid)) {
                 int code = Integer.parseInt(split[1]);
                 if(code == DishWasherEvent.EVENT_WORK_COMPLETE_RESET){
-                    toComplete();
+                    DishWasher curDevice = getCurDevice();
+                    if(curDevice.auxMode != 0 && curDevice.auxMode != DishWasherConstant.AUX_FLUSH){//附加模式是长效净存，不跳转到工作完成
+                        toComplete();
+                    }
                 }
             }
         });
@@ -165,6 +169,11 @@ public class WorkActivity extends DishWasherBaseActivity {
         if (null != modeBean) {
             setData(modeBean);
             setModelTextState(modeBean.code);
+            DishWasher curDevice = getCurDevice();
+            if(curDevice != null){
+                changeViewsState(curDevice.powerStatus);
+                setModelTextState(curDevice.workMode);
+            }
             preRemainingTime = modeBean.time;
             float progress;
             if(modeBean.time == 0){
@@ -196,6 +205,7 @@ public class WorkActivity extends DishWasherBaseActivity {
         }else if(DishWasherEnum.AUTO_AERATION_AWAIT.getCode() == code ||
                 DishWasherEnum.FLUSH_AWAIT.getCode() == code ||
                 DishWasherEnum.LONG_STORAGE_AWAIT.getCode() == code){//换气等待
+            tvAirMode.setText(DishWasherEnum.match(code));
             tvAirMode.setVisibility(View.VISIBLE);
             tvAriTime.setVisibility(View.VISIBLE);
             tvMode.setVisibility(View.INVISIBLE);

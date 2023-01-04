@@ -56,7 +56,7 @@ public class SkipUtil {
 
                 Intent intent;
                 List<MultiSegment> list;
-                if(steamOven.sectionNumber >= 2){
+                if(steamOven.sectionNumber >= 2 && steamOven.recipeId == 0){
                     //多段工作页面
                     intent = new Intent(activity, MultiWorkActivity.class);
                     list = getMultiWorkResult(steamOven);

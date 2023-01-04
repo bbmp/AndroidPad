@@ -23,6 +23,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.Device;
 import com.robam.common.bean.UserInfo;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.utils.DeviceUtils;
@@ -36,17 +37,24 @@ import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.bean.SubViewModelMap;
 import com.robam.steamoven.bean.SubViewModelMapSubView;
 import com.robam.steamoven.constant.Constant;
+import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.http.CloudHelper;
+import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.request.GetCurveDetailReq;
 import com.robam.steamoven.response.GetDeviceParamsRes;
 import com.robam.steamoven.ui.pages.RecipeClassifyPage;
+import com.robam.steamoven.utils.SkipUtil;
 import com.robam.steamoven.utils.SteamDataUtil;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 //一体机菜谱
@@ -114,6 +122,33 @@ public class RecipeActivity extends SteamBaseActivity {
         });
 
         setOnClickListener(R.id.recipe_search_prompt_btn);
+        AccountInfo.getInstance().getGuid().observe(this, s -> {
+            for (Device device: AccountInfo.getInstance().deviceList) {
+                if (device.guid.equals(s) && device instanceof SteamOven && device.guid.equals(HomeSteamOven.getInstance().guid)) {
+                    SteamOven steamOven = (SteamOven) device;
+                    if(!SteamCommandHelper.getInstance().isSafe()){
+                        return;
+                    }
+                    if(toWaringPage(steamOven)){
+                        return;
+                    }
+                    if(toOffLinePage(steamOven)){
+                        return;
+                    }
+                    switch (steamOven.powerState){
+                        case SteamStateConstant.POWER_STATE_AWAIT:
+                        case SteamStateConstant.POWER_STATE_ON:
+                        case SteamStateConstant.POWER_STATE_TROUBLE:
+                            SkipUtil.toWorkPage(steamOven,RecipeActivity.this);
+                            break;
+                        case SteamStateConstant.POWER_STATE_OFF:
+                            break;
+                    }
+
+
+                }
+            }
+        });
     }
 
     private void performSearch() {
@@ -178,6 +213,27 @@ public class RecipeActivity extends SteamBaseActivity {
                 }
             }
         }
+        if(deviceConfigurationFunctionsList != null && deviceConfigurationFunctionsList.size() > 0){
+            Collections.sort(deviceConfigurationFunctionsList, (t1, t2) -> {
+                String order = t1.functionParams;
+                String order2 = t2.functionParams;
+                if(StringUtils.isBlank(order) || StringUtils.isBlank(order2)){
+                    return 0;
+                }
+                try {
+                    JSONObject jObj1 = new JSONObject(order);
+                    JSONObject jObj2 = new JSONObject(order2);
+                    String order1Str = jObj1.optString("sort");
+                    String order2Str = jObj2.optString("sort");
+                    return Integer.parseInt(order1Str) - Integer.parseInt(order2Str);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }catch (NumberFormatException e){
+                    e.printStackTrace();
+                }
+                return 0;
+            });
+        }
         //添加分类
         for (int i =0; i<deviceConfigurationFunctionsList.size(); i++) {
             DeviceConfigurationFunctions deviceConfigurationFunctions = deviceConfigurationFunctionsList.get(i);
@@ -187,7 +243,7 @@ public class RecipeActivity extends SteamBaseActivity {
             tab.setId(i);
             View view = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab_classify, null);
             TextView classify = view.findViewById(R.id.tv_classify);
-            classify.setText(classifyList.get(i));
+            classify.setText(classifyList.get(i).replace("菜谱",""));
             tab.setCustomView(view);
             tabLayout.addTab(tab);
 

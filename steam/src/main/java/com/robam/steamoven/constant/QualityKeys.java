@@ -112,6 +112,17 @@ public interface QualityKeys {
      * 除垢模式总段数
      */
     short descaleNum = 27;
+
+    /**
+     * 废水箱状态（1- 关闭；1 - 打开）
+     */
+    short wasteWaterBox = 35;
+
+    /**
+     * 废水箱水位（0表示正常,1表示水满）
+     */
+    short wasteWaterLevel = 36;
+
     /**
      * 当前工作段数
      */

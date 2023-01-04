@@ -125,7 +125,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/dishwasher_white70"
         android:textSize="@dimen/sp_40"
-        android:text="护婴净存"
+        android:text="长效净存"
         android:visibility="invisible"
         app:layout_constraintTop_toBottomOf="@id/dishwasher_guideline3"
         app:layout_constraintLeft_toRightOf="@id/dishwasher_guideline5"/>
