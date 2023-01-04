@@ -5,28 +5,23 @@ import java.util.List;
 public class StoveRecipe {
     //菜谱id
     public long id;
-    //图片
-    private String imgSmall;
     //菜谱名称
-    private String name;
+    public String name;
+    //图片
+    public String imgCover11;
     //设备类型
-    public List<DCS> dcs;
+    public List<DCS> deviceCategoryList;
 
-
-    public StoveRecipe(String name, String imgUrl) {
+    public StoveRecipe(String name, String imgCover11) {
         this.name = name;
-        this.imgSmall = imgUrl;
-    }
-
-    public String getImgUrl() {
-        return imgSmall;
-    }
-
-    public String getName() {
-        return name;
+        this.imgCover11 = imgCover11;
     }
 
     public class DCS {
-        public String dc;
+        public String cookbookId;
+
+        public String categoryCode;
+
+        public String categoryName;
     }
 }

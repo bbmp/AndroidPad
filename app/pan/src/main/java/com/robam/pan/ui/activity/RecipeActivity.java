@@ -16,6 +16,8 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.robam.common.IDeviceType;
+import com.robam.common.bean.AccountInfo;
+import com.robam.common.bean.UserInfo;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.common.utils.LogUtils;
@@ -24,6 +26,7 @@ import com.robam.pan.R;
 import com.robam.pan.base.PanBaseActivity;
 import com.robam.pan.bean.PanRecipe;
 import com.robam.common.constant.PanConstant;
+import com.robam.pan.device.HomePan;
 import com.robam.pan.http.CloudHelper;
 import com.robam.pan.response.GetRecipesByDeviceRes;
 import com.robam.pan.ui.adapter.RvRecipeAdapter;
@@ -68,6 +71,8 @@ public class RecipeActivity extends PanBaseActivity {
                 startActivity(intent);
             }
         });
+        // 当数据不满一页时，是否继续自动加载（默认为true）
+        rvRecipeAdapter.getLoadMoreModule().setEnableLoadMoreIfNotFullPage(false);
         rvRecipeAdapter.getLoadMoreModule().setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
@@ -82,6 +87,8 @@ public class RecipeActivity extends PanBaseActivity {
                     String text = etSearch.getText().toString();
                     if (!TextUtils.isEmpty(text)) {
                         //处理搜索
+                        pageNo = 0;
+                        rvRecipeAdapter.setNewInstance(new ArrayList<>());
                         searchResult(text);
                     } else {
                         ToastUtils.showShort(RecipeActivity.this, R.string.pan_input_empty);
@@ -100,34 +107,44 @@ public class RecipeActivity extends PanBaseActivity {
 
     //获取锅菜谱
     private void getPanRecipe() {
-        CloudHelper.getRecipesByDevice(this, IDeviceType.RZNG, "all", 1 + pageNo * 20, 20, GetRecipesByDeviceRes.class,
-                new RetrofitCallback<GetRecipesByDeviceRes>() {
-                    @Override
-                    public void onSuccess(GetRecipesByDeviceRes getRecipesByDeviceRes) {
-                        if (null == getRecipesByDeviceRes || null == getRecipesByDeviceRes.cookbooks)
-                            rvRecipeAdapter.getLoadMoreModule().loadMoreEnd();
+        UserInfo userInfo = AccountInfo.getInstance().getUser().getValue();
+        String dp = HomePan.getInstance().getDp();
+        if (!TextUtils.isEmpty(dp)) {
+            CloudHelper.getRecipesByDevice(this, (userInfo != null) ? userInfo.id : 0, IDeviceType.RZNG, 1 + pageNo * 20, 20, dp, new ArrayList(), GetRecipesByDeviceRes.class,
+                    new RetrofitCallback<GetRecipesByDeviceRes>() {
+                        @Override
+                        public void onSuccess(GetRecipesByDeviceRes getRecipesByDeviceRes) {
+                            if (null == getRecipesByDeviceRes || null == getRecipesByDeviceRes.data
+                                    || getRecipesByDeviceRes.data.size() < 20) {
+                                rvRecipeAdapter.getLoadMoreModule().loadMoreEnd();
+                                //关闭加载更多
+                                rvRecipeAdapter.getLoadMoreModule().setEnableLoadMore(false);
+                            }
 
-                        setData(getRecipesByDeviceRes);
-                    }
+                            setData(getRecipesByDeviceRes);
+                        }
 
-                    @Override
-                    public void onFaild(String err) {
-                        setData(null);
-                        rvRecipeAdapter.getLoadMoreModule().loadMoreFail();
-                    }
-                });
+                        @Override
+                        public void onFaild(String err) {
+                            setData(null);
+                            rvRecipeAdapter.getLoadMoreModule().loadMoreFail();
+                        }
+                    });
+        } else
+            setData(null);
     }
 
     //设置菜谱数据
     private void setData(GetRecipesByDeviceRes getRecipesByDeviceRes) {
         List<PanRecipe> panRecipes = new ArrayList<>();
-        if (null != getRecipesByDeviceRes && null != getRecipesByDeviceRes.cookbooks) {
+        if (null != getRecipesByDeviceRes && null != getRecipesByDeviceRes.data
+                && getRecipesByDeviceRes.data.size() > 0) {
             //过滤其他设备菜谱
-            for (PanRecipe panRecipe: getRecipesByDeviceRes.cookbooks) {
-                List<PanRecipe.DCS> dcsList = panRecipe.dcs;
+            for (PanRecipe panRecipe: getRecipesByDeviceRes.data) {
+                List<PanRecipe.DCS> dcsList = panRecipe.deviceCategoryList;
                 if (null != dcsList) {
                     for (PanRecipe.DCS dcs: dcsList) {
-                        if (IDeviceType.RZNG.equals(dcs.dc)) {
+                        if (IDeviceType.RZNG.equals(dcs.categoryCode)) {
                             panRecipes.add(panRecipe);
                             break;
                         }
@@ -140,8 +157,7 @@ public class RecipeActivity extends PanBaseActivity {
         if (panRecipes.size() > 0) {
             rvRecipeAdapter.addData(panRecipes);
             hideEmpty();
-        }
-        else
+        } else if (pageNo == 0)
             showEmpty();
     }
 
@@ -157,20 +173,31 @@ public class RecipeActivity extends PanBaseActivity {
     }
     //搜索结果
     private void searchResult(String text) {
-        CloudHelper.getCookbooksByName(this, text, false, 0L, false, true,
-                GetRecipesByDeviceRes.class, new RetrofitCallback<GetRecipesByDeviceRes>() {
+        UserInfo userInfo = AccountInfo.getInstance().getUser().getValue();
+        String dp = HomePan.getInstance().getDp();
 
-                    @Override
-                    public void onSuccess(GetRecipesByDeviceRes getRecipesByDeviceRes) {
-                        rvRecipeAdapter.setNewInstance(new ArrayList<>());
-                        pageNo = 0;
-                        setData(getRecipesByDeviceRes);
-                    }
+        if (!TextUtils.isEmpty(dp)) {
+            CloudHelper.getCookbooksByName(this, dp, true, 1 + pageNo * 20, 20, text, 1, (userInfo != null) ? userInfo.id : 0,
+                    GetRecipesByDeviceRes.class, new RetrofitCallback<GetRecipesByDeviceRes>() {
 
-                    @Override
-                    public void onFaild(String err) {
-                        setData(null);
-                    }
-                });
+                        @Override
+                        public void onSuccess(GetRecipesByDeviceRes getRecipesByDeviceRes) {
+                            if (null == getRecipesByDeviceRes || null == getRecipesByDeviceRes.data
+                                    || getRecipesByDeviceRes.data.size() < 20) {
+                                rvRecipeAdapter.getLoadMoreModule().loadMoreEnd();
+                                //关闭加载更多
+                                rvRecipeAdapter.getLoadMoreModule().setEnableLoadMore(false);
+                            }
+
+                            setData(getRecipesByDeviceRes);
+                        }
+
+                        @Override
+                        public void onFaild(String err) {
+                            setData(null);
+                        }
+                    });
+        } else
+            setData(null);
     }
 }

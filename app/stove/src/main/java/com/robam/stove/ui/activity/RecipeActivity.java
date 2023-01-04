@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.UserInfo;
@@ -41,6 +42,7 @@ public class RecipeActivity extends StoveBaseActivity {
     private TextView tvEmpty;
 
     private TextView btnConnect;
+    private int pageNo;
     //分类
 //    private List<String> classifyList = new ArrayList<>();
     //弱引用，防止内存泄漏
@@ -75,6 +77,14 @@ public class RecipeActivity extends StoveBaseActivity {
                 startActivity(intent);
             }
         });
+        // 当数据不满一页时，是否继续自动加载（默认为true）
+        rvRecipeAdapter.getLoadMoreModule().setEnableLoadMoreIfNotFullPage(false);
+        rvRecipeAdapter.getLoadMoreModule().setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                getStoveRecipe();
+            }
+        });
         etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -82,9 +92,11 @@ public class RecipeActivity extends StoveBaseActivity {
                     String text = etSearch.getText().toString();
                     if (!TextUtils.isEmpty(text)) {
                         //处理搜索
+                        pageNo = 0;
+                        rvRecipeAdapter.setNewInstance(new ArrayList<>());
                         searchResult(text);
                     } else {
-                        ToastUtils.showShort(RecipeActivity.this, R.string.stove_input_empty);
+                        ToastUtils.showShort(getApplicationContext(), R.string.stove_input_empty);
                     }
                     return false;
                 }
@@ -118,10 +130,16 @@ public class RecipeActivity extends StoveBaseActivity {
         UserInfo userInfo = AccountInfo.getInstance().getUser().getValue();
         String dp = HomeStove.getInstance().getDp();
         if (!TextUtils.isEmpty(dp)) {
-            CloudHelper.getRecipesByDevice(this, (userInfo != null) ? userInfo.id : 0, IDeviceType.RRQZ, "all", 1, 20, dp, GetRecipesByDeviceRes.class,
+            CloudHelper.getRecipesByDevice(this, (userInfo != null) ? userInfo.id : 0, IDeviceType.RRQZ, 1 + pageNo * 20, 20, dp, new ArrayList(), GetRecipesByDeviceRes.class,
                     new RetrofitCallback<GetRecipesByDeviceRes>() {
                         @Override
                         public void onSuccess(GetRecipesByDeviceRes getRecipesByDeviceRes) {
+                            if (null == getRecipesByDeviceRes || null == getRecipesByDeviceRes.data
+                                || getRecipesByDeviceRes.data.size() < 20) {
+                                rvRecipeAdapter.getLoadMoreModule().loadMoreEnd();
+                                //关闭加载更多
+                                rvRecipeAdapter.getLoadMoreModule().setEnableLoadMore(false);
+                            }
 
                             setData(getRecipesByDeviceRes);
                         }
@@ -129,6 +147,7 @@ public class RecipeActivity extends StoveBaseActivity {
                         @Override
                         public void onFaild(String err) {
                             setData(null);
+                            rvRecipeAdapter.getLoadMoreModule().loadMoreFail();
                         }
                     });
         } else
@@ -138,26 +157,28 @@ public class RecipeActivity extends StoveBaseActivity {
     //设置菜谱列表
     private void setData(GetRecipesByDeviceRes getRecipesByDeviceRes) {
         List<StoveRecipe> stoveRecipes = new ArrayList<>();
-        if (null != getRecipesByDeviceRes && null != getRecipesByDeviceRes.cookbooks) {
+        if (null != getRecipesByDeviceRes && null != getRecipesByDeviceRes.data
+                && getRecipesByDeviceRes.data.size() > 0) {
             //过滤其他设备菜谱
-            for (StoveRecipe stoveRecipe: getRecipesByDeviceRes.cookbooks) {
-                List<StoveRecipe.DCS> dcsList = stoveRecipe.dcs;
+            for (StoveRecipe stoveRecipe: getRecipesByDeviceRes.data) {
+                List<StoveRecipe.DCS> dcsList = stoveRecipe.deviceCategoryList;
                 if (null != dcsList) {
                     for (StoveRecipe.DCS dcs: dcsList) {
-                        if (IDeviceType.RRQZ.equals(dcs.dc)) {
+                        if (IDeviceType.RRQZ.equals(dcs.categoryCode)) {
                             stoveRecipes.add(stoveRecipe);
                             break;
                         }
                     }
                 }
             }
+            pageNo++;
+            rvRecipeAdapter.getLoadMoreModule().loadMoreComplete();
         }
         if (stoveRecipes.size() > 0) {
-            rvRecipeAdapter.setList(stoveRecipes);
+            rvRecipeAdapter.addData(stoveRecipes);
             hideEmpty();
             btnConnect.setVisibility(View.GONE);
-        }
-        else
+        } else if (pageNo == 0)
             showEmpty();
     }
 
@@ -174,20 +195,31 @@ public class RecipeActivity extends StoveBaseActivity {
 
     //搜索结果
     private void searchResult(String text) {
-        CloudHelper.getCookbooksByName(this, text, false, 0L, false, true,
-                GetRecipesByDeviceRes.class, new RetrofitCallback<GetRecipesByDeviceRes>() {
+        UserInfo userInfo = AccountInfo.getInstance().getUser().getValue();
+        String dp = HomeStove.getInstance().getDp();
 
-                    @Override
-                    public void onSuccess(GetRecipesByDeviceRes getRecipesByDeviceRes) {
+        if (!TextUtils.isEmpty(dp)) {
+            CloudHelper.getCookbooksByName(this, dp, true, 1 + pageNo * 20, 20, text, 1, (userInfo != null) ? userInfo.id : 0,
+                    GetRecipesByDeviceRes.class, new RetrofitCallback<GetRecipesByDeviceRes>() {
 
-                        setData(getRecipesByDeviceRes);
-                    }
+                        @Override
+                        public void onSuccess(GetRecipesByDeviceRes getRecipesByDeviceRes) {
+                            if (null == getRecipesByDeviceRes || null == getRecipesByDeviceRes.data
+                                    || getRecipesByDeviceRes.data.size() < 20) {
+                                rvRecipeAdapter.getLoadMoreModule().loadMoreEnd();
+                                //关闭加载更多
+                                rvRecipeAdapter.getLoadMoreModule().setEnableLoadMore(false);
+                            }
 
-                    @Override
-                    public void onFaild(String err) {
-                        setData(null);
-                    }
-                });
+                            setData(getRecipesByDeviceRes);
+                        }
 
+                        @Override
+                        public void onFaild(String err) {
+                            setData(null);
+                        }
+                    });
+        } else
+            setData(null);
     }
 }

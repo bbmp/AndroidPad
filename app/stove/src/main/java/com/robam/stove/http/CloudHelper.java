@@ -33,10 +33,10 @@ public class CloudHelper {
     private static ICloudService svr = RetrofitClient.getInstance().createApi(ICloudService.class, HostServer.apiHost);
 
     //获取灶具分类菜谱
-    public static <T extends BaseResponse> void getRecipesByDevice(ILife iLife, long userId, String dc, String cookbookType, int start, int limit, String dp,
+    public static <T extends BaseResponse> void getRecipesByDevice(ILife iLife, long userId, String dc, int pageIndex, int pageSize, String dp, List excludeIds,
                                                                             Class<T> entity,
                                                               final RetrofitCallback<T> callback) {
-        String json = new GetRecipesByDeviceReq(userId, dc, start, limit, cookbookType, dp).toString();
+        String json = new GetRecipesByDeviceReq(userId, dc, pageIndex, pageSize, dp, excludeIds).toString();
         RequestBody requestBody =
                 RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
         Call<ResponseBody> call = svr.getRecipesByDevice(requestBody);
@@ -106,9 +106,9 @@ public class CloudHelper {
         enqueue(iLife, entity, call, callback);
     }
     //菜谱搜索
-    public static <T extends BaseResponse> void getCookbooksByName(ILife iLife, String name, boolean contain3rd, long userId, boolean notNeedSearchHistory,
-                                                                   boolean needStatisticCookbook, Class<T> entity, final RetrofitCallback<T> callback) {
-        String json = new RecipeSearchReq(name, contain3rd, userId, notNeedSearchHistory, needStatisticCookbook).toString();
+    public static <T extends BaseResponse> void getCookbooksByName(ILife iLife, String devicePlat, boolean needSearchHistory, int pageIndex, int pageSize,
+                                                                   String search, int searchType, long userId, Class<T> entity, final RetrofitCallback<T> callback) {
+        String json = new RecipeSearchReq(devicePlat, needSearchHistory, pageIndex, pageSize, search, searchType, userId).toString();
         RequestBody requestBody =
                 RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
         Call<ResponseBody> call = svr.getCookbooksByName(requestBody);

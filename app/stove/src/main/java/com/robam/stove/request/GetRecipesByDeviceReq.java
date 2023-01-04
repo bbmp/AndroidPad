@@ -2,21 +2,23 @@ package com.robam.stove.request;
 
 import com.google.gson.Gson;
 
+import java.util.List;
+
 public class GetRecipesByDeviceReq {
     public long userId;
-    public String dc;
-    public int start;
-    public int limit;
-    public String cookbookType;
+    public String deviceCategory;
+    public int pageIndex;
+    public int pageSize;
     public String devicePlat;
+    public List excludeCookIds;
 
-    public GetRecipesByDeviceReq(long userid, String dc, int start, int limit, String cookbookType, String devicePlat) {
-        this.userId = userid;
-        this.dc = dc;
-        this.start = start;
-        this.limit = limit;
-        this.cookbookType = cookbookType;
+    public GetRecipesByDeviceReq(long userId, String deviceCategory, int pageIndex, int pageSize, String devicePlat, List excludeCookIds) {
+        this.userId = userId;
+        this.deviceCategory = deviceCategory;
+        this.pageIndex = pageIndex;
+        this.pageSize = pageSize;
         this.devicePlat = devicePlat;
+        this.excludeCookIds = excludeCookIds;
     }
 
     @Override

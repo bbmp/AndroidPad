@@ -33,6 +33,14 @@ public class HomePan {
 
     //当前guid
     public String guid;
+    //获取设备平台
+    public String getDp() {
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (null != device.guid && device.guid.equals(guid) && null != device.dp)
+                return device.dp;
+        }
+        return "";
+    }
     //锅温度
     public MutableLiveData<Integer> panTemp = new MutableLiveData<Integer>(0);
 

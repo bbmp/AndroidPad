@@ -4,42 +4,36 @@ import java.util.List;
 
 public class PanRecipe {
     //菜谱id
-    public long id = 15312;
-    //图片
-    private String imgSmall;
+    public long id;
     //菜谱名称
-    private String name;
+    public String name;
+    //图片
+    public String imgCover11;
     //设备类型
-    public List<DCS> dcs;
+    public List<DCS> deviceCategoryList;
     //曲线id
     public long curveId;
     //我的最爱序号
     public int orderNo;
 
-
-    public PanRecipe(String name, String imgUrl) {
+    public PanRecipe(String name, String imgCover11) {
         this.name = name;
-        this.imgSmall = imgUrl;
+        this.imgCover11 = imgCover11;
     }
 
-    public PanRecipe(int no, long id, String imgSmall, String name, long curveId) {
+    public PanRecipe(int no, long id, String imgCover11, String name, long curveId) {
         this.orderNo = no;
         this.id = id;
-        this.imgSmall = imgSmall;
+        this.imgCover11 = imgCover11;
         this.name = name;
         this.curveId = curveId;
     }
 
-    public String getImgUrl() {
-        return imgSmall;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-
     public class DCS {
-        public String dc;
+        public String cookbookId;
+
+        public String categoryCode;
+
+        public String categoryName;
     }
 }

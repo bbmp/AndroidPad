@@ -36,8 +36,8 @@ public class RvRecipeAdapter extends BaseQuickAdapter<PanRecipe, BaseViewHolder>
         if (null != panRecipe) {
 
             ImageView imageView = baseViewHolder.getView(R.id.iv_recipe_img);
-            ImageUtils.loadImage(getContext(), panRecipe.getImgUrl(), maskOption, imageView);
-            baseViewHolder.setText(R.id.tv_recipe, panRecipe.getName());
+            ImageUtils.loadImage(getContext(), panRecipe.imgCover11, maskOption, imageView);
+            baseViewHolder.setText(R.id.tv_recipe, panRecipe.name);
         }
     }
 }

@@ -2,17 +2,23 @@ package com.robam.pan.request;
 
 import com.google.gson.Gson;
 
-public class GetRecipesByDeviceReq {
-    public String dc;
-    public String recipeType;
-    public int start;
-    public int limit;
+import java.util.List;
 
-    public GetRecipesByDeviceReq(String dc, String recipeType, int start, int limit) {
-        this.dc = dc;
-        this.recipeType = recipeType;
-        this.start = start;
-        this.limit = limit;
+public class GetRecipesByDeviceReq {
+    public long userId;
+    public String deviceCategory;
+    public int pageIndex;
+    public int pageSize;
+    public String devicePlat;
+    public List excludeCookIds;
+
+    public GetRecipesByDeviceReq(long userId, String deviceCategory, int pageIndex, int pageSize, String devicePlat, List excludeCookIds) {
+        this.userId = userId;
+        this.deviceCategory = deviceCategory;
+        this.pageIndex = pageIndex;
+        this.pageSize = pageSize;
+        this.devicePlat = devicePlat;
+        this.excludeCookIds = excludeCookIds;
     }
 
     @Override

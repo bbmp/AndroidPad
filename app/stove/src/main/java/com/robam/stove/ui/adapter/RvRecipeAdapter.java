@@ -34,8 +34,8 @@ public class RvRecipeAdapter extends BaseQuickAdapter<StoveRecipe, BaseViewHolde
     protected void convert(@NonNull BaseViewHolder baseViewHolder, StoveRecipe stoveRecipe) {
         if (null != stoveRecipe) {
             ImageView imageView = baseViewHolder.getView(R.id.iv_recipe_img);
-            ImageUtils.loadImage(getContext(), stoveRecipe.getImgUrl(), maskOption, imageView);
-            baseViewHolder.setText(R.id.tv_recipe, stoveRecipe.getName());
+            ImageUtils.loadImage(getContext(), stoveRecipe.imgCover11, maskOption, imageView);
+            baseViewHolder.setText(R.id.tv_recipe, stoveRecipe.name);
         }
     }
 }
