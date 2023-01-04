@@ -40,11 +40,11 @@ public class RvShortcutFunAdapter extends BaseQuickAdapter<VenFunBean, BaseViewH
         if (null != venFunBean) {
             if (getItemPosition(venFunBean) == pickPosition) {
                 baseViewHolder.setBackgroundResource(R.id.tv_fun_name, R.drawable.ventilator_shortcut_item_selected);
-//                baseViewHolder.getView(R.id.iv_fun).startAnimation(imgAnimation);
+                baseViewHolder.getView(R.id.iv_fun).startAnimation(imgAnimation);
             } else {
                 baseViewHolder.setBackgroundResource(R.id.tv_fun_name, R.drawable.ventilator_shortcut_item_unselected);
-//                baseViewHolder.getView(R.id.iv_fun).clearAnimation();
-
+                baseViewHolder.getView(R.id.iv_fun).clearAnimation();
+                imgAnimation.cancel();
             }
             baseViewHolder.setImageResource(R.id.iv_fun, venFunBean.iconRes);
         }

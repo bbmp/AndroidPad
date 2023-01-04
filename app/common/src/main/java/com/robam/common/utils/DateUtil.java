@@ -857,20 +857,21 @@ public class DateUtil {
         int hour = 0;
         int minute = 0;
         int second = 0;
-        if (time <= 0)
-            return "00:00";
+        if (time <= 60)
+            return unitFormat(time)+"秒";
         else {
             minute = time / 60;
             if (minute < 60) {
                 second = time % 60;
-                timeStr = unitFormat(minute) + "分钟" + unitFormat(second)+"秒";
+
+                timeStr = minute + "分" + unitFormat(second)+"秒";
             } else {
                 hour = minute / 60;
                 if (hour > 99)
                     return "99:59:59";
                 minute = minute % 60;
                 second = time - hour * 3600 - minute * 60;
-                timeStr = unitFormat(hour) + "小时" + unitFormat(minute) + "分钟" + unitFormat(second)+"秒";
+                timeStr = unitFormat(hour) + "小时" + unitFormat(minute) + "分" + unitFormat(second)+"秒";
             }
         }
         return timeStr;

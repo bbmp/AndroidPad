@@ -31,6 +31,7 @@ import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.MCountdownView;
 import com.robam.common.utils.ClickUtils;
+import com.robam.common.utils.DateUtil;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.device.subdevice.Pan;
 import com.robam.common.device.subdevice.Stove;
@@ -424,12 +425,14 @@ public class HomeVentilator {
 
             if (!isLink) //主动关机
                 delayCloseDialog.setmContentVisible(View.GONE);
+            else
+                delayCloseDialog.tvCountdown.setVisibility(View.GONE);
             delayCloseDialog.tvCountdown.addOnCountDownListener(new MCountdownView.OnCountDownListener() {
                 @Override
                 public void onCountDown(int currentSecond) {
 
-                    delayCloseDialog.tvCountdown.setText(currentSecond + "s后关机");
-                    delayCloseDialog.setContentText(currentSecond + "s");
+                    delayCloseDialog.tvCountdown.setText(DateUtil.secToTime(currentSecond) + "后关机");
+                    delayCloseDialog.setContentText(DateUtil.secToTime(currentSecond));
                     if (currentSecond <= 0) {
                         cancleDelayShutDown();
                         //关机

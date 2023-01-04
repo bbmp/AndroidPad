@@ -38,4 +38,6 @@ dependencies {
     api project(path: ':app:MPChartLib')
     api "com.github.CymChad:BaseRecyclerViewAdapterHelper:$versions.BaseRecyclerViewAdapterHelper"
     api "pl.droidsonroids.gif:android-gif-drawable:$versions.gif_drawable"
+    //banner
+    api "io.github.youth5201314:banner:$versions.banner"
 }
