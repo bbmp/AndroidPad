@@ -211,7 +211,7 @@ public class BleVentilator {
             @SuppressLint("MissingPermission")
             @Override
             public void onDisConnected(boolean isActiveDisConnected, BleDevice bleDevice, BluetoothGatt gatt, int status) {
-                LogUtils.e("onDisConnected " + isActiveDisConnected);
+                LogUtils.e("onDisConnected " + isActiveDisConnected + " mac=" + bleDevice.getMac());
                 //掉线
                 if (null != gatt)
                     gatt.close();
