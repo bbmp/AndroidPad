@@ -262,7 +262,7 @@ public class SerialVentilator {
                 lightOn,
                 gear,
                 beep,
-                baffle,
+                HomeVentilator.getInstance().baffle,
                 HomeVentilator.getInstance().param1,
                 HomeVentilator.getInstance().param2,
                 HomeVentilator.getInstance().param3,
@@ -362,12 +362,13 @@ public class SerialVentilator {
     public static byte[] setGear(byte curgear) {
         byte gear = curgear;
         byte beep = (byte) 0x04;     //蜂鸣
+        byte baffle = (byte) 0xA1; //打开风门挡板
         byte[] payload = new byte[]{
                 HomeVentilator.getInstance().startup,
                 HomeVentilator.getInstance().lightOn,
                 gear,
                 beep,
-                HomeVentilator.getInstance().baffle,
+                baffle,
                 HomeVentilator.getInstance().param1,
                 HomeVentilator.getInstance().param2,
                 HomeVentilator.getInstance().param3,
@@ -429,7 +430,7 @@ public class SerialVentilator {
                 lightOn,
                 HomeVentilator.getInstance().gear,
                 beep,
-                baffle,
+                HomeVentilator.getInstance().baffle,
                 HomeVentilator.getInstance().param1,
                 HomeVentilator.getInstance().param2,
                 HomeVentilator.getInstance().param3,
@@ -462,7 +463,7 @@ public class SerialVentilator {
                 HomeVentilator.getInstance().param3,
                 HomeVentilator.getInstance().param4,
                 HomeVentilator.getInstance().param5,
-                HomeVentilator.getInstance(). baffle2,
+                HomeVentilator.getInstance().baffle2,
                 HomeVentilator.getInstance().param6,
                 param7,
                 HomeVentilator.getInstance().param8,
