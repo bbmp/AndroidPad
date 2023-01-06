@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.robam.common.ui.activity.BaseActivity;
+import com.robam.common.utils.ToastUtils;
 import com.robam.ventilator.BuildConfig;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
@@ -16,6 +17,9 @@ import java.util.Date;
 public class AboutActivity extends VentilatorBaseActivity {
     private TextView tvSysV;
     private TextView tvModelV;
+    private int COUNT = 5;
+    private long DURATION = 3* 1000;
+    private long[] mHits = new long[COUNT];
 
     @Override
     protected int getLayoutId() {
@@ -43,6 +47,18 @@ public class AboutActivity extends VentilatorBaseActivity {
         Date date = new Date(Build.TIME);
         tvSysV.setText(simpleDateFormat.format(date));
         tvModelV.setText(BuildConfig.MODEL);
+        tvSysV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);
+                mHits[mHits.length - 1] = System.currentTimeMillis();
+                if (mHits[0] >= (System.currentTimeMillis() - DURATION)) {
+                    long[] hits = new long[COUNT];
+                    System.arraycopy(hits, 0, mHits, 0, mHits.length);
+
+                }
+            }
+        });
     }
 
     @Override

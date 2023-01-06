@@ -119,15 +119,19 @@ public class ShortcutActivity extends VentilatorBaseActivity {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 if (position == rvShortcutFunAdapter.getPickPosition()) {//已经选中了
+                    rvShortcutFunAdapter.setPickPosition(-1);
                     VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_CLOSE);
                 } else if (position == 0) {
+                    rvShortcutFunAdapter.setPickPosition(0);
                     VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_WEAK);
                 } else if (position == 1) {
+                    rvShortcutFunAdapter.setPickPosition(1);
                     VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_MID);
                 } else if (position == 2) {
+                    rvShortcutFunAdapter.setPickPosition(2);
                     VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_FRY);
                 }
-                finish();
+//                finish();
             }
         });
         //设备

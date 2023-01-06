@@ -5,7 +5,8 @@ import com.tencent.mmkv.MMKV;
 import java.util.Set;
 
 public class MMKVUtils {
-    private static final String SMART_SET = "智感恒吸设置";
+    private static final String COLOR_LAMP = "color_lamp";
+    private static final String SMART_SET = "smart_set";
     private static final String MMKV_NAME = "STEAM_OVEN";
     private static final String LOGIN = "login";
     private static final String USER_INFO = "user_info";
@@ -294,6 +295,16 @@ public class MMKVUtils {
     public static boolean getSmartSet() {
         MMKV mmkv = MMKV.defaultMMKV();
         return mmkv.decodeBool(SMART_SET, false);
+    }
+    //获取冷暖光设置
+    public static int getColorLamp() {
+        MMKV mmkv = MMKV.defaultMMKV();
+        return mmkv.decodeInt(COLOR_LAMP, 0);
+    }
+    //设置冷暖光设置
+    public static void setColorLamp(int lamp) {
+        MMKV mmkv = MMKV.defaultMMKV();
+        mmkv.encode(COLOR_LAMP, lamp);
     }
     //wifi密码
     public static void setWifi(String ssid, String pwd) {

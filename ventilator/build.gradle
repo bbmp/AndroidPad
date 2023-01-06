@@ -19,12 +19,12 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "MODEL", "\"5068S\""
+            buildConfigField "String", "MODEL", "\"CXW-260-5068S\""
             buildConfigField "String", "VERSION_NAME", "\"V1.0.0\""
             buildConfigField "int", "VERSION_CODE", "1"
         }
         debug {
-            buildConfigField "String", "MODEL", "\"5068S\""
+            buildConfigField "String", "MODEL", "\"CXW-260-5068S\""
             buildConfigField "String", "VERSION_NAME", "\"V1.0.0\""
             buildConfigField "int", "VERSION_CODE", "1"
         }
@@ -70,4 +70,6 @@ dependencies {
     api "pl.droidsonroids.gif:android-gif-drawable:$versions.gif_drawable"
     //工具类
     api "com.blankj:utilcodex:$versions.utilcodex"
+    //xcrash
+    api "com.iqiyi.xcrash:xcrash-android-lib:$versions.xcrash"
 }

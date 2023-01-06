@@ -79,20 +79,14 @@ public class AlarmVentilatorService extends Service {
                         BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream(), "utf-8"));
                         String line = null;
                         long downTime = 0;
-                        boolean consume = true;
                         while (true) {
                             line = br.readLine();
 
                             if (null != line) { //熄屏状态
                                 if (line.contains("00a5")) { //左键
                                     if (line.contains("00000001")) {//down事件
-                                        if (System.currentTimeMillis() - downTime < 200) {
-                                            consume = false; //不消费事件
-                                            continue;
-                                        }
                                         downTime = System.currentTimeMillis();
-                                        consume = true;
-                                    } else if (line.contains("00000000") && consume) { //up事件
+                                    } else if (line.contains("00000000")) { //up事件
                                         if (System.currentTimeMillis() - downTime > 2000) { //长按
                                             PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
                                             boolean isScreenOn = pm.isInteractive();
@@ -113,13 +107,9 @@ public class AlarmVentilatorService extends Service {
                                     }
                                 } else if (line.contains("00a4")) { //右键
                                     if (line.contains("00000001")) {//down事件
-                                        if (System.currentTimeMillis() - downTime < 200) {
-                                            consume = false; //不消费事件
-                                            continue;
-                                        }
                                         downTime = System.currentTimeMillis();
-                                        consume = true;
-                                    } else if (line.contains("00000000") && consume) { //up事件
+                                    } else if (line.contains("00000000")) { //up事件
+                                        LogUtils.e("startup = " + HomeVentilator.getInstance().isStartUp());
                                         if (HomeVentilator.getInstance().isStartUp()) { //开机状态
                                             //延时关机
                                             Activity activity = AppActivityManager.getInstance().getCurrentActivity();

@@ -9,11 +9,11 @@
     <string name="ventilator_settting">系统设置</string>
     <string name="ventilator_personal">个人中心</string>
     <string name="ventilator_product">产品中心</string>
-    <string name="ventilator_setting_time">时间设定</string>
+    <string name="ventilator_setting_time">时间设置</string>
     <string name="ventilator_net_connect">网络连接</string>
     <string name="ventilator_reset">恢复出厂</string>
     <string name="ventilator_screen_brightness">屏幕亮度</string>
-    <string name="ventilator_performance">性能</string>
+    <string name="ventilator_performance">标准</string>
     <string name="ventilator_comfort">舒适</string>
     <string name="ventilator_login_phone">手机登录</string>
     <string name="ventilator_login_password">密码登录</string>
@@ -107,7 +107,7 @@
     <string name="ventilator_cleaning_completion">清洁完成</string>
     <string name="ventilator_disinfect_completion">消毒完成</string>
     <string name="ventilator_cabinet_completion">结束</string>
-    <string name="ventilator_products_center">欢迎使用\n双子星套系产品</string>
+    <string name="ventilator_products_center">欢迎使用\nROKI数字厨电\n创造者i6</string>
     <string name="ventilator_delete_device">删除设备</string>
     <string name="ventilator_maintain_phone">维修电话：658889789</string>
     <string name="ventilator_warning_e1_title">报警信息</string>

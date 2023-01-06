@@ -63,6 +63,8 @@ import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import xcrash.TombstoneManager;
+
 public class HomeVentilator {
     //锁屏框
     public IDialog homeLock;
@@ -236,7 +238,7 @@ public class HomeVentilator {
     /**
      * byte17 参数6 设置可调色温灯颜色	0）-100，0表示全冷100全
      */
-    public byte param6 = 0;
+    public byte param6 = (byte) MMKVUtils.getColorLamp();
     /**
      * byte18  参数7 设置智感恒吸模式
      */
@@ -387,12 +389,14 @@ public class HomeVentilator {
             delayCloseDialog.tvCountdown.setTotalTime(timingTime * 60);
 
             delayCloseDialog.setmContentVisible(View.GONE);
+            delayCloseDialog.tvCountdown.setText(DateUtil.secToTime(timingTime * 60) + "后关机");
+            delayCloseDialog.setContentText(DateUtil.secToTime(timingTime * 60));
             delayCloseDialog.tvCountdown.addOnCountDownListener(new MCountdownView.OnCountDownListener() {
                 @Override
                 public void onCountDown(int currentSecond) {
                     remainTime = currentSecond;
-                    delayCloseDialog.tvCountdown.setText(currentSecond + "s后关机");
-                    delayCloseDialog.setContentText(currentSecond + "s");
+                    delayCloseDialog.tvCountdown.setText(DateUtil.secToTime(currentSecond) + "后关机");
+                    delayCloseDialog.setContentText(DateUtil.secToTime(currentSecond));
                     if (currentSecond <= 0) {
                         cancleDelayShutDown();
                         //关机
@@ -427,6 +431,8 @@ public class HomeVentilator {
                 delayCloseDialog.setmContentVisible(View.GONE);
             else
                 delayCloseDialog.tvCountdown.setVisibility(View.GONE);
+            delayCloseDialog.tvCountdown.setText(DateUtil.secToTime(delayTime * 60) + "后关机");
+            delayCloseDialog.setContentText(DateUtil.secToTime(delayTime * 60));
             delayCloseDialog.tvCountdown.addOnCountDownListener(new MCountdownView.OnCountDownListener() {
                 @Override
                 public void onCountDown(int currentSecond) {
@@ -473,6 +479,7 @@ public class HomeVentilator {
 //        Activity activity = AppActivityManager.getInstance().getCurrentActivity();
 //        if (null != activity)
 //            activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        cancleDelayShutDown();
     }
     //关闭烟机
     public void closeVentilator() {
@@ -493,6 +500,11 @@ public class HomeVentilator {
 //        activity = AppActivityManager.getInstance().getCurrentActivity();
 //        if (null != activity)
 //            activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        //保留10个日志
+        File[] files = TombstoneManager.getAllTombstones();
+        if (files.length > 10) {
+            TombstoneManager.deleteTombstone(files[0]);
+        }
     }
 
     //关闭延时关机

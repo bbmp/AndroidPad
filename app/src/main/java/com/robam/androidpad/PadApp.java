@@ -23,10 +23,6 @@ import com.tencent.mmkv.MMKV;
 
 import org.litepal.LitePal;
 
-import java.io.File;
-
-import xcrash.TombstoneManager;
-
 public class PadApp extends Application {
     @Override
     public void onCreate() {
@@ -34,11 +30,6 @@ public class PadApp extends Application {
         MultiDex.install(this);
         //崩溃注册
         xcrash.XCrash.init(this);
-        //保留10个日志
-        File[] files = TombstoneManager.getAllTombstones();
-        if (files.length > 10) {
-            TombstoneManager.deleteTombstone(files[0]);
-        }
         //LitePal注册 数据库
         LitePal.initialize(this);
         //平台初始化

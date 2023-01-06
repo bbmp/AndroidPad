@@ -8,6 +8,7 @@ import com.robam.common.device.Plat;
 import com.robam.common.utils.ByteUtils;
 import com.robam.common.utils.Crc16Utils;
 import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.MMKVUtils;
 import com.robam.common.utils.StringUtils;
 import com.robam.ventilator.constant.VentilatorConstant;
 import com.robam.ventilator.device.HomeVentilator;
@@ -424,6 +425,7 @@ public class SerialVentilator {
             param6 = 100;
         else
             param6 = 0;
+        MMKVUtils.setColorLamp(param6);
         byte baffle = (byte) 0xA1; //打开风门挡板
         byte[] payload = new byte[]{
                 HomeVentilator.getInstance().startup,
