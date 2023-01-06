@@ -166,5 +166,29 @@ public enum SteamModeEnum {
         return false;
     }
 
+    /**
+     * 是否是EXP获取加湿烤
+     * @param modeCode
+     * @return
+     */
+    public static boolean isExp(int modeCode){
+        return modeCode == SteamConstant.EXP;
+    }
+
+    /**
+     * 是否包含蒸汽量
+     * @param modeCode
+     * @return
+     */
+    public static boolean isAddSteam(int modeCode){
+        if(SteamConstant.ZHIKONGZHENG == modeCode ||
+                SteamConstant.SHOUDONGJIASHIKAO == modeCode ||
+                SteamConstant.JIASHIBEIKAO == modeCode ||
+                SteamConstant.JIASHIFENGBEIKAO == modeCode){
+            return true;
+        }
+        return false;
+    }
+
 
 }

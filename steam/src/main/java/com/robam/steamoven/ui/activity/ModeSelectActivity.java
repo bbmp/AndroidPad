@@ -685,12 +685,12 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
     }
 
     private void initOtherViews(ModeBean modeBean){
-        if(modeBean.rotate == 1 && !needSetResult){
-            showLeftCenter();
-            setOnClickListener(R.id.ll_left_center);
-        }else{
-            hideLeftCenter();
-        }
+//        if(modeBean.rotate == 1 && !needSetResult){
+//            showLeftCenter();
+//            setOnClickListener(R.id.ll_left_center);
+//        }else{
+//            hideLeftCenter();
+//        }
         if(modeBean.order == 1 && !needSetResult){
             showRight();
             TextView textView = findViewById(R.id.tv_right);

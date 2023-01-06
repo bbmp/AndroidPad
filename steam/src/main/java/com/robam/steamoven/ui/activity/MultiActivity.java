@@ -24,6 +24,8 @@ import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.MultiSegmentEnum;
 import com.robam.steamoven.constant.SteamConstant;
 import com.robam.steamoven.constant.SteamEnum;
+import com.robam.steamoven.constant.SteamModeEnum;
+import com.robam.steamoven.constant.SteamOvenSteamEnum;
 import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.protocol.SteamCommandHelper;
@@ -256,15 +258,17 @@ public class MultiActivity extends SteamBaseActivity {
             segmentView.setTextColor(i == 0 ? enableColor:disableColor);
             segmentView.setText(this.getSegmentName(i));
 
-
-            TextView temperatureView = itemGroup.findViewById(R.id.multi_item_temperature);
-            temperatureView.setTextColor(i == 0 ? enableColor:disableColor);
-            temperatureView.setText("");
-
             TextView modelView = itemGroup.findViewById(R.id.multi_item_model);
             modelView.setTextColor(i == 0 ? enableColor:disableColor);
             modelView.setText("");
 
+            TextView steamView = itemGroup.findViewById(R.id.multi_item_model);
+            steamView.setTextColor(i == 0 ? enableColor:disableColor);
+            steamView.setText("");
+
+            TextView temperatureView = itemGroup.findViewById(R.id.multi_item_temperature);
+            temperatureView.setTextColor(i == 0 ? enableColor:disableColor);
+            temperatureView.setText("");
 
             TextView durationView = itemGroup.findViewById(R.id.multi_item_duration);
             durationView.setTextColor(i == 0 ? enableColor:disableColor);
@@ -316,10 +320,21 @@ public class MultiActivity extends SteamBaseActivity {
         segmentView.setText(this.getSegmentName(index));
         itemGroup.setTag(DATA_KEY,isInit ? null:multiSegmentBean);
 
+        if(!isInit && SteamModeEnum.isAddSteam(multiSegmentBean.code)){
+            TextView steamView = itemGroup.findViewById(R.id.multi_item_steam);
+            steamView.setVisibility(View.VISIBLE);
+            steamView.setTextColor(textColor);
+            String streamValue = isInit ? "" : SteamOvenSteamEnum.match(multiSegmentBean.steam) +"蒸汽";
+            steamView.setText(streamValue);
+        }else{
+            itemGroup.findViewById(R.id.multi_item_steam).setVisibility(View.GONE);
+        }
+
         TextView temperatureView = itemGroup.findViewById(R.id.multi_item_temperature);
         temperatureView.setTextColor(textColor);
         String temperature = isInit ? "" : (multiSegmentBean.defTemp + "°c");
         temperatureView.setText(temperature);
+
 
         TextView modelView = itemGroup.findViewById(R.id.multi_item_model);
         modelView.setTextColor(textColor);

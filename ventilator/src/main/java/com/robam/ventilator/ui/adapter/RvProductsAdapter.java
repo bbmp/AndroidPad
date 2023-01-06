@@ -300,7 +300,7 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
                 baseViewHolder.setText(R.id.tv_time, getStartTimePrompt(dishWasher.AppointmentRemainingTime * 60));
                 baseViewHolder.setText(R.id.btn_work, R.string.ventilator_appoint_finish);
             }else{
-                baseViewHolder.setText(R.id.tv_time, getSpan(dishWasher.remainingWorkingTime * 60,false));
+                baseViewHolder.setText(R.id.tv_time, getSpan(dishWasher.remainingWorkingTime * 60,true));
                 if (dishWasher.getWorkStatus() == 2) //工作中
                     baseViewHolder.setText(R.id.btn_work, R.string.ventilator_pause);
                 else if (dishWasher.getWorkStatus() == 3) //暂停中

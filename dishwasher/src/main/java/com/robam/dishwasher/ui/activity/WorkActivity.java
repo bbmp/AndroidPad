@@ -365,8 +365,8 @@ public class WorkActivity extends DishWasherBaseActivity {
             int hourIndex = time.indexOf("h");
             if(minIndex != 0 && hourIndex != 0){
                 try{
-                    //time = (Integer.parseInt(time.substring(0,hourIndex)) + 1) +"h";//暂时不加1
-                    time = time.substring(0,hourIndex)+"h";//暂时不加1
+                    time = (Integer.parseInt(time.substring(0,hourIndex)) + 1) +"h";//暂时不加1
+                    //time = time.substring(0,hourIndex)+"h";//暂时不加1
                 }catch (NumberFormatException e){}
             }else{
                 try{
