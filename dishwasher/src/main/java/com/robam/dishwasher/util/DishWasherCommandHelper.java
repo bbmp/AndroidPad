@@ -90,7 +90,7 @@ public class DishWasherCommandHelper {
      * @return
      */
     public static boolean checkDishWasherState(Context context, DishWasher curDevice){
-        if(curDevice == null || curDevice.status != Device.ONLINE){
+        if(curDevice == null || curDevice.status == Device.OFFLINE){
             ToastUtils.show(context, R.string.dishwasher_offline, Toast.LENGTH_LONG);
             return false;
         }

@@ -10,7 +10,6 @@ import com.robam.common.http.RetrofitCallback;
 import com.robam.common.manager.DeviceWarnInfoManager;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.StringUtils;
-import com.robam.steamoven.bean.DeviceConfigurationFunctions;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.SteamModeEnum;
 import com.robam.steamoven.http.CloudHelper;
@@ -18,7 +17,6 @@ import com.robam.steamoven.manager.RecipeManager;
 import com.robam.steamoven.response.GetDeviceErrorRes;
 import com.robam.steamoven.response.GetDeviceParamsRes;
 import com.tencent.mmkv.MMKV;
-import java.util.List;
 
 public class SteamDataUtil {
 

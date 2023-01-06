@@ -29,6 +29,11 @@ public class DishWasherModeBean implements Serializable {
      */
     public int auxCode = -1;
 
+    /**
+     * 工作进展状态
+     */
+    public int workModeState = 0;
+
     public DishWasherModeBean getNewMode(){
         DishWasherModeBean modeBean = new DishWasherModeBean();
         modeBean.code = code;
@@ -41,6 +46,7 @@ public class DishWasherModeBean implements Serializable {
         modeBean.auxCode = auxCode;
         modeBean.auxList = auxList;
         modeBean.restTime = restTime;
+        modeBean.workModeState = workModeState;
         return modeBean;
     }
 

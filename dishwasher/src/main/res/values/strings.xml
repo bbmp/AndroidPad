@@ -64,6 +64,7 @@
     <string name="dishwasher_lock">童锁</string>
     <string name="dishwasher_no_longer_remind">不再提醒</string>
     <string name="dishwasher_offline">洗碗机已离线</string>
+    <string name="dishwasher_power_off">设备关机状态下，不能开启童锁功能</string>
     <string name="dishwasher_close_door_prompt">请检查洗碗机门是否关闭</string>
     <string name="dishwasher_finish">完成</string>
     <string name="dishwasher_washer">洗涤</string>

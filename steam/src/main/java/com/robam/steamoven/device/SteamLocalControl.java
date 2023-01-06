@@ -35,6 +35,11 @@ public class SteamLocalControl implements SteamFunction{
     }
 
     @Override
+    public void startCookForAppoint(String targetGuid) {
+
+    }
+
+    @Override
     public void pauseWork(String targetGuid) {
 
     }

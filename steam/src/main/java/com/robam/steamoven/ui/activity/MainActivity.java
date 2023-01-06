@@ -74,7 +74,11 @@ public class MainActivity extends SteamBaseActivity {
         }
         SteamOven steamOven = getSteamOven();
         if(steamOven != null){//获取设备数据，主要用于展示菜谱
-            SteamDataUtil.getSteamData(this,DeviceUtils.getDeviceTypeId(steamOven.guid));
+            String deviceTypeId = DeviceUtils.getDeviceTypeId(steamOven.guid);
+            String steamContent = SteamDataUtil.getSteamContent(deviceTypeId);
+            if(StringUtils.isBlank(steamContent)){
+                SteamDataUtil.getSteamData(this,deviceTypeId);
+            }
         }
         SteamDataUtil.getDeviceErrorInfo(this);
     }

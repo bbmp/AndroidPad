@@ -175,12 +175,15 @@ public class SteamCommandHelper {
      * @param segment
      * @param flag
      */
-    public static void startModelWork(MultiSegment segment,int flag){
+    public static void startModelWork(MultiSegment segment,String targetGuid,int flag){
         int mode = segment.code;
         int setTemp = segment.defTemp;
         int setTime = segment.duration;
         int steamFlow = segment.steam;
         Map commonMap = SteamCommandHelper.getCommonMap(MsgKeys.setDeviceAttribute_Req);
+        if(targetGuid != null){
+            commonMap.put(SteamConstant.TARGET_GUID, targetGuid);
+        }
         if (steamFlow == 0){
             if (setTemp == 0){
                 commonMap.put(SteamConstant.ARGUMENT_NUMBER, 6);
@@ -321,7 +324,7 @@ public class SteamCommandHelper {
      * @param appointTime 预约时间
      * @param flag 命令标识
      */
-    public static void sendCommandForExp(MultiSegment segment,int appointTime,int flag) {
+    public static void sendCommandForExp(MultiSegment segment,String targetGuid,int appointTime,int flag) {
         int mode = segment.code;
         int setTime = segment.duration;
         int setTemp = segment.defTemp;
@@ -330,6 +333,9 @@ public class SteamCommandHelper {
         int steamFlow = segment.steam;
         try {
             Map msg = getCommonMap(MsgKeys.setDeviceAttribute_Req);
+            if(targetGuid != null){
+                msg.put(SteamConstant.TARGET_GUID, targetGuid);
+            }
             if (steamFlow==0){
                 msg.put(SteamConstant.ARGUMENT_NUMBER, 8);
             }else {
@@ -417,7 +423,8 @@ public class SteamCommandHelper {
                 msg.put(SteamConstant.steamLength, 1);
                 msg.put(SteamConstant.steam, steamFlow);
             }
-            getInstance().sendCommonMsgForLiveData(msg,flag);
+            //getInstance().sendCommonMsgForLiveData(msg,flag);
+            getInstance().sendCommonMsg(msg);
         } catch (Exception e) {
             e.printStackTrace();
         }

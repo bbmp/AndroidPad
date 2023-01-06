@@ -27,6 +27,7 @@ import com.robam.common.bean.Device;
 import com.robam.common.bean.UserInfo;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.utils.DeviceUtils;
+import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.StringUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.steamoven.R;
@@ -40,6 +41,7 @@ import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.http.CloudHelper;
+import com.robam.steamoven.manager.RecipeManager;
 import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.request.GetCurveDetailReq;
 import com.robam.steamoven.response.GetDeviceParamsRes;
@@ -159,7 +161,8 @@ public class RecipeActivity extends SteamBaseActivity {
 
     @Override
     protected void initData() {
-        getLocalRecipe();
+        //getLocalRecipe();
+        loadRecipe();
     }
 
     @Override
@@ -176,6 +179,29 @@ public class RecipeActivity extends SteamBaseActivity {
             etSearch.setText("");
             showRecipeCategory();
             setSearchState(false);
+        }
+    }
+
+    private void loadRecipe() {
+        SteamOven steamOven = getSteamOven();
+        if(steamOven != null){//获取设备数据，主要用于展示菜谱
+            UserInfo info = AccountInfo.getInstance().getUser().getValue();
+            String guidType = DeviceUtils.getDeviceTypeId(steamOven.guid);
+            CloudHelper.getDeviceParams(this, (info != null) ? info.id : 0, guidType, IDeviceType.RZKY, GetDeviceParamsRes.class,
+                    new RetrofitCallback<GetDeviceParamsRes>() {
+                        @Override
+                        public void onSuccess(GetDeviceParamsRes getDeviceParamsRes) {
+                            if (null != getDeviceParamsRes && null != getDeviceParamsRes.modelMap) {
+                                new Thread(() -> RecipeManager.getInstance().setRecipeInfo(guidType, getDeviceParamsRes)).start();
+                                setRecipeData(getDeviceParamsRes);
+                            }
+                        }
+
+                        @Override
+                        public void onFaild(String err) {
+
+                        }
+                    });
         }
     }
 
@@ -237,13 +263,17 @@ public class RecipeActivity extends SteamBaseActivity {
         //添加分类
         for (int i =0; i<deviceConfigurationFunctionsList.size(); i++) {
             DeviceConfigurationFunctions deviceConfigurationFunctions = deviceConfigurationFunctionsList.get(i);
-            classifyList.add(deviceConfigurationFunctions.functionName);
+            if(deviceConfigurationFunctions.functionName != null){
+                classifyList.add(deviceConfigurationFunctions.functionName.replace("菜谱",""));
+            }else{
+                continue;
+            }
             //菜谱信息
             TabLayout.Tab tab = tabLayout.newTab();
             tab.setId(i);
             View view = LayoutInflater.from(getContext()).inflate(R.layout.steam_view_layout_tab_classify, null);
             TextView classify = view.findViewById(R.id.tv_classify);
-            classify.setText(classifyList.get(i).replace("菜谱",""));
+            classify.setText(classifyList.get(i));
             tab.setCustomView(view);
             tabLayout.addTab(tab);
 
@@ -281,7 +311,9 @@ public class RecipeActivity extends SteamBaseActivity {
         @NonNull
         @Override
         public Fragment getItem(int position) {
-            return curFragments.get(position).get();
+            Fragment fragment = curFragments.get(position).get();
+            LogUtils.e("getItem : "+position + " fragment "+(fragment == null));
+            return fragment;
         }
 
         @Override

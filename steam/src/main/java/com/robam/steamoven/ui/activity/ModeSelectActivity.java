@@ -20,8 +20,8 @@ import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.IModeSelect;
-import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.common.utils.ClickUtils;
+import com.robam.common.utils.DateUtil;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.steamoven.R;
@@ -52,6 +52,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect {
     private TabLayout tabLayout;
@@ -208,13 +210,13 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
                     isClickAble = modeBean.maxTemp != modeBean.minTemp;
                     promptResId = R.string.steam_temp_prompt;
                 } else if (tab.getId() == 4) {
-                    isClickAble = modeBean.maxTemp != modeBean.minTemp;
+                    isClickAble = modeBean.maxTime != modeBean.minTime;
                     promptResId = R.string.steam_time_prompt;
                 }
                 if(!isClickAble){
-                    if(modeBean.maxTemp == modeBean.minTemp && modeBean.maxTemp == modeBean.minTemp){
-                        promptResId = R.string.steam_temp_time_prompt;
-                    }
+//                    if(modeBean.maxTemp == modeBean.minTemp && modeBean.maxTemp == modeBean.minTemp){
+//                        promptResId = R.string.steam_temp_time_prompt;
+//                    }
                     if(System.currentTimeMillis() - preShowTimeMin >= 2000){//防止用户多次点击，弹出太多的Toast
                         preShowTimeMin = System.currentTimeMillis();
                         ToastUtils.showLong(ModeSelectActivity.this,promptResId);
@@ -301,9 +303,11 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
         preSegment =  getIntent().getParcelableExtra(Constant.SEGMENT_DATA_FLAG);
         int checkIndex = getPreCheckIndex();
         initCurModelList();
+        if(needSetResult){
+            btStart.setText(R.string.steam_ok_btn);
+        }
         if (null != modes && modes.size() > 0) {
             //默认模式
-
             ModeBean defaultBean = getCurModeBean(checkIndex);//modes.get(checkIndex != -1 ? checkIndex:0);
             curModeBean = defaultBean;
             if(!needSetResult){
@@ -393,6 +397,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
                 setRight(R.string.steam_makeAnAppointment);
             }
             initOtherViews(defaultBean);
+            initTimePrompt();
         }
 
 //        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(noScrollViewPager));
@@ -409,6 +414,9 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
 
     private void initCurModelList(){
         if(modes != null && !needSetResult){
+            if(modes.size() > 0 && modes.get(0).funCode == 7){
+                return;
+            }
             for(int i = 0;i < modes.size();i++){
                 ModelUtil.ModelRecord modelRecord = ModelUtil.getModelRecord(modes.get(i).code);
                 if(modelRecord != null){
@@ -479,7 +487,10 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
     }
 
     private void saveReCode(){
-        if(needSetResult){
+        if(needSetResult){//多段模式不记录
+            return;
+        }
+        if(modes.size() > 0 && modes.get(0).funCode == 7){//辅助模式不记录
             return;
         }
         MultiSegment result = getResult();
@@ -509,7 +520,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             MultiSegment multiSegment = getResult();
             multiSegment.workRemaining = (int) getAppointingTimeMin(timeVt.getText().toString()) * 60;
             if(SteamModeEnum.EXP.getMode() == multiSegment.code){
-                SteamCommandHelper.sendCommandForExp(multiSegment, multiSegment.workRemaining,directive_offset + START);
+                SteamCommandHelper.sendCommandForExp(multiSegment, null,multiSegment.workRemaining,directive_offset + START);
             }else{
                 SteamCommandHelper.sendAppointCommand(multiSegment,multiSegment.workRemaining,directive_offset + START);
             }
@@ -525,12 +536,12 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
     private void startWork(){
         MultiSegment result = getResult();
         if(SteamModeEnum.EXP.getMode() == result.code){
-            SteamCommandHelper.sendCommandForExp(result,0,MsgKeys.setDeviceAttribute_Req+directive_offset);
+            SteamCommandHelper.sendCommandForExp(result,null,0,MsgKeys.setDeviceAttribute_Req+directive_offset);
         }else{
             if(SteamModeEnum.isAuxModel(result.code)){
-                SteamCommandHelper.startModelWork(result,DIRECTIVE_OFFSET_AUX_MODEL+directive_offset);
+                SteamCommandHelper.startModelWork(result,null,DIRECTIVE_OFFSET_AUX_MODEL+directive_offset);
             }else{
-                SteamCommandHelper.startModelWork(result,MsgKeys.setDeviceAttribute_Req+directive_offset);
+                SteamCommandHelper.startModelWork(result,null,MsgKeys.setDeviceAttribute_Req+directive_offset);
             }
         }
     }
@@ -813,6 +824,53 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
                 return timeDur + 1;
             }
             return timeDur;
+        }
+    }
+
+    Timer timer;
+    /**
+     * 初始化定时器
+     */
+    private void initTimePrompt(){
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if(!isDestroyed()){
+                    btStart.post(() -> {
+                        if(!isDestroyed()){
+                            setAppointContent();
+                        }
+                    });
+                }
+            }
+        },5000,5000);
+    }
+
+    /**
+     * 更改预约显示
+     */
+    private void setAppointContent() {
+        String btValue = btStart.getText().toString();
+        if(getResources().getString(R.string.steam_start_appoint).equals(btValue)){
+            TextView appointTv =  findViewById(R.id.tv_right);
+            String orderTime = appointTv.getText().toString();
+            if(orderTime.contains("日")){
+                orderTime = orderTime.substring("今日".length());
+            }
+            if (DateUtil.compareTime(DateUtil.getCurrentTime(DateUtil.PATTERN), orderTime, DateUtil.PATTERN) >= 0) {
+                appointTv.setText("次日"+orderTime);
+            } else {
+                appointTv.setText(orderTime);
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(timer !=  null){
+            timer.cancel();
         }
     }
 }

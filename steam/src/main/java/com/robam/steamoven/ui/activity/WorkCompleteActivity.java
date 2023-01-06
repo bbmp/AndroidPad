@@ -17,6 +17,7 @@ import com.robam.steamoven.constant.SteamConstant;
 import com.robam.steamoven.constant.SteamModeEnum;
 import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
+import com.robam.steamoven.device.SteamAbstractControl;
 import com.robam.steamoven.manager.RecipeManager;
 import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.ui.dialog.SteamOverTimeDialog;
@@ -115,7 +116,7 @@ public class WorkCompleteActivity extends SteamBaseActivity {
             case SteamStateConstant.WORK_STATE_PREHEAT_PAUSE:
             case SteamStateConstant.WORK_STATE_WORKING:
             case SteamStateConstant.WORK_STATE_WORKING_PAUSE:
-                if(steamOven.restTime > 0){
+                if(steamOven.restTime > 0 || steamOven.restTime2 > 0 || steamOven.restTime3 > 0){
                     finish();
                 }
                 break;
@@ -223,7 +224,8 @@ public class WorkCompleteActivity extends SteamBaseActivity {
                     }
                 }
                 addTime = Integer.parseInt(timeDialog.getCurValue());
-                sendOverTimeCommand(addTime);
+                sendOverTimeCommand(addTime*60);
+                mContent.postDelayed(() -> SteamAbstractControl.getInstance().queryAttribute(HomeSteamOven.getInstance().guid),1000);
                 //setResult();
             }else if(v.getId() == R.id.tv_cancel) {//取消
                 timeDialog.dismiss();

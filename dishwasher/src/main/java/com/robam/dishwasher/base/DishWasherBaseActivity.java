@@ -22,6 +22,7 @@ import com.robam.common.utils.ToastUtils;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.dishwasher.constant.DishWasherConstant;
+import com.robam.dishwasher.constant.DishWasherState;
 import com.robam.dishwasher.constant.DishWasherWaringEnum;
 import com.robam.dishwasher.device.DishWasherAbstractControl;
 import com.robam.dishwasher.device.HomeDishWasher;
@@ -115,10 +116,19 @@ public abstract class DishWasherBaseActivity extends BaseActivity {
                 return;
             }
             if(lock){
+                if(needShow()){
+                    preLockTimeMil = System.currentTimeMillis();
+                    ToastUtils.show(this,R.string.dishwasher_unlock_hint, Toast.LENGTH_LONG);
+                }
                 return;
             }
             DishWasher curDevice = getCurDevice();
-            if(curDevice == null){
+            if(curDevice == null || curDevice.status == Device.OFFLINE){
+                ToastUtils.show(this, R.string.dishwasher_offline, Toast.LENGTH_LONG);
+                return ;
+            }
+            if(curDevice == null || curDevice.powerStatus == DishWasherState.OFF){
+                ToastUtils.show(this, R.string.dishwasher_power_off, Toast.LENGTH_LONG);
                 return ;
             }
             if(touchDownTimeMil != 0 && System.currentTimeMillis() - touchDownTimeMil > 1000){
@@ -126,12 +136,8 @@ public abstract class DishWasherBaseActivity extends BaseActivity {
                 return;
             }
             touchDownTimeMil = System.currentTimeMillis();
-            preLockTimeMil = System.currentTimeMillis();
-//            if(System.currentTimeMillis() - preLockTimeMil <= 2000){//执行一次加锁功能后，2秒之类不能在执行加锁，防止加锁被执行多次，的临时解决方案
-//                return;
-//            }
             DishWasherCommandHelper.sendCtrlLockCommand(true,LOCK_FLAG);
-            LogUtils.i("dispatchTouchEvent setOnClickListener");
+            //LogUtils.i("dispatchTouchEvent setOnClickListener");
             //setLock(true);
         });
         View iconView = findViewById(R.id.iv_right_center);
@@ -149,10 +155,15 @@ public abstract class DishWasherBaseActivity extends BaseActivity {
             return;
         }
         DishWasher curDevice = getCurDevice();
-        if(curDevice == null){
+        if(curDevice == null || curDevice.status == Device.OFFLINE){
+            ToastUtils.show(this, R.string.dishwasher_offline, Toast.LENGTH_LONG);
             return ;
         }
-        LogUtils.i("dispatchTouchEvent  runnable");
+        if(curDevice == null || curDevice.powerStatus == DishWasherState.OFF){
+            ToastUtils.show(this, R.string.dishwasher_power_off, Toast.LENGTH_LONG);
+            return ;
+        }
+        //LogUtils.i("dispatchTouchEvent  runnable");
         DishWasherCommandHelper.sendCtrlLockCommand(false,LOCK_FLAG);
     };
 
@@ -290,6 +301,14 @@ public abstract class DishWasherBaseActivity extends BaseActivity {
         }
         return false;
     }
+
+    private boolean needShow(){
+        if(System.currentTimeMillis() - preLockTimeMil > 3000){
+            return true;
+        }
+        return false;
+    }
+
 
 
 

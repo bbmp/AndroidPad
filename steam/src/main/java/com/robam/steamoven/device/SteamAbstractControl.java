@@ -1,6 +1,12 @@
 package com.robam.steamoven.device;
 
 import com.robam.common.mqtt.MqttManager;
+import com.robam.common.mqtt.MsgKeys;
+import com.robam.steamoven.bean.MultiSegment;
+import com.robam.steamoven.bean.SteamOven;
+import com.robam.steamoven.constant.SteamModeEnum;
+import com.robam.steamoven.protocol.SteamCommandHelper;
+import com.robam.steamoven.utils.MultiSegmentUtil;
 
 import java.util.Map;
 
@@ -41,6 +47,21 @@ public class SteamAbstractControl implements SteamFunction {
     @Override
     public void startWork() {
         function.startWork();
+    }
+
+    @Override
+    public void startCookForAppoint(String targetGuid) {
+        function.startCookForAppoint(targetGuid);
+
+    }
+
+    public void startCookForAppoint(String targetGuid, SteamOven steamOven){
+        MultiSegment result = MultiSegmentUtil.getSkipResult(steamOven);
+        if(SteamModeEnum.EXP.getMode() == steamOven.mode){
+            SteamCommandHelper.sendCommandForExp(result,targetGuid,0, MsgKeys.setDeviceAttribute_Req);
+        }else{
+            SteamCommandHelper.startModelWork(result,targetGuid,0);
+        }
     }
 
     @Override

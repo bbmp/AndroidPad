@@ -1199,6 +1199,30 @@
     <string name="steam_match_hint8">1.开启一体机。 \n2.在一体机上登录当前ROKI账户。 \n完成上述操作后点击下一步。</string>
     <string name="steam_need_water">设备缺水</string>
     <string name="steam_waste_water">废水箱已满</string>
-
-
+    <string name="steam_waring_2">上温度传感器故障</string>
+    <string name="steam_waring_2_content">上温度传感器故障，请关闭一体机并申请售后服务。</string>
+    <string name="steam_waring_3">下温度传感器故障</string>
+    <string name="steam_waring_3_content">下温度传感器故障，请关闭一体机并申请售后服务。</string>
+    <string name="steam_waring_4">散热风机故障</string>
+    <string name="steam_waring_4_content">散热风机故障，请关闭一体机并申请售后服务。</string>
+    <string name="steam_waring_5">通讯故障</string>
+    <string name="steam_waring_5_content">通讯故障，请关闭蒸烤一体机并申请售后服务。</string>
+    <string name="steam_waring_6">水位传感器故障</string>
+    <string name="steam_waring_6_content">水位传感器故障，请关闭蒸烤一体机并申请售后服务。</string>
+    <string name="steam_waring_7">按键板温度传感器故障</string>
+    <string name="steam_waring_7_content">按键板温度传感器故障，请关闭一体机并申请售后服务。</string>
+    <string name="steam_waring_8">高温报警故障</string>
+    <string name="steam_waring_8_content">高温报警故障，请关闭一体机并申请售后服务。</string>
+    <string name="steam_waring_9">温度加热异常故障</string>
+    <string name="steam_waring_9_content">温度加热异常故障，请关闭一体机并申请售后服务。</string>
+    <string name="steam_waring_10">冷气阀故障</string>
+    <string name="steam_waring_10_content">冷气阀故障，请关闭一体机并申请售后服务。</string>
+    <string name="steam_waring_11">缺水报警</string>
+    <string name="steam_waring_11_content">缺水报警，请添加水。</string>
+    <string name="steam_waring_14">按键板温度过高</string>
+    <string name="steam_waring_14_content">按键板温度过高，请暂停使用。</string>
+    <string name="steam_waring_16">变频板通讯故障</string>
+    <string name="steam_waring_16_content">变频板通讯故障，请关闭一体机并申请售后服务。</string>
+    <string name="steam_waring_17">磁控管温度传感器故障</string>
+    <string name="steam_waring_17_content">磁控管温度传感器故障，请关闭一体机并申请售后服务。</string>
 </resources>

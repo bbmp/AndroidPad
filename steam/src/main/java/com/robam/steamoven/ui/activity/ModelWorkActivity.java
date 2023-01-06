@@ -354,6 +354,13 @@ public class ModelWorkActivity extends SteamBaseActivity {
                 entryList.add(entry);
             }
             curTime = 1;
+        }else if(entryList.size() == 1){
+            SteamOven steamOven = getSteamOven();
+            Entry firstEntry = (Entry) entryList.get(0);
+            curTime = (int) (firstEntry.getX() + 2);
+            Entry entry = new Entry(curTime, steamOven.curTemp);
+            entryList.add(entry);
+            curTime = 1;
         }
     }
 
@@ -456,8 +463,12 @@ public class ModelWorkActivity extends SteamBaseActivity {
         }
         //加湿显示控制
         preHeadTv.setVisibility((isPreHeat && isWorking)?View.VISIBLE:View.INVISIBLE);
-
-        setTempTv.setText(TextSpanUtil.getSpan(steamOven.setUpTemp,Constant.UNIT_TEMP));
+        if(segment.code == SteamConstant.EXP){
+            setSteamTv.setText("上"+TextSpanUtil.getSpan(steamOven.setUpTemp,Constant.UNIT_TEMP));
+            setTempTv.setText("下"+TextSpanUtil.getSpan(steamOven.setDownTemp,Constant.UNIT_TEMP));
+        }else{
+            setTempTv.setText(TextSpanUtil.getSpan(steamOven.setUpTemp,Constant.UNIT_TEMP));
+        }
         //设置的工作时间 (秒)
         int outTime = (steamOven.restTimeH * 256 + steamOven.restTime);
         if(showAddStream){
@@ -637,10 +648,6 @@ public class ModelWorkActivity extends SteamBaseActivity {
         steamIv.setVisibility(View.INVISIBLE);
         steamTv.setVisibility(View.INVISIBLE);
         preHeadTv.setVisibility((isPreHeat && isWorking)?View.VISIBLE:View.INVISIBLE);
-        //TextView  curModel = curCookInfoViewGroup.findViewById(R.id.multi_item_cur_model);
-        //TextView  curTemp = curCookInfoViewGroup.findViewById(R.id.multi_item_cur_temperature);
-        //TextView  curDuration = curCookInfoViewGroup.findViewById(R.id.multi_item_cur_duration);
-
         setDurationTv.setVisibility((isPreHeat && isWorking)?View.INVISIBLE:View.VISIBLE);
         //工作模式
         setModelTv.setText(getModelName(segment.code,recipeId));
@@ -654,10 +661,17 @@ public class ModelWorkActivity extends SteamBaseActivity {
         }
         //设置的工作时间 (秒)
         setDurationTv.setText(TextSpanUtil.getSpan(segment.duration,Constant.UNIT_TIME_MIN));
-        setSteamTv.setVisibility(segment.steam != 0 ? View.VISIBLE:View.GONE);
-        if(segment.steam != 0){
-            setSteamTv.setText(SteamOvenSteamEnum.match(segment.steam)+"蒸汽");
+        if(segment.code == SteamConstant.EXP){
+            setSteamTv.setVisibility(View.VISIBLE);
+            setSteamTv.setText("上"+TextSpanUtil.getSpan(segment.defTemp,Constant.UNIT_TEMP));
+            setTempTv.setText("下"+TextSpanUtil.getSpan(segment.downTemp,Constant.UNIT_TEMP));
+        }else{
+            setSteamTv.setVisibility(segment.steam != 0 ? View.VISIBLE:View.GONE);
+            if(segment.steam != 0){
+                setSteamTv.setText(SteamOvenSteamEnum.match(segment.steam)+"蒸汽");
+            }
         }
+
     }
 
 

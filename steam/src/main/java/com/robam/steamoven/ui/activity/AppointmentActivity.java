@@ -24,6 +24,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 //工作预约
 public class AppointmentActivity extends SteamBaseActivity {
@@ -160,6 +162,7 @@ public class AppointmentActivity extends SteamBaseActivity {
         //默认
         multiSegment = getIntent().getParcelableExtra(Constant.SEGMENT_DATA_FLAG);
         initHourAndMinScroll(hourData,minuteData);
+        initTimePrompt();
         //setOrderDate();
     }
 
@@ -272,5 +275,30 @@ public class AppointmentActivity extends SteamBaseActivity {
             }
             return timeDur;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(timer !=  null){
+            timer.cancel();
+        }
+    }
+
+    Timer timer;
+    private void initTimePrompt(){
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if(!isDestroyed()){
+                    tvTime.post(() -> {
+                        if(!isDestroyed() && !mMinuteManager.isSmoothScrolling() && !mHourManager.isSmoothScrolling()){
+                            setOrderDate();
+                        }
+                    });
+                }
+            }
+        },5000,5000);
     }
 }

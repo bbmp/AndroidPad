@@ -39,6 +39,7 @@ public class DishWasherModelUtil {
         curWasherModel.code = (short) dishWasher.workMode;
         curWasherModel.auxCode = dishWasher.auxMode;
         curWasherModel.time = dishWasher.SetWorkTimeValue * 60;
+        curWasherModel.workModeState = dishWasher.workModeState;
         /*if(dishWasher.auxMode != 0 && curWasherModel != null && curWasherModel.auxList.size() != 0){
             for(int i = 0; i < curWasherModel.auxList.size() ;i++){
                 if(dishWasher.auxMode == curWasherModel.auxList.get(i).auxCode){

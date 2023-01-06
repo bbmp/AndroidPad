@@ -32,12 +32,14 @@ public class SkipUtil {
             case SteamStateConstant.WORK_STATE_LEISURE:
                 break;
             case SteamStateConstant.WORK_STATE_APPOINTMENT://预约页面
-                HomeSteamOven.getInstance().orderTime = steamOven.orderLeftTime;
-                Intent appointIntent = new Intent(activity, AppointingActivity.class);
-                MultiSegment segment = MultiSegmentUtil.getSkipResult(steamOven);
-                segment.workRemaining = steamOven.orderLeftTime;
-                appointIntent.putExtra(Constant.SEGMENT_DATA_FLAG, segment);
-                activity.startActivity(appointIntent);
+                if(steamOven.orderLeftTime != 0){
+                    HomeSteamOven.getInstance().orderTime = steamOven.orderLeftTime;
+                    Intent appointIntent = new Intent(activity, AppointingActivity.class);
+                    MultiSegment segment = MultiSegmentUtil.getSkipResult(steamOven);
+                    segment.workRemaining = steamOven.orderLeftTime;
+                    appointIntent.putExtra(Constant.SEGMENT_DATA_FLAG, segment);
+                    activity.startActivity(appointIntent);
+                }
                 break;
             case SteamStateConstant.WORK_STATE_PREHEAT:
             case SteamStateConstant.WORK_STATE_PREHEAT_PAUSE:
@@ -47,7 +49,7 @@ public class SkipUtil {
                     return;
                 }
                 //辅助模式工作页面
-                if(SteamModeEnum.isAuxModel(steamOven.mode)){
+                if(SteamModeEnum.isAuxModel(steamOven.mode) && steamOven.recipeId == 0){
                     Intent intent = new Intent(activity, AuxModelWorkActivity.class);
                     intent.putExtra(Constant.SEGMENT_DATA_FLAG,MultiSegmentUtil.getSkipResult(steamOven));
                     activity.startActivity(intent);

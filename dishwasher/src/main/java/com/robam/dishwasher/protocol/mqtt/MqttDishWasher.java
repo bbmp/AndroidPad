@@ -9,6 +9,7 @@ import com.robam.common.mqtt.MqttPublic;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.ByteUtils;
 import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.MsgUtils;
 import com.robam.dishwasher.constant.DishWasherConstant;
 import com.robam.dishwasher.constant.DishWasherEvent;
 import com.robam.dishwasher.device.DishWasherAbstractControl;
@@ -54,53 +55,44 @@ public class MqttDishWasher extends MqttPublic {
                 short lackRinseStatus = ByteUtils.toShort(payload[offset++]);
                 short lackSaltStatus = ByteUtils.toShort(payload[offset++]);
                 short abnormalAlarmStatus = ByteUtils.toShort(payload[offset++]);
-                short ADD_AUX = ByteUtils.toShort(payload[payload.length - 1]);
+                //short ADD_AUX = ByteUtils.toShort(payload[payload.length - 1]);
                 short argument = ByteUtils.toShort(payload[offset++]);
-                //LogUtils.i("MqttDishWasher dishWasherWorkMode  : "+dishWasherWorkMode);
                 while (argument > 0) {
-                    short argument_key = ByteUtils.toShort(payload[offset++]);
-                    short arg_length = ByteUtils.toShort(payload[offset++]);
-                    switch (argument_key) {
+                    argument--;
+                    int key = MsgUtils.getByte(payload[offset]);
+                    offset++;
+                    int length = MsgUtils.getByte(payload[offset]);
+                    offset++;
+                    int value = 0; //支持1 2 4字节值
+                    if (length == 1) {
+                        value = MsgUtils.getByte(payload[offset]);
+                        offset++;
+                    } else if (length == 2) {
+                        value = MsgUtils.bytes2ShortLittle(payload, offset);
+                        offset += 2;
+                    } else if (length == 4) {
+                        value = MsgUtils.bytes2IntLittle(payload, offset);
+                        offset += 4;
+                    } else {
+                        offset += length;
+                        continue;  //错误的属性
+                    }
+                    switch (key) {
                         case 1:
-                            msg.putOpt(DishWasherConstant.CurrentWaterTemperatureKey, argument_key);
-                            msg.putOpt(DishWasherConstant.CurrentWaterTemperatureLength, arg_length);
-                            msg.putOpt(DishWasherConstant.CurrentWaterTemperatureValue, ByteUtils.toShort(payload[offset++]));
-                            offset++;
+                            msg.putOpt(DishWasherConstant.CurrentWaterTemperatureValue, value);
                             break;
                         case 2:
-                            msg.putOpt(DishWasherConstant.SetWorkTimeKey, argument_key);
-                            msg.putOpt(DishWasherConstant.SetWorkTimelength, arg_length);
-                            //msg.putOpt(MsgParams.SetWorkTimeValue,MsgUtils.getInt(payload, offset++));
-                            //offset++;
-                            byte[]  times = new byte[arg_length];
-                            for (int i = 0 ; i < arg_length ; i ++ ){
-                                short orderLeftMinute = ByteUtils.toShort(payload[offset]);
-                                times[i] = (byte) orderLeftMinute ;
-                                offset ++ ;
-                            }
-                            int SetWorkTimeValue = ByteUtils.byteToInt2(times);
-                            msg.putOpt(DishWasherConstant.SetWorkTimeValue, SetWorkTimeValue);
-                            //offset++;
+                            msg.putOpt(DishWasherConstant.SetWorkTimeValue, value);
                             break;
                         case 3:
-                            //offset++;
-                            int value3 = ByteUtils.toShort(payload[offset++]);
-                            msg.putOpt(DishWasherConstant.ADD_AUX,value3);
-                            //LogUtils.i("MqttDishWasher onDecodeMsg 3 value : "+value3);
+                            msg.putOpt(DishWasherConstant.ADD_AUX,value);
                             break;
-                        case 4:
-                            int value4 = ByteUtils.toShort(payload[offset++]);
-                            //LogUtils.i("MqttDishWasher onDecodeMsg 4 value : "+value4);
-                            break;
-                        case 5:
-                            int value5 = ByteUtils.toShort(payload[offset++]);
-                            //LogUtils.i("MqttDishWasher onDecodeMsg 5 value : "+value5);
+                        case 10:
+                            msg.putOpt(DishWasherConstant.WORK_MODE_STATE, value);
                             break;
                         default:
-                            offset += arg_length ;
                             break;
                     }
-                    argument--;
                 }
 
                 msg.putOpt(DishWasherConstant.powerStatus, powerStatus);
@@ -118,7 +110,7 @@ public class MqttDishWasher extends MqttPublic {
                 msg.putOpt(DishWasherConstant.LackRinseStatus, lackRinseStatus);
                 msg.putOpt(DishWasherConstant.LackSaltStatus, lackSaltStatus);
                 msg.putOpt(DishWasherConstant.AbnormalAlarmStatus, abnormalAlarmStatus);
-                msg.putOpt(DishWasherConstant.ADD_AUX, ADD_AUX);
+                //msg.putOpt(DishWasherConstant.ADD_AUX, ADD_AUX);
                 if(dishWasherWorkMode != 0 && remainingWorkingTime > 0){//记录最新工作模式
                     MqttDirective.getInstance().updateModelWorkState(msg.getGuid(),dishWasherWorkMode,0);
                 }

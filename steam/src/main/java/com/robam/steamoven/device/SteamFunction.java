@@ -15,6 +15,8 @@ public interface SteamFunction {
 
     void startWork();
 
+    void startCookForAppoint(String targetGuid);
+
     void pauseWork(String targetGuid);
 
     void continueWork(String targetGuid);

@@ -30,6 +30,7 @@ import com.robam.dishwasher.constant.DishWasherConstant;
 import com.robam.dishwasher.constant.DishWasherEnum;
 import com.robam.dishwasher.constant.DishWasherEvent;
 import com.robam.dishwasher.constant.DishWasherState;
+import com.robam.dishwasher.constant.DishWorkStateEnum;
 import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.factory.DishWasherDialogFactory;
 import com.robam.dishwasher.ui.dialog.DiashWasherCommonDialog;
@@ -142,7 +143,7 @@ public class WorkActivity extends DishWasherBaseActivity {
                 int code = Integer.parseInt(split[1]);
                 if(code == DishWasherEvent.EVENT_WORK_COMPLETE_RESET){
                     DishWasher curDevice = getCurDevice();
-                    if(curDevice.auxMode != 0 && curDevice.auxMode != DishWasherConstant.AUX_FLUSH){//附加模式是长效净存，不跳转到工作完成
+                    if(curDevice.auxMode != DishWasherConstant.AUX_FLUSH){//附加模式是长效净存，不跳转到工作完成
                         toComplete();
                     }
                 }
@@ -168,11 +169,11 @@ public class WorkActivity extends DishWasherBaseActivity {
 
         if (null != modeBean) {
             setData(modeBean);
-            setModelTextState(modeBean.code);
+            setModelTextState(modeBean.code,modeBean.workModeState);
             DishWasher curDevice = getCurDevice();
             if(curDevice != null){
                 changeViewsState(curDevice.powerStatus);
-                setModelTextState(curDevice.workMode);
+                setModelTextState(curDevice.workMode,curDevice.workModeState);
             }
             preRemainingTime = modeBean.time;
             float progress;
@@ -188,7 +189,7 @@ public class WorkActivity extends DishWasherBaseActivity {
         }
     }
 
-    private void setModelTextState(int code){
+    private void setModelTextState(int code,int workModeState){
         if(DishWasherEnum.FLUSH.getCode() == code ||
                 DishWasherEnum.AUTO_AERATION.getCode() == code ||
                 DishWasherEnum.LONG_STORAGE.getCode() == code){
@@ -223,6 +224,7 @@ public class WorkActivity extends DishWasherBaseActivity {
             cpgBar.setVisibility(View.VISIBLE);
             tvModeCur.setVisibility(View.VISIBLE);
             tvModeCur.setText(R.string.dishwasher_working);
+            //tvModeCur.setText(DishWorkStateEnum.match(workModeState));
         }
     }
 
@@ -300,7 +302,7 @@ public class WorkActivity extends DishWasherBaseActivity {
     //工作中 - 需更新时间
     private void setWorkingState(DishWasher dishWasher){
         changeViewsState(dishWasher.powerStatus);
-        setModelTextState(dishWasher.workMode);
+        setModelTextState(dishWasher.workMode,dishWasher.workModeState);
         if(dishWasher.workMode >= DishWasherConstant.MODE_FLUSH){
             tvAuxMode.setVisibility(View.INVISIBLE);
         }else{
@@ -322,12 +324,7 @@ public class WorkActivity extends DishWasherBaseActivity {
             return;
         }
         float progress = MAX_PROGRESS;
-        if(dishWasher.workMode == DishWasherConstant.MODE_LONG_STORAGE ||
-                dishWasher.workMode == DishWasherConstant.MODE_AUTO_AERATION){//护婴净存/自动换气
-            //获取分钟数
-            int residueTimeM = dishWasher.remainingWorkingTime % 60;
-            progress = residueTimeM / 60f * 100;
-        }else if(dishWasher.workMode == DishWasherConstant.MODE_LONG_STORAGE_AWAIT){
+        if(dishWasher.workMode == DishWasherConstant.MODE_LONG_STORAGE_AWAIT){
             return;
         }else{
             if(dishWasher.SetWorkTimeValue != 0){

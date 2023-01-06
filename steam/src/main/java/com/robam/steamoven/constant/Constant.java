@@ -133,4 +133,19 @@ public interface Constant {
     String WORK_MODE  = "work_mode";
 
 
+    int WARING_CODE_2  = 2;//上温度传感器故障
+    int WARING_CODE_3  = 3;//下温度传感器故障
+    int WARING_CODE_4  = 4;//散热风机故障
+    int WARING_CODE_5  = 5;//通讯故障
+    int WARING_CODE_6  = 6;//水位传感器故障
+    int WARING_CODE_7  = 7;//按键板温度传感器故障
+    int WARING_CODE_8  = 8;//高温报警故障
+    int WARING_CODE_9  = 9;//温度加热异常故障
+    int WARING_CODE_10  = 10;//冷气阀故障
+    int WARING_CODE_11  = 11;//缺水报警
+    int WARING_CODE_14  = 14;//按键板温度过高
+    int WARING_CODE_16  = 16;//变频板通讯故障
+    int WARING_CODE_17  = 17;//磁控管温度传感器故障
+
+
 }

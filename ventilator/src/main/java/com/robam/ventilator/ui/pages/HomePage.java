@@ -44,6 +44,7 @@ import com.robam.dishwasher.constant.DishWasherWaringEnum;
 import com.robam.dishwasher.device.DishWasherAbstractControl;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.common.module.IPublicSteamApi;
+import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.SteamAbstractControl;
 import com.robam.common.device.subdevice.Stove;
 import com.robam.common.http.RetrofitCallback;
@@ -343,8 +344,8 @@ public class HomePage extends VentilatorBasePage {
                     drawerLayout.closeDrawer(Gravity.RIGHT);
                 }
                 Device device = (Device) adapter.getItem(position);
-                if (device.status != Device.ONLINE)
-                    return;
+//                if (device.status != Device.ONLINE)
+//                    return;
                 //跳转设备首页
                 Intent intent = new Intent();
                 intent.putExtra(ComnConstant.EXTRA_GUID, device.guid);
@@ -410,10 +411,14 @@ public class HomePage extends VentilatorBasePage {
                     Device device = (Device) adapter.getItem(position);
                     if (device instanceof SteamOven) {
                         SteamOven steamOven = (SteamOven) device;
-                        if (steamOven.workStatus == 4 || steamOven.workStatus == 2)   //工作中和预热中
-                            SteamAbstractControl.getInstance().pauseWork(device.guid);
-                        else if (steamOven.workStatus == 5 || steamOven.workStatus == 3)  //暂停中
-                            SteamAbstractControl.getInstance().continueWork(device.guid);
+                        if(steamOven.workState == SteamStateConstant.WORK_STATE_APPOINTMENT){
+                            SteamAbstractControl.getInstance().startCookForAppoint(device.guid,steamOven);
+                        }else{
+                            if (steamOven.workStatus == 4 || steamOven.workStatus == 2)   //工作中和预热中
+                                SteamAbstractControl.getInstance().pauseWork(device.guid);
+                            else if (steamOven.workStatus == 5 || steamOven.workStatus == 3)  //暂停中
+                                SteamAbstractControl.getInstance().continueWork(device.guid);
+                        }
                     } else if(device instanceof DishWasher){
                         DishWasher dishWasher = (DishWasher) device;
                         if(dishWasher.AppointmentRemainingTime > 0){//结束预约

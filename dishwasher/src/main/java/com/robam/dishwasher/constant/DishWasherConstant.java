@@ -116,6 +116,14 @@ public class DishWasherConstant {
     public final static String POWER_CONSUMPTION = "powerConsumption";
     public final static String WATER_CONSUMPTION = "waterConsumption";
 
+    /**
+     * 模式状态
+     * 0表示洗涤状态
+     * 1表示漂洗状态单位
+     * 2表示干燥状态
+     */
+    public final static String WORK_MODE_STATE = "work_mode_state";
+
     public final static int ZERO = 0;//无
 
     public final static int APPOINTMENT_CODE = 102;//无

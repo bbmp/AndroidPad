@@ -7,12 +7,14 @@ import android.text.Spanned;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.SuperscriptSpan;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.view.MCountdownView;
+import com.robam.common.utils.DensityUtil;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.TimeUtils;
 import com.robam.steamoven.base.SteamBaseActivity;
@@ -59,6 +61,7 @@ public class AppointingActivity extends SteamBaseActivity {
 
     private int directive_offset = 15000000;
     private final static int DIRECTIVE_OFFSET_END = 40;
+    int tempPaddingTop;
 
     @Override
     protected int getLayoutId() {
@@ -147,13 +150,21 @@ public class AppointingActivity extends SteamBaseActivity {
 
     @Override
     protected void initData() {
+        tempPaddingTop = (int) getResources().getDimension(com.robam.common.R.dimen.dp_44);
         segment = getIntent().getParcelableExtra(Constant.SEGMENT_DATA_FLAG);
-        //setCountDownTime();
         tvMode.setText(SteamModeEnum.match(segment.code));
-        defTemp.setText(getSpanTemp(segment.defTemp+""));
-        tvSteam.setVisibility(segment.steam != 0 ? View.VISIBLE:View.GONE);
-        if(segment.steam != 0){
-            tvSteam.setText(SteamOvenSteamEnum.match(segment.steam)+"蒸汽");
+        if(segment.code == SteamConstant.EXP){
+            tvSteam.setVisibility(View.VISIBLE);
+            tvSteam.setText(getSpanTemp(segment.defTemp+""));
+            defTemp.setPadding(defTemp.getPaddingLeft(),tempPaddingTop,defTemp.getPaddingRight(),defTemp.getPaddingBottom());
+            defTemp.setText(getSpanTemp(segment.downTemp+""));
+        }else{
+            tvSteam.setVisibility(segment.steam != 0 ? View.VISIBLE:View.GONE);
+            if(segment.steam != 0){
+                defTemp.setPadding(defTemp.getPaddingLeft(),tempPaddingTop,defTemp.getPaddingRight(),defTemp.getPaddingBottom());
+                tvSteam.setText(SteamOvenSteamEnum.match(segment.steam)+"蒸汽");
+            }
+            defTemp.setText(getSpanTemp(segment.defTemp+""));
         }
         tvWorkHours.setText(getSpan(segment.duration*60));
         int totalTime =segment.workRemaining * 60;
@@ -218,12 +229,12 @@ public class AppointingActivity extends SteamBaseActivity {
             return;
         }
         if(SteamModeEnum.EXP.getMode() == result.code){
-            SteamCommandHelper.sendCommandForExp(result,0,MsgKeys.setDeviceAttribute_Req+directive_offset);
+            SteamCommandHelper.sendCommandForExp(result,null,0,MsgKeys.setDeviceAttribute_Req+directive_offset);
         }else{
             if(SteamModeEnum.isAuxModel(result.code)){
-                SteamCommandHelper.startModelWork(result,0);
+                SteamCommandHelper.startModelWork(result,null,0);
             }else{
-                SteamCommandHelper.startModelWork(result,0);
+                SteamCommandHelper.startModelWork(result,null,0);
             }
         }
     }

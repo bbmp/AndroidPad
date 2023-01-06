@@ -76,14 +76,14 @@
             android:id="@+id/tv_pxj"
             android:visibility="gone"
             android:src="@drawable/dishwasher_ic_pxj"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_width="@dimen/dp_38"
+            android:layout_height="@dimen/dp_38"/>
         <ImageView
             android:id="@+id/tv_zyy"
             android:visibility="gone"
             android:src="@drawable/dishwasher_ic_zyy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_width="@dimen/dp_38"
+            android:layout_height="@dimen/dp_38"/>
         <TextClock
             android:id="@+id/tc_center"
             android:layout_width="wrap_content"

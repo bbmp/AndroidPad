@@ -34,10 +34,11 @@
         android:textColor="@color/steam_mode70"
         android:text="中蒸汽"
         android:visibility="gone"
+        android:layout_marginLeft="@dimen/dp_160"
         android:layout_marginBottom="@dimen/dp_44"
-        app:layout_constraintLeft_toLeftOf="@id/tv_temp"
-        app:layout_constraintBottom_toTopOf="@id/tv_temp"
-        app:layout_constraintVertical_chainStyle="packed"/>
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/guideline_1"
+        app:layout_constraintBottom_toBottomOf="@id/guideline_1"/>
 
     <TextView
         android:id="@+id/tv_temp"
@@ -48,8 +49,7 @@
         android:text="180C"
         android:layout_marginLeft="@dimen/dp_160"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/tv_steam" />
 
     <TextView
         android:id="@+id/tv_time"
@@ -129,4 +129,11 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_1"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.42"
+        android:layout_height="@dimen/dp_1"
+        android:layout_width="match_parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

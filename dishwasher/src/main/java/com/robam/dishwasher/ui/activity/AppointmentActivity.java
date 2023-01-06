@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 //工作预约
 public class AppointmentActivity extends DishWasherBaseActivity {
@@ -183,7 +185,7 @@ public class AppointmentActivity extends DishWasherBaseActivity {
         mMinuteView.setAdapter(mMinuteAdapter);
         modeBean = (DishWasherModeBean) getIntent().getSerializableExtra(DishWasherConstant.EXTRA_MODEBEAN);
         initHourAndMinScroll(hourData,minuteData);
-
+        initTimePrompt();
         //默认
         //setOrderDate();
 
@@ -362,6 +364,32 @@ public class AppointmentActivity extends DishWasherBaseActivity {
             tvTime.setText(String.format(getString(R.string.dishwasher_work_order_hint3), orderTime ));
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(timer !=  null){
+            timer.cancel();
+        }
+    }
+
+    Timer timer;
+    private void initTimePrompt(){
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if(!isDestroyed()){
+                    tvTime.post(() -> {
+                        if(!isDestroyed() && !mMinuteManager.isSmoothScrolling() && !mHourManager.isSmoothScrolling()){
+                            setOrderDate();
+                        }
+                    });
+                }
+            }
+        },5000,5000);
+    }
+
 
 
 }

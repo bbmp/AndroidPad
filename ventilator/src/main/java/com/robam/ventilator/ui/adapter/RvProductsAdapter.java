@@ -38,6 +38,9 @@ import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.utils.SteamDataUtil;
 import com.robam.ventilator.R;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.stream.Stream;
 
 public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> {
@@ -294,10 +297,10 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
             baseViewHolder.setVisible(R.id.ventilator_group6, true);
             baseViewHolder.setText(R.id.tv_mode, DishWasherEnum.match(dishWasher.workMode));
             if(isAppoint){
-                baseViewHolder.setText(R.id.tv_time, getSpan(dishWasher.AppointmentRemainingTime * 60));
+                baseViewHolder.setText(R.id.tv_time, getStartTimePrompt(dishWasher.AppointmentRemainingTime * 60));
                 baseViewHolder.setText(R.id.btn_work, R.string.ventilator_appoint_finish);
             }else{
-                baseViewHolder.setText(R.id.tv_time, getSpan(dishWasher.remainingWorkingTime * 60));
+                baseViewHolder.setText(R.id.tv_time, getSpan(dishWasher.remainingWorkingTime * 60,false));
                 if (dishWasher.getWorkStatus() == 2) //工作中
                     baseViewHolder.setText(R.id.btn_work, R.string.ventilator_pause);
                 else if (dishWasher.getWorkStatus() == 3) //暂停中
@@ -322,17 +325,21 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
     /**
      * 获取时间Spannable
      * @param remainTime 剩余工作时间，单位秒
+     * @param isRound 是否四舍五入
      * @return
      */
-    private SpannableString getSpan(int remainTime){
+    private SpannableString getSpan(int remainTime,boolean isRound){
         String time = TimeUtils.secToHourMinUp(remainTime);
         if(remainTime >= 60*60*10){//超过10小时，只显示小时数据
             int minIndex = time.indexOf("min");
             int hourIndex = time.indexOf("h");
             if(minIndex != 0 && hourIndex != 0){
                 try{
-                    //time = (Integer.parseInt(time.substring(0,hourIndex)) + 1) +"h";//暂时不加1
-                    time = time.substring(0,hourIndex)+"h";//暂时不加1
+                    if(isRound){
+                        time = (Integer.parseInt(time.substring(0,hourIndex)) + 1) +"h";
+                    }else{
+                        time = time.substring(0,hourIndex)+"h";//暂时不加1
+                    }
                 }catch (NumberFormatException e){}
             }else{
                 try{
@@ -370,12 +377,15 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
         }
         boolean isWork  = false;
         boolean workFinish = false;
+        boolean isAppoint = false;
         if(steamOven.powerState != SteamStateConstant.POWER_STATE_OFF &&
                 (steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT ||
                         steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT_PAUSE ||
                         steamOven.workState == SteamStateConstant.WORK_STATE_WORKING ||
-                        steamOven.workState == SteamStateConstant.WORK_STATE_WORKING_PAUSE)){
+                        steamOven.workState == SteamStateConstant.WORK_STATE_WORKING_PAUSE ||
+                        steamOven.workState == SteamStateConstant.WORK_STATE_APPOINTMENT)){
             isWork =  true;
+            isAppoint = steamOven.workState == SteamStateConstant.WORK_STATE_APPOINTMENT;
         }
         if(!isWork){
             MqttDirective.WorkState workState = MqttDirective.getInstance().getWorkState(steamOven.guid);
@@ -407,13 +417,18 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
                 baseViewHolder.setGone(R.id.ventilator_group7, true);
                 baseViewHolder.setVisible(R.id.ventilator_group6, true);
                 baseViewHolder.setText(R.id.tv_mode, modelName);
-                baseViewHolder.setText(R.id.tv_time, DateUtil.secForMatTime3(steamOven.totalRemainSeconds) + "min");
-                if (steamOven.getWorkStatus() == 2 || steamOven.getWorkStatus() == 4) //预热中和工作中
-                    baseViewHolder.setText(R.id.btn_work, R.string.ventilator_pause);
-                else if (steamOven.getWorkStatus() == 3 || steamOven.getWorkStatus() == 5) //暂停中
-                    baseViewHolder.setText(R.id.btn_work, R.string.ventilator_continue);
-                else
-                    baseViewHolder.setGone(R.id.btn_work, true);
+                if(isAppoint){
+                    baseViewHolder.setText(R.id.tv_time, getStartTimePrompt(steamOven.orderLeftTime));
+                    baseViewHolder.setText(R.id.btn_work, R.string.ventilator_start_cook);
+                }else{
+                    baseViewHolder.setText(R.id.tv_time, DateUtil.secForMatTime3(steamOven.totalRemainSeconds) + "min");
+                    if (steamOven.getWorkStatus() == 2 || steamOven.getWorkStatus() == 4) //预热中和工作中
+                        baseViewHolder.setText(R.id.btn_work, R.string.ventilator_pause);
+                    else if (steamOven.getWorkStatus() == 3 || steamOven.getWorkStatus() == 5) //暂停中
+                        baseViewHolder.setText(R.id.btn_work, R.string.ventilator_continue);
+                    else
+                        baseViewHolder.setGone(R.id.btn_work, true);
+                }
             }
         }
 
@@ -460,13 +475,33 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
             baseViewHolder.setVisible(R.id.ventilator_group6, true);
             baseViewHolder.setText(R.id.tv_mode, CabinetEnum.match(cabinet.workMode));
             if(isAppoint){
-                baseViewHolder.setText(R.id.tv_time, DateUtil.secForMatTime3(cabinet.remainingAppointTime*60) + "min");
+                baseViewHolder.setText(R.id.tv_time, getStartTimePrompt(cabinet.remainingAppointTime*60));
                 baseViewHolder.setText(R.id.btn_work, R.string.ventilator_appoint_finish);
             }else{
                 baseViewHolder.setText(R.id.tv_time, DateUtil.secForMatTime3(cabinet.remainingModeWorkTime) + "min");
                 baseViewHolder.setText(R.id.btn_work, R.string.ventilator_cabinet_completion);
             }
 
+        }
+    }
+
+    /**
+     *
+     * @param remainingAppointTime  剩余预约时间，单位 - 秒
+     * @return
+     */
+    private String getStartTimePrompt(int remainingAppointTime){
+        Calendar calendar = GregorianCalendar.getInstance();
+        calendar.setTime(new Date());
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        calendar.add(Calendar.SECOND,remainingAppointTime);
+        int totalHour = calendar.get(Calendar.HOUR_OF_DAY);
+        int totalMin = calendar.get(Calendar.MINUTE);
+        int totalDay = calendar.get(Calendar.DAY_OF_MONTH);
+        if (day != totalDay) {
+            return "次日" + (totalHour <= 9 ? ("0" + totalHour) : totalHour) + ":" + (totalMin <= 9 ? ("0" + totalMin) : totalMin) + "启动";
+        } else {
+            return (totalHour <= 9 ? ("0" + totalHour) : totalHour) + ":" + (totalMin <= 9 ? ("0" + totalMin) : totalMin) + "启动";
         }
     }
 }

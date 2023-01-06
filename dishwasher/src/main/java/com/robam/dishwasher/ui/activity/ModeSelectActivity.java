@@ -15,6 +15,7 @@ import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.view.CancelRadioButton;
 import com.robam.common.utils.ClickUtils;
+import com.robam.common.utils.DateUtil;
 import com.robam.common.utils.TimeUtils;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.base.DishWasherBaseActivity;
@@ -33,6 +34,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ModeSelectActivity extends DishWasherBaseActivity {
     private RadioGroup radioGroup;
@@ -225,7 +228,7 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
 
     @Override
     protected void initData() {
-
+        initTimePrompt();
         if (null != getIntent())
             modeBean = (DishWasherModeBean) getIntent().getSerializableExtra(DishWasherConstant.EXTRA_MODEBEAN);
         if (null != modeBean) {
@@ -363,7 +366,7 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
             map.put(DishWasherConstant.AutoVentilation, 0);
             map.put(DishWasherConstant.EnhancedDrySwitch, 0);
             map.put(DishWasherConstant.ArgumentNumber, 1);
-            map.put(DishWasherConstant.ADD_AUX, modeBean.auxCode);
+            map.put(DishWasherConstant.ADD_AUX, (short) getAuxCode());
             DishWasherCommandHelper.getInstance().sendCommonMsg(map,MsgKeys.setDishWasherWorkMode + directive_offset);
 
             HomeDishWasher.getInstance().workHours = modeBean.time;
@@ -462,6 +465,55 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
                 }
                 setRight(timeValue);
                 btStart.setText(R.string.dishwasher_start_appoint);
+            }
+        }
+    }
+
+
+    Timer timer;
+
+    /**
+     * 初始化定时器
+     */
+    private void initTimePrompt(){
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if(!isDestroyed()){
+                    btStart.post(() -> {
+                        if(!isDestroyed()){
+                            setAppointContent();
+                        }
+                    });
+                }
+            }
+        },5000,5000);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(timer !=  null){
+            timer.cancel();
+        }
+    }
+
+    /**
+     * 更改预约显示
+     */
+    private void setAppointContent() {
+        String btValue = btStart.getText().toString();
+        if(getResources().getString(R.string.dishwasher_start_appoint).equals(btValue)){
+            TextView appointTv =  findViewById(R.id.tv_right);
+            String orderTime = appointTv.getText().toString();
+            if(orderTime.contains("日")){
+                orderTime = orderTime.substring("今日".length());
+            }
+            if (DateUtil.compareTime(DateUtil.getCurrentTime(DateUtil.PATTERN), orderTime, DateUtil.PATTERN) >= 0) {
+                appointTv.setText("次日"+orderTime);
+            } else {
+                appointTv.setText(orderTime);
             }
         }
     }

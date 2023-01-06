@@ -118,4 +118,5 @@
     <string name="ventilator_warning_e5_content">灯光故障</string>
     <string name="ventilator_warning_e6_content">推杆电机故障</string>
     <string name="ventilator_appoint_finish">结束预约</string>
+    <string name="ventilator_start_cook">开始烹饪</string>
 </resources>

@@ -57,6 +57,11 @@ public class SteamMqttControl implements SteamFunction {
     }
 
     @Override
+    public void startCookForAppoint(String targetGuid) {
+
+    }
+
+    @Override
     public void pauseWork(String targetGuid) { //暂停工作
         //mqtt指令打包
         try{

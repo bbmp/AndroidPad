@@ -81,6 +81,7 @@ public class DishWasher extends Device{
                 this.CurrentWaterTemperatureValue = (short) msg.optInt(DishWasherConstant.CurrentWaterTemperatureValue);
                 this.SetWorkTimeValue = (short) msg.optInt(DishWasherConstant.SetWorkTimeValue);
                 this.auxMode = (short) msg.optInt(DishWasherConstant.ADD_AUX);
+                //this.workModeState = (short) msg.optInt(DishWasherConstant.WORK_MODE_STATE);
 
                 this.workStatus = powerStatus;
                 this.faultId = this.abnormalAlarmStatus;
@@ -190,4 +191,12 @@ public class DishWasher extends Device{
      * 水软盐通知
      */
     public boolean salt;
+
+    /**
+     *  工作进展状态
+     *  0表示洗涤状态
+     * 1表示漂洗状态
+     * 2表示干燥状态
+     */
+    public int workModeState;
 }

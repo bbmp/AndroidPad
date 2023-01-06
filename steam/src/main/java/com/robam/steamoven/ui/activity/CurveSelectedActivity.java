@@ -269,7 +269,7 @@ public class CurveSelectedActivity extends SteamBaseActivity {
         if(multiSegment.size() >= 2){
             SteamCommandHelper.sendMultiWork(this,multiSegment,directive_offset+ MsgKeys.setDeviceAttribute_Req);
         }else{
-            SteamCommandHelper.startModelWork(multiSegment.get(0),MsgKeys.setDeviceAttribute_Req+directive_offset);
+            SteamCommandHelper.startModelWork(multiSegment.get(0),null,MsgKeys.setDeviceAttribute_Req+directive_offset);
         }
     }
 
