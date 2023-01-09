@@ -297,7 +297,7 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
             baseViewHolder.setVisible(R.id.ventilator_group6, true);
             baseViewHolder.setText(R.id.tv_mode, DishWasherEnum.match(dishWasher.workMode));
             if(isAppoint){
-                baseViewHolder.setText(R.id.tv_time, getStartTimePrompt(dishWasher.AppointmentRemainingTime * 60));
+                baseViewHolder.setText(R.id.tv_time, getStartTimePrompt(dishWasher.AppointmentRemainingTime * 60,dishWasher.dc));
                 baseViewHolder.setText(R.id.btn_work, R.string.ventilator_appoint_finish);
             }else{
                 baseViewHolder.setText(R.id.tv_time, getSpan(dishWasher.remainingWorkingTime * 60,true));
@@ -418,10 +418,11 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
                 baseViewHolder.setVisible(R.id.ventilator_group6, true);
                 baseViewHolder.setText(R.id.tv_mode, modelName);
                 if(isAppoint){
-                    baseViewHolder.setText(R.id.tv_time, getStartTimePrompt(steamOven.orderLeftTime));
+                    baseViewHolder.setText(R.id.tv_time, getStartTimePrompt(steamOven.orderLeftTime,steamOven.dc));
                     baseViewHolder.setText(R.id.btn_work, R.string.ventilator_start_cook);
                 }else{
-                    baseViewHolder.setText(R.id.tv_time, DateUtil.secForMatTime3(steamOven.totalRemainSeconds) + "min");
+                    baseViewHolder.setText(R.id.tv_time, DateUtil.secForMatTime3(getTotalTime(steamOven)) + "min");
+                    //baseViewHolder.setText(R.id.tv_time, DateUtil.secForMatTime3(steamOven.totalRemainSeconds) + "min");
                     if (steamOven.getWorkStatus() == 2 || steamOven.getWorkStatus() == 4) //预热中和工作中
                         baseViewHolder.setText(R.id.btn_work, R.string.ventilator_pause);
                     else if (steamOven.getWorkStatus() == 3 || steamOven.getWorkStatus() == 5) //暂停中
@@ -475,10 +476,11 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
             baseViewHolder.setVisible(R.id.ventilator_group6, true);
             baseViewHolder.setText(R.id.tv_mode, CabinetEnum.match(cabinet.workMode));
             if(isAppoint){
-                baseViewHolder.setText(R.id.tv_time, getStartTimePrompt(cabinet.remainingAppointTime*60));
+                baseViewHolder.setText(R.id.tv_time, getStartTimePrompt(cabinet.remainingAppointTime*60,cabinet.dc));
                 baseViewHolder.setText(R.id.btn_work, R.string.ventilator_appoint_finish);
             }else{
-                baseViewHolder.setText(R.id.tv_time, DateUtil.secForMatTime3(cabinet.remainingModeWorkTime) + "min");
+                //baseViewHolder.setText(R.id.tv_time, DateUtil.secForMatTime3(cabinet.remainingModeWorkTime) + "min");
+                baseViewHolder.setText(R.id.tv_time, getSpan(cabinet.remainingModeWorkTime,true));
                 baseViewHolder.setText(R.id.btn_work, R.string.ventilator_cabinet_completion);
             }
 
@@ -490,7 +492,7 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
      * @param remainingAppointTime  剩余预约时间，单位 - 秒
      * @return
      */
-    private String getStartTimePrompt(int remainingAppointTime){
+    private String getStartTimePrompt(int remainingAppointTime,String deviceType){
         Calendar calendar = GregorianCalendar.getInstance();
         calendar.setTime(new Date());
         int day = calendar.get(Calendar.DAY_OF_MONTH);
@@ -498,10 +500,100 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
         int totalHour = calendar.get(Calendar.HOUR_OF_DAY);
         int totalMin = calendar.get(Calendar.MINUTE);
         int totalDay = calendar.get(Calendar.DAY_OF_MONTH);
+        String time = (totalHour <= 9 ? ("0" + totalHour) : totalHour) + ":" + (totalMin <= 9 ? ("0" + totalMin) : totalMin);
+
+        // 问题：返回的剩余时间单位是分钟，若剩余时间为2分钟，本地时间是 12:02,计算结果为12：04，
+        // 若10秒后本地时间为12：03,这时剩余时间仍然为2分钟，计算结果为12:05
+        //兼容性处理 以下逻辑为了屏蔽时间来回切换的情况
+        if(IDeviceType.RXDG.equals(deviceType)){//消毒柜
+            if(StringUtils.isBlank(preCabinetTimeValue)){
+                preCabinetTimeValue = time;
+                preCabinetTime = totalMin;
+            }
+            if(time.compareTo(preCabinetTimeValue) != 0){
+                if(Math.abs(preCabinetTime - totalMin) <= 1){//只相差一分钟的情况下，生效
+                    time = preCabinetTimeValue;
+                }
+            }
+        }else if(IDeviceType.RXWJ.equals(deviceType)){//洗碗机
+            if(StringUtils.isBlank(preDishwasherTimeValue)){
+                preDishwasherTimeValue = time;
+                preDishwasherTime = totalMin;
+            }
+            if(time.compareTo(preDishwasherTimeValue) != 0){
+                if(Math.abs(preDishwasherTime - totalMin) <= 1){//只相差一分钟的情况下，生效
+                    time = preDishwasherTimeValue;
+                }
+            }
+        }else if(IDeviceType.RZKY.equals(deviceType)){//一体机
+            if(StringUtils.isBlank(preSteamTimeValue)){
+                preSteamTimeValue = time;
+                preSteamTime = totalMin;
+            }
+            if(time.compareTo(preSteamTimeValue) != 0){
+                if(Math.abs(preSteamTime - totalMin) <= 1){//只相差一分钟的情况下，生效
+                    time = preSteamTimeValue;
+                }
+            }
+        }
+
         if (day != totalDay) {
-            return "次日" + (totalHour <= 9 ? ("0" + totalHour) : totalHour) + ":" + (totalMin <= 9 ? ("0" + totalMin) : totalMin) + "启动";
+            return "次日" + time+ "启动";
         } else {
-            return (totalHour <= 9 ? ("0" + totalHour) : totalHour) + ":" + (totalMin <= 9 ? ("0" + totalMin) : totalMin) + "启动";
+            return time+ "启动";
         }
     }
+
+    /**
+     * 上一次消毒柜显示时间(如 12:30)
+     */
+    private String preCabinetTimeValue = "";
+    /**
+     * 上次消毒柜显示分钟数（如：30）
+     */
+    private int preCabinetTime;
+    /**
+     * 上一次洗碗机显示时间(如 12:30)
+     */
+    private String preDishwasherTimeValue = "";
+    /**
+     * 上次洗碗机分钟数（如：30）
+     */
+    private int preDishwasherTime;
+    /**
+     * 上一次一体机显示时间(如 12:30)
+     */
+    private String preSteamTimeValue = "";
+    /**
+     * 上次一体机显示分钟数（如：30）
+     */
+    private int preSteamTime;
+
+    /**
+     * 获取剩余运行时间
+     * @param steamOven
+     * @return
+     */
+    private int getTotalTime(SteamOven steamOven){
+        if(steamOven == null){
+            return 0;
+        }
+        int totalTime = 0;
+        int startIndex = steamOven.curSectionNbr;
+        if(startIndex <= 0){
+            startIndex = 1;
+        }
+        for(int i = startIndex ; i <= 3;i++){
+            if(i == 1){
+                totalTime += steamOven.restTimeH * 256 + steamOven.restTime;//设置的工作时间 (秒)
+            }else if(i == 2){
+                totalTime += steamOven.restTimeH2 * 256 + steamOven.restTime2;//设置的工作时间 (秒)
+            }else if(i == 3){
+                totalTime += steamOven.restTimeH3 * 256 + steamOven.restTime3;//设置的工作时间 (秒)
+            }
+        }
+        return totalTime;
+    }
+
+
 }

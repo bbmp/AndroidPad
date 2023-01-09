@@ -10,6 +10,7 @@ import com.robam.cabinet.bean.CabModeBean;
 import com.robam.cabinet.bean.Cabinet;
 import com.robam.cabinet.bean.WorkModeBean;
 import com.robam.cabinet.constant.CabinetConstant;
+import com.robam.cabinet.constant.CabinetEnum;
 import com.robam.cabinet.constant.Constant;
 import com.robam.cabinet.device.HomeCabinet;
 import com.robam.cabinet.ui.adapter.RvStringAdapter;
@@ -102,6 +103,13 @@ public class AppointmentActivity extends CabinetBaseActivity {
                     if(toOffLinePage(cabinet)){
                         return;
                     }
+                    if(cabinet.smartCruising == 1 || cabinet.pureCruising == 1){//去往智能巡航页面
+                        Intent intent = new Intent(this,CruiseActivity.class);
+                        int model = cabinet.smartCruising == 1 ? CabinetEnum.SMART.getCode() : CabinetEnum.FLUSH.getCode();
+                        intent.putExtra(Constant.SMART_MODEL,model);
+                        startActivity(intent);
+                        return;
+                    }
                     switch (cabinet.workMode){
                         case CabinetConstant.FUN_DISINFECT:
                         case CabinetConstant.FUN_CLEAN:
@@ -109,9 +117,10 @@ public class AppointmentActivity extends CabinetBaseActivity {
                         case CabinetConstant.FUN_FLUSH:
                         case CabinetConstant.FUN_SMART:
                         case CabinetConstant.FUN_WARING:
-                            if(cabinet.remainingAppointTime != 0){
-                                toAppointPage(cabinet);
-                            }
+//                            if(cabinet.remainingAppointTime != 0){
+//                                toAppointPage(cabinet);
+//                            }
+                            toWorkingPage(cabinet);
                             break;
                     }
 
@@ -130,6 +139,24 @@ public class AppointmentActivity extends CabinetBaseActivity {
         startActivity(intent);
         finish();
     }
+
+    private void toWorkingPage(Cabinet cabinet) {
+        if(cabinet.remainingModeWorkTime > 0){//工作
+            WorkModeBean workModeBean = new WorkModeBean(cabinet.workMode,0, cabinet.remainingModeWorkTime);
+            Intent intent = new Intent(this,WorkActivity.class);
+            intent.putExtra(Constant.EXTRA_MODE_BEAN,workModeBean);
+            startActivity(intent);
+            finish();
+        }else if(cabinet.remainingAppointTime > 0){//预约 每次结束后，都有一段时间预约时间是1380，需与设备端一起排查问题
+            WorkModeBean workModeBean = new WorkModeBean(cabinet.workMode, cabinet.remainingAppointTime,cabinet.modeWorkTime);
+            Intent intent = new Intent(this,AppointingActivity.class);
+            intent.putExtra(Constant.EXTRA_MODE_BEAN,workModeBean);
+            startActivity(intent);
+            finish();
+        }
+    }
+
+
 
     @Override
     protected void initData() {

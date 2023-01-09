@@ -653,7 +653,7 @@ public class SteamCommandHelper {
                     || modeCode == SteamConstant.CHUGOU
             ){
                 if(curDevice.waterLevelState == 1){
-                    return R.string.steam_water_deficient;
+                    return R.string.steam_water_deficient_remain;
                 }
 //                if(curDevice.descaleFlag == 1){//除垢
 //                    ToastUtils.showLong(this, R.string.steam_descaling_prompt);

@@ -303,9 +303,6 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
         preSegment =  getIntent().getParcelableExtra(Constant.SEGMENT_DATA_FLAG);
         int checkIndex = getPreCheckIndex();
         initCurModelList();
-        if(needSetResult){
-            btStart.setText(R.string.steam_ok_btn);
-        }
         if (null != modes && modes.size() > 0) {
             //默认模式
             ModeBean defaultBean = getCurModeBean(checkIndex);//modes.get(checkIndex != -1 ? checkIndex:0);
@@ -357,9 +354,17 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             tabLayout.addTab(upTempTab);
             upTempSelectPage = new TempSelectPage(upTempTab, defaultBean);
             fragments.add(new WeakReference<>(upTempSelectPage));
+            upTempSelectPage.setModeSelect(new IModeSelect() {
+                @Override
+                public void updateTab(int curTemp) {
+                    if(curModeBean.code == SteamConstant.EXP && downTempSelectPage != null){
+                        downTempSelectPage.updateTempTab(getDownTempMode(curModeBean,curTemp));
+                    }
+                }
+            });
 
             //下温度
-            ModeBean downTempMode = getDownTempMode(defaultBean);
+            ModeBean downTempMode = getDefaultTempMode(defaultBean);
             if(!needSetResult){
                 ModelUtil.ModelRecord modelRecord = ModelUtil.getModelRecord(SteamConstant.EXP);
                 if(modelRecord != null && modelRecord.downTemp != 0){
@@ -437,11 +442,23 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
         }
     }
 
-    private ModeBean getDownTempMode(ModeBean defaultBean){
+    private ModeBean getDefaultTempMode(ModeBean defaultBean){
         ModeBean modeBean =new ModeBean();
         modeBean.defTemp = 160;
         modeBean.minTemp = 80;
         modeBean.maxTemp = 180;
+        return modeBean;
+    }
+
+    private ModeBean getDownTempMode(ModeBean expMode,int curTemp){
+        ModeBean modeBean =new ModeBean();
+        int downMinTemp = curTemp - 20;
+        int downMaxTemp = curTemp + 20;
+        int downMin = downMinTemp < expMode.minTemp ? expMode.minTemp : downMinTemp;
+        int dowMax = downMaxTemp > expMode.maxTemp ? expMode.maxTemp : downMaxTemp;
+        modeBean.defTemp = downMaxTemp;
+        modeBean.minTemp = downMin;
+        modeBean.maxTemp = dowMax;
         return modeBean;
     }
 
@@ -702,6 +719,9 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
         }else{
             hideRight();
             btStart.setText(R.string.steam_start_cook);
+        }
+        if(needSetResult){
+            btStart.setText(R.string.steam_ok_btn);
         }
     }
 

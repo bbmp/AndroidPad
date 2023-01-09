@@ -132,7 +132,7 @@ public class AppointingActivity extends DishWasherBaseActivity {
                 return ;
             }
             String[] split = s.split(MqttDirective.STR_LIVE_DATA_FLAG);
-            if(split == null || split.length != 2){
+            if(split == null || split.length != 2 || split[0] == null){
                 return;
             }
             if (split[0].equals(HomeDishWasher.getInstance().guid)) {
@@ -283,11 +283,12 @@ public class AppointingActivity extends DishWasherBaseActivity {
             cancelAppointment(DishWasherState.OFF);
         } else if (id == R.id.iv_start) {
             //取消预约提示
-            cancelAppointment(DishWasherState.WAIT);
+            cancelAppointment(DishWasherState.OFF);
         }
     }
     //取消预约
     private void cancelAppointment(int powerMode) {
+        HomeDishWasher.getInstance().isTurnOff = true;
         IDialog iDialog = DishWasherDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_COMMON_DIALOG);
         iDialog.setCancelable(false);
         iDialog.setContentText(R.string.dishwasher_cancel_appointment_hint);

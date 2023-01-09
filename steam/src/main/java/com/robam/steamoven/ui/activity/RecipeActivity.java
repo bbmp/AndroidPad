@@ -162,7 +162,13 @@ public class RecipeActivity extends SteamBaseActivity {
     @Override
     protected void initData() {
         //getLocalRecipe();
-        loadRecipe();
+        String recipeData = RecipeManager.getInstance().getRecipeData();
+        if(StringUtils.isNotBlank(recipeData)){
+            showRecipe(recipeData);
+        }else{
+            loadRecipe();
+        }
+
     }
 
     @Override
@@ -202,6 +208,15 @@ public class RecipeActivity extends SteamBaseActivity {
 
                         }
                     });
+        }
+    }
+
+    private void showRecipe(String recipeData){
+        if(StringUtils.isNotBlank(recipeData)){
+            GetDeviceParamsRes getDeviceParamsRes = new Gson().fromJson(recipeData, GetDeviceParamsRes.class);
+            if (null != getDeviceParamsRes && null != getDeviceParamsRes.modelMap){
+                setRecipeData(getDeviceParamsRes);
+            }
         }
     }
 

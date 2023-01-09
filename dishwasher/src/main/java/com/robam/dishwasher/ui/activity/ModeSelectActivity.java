@@ -122,7 +122,7 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
             }
             //LogUtils.i("MqttDishWasher onDecodeMsg  guid : arrvice "+s+"");
             String[] split = s.split(MqttDirective.STR_LIVE_DATA_FLAG);
-            if(split == null || split.length != 2){
+            if(split == null || split.length != 2  || split[0] == null){
                 return;
             }
             if (split[0].equals(HomeDishWasher.getInstance().guid)) {
@@ -306,7 +306,7 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
         } else if (id == R.id.btn_start) {
             Log.i("startWork"," onclick ");
             if(ClickUtils.isFastClick()){
-                Log.i("startWork"," 被重复点击了 " );
+                //Log.i("startWork"," 被重复点击了 " );
                 //ToastUtils.showLong(this,"被重复点击了");
                 return;//防止快速重复点击
             }
@@ -319,18 +319,25 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
 
 
 
-
+    private boolean isSendOFF = false;
+    private long preSendTimeMil;
     private void startWork(){
         DishWasher curDevice = getCurDevice();
         if(!DishWasherCommandHelper.checkDishWasherState(this,curDevice)){
             getLastState();
             return;
         }
-        Log.i("startWork"," off " +(curDevice.powerStatus == DishWasherState.OFF));
-        if((curDevice.powerStatus == DishWasherState.OFF)){
+        //Log.i("startWork"," off " +(curDevice.powerStatus == DishWasherState.OFF));
+        //DishWasherCommandHelper.sendPowerState(DishWasherState.WAIT);
+        if(curDevice.powerStatus == DishWasherState.OFF || (!isSendOFF && System.currentTimeMillis() - preSendTimeMil >= 3000)){//防止多次方式DishWasherState.WAIT 指令
+            isSendOFF = true;
+            preSendTimeMil = System.currentTimeMillis();
             DishWasherCommandHelper.sendPowerState(DishWasherState.WAIT);
         }else {
             //sendStartWorkCommand();
+            if(System.currentTimeMillis() - preSendTimeMil >= 3000){//防止多次方式DishWasherState.WAIT 指令
+                isSendOFF = false;
+            }
             sendStartWorkOrAppointCommand();
         }
     }

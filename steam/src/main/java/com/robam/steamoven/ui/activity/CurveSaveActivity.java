@@ -149,9 +149,10 @@ public class CurveSaveActivity extends SteamBaseActivity {
         JSONObject jsonObject = new JSONObject(getDeviceParamsRes.payload.temperatureCurveParams);
         Iterator<String> keys = jsonObject.keys();
         if(keys == null || !keys.hasNext()){
-            ToastUtils.showLong(this,R.string.steam_curve_no_data);
-            cookChart.setNoDataText(getString(R.string.steam_curve_no_data));
-            initLineChart();
+            //ToastUtils.showLong(this,R.string.steam_curve_no_data);
+            //cookChart.setNoDataText(getString(R.string.steam_curve_no_data));
+            //initLineChart();
+            initCurveData();
             return;
         }
         while (keys.hasNext()){
@@ -166,6 +167,11 @@ public class CurveSaveActivity extends SteamBaseActivity {
             }
             Entry entry = new Entry(Integer.parseInt(key),Integer.parseInt(temp.trim()));
             entryList.add(entry);
+        }
+        if(entryList.size() <= 2){
+            entryList.clear();
+            initCurveData();
+            return;
         }
         Collections.sort(entryList,  (Entry bean1, Entry bean2) -> {
             if (bean1.getX() > bean2.getX()) {
@@ -193,12 +199,12 @@ public class CurveSaveActivity extends SteamBaseActivity {
         if(StringUtils.isNotBlank(promptText)){
             finishTv.setText(promptText);
         }
-        initCurveData();
-//        if(curveId == 0){
-//            getCurveByGuid(getSteamOven().guid);
-//        }else{
-//            getCurveById();
-//        }
+        //initCurveData();
+        if(curveId == 0){
+            getCurveByGuid(getSteamOven().guid);
+        }else{
+            getCurveById();
+        }
 
     }
 
@@ -260,6 +266,10 @@ public class CurveSaveActivity extends SteamBaseActivity {
     }
 
     private void saveCurveStep(){
+        if(curveDetailRes == null){
+            ToastUtils.showLong(CurveSaveActivity.this,R.string.steam_curve_no_data);
+            return;
+        }
         curveDetailRes.payload.userId = AccountInfo.getInstance().getUserString();
         curveDetailRes.payload.name = finishTv.getText().toString();
         curveDetailRes.payload.deviceGuid = getSteamOven().guid;
@@ -270,6 +280,7 @@ public class CurveSaveActivity extends SteamBaseActivity {
         CloudHelper.saveCurveStepData(this, curveDetailRes.payload, BaseResponse.class, new RetrofitCallback<BaseResponse>() {
             @Override
             public void onSuccess(BaseResponse baseResponse) {
+                ToastUtils.showLong(CurveSaveActivity.this,R.string.steam_curve_success);
                 goHome();
             }
 

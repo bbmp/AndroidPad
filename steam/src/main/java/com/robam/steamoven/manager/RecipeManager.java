@@ -31,9 +31,20 @@ public class RecipeManager {
 
     private Map<String,Map<Long,String>> recipeName = new ConcurrentHashMap<>();
     private Map<String,Map<Long,Boolean>> needWaterMap = new ConcurrentHashMap<>();
+    private volatile String recipeData;
 
-    public void setRecipeInfo(String guidType,GetDeviceParamsRes getDeviceParamsRes){
-        SteamDataUtil.saveSteam(guidType,new Gson().toJson(getDeviceParamsRes, GetDeviceParamsRes.class));
+    public synchronized void setRecipeData(String recipeData) {
+        this.recipeData = recipeData;
+    }
+
+    public synchronized String getRecipeData() {
+        return recipeData;
+    }
+
+    public void setRecipeInfo(String guidType, GetDeviceParamsRes getDeviceParamsRes){
+        String recipeData = new Gson().toJson(getDeviceParamsRes, GetDeviceParamsRes.class);
+        setRecipeData(recipeData);
+        SteamDataUtil.saveSteam(guidType,recipeData);
         Map<Long, String> integerStringMap = recipeName.get(guidType);
         if(integerStringMap == null){
             recipeName.put(guidType,new HashMap<>());

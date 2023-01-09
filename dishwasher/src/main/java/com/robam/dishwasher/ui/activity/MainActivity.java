@@ -63,7 +63,7 @@ public class MainActivity extends DishWasherBaseActivity {
                     setState(dishWasher.LackSaltStatus == 1,dishWasher.LackRinseStatus == 1);
                     HomeDishWasher.getInstance().isTurnOff = (dishWasher.powerStatus == DishWasherState.OFF);
                     switch (dishWasher.powerStatus){
-                        case DishWasherState.WAIT:
+                        //case DishWasherState.WAIT:
                         case DishWasherState.WORKING:
                         case DishWasherState.PAUSE:
                             dealWasherWorkingState(dishWasher);

@@ -280,6 +280,7 @@ public class WorkActivity extends DishWasherBaseActivity {
         iDialog.setListeners(v -> {
             iDialog.dismiss();
             if (v.getId() == R.id.tv_ok) {
+                HomeDishWasher.getInstance().isTurnOff = true;
                 Map map = DishWasherCommandHelper.getCommonMap(MsgKeys.setDishWasherPower);
                 map.put(DishWasherConstant.PowerMode,DishWasherState.OFF);
                 DishWasherCommandHelper.getInstance().sendCommonMsgForLiveData(map,DishWasherState.OFF);

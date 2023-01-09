@@ -5,6 +5,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.tabs.TabLayout;
+import com.robam.common.ui.IModeSelect;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBasePage;
@@ -23,12 +24,13 @@ public class TempSelectPage extends SteamBasePage {
     private RvTimeAdapter rvTempAdapter;
     private TabLayout.Tab tab;
 
-    //    private IModeSelect iModeSelect;
+    private IModeSelect iModeSelect;
     //当前模式
     private ModeBean curMode;
     //当前温度
     private String curTemp;
     int defaultValue;
+
 
     public TempSelectPage(TabLayout.Tab tab, ModeBean modeBean) {
         this.tab = tab;
@@ -137,10 +139,16 @@ public class TempSelectPage extends SteamBasePage {
                             TextView textView = tab.getCustomView().findViewById(R.id.tv_mode);
                             textView.setText(rvTempAdapter.getItem(position));
                         }
-
+                        if(iModeSelect != null){
+                            iModeSelect.updateTab(Integer.parseInt(rvTempAdapter.getItem(position)));
+                        }
                     }
                 })
                 .build();
         rvSelect.setLayoutManager(pickerLayoutManager);
+    }
+
+    public void setModeSelect(IModeSelect iModeSelect) {
+        this.iModeSelect = iModeSelect;
     }
 }

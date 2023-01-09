@@ -15,6 +15,7 @@ public class RemindActivity extends SteamBaseActivity {
 
     private TextView titleTv;
     private int remainBusCode;
+    private TextView sureTv;
 
     @Override
     protected int getLayoutId() {
@@ -24,6 +25,8 @@ public class RemindActivity extends SteamBaseActivity {
     @Override
     protected void initView() {
         titleTv = findViewById(R.id.remind_title);
+        sureTv = findViewById(R.id.remind_btn);
+        setOnClickListener(R.id.remind_btn);
         AccountInfo.getInstance().getGuid().observe(this, s -> {
             for (Device device: AccountInfo.getInstance().deviceList) {
                 if (device.guid.equals(s) && device instanceof SteamOven && device.guid.equals(HomeSteamOven.getInstance().guid)) {
@@ -51,13 +54,16 @@ public class RemindActivity extends SteamBaseActivity {
         if(remainBusCode != 0){
             titleTv.setText(remainBusCode);
         }
+        if(remainBusCode == R.string.steam_water_deficient_remain){
+            sureTv.setText(R.string.steam_iamknown);
+        }
     }
 
 
     @Override
     public void onClick(View view) {
-        if(view.getId() == R.id.ll_left){
-
+        if(view.getId() == R.id.remind_btn){
+            finish();
         }
     }
 }

@@ -14,6 +14,7 @@ import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.device.SteamAbstractControl;
+import com.robam.steamoven.manager.RecipeManager;
 import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.utils.SkipUtil;
 import com.robam.steamoven.utils.SteamDataUtil;
@@ -78,13 +79,16 @@ public class MainActivity extends SteamBaseActivity {
             String steamContent = SteamDataUtil.getSteamContent(deviceTypeId);
             if(StringUtils.isBlank(steamContent)){
                 SteamDataUtil.getSteamData(this,deviceTypeId);
+            }else{
+                RecipeManager.getInstance().setRecipeData(steamContent);
             }
         }
         SteamDataUtil.getDeviceErrorInfo(this);
     }
 
-
-
-
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        RecipeManager.getInstance().setRecipeData(null);
+    }
 }

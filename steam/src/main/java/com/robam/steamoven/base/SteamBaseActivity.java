@@ -149,7 +149,10 @@ public abstract class SteamBaseActivity extends BaseActivity {
     }
 
 
-
+    /**
+     * 上一次提醒内容对应资源ID
+     */
+    private int preRemindResId = -1;
 
     /**
      * 调整到提醒页面
@@ -158,7 +161,8 @@ public abstract class SteamBaseActivity extends BaseActivity {
      */
     public boolean toRemandPage(SteamOven curDevice){
         int remindResId = SteamCommandHelper.getRemindResId(curDevice);
-        if(remindResId != 0){
+        if(remindResId != 0 && preRemindResId != remindResId){
+            preRemindResId = remindResId;
             Intent intent = new Intent(this, RemindActivity.class);
             intent.putExtra(Constant.REMIND_BUS_CODE,remindResId);
             startActivity(intent);
