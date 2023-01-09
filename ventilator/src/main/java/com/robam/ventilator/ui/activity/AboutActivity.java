@@ -1,11 +1,13 @@
 package com.robam.ventilator.ui.activity;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
 import com.robam.common.ui.activity.BaseActivity;
+import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.ventilator.BuildConfig;
 import com.robam.ventilator.R;
@@ -20,6 +22,7 @@ public class AboutActivity extends VentilatorBaseActivity {
     private int COUNT = 5;
     private long DURATION = 3* 1000;
     private long[] mHits = new long[COUNT];
+    private long[] mSerial = new long[COUNT];
 
     @Override
     protected int getLayoutId() {
@@ -47,6 +50,18 @@ public class AboutActivity extends VentilatorBaseActivity {
         Date date = new Date(Build.TIME);
         tvSysV.setText(simpleDateFormat.format(date));
         tvModelV.setText(BuildConfig.MODEL);
+        tvModelV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.arraycopy(mSerial, 1, mSerial, 0, mSerial.length - 1);
+                mSerial[mSerial.length - 1] = System.currentTimeMillis();
+                if (mSerial[0] >= (System.currentTimeMillis() - DURATION)) {
+                    long[] hits = new long[COUNT];
+                    System.arraycopy(hits, 0, mSerial, 0, mSerial.length);
+                    ToastUtils.showLong(getApplicationContext(), DeviceUtils.getDeviceSerial());
+                }
+            }
+        });
         tvSysV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,10 +70,17 @@ public class AboutActivity extends VentilatorBaseActivity {
                 if (mHits[0] >= (System.currentTimeMillis() - DURATION)) {
                     long[] hits = new long[COUNT];
                     System.arraycopy(hits, 0, mHits, 0, mHits.length);
-
+                    goHome();
                 }
             }
         });
+    }
+
+    private void goHome() {
+        Intent i = new Intent(Intent.ACTION_MAIN);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        i.addCategory(Intent.CATEGORY_HOME);
+        startActivity(i);
     }
 
     @Override

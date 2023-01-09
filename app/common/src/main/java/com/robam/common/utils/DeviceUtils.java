@@ -1,6 +1,11 @@
 package com.robam.common.utils;
 
+import android.os.Build;
+
 import com.robam.common.IDeviceType;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class DeviceUtils {
     public final static int VENDOR_LENGTH = 0;
@@ -42,5 +47,27 @@ public class DeviceUtils {
         if (IDeviceType.RRQZ.equals(getDeviceTypeId(guid)))
             return true;
         return false;
+    }
+    //设备序列号
+    public static String getDeviceSerial() {
+        String serial = "unknown";
+        try {
+            Class clazz = Class.forName("android.os.Build");
+            Class paraTypes = Class.forName("java.lang.String");
+            Method method = clazz.getDeclaredMethod("getString", paraTypes);
+            if (!method.isAccessible()) {
+                method.setAccessible(true);
+            }
+            serial = (String)method.invoke(new Build(), "ro.serialno");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return serial;
     }
 }
