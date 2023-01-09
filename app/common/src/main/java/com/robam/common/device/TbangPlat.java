@@ -78,4 +78,9 @@ public class TbangPlat implements IPlat{
         tbManager.screenOff();
 //        tbManager.setBackLight(false);
     }
+
+    @Override
+    public void closeNavBar() {
+        tbManager.setNavBar(false);
+    }
 }
