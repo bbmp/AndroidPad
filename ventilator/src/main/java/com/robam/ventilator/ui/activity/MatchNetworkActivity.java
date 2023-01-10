@@ -98,8 +98,23 @@ public class MatchNetworkActivity extends VentilatorBaseActivity implements BleV
         } else if (IDeviceType.RXDG.equals(model)) {
             //消毒柜
             ivDevice.setImageResource(R.drawable.ventilator_cabinet);
-            string = getResources().getString(R.string.ventilator_match_hint8);
+//            string = getResources().getString(R.string.ventilator_match_hint8);
+//            spannableString = new SpannableString(string);
+//            tvNext.setVisibility(View.GONE);
+//            tvOk.setVisibility(View.VISIBLE);
+            string = getResources().getString(R.string.ventilator_match_hint1);
             spannableString = new SpannableString(string);
+            Drawable drawable = getResources().getDrawable(R.drawable.ventilator_r);
+            drawable.setBounds(0, 0, (int) getResources().getDimension(com.robam.common.R.dimen.dp_32),
+                    (int) getResources().getDimension(com.robam.common.R.dimen.dp_32));
+//            int pos = string.indexOf("[");
+//            if (pos >= 0)
+//                spannableString.setSpan(new ExtImageSpan(drawable), pos + 1, pos + 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            int pos = string.indexOf("\"");
+            if (pos >= 0)
+                spannableString.setSpan(new ExtImageSpan(drawable), pos + 1, pos + 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
             tvNext.setVisibility(View.GONE);
             tvOk.setVisibility(View.VISIBLE);
         } else if (IDeviceType.RXWJ.equals(model)) {

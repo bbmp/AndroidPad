@@ -250,7 +250,7 @@ public class AppointmentActivity extends CabinetBaseActivity {
 
     private void cancelAppointment(){
         Intent result = new Intent();
-        result.putExtra(Constant.APPOINTMENT_RESULT,tvTime.getText().toString());
+        result.putExtra(Constant.APPOINTMENT_RESULT,"");
         setResult(RESULT_OK,result);
         finish();
     }

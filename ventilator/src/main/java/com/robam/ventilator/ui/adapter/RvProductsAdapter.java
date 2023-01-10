@@ -309,6 +309,8 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
                     baseViewHolder.setGone(R.id.btn_work, true);
             }
         }else{
+            preDishwasherTimeValue = "";
+            preDishwasherTimeMil = 0;
             boolean isWorkFinish = false;
             if(workState != null && workState.isFinish()) {
                 isWorkFinish = true;
@@ -388,6 +390,8 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
             isAppoint = steamOven.workState == SteamStateConstant.WORK_STATE_APPOINTMENT;
         }
         if(!isWork){
+            preSteamTimeValue = "";
+            preSteamTimeMil = 0;
             MqttDirective.WorkState workState = MqttDirective.getInstance().getWorkState(steamOven.guid);
             if(workState != null && workState.isFinish()){
                 workFinish = true;
@@ -442,7 +446,7 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
      */
     private void dealCabinetWorkView(Cabinet cabinet, BaseViewHolder baseViewHolder){
 
-        if(cabinet.faultId != 255 && cabinet.faultId != 0 &&
+        if(cabinet.faultId != 255  &&
                 CabinetWaringEnum.match(cabinet.faultId).getCode() != CabinetWaringEnum.E255.getCode()){
             baseViewHolder.setVisible(R.id.layout_offline, true);
             baseViewHolder.setText(R.id.tv_hint, R.string.ventilator_product_failure);
@@ -460,6 +464,8 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
         }
 
         if(!isWork){
+            preCabinetTimeValue = "";
+            preCabinetTimeMil = 0;
             MqttDirective.WorkState workState = MqttDirective.getInstance().getWorkState(cabinet.guid);
             if(workState != null && workState.isFinish()){
                workFinish = true;
@@ -502,36 +508,38 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
         int totalDay = calendar.get(Calendar.DAY_OF_MONTH);
         String time = (totalHour <= 9 ? ("0" + totalHour) : totalHour) + ":" + (totalMin <= 9 ? ("0" + totalMin) : totalMin);
 
+
+
         // 问题：返回的剩余时间单位是分钟，若剩余时间为2分钟，本地时间是 12:02,计算结果为12：04，
         // 若10秒后本地时间为12：03,这时剩余时间仍然为2分钟，计算结果为12:05
         //兼容性处理 以下逻辑为了屏蔽时间来回切换的情况
         if(IDeviceType.RXDG.equals(deviceType)){//消毒柜
             if(StringUtils.isBlank(preCabinetTimeValue)){
                 preCabinetTimeValue = time;
-                preCabinetTime = totalMin;
+                preCabinetTimeMil = calendar.getTimeInMillis();
             }
             if(time.compareTo(preCabinetTimeValue) != 0){
-                if(Math.abs(preCabinetTime - totalMin) <= 1){//只相差一分钟的情况下，生效
+                if(Math.abs(preCabinetTimeMil - calendar.getTimeInMillis()) <= max_error_dur){//只相差一分钟的情况下，生效
                     time = preCabinetTimeValue;
                 }
             }
         }else if(IDeviceType.RXWJ.equals(deviceType)){//洗碗机
             if(StringUtils.isBlank(preDishwasherTimeValue)){
                 preDishwasherTimeValue = time;
-                preDishwasherTime = totalMin;
+                preDishwasherTimeMil = calendar.getTimeInMillis();
             }
             if(time.compareTo(preDishwasherTimeValue) != 0){
-                if(Math.abs(preDishwasherTime - totalMin) <= 1){//只相差一分钟的情况下，生效
+                if(Math.abs(preDishwasherTimeMil - calendar.getTimeInMillis()) <= max_error_dur){//只相差一分钟的情况下，生效
                     time = preDishwasherTimeValue;
                 }
             }
         }else if(IDeviceType.RZKY.equals(deviceType)){//一体机
             if(StringUtils.isBlank(preSteamTimeValue)){
                 preSteamTimeValue = time;
-                preSteamTime = totalMin;
+                preSteamTimeMil = totalMin;
             }
             if(time.compareTo(preSteamTimeValue) != 0){
-                if(Math.abs(preSteamTime - totalMin) <= 1){//只相差一分钟的情况下，生效
+                if(Math.abs(preSteamTimeMil - calendar.getTimeInMillis()) <= max_error_dur){//只相差一分钟的情况下，生效
                     time = preSteamTimeValue;
                 }
             }
@@ -551,7 +559,7 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
     /**
      * 上次消毒柜显示分钟数（如：30）
      */
-    private int preCabinetTime;
+    private long preCabinetTimeMil;
     /**
      * 上一次洗碗机显示时间(如 12:30)
      */
@@ -559,7 +567,7 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
     /**
      * 上次洗碗机分钟数（如：30）
      */
-    private int preDishwasherTime;
+    private long preDishwasherTimeMil;
     /**
      * 上一次一体机显示时间(如 12:30)
      */
@@ -567,7 +575,7 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
     /**
      * 上次一体机显示分钟数（如：30）
      */
-    private int preSteamTime;
+    private long preSteamTimeMil;
 
     /**
      * 获取剩余运行时间
@@ -594,6 +602,8 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
         }
         return totalTime;
     }
+
+    private final int max_error_dur = 60*1000;//1分钟
 
 
 }

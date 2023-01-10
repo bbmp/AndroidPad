@@ -16,6 +16,7 @@ import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.view.CancelRadioButton;
 import com.robam.common.utils.ClickUtils;
 import com.robam.common.utils.DateUtil;
+import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.TimeUtils;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.base.DishWasherBaseActivity;
@@ -116,7 +117,7 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
         });
 
         MqttDirective.getInstance().getStrLiveData().observe(this,s->{
-            //LogUtils.i("MqttDishWasher onDecodeMsg  guid : arrvice "+s+"");
+            LogUtils.i("MqttDishWasher onDecodeMsg  guid : arrvice "+s+"");
             if(s == null || s.trim().length() == 0){
                 return ;
             }

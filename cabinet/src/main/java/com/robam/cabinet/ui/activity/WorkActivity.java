@@ -76,6 +76,11 @@ public class WorkActivity extends CabinetBaseActivity {
                     if(!CabinetCommonHelper.isSafe()){
                         return;
                     }
+                    if(cabinet.isChildLock == 1){
+                        if(finishDialog != null && finishDialog.isShow()){
+                            finishDialog.dismiss();
+                        }
+                    }
                     if(toWaringPage(cabinet.faultId)){
                         return;
                     }

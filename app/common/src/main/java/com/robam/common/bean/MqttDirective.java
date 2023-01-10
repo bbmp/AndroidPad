@@ -1,16 +1,14 @@
 package com.robam.common.bean;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
-
-import com.robam.common.utils.LogUtils;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -25,9 +23,11 @@ public class MqttDirective {
     public static final String STR_LIVE_DATA_FLAG = "&:&:&";//安全更新时间 30秒
 
     @Deprecated
-    private BusMutableLiveData<Integer> directive = new BusMutableLiveData<>(-100); //设备状态变化
+    private StickyLiveData<Integer> directive = new StickyLiveData<>(); //设备状态变化
     private Map<String,WorkState> workModelState = new ConcurrentHashMap<>();
-    private BusMutableLiveData<String> strLiveData = new BusMutableLiveData<>(""); //设备状态变化
+    //private BusMutableLiveData<String> strLiveData = new BusMutableLiveData<>(""); //设备状态变化
+    private StickyLiveData<String> stickyLiveData = new StickyLiveData();//设备状态变化
+
 
     private MqttDirective(){}
 
@@ -40,16 +40,21 @@ public class MqttDirective {
     }
 
     @Deprecated
-    public MutableLiveData<Integer> getDirective() {
+    public StickyLiveData<Integer> getDirective() {
         return directive;
     }
 
-    public MutableLiveData<String> getStrLiveData() {
-        return strLiveData;
+    public void setDirectiveStickyData(int bsCode){
+        directive.setStickyData(bsCode);
+    }
+
+
+    public StickyLiveData<String> getStrLiveData() {
+        return stickyLiveData;
     }
 
     public void setStrLiveDataValue(String guid, int code){
-        strLiveData.setValue(guid+STR_LIVE_DATA_FLAG+code);
+        stickyLiveData.setStickyData(guid+STR_LIVE_DATA_FLAG+code);
     }
 
 
@@ -166,6 +171,78 @@ public class MqttDirective {
     }
 
 
+    public class StickyLiveData<T>  extends LiveData<T>{
 
+        T mStickyData;
+        volatile long mVersion = 0;
+
+        void setStickyData(T stickyData){
+            this.mStickyData = stickyData;
+            setValue(stickyData);
+        }
+
+        void postStickyData(T stickyData ){
+            this.mStickyData = stickyData;
+            postValue(stickyData);
+        }
+
+        @Override
+        protected void setValue(T value) {
+            mVersion++;
+            super.setValue(value);
+        }
+
+
+
+        public void postValue(T value) {
+            mVersion++;
+            super.postValue(value);
+        }
+
+        @Override
+        public void observe(@NonNull LifecycleOwner owner, @NonNull Observer<? super T> observer) {
+            //super.observe(owner, observer);
+            observeSticky(owner,false,observer);
+        }
+
+
+        public void observeSticky(LifecycleOwner owner,Boolean sticky,Observer<? super T> observer){
+            //允许指定注册的观察者 是否需要关心粘性事件
+            //sticky = true，如果之前存在已经发送的数据，那么这个observier会受到之前的粘性事件的消息
+//            owner.getLifecycle().addObserver((LifecycleEventObserver) (source, event) -> {
+//                if(event == Lifecycle.Event.ON_DESTROY){
+//                    eventMap.remove(eventName);
+//                }
+//            });
+            super.observe(owner, new StickyObserver(this,sticky,observer));
+        }
+    }
+
+    class StickyObserver<T> implements Observer<T> {
+        private StickyLiveData<T> stickyLiveData;
+        private Boolean sticky ;
+        private Observer<T> observer;
+        private volatile long lastVersion;
+        public StickyObserver(StickyLiveData<T> stickyLiveData , Boolean sticky , Observer<T> observer){
+            this.stickyLiveData = stickyLiveData;
+            this.sticky = sticky;
+            this.observer = observer;
+            this.lastVersion = stickyLiveData.mVersion;
+        }
+        //lastVersion和livedata和version对齐的原因，就是为控制粘性事件的分发
+        //sticky 不等于 true,只能接收到注册之后发送的消息，如果要接收粘性事件，则sticky 需要传递为true
+
+        @Override
+        public void onChanged(T t) {
+            if(lastVersion >= stickyLiveData.mVersion){
+                if(sticky && stickyLiveData.mStickyData != null){
+                    observer.onChanged(stickyLiveData.mStickyData);
+                }
+                return;
+            }
+            lastVersion = stickyLiveData.mVersion;
+            observer.onChanged(t);
+        }
+    }
 
 }

@@ -18,7 +18,10 @@ import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
+import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.ui.adapter.RvStringAdapter;
+import com.robam.steamoven.utils.SkipUtil;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -92,25 +95,54 @@ public class AppointmentActivity extends SteamBaseActivity {
 
         setOnClickListener(R.id.btn_cancel, R.id.btn_ok);
 
+
         AccountInfo.getInstance().getGuid().observe(this, s -> {
             for (Device device: AccountInfo.getInstance().deviceList) {
                 if (device.guid.equals(s) && device instanceof SteamOven && device.guid.equals(HomeSteamOven.getInstance().guid)) {
                     SteamOven steamOven = (SteamOven) device;
+                    if(!SteamCommandHelper.getInstance().isSafe()){
+                        return;
+                    }
                     if(toWaringPage(steamOven)){
+                        return;
+                    }
+                    if(toOffLinePage(steamOven)){
                         return;
                     }
                     switch (steamOven.powerState){
                         case SteamStateConstant.POWER_STATE_AWAIT:
                         case SteamStateConstant.POWER_STATE_ON:
                         case SteamStateConstant.POWER_STATE_TROUBLE:
-                            dealAppointingPage(steamOven);
+                            SkipUtil.toWorkPage(steamOven,AppointmentActivity.this);
                             break;
                         case SteamStateConstant.POWER_STATE_OFF:
                             break;
                     }
+
+
                 }
             }
         });
+
+//        AccountInfo.getInstance().getGuid().observe(this, s -> {
+//            for (Device device: AccountInfo.getInstance().deviceList) {
+//                if (device.guid.equals(s) && device instanceof SteamOven && device.guid.equals(HomeSteamOven.getInstance().guid)) {
+//                    SteamOven steamOven = (SteamOven) device;
+//                    if(toWaringPage(steamOven)){
+//                        return;
+//                    }
+//                    switch (steamOven.powerState){
+//                        case SteamStateConstant.POWER_STATE_AWAIT:
+//                        case SteamStateConstant.POWER_STATE_ON:
+//                        case SteamStateConstant.POWER_STATE_TROUBLE:
+//                            dealAppointingPage(steamOven);
+//                            break;
+//                        case SteamStateConstant.POWER_STATE_OFF:
+//                            break;
+//                    }
+//                }
+//            }
+//        });
 //        MqttDirective.getInstance().getDirective().observe(this, s -> {
 //            switch (s - directive_offset){
 //                case START:

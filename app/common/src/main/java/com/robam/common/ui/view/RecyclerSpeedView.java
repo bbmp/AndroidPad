@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
  * 抛掷速度的控制
  */
 public class RecyclerSpeedView extends RecyclerView {
-    private float speed_divisor = 0.45f;
+    private float speed_divisor = 0.25f;
 
 
     public RecyclerSpeedView(@NonNull Context context) {

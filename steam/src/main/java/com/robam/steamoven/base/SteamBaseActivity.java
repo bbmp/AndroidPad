@@ -51,6 +51,11 @@ public abstract class SteamBaseActivity extends BaseActivity {
         findViewById(R.id.ll_left).setVisibility(View.VISIBLE);
         setOnClickListener(R.id.ll_left);
     }
+
+    public void hideLeft(){
+        findViewById(R.id.ll_left).setVisibility(View.INVISIBLE);
+    }
+
     public void showLeftCenter() {
         findViewById(R.id.ll_left_center).setVisibility(View.VISIBLE);
         findViewById(R.id.ll_left_center).setOnClickListener(v -> {

@@ -15,20 +15,17 @@ import com.robam.cabinet.constant.CabinetConstant;
 import com.robam.cabinet.constant.CabinetEnum;
 import com.robam.cabinet.constant.Constant;
 import com.robam.cabinet.constant.DialogConstant;
-import com.robam.cabinet.constant.EventConstant;
 import com.robam.cabinet.device.HomeCabinet;
 import com.robam.cabinet.factory.CabinetDialogFactory;
 import com.robam.cabinet.util.CabinetAppointmentUtil;
 import com.robam.cabinet.util.CabinetCommonHelper;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
-import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.view.MCountdownView;
 import com.robam.common.utils.DateUtil;
 import com.robam.common.utils.TimeUtils;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -53,6 +50,8 @@ public class AppointingActivity extends CabinetBaseActivity {
 
     //指令标记偏移量
     public int directive_offset = 1400000;
+
+    private final int max_error_dur = 60*1000;//1分钟
 
     @Override
     protected int getLayoutId() {
@@ -79,6 +78,11 @@ public class AppointingActivity extends CabinetBaseActivity {
 //                    if(toWaringPage(cabinet.alarmStatus)){
 //                        return;
 //                    }
+                    if(cabinet.isChildLock == 1){
+                        if(finishDialog != null && finishDialog.isShow()){
+                            finishDialog.dismiss();
+                        }
+                    }
                     if(toOffLinePage(cabinet)){
                         return;
                     }
@@ -139,7 +143,7 @@ public class AppointingActivity extends CabinetBaseActivity {
     }
 
     private String preTime = "";
-    private int preTimeMin = 0;
+    private long preTimeMinMil = 0;
     private String startTimePoint(int remainingTime){
         Calendar calendar = GregorianCalendar.getInstance();
         calendar.setTime(new Date());
@@ -155,10 +159,10 @@ public class AppointingActivity extends CabinetBaseActivity {
         //兼容性处理 以下逻辑未屏蔽上面 时间来回切换的情况
         if(preTime.equals("")){
             preTime = time;
-            preTimeMin = totalMin;
+            preTimeMinMil = calendar.getTimeInMillis();
         }
         if(time.compareTo(preTime) != 0){
-            if(Math.abs(preTimeMin - totalMin) <= 1){//只相差一分钟的情况下，生效
+            if(Math.abs(preTimeMinMil - calendar.getTimeInMillis()) <= max_error_dur){//只相差一分钟的情况下，生效
                 time = preTime;
             }
         }
@@ -239,13 +243,14 @@ public class AppointingActivity extends CabinetBaseActivity {
         return spannableString;
     }
 
+    private IDialog finishDialog;
     /**
      * 展示结束预约弹窗
      */
     private void showEndDialog(){
-        IDialog iDialog = CabinetDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_WORK_STOP);
-        iDialog.setCancelable(false);
-        iDialog.setListeners(v -> {
+        finishDialog = CabinetDialogFactory.createDialogByType(this, DialogConstant.DIALOG_TYPE_WORK_STOP);
+        finishDialog.setCancelable(false);
+        finishDialog.setListeners(v -> {
             //结束工作
             if (v.getId() == R.id.tv_ok) {
                 Map map = CabinetCommonHelper.getCommonMap(MsgKeys.SetSteriPowerOnOff_Req);
@@ -255,6 +260,15 @@ public class AppointingActivity extends CabinetBaseActivity {
                 CabinetCommonHelper.sendCommonMsgForLiveData(map,directive_offset + MsgKeys.SetSteriPowerOnOff_Req);
             }
         }, R.id.tv_cancel, R.id.tv_ok);
-        iDialog.show();
+        finishDialog.show();
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(finishDialog != null && finishDialog.isShow()){
+            finishDialog.dismiss();
+        }
+    }
+
 }

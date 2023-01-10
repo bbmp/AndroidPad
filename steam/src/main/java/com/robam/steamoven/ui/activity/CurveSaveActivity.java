@@ -140,10 +140,16 @@ public class CurveSaveActivity extends SteamBaseActivity {
      */
     private void parserCureData(GetCurveDetailRes getDeviceParamsRes) throws JSONException {
         this.curveDetailRes = getDeviceParamsRes;
-        if(getDeviceParamsRes == null || getDeviceParamsRes.payload == null || getDeviceParamsRes.payload.temperatureCurveParams == null){
+        if(getDeviceParamsRes == null){
             ToastUtils.showLong(this,R.string.steam_curve_no_data);
             cookChart.setNoDataText(getString(R.string.steam_curve_no_data));
             initLineChart();
+        }
+        if(getDeviceParamsRes != null || getDeviceParamsRes.payload == null || getDeviceParamsRes.payload.temperatureCurveParams == null){
+            //ToastUtils.showLong(this,R.string.steam_curve_no_data);
+            //cookChart.setNoDataText(getString(R.string.steam_curve_no_data));
+            //initLineChart();
+            initCurveData();
             return;
         }
         JSONObject jsonObject = new JSONObject(getDeviceParamsRes.payload.temperatureCurveParams);

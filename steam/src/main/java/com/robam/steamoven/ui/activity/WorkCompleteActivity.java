@@ -165,8 +165,10 @@ public class WorkCompleteActivity extends SteamBaseActivity {
         if (id == R.id.tv_cancel) {//加时
             showOverTimeDialog();
         }else if(id == R.id.tv_ok){//完成
+            //toCurveSavePage();
             SteamCommandHelper.sendWorkFinishCommand(directive_offset+DIRECTIVE_OFFSET_WORK_FINISH);
         }else if(id == R.id.tv_single_ok){
+            //toCurveSavePage();
             SteamCommandHelper.sendWorkFinishCommand(directive_offset+DIRECTIVE_OFFSET_WORK_FINISH);
         }
     }

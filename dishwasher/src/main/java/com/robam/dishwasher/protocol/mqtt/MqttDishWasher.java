@@ -124,9 +124,9 @@ public class MqttDishWasher extends MqttPublic {
                     msg.putOpt(DishWasherConstant.POWER_CONSUMPTION, ByteUtils.toShort(payload[offset++]));
                     //记录工作完成结束事件
                     MqttDirective.getInstance().finishWorkModelState(msg.getGuid());
+                    MqttDirective.getInstance().setStrLiveDataValue(msg.getGuid(),aShort);
                 }
                 //MqttDirective.getInstance().getDirective().setValue((int)aShort);
-                MqttDirective.getInstance().setStrLiveDataValue(msg.getGuid(),aShort);
                 break;
         }
     }

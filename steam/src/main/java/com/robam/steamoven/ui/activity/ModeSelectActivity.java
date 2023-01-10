@@ -354,12 +354,9 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             tabLayout.addTab(upTempTab);
             upTempSelectPage = new TempSelectPage(upTempTab, defaultBean);
             fragments.add(new WeakReference<>(upTempSelectPage));
-            upTempSelectPage.setModeSelect(new IModeSelect() {
-                @Override
-                public void updateTab(int curTemp) {
-                    if(curModeBean.code == SteamConstant.EXP && downTempSelectPage != null){
-                        downTempSelectPage.updateTempTab(getDownTempMode(curModeBean,curTemp));
-                    }
+            upTempSelectPage.setModeSelect(curTemp -> {
+                if(curModeBean.code == SteamConstant.EXP && downTempSelectPage != null){
+                    downTempSelectPage.updateTempTab(getDownTempMode(curModeBean,curTemp));
                 }
             });
 
@@ -456,7 +453,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
         int downMaxTemp = curTemp + 20;
         int downMin = downMinTemp < expMode.minTemp ? expMode.minTemp : downMinTemp;
         int dowMax = downMaxTemp > expMode.maxTemp ? expMode.maxTemp : downMaxTemp;
-        modeBean.defTemp = downMaxTemp;
+        modeBean.defTemp = downMin;
         modeBean.minTemp = downMin;
         modeBean.maxTemp = dowMax;
         return modeBean;

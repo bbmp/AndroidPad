@@ -1,6 +1,8 @@
 package com.robam.cabinet.ui.activity;
 
+import android.graphics.drawable.Drawable;
 import android.text.SpannableString;
+import android.text.Spanned;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -13,6 +15,7 @@ import com.robam.cabinet.util.CabinetCommonHelper;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
+import com.robam.common.ui.view.ExtImageSpan;
 
 public class MatchNetworkActivity extends CabinetBaseActivity{
     private TextView tvHint;
@@ -59,11 +62,17 @@ public class MatchNetworkActivity extends CabinetBaseActivity{
 
     @Override
     protected void initData() {
-        SpannableString spannableString = null;
         //消毒柜
         ivDevice.setImageResource(R.drawable.cabinet_cabinet);
-        String string = getResources().getString(R.string.cabinet_match_hint8);
-        spannableString = new SpannableString(string);
+        String string = getResources().getString(R.string.cabinet_match_hint1);
+        SpannableString spannableString = new SpannableString(string);
+        Drawable drawable = getResources().getDrawable(R.drawable.cabinet_r);
+        drawable.setBounds(0, 0, (int) getResources().getDimension(com.robam.common.R.dimen.dp_32),
+                (int) getResources().getDimension(com.robam.common.R.dimen.dp_32));
+        int pos = string.indexOf("\"");
+        if (pos >= 0)
+            spannableString.setSpan(new ExtImageSpan(drawable), pos + 1, pos + 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
         tvNext.setVisibility(View.GONE);
         //tvOk.setVisibility(View.VISIBLE);
         tvHint.setText(spannableString);

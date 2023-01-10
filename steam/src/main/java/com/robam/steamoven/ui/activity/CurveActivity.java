@@ -15,16 +15,22 @@ import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.BaseResponse;
+import com.robam.common.bean.Device;
 import com.robam.common.bean.UserInfo;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.bean.SteamCurveDetail;
+import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.SteamConstant;
+import com.robam.steamoven.constant.SteamStateConstant;
+import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.http.CloudHelper;
+import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.response.GetCurveCookbooksRes;
 import com.robam.steamoven.ui.adapter.RvCurveAdapter;
+import com.robam.steamoven.utils.SkipUtil;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -100,6 +106,34 @@ public class CurveActivity extends SteamBaseActivity {
         });
 
         setOnClickListener(R.id.ll_left, R.id.ll_right, R.id.tv_delete);
+
+        AccountInfo.getInstance().getGuid().observe(this, s -> {
+            for (Device device: AccountInfo.getInstance().deviceList) {
+                if (device.guid.equals(s) && device instanceof SteamOven && device.guid.equals(HomeSteamOven.getInstance().guid)) {
+                    SteamOven steamOven = (SteamOven) device;
+                    if(!SteamCommandHelper.getInstance().isSafe()){
+                        return;
+                    }
+                    if(toWaringPage(steamOven)){
+                        return;
+                    }
+                    if(toOffLinePage(steamOven)){
+                        return;
+                    }
+                    switch (steamOven.powerState){
+                        case SteamStateConstant.POWER_STATE_AWAIT:
+                        case SteamStateConstant.POWER_STATE_ON:
+                        case SteamStateConstant.POWER_STATE_TROUBLE:
+                            SkipUtil.toWorkPage(steamOven,CurveActivity.this);
+                            break;
+                        case SteamStateConstant.POWER_STATE_OFF:
+                            break;
+                    }
+
+
+                }
+            }
+        });
     }
 
     @Override

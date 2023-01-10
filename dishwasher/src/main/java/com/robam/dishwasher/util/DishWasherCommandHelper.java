@@ -48,7 +48,8 @@ public class DishWasherCommandHelper {
         DishWasherAbstractControl.getInstance().sendCommonMsg(map, (String) map.get(DishWasherConstant.TARGET_GUID), (Short) map.get(DishWasherConstant.MSG_ID), new MqttManager.MqttSendMsgListener() {
             @Override
             public void onSuccess(String top, short msgId) {
-                MqttDirective.getInstance().getDirective().setValue(bsCode);
+                //MqttDirective.getInstance().getDirective().setValue(bsCode);
+                MqttDirective.getInstance().setDirectiveStickyData(bsCode);
             }
 
             @Override

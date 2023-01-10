@@ -36,7 +36,7 @@
     <string name="cabinet_work_complete">消毒完成</string>
     <string name="cabinet_start_appoint">开始预约</string>
     <string name="cabinet_waring_prompt">设备告警</string>
-    <string name="cabinet_match_hint8">1.开启消毒柜。 \n2.在消毒柜上登录当前ROKI账户。 \n完成上述操作后点击下一步。</string>
+    <string name="cabinet_match_hint1">1.旋转右旋钮或点击面板上[联网]，选中联网模式。\n2.短按右侧旋钮或点击面板上[联网]，屏幕内智能符号\" \"闪烁。\n3.在ROKI APP中，添加XG858，输入WiFi密码，连接网络。</string>
     <string name="cabinet_next_step">下一步</string>
     <string name="cabinet_ok">确定</string>
 </resources>

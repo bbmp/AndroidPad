@@ -26,7 +26,8 @@ public class CabinetCommonHelper {
         CabinetAbstractControl.getInstance().sendCommonMsg(map, (String) map.get(CabinetConstant.TARGET_GUID), (Short) map.get(CabinetConstant.MSG_ID), new MqttManager.MqttSendMsgListener() {
             @Override
             public void onSuccess(String top, short msgId) {
-                MqttDirective.getInstance().getDirective().setValue(bsCode);
+                //MqttDirective.getInstance().getDirective().setValue(bsCode);
+                MqttDirective.getInstance().setDirectiveStickyData(bsCode);
             }
 
             @Override

@@ -29,7 +29,7 @@
         android:id="@+id/multi_item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_28"
+        android:textSize="@dimen/sp_24"
         android:layout_marginTop="@dimen/dp_24"
         android:layout_marginLeft="@dimen/dp_24"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -53,10 +53,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@id/guideline"
-        android:layout_marginBottom="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_2"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:textSize="@dimen/sp_40"
+        android:textSize="@dimen/sp_36"
         android:textColor="@color/steam_white"
         tools:text="大蒸汽"/>
 
@@ -67,7 +67,7 @@
         app:layout_constraintTop_toBottomOf="@+id/guideline"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:textSize="@dimen/sp_40"
+        android:textSize="@dimen/sp_36"
         android:textColor="@color/steam_white"
         tools:text="100C"/>
 
@@ -76,8 +76,8 @@
         android:id="@+id/multi_item_model"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_40"
-        android:layout_marginBottom="@dimen/dp_10"
+        android:textSize="@dimen/sp_36"
+        android:layout_marginBottom="@dimen/dp_2"
         app:layout_constraintBottom_toTopOf="@id/multi_item_steam"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -89,9 +89,9 @@
         android:id="@+id/multi_item_duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_40"
-        android:layout_marginTop="@dimen/dp_10"
-        android:layout_marginBottom="@dimen/dp_10"
+        android:textSize="@dimen/sp_36"
+        android:layout_marginTop="@dimen/dp_2"
+        android:layout_marginBottom="@dimen/dp_2"
         app:layout_constraintTop_toBottomOf="@id/multi_item_temperature"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -103,7 +103,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_percent="0.51" />
 
 
 

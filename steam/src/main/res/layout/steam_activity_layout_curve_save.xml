@@ -54,6 +54,7 @@
         android:layout_marginTop="@dimen/dp_180"
         android:maxLength="10"
         android:maxWidth="@dimen/dp_400"
+        android:singleLine="true"
         android:textColor="@color/steam_white"
         app:layout_constraintLeft_toRightOf="@id/cook_chart"
         app:layout_constraintTop_toTopOf="parent"

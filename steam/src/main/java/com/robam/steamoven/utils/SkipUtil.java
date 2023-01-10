@@ -12,6 +12,7 @@ import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.ui.activity.AppointingActivity;
 import com.robam.steamoven.ui.activity.AuxModelWorkActivity;
+import com.robam.steamoven.ui.activity.DescalingActivity;
 import com.robam.steamoven.ui.activity.ModelWorkActivity;
 import com.robam.steamoven.ui.activity.MultiWorkActivity;
 
@@ -45,7 +46,12 @@ public class SkipUtil {
             case SteamStateConstant.WORK_STATE_PREHEAT_PAUSE:
             case SteamStateConstant.WORK_STATE_WORKING:
             case SteamStateConstant.WORK_STATE_WORKING_PAUSE:
-                if(steamOven.restTimeH == 0 && steamOven.restTime == 0){
+                if(steamOven.restTime == 0 && steamOven.restTime2 == 0 && steamOven.restTime3 == 0){
+                    if(SteamModeEnum.CHUGOU.getMode() == steamOven.mode){
+                        Intent intent = new Intent(activity, AuxModelWorkActivity.class);
+                        intent.putExtra(Constant.SEGMENT_DATA_FLAG,MultiSegmentUtil.getSkipResult(steamOven));
+                        activity.startActivity(intent);
+                    }
                     return;
                 }
                 //辅助模式工作页面

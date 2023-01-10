@@ -20,6 +20,7 @@ public class Cabinet extends Device{
         this.categoryName = device.categoryName;
         this.subDevices = device.subDevices;
         this.name = device.name;
+        this.faultId = 255;//255代表无告警
     }
 
     public Cabinet(String name, String dc, String displayType) {
