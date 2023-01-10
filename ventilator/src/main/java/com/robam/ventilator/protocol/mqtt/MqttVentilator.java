@@ -162,9 +162,14 @@ public class MqttVentilator extends MqttPublic {
                                 min = MsgUtils.bytes2IntLittle(payload, offset);
                                 offset += 4;
                             }
+                            if (min == 0xff)
+                                min = Integer.parseInt(MMKVUtils.getDelayShutdownTime()); //延时时间
                             msg.putOpt(VentilatorConstant.DelayTime, min);
-                            if (min >=1 && min <= 5) //设置延时关机时间
-                                MMKVUtils.setDelayShutdownTime(min + "");
+                            if (min >=1 && min <= 5) {//设置延时关机时间
+//                                MMKVUtils.setDelayShutdownTime(min + "");
+                                //延时关机倒计时
+                                HomeVentilator.getInstance().timeShutdown(min);
+                            }
                         }
                             break;
                         case 101:
