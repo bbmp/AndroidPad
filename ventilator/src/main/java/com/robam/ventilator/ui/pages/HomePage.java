@@ -561,11 +561,11 @@ public class HomePage extends VentilatorBasePage {
                     if (null != getDeviceRes && null != getDeviceRes.devices) {
                         List<Device> deviceList = getDeviceRes.devices;
                         for (Device device: deviceList) {
-                            if (IDeviceType.RZKY.equals(device.dc)) //一体机
+                            if (IDeviceType.RZKY.equals(device.dc) && IDeviceType.SERIES_STEAM.equals(device.dt)) //一体机
                                 AccountInfo.getInstance().deviceList.add(new SteamOven(device));
-                            else if (IDeviceType.RXWJ.equals(device.dc)) //洗碗机
+                            else if (IDeviceType.RXWJ.equals(device.dc) && IDeviceType.SERIES_DISHWASHER.equals(device.dt)) //洗碗机
                                 AccountInfo.getInstance().deviceList.add(new DishWasher(device));
-                            else if (IDeviceType.RXDG.equals(device.dc))  //消毒柜
+                            else if (IDeviceType.RXDG.equals(device.dc) && IDeviceType.SERIES_CABINET.equals(device.dt))  //消毒柜
                                 AccountInfo.getInstance().deviceList.add(new Cabinet(device));
                             else if (IDeviceType.RYYJ.equals(device.dc) && device.guid.equals(Plat.getPlatform().getDeviceOnlySign())) {
                                 //当前烟机子设备
