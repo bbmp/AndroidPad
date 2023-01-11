@@ -11,6 +11,7 @@
     <color name="ventilator_mode">#fff6f6f6</color>
     <color name="ventilator_line">#1ad9d9d9</color>
     <color name="ventilator_lock">#80000d2a</color>
+    <color name="ventilator_lock_color_bg">#E6000D2A</color>
     <color name="ventilator_drawer_bg">#332c2c2c</color>
     <color name="ventilator_phone">#AEAEAE</color>
     <color name="ventilator_blue">#78B3FF</color>

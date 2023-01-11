@@ -485,19 +485,26 @@ public class HomePage extends VentilatorBasePage {
                             group.setVisibility(View.VISIBLE);
                         }
                     }
-                    //风阻
+                    //智感恒吸风阻
+                    int columnCount = 8;
+                    if (HomeVentilator.getInstance().param8 <= 5)
+                        columnCount = 6;
+                    else if (HomeVentilator.getInstance().param8 <= 8)
+                        columnCount = 8;
+                    else
+                        columnCount = 12;
                     if (HomeVentilator.getInstance().gear == (byte) 0xA1) {
-                        viewFlow.setHeight(5, 3);
-                        viewSpeed.setHeight(5, 3);
+                        viewFlow.setHeight(5, 3, columnCount);
+                        viewSpeed.setHeight(5, 3, columnCount);
                     } else if (HomeVentilator.getInstance().gear == (byte) 0xA3) {
-                        viewFlow.setHeight(7, 5);
-                        viewSpeed.setHeight(7, 5);
+                        viewFlow.setHeight(7, 5, columnCount);
+                        viewSpeed.setHeight(7, 5, columnCount);
                     } else if (HomeVentilator.getInstance().gear == (byte) 0xA6) {
-                        viewFlow.setHeight(9, 7);
-                        viewSpeed.setHeight(9, 7);
+                        viewFlow.setHeight(9, 7, columnCount);
+                        viewSpeed.setHeight(9, 7, columnCount);
                     } else {
-                        viewFlow.setHeight(0, 0);
-                        viewSpeed.setHeight(0, 0);
+                        viewFlow.setHeight(0, 0, columnCount);
+                        viewSpeed.setHeight(0, 0, columnCount);
                     }
 //                    return;
                     //检查报警信息

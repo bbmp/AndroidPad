@@ -70,31 +70,38 @@ public class MatchNetworkActivity extends VentilatorBaseActivity implements BleV
             ivDevice.setImageResource(R.drawable.ventilator_stove);
             string = getResources().getString(R.string.ventilator_match_hint4);
             spannableString = new SpannableString(string);
-            Drawable drawable = getResources().getDrawable(R.drawable.ventilator_r);
-            drawable.setBounds(0, 0, (int) getResources().getDimension(com.robam.common.R.dimen.dp_32),
+            Drawable drawable1 = getResources().getDrawable(R.drawable.ventilator_things);
+            Drawable drawable2 = getResources().getDrawable(R.drawable.ventilator_r);
+            drawable1.setBounds(0, 0, (int) getResources().getDimension(com.robam.common.R.dimen.dp_32),
                     (int) getResources().getDimension(com.robam.common.R.dimen.dp_32));
-            int pos = string.indexOf("[");
+            drawable2.setBounds(0, 0, (int) getResources().getDimension(com.robam.common.R.dimen.dp_32),
+                    (int) getResources().getDimension(com.robam.common.R.dimen.dp_32));
+            int pos = string.indexOf("上\"");
             if (pos >= 0)
-                spannableString.setSpan(new ExtImageSpan(drawable), pos + 1, pos + 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                spannableString.setSpan(new ExtImageSpan(drawable1), pos + 2, pos + 3, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-            pos = string.indexOf("\"");
-            if (pos >= 0)
-                spannableString.setSpan(new ExtImageSpan(drawable), pos + 1, pos + 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            pos = string.indexOf("号\"");
+            if (pos >= 0) {
+                spannableString.setSpan(new ExtImageSpan(drawable2), pos + 2, pos + 3, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
         } else if (IDeviceType.RZNG.equals(model)) {
             //锅
             ivDevice.setImageResource(R.drawable.ventilator_pan);
             string = getResources().getString(R.string.ventilator_match_hint3);
             spannableString = new SpannableString(string);
-            Drawable drawable = getResources().getDrawable(R.drawable.ventilator_r);
-            drawable.setBounds(0, 0, (int) getResources().getDimension(com.robam.common.R.dimen.dp_32),
+            Drawable drawable1 = getResources().getDrawable(R.drawable.ventilator_things);
+            Drawable drawable2 = getResources().getDrawable(R.drawable.ventilator_r);
+            drawable1.setBounds(0, 0, (int) getResources().getDimension(com.robam.common.R.dimen.dp_32),
                     (int) getResources().getDimension(com.robam.common.R.dimen.dp_32));
-            int pos = string.indexOf("[");
+            drawable2.setBounds(0, 0, (int) getResources().getDimension(com.robam.common.R.dimen.dp_32),
+                    (int) getResources().getDimension(com.robam.common.R.dimen.dp_32));
+            int pos = string.indexOf("上\"");
             if (pos >= 0)
-                spannableString.setSpan(new ExtImageSpan(drawable), pos + 1, pos + 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                spannableString.setSpan(new ExtImageSpan(drawable1), pos + 2, pos + 3, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-            pos = string.indexOf("\"");
+            pos = string.indexOf("号\"");
             if (pos >= 0)
-                spannableString.setSpan(new ExtImageSpan(drawable), pos + 1, pos + 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                spannableString.setSpan(new ExtImageSpan(drawable2), pos + 2, pos + 3, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         } else if (IDeviceType.RXDG.equals(model)) {
             //消毒柜
             ivDevice.setImageResource(R.drawable.ventilator_cabinet);

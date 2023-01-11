@@ -61,8 +61,8 @@
     <string name="ventilator_clean_oil_auto_hint">检查当前油网状态需要清洗\n确认进入清洗状态，可以放心拆卸清洗油网</string>
     <string name="ventilator_delay_close_hint">系统检测到燃气灶已关闭\n油烟机将在%s后自动关机</string>
     <string name="ventilator_match_hint1">1.长按面板上[ ]2秒至滴声响，屏幕内智能符号\" \"闪烁。\n2.在ROKI APP中，添加XG858，输入WiFi密码，连接网络。</string>
-    <string name="ventilator_match_hint3">1.长按明火自动翻炒锅锅柄上[ ]2秒至滴声响，屏幕内智能符号\" \"闪烁。\n完成上述操作后点击下一步。</string>
-    <string name="ventilator_match_hint4">1.燃气灶点火。 \n2.长按燃气灶面板上[ ]2秒至滴声响，屏幕内智能符号\" \"闪烁。\n完成上述操作后点击下一步。</string>
+    <string name="ventilator_match_hint3">1.长按明火自动翻炒锅锅柄上\" \"2秒至滴声响，屏幕内智能符号\" \"闪烁。\n完成上述操作后点击下一步。</string>
+    <string name="ventilator_match_hint4">1.燃气灶点火。 \n2.长按燃气灶面板上\" \"2秒至滴声响，屏幕内智能符号\" \"闪烁。\n完成上述操作后点击下一步。</string>
     <string name="ventilator_match_hint6">1.开启洗碗机。 \n2.在洗碗机上登录当前ROKI账户。 \n完成上述操作后点击下一步。</string>
     <string name="ventilator_match_hint7">1.开启一体机。 \n2.在一体机上登录当前ROKI账户。 \n完成上述操作后点击下一步。</string>
     <string name="ventilator_match_hint8">1.开启消毒柜。 \n2.在消毒柜上登录当前ROKI账户。 \n完成上述操作后点击下一步。</string>

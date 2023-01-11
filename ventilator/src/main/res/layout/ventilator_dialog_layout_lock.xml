@@ -2,21 +2,22 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/ventilator_lock_color_bg"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 <!--    模糊背景是图片-->
-    <com.robam.common.ui.blurview.ShapeBlurView
-        android:id="@+id/sb_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        app:common_blur_mode="rectangle"
-        app:common_blur_radius="@dimen/dp_20"
-        app:common_blur_overlay_color="@color/ventilator_lock"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+<!--    <com.robam.common.ui.blurview.ShapeBlurView-->
+<!--        android:id="@+id/sb_view"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:gravity="center"-->
+<!--        app:common_blur_mode="rectangle"-->
+<!--        app:common_blur_radius="@dimen/dp_20"-->
+<!--        app:common_blur_overlay_color="@color/ventilator_lock"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintRight_toRightOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent" />-->
     <TextView
         android:id="@+id/tv_work_content"
         android:layout_width="wrap_content"
