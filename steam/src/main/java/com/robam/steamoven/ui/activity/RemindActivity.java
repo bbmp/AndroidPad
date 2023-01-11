@@ -51,7 +51,7 @@ public class RemindActivity extends SteamBaseActivity {
     @Override
     protected void initData() {
         remainBusCode = getIntent().getIntExtra(Constant.REMIND_BUS_CODE,0);
-        if(remainBusCode != 0){
+        if(remainBusCode != 0 && remainBusCode != -1){
             titleTv.setText(remainBusCode);
         }
         if(remainBusCode == R.string.steam_water_deficient_remain){

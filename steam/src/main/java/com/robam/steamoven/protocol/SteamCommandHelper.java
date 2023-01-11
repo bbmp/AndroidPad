@@ -608,7 +608,7 @@ public class SteamCommandHelper {
         if(curDevice.waterBox != 0){
             return R.string.steam_water_box_panel_prompt;
         }
-        return -1;
+        return 0;
     }
 
     public static int getRunPromptResId(SteamOven curDevice,int modeCode,boolean needWater){
