@@ -301,9 +301,9 @@ public class HomePage extends VentilatorBasePage {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 //close setting menu
-                if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
-                    drawerLayout.closeDrawer(Gravity.LEFT);
-                }
+//                if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
+//                    drawerLayout.closeDrawer(Gravity.LEFT);
+//                }
 
                 VenFunBean venFunBean = (VenFunBean) adapter.getItem(position);
 
@@ -328,9 +328,9 @@ public class HomePage extends VentilatorBasePage {
             @Override
             public void onClick(View v) {
                 //close products menu
-                if (drawerLayout.isDrawerOpen(Gravity.RIGHT)) {
-                    drawerLayout.closeDrawer(Gravity.RIGHT);
-                }
+//                if (drawerLayout.isDrawerOpen(Gravity.RIGHT)) {
+//                    drawerLayout.closeDrawer(Gravity.RIGHT);
+//                }
                 startActivity(new Intent(getContext(), AddDeviceActivity.class));
             }
         });
@@ -340,9 +340,9 @@ public class HomePage extends VentilatorBasePage {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 //close products menu
-                if (drawerLayout.isDrawerOpen(Gravity.RIGHT)) {
-                    drawerLayout.closeDrawer(Gravity.RIGHT);
-                }
+//                if (drawerLayout.isDrawerOpen(Gravity.RIGHT)) {
+//                    drawerLayout.closeDrawer(Gravity.RIGHT);
+//                }
                 Device device = (Device) adapter.getItem(position);
                 if (device.status != Device.ONLINE)
                     return;
