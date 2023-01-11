@@ -9,6 +9,7 @@ import com.robam.common.bean.DeviceErrorInfo;
 import com.robam.common.constant.ComnConstant;
 import com.robam.common.manager.DeviceWarnInfoManager;
 import com.robam.common.utils.DeviceUtils;
+import com.robam.common.utils.StringUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.bean.SteamOven;
@@ -18,6 +19,7 @@ public class WaringActivity extends SteamBaseActivity {
 
     private TextView titleTv,descTv;
     private int fromFlag = 0;
+    private String deviceGuid = "";
 
     public static final int FROM_VENTILATOR_FLAG = 1;//从烟机界面主动进入
 
@@ -47,15 +49,24 @@ public class WaringActivity extends SteamBaseActivity {
     protected void initData() {
         int waringCode = getIntent().getIntExtra(ComnConstant.WARING_CODE,0);
         fromFlag = getIntent().getIntExtra(ComnConstant.WARING_FROM,0);
+        deviceGuid = getIntent().getStringExtra(ComnConstant.WARING_GUID);
         if(fromFlag == FROM_VENTILATOR_FLAG){
             showLeft();
             setOnClickListener(R.id.ll_left);
         }
-        SteamOven steamOven = getSteamOven();
-        if(waringCode == 0 || steamOven == null){
+        if(waringCode == 0){
             return;
         }
-        DeviceErrorInfo deviceErrorInfo = DeviceWarnInfoManager.getInstance().getDeviceErrorInfo(IDeviceType.RZKY, DeviceUtils.getDeviceTypeId(steamOven.guid), waringCode);
+        DeviceErrorInfo deviceErrorInfo;
+        if(StringUtils.isNotBlank(deviceGuid)){
+             deviceErrorInfo = DeviceWarnInfoManager.getInstance().getDeviceErrorInfo(IDeviceType.RZKY, DeviceUtils.getDeviceTypeId(deviceGuid), waringCode);
+        }else{
+            SteamOven steamOven = getSteamOven();
+            if(steamOven == null){
+                return;
+            }
+            deviceErrorInfo = DeviceWarnInfoManager.getInstance().getDeviceErrorInfo(IDeviceType.RZKY, DeviceUtils.getDeviceTypeId(steamOven.guid), waringCode);
+        }
         if(deviceErrorInfo == null){
             return;
         }

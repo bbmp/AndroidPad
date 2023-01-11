@@ -110,7 +110,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
                     if(toOffLinePage(steamOven)){
                         return;
                     }
-                    if(toRemandPage(steamOven)){
+                    if(toRemandPage(steamOven,getSegmentModeCode(steamOven))){
                         return;
                     }
                     switch (steamOven.powerState){

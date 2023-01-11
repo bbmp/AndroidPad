@@ -578,6 +578,8 @@ public class MqttSteamOven extends MqttPublic {
                         case QualityKeys.descaleIndex:
                             msg.putOpt(SteamConstant.chugouType, value);
                             break;
+                        case QualityKeys.waterBox:
+                            msg.putOpt(SteamConstant.wasteWaterBox, value);
                         case QualityKeys.wasteWaterBox:
                             msg.putOpt(SteamConstant.wasteWaterBox, value);
                             break;

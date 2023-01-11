@@ -1,5 +1,6 @@
 package com.robam.dishwasher.ui.adapter;
 
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -11,10 +12,10 @@ import com.robam.common.utils.LogUtils;
 import com.robam.dishwasher.R;
 import com.robam.dishwasher.bean.DishWasherModeBean;
 
-public class RvMainModeAdapter extends BaseQuickAdapter<DishWasherModeBean, BaseViewHolder> {
+public class RvMainModeAdapter extends BaseQuickAdapter<DishWasherModeBean, BaseViewHolder> implements View.OnClickListener{
     private int pickPosition;
 //    private RequestOptions options = RequestOptions.bitmapTransform(new MultiTransformation(new BlurTransformation(30, 3)));
-
+    private ItemClick itemClick;
     public void setPickPosition(int pickPosition) {
         this.pickPosition = pickPosition % getData().size();
         notifyDataSetChanged();
@@ -54,7 +55,24 @@ public class RvMainModeAdapter extends BaseQuickAdapter<DishWasherModeBean, Base
         if (null != dishWaherModeBean) {
             TextView textView = baseViewHolder.getView(R.id.tv_mode_name);
             textView.setText(dishWaherModeBean.name);
-            //ImageView imageView = baseViewHolder.getView(R.id.iv_round_bg);
+            View view = baseViewHolder.getView(R.id.iv_round_bg);
+            view.setTag(dishWaherModeBean);
+            view.setOnClickListener(this);
         }
+    }
+
+    @Override
+    public void onClick(View view) {
+        if(itemClick != null){
+            itemClick.itemClick((DishWasherModeBean) view.getTag());
+        }
+    }
+
+    public static interface ItemClick{
+        void itemClick(DishWasherModeBean washerModeBean);
+    }
+
+    public void setItemClick(ItemClick itemClick) {
+        this.itemClick = itemClick;
     }
 }

@@ -21,6 +21,22 @@ public class CabinetCommonHelper {
         CabinetAbstractControl.getInstance().sendCommonMsg(map,(String) map.get(CabinetConstant.TARGET_GUID), (Short) map.get(CabinetConstant.MSG_ID));
     }
 
+    public static void endSmartMode(String guid){
+        Map map = CabinetCommonHelper.getCommonMap(MsgKeys.SMART_CRUISING);
+        map.put(CabinetConstant.TARGET_GUID, guid);
+
+        map.put(CabinetConstant.ArgumentNumber,2);
+        map.put(CabinetConstant.SMART_CRUISING_KEY,1);//智能巡航
+        map.put(CabinetConstant.SMART_CRUISING_LEN,1);//智能巡航
+        map.put(CabinetConstant.SMART_CRUISING,0);//智能巡航关闭
+
+        map.put(CabinetConstant.PURE_CRUISING,2);//净存巡航
+        map.put(CabinetConstant.PURE_CRUISING_KEY,1);//净存巡航
+        map.put(CabinetConstant.PURE_CRUISING_LEN,0);//净存巡航关闭
+        sendCommonMsg(map);
+    }
+
+
     public static void sendCommonMsgForLiveData(Map map,final int bsCode){
         perOrderTimeMin = System.currentTimeMillis();
         CabinetAbstractControl.getInstance().sendCommonMsg(map, (String) map.get(CabinetConstant.TARGET_GUID), (Short) map.get(CabinetConstant.MSG_ID), new MqttManager.MqttSendMsgListener() {

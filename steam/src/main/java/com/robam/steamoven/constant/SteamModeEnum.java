@@ -190,5 +190,22 @@ public enum SteamModeEnum {
         return false;
     }
 
+    public static boolean needWater(int modeCode){
+        boolean needWater = (modeCode == SteamConstant.XIANNENZHENG
+                || modeCode == SteamConstant.YIYANGZHENG
+                || modeCode == SteamConstant.GAOWENZHENG
+                || modeCode == SteamConstant.WEIBOZHENG
+                || modeCode == SteamConstant.ZHIKONGZHENG
+                || modeCode == SteamConstant.SHOUDONGJIASHIKAO
+                || modeCode == SteamConstant.JIASHIBEIKAO
+                || modeCode == SteamConstant.JIASHIFENGBEIKAO
+                || modeCode == SteamConstant.SHAJUN
+                || modeCode == SteamConstant.JIEDONG
+                || modeCode == SteamConstant.FAJIAO
+                || modeCode == SteamConstant.QINGJIE
+                || modeCode == SteamConstant.CHUGOU);
+        return needWater;
+    }
+
 
 }

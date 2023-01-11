@@ -196,7 +196,7 @@ public class ModeSelectActivity extends CabinetBaseActivity {
                 TextView time = findViewById(R.id.tv_right);
                 int appointingTimeMin = (int) getAppointingTimeMin(time.getText().toString());
                 CabinetCommonHelper.startAppointCommand(cabModeBean.code,
-                        cabModeBean.defTime,
+                        Integer.parseInt(rvTimeAdapter.getItem(pickerLayoutManager.getPickedPosition())),
                         appointingTimeMin,
                         directive_offset + MsgKeys.SetSteriPowerOnOff_Req);
                 //LogUtils.i("startAppointOrWork ...appointingTimeMin "+appointingTimeMin);

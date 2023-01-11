@@ -25,6 +25,7 @@ import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.QualityKeys;
 import com.robam.steamoven.constant.SteamConstant;
+import com.robam.steamoven.constant.SteamModeEnum;
 import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.manager.SteamActivityManager;
@@ -124,6 +125,15 @@ public abstract class SteamBaseActivity extends BaseActivity {
         return null;
     }
 
+    public SteamOven getSteamOven(String deviceGuid){
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device instanceof SteamOven && device.guid.equals(deviceGuid)) {
+                return (SteamOven) device;
+            }
+        }
+        return null;
+    }
+
 
     /**
      * 回到主页
@@ -165,7 +175,11 @@ public abstract class SteamBaseActivity extends BaseActivity {
      * @return
      */
     public boolean toRemandPage(SteamOven curDevice){
-        int remindResId = SteamCommandHelper.getRemindResId(curDevice);
+        return this.toRemandPage(curDevice,curDevice.mode);
+    }
+
+    public boolean toRemandPage(SteamOven curDevice,int curMode){
+        int remindResId = SteamCommandHelper.getRemindPromptResId(curDevice, SteamModeEnum.needWater(curMode));
         if(remindResId != 0 && preRemindResId != remindResId){
             preRemindResId = remindResId;
             Intent intent = new Intent(this, RemindActivity.class);
@@ -175,6 +189,7 @@ public abstract class SteamBaseActivity extends BaseActivity {
         }
         return false;
     }
+
 
     @Override
     protected void onDestroy() {

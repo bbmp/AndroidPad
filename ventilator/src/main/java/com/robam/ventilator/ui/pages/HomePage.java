@@ -24,6 +24,7 @@ import com.google.gson.Gson;
 import com.robam.cabinet.bean.Cabinet;
 import com.robam.cabinet.constant.CabinetWaringEnum;
 import com.robam.cabinet.device.CabinetAbstractControl;
+import com.robam.cabinet.util.CabinetCommonHelper;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.BaseResponse;
 import com.robam.common.bean.DeviceErrorInfo;
@@ -432,6 +433,10 @@ public class HomePage extends VentilatorBasePage {
 
                     }else if(device instanceof Cabinet){
                         Cabinet cabinet = (Cabinet) device;
+                        if(cabinet.smartCruising == 1 || cabinet.pureCruising == 1){
+                            CabinetAbstractControl.getInstance().endSmartMode(device.guid);
+                            return;
+                        }
                         if(cabinet.remainingAppointTime > 0){//结束预约
                             CabinetAbstractControl.getInstance().endAppoint(device.guid);
                         }else{
@@ -838,6 +843,8 @@ public class HomePage extends VentilatorBasePage {
                 Intent intent = new Intent(getContext(), com.robam.steamoven.ui.activity.WaringActivity.class);
                 intent.putExtra(ComnConstant.WARING_FROM,1);
                 intent.putExtra(ComnConstant.WARING_CODE,device.faultId);
+                intent.putExtra(ComnConstant.WARING_GUID,device.guid);
+                startActivity(intent);
                 return true;
             }
         } else if (device instanceof Stove && IDeviceType.RRQZ.equals(device.dc)) {

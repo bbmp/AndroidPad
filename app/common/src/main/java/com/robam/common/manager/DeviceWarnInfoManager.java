@@ -1,6 +1,7 @@
 package com.robam.common.manager;
 
 import com.robam.common.bean.DeviceErrorInfo;
+import com.robam.common.utils.CurveUtils;
 import com.robam.common.utils.StringUtils;
 import com.tencent.mmkv.MMKV;
 import org.json.JSONException;
@@ -9,6 +10,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -23,9 +26,11 @@ public class DeviceWarnInfoManager {
 
     public static final String ERROR_INFO = "error_info";
 
-    private Map<String,DeviceErrorInfo> infoMap = new HashMap<>();
+    private Map<String,DeviceErrorInfo> infoMap = new ConcurrentHashMap<>();
     private static final String RZKY = "RZKY";//一体机标识
+    private static final String RZKY_928 = "CQ928";//一体机标识
     private boolean isRZKY = true;//是否只缓存一体机
+    private boolean isRZKY_928 = true;//是否只缓存928
 
 
     private static class Holder {
@@ -77,6 +82,11 @@ public class DeviceWarnInfoManager {
             for (Iterator<String> typeKeys = typeObj.keys(); typeKeys.hasNext(); ) {
                 String typeKey = typeKeys.next();
                 JSONObject idObj = typeObj.optJSONObject(typeKey);
+                if(isRZKY_928){
+                    if(!RZKY_928.equals(typeKey)){
+                        continue;
+                    }
+                }
                 if(idObj == null){
                     continue;
                 }

@@ -335,7 +335,7 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
         if(remainTime >= 60*60*10){//超过10小时，只显示小时数据
             int minIndex = time.indexOf("min");
             int hourIndex = time.indexOf("h");
-            if(minIndex != 0 && hourIndex != 0){
+            if(minIndex > 0 && hourIndex != 0){
                 try{
                     if(isRound){
                         time = (Integer.parseInt(time.substring(0,hourIndex)) + 1) +"h";
@@ -452,6 +452,18 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
             baseViewHolder.setText(R.id.tv_hint, R.string.ventilator_product_failure);
             baseViewHolder.setGone(R.id.layout_work, true);
             baseViewHolder.setVisible(R.id.btn_detail, true);
+            return;
+        }
+
+        if(cabinet.smartCruising == 1 || cabinet.pureCruising == 1){
+            baseViewHolder.setVisible(R.id.tv_mode,true);
+            baseViewHolder.setGone(R.id.layout_offline, true);
+            baseViewHolder.setVisible(R.id.layout_work, true);
+            baseViewHolder.setGone(R.id.ventilator_group7, true);
+            baseViewHolder.setVisible(R.id.ventilator_group6, true);
+            baseViewHolder.setText(R.id.tv_mode, cabinet.smartCruising == 1?"智能":"净存");
+            baseViewHolder.setText(R.id.tv_time, "巡航中");
+            baseViewHolder.setText(R.id.btn_work, R.string.ventilator_cabinet_completion);
             return;
         }
         boolean isWork = false;

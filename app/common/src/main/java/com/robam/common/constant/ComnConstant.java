@@ -8,4 +8,5 @@ public class ComnConstant {
 
     public final static String WARING_FROM = "waring_from";
     public final static String WARING_CODE = "waring_code";
+    public final static String WARING_GUID = "waring_guid";
 }

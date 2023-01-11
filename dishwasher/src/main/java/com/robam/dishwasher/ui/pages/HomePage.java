@@ -145,13 +145,20 @@ public class HomePage extends DishWasherBasePage {
 
         setData(rvMainModeAdapter.getItem(initPos));
 
-        rvMainModeAdapter.setOnItemClickListener((adapter, view, position) -> {
-            DishWasherModeBean dishWaherModeBean = (DishWasherModeBean) adapter.getItem(position);
-
-            HomeDishWasher.getInstance().workMode = dishWaherModeBean.code;
+//        rvMainModeAdapter.setOnItemClickListener((adapter, view, position) -> {
+//            DishWasherModeBean dishWaherModeBean = (DishWasherModeBean) adapter.getItem(position);
+//
+//            HomeDishWasher.getInstance().workMode = dishWaherModeBean.code;
+//            Intent intent = new Intent();
+//            intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, dishWaherModeBean);
+//            intent.setClassName(getContext(), dishWaherModeBean.into);
+//            startActivity(intent);
+//        });
+        rvMainModeAdapter.setItemClick(dishWasherModeBean -> {
+            HomeDishWasher.getInstance().workMode = dishWasherModeBean.code;
             Intent intent = new Intent();
-            intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, dishWaherModeBean);
-            intent.setClassName(getContext(), dishWaherModeBean.into);
+            intent.putExtra(DishWasherConstant.EXTRA_MODEBEAN, dishWasherModeBean);
+            intent.setClassName(getContext(), dishWasherModeBean.into);
             startActivity(intent);
         });
 

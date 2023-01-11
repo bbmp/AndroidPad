@@ -34,7 +34,6 @@ public class CabinetMqttControl implements CabinetFunction{
         map.put(CabinetConstant.CABINET_TIME, 0);
         map.put(CabinetConstant.ArgumentNumber,0);
         sendCommonMsg(map,targetGuid,MsgKeys.SetSteriPowerOnOff_Req);
-
     }
 
     @Override
@@ -48,6 +47,24 @@ public class CabinetMqttControl implements CabinetFunction{
                     .build();
             MqttManager.getInstance().publish(msg, CabinetFactory.getProtocol());
         } catch (Exception e) {}
+    }
+
+    @Override
+    public void endSmartMode(String targetGuid) {
+        Map map = CabinetCommonHelper.getCommonMap(MsgKeys.SMART_CRUISING);
+        map.put(CabinetConstant.TARGET_GUID, targetGuid);
+
+        map.put(CabinetConstant.ArgumentNumber,2);
+
+        map.put(CabinetConstant.SMART_CRUISING_KEY,1);//智能巡航
+        map.put(CabinetConstant.SMART_CRUISING_LEN,1);//智能巡航
+        map.put(CabinetConstant.SMART_CRUISING,0);//智能巡航关闭
+
+        map.put(CabinetConstant.PURE_CRUISING,2);//净存巡航
+        map.put(CabinetConstant.PURE_CRUISING_KEY,1);//净存巡航
+        map.put(CabinetConstant.PURE_CRUISING_LEN,0);//净存巡航关闭
+
+        sendCommonMsg(map,targetGuid,MsgKeys.SMART_CRUISING);
     }
 
     @Override

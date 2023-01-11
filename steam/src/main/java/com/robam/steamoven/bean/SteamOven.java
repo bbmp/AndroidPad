@@ -327,6 +327,11 @@ public class SteamOven extends Device {
     public String workGuid ;
 
     /**
+     * 水箱面板状态
+     */
+    public short waterBox;
+
+    /**
      * 废水箱状态（1- 关闭；1 - 打开）
      */
     public short wasteWaterBox = 35;
@@ -522,6 +527,7 @@ public class SteamOven extends Device {
             this.descaleFlag = (short) msg.optInt(SteamConstant.descaleFlag);
             this.wasteWaterBox = (short) msg.optInt(SteamConstant.wasteWaterBox);
             this.wasteWaterLevel = (short) msg.optInt(SteamConstant.wasteWaterLevel);
+            this.waterBox = (short)msg.optInt(SteamConstant.waterBox);
 
             this.chugouType = (short) msg.optInt(SteamConstant.chugouType);
             this.curSectionNbr = (short) msg.optInt(SteamConstant.curSectionNbr);

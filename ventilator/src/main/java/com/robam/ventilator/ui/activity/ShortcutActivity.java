@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.robam.cabinet.bean.Cabinet;
+import com.robam.cabinet.constant.CabinetConstant;
 import com.robam.cabinet.manager.CabinetActivityManager;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
@@ -32,10 +33,12 @@ import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.common.utils.LogUtils;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.common.device.subdevice.Pan;
+import com.robam.dishwasher.constant.DishWasherState;
 import com.robam.dishwasher.manager.DishwasherActivityManager;
 import com.robam.pan.manager.PanActivityManager;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.common.device.subdevice.Stove;
+import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.manager.SteamActivityManager;
 import com.robam.stove.manager.StoveActivityManager;
 import com.robam.ventilator.R;
@@ -220,22 +223,34 @@ public class ShortcutActivity extends VentilatorBaseActivity {
         for (Device device: AccountInfo.getInstance().deviceList) {
             if (IDeviceType.RZKY.equals(device.dc) && device.status == Device.ONLINE) {//一体机
                 SteamOven steamOven = (SteamOven) device;
-                if (steamOven.workStatus != 0)
+                if(steamOven.powerState != SteamStateConstant.POWER_STATE_OFF &&
+                        (steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT ||
+                                steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT_PAUSE ||
+                                steamOven.workState == SteamStateConstant.WORK_STATE_WORKING ||
+                                steamOven.workState == SteamStateConstant.WORK_STATE_WORKING_PAUSE ||
+                                steamOven.workState == SteamStateConstant.WORK_STATE_APPOINTMENT)){
                     workList.add(steamOven);
-                else
+                }else{
                     onlineList.add(steamOven);
+                }
             } else if (IDeviceType.RXWJ.equals(device.dc) && device.status == Device.ONLINE) { //洗碗机
                 DishWasher dishWasher = (DishWasher) device;
-                if (dishWasher.workStatus != 0)
+                if((dishWasher.powerStatus == DishWasherState.WORKING  ||
+                        dishWasher.powerStatus == DishWasherState.PAUSE) &&
+                        dishWasher.remainingWorkingTime > 0){
                     workList.add(dishWasher);
-                else
+                }else{
                     onlineList.add(dishWasher);
+                }
             } else if (IDeviceType.RXDG.equals(device.dc) && device.status == Device.ONLINE) { //消毒柜
                 Cabinet cabinet = (Cabinet) device;
-                if (cabinet.workStatus != 0)
+                if(cabinet.workMode == CabinetConstant.FUN_DISINFECT || cabinet.workMode == CabinetConstant.FUN_CLEAN
+                        || cabinet.workMode == CabinetConstant.FUN_DRY || cabinet.workMode == CabinetConstant.FUN_FLUSH
+                        || cabinet.workMode == CabinetConstant.FUN_SMART){
                     workList.add(cabinet);
-                else
+                }else{
                     onlineList.add(cabinet);
+                }
             } else if (IDeviceType.RRQZ.equals(device.dc) && device.status == Device.ONLINE) {
                 Stove stove = (Stove) device;
                 if (stove.leftLevel == 0 && stove.rightLevel == 0)

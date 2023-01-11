@@ -114,6 +114,11 @@ public interface QualityKeys {
     short descaleNum = 27;
 
     /**
+     * 水箱面板
+     */
+    short waterBox = 34;
+
+    /**
      * 废水箱状态（1- 关闭；1 - 打开）
      */
     short wasteWaterBox = 35;

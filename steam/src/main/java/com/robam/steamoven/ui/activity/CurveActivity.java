@@ -59,6 +59,7 @@ public class CurveActivity extends SteamBaseActivity {
         tvRight = findViewById(R.id.tv_right);
         //
         tvRight.setText(R.string.steam_delete);
+        ivRight.setImageResource(R.drawable.steam_delete);
         ivRight = findViewById(R.id.iv_right);
         rvRecipe = findViewById(R.id.rv_recipe);
         tvDelete = findViewById(R.id.tv_delete);
@@ -80,27 +81,24 @@ public class CurveActivity extends SteamBaseActivity {
             startActivity(intent);
 
         });
-        rvCurveAdapter.setOnItemChildClickListener(new OnItemChildClickListener() {
-            @Override
-            public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
-                //某一条菜删除
-                if (view.getId() == R.id.iv_select) {
-                    SteamCurveDetail steamCurveDetail = (SteamCurveDetail) adapter.getItem(position);
-                    if (rvCurveAdapter.getStatus() == RvCurveAdapter.STATUS_ALL) {
-                        //全选-》删除
-                        steamCurveDetail.setSelected(false);
-                        ivRight.setImageResource(R.drawable.steam_unselected);
-                        rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_DELETE);
-                    } else if (rvCurveAdapter.getStatus() == RvCurveAdapter.STATUS_DELETE) {
-                        steamCurveDetail.setSelected(!steamCurveDetail.isSelected());
-                        //检测是否全选
-                        if (isAll()) {
-                            ivRight.setImageResource(R.drawable.steam_selected);
-                            rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_ALL);
-                        }
-                        else
-                            rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_DELETE);
+        rvCurveAdapter.setOnItemChildClickListener((adapter, view, position) -> {
+            //某一条菜删除
+            if (view.getId() == R.id.iv_select) {
+                SteamCurveDetail steamCurveDetail = (SteamCurveDetail) adapter.getItem(position);
+                if (rvCurveAdapter.getStatus() == RvCurveAdapter.STATUS_ALL) {
+                    //全选-》删除
+                    steamCurveDetail.setSelected(false);
+                    ivRight.setImageResource(R.drawable.steam_unselected);
+                    rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_DELETE);
+                } else if (rvCurveAdapter.getStatus() == RvCurveAdapter.STATUS_DELETE) {
+                    steamCurveDetail.setSelected(!steamCurveDetail.isSelected());
+                    //检测是否全选
+                    if (isAll()) {
+                        ivRight.setImageResource(R.drawable.steam_selected);
+                        rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_ALL);
                     }
+                    else
+                        rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_DELETE);
                 }
             }
         });
@@ -181,7 +179,6 @@ public class CurveActivity extends SteamBaseActivity {
         //是否显示删除
         if (steamCurveDetails.size() > 1) {
             showRight();
-            ivRight.setImageResource(R.drawable.steam_delete);
         }
     }
 

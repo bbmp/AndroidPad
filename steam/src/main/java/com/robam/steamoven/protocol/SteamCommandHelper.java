@@ -13,7 +13,6 @@ import com.robam.steamoven.R;
 import com.robam.steamoven.bean.MultiSegment;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.SteamConstant;
-import com.robam.steamoven.constant.SteamModeEnum;
 import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.device.SteamAbstractControl;
@@ -51,7 +50,6 @@ public class SteamCommandHelper {
         SteamAbstractControl.getInstance().sendCommonMsg(map, (String) map.get(SteamConstant.TARGET_GUID), (Short) map.get(SteamConstant.MSG_ID), new MqttManager.MqttSendMsgListener() {
             @Override
             public void onSuccess(String top, short msgId) {
-                //MqttDirective.getInstance().getDirective().setValue(bsCode);
                 MqttDirective.getInstance().setDirectiveStickyData(bsCode);
             }
 
@@ -568,24 +566,6 @@ public class SteamCommandHelper {
      */
     public static boolean checkSteamState(Context context, SteamOven curDevice,int modeCode){
         boolean state = true;
-        if(curDevice == null || curDevice.status != Device.ONLINE){
-            if(needShowPrompt()){
-                ToastUtils.showLong(context, R.string.steam_offline);
-            }
-            state = false;
-        }
-        if(state && curDevice.powerState == SteamStateConstant.POWER_STATE_OFF){
-            if(needShowPrompt()){
-                ToastUtils.showLong(context, R.string.steam_power_off);
-            }
-            state = false;
-        }
-        if(state && curDevice.doorState != 0 && (modeCode != SteamConstant.CHUGOU || modeCode != SteamConstant.GANZAO)){//门状态检测
-            if(needShowPrompt()){
-                ToastUtils.showLong(context,R.string.steam_close_door_prompt);
-            }
-            state = false;
-        }
         boolean needWater = (modeCode == SteamConstant.XIANNENZHENG
                 || modeCode == SteamConstant.YIYANGZHENG
                 || modeCode == SteamConstant.GAOWENZHENG
@@ -599,70 +579,90 @@ public class SteamCommandHelper {
                 || modeCode == SteamConstant.FAJIAO
                 || modeCode == SteamConstant.QINGJIE
                 || modeCode == SteamConstant.CHUGOU);
-        if(state && (curDevice.descaleFlag == 1 || curDevice.waterLevelState == 1)){
-            if (needWater){
-                if(state && curDevice.waterLevelState == 1){
-                    if(needShowPrompt()){
-                        ToastUtils.showLong(context, R.string.steam_water_deficient);
-                    }
-                    state = false;
-                }
-                if(state && curDevice.descaleFlag == 1){//除垢
-                    if(needShowPrompt()){
-                        ToastUtils.showLong(context, R.string.steam_descaling_prompt);
-                    }
-                    state = false;
-                }
-            }
-        }
-        if(state && (curDevice.waterBoxState ==1 || curDevice.waterBoxState ==3)){
+        int promptResId = getRunPromptResId(curDevice, modeCode,needWater);
+        if(promptResId != -1){
             if(needShowPrompt()){
-                ToastUtils.show(context,R.string.steam_water_box_prompt,Toast.LENGTH_LONG);
+                ToastUtils.showLong(context,promptResId);
             }
-            state = false;
-        }
-        if(state && needWater && curDevice.wasteWaterLevel == 1){
-            if(needShowPrompt()){
-                ToastUtils.showLong(context, R.string.steam_waste_water);
-            }
-            state = false;
-        }
-        if(!state){
             preShowTimeMil = System.currentTimeMillis();
+            state = false;
         }
         return state;
     }
 
-    public static int getRemindResId(SteamOven curDevice){
-        int modeCode = curDevice.mode;
-        if(curDevice.doorState != 0 && (curDevice.mode != SteamConstant.CHUGOU || curDevice.mode != SteamConstant.GANZAO)){//门状态检测
+    public static int getRemindPromptResId(SteamOven curDevice,boolean needWater){
+        if(needWater){
+            if(curDevice.waterLevelState == 1){
+                return R.string.steam_water_deficient;
+            }
+            if(curDevice.waterBoxState != 0){
+                return R.string.steam_water_box_prompt;
+            }
+            if(curDevice.wasteWaterLevel == 1){
+                return R.string.steam_waste_water;
+            }
+            if(curDevice.wasteWaterBox != 0){
+                return R.string.steam_waste_water_out;
+            }
+        }
+        if(curDevice.waterBox != 0){
+            return R.string.steam_water_box_panel_prompt;
+        }
+        return -1;
+    }
+
+    public static int getRunPromptResId(SteamOven curDevice,int modeCode,boolean needWater){
+        if(curDevice == null || curDevice.status == Device.OFFLINE){
+           return R.string.steam_offline;
+        }
+        if(curDevice.powerState == SteamStateConstant.POWER_STATE_OFF){
+            return R.string.steam_power_off;
+        }
+        if(curDevice.doorState != 0 && (modeCode != SteamConstant.CHUGOU || modeCode != SteamConstant.GANZAO)){//门状态检测
             return R.string.steam_close_door_prompt;
         }
-        if(curDevice.descaleFlag == 1 || curDevice.waterLevelState == 1){
-            if (modeCode == SteamConstant.XIANNENZHENG
-                    || modeCode == SteamConstant.YIYANGZHENG
-                    || modeCode == SteamConstant.GAOWENZHENG
-                    || modeCode == SteamConstant.WEIBOZHENG
-                    || modeCode == SteamConstant.ZHIKONGZHENG
-                    || modeCode == SteamConstant.SHOUDONGJIASHIKAO
-                    || modeCode == SteamConstant.JIASHIBEIKAO
-                    || modeCode == SteamConstant.JIASHIFENGBEIKAO
-                    || modeCode == SteamConstant.SHAJUN
-                    || modeCode == SteamConstant.JIEDONG
-                    || modeCode == SteamConstant.FAJIAO
-                    || modeCode == SteamConstant.QINGJIE
-                    || modeCode == SteamConstant.CHUGOU
-            ){
-                if(curDevice.waterLevelState == 1){
-                    return R.string.steam_water_deficient_remain;
-                }
-//                if(curDevice.descaleFlag == 1){//除垢
-//                    ToastUtils.showLong(this, R.string.steam_descaling_prompt);
-//                }
-                if(curDevice.waterBoxState ==1 || curDevice.waterBoxState ==3){
-                    return R.string.steam_water_box_prompt;
-                }
+        if(needWater){
+            if(curDevice.waterLevelState == 1){
+                return R.string.steam_water_deficient;
             }
+            if(curDevice.waterBoxState != 0){
+                return R.string.steam_water_box_prompt;
+            }
+            if(curDevice.wasteWaterLevel == 1){
+                return R.string.steam_waste_water;
+            }
+            if(curDevice.wasteWaterBox != 0){
+                return R.string.steam_waste_water_out;
+            }
+            if(curDevice.descaleFlag == 1){
+                return R.string.steam_descaling_prompt;
+            }
+        }
+        if(curDevice.waterBox != 0){
+            return R.string.steam_water_box_panel_prompt;
+        }
+        return -1;
+    }
+
+
+    public static int getRemindResId(SteamOven curDevice){
+        int modeCode = curDevice.mode;
+        boolean needWater = (modeCode == SteamConstant.XIANNENZHENG
+                || modeCode == SteamConstant.YIYANGZHENG
+                || modeCode == SteamConstant.GAOWENZHENG
+                || modeCode == SteamConstant.WEIBOZHENG
+                || modeCode == SteamConstant.ZHIKONGZHENG
+                || modeCode == SteamConstant.SHOUDONGJIASHIKAO
+                || modeCode == SteamConstant.JIASHIBEIKAO
+                || modeCode == SteamConstant.JIASHIFENGBEIKAO
+                || modeCode == SteamConstant.SHAJUN
+                || modeCode == SteamConstant.JIEDONG
+                || modeCode == SteamConstant.FAJIAO
+                || modeCode == SteamConstant.QINGJIE
+                || modeCode == SteamConstant.CHUGOU);
+        int promptResId = getRunPromptResId(curDevice, modeCode,needWater);
+        if(promptResId != -1){
+           return promptResId;
         }
         return 0;
     }
@@ -681,66 +681,13 @@ public class SteamCommandHelper {
      */
     public static boolean checkRecipeState(Context context, SteamOven curDevice,boolean needWater){
         boolean state = true;
-        if(state && (curDevice == null || curDevice.status != Device.ONLINE)){
+        int promptResId = getRunPromptResId(curDevice, curDevice.mode,needWater);
+        if(promptResId != -1){
             if(needShowPrompt()){
-                ToastUtils.showLong(context, R.string.steam_offline);
+                ToastUtils.showLong(context,promptResId);
             }
-            state = false;
-        }
-//        if(curDevice.mode != 0 && (curDevice.powerState == SteamStateConstant.POWER_STATE_AWAIT
-//                || curDevice.powerState == SteamStateConstant.POWER_STATE_ON
-//                || curDevice.powerState == SteamStateConstant.POWER_STATE_TROUBLE)){
-//            if(curDevice.workState == SteamStateConstant.WORK_STATE_PREHEAT ||
-//                    curDevice.workState == SteamStateConstant.WORK_STATE_PREHEAT_PAUSE ||
-//                    curDevice.workState == SteamStateConstant.WORK_STATE_WORKING ||
-//                    curDevice.workState == SteamStateConstant.WORK_STATE_WORKING_PAUSE){
-//                ToastUtils.showLong(context, R.string.steam_working_prompt);
-//                return false;
-//            }
-//        }
-        if(state && curDevice.powerState == SteamStateConstant.POWER_STATE_OFF){
-            if(needShowPrompt()){
-                ToastUtils.showLong(context, R.string.steam_power_off);
-            }
-            state = false;
-        }
-        if(state &&  curDevice.doorState != 0){//门状态检测
-            if(needShowPrompt()){
-                ToastUtils.showLong(context,R.string.steam_close_door_prompt);
-            }
-            state = false;
-        }
-        if(state &&  (curDevice.descaleFlag == 1 || curDevice.waterLevelState == 1)){
-            if(needWater){
-                if(state && curDevice.waterLevelState == 1){
-                    if(needShowPrompt()){
-                        ToastUtils.showLong(context, R.string.steam_water_deficient);
-                    }
-                    state = false;
-                }
-                if(state && curDevice.descaleFlag == 1){//除垢
-                    if(needShowPrompt()){
-                        ToastUtils.showLong(context, R.string.steam_descaling_prompt);
-                    }
-                    state = false;
-                }
-            }
-        }
-        if(state && needWater && curDevice.wasteWaterLevel == 1){
-            if(needShowPrompt()){
-                ToastUtils.showLong(context, R.string.steam_waste_water);
-            }
-            state = false;
-        }
-        if(state && (curDevice.waterBoxState ==1 || curDevice.waterBoxState ==3)){
-            if(needShowPrompt()){
-                ToastUtils.show(context,R.string.steam_water_box_prompt,Toast.LENGTH_LONG);
-            }
-            state = false;
-        }
-
-        if(!state){
             preShowTimeMil = System.currentTimeMillis();
+            state = false;
         }
         return state;
     }
@@ -792,13 +739,6 @@ public class SteamCommandHelper {
         //getInstance().sendCommonMsgForLiveData(commonMap,flag);
         getInstance().sendCommonMsgForLiveData(commonMap,flag);
     }
-
-
-
-
-
-
-
 
 
 }
