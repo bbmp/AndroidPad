@@ -147,7 +147,8 @@ class SmartSettingActivity : VentilatorBaseActivity() {
                 if (!onOff) { //烟灶联动关闭
                     HomeVentilator.getInstance().stopLevelCountDown()
                     HomeVentilator.getInstance().stopA6CountDown()
-                }
+                } else
+                    updateFanStove()
             }
             "烟锅联动" -> {
                 for (device in AccountInfo.getInstance().deviceList) { //查找锅
@@ -156,6 +157,7 @@ class SmartSettingActivity : VentilatorBaseActivity() {
 
                         if (onOff) {
                             pan.fanPan = pan.fanPan.or(0x02)
+                            updateFanPan(pan.fanPan)
                         } else //关闭时风量也关闭
                             pan.fanPan = pan.fanPan.and(0xF9)
                         pan.let { iPublicPanApi?.setFanPan(it.fanPan) }  //设置烟锅联动
@@ -341,6 +343,30 @@ class SmartSettingActivity : VentilatorBaseActivity() {
                 smartBean.modeDescName = "关联产品:$relationDevice\n一体机工作室开门，烟机自动匹配风量"
                 smartBean.modeSwitch = linkageConfig?.enabled ?: false
                 smartBean.modeDescSwitch = linkageConfig?.doorOpenEnabled ?: false
+                mAdapter?.notifyDataSetChanged()
+                break
+            }
+        }
+    }
+    //更新烟灶联动
+    fun updateFanStove() {
+        for (smartBean in mList) {
+            if (smartBean.modeName == "烟灶联动") {
+                smartBean.modeSwitch = MMKVUtils.getFanStove()
+                smartBean.modeDescSwitch = MMKVUtils.getFanStoveGear()
+                mAdapter?.notifyDataSetChanged()
+                break
+            }
+        }
+    }
+    //更新烟锅联动
+    fun updateFanPan(fanPan: Int) {
+        for (smartBean in mList) {
+            if (smartBean.modeName == "烟锅联动") {
+                val fanPan: Int = fanPan and 0x02 shr 1
+                val fanPanGear: Int = fanPan and 0x04 shr 2
+                smartBean.modeSwitch = (fanPan === 1)
+                smartBean.modeDescSwitch = (fanPanGear === 1)
                 mAdapter?.notifyDataSetChanged()
                 break
             }

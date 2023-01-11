@@ -302,9 +302,9 @@ public class HomePage extends VentilatorBasePage {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 //close setting menu
-                if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
-                    drawerLayout.closeDrawer(Gravity.LEFT);
-                }
+//                if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
+//                    drawerLayout.closeDrawer(Gravity.LEFT);
+//                }
 
                 VenFunBean venFunBean = (VenFunBean) adapter.getItem(position);
 
@@ -329,9 +329,9 @@ public class HomePage extends VentilatorBasePage {
             @Override
             public void onClick(View v) {
                 //close products menu
-                if (drawerLayout.isDrawerOpen(Gravity.RIGHT)) {
-                    drawerLayout.closeDrawer(Gravity.RIGHT);
-                }
+//                if (drawerLayout.isDrawerOpen(Gravity.RIGHT)) {
+//                    drawerLayout.closeDrawer(Gravity.RIGHT);
+//                }
                 startActivity(new Intent(getContext(), AddDeviceActivity.class));
             }
         });
@@ -341,9 +341,9 @@ public class HomePage extends VentilatorBasePage {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 //close products menu
-                if (drawerLayout.isDrawerOpen(Gravity.RIGHT)) {
-                    drawerLayout.closeDrawer(Gravity.RIGHT);
-                }
+//                if (drawerLayout.isDrawerOpen(Gravity.RIGHT)) {
+//                    drawerLayout.closeDrawer(Gravity.RIGHT);
+//                }
                 Device device = (Device) adapter.getItem(position);
                 if (device.status != Device.ONLINE)
                     return;
@@ -490,19 +490,26 @@ public class HomePage extends VentilatorBasePage {
                             group.setVisibility(View.VISIBLE);
                         }
                     }
-                    //风阻
+                    //智感恒吸风阻
+                    int columnCount = 8;
+                    if (HomeVentilator.getInstance().param8 <= 5)
+                        columnCount = 6;
+                    else if (HomeVentilator.getInstance().param8 <= 8)
+                        columnCount = 8;
+                    else
+                        columnCount = 12;
                     if (HomeVentilator.getInstance().gear == (byte) 0xA1) {
-                        viewFlow.setHeight(5, 3);
-                        viewSpeed.setHeight(5, 3);
+                        viewFlow.setHeight(5, 3, columnCount);
+                        viewSpeed.setHeight(5, 3, columnCount);
                     } else if (HomeVentilator.getInstance().gear == (byte) 0xA3) {
-                        viewFlow.setHeight(7, 5);
-                        viewSpeed.setHeight(7, 5);
+                        viewFlow.setHeight(7, 5, columnCount);
+                        viewSpeed.setHeight(7, 5, columnCount);
                     } else if (HomeVentilator.getInstance().gear == (byte) 0xA6) {
-                        viewFlow.setHeight(9, 7);
-                        viewSpeed.setHeight(9, 7);
+                        viewFlow.setHeight(9, 7, columnCount);
+                        viewSpeed.setHeight(9, 7, columnCount);
                     } else {
-                        viewFlow.setHeight(0, 0);
-                        viewSpeed.setHeight(0, 0);
+                        viewFlow.setHeight(0, 0, columnCount);
+                        viewSpeed.setHeight(0, 0, columnCount);
                     }
 //                    return;
                     //检查报警信息

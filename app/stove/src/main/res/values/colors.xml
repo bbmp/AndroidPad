@@ -17,4 +17,5 @@
     <color name="stove_white_80">#CCffffff</color>
     <color name="stove_blur_overlay_color">#33ffffff</color>
     <color name="stove_blur_border_color">#4dffffff</color>
+    <color name="stove_lock_color_bg">#E6000D2A</color>
 </resources>

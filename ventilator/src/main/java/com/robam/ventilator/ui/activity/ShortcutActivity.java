@@ -31,6 +31,7 @@ import com.robam.common.module.IPublicStoveApi;
 import com.robam.common.module.IPublicVentilatorApi;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.WindowsUtils;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.common.device.subdevice.Pan;
 import com.robam.dishwasher.constant.DishWasherState;
@@ -202,6 +203,18 @@ public class ShortcutActivity extends VentilatorBaseActivity {
         if (keyCode == KeyEvent.KEYCODE_BACK)
             return true;  //屏蔽返回键
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        WindowsUtils.hidePopupWindow();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        WindowsUtils.showPopupWindow();
     }
 
     @Override

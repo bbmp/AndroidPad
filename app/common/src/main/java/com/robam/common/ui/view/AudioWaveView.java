@@ -30,12 +30,18 @@ public class AudioWaveView extends View {
     private RectF rectF6;
     private RectF rectF7;
     private RectF rectF8;
+    private RectF rectF9;
+    private RectF rectF10;
+    private RectF rectF11;
+    private RectF rectF12;
     private int viewWidth;
     private int viewHeight;
     /** 每个条的宽度 */
     private int rectWidth;
     /** 条数 */
-    private int columnCount = 8;
+    private int columnCount = 12;
+
+    private int maxColumnCount = 12;
     /** 条间距 */
     private final int space = 6;
     /** 条随机高度 */
@@ -61,9 +67,10 @@ public class AudioWaveView extends View {
         init(context, attrs);
     }
 
-    public void setHeight(int maxHeight, int minHeight) {
+    public void setHeight(int maxHeight, int minHeight, int columnCount) {
         this.maxHeight = maxHeight;
         this.minHeight = minHeight;
+        this.columnCount = columnCount;
     }
 
     @Override
@@ -73,7 +80,7 @@ public class AudioWaveView extends View {
         viewWidth = MeasureSpec.getSize(widthMeasureSpec);
         viewHeight = MeasureSpec.getSize(heightMeasureSpec);
 
-        rectWidth = (viewWidth - space * (columnCount - 1)) / columnCount;
+        rectWidth = (viewWidth - space * (maxColumnCount - 1)) / maxColumnCount;
     }
 
     private void init(Context context, AttributeSet attrs) {
@@ -106,7 +113,10 @@ public class AudioWaveView extends View {
         rectF6 = new RectF();
         rectF7 = new RectF();
         rectF8 = new RectF();
-
+        rectF9 = new RectF();
+        rectF10 = new RectF();
+        rectF11 = new RectF();
+        rectF12 = new RectF();
     }
 
     @Override
@@ -116,24 +126,33 @@ public class AudioWaveView extends View {
         if (maxHeight != 0 && minHeight != 0) {
             int left = rectWidth + space;
             int height = (int) (viewHeight / 9.0); //分成9段
+            int start = (viewWidth - columnCount*rectWidth - (columnCount - 1)*space) / 2;
             //画每个条之前高度都重新随机生成
             randomHeight = (viewHeight - height * (random.nextInt(maxHeight) % (maxHeight - minHeight + 1) + minHeight));
 
-            rectF1.set(left * 0, randomHeight, left * 0 + rectWidth, viewHeight);
+            rectF1.set(start + left * 0, randomHeight, start + left * 0 + rectWidth, viewHeight);
             randomHeight = (viewHeight - height * (random.nextInt(maxHeight) % (maxHeight - minHeight + 1) + minHeight));
-            rectF2.set(left * 1, randomHeight, left * 1 + rectWidth, viewHeight);
+            rectF2.set(start + left * 1, randomHeight, start + left * 1 + rectWidth, viewHeight);
             randomHeight = (viewHeight - height * (random.nextInt(maxHeight) % (maxHeight - minHeight + 1) + minHeight));
-            rectF3.set(left * 2, randomHeight, left * 2 + rectWidth, viewHeight);
+            rectF3.set(start + left * 2, randomHeight, start + left * 2 + rectWidth, viewHeight);
             randomHeight = (viewHeight - height * (random.nextInt(maxHeight) % (maxHeight - minHeight + 1) + minHeight));
-            rectF4.set(left * 3, randomHeight, left * 3 + rectWidth, viewHeight);
+            rectF4.set(start + left * 3, randomHeight, start + left * 3 + rectWidth, viewHeight);
             randomHeight = (viewHeight - height * (random.nextInt(maxHeight) % (maxHeight - minHeight + 1) + minHeight));
-            rectF5.set(left * 4, randomHeight, left * 4 + rectWidth, viewHeight);
+            rectF5.set(start + left * 4, randomHeight, start + left * 4 + rectWidth, viewHeight);
             randomHeight = (viewHeight - height * (random.nextInt(maxHeight) % (maxHeight - minHeight + 1) + minHeight));
-            rectF6.set(left * 5, randomHeight, left * 5 + rectWidth, viewHeight);
+            rectF6.set(start + left * 5, randomHeight, start + left * 5 + rectWidth, viewHeight);
             randomHeight = (viewHeight - height * (random.nextInt(maxHeight) % (maxHeight - minHeight + 1) + minHeight));
-            rectF7.set(left * 6, randomHeight, left * 6 + rectWidth, viewHeight);
+            rectF7.set(start + left * 6, randomHeight, start + left * 6 + rectWidth, viewHeight);
             randomHeight = (viewHeight - height * (random.nextInt(maxHeight) % (maxHeight - minHeight + 1) + minHeight));
-            rectF8.set(left * 7, randomHeight, left * 7 + rectWidth, viewHeight);
+            rectF8.set(start + left * 7, randomHeight, start + left * 7 + rectWidth, viewHeight);
+            randomHeight = (viewHeight - height * (random.nextInt(maxHeight) % (maxHeight - minHeight + 1) + minHeight));
+            rectF9.set(start + left * 8, randomHeight, start + left * 8 + rectWidth, viewHeight);
+            randomHeight = (viewHeight - height * (random.nextInt(maxHeight) % (maxHeight - minHeight + 1) + minHeight));
+            rectF10.set(start + left * 9, randomHeight, start + left * 9 + rectWidth, viewHeight);
+            randomHeight = (viewHeight - height * (random.nextInt(maxHeight) % (maxHeight - minHeight + 1) + minHeight));
+            rectF11.set(start + left * 10, randomHeight, start + left * 10 + rectWidth, viewHeight);
+            randomHeight = (viewHeight - height * (random.nextInt(maxHeight) % (maxHeight - minHeight + 1) + minHeight));
+            rectF12.set(start + left * 11, randomHeight, start + left * 11 + rectWidth, viewHeight);
 
             canvas.drawRoundRect(rectF1, (float) (rectWidth / 2.0), (float) (rectWidth / 2.0), paint);
             canvas.drawRoundRect(rectF2, (float) (rectWidth / 2.0), (float) (rectWidth / 2.0), paint);
@@ -141,8 +160,18 @@ public class AudioWaveView extends View {
             canvas.drawRoundRect(rectF4, (float) (rectWidth / 2.0), (float) (rectWidth / 2.0), paint);
             canvas.drawRoundRect(rectF5, (float) (rectWidth / 2.0), (float) (rectWidth / 2.0), paint);
             canvas.drawRoundRect(rectF6, (float) (rectWidth / 2.0), (float) (rectWidth / 2.0), paint);
-            canvas.drawRoundRect(rectF7, (float) (rectWidth / 2.0), (float) (rectWidth / 2.0), paint);
-            canvas.drawRoundRect(rectF8, (float) (rectWidth / 2.0), (float) (rectWidth / 2.0), paint);
+            if (columnCount == 8) {
+                canvas.drawRoundRect(rectF7, (float) (rectWidth / 2.0), (float) (rectWidth / 2.0), paint);
+                canvas.drawRoundRect(rectF8, (float) (rectWidth / 2.0), (float) (rectWidth / 2.0), paint);
+            }
+            if (columnCount == 12) {
+                canvas.drawRoundRect(rectF7, (float) (rectWidth / 2.0), (float) (rectWidth / 2.0), paint);
+                canvas.drawRoundRect(rectF8, (float) (rectWidth / 2.0), (float) (rectWidth / 2.0), paint);
+                canvas.drawRoundRect(rectF9, (float) (rectWidth / 2.0), (float) (rectWidth / 2.0), paint);
+                canvas.drawRoundRect(rectF10, (float) (rectWidth / 2.0), (float) (rectWidth / 2.0), paint);
+                canvas.drawRoundRect(rectF11, (float) (rectWidth / 2.0), (float) (rectWidth / 2.0), paint);
+                canvas.drawRoundRect(rectF12, (float) (rectWidth / 2.0), (float) (rectWidth / 2.0), paint);
+            }
         }
 
 

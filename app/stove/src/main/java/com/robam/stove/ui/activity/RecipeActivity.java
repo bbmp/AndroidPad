@@ -43,6 +43,8 @@ public class RecipeActivity extends StoveBaseActivity {
 
     private TextView btnConnect;
     private int pageNo;
+    //菜谱id
+    private List idList = new ArrayList();
     //分类
 //    private List<String> classifyList = new ArrayList<>();
     //弱引用，防止内存泄漏
@@ -130,7 +132,7 @@ public class RecipeActivity extends StoveBaseActivity {
         UserInfo userInfo = AccountInfo.getInstance().getUser().getValue();
         String dp = HomeStove.getInstance().getDp();
         if (!TextUtils.isEmpty(dp)) {
-            CloudHelper.getRecipesByDevice(this, (userInfo != null) ? userInfo.id : 0, IDeviceType.RRQZ, 1 + pageNo * 20, 20, dp, new ArrayList(), GetRecipesByDeviceRes.class,
+            CloudHelper.getRecipesByDevice(this, (userInfo != null) ? userInfo.id : 0, IDeviceType.RRQZ, 1 + pageNo, 20, dp,idList, GetRecipesByDeviceRes.class,
                     new RetrofitCallback<GetRecipesByDeviceRes>() {
                         @Override
                         public void onSuccess(GetRecipesByDeviceRes getRecipesByDeviceRes) {
@@ -161,6 +163,7 @@ public class RecipeActivity extends StoveBaseActivity {
                 && getRecipesByDeviceRes.data.size() > 0) {
             //过滤其他设备菜谱
             for (StoveRecipe stoveRecipe: getRecipesByDeviceRes.data) {
+                idList.add(stoveRecipe.id);
                 List<StoveRecipe.DCS> dcsList = stoveRecipe.deviceCategoryList;
                 if (null != dcsList) {
                     for (StoveRecipe.DCS dcs: dcsList) {
@@ -198,8 +201,9 @@ public class RecipeActivity extends StoveBaseActivity {
         UserInfo userInfo = AccountInfo.getInstance().getUser().getValue();
         String dp = HomeStove.getInstance().getDp();
 
+        idList.clear();
         if (!TextUtils.isEmpty(dp)) {
-            CloudHelper.getCookbooksByName(this, dp, true, 1 + pageNo * 20, 20, text, 1, (userInfo != null) ? userInfo.id : 0,
+            CloudHelper.getCookbooksByName(this, dp, true, 1 + pageNo, 20, text, 1, (userInfo != null) ? userInfo.id : 0,
                     GetRecipesByDeviceRes.class, new RetrofitCallback<GetRecipesByDeviceRes>() {
 
                         @Override

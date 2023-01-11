@@ -78,7 +78,7 @@
 
     <com.robam.common.ui.view.AudioWaveView
         android:id="@+id/iv_speed"
-        android:layout_width="@dimen/dp_90"
+        android:layout_width="@dimen/dp_138"
         android:layout_height="@dimen/dp_45"
         android:layout_marginRight="@dimen/dp_56"
         android:layout_marginBottom="@dimen/dp_36"
@@ -87,7 +87,7 @@
 
     <com.robam.common.ui.view.AudioWaveView
         android:id="@+id/iv_flow"
-        android:layout_width="@dimen/dp_90"
+        android:layout_width="@dimen/dp_138"
         android:layout_height="@dimen/dp_45"
         android:layout_marginLeft="@dimen/dp_56"
         android:layout_marginBottom="@dimen/dp_36"
