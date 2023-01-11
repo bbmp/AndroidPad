@@ -62,23 +62,23 @@ public class SaleServiceActivity extends VentilatorBaseActivity {
     protected void initData() {
         tvSysV.setText(BuildConfig.VERSION_NAME);
         tvModelV.setText(BuildConfig.MODEL);
-//        CloudHelper.checkAppVersion(this, "RKPAD", Plat.getPlatform().getDt(), AppTypeRes.class, new RetrofitCallback<AppTypeRes>() {
-//            @Override
-//            public void onSuccess(AppTypeRes appTypeRes) {
-//                if (null != appTypeRes && null != appTypeRes.ver && null != appTypeRes.ver.url) {
-//                    LogUtils.e(appTypeRes.ver.url);
-//                    versionUrl = appTypeRes.ver.url;
-//                    String version = String.format(getString(R.string.ventilator_new_version), appTypeRes.ver.code + "");
-//                    tvNewVersion.setVisibility(View.VISIBLE);
-//                    tvNewVersion.setText(version);
-//                }
-//            }
-//
-//            @Override
-//            public void onFaild(String err) {
-//
-//            }
-//        });
+        CloudHelper.checkAppVersion(this, "RKPAD", Plat.getPlatform().getDt(), AppTypeRes.class, new RetrofitCallback<AppTypeRes>() {
+            @Override
+            public void onSuccess(AppTypeRes appTypeRes) {
+                if (null != appTypeRes && null != appTypeRes.ver && null != appTypeRes.ver.url) {
+                    LogUtils.e(appTypeRes.ver.url);
+                    versionUrl = appTypeRes.ver.url;
+                    String version = String.format(getString(R.string.ventilator_new_version), appTypeRes.ver.code + "");
+                    tvNewVersion.setVisibility(View.VISIBLE);
+                    tvNewVersion.setText(version);
+                }
+            }
+
+            @Override
+            public void onFaild(String err) {
+
+            }
+        });
     }
 
     @Override
