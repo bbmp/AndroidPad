@@ -13,6 +13,7 @@ import com.robam.steamoven.R;
 import com.robam.steamoven.bean.MultiSegment;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.SteamConstant;
+import com.robam.steamoven.constant.SteamModeEnum;
 import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.device.SteamAbstractControl;
@@ -566,20 +567,7 @@ public class SteamCommandHelper {
      */
     public static boolean checkSteamState(Context context, SteamOven curDevice,int modeCode){
         boolean state = true;
-        boolean needWater = (modeCode == SteamConstant.XIANNENZHENG
-                || modeCode == SteamConstant.YIYANGZHENG
-                || modeCode == SteamConstant.GAOWENZHENG
-                || modeCode == SteamConstant.WEIBOZHENG
-                || modeCode == SteamConstant.ZHIKONGZHENG
-                || modeCode == SteamConstant.SHOUDONGJIASHIKAO
-                || modeCode == SteamConstant.JIASHIBEIKAO
-                || modeCode == SteamConstant.JIASHIFENGBEIKAO
-                || modeCode == SteamConstant.SHAJUN
-                || modeCode == SteamConstant.JIEDONG
-                || modeCode == SteamConstant.FAJIAO
-                || modeCode == SteamConstant.QINGJIE
-                || modeCode == SteamConstant.CHUGOU);
-        int promptResId = getRunPromptResId(curDevice, modeCode,needWater);
+        int promptResId = getRunPromptResId(curDevice, modeCode, SteamModeEnum.needWater(modeCode));
         if(promptResId != -1){
             if(needShowPrompt()){
                 ToastUtils.showLong(context,promptResId);
@@ -589,6 +577,28 @@ public class SteamCommandHelper {
         }
         return state;
     }
+
+    /**
+     * 检查手动添加蒸汽状态
+     * @param context
+     * @param curDevice
+     * @param modeCode
+     * @return
+     */
+    public static boolean checkManuallyAddSteamState(Context context, SteamOven curDevice,int modeCode){
+        boolean state = true;
+        int promptResId = getRunPromptResId(curDevice, modeCode, SteamModeEnum.isManuallyAddSteam(modeCode));
+        if(promptResId != -1){
+            if(needShowPrompt()){
+                ToastUtils.showLong(context,promptResId);
+            }
+            preShowTimeMil = System.currentTimeMillis();
+            state = false;
+        }
+        return state;
+    }
+
+
 
     public static int getRemindPromptResId(SteamOven curDevice,boolean needWater){
         if(needWater){
@@ -647,20 +657,7 @@ public class SteamCommandHelper {
 
     public static int getRemindResId(SteamOven curDevice){
         int modeCode = curDevice.mode;
-        boolean needWater = (modeCode == SteamConstant.XIANNENZHENG
-                || modeCode == SteamConstant.YIYANGZHENG
-                || modeCode == SteamConstant.GAOWENZHENG
-                || modeCode == SteamConstant.WEIBOZHENG
-                || modeCode == SteamConstant.ZHIKONGZHENG
-                || modeCode == SteamConstant.SHOUDONGJIASHIKAO
-                || modeCode == SteamConstant.JIASHIBEIKAO
-                || modeCode == SteamConstant.JIASHIFENGBEIKAO
-                || modeCode == SteamConstant.SHAJUN
-                || modeCode == SteamConstant.JIEDONG
-                || modeCode == SteamConstant.FAJIAO
-                || modeCode == SteamConstant.QINGJIE
-                || modeCode == SteamConstant.CHUGOU);
-        int promptResId = getRunPromptResId(curDevice, modeCode,needWater);
+        int promptResId = getRunPromptResId(curDevice, modeCode,SteamModeEnum.needWater(modeCode));
         if(promptResId != -1){
            return promptResId;
         }

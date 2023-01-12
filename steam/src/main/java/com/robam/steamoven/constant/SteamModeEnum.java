@@ -176,7 +176,7 @@ public enum SteamModeEnum {
     }
 
     /**
-     * 是否包含蒸汽量
+     * 模式选择是否包含蒸汽量
      * @param modeCode
      * @return
      */
@@ -185,6 +185,23 @@ public enum SteamModeEnum {
                 SteamConstant.SHOUDONGJIASHIKAO == modeCode ||
                 SteamConstant.JIASHIBEIKAO == modeCode ||
                 SteamConstant.JIASHIFENGBEIKAO == modeCode){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 是否可以手动添加蒸汽
+     * @param modeCode
+     * @return
+     */
+    public static boolean isManuallyAddSteam(int modeCode) {
+        if (SteamConstant.KUAIRE == modeCode ||
+                SteamConstant.FENGBEIKAO == modeCode ||
+                SteamConstant.BEIKAO == modeCode ||
+                SteamConstant.FENGSHANKAO == modeCode ||
+                SteamConstant.QIANGSHAOKAO == modeCode ||
+                SteamConstant.EXP == modeCode) {
             return true;
         }
         return false;

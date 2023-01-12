@@ -594,5 +594,20 @@ public class SteamOven extends Device {
         }
     }
 
+    /**
+     * 获取当前运行的模式
+     * @return
+     */
+    public int getCurModeCode(){
+        switch (this.sectionNumber){
+            case 2:
+                return this.mode2;
+            case 3:
+                return this.mode3;
+            default:
+                return this.mode;
+        }
+    }
+
 
 }

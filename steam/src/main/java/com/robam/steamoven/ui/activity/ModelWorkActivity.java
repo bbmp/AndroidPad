@@ -477,7 +477,7 @@ public class ModelWorkActivity extends SteamBaseActivity {
                 steamTv.setVisibility(steamOven.steamState == 1 ? View.VISIBLE : View.INVISIBLE);
             }else{
                 steamIv.setVisibility((isWorking && steamOven.steamState == 2) ? View.VISIBLE : View.INVISIBLE);
-                steamTv.setVisibility(steamOven.steamState == 1 ? View.VISIBLE : View.INVISIBLE);
+                steamTv.setVisibility(steamOven.steamState != 2 ? View.VISIBLE : View.INVISIBLE);
             }
         }
         setDurationTv.setVisibility((!isPreHeat&&isWorking)?View.INVISIBLE:View.VISIBLE);
@@ -526,7 +526,7 @@ public class ModelWorkActivity extends SteamBaseActivity {
             showLeftCenter();
         }
 
-        if(SteamModeEnum.isAddStream(modeCode)){//菜谱不显示加蒸汽
+        if(SteamModeEnum.isManuallyAddSteam(modeCode)){//菜谱不显示加蒸汽
             showAddStream = true;
         }else{
             showAddStream = false;
@@ -572,7 +572,7 @@ public class ModelWorkActivity extends SteamBaseActivity {
             if(steamOven != null){
                 code = steamOven.mode;
             }
-            if(!SteamCommandHelper.checkSteamState(this,steamOven,code)){
+            if(!SteamCommandHelper.checkManuallyAddSteamState(this,steamOven,code)){
                 return;
             }
             SteamCommandHelper.sendSteamOrRotateCommand(QualityKeys.steamCtrl, (short) 1,DIRECTIVE_OFFSET_NONE);

@@ -150,7 +150,7 @@ public abstract class SteamBaseActivity extends BaseActivity {
      * @return
      */
     public boolean toWaringPage(SteamOven steamOven){
-        if(steamOven.faultId != 0){
+        if(steamOven.faultId != 0 && preRemindResId != R.string.steam_water_deficient){
             DeviceErrorInfo deviceErrorInfo = DeviceWarnInfoManager.getInstance().getDeviceErrorInfo(IDeviceType.RZKY, DeviceUtils.getDeviceTypeId(steamOven.guid), steamOven.faultId);
             if(deviceErrorInfo == null){
                 return false;
@@ -179,7 +179,7 @@ public abstract class SteamBaseActivity extends BaseActivity {
     }
 
     public boolean toRemandPage(SteamOven curDevice,int curMode){
-        int remindResId = SteamCommandHelper.getRemindPromptResId(curDevice, SteamModeEnum.needWater(curMode));
+        int remindResId = SteamCommandHelper.getRemindPromptResId(curDevice, SteamModeEnum.needWater(curMode) || SteamModeEnum.isManuallyAddSteam(curMode));
         if(remindResId != 0 && preRemindResId != remindResId){
             preRemindResId = remindResId;
             Intent intent = new Intent(this, RemindActivity.class);

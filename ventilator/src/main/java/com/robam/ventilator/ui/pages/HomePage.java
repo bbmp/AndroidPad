@@ -58,6 +58,9 @@ import com.robam.common.ui.dialog.IDialog;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ScreenUtils;
+import com.robam.steamoven.manager.RecipeManager;
+import com.robam.steamoven.protocol.SteamCommandHelper;
+import com.robam.steamoven.utils.SteamDataUtil;
 import com.robam.stove.device.StoveAbstractControl;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBasePage;
@@ -415,6 +418,9 @@ public class HomePage extends VentilatorBasePage {
                         if(steamOven.workState == SteamStateConstant.WORK_STATE_APPOINTMENT){
                             SteamAbstractControl.getInstance().startCookForAppoint(device.guid,steamOven);
                         }else{
+                            if(!getSteamCanRun(steamOven)){
+                                return;
+                            }
                             if (steamOven.workStatus == 4 || steamOven.workStatus == 2)   //工作中和预热中
                                 SteamAbstractControl.getInstance().pauseWork(device.guid);
                             else if (steamOven.workStatus == 5 || steamOven.workStatus == 3)  //暂停中
@@ -875,5 +881,19 @@ public class HomePage extends VentilatorBasePage {
             }
         }
         return false;
+    }
+
+    /**
+     * 判断一体机是否能继续运行（如：缺水不能继续炒作）
+     * @param steamOven
+     * @return
+     */
+    private boolean getSteamCanRun(SteamOven steamOven){
+        if(steamOven.recipeId == 0){
+            return SteamCommandHelper.checkSteamState(getContext(),steamOven,steamOven.getCurModeCode());
+        }else{
+            Boolean needWater = RecipeManager.getInstance().needWater(IDeviceType.SERIES_STEAM, steamOven.recipeId);
+            return SteamCommandHelper.checkRecipeState(getContext(),steamOven,needWater);
+        }
     }
 }
