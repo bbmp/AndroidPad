@@ -144,8 +144,9 @@ public class CurveSaveActivity extends SteamBaseActivity {
             ToastUtils.showLong(this,R.string.steam_curve_no_data);
             cookChart.setNoDataText(getString(R.string.steam_curve_no_data));
             initLineChart();
+            return;
         }
-        if(getDeviceParamsRes != null || getDeviceParamsRes.payload == null || getDeviceParamsRes.payload.temperatureCurveParams == null){
+        if(getDeviceParamsRes != null && (getDeviceParamsRes.payload == null || getDeviceParamsRes.payload.temperatureCurveParams == null)){
             //ToastUtils.showLong(this,R.string.steam_curve_no_data);
             //cookChart.setNoDataText(getString(R.string.steam_curve_no_data));
             //initLineChart();

@@ -30,7 +30,7 @@ public class RecipeManager {
     }
 
     private Map<String,Map<Long,String>> recipeName = new ConcurrentHashMap<>();
-    private Map<String,Map<Long,Boolean>> needWaterMap = new ConcurrentHashMap<>();
+    private Map<String,Map<Long,Boolean> > needWaterMap = new ConcurrentHashMap<>();
     private volatile String recipeData;
 
     public synchronized void setRecipeData(String recipeData) {
