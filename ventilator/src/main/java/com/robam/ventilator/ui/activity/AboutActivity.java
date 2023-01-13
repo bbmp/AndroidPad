@@ -1,5 +1,6 @@
 package com.robam.ventilator.ui.activity;
 
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -77,10 +78,15 @@ public class AboutActivity extends VentilatorBaseActivity {
     }
 
     private void goHome() {
-        Intent i = new Intent(Intent.ACTION_MAIN);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        i.addCategory(Intent.CATEGORY_HOME);
-        startActivity(i);
+        ComponentName componetName = new ComponentName(
+//这个是另外一个应用程序的包名
+                "com.android.launcher3",
+//这个参数是要启动的Activity
+                "com.android.launcher3.uioverrides.QuickstepLauncher");
+
+        Intent intent = new Intent();
+        intent.setComponent(componetName);
+        startActivity(intent);
     }
 
     @Override

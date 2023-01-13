@@ -98,9 +98,11 @@ public class AlarmVentilatorService extends Service {
                                         } else {
                                             if (HomeVentilator.getInstance().lightOn == (byte) 0xA0) {
                                                 Plat.getPlatform().openWaterLamp();
+                                                HomeVentilator.getInstance().updateOperationTime(); //开关灯也算操作
                                                 VentilatorAbstractControl.getInstance().setFanLight(VentilatorConstant.FAN_LIGHT_OPEN);
                                             } else {
                                                 Plat.getPlatform().closeWaterLamp();
+                                                HomeVentilator.getInstance().updateOperationTime();
                                                 VentilatorAbstractControl.getInstance().setFanLight(VentilatorConstant.FAN_LIGHT_CLOSE);
                                             }
                                         }
