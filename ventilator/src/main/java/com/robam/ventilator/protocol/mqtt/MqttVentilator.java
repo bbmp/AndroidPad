@@ -168,7 +168,8 @@ public class MqttVentilator extends MqttPublic {
                             if (min >=1 && min <= 5) {//设置延时关机时间
 //                                MMKVUtils.setDelayShutdownTime(min + "");
                                 //延时关机倒计时
-                                HomeVentilator.getInstance().timeShutdown(min);
+                                if (HomeVentilator.getInstance().isStartUp() && !HomeVentilator.getInstance().isLock()) //非锁屏
+                                    HomeVentilator.getInstance().timeShutdown(min);
                             }
                         }
                             break;

@@ -28,6 +28,16 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+        applicationVariants.all { variant ->
+            // apk 输出文件名配置
+            variant.outputs.all { output ->
+                outputFileName = rootProject.getName() + '_v' + variant.versionName + '_' + variant.buildType.name
+                if (variant.buildType.name == buildTypes.release.getName()) {
+                    outputFileName += '_' + new Date().format('yyyyMMdd')
+                }
+                outputFileName += '.apk'
+            }
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
