@@ -455,6 +455,7 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
             return;
         }
 
+        //if((cabinet.smartCruising == 1 || cabinet.pureCruising == 1) && cabinet.remainingModeWorkTime <= 0){//去往智能巡航页面
         if(cabinet.smartCruising == 1 || cabinet.pureCruising == 1){
             baseViewHolder.setVisible(R.id.tv_mode,true);
             baseViewHolder.setGone(R.id.layout_offline, true);

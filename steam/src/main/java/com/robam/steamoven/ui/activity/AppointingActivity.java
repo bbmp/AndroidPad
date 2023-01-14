@@ -198,7 +198,7 @@ public class AppointingActivity extends SteamBaseActivity {
             //结束倒计时
             showFinishAppointDialog();
         } else if (id == R.id.iv_start) {
-            if(!SteamCommandHelper.checkSteamState(this,getSteamOven(),segment.code)){
+            if(!SteamCommandHelper.checkSteamState(this,getSteamOven(),segment.code,true)){
                 return;
             }
             startWork();
@@ -225,7 +225,7 @@ public class AppointingActivity extends SteamBaseActivity {
 
     private void startWork(){
         MultiSegment result = segment;
-        if(!SteamCommandHelper.checkSteamState(this,getSteamOven(),result.code)){
+        if(!SteamCommandHelper.checkSteamState(this,getSteamOven(),result.code,true)){
             return;
         }
         if(SteamModeEnum.EXP.getMode() == result.code){

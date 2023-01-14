@@ -262,7 +262,7 @@ public class CurveSelectedActivity extends SteamBaseActivity {
             finish();
         }
         for(int i = 0;i < multiSegment.size();i++){
-            if(!SteamCommandHelper.checkSteamState(this,getSteamOven(),multiSegment.get(i).code)){
+            if(!SteamCommandHelper.checkSteamState(this,getSteamOven(),multiSegment.get(i).code,true)){
                 return;
             }
         }

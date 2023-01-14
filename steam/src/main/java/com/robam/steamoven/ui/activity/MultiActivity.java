@@ -13,6 +13,7 @@ import com.robam.common.bean.Device;
 import com.robam.common.manager.FunctionManager;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.ToastInsUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
@@ -209,7 +210,7 @@ public class MultiActivity extends SteamBaseActivity {
 
     private void toModelPage(FuntionBean funtionBean,int index,MultiSegment curSegment){
         if (funtionBean == null || funtionBean.into == null || funtionBean.into.length() == 0) {
-            ToastUtils.showShort(getContext(), "功能还未实现，请等待版本更新");
+            ToastInsUtils.showShort(getContext(), "功能还未实现，请等待版本更新");
             return;
         }
         Intent intent = new Intent();
@@ -392,6 +393,7 @@ public class MultiActivity extends SteamBaseActivity {
             if(isDelState()){
                 setDelBtnItemState(false);
                 setDelBtnState(true);
+                startCookBtn.setVisibility(View.VISIBLE);
                 return;
             }
             finish();
@@ -444,9 +446,11 @@ public class MultiActivity extends SteamBaseActivity {
     private void dealDataItemWasDel(int index){
         multiSegments.remove(index);
         setOptContent(multiSegments);
-        setDelBtnItemState(true);
+        setDelBtnItemState(false);
         setTotalDuration();
         initStartBtnState();
+        startCookBtn.setVisibility(View.VISIBLE);
+        setDelBtnState(true);//显示删除按钮
     }
 
 
@@ -468,6 +472,7 @@ public class MultiActivity extends SteamBaseActivity {
     private void showItemDelView() {
         setDelBtnState(false);//隐藏删除按钮
         setDelBtnItemState(true);
+        startCookBtn.setVisibility(View.INVISIBLE);
     }
 
     private void setDelBtnItemState(boolean isShow){
@@ -579,7 +584,7 @@ public class MultiActivity extends SteamBaseActivity {
 
     private void startWork(){
         for(int i = 0;i < multiSegments.size();i++){
-            if(!SteamCommandHelper.checkSteamState(this,getSteamOven(),multiSegments.get(i).code)){
+            if(!SteamCommandHelper.checkSteamState(this,getSteamOven(),multiSegments.get(i).code,true)){
                 return;
             }
         }

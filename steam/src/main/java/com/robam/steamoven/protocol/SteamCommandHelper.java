@@ -1,14 +1,12 @@
 package com.robam.steamoven.protocol;
 
 import android.content.Context;
-import android.widget.Toast;
-
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.mqtt.MsgKeys;
-import com.robam.common.utils.ToastUtils;
+import com.robam.common.utils.ToastInsUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.bean.MultiSegment;
 import com.robam.steamoven.bean.SteamOven;
@@ -71,11 +69,6 @@ public class SteamCommandHelper {
     }
 
 
-
-
-
-
-
     public static Map getCommonMap(short msgId){
         Map map = new HashMap();
         map.put(SteamConstant.UserId, AccountInfo.getInstance().getUserString());
@@ -101,7 +94,7 @@ public class SteamCommandHelper {
      */
     public static void sendMultiWork(Context context, List<MultiSegment> multiSegments,int flag){
         if(!multiSegments.get(0).isStart() && multiSegments.size() < 2){
-            Toast.makeText(context, R.string.steam_cook_start_prompt,Toast.LENGTH_LONG).show();
+            ToastInsUtils.showLong(context, R.string.steam_cook_start_prompt);
             return;
         }
         Map commonMap = SteamCommandHelper.getCommonMap(MsgKeys.setDeviceAttribute_Req);
@@ -563,14 +556,15 @@ public class SteamCommandHelper {
      * 检测洗碗是否处于开门或者离线状态，若处于离线或开门状态，则提示并返回false，否则返回true
      * @param context
      * @param curDevice
+     * @param needCheckDescale 是否需要判断除垢
      * @return
      */
-    public static boolean checkSteamState(Context context, SteamOven curDevice,int modeCode){
+    public static boolean checkSteamState(Context context, SteamOven curDevice,int modeCode,boolean needCheckDescale){
         boolean state = true;
-        int promptResId = getRunPromptResId(curDevice, modeCode, SteamModeEnum.needWater(modeCode));
+        int promptResId = getRunPromptResId(curDevice, modeCode, SteamModeEnum.needWater(modeCode)||SteamModeEnum.isManuallyAddSteam(modeCode),needCheckDescale);
         if(promptResId != -1){
             if(needShowPrompt()){
-                ToastUtils.showLong(context,promptResId);
+                ToastInsUtils.showLong(context,promptResId);
             }
             preShowTimeMil = System.currentTimeMillis();
             state = false;
@@ -587,10 +581,10 @@ public class SteamCommandHelper {
      */
     public static boolean checkManuallyAddSteamState(Context context, SteamOven curDevice,int modeCode){
         boolean state = true;
-        int promptResId = getRunPromptResId(curDevice, modeCode, SteamModeEnum.isManuallyAddSteam(modeCode));
+        int promptResId = getRunPromptResId(curDevice, modeCode, SteamModeEnum.isManuallyAddSteam(modeCode),false);
         if(promptResId != -1){
             if(needShowPrompt()){
-                ToastUtils.showLong(context,promptResId);
+                ToastInsUtils.showLong(context,promptResId);
             }
             preShowTimeMil = System.currentTimeMillis();
             state = false;
@@ -621,7 +615,7 @@ public class SteamCommandHelper {
         return 0;
     }
 
-    public static int getRunPromptResId(SteamOven curDevice,int modeCode,boolean needWater){
+    public static int getRunPromptResId(SteamOven curDevice,int modeCode,boolean needWater,boolean needCheckDescale){
         if(curDevice == null || curDevice.status == Device.OFFLINE){
            return R.string.steam_offline;
         }
@@ -644,7 +638,7 @@ public class SteamCommandHelper {
             if(curDevice.wasteWaterBox != 0){
                 return R.string.steam_waste_water_out;
             }
-            if(curDevice.descaleFlag == 1){
+            if(needCheckDescale && curDevice.descaleFlag == 1){
                 return R.string.steam_descaling_prompt;
             }
         }
@@ -655,9 +649,9 @@ public class SteamCommandHelper {
     }
 
 
-    public static int getRemindResId(SteamOven curDevice){
+    public static int getRemindResId(SteamOven curDevice,boolean needCheckDescale){
         int modeCode = curDevice.mode;
-        int promptResId = getRunPromptResId(curDevice, modeCode,SteamModeEnum.needWater(modeCode));
+        int promptResId = getRunPromptResId(curDevice, modeCode,SteamModeEnum.needWater(modeCode),needCheckDescale);
         if(promptResId != -1){
            return promptResId;
         }
@@ -676,12 +670,12 @@ public class SteamCommandHelper {
      * @param needWater 是否需要水
      * @return
      */
-    public static boolean checkRecipeState(Context context, SteamOven curDevice,boolean needWater){
+    public static boolean checkRecipeState(Context context, SteamOven curDevice,boolean needWater,boolean needCheckDescale){
         boolean state = true;
-        int promptResId = getRunPromptResId(curDevice, curDevice.mode,needWater);
+        int promptResId = getRunPromptResId(curDevice, curDevice.mode,needWater,needCheckDescale);
         if(promptResId != -1){
             if(needShowPrompt()){
-                ToastUtils.showLong(context,promptResId);
+                ToastInsUtils.showLong(context,promptResId);
             }
             preShowTimeMil = System.currentTimeMillis();
             state = false;

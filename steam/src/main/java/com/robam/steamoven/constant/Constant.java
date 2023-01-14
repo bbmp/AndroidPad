@@ -127,6 +127,10 @@ public interface Constant {
 
     String REMIND_BUS_CODE = "remind_bus_code";
 
+    String REMIND_NEED_WATER = "remind_need_water";
+
+    String REMIND_RECIPE_ID = "remind_recipe_id";
+
     /**
      * 菜谱id
      */

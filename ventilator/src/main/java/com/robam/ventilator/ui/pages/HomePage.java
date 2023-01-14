@@ -418,13 +418,14 @@ public class HomePage extends VentilatorBasePage {
                         if(steamOven.workState == SteamStateConstant.WORK_STATE_APPOINTMENT){
                             SteamAbstractControl.getInstance().startCookForAppoint(device.guid,steamOven);
                         }else{
-                            if(!getSteamCanRun(steamOven)){
-                                return;
-                            }
                             if (steamOven.workStatus == 4 || steamOven.workStatus == 2)   //工作中和预热中
                                 SteamAbstractControl.getInstance().pauseWork(device.guid);
-                            else if (steamOven.workStatus == 5 || steamOven.workStatus == 3)  //暂停中
+                            else if (steamOven.workStatus == 5 || steamOven.workStatus == 3){
+                                if(!getSteamCanRun(steamOven)){
+                                    return;
+                                }
                                 SteamAbstractControl.getInstance().continueWork(device.guid);
+                            }
                         }
                     } else if(device instanceof DishWasher){
                         DishWasher dishWasher = (DishWasher) device;
@@ -439,7 +440,8 @@ public class HomePage extends VentilatorBasePage {
 
                     }else if(device instanceof Cabinet){
                         Cabinet cabinet = (Cabinet) device;
-                        if(cabinet.smartCruising == 1 || cabinet.pureCruising == 1){
+                        //if((cabinet.smartCruising == 1 || cabinet.pureCruising == 1) && cabinet.remainingModeWorkTime <= 0){//去往智能巡航页面
+                        if(cabinet.smartCruising == 1 || cabinet.pureCruising == 1){//去往智能巡航页面
                             CabinetAbstractControl.getInstance().endSmartMode(device.guid);
                             return;
                         }
@@ -890,10 +892,10 @@ public class HomePage extends VentilatorBasePage {
      */
     private boolean getSteamCanRun(SteamOven steamOven){
         if(steamOven.recipeId == 0){
-            return SteamCommandHelper.checkSteamState(getContext(),steamOven,steamOven.getCurModeCode());
+            return SteamCommandHelper.checkSteamState(getContext(),steamOven,steamOven.getCurModeCode(),false);
         }else{
             Boolean needWater = RecipeManager.getInstance().needWater(IDeviceType.SERIES_STEAM, steamOven.recipeId);
-            return SteamCommandHelper.checkRecipeState(getContext(),steamOven,needWater);
+            return SteamCommandHelper.checkRecipeState(getContext(),steamOven,needWater,false);
         }
     }
 }

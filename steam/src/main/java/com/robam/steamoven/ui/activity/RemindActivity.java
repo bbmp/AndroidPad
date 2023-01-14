@@ -8,6 +8,7 @@ import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.Constant;
+import com.robam.steamoven.constant.SteamModeEnum;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.protocol.SteamCommandHelper;
 
@@ -16,6 +17,8 @@ public class RemindActivity extends SteamBaseActivity {
     private TextView titleTv;
     private int remainBusCode;
     private TextView sureTv;
+    private boolean needWater;
+
 
     @Override
     protected int getLayoutId() {
@@ -34,7 +37,7 @@ public class RemindActivity extends SteamBaseActivity {
                     if(toOffLinePage(steamOven)){
                         return;
                     }
-                    int remindResId = SteamCommandHelper.getRemindResId(steamOven);
+                    int remindResId = SteamCommandHelper.getRemindPromptResId(steamOven, needWater);
                     if(remindResId == 0){
                         finish();
                     }else{
@@ -51,6 +54,7 @@ public class RemindActivity extends SteamBaseActivity {
     @Override
     protected void initData() {
         remainBusCode = getIntent().getIntExtra(Constant.REMIND_BUS_CODE,0);
+        needWater = getIntent().getBooleanExtra(Constant.REMIND_NEED_WATER,false);
         if(remainBusCode != 0 && remainBusCode != -1){
             titleTv.setText(remainBusCode);
         }

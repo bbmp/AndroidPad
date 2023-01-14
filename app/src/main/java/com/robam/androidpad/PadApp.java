@@ -8,6 +8,7 @@ package com.robam.androidpad;
 import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,6 +17,8 @@ import androidx.multidex.MultiDex;
 import com.bumptech.glide.Glide;
 import com.robam.common.device.Plat;
 import com.robam.common.manager.AppActivityManager;
+import com.robam.common.utils.ToastInsUtils;
+import com.robam.common.utils.ToastUtils;
 import com.robam.ventilator.AppVentilator;
 import com.tencent.mmkv.MMKV;
 
@@ -38,6 +41,8 @@ public class PadApp extends Application {
         MMKV.initialize(this);
 //        AppRoki.init(this);
         AppVentilator.onCreate(this);
+        //Toast单实例
+        ToastInsUtils.init(this,"", Toast.LENGTH_LONG);
 
         registerLifecycle();
     }

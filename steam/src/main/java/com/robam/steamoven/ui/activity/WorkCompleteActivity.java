@@ -210,21 +210,22 @@ public class WorkCompleteActivity extends SteamBaseActivity {
         timeDialog.setListeners(v -> {
             if(v.getId() == R.id.tv_ok){//确认加时
                 //发送结束请求并跳转到保存曲线界面
-                if(recipeId != 0){//菜谱加时 缺水判断
-                    SteamOven steamOven = getSteamOven();
-                    boolean needWater = false;
-                    if(steamOven != null){
-                        String deviceTypeId = DeviceUtils.getDeviceTypeId(steamOven.guid);
-                        needWater = RecipeManager.getInstance().needWater(deviceTypeId, recipeId);
-                    }
-                    if(!SteamCommandHelper.checkRecipeState(this,steamOven,needWater)){
-                        return;
-                    }
-                }else{//模式加时 缺水判断
-                    if(!SteamCommandHelper.checkSteamState(this,getSteamOven(),workMode)){
-                        return;
-                    }
-                }
+                //加时先不判断，缺水，工作中不判断除垢
+//                if(recipeId != 0){//菜谱加时 缺水判断
+//                    SteamOven steamOven = getSteamOven();
+//                    boolean needWater = false;
+//                    if(steamOven != null){
+//                        String deviceTypeId = DeviceUtils.getDeviceTypeId(steamOven.guid);
+//                        needWater = RecipeManager.getInstance().needWater(deviceTypeId, recipeId);
+//                    }
+//                    if(!SteamCommandHelper.checkRecipeState(this,steamOven,needWater)){
+//                        return;
+//                    }
+//                }else{//模式加时 缺水判断
+//                    if(!SteamCommandHelper.checkSteamState(this,getSteamOven(),workMode)){
+//                        return;
+//                    }
+//                }
                 addTime = Integer.parseInt(timeDialog.getCurValue());
                 sendOverTimeCommand(addTime*60);
                 mContent.postDelayed(() -> SteamAbstractControl.getInstance().queryAttribute(HomeSteamOven.getInstance().guid),1000);

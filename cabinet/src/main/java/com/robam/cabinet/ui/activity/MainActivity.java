@@ -66,6 +66,7 @@ public class MainActivity extends CabinetBaseActivity {
                     if(toWaringPage(cabinet.faultId)){
                         return;
                     }
+                    //if((cabinet.smartCruising == 1 || cabinet.pureCruising == 1) && cabinet.remainingModeWorkTime <= 0){//去往智能巡航页面
                     if(cabinet.smartCruising == 1 || cabinet.pureCruising == 1){//去往智能巡航页面
                         Intent intent = new Intent(this,CruiseActivity.class);
                         int model = cabinet.smartCruising == 1 ? CabinetEnum.SMART.getCode() : CabinetEnum.FLUSH.getCode();

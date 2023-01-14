@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
+import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.MqttDirective;
@@ -30,6 +31,7 @@ import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.device.SteamAbstractControl;
 import com.robam.steamoven.http.CloudHelper;
+import com.robam.steamoven.manager.RecipeManager;
 import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.response.GetCurveDetailRes;
 import com.robam.steamoven.ui.dialog.SteamCommonDialog;
@@ -91,6 +93,7 @@ public class ModelWorkActivity extends SteamBaseActivity {
     private boolean isAddTime = false;//是否加时
     private Long addTimeMil;//加时指令发起的时间戳
     private int workMode = 0;
+    private boolean isPreHeat = false;//是否当前处于预热状态
 
     @Override
     protected int getLayoutId() {
@@ -117,30 +120,31 @@ public class ModelWorkActivity extends SteamBaseActivity {
         setDurationTv = curCookInfoViewGroup.findViewById(R.id.multi_item_cur_duration);
         setOnClickListener(R.id.multi_work_pause,R.id.multi_work_start,R.id.multi_work_ic_steam);
         //发送指令成功监听
-        MqttDirective.getInstance().getDirective().observe(this, s -> {
-            switch (s - directive_offset){
-                case DIRECTIVE_OFFSET_END:
-                    LogUtils.e(TAG+"主动结束回到主页");
-                    //goHome();
-                    break;
-                case DIRECTIVE_OFFSET_OVER_TIME:
-                    if(timeDialog != null && timeDialog.isShow()){
-                        timeDialog.dismiss();
-                    }
-                    break;
-                case DIRECTIVE_OFFSET_WORK_FINISH:
-                    toCurveSavePage();
-                    break;
-            }
-        });
+//        MqttDirective.getInstance().getDirective().observe(this, s -> {
+//            switch (s - directive_offset){
+//                case DIRECTIVE_OFFSET_END:
+//                    LogUtils.e(TAG+"主动结束回到主页");
+//                    //goHome();
+//                    break;
+//                case DIRECTIVE_OFFSET_OVER_TIME:
+//                    if(timeDialog != null && timeDialog.isShow()){
+//                        timeDialog.dismiss();
+//                    }
+//                    break;
+//                case DIRECTIVE_OFFSET_WORK_FINISH:
+//                    if(isPreHeat){
+//                        goHome();
+//                    }else{
+//                        toCurveSavePage();
+//                    }
+//                    break;
+//            }
+//        });
         //设备状态监听
         AccountInfo.getInstance().getGuid().observe(this, s -> {
             for (Device device: AccountInfo.getInstance().deviceList) {
                 if (device.guid.equals(s) && device instanceof SteamOven && device.guid.equals(HomeSteamOven.getInstance().guid)) {
                     SteamOven steamOven = (SteamOven) device;
-                    if(!SteamCommandHelper.getInstance().isSafe()){
-                        return;
-                    }
                     if(toWaringPage(steamOven)){
                         return;
                     }
@@ -163,7 +167,11 @@ public class ModelWorkActivity extends SteamBaseActivity {
                             if(isWaringAddTimeSuccess()){
                                 return;
                             }
-                            goHome();
+                            if(isPreHeat){
+                                goHome();
+                            }else{
+                                toCurveSavePage();
+                            }
                             break;
                     }
                 }
@@ -371,7 +379,11 @@ public class ModelWorkActivity extends SteamBaseActivity {
                 if(isWaringAddTimeSuccess()){
                     return;
                 }
-                toCurveSavePage();
+                if(isPreHeat){
+                    goHome();
+                }else{
+                    toCurveSavePage();
+                }
                 break;
             case SteamStateConstant.WORK_STATE_APPOINTMENT:
                 goHome();
@@ -439,7 +451,7 @@ public class ModelWorkActivity extends SteamBaseActivity {
             return;
         }
         //LogUtils.e("ModelWork name recipeId " + steamOven.recipeId + " modelCode "+steamOven.mode + " name "+getModelName(steamOven.mode,steamOven.recipeId));
-        boolean isPreHeat = (steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT || steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT_PAUSE);
+        isPreHeat = (steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT || steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT_PAUSE);
         boolean isWorking = changeViewState ? !isPause : (steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT || steamOven.workState == SteamStateConstant.WORK_STATE_WORKING);
         //蒸汽量
         pauseCookView.setVisibility(isWorking?View.VISIBLE:View.INVISIBLE);
@@ -551,9 +563,9 @@ public class ModelWorkActivity extends SteamBaseActivity {
             if(steamOven != null){
                 code = steamOven.mode;
             }
-            if(!SteamCommandHelper.checkSteamState(this,steamOven,code)){
-                return;
-            }
+//            if(!SteamCommandHelper.checkSteamState(this,steamOven,code,false)){
+//                return;
+//            }
             SteamCommandHelper.sendWorkCtrCommand(false);
         }else if(id==R.id.multi_work_start){//继续工作
             //updateViewsPreheat(getSteamOven(),true,false);
@@ -562,7 +574,7 @@ public class ModelWorkActivity extends SteamBaseActivity {
             if(steamOven != null){
                 code = steamOven.mode;
             }
-            if(!SteamCommandHelper.checkSteamState(this,steamOven,code)){
+            if(!SteamCommandHelper.checkSteamState(this,steamOven,code,false)){
                 return;
             }
             SteamCommandHelper.sendWorkCtrCommand(true);

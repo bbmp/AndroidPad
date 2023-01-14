@@ -15,6 +15,7 @@ import com.robam.common.http.RetrofitCallback;
 import com.robam.common.manager.DynamicLineChartManager;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.StringUtils;
+import com.robam.common.utils.ToastInsUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
@@ -141,7 +142,7 @@ public class CurveSaveActivity extends SteamBaseActivity {
     private void parserCureData(GetCurveDetailRes getDeviceParamsRes) throws JSONException {
         this.curveDetailRes = getDeviceParamsRes;
         if(getDeviceParamsRes == null){
-            ToastUtils.showLong(this,R.string.steam_curve_no_data);
+            ToastInsUtils.showLong(this,R.string.steam_curve_no_data);
             cookChart.setNoDataText(getString(R.string.steam_curve_no_data));
             initLineChart();
             return;
@@ -274,7 +275,7 @@ public class CurveSaveActivity extends SteamBaseActivity {
 
     private void saveCurveStep(){
         if(curveDetailRes == null){
-            ToastUtils.showLong(CurveSaveActivity.this,R.string.steam_curve_no_data);
+            ToastInsUtils.showLong(CurveSaveActivity.this,R.string.steam_curve_no_data);
             return;
         }
         curveDetailRes.payload.userId = AccountInfo.getInstance().getUserString();
@@ -287,7 +288,7 @@ public class CurveSaveActivity extends SteamBaseActivity {
         CloudHelper.saveCurveStepData(this, curveDetailRes.payload, BaseResponse.class, new RetrofitCallback<BaseResponse>() {
             @Override
             public void onSuccess(BaseResponse baseResponse) {
-                ToastUtils.showLong(CurveSaveActivity.this,R.string.steam_curve_success);
+                ToastInsUtils.showLong(CurveSaveActivity.this,R.string.steam_curve_success);
                 goHome();
             }
 

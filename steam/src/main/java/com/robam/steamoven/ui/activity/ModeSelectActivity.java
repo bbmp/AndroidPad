@@ -23,6 +23,7 @@ import com.robam.common.ui.IModeSelect;
 import com.robam.common.utils.ClickUtils;
 import com.robam.common.utils.DateUtil;
 import com.robam.common.utils.LogUtils;
+import com.robam.common.utils.ToastInsUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
@@ -205,22 +206,19 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
         boolean isClickAble = true;
         for (ModeBean modeBean: modes) {
             if (modeCode == modeBean.code) {
-                int promptResId = 0;
+                //int promptResId = 0;
+                String promptText = null;
                 if (tab.getId() == 2) {
                     isClickAble = modeBean.maxTemp != modeBean.minTemp;
-                    promptResId = R.string.steam_temp_prompt;
+                    //promptResId = R.string.steam_temp_prompt;
+                    promptText = SteamModeEnum.match(modeCode)+"不需要调节温度参数";
                 } else if (tab.getId() == 4) {
                     isClickAble = modeBean.maxTime != modeBean.minTime;
-                    promptResId = R.string.steam_time_prompt;
+                    //promptResId = R.string.steam_time_prompt;
+                    promptText = SteamModeEnum.match(modeCode)+"不需要调节时间参数";
                 }
-                if(!isClickAble){
-//                    if(modeBean.maxTemp == modeBean.minTemp && modeBean.maxTemp == modeBean.minTemp){
-//                        promptResId = R.string.steam_temp_time_prompt;
-//                    }
-                    if(System.currentTimeMillis() - preShowTimeMin >= 2000){//防止用户多次点击，弹出太多的Toast
-                        preShowTimeMin = System.currentTimeMillis();
-                        ToastUtils.showLong(ModeSelectActivity.this,promptResId);
-                    }
+                if(!isClickAble && promptText != null){
+                    ToastInsUtils.showLong(ModeSelectActivity.this,promptText);
                 }
                 break;
             }
@@ -285,7 +283,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
         if (null != getIntent()){
             modes = (ArrayList<ModeBean>) getIntent().getSerializableExtra(SteamConstant.EXTRA_MODE_LIST);
         }else{
-            ToastUtils.showLong(this,R.string.steam_model_select_data_prompt);
+            ToastInsUtils.showLong(this,R.string.steam_model_select_data_prompt);
             finish();
             return;
         }
@@ -440,11 +438,25 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
     }
 
     private ModeBean getDefaultTempMode(ModeBean defaultBean){
-        ModeBean modeBean =new ModeBean();
-        modeBean.defTemp = 160;
-        modeBean.minTemp = 80;
-        modeBean.maxTemp = 180;
-        return modeBean;
+        ModeBean expMode = null;
+        if(modes != null && modes.size() > 0){
+            for(ModeBean mBean : modes){
+                if(mBean.code == SteamConstant.EXP){
+                    expMode = mBean;
+                    break;
+                }
+            }
+        }
+        if(expMode != null){
+            return getDownTempMode(expMode,expMode.defTemp);
+        }else{
+            ModeBean modeBean =new ModeBean();
+            modeBean.defTemp = 160;
+            modeBean.minTemp = 80;
+            modeBean.maxTemp = 180;
+            return modeBean;
+        }
+
     }
 
     private ModeBean getDownTempMode(ModeBean expMode,int curTemp){
@@ -514,7 +526,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
 
 
     private void startWorkOrAppointment(){
-        if(!SteamCommandHelper.checkSteamState(this,getSteamOven(),curModeBean.code)){
+        if(!SteamCommandHelper.checkSteamState(this,getSteamOven(),curModeBean.code,true)){
             return;
         }
         String text = btStart.getText().toString();

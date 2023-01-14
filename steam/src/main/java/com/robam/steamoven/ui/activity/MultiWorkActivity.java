@@ -15,7 +15,7 @@ import com.robam.common.http.RetrofitCallback;
 import com.robam.common.manager.DynamicLineChartManager;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.LogUtils;
-import com.robam.common.utils.ToastUtils;
+import com.robam.common.utils.ToastInsUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.bean.MultiSegment;
@@ -77,6 +77,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
     private long workTimeMS = System.currentTimeMillis();
     private boolean isPageHide = false;//页面是否已经不显示
     private int workMode;
+    private boolean isPreHeat;
 
     @Override
     protected int getLayoutId() {
@@ -101,9 +102,6 @@ public class MultiWorkActivity extends SteamBaseActivity {
             for (Device device: AccountInfo.getInstance().deviceList) {
                 if (device.guid.equals(s) && device instanceof SteamOven && device.guid.equals(HomeSteamOven.getInstance().guid)) {
                     SteamOven steamOven = (SteamOven) device;
-                    if(!SteamCommandHelper.getInstance().isSafe()){
-                        return;
-                    }
                     if(toWaringPage(steamOven)){
                         return;
                     }
@@ -121,10 +119,15 @@ public class MultiWorkActivity extends SteamBaseActivity {
                             break;
                         case SteamStateConstant.POWER_STATE_OFF:
                             //goHome();
-                            if(multiSegments != null && multiSegments.get(0).recipeId != 0){
+
+                            if(isPreHeat){
                                 goHome();
                             }else{
-                                toCurveSavePage();
+                                if(multiSegments != null && multiSegments.get(0).recipeId != 0){
+                                    goHome();
+                                }else{
+                                    toCurveSavePage();
+                                }
                             }
                             break;
                     }
@@ -153,7 +156,16 @@ public class MultiWorkActivity extends SteamBaseActivity {
     private void updateViewInfo(SteamOven steamOven){
         switch (steamOven.workState){
             case SteamStateConstant.WORK_STATE_LEISURE://空闲
-                toCurveSavePage();
+                //toCurveSavePage();
+                if(isPreHeat){
+                    goHome();
+                }else{
+                    if(multiSegments != null && multiSegments.get(0).recipeId != 0){
+                        goHome();
+                    }else{
+                        toCurveSavePage();
+                    }
+                }
                 break;
             case SteamStateConstant.WORK_STATE_APPOINTMENT:
                 goHome();
@@ -169,7 +181,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
                 dismissAllDialog();
                 showDialog = false;
                 boolean cookState = ((steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT) || (steamOven.workState ==  SteamStateConstant.WORK_STATE_WORKING));
-                boolean isPreHeat = (steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT || steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT_PAUSE);
+                isPreHeat = (steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT || steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT_PAUSE);
                 preTotalTime = getTotalTime(steamOven);
                 setOptViewsState(steamOven,cookState,isPreHeat);
                 //改变段落数据显示状态
@@ -400,20 +412,20 @@ public class MultiWorkActivity extends SteamBaseActivity {
         }else if(id == R.id.multi_work_pause){//暂停工作
             SteamOven steamOven = getSteamOven();
             if(steamOven == null){
-                ToastUtils.showLong(this, R.string.steam_offline);
+                ToastInsUtils.showLong(this, R.string.steam_offline);
                 return;
             }
-            if(!SteamCommandHelper.checkSteamState(this,steamOven,getSegmentModeCode(steamOven))){
+            if(!SteamCommandHelper.checkSteamState(this,steamOven,getSegmentModeCode(steamOven),false)){
                 return;
             }
             SteamCommandHelper.sendWorkCtrCommand(false);
         }else if(id==R.id.multi_work_start){//继续工作
             SteamOven steamOven = getSteamOven();
             if(steamOven == null){
-                ToastUtils.showLong(this, R.string.steam_offline);
+                ToastInsUtils.showLong(this, R.string.steam_offline);
                 return;
             }
-            if(!SteamCommandHelper.checkSteamState(this,steamOven,getSegmentModeCode(steamOven))){
+            if(!SteamCommandHelper.checkSteamState(this,steamOven,getSegmentModeCode(steamOven),false)){
                 return;
             }
             SteamCommandHelper.sendWorkCtrCommand(true);

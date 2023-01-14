@@ -28,6 +28,7 @@ import com.robam.steamoven.constant.SteamConstant;
 import com.robam.steamoven.constant.SteamModeEnum;
 import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
+import com.robam.steamoven.manager.RecipeManager;
 import com.robam.steamoven.manager.SteamActivityManager;
 import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.ui.activity.MainActivity;
@@ -175,15 +176,27 @@ public abstract class SteamBaseActivity extends BaseActivity {
      * @return
      */
     public boolean toRemandPage(SteamOven curDevice){
-        return this.toRemandPage(curDevice,curDevice.mode);
+        boolean needWater;
+        if(curDevice.recipeId != 0){
+            needWater = RecipeManager.getInstance().needWater(IDeviceType.SERIES_STEAM, curDevice.recipeId);
+        }else{
+            needWater = SteamModeEnum.needWater(curDevice.mode) || SteamModeEnum.isManuallyAddSteam(curDevice.mode);
+        }
+        return this.toRemandPage(curDevice,needWater);
     }
 
     public boolean toRemandPage(SteamOven curDevice,int curMode){
-        int remindResId = SteamCommandHelper.getRemindPromptResId(curDevice, SteamModeEnum.needWater(curMode) || SteamModeEnum.isManuallyAddSteam(curMode));
+        boolean needWater = SteamModeEnum.needWater(curMode) || SteamModeEnum.isManuallyAddSteam(curMode);
+        return this.toRemandPage(curDevice,needWater);
+    }
+
+    public boolean toRemandPage(SteamOven curDevice,boolean needWater){
+        int remindResId = SteamCommandHelper.getRemindPromptResId(curDevice,needWater);
         if(remindResId != 0 && preRemindResId != remindResId){
             preRemindResId = remindResId;
             Intent intent = new Intent(this, RemindActivity.class);
             intent.putExtra(Constant.REMIND_BUS_CODE,remindResId);
+            intent.putExtra(Constant.REMIND_NEED_WATER,needWater);
             startActivity(intent);
             return true;
         }
