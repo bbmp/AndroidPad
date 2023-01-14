@@ -57,7 +57,7 @@ android {
         //ventilator
         ventilator {
             applicationId "com.robam.ventilator"
-            resValue "string", "app_name", "ventilator"
+            resValue "string", "app_name", "CXW-260-5068S"
 //            修改AndroidManifest.xml部分字段(包含logo)
             manifestPlaceholders = [app_icon: "@mipmap/logo"]
         }

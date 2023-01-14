@@ -7,23 +7,27 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.robam.common.device.Plat;
 import com.robam.common.ui.activity.BaseActivity;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.ventilator.BuildConfig;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
+import com.robam.ventilator.device.HomeVentilator;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class AboutActivity extends VentilatorBaseActivity {
+    private TextView tvSys;
     private TextView tvSysV;
     private TextView tvModelV;
     private int COUNT = 5;
     private long DURATION = 3* 1000;
     private long[] mHits = new long[COUNT];
     private long[] mSerial = new long[COUNT];
+    private long[] mBuildTime = new long[COUNT];
 
     @Override
     protected int getLayoutId() {
@@ -36,6 +40,7 @@ public class AboutActivity extends VentilatorBaseActivity {
         showLeft();
         showCenter();
         findViewById(R.id.tc_center).setVisibility(View.GONE);
+        tvSys = findViewById(R.id.tv_sys);
         tvSysV = findViewById(R.id.tv_sys_v);
         tvModelV = findViewById(R.id.tv_model_v);
         TextView tvCenter = findViewById(R.id.tv_center);
@@ -47,9 +52,22 @@ public class AboutActivity extends VentilatorBaseActivity {
     @Override
     protected void initData() {
 //        tvSysV.setText(BuildConfig.VERSION_NAME);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = new Date(Build.TIME);
-        tvSysV.setText(simpleDateFormat.format(date));
+//        tvSysV.setText(simpleDateFormat.format(date));
+        tvSys.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.arraycopy(mBuildTime, 1, mBuildTime, 0, mBuildTime.length - 1);
+                mBuildTime[mBuildTime.length - 1] = System.currentTimeMillis();
+                if (mBuildTime[0] >= (System.currentTimeMillis() - DURATION)) {
+                    long[] hits = new long[COUNT];
+                    System.arraycopy(hits, 0, mBuildTime, 0, mBuildTime.length);
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    Date date = new Date(Build.TIME);
+                    ToastUtils.showLong(getApplicationContext(), simpleDateFormat.format(date));
+                }
+            }
+        });
+        tvSysV.setText(Plat.getPlatform().getFirmwareVersion());
         tvModelV.setText(BuildConfig.MODEL);
         tvModelV.setOnClickListener(new View.OnClickListener() {
             @Override

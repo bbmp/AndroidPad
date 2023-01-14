@@ -78,16 +78,28 @@ public class AlarmVentilatorService extends Service {
                     if (null != process) {
                         BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream(), "utf-8"));
                         String line = null;
+                        long longTime = 0;
                         long downTime = 0;
+                        boolean consume = false;
                         while (true) {
                             line = br.readLine();
 
                             if (null != line) { //熄屏状态
+                                if (line.startsWith("0001") && line.contains("00000001")) { //按下事件
+                                    if (System.currentTimeMillis() - downTime < 1000) {
+                                        consume = false; //后面的事件停止消费
+                                        continue;
+                                    }
+                                    downTime = System.currentTimeMillis();
+                                    consume = true;
+                                }
+                                if (!consume)
+                                    continue;
                                 if (line.contains("00a5")) { //左键
                                     if (line.contains("00000001")) {//down事件
-                                        downTime = System.currentTimeMillis();
+                                        longTime = System.currentTimeMillis();
                                     } else if (line.contains("00000000")) { //up事件
-                                        if (System.currentTimeMillis() - downTime > 2000) { //长按
+                                        if (System.currentTimeMillis() - longTime > 2000) { //长按
                                             PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
                                             boolean isScreenOn = pm.isInteractive();
                                             if (!isScreenOn) { //熄屏状态冷暖光切换
@@ -109,7 +121,7 @@ public class AlarmVentilatorService extends Service {
                                     }
                                 } else if (line.contains("00a4")) { //右键
                                     if (line.contains("00000001")) {//down事件
-                                        downTime = System.currentTimeMillis();
+                                        longTime = System.currentTimeMillis();
                                     } else if (line.contains("00000000")) { //up事件
                                         LogUtils.e("startup = " + HomeVentilator.getInstance().isStartUp());
                                         if (HomeVentilator.getInstance().isStartUp()) { //开机状态
