@@ -119,27 +119,6 @@ public class ModelWorkActivity extends SteamBaseActivity {
         setTempTv = curCookInfoViewGroup.findViewById(R.id.multi_item_cur_temperature);
         setDurationTv = curCookInfoViewGroup.findViewById(R.id.multi_item_cur_duration);
         setOnClickListener(R.id.multi_work_pause,R.id.multi_work_start,R.id.multi_work_ic_steam);
-        //发送指令成功监听
-//        MqttDirective.getInstance().getDirective().observe(this, s -> {
-//            switch (s - directive_offset){
-//                case DIRECTIVE_OFFSET_END:
-//                    LogUtils.e(TAG+"主动结束回到主页");
-//                    //goHome();
-//                    break;
-//                case DIRECTIVE_OFFSET_OVER_TIME:
-//                    if(timeDialog != null && timeDialog.isShow()){
-//                        timeDialog.dismiss();
-//                    }
-//                    break;
-//                case DIRECTIVE_OFFSET_WORK_FINISH:
-//                    if(isPreHeat){
-//                        goHome();
-//                    }else{
-//                        toCurveSavePage();
-//                    }
-//                    break;
-//            }
-//        });
         //设备状态监听
         AccountInfo.getInstance().getGuid().observe(this, s -> {
             for (Device device: AccountInfo.getInstance().deviceList) {

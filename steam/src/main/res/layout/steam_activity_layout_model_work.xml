@@ -18,7 +18,7 @@
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5"
+        app:layout_constraintGuide_percent="0.46"
         android:layout_height="@dimen/dp_10"
         android:layout_width="@dimen/dp_10"/>
 
@@ -27,7 +27,7 @@
         android:id="@+id/cook_chart"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginLeft="@dimen/dp_140"
+        android:layout_marginLeft="@dimen/dp_120"
         android:layout_marginBottom="@dimen/dp_80"
         android:layout_marginTop="@dimen/dp_156"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -167,17 +167,17 @@
         <TextView
             android:id="@+id/multi_item_cur_steam"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/sp_40"
-            android:textSize="@dimen/sp_40"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/sp_25"
             android:textColor="@color/steam_white_65"
-            tools:text="中蒸汽"/>
+            android:textSize="@dimen/sp_40"
+            tools:text="中蒸汽" />
 
         <TextView
             android:id="@+id/multi_item_cur_temperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/sp_40"
+            android:layout_marginLeft="@dimen/sp_25"
             android:textSize="@dimen/sp_40"
             android:textColor="@color/steam_white_65"
             tools:text="100"/>
@@ -198,7 +198,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_40"
-            android:layout_marginLeft="@dimen/sp_40"
+            android:layout_marginLeft="@dimen/sp_25"
             android:textColor="@color/steam_white_65"
             tools:text="20"/>
 

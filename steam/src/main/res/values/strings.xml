@@ -1199,7 +1199,7 @@
     <string name="steam_end_appoint">是否结束当前预约工作</string>
     <string name="steam_match_hint8">1.开启一体机。 \n2.在一体机上登录当前ROKI账户。 \n完成上述操作后点击下一步。</string>
     <string name="steam_need_water">设备缺水</string>
-    <string name="steam_waste_water">废水箱已满,请即时清理</string>
+    <string name="steam_waste_water">废水箱已满，请即时清理</string>
     <string name="steam_waste_water_out">废水箱未就位，请将水箱放置于正确位置</string>
     <string name="steam_waste_water_remain">废水箱已满,请即时清理</string>
     <string name="steam_waring_2">上温度传感器故障</string>

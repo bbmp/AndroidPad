@@ -36,9 +36,9 @@ public class MainActivity extends SteamBaseActivity {
             for (Device device: AccountInfo.getInstance().deviceList) {
                 if (device.guid.equals(s) && device instanceof SteamOven && device.guid.equals(HomeSteamOven.getInstance().guid)) {
                     SteamOven steamOven = (SteamOven) device;
-                    if(!SteamCommandHelper.getInstance().isSafe()){
-                        return;
-                    }
+//                    if(!SteamCommandHelper.getInstance().isSafe()){
+//                        return;
+//                    }
                     if(toWaringPage(steamOven)){
                         return;
                     }

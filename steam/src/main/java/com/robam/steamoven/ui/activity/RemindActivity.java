@@ -18,6 +18,8 @@ public class RemindActivity extends SteamBaseActivity {
     private int remainBusCode;
     private TextView sureTv;
     private boolean needWater;
+    private boolean needCheckDescale;
+    private int curMode = -1;
 
 
     @Override
@@ -37,12 +39,14 @@ public class RemindActivity extends SteamBaseActivity {
                     if(toOffLinePage(steamOven)){
                         return;
                     }
-                    int remindResId = SteamCommandHelper.getRemindPromptResId(steamOven, needWater);
-                    if(remindResId == 0){
+                    int tempMode = curMode == -1 ? steamOven.mode : curMode;
+                    int remindResId = SteamCommandHelper.getRunPromptResId(steamOven, tempMode, needWater,needCheckDescale);
+                    //int remindResId = SteamCommandHelper.getRemindPromptResId(steamOven, needWater);
+                    if(remindResId == 0 || remindResId == -1){
                         finish();
                     }else{
                         if(remindResId != remainBusCode){
-                            titleTv.setText(remainBusCode);
+                            titleTv.setText(remindResId);
                         }
                     }
                 }
@@ -55,12 +59,15 @@ public class RemindActivity extends SteamBaseActivity {
     protected void initData() {
         remainBusCode = getIntent().getIntExtra(Constant.REMIND_BUS_CODE,0);
         needWater = getIntent().getBooleanExtra(Constant.REMIND_NEED_WATER,false);
+        curMode = getIntent().getIntExtra(Constant.REMIND_MODE_CODE,-1);
+        needCheckDescale = getIntent().getBooleanExtra(Constant.REMIND_NEED_Descale,false);
         if(remainBusCode != 0 && remainBusCode != -1){
             titleTv.setText(remainBusCode);
         }
-        if(remainBusCode == R.string.steam_water_deficient_remain){
-            sureTv.setText(R.string.steam_iamknown);
-        }
+//        if(remainBusCode == R.string.steam_water_deficient_remain || remainBusCode == R.string.steam_waste_water){
+//            sureTv.setText(R.string.steam_iamknown);
+//        }
+        sureTv.setText(R.string.steam_iamknown);
     }
 
 

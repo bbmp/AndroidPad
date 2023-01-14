@@ -2,6 +2,7 @@ package com.robam.common.utils;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.widget.Toast;
@@ -13,6 +14,7 @@ public class ToastInsUtils {
 
 
     private static Toast toast;
+
     public static void showThrowable(Context cx, Throwable t) {
         if (t != null)
             showShort(cx, t.getMessage());
@@ -45,7 +47,6 @@ public class ToastInsUtils {
     }
 
     public static void show(final Context cx, final String msg, final int duration) {
-
         if (TextUtils.isEmpty(msg))
             return;
         if(toast == null){
@@ -56,7 +57,7 @@ public class ToastInsUtils {
                 return;
             }
         }
-        //toast.setDuration(duration);
+        toast.setDuration(duration);
         toast.setText(msg);
         toast.show();
     }

@@ -1,6 +1,7 @@
 package com.robam.steamoven.ui.adapter;
 
 import android.util.TypedValue;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -11,8 +12,9 @@ import com.robam.common.utils.LogUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.bean.FuntionBean;
 
-public class RvMainFuntionAdapter extends BaseQuickAdapter<FuntionBean, BaseViewHolder> {
+public class RvMainFuntionAdapter extends BaseQuickAdapter<FuntionBean, BaseViewHolder> implements View.OnClickListener{
     private int pickPosition;
+    private ItemClick itemClick;
 
     public void setPickPosition(int pickPosition) {
         this.pickPosition = pickPosition % getData().size();
@@ -54,11 +56,31 @@ public class RvMainFuntionAdapter extends BaseQuickAdapter<FuntionBean, BaseView
         if (null != functionBean) {
             TextView textView = baseViewHolder.getView(R.id.tv_funtion_name);
             textView.setText(functionBean.funtionName);
+            View view = baseViewHolder.getView(R.id.tv_funtion_bg);
+            view.setTag(functionBean);
+            view.setOnClickListener(this);
 //            mTextView.setTextColor(getColor(R.color.common_text_color));
 //            if (pickPosition == getItemPosition(functionBean)) {
 //                textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getContext().getResources().getDimensionPixelSize(com.robam.common.R.dimen.sp_80));
 //            } else
 //                textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getContext().getResources().getDimensionPixelSize(com.robam.common.R.dimen.sp_40));
         }
+    }
+
+
+
+    @Override
+    public void onClick(View view) {
+        if(itemClick != null){
+            itemClick.itemClick((FuntionBean) view.getTag());
+        }
+    }
+
+    public static interface ItemClick{
+        void itemClick(FuntionBean funtionBean);
+    }
+
+    public void setItemClick(ItemClick itemClick) {
+        this.itemClick = itemClick;
     }
 }

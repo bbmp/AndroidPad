@@ -682,11 +682,10 @@ public class MqttSteamOven extends MqttPublic {
                 int attributeNum = MsgUtils.getByte(payload[offset]);
                 offset++;
                 break;
-            case MsgKeys.getDeviceAlarmEventReport:{
+            case MsgKeys.getDeviceAlarmEventReport:
                 short code = ByteUtils.toShort(payload[offset++]);
                 msg.putOpt(SteamConstant.faultCode, code);
-            }
-            break;
+                break;
             case MsgKeys.setSteameOvenStatusControl_Rep:
                 msg.putOpt(SteamConstant.RC, ByteUtils.toShort(payload[offset++]));
                 break;

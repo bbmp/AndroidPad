@@ -14,53 +14,60 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tv_mode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_40"
-        android:textColor="@color/steam_mode70"
-        android:text="消毒"
-        android:layout_marginBottom="@dimen/dp_44"
-        app:layout_constraintLeft_toLeftOf="@id/tv_temp"
-        app:layout_constraintBottom_toTopOf="@id/tv_steam"
-        app:layout_constraintVertical_chainStyle="packed"/>
-
-    <TextView
-        android:id="@+id/tv_steam"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_40"
-        android:textColor="@color/steam_mode70"
-        android:text="中蒸汽"
-        android:visibility="gone"
-        android:layout_marginLeft="@dimen/dp_160"
-        android:layout_marginBottom="@dimen/dp_44"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@id/guideline_1"
-        app:layout_constraintBottom_toBottomOf="@id/guideline_1"/>
-
-    <TextView
-        android:id="@+id/tv_temp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_40"
-        android:textColor="@color/steam_mode70"
-        android:text="180C"
+    <LinearLayout
+        android:layout_marginTop="@dimen/dp_40"
         android:layout_marginLeft="@dimen/dp_160"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_steam" />
+        app:layout_constraintTop_toBottomOf="@id/ll_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:orientation="vertical"
+        android:layout_width="@dimen/dp_200"
+        android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/dp_100">
 
-    <TextView
-        android:id="@+id/tv_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_40"
-        android:textColor="@color/steam_mode70"
-        android:text="22"
-        android:layout_marginTop="@dimen/dp_44"
-        app:layout_constraintLeft_toLeftOf="@id/tv_temp"
-        app:layout_constraintTop_toBottomOf="@id/tv_temp"/>
+        <TextView
+            android:id="@+id/tv_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="@dimen/sp_40"
+            android:textColor="@color/steam_mode70"
+            android:text="消毒"/>
+
+        <TextView
+            android:id="@+id/tv_steam"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="@dimen/sp_40"
+            android:textColor="@color/steam_mode70"
+            android:text="中蒸汽"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/tv_temp"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="@dimen/sp_40"
+            android:textColor="@color/steam_mode70"
+            android:text="180C"/>
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="@dimen/sp_40"
+            android:textColor="@color/steam_mode70"
+            android:text="22"/>
+    </LinearLayout>
+
+
 
     <com.robam.common.ui.view.MCountdownView
         android:id="@+id/tv_countdown"

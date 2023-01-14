@@ -78,7 +78,7 @@ public class AuxWorkCompleteActivity extends SteamBaseActivity {
     protected void initData() {
         auxCode = getIntent().getIntExtra(Constant.AUX_MODEL,0);
         if(auxCode != 0){
-            mContentTv.setText(SteamModeEnum.match(auxCode)+"完成");
+            mContentTv.setText(SteamModeEnum.match(auxCode)+"已完成");
         }else{
             mContentTv.setText("工作完成");
         }

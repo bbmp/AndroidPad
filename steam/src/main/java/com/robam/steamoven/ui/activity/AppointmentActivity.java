@@ -123,56 +123,7 @@ public class AppointmentActivity extends SteamBaseActivity {
                 }
             }
         });
-
-//        AccountInfo.getInstance().getGuid().observe(this, s -> {
-//            for (Device device: AccountInfo.getInstance().deviceList) {
-//                if (device.guid.equals(s) && device instanceof SteamOven && device.guid.equals(HomeSteamOven.getInstance().guid)) {
-//                    SteamOven steamOven = (SteamOven) device;
-//                    if(toWaringPage(steamOven)){
-//                        return;
-//                    }
-//                    switch (steamOven.powerState){
-//                        case SteamStateConstant.POWER_STATE_AWAIT:
-//                        case SteamStateConstant.POWER_STATE_ON:
-//                        case SteamStateConstant.POWER_STATE_TROUBLE:
-//                            dealAppointingPage(steamOven);
-//                            break;
-//                        case SteamStateConstant.POWER_STATE_OFF:
-//                            break;
-//                    }
-//                }
-//            }
-//        });
-//        MqttDirective.getInstance().getDirective().observe(this, s -> {
-//            switch (s - directive_offset){
-//                case START:
-//                    try {
-//                        toAppointingPage();
-//                    } catch (ParseException e) {
-//                        e.printStackTrace();
-//                    }
-//                    break;
-//            }
-//        });
     }
-
-
-
-    private void dealAppointingPage(SteamOven steamOven) {
-        if(steamOven.mode == 0){
-            return;
-        }
-        if (steamOven.workState == SteamStateConstant.WORK_STATE_APPOINTMENT && steamOven.orderLeftTime > 0){
-            HomeSteamOven.getInstance().orderTime = multiSegment.workRemaining;
-            HomeSteamOven.getInstance().workMode = (short) multiSegment.code;
-            HomeSteamOven.getInstance().workHours = multiSegment.duration;
-            Intent intent = new Intent(this,AppointingActivity.class);
-            intent.putExtra(Constant.SEGMENT_DATA_FLAG,multiSegment);
-            startActivity(intent);
-            finish();
-        }
-    }
-
 
     @Override
     protected void initData() {
@@ -201,7 +152,6 @@ public class AppointmentActivity extends SteamBaseActivity {
     @Override
     public void onClick(View view) {
         //super.onClick(view);
-        LogUtils.i("AppointmentActivity onClick .");
         int id = view.getId();
         if (id == R.id.btn_cancel) {
             //finish();
@@ -237,7 +187,7 @@ public class AppointmentActivity extends SteamBaseActivity {
         String hour = mHourAdapter.getItem(mHourManager.getPickedPosition());
         String minute = mMinuteAdapter.getItem(mMinuteManager.getPickedPosition());
         orderTime = hour + ":" + minute;
-        if (DateUtil.compareTime(DateUtil.getCurrentTime(DateUtil.PATTERN), orderTime, DateUtil.PATTERN) == 1) {
+        if (DateUtil.compareTime(DateUtil.getCurrentTime(DateUtil.PATTERN), orderTime, DateUtil.PATTERN)  >= 0) {
             tvTime.setText(String.format(getString(R.string.steam_work_order_hint2), orderTime ));
         } else {
             tvTime.setText(String.format(getString(R.string.steam_work_order_hint3), orderTime ));

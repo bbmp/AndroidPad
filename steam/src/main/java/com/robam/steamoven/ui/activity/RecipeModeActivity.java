@@ -1,5 +1,6 @@
 package com.robam.steamoven.ui.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Parcelable;
 import android.view.View;
@@ -182,11 +183,23 @@ public class RecipeModeActivity extends SteamBaseActivity {
         if (view.getId() == R.id.ll_left) {
             finish();
         }else if(view.getId() == R.id.btn_start){
-            if(!SteamCommandHelper.checkRecipeState(this,getSteamOven(),curMode.needWater == 1,true)){
+//            if(!SteamCommandHelper.checkRecipeState(this,getSteamOven(),curMode.needWater == 1,true)){
+//                return;
+//            }
+            if(!toRecipePage(getSteamOven(),curMode.needWater == 1,true)){
                 return;
             }
             sendStartWorkCommand();
         }
+    }
+
+    private  boolean toRecipePage(SteamOven curDevice, boolean needWater, boolean needCheckDescale){
+        int promptResId = SteamCommandHelper.getRunPromptResId(curDevice, curDevice.mode,needWater,needCheckDescale);
+        if(promptResId != -1){
+            showRemindPage(promptResId,needWater, curDevice.mode,needCheckDescale);
+            return true;
+        }
+        return false;
     }
 
     /**

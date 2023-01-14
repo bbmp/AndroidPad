@@ -224,6 +224,16 @@ public abstract class SteamBaseActivity extends BaseActivity {
         return false;
     }
 
+    public void showRemindPage(int remindResId,boolean needWater,int modeCode,boolean needCheckDescale){
+        Intent intent = new Intent(this, RemindActivity.class);
+        intent.putExtra(Constant.REMIND_BUS_CODE,remindResId);
+        intent.putExtra(Constant.REMIND_NEED_WATER,needWater);
+        intent.putExtra(Constant.REMIND_NEED_Descale,needCheckDescale);
+        intent.putExtra(Constant.REMIND_MODE_CODE,modeCode);
+        startActivity(intent);
+    }
+
+
 
 
 }

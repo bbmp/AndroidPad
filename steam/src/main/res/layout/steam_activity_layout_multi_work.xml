@@ -36,7 +36,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintWidth_percent="0.5"
+        app:layout_constraintWidth_percent="0.46"
         android:paddingLeft="@dimen/dp_85"
         app:layout_constraintTop_toBottomOf="@id/ll_title"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -76,7 +76,7 @@
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.545"
+        app:layout_constraintGuide_percent="0.6"
         android:layout_height="@dimen/dp_10"
         android:layout_width="@dimen/dp_10"/>
 
@@ -91,6 +91,19 @@
         app:layout_constraintBottom_toBottomOf="@id/guideline"
         app:layout_constraintLeft_toRightOf="@id/multi_work_model_list"
         android:text="22min"/>
+
+    <TextView
+        android:id="@+id/multi_work_pre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_30"
+        android:layout_marginRight="@dimen/dp_10"
+        android:textColor="@color/steam_white"
+        android:layout_marginLeft="@dimen/dp_80"
+        app:layout_constraintTop_toTopOf="@id/multi_work_pause"
+        app:layout_constraintBottom_toBottomOf="@id/multi_work_pause"
+        app:layout_constraintLeft_toRightOf="@id/multi_work_total"
+        android:text="预热中"/>
 
 <!--    <TextView-->
 <!--        android:id="@+id/multi_work_temp"-->
@@ -111,9 +124,9 @@
         android:src="@drawable/steam_ic_pause"
         app:layout_constraintBottom_toBottomOf="@id/multi_work_total"
         android:layout_marginBottom="@dimen/dp_30"
-        app:layout_constraintLeft_toRightOf="@id/multi_work_total"
-        app:layout_constraintRight_toRightOf="parent"
-        android:text="22min"/>
+        app:layout_constraintLeft_toRightOf="@id/multi_work_pre"
+        app:layout_constraintRight_toRightOf="parent"/>
+
 
 
     <ImageView
@@ -134,6 +147,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toRightOf="@id/multi_work_model_list"
         app:layout_constraintBottom_toTopOf="@id/multi_work_total"
+        android:layout_marginBottom="@dimen/dp_20"
         android:orientation="horizontal"
         android:layout_width="0dp"
         android:layout_height="wrap_content">

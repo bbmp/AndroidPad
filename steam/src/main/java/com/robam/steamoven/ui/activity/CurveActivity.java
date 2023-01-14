@@ -57,10 +57,9 @@ public class CurveActivity extends SteamBaseActivity {
         showRight();
         //showRightCenter();
         tvRight = findViewById(R.id.tv_right);
-        //
         tvRight.setText(R.string.steam_delete);
-        ivRight.setImageResource(R.drawable.steam_delete);
         ivRight = findViewById(R.id.iv_right);
+        ivRight.setImageResource(R.drawable.steam_delete);
         rvRecipe = findViewById(R.id.rv_recipe);
         tvDelete = findViewById(R.id.tv_delete);
         linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);

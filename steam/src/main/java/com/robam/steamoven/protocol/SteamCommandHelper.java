@@ -561,7 +561,8 @@ public class SteamCommandHelper {
      */
     public static boolean checkSteamState(Context context, SteamOven curDevice,int modeCode,boolean needCheckDescale){
         boolean state = true;
-        int promptResId = getRunPromptResId(curDevice, modeCode, SteamModeEnum.needWater(modeCode)||SteamModeEnum.isManuallyAddSteam(modeCode),needCheckDescale);
+        //int promptResId = getRunPromptResId(curDevice, modeCode, SteamModeEnum.needWater(modeCode)||SteamModeEnum.isManuallyAddSteam(modeCode),needCheckDescale);
+        int promptResId = getRunPromptResId(curDevice, modeCode, SteamModeEnum.needWater(modeCode),needCheckDescale);//TODO(暂不考虑手动加湿)
         if(promptResId != -1){
             if(needShowPrompt()){
                 ToastInsUtils.showLong(context,promptResId);
@@ -682,6 +683,11 @@ public class SteamCommandHelper {
         }
         return state;
     }
+
+
+
+
+
 
     public static void sendWorkCtrCommand(boolean isWork){
         Map commonMap = getCommonMap(MsgKeys.setDeviceAttribute_Req);

@@ -31,7 +31,7 @@
 
     <TextView
         android:id="@+id/remind_btn"
-        android:layout_marginTop="@dimen/dp_36"
+        android:layout_marginTop="@dimen/dp_56"
         android:textSize="@dimen/sp_32"
         android:textColor="@color/steam_color_f6"
         android:text="@string/steam_sure3"

@@ -287,16 +287,11 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
             finish();
             return;
         }
-//        if(modes.get(0).funCode != SteamEnum.AUX.fun){
-//           showLeftCenter();
-//            setRight(R.string.steam_makeAnAppointment);
-//        }
         sectionResId = getIntent().getIntExtra(Constant.SEGMENT_SECTION,-1);
         if(sectionResId != -1){
             findViewById(R.id.section_value).setVisibility(View.VISIBLE);
             ((TextView)findViewById(R.id.section_value)).setText(sectionResId);
         }
-
         needSetResult =  getIntent().getBooleanExtra(Constant.NEED_SET_RESULT,false);
         preSegment =  getIntent().getParcelableExtra(Constant.SEGMENT_DATA_FLAG);
         int checkIndex = getPreCheckIndex();
@@ -312,6 +307,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
                     curModeBean = defaultBean;
                 }
             }
+            proModeCode = curModeBean.code;
             //当前模式
             HomeSteamOven.getInstance().workMode = (short) defaultBean.code;
             //模式
@@ -526,7 +522,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
 
 
     private void startWorkOrAppointment(){
-        if(!SteamCommandHelper.checkSteamState(this,getSteamOven(),curModeBean.code,true)){
+        if(toRemainPage(getSteamOven())){
             return;
         }
         String text = btStart.getText().toString();
@@ -535,6 +531,16 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
         }else{//开始工作
             startWork();
         }
+    }
+
+    private  boolean toRemainPage(SteamOven steamOven){
+        boolean needWater = SteamModeEnum.needWater(curModeBean.code);//TODO(暂不考虑手动加湿)
+        int promptResId = SteamCommandHelper.getRunPromptResId(steamOven, curModeBean.code, SteamModeEnum.needWater(curModeBean.code),true);
+        if(promptResId != -1){
+            showRemindPage(promptResId,needWater,curModeBean.code,true);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -710,20 +716,20 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
         }
     }
 
+    private int proModeCode = 0;//上一次选中模式
     private void initOtherViews(ModeBean modeBean){
-//        if(modeBean.rotate == 1 && !needSetResult){
-//            showLeftCenter();
-//            setOnClickListener(R.id.ll_left_center);
-//        }else{
-//            hideLeftCenter();
-//        }
         if(modeBean.order == 1 && !needSetResult){
             showRight();
             TextView textView = findViewById(R.id.tv_right);
-            if("预约".equals(textView.getText().toString())){
+            if(proModeCode != modeBean.code){
+                textView.setText(R.string.steam_makeAnAppointment);
                 btStart.setText(R.string.steam_start_cook);
             }else{
-                btStart.setText(R.string.steam_start_appoint);
+                if("预约".equals(textView.getText().toString())){
+                    btStart.setText(R.string.steam_start_cook);
+                }else{
+                    btStart.setText(R.string.steam_start_appoint);
+                }
             }
         }else{
             hideRight();
@@ -732,6 +738,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
         if(needSetResult){
             btStart.setText(R.string.steam_ok_btn);
         }
+        proModeCode = modeBean.code;
     }
 
 

@@ -22,6 +22,7 @@ import com.robam.steamoven.bean.MultiSegment;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.SteamConstant;
+import com.robam.steamoven.constant.SteamOvenSteamEnum;
 import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.device.SteamAbstractControl;
@@ -78,6 +79,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
     private boolean isPageHide = false;//页面是否已经不显示
     private int workMode;
     private boolean isPreHeat;
+    private TextView preTv;
 
     @Override
     protected int getLayoutId() {
@@ -94,6 +96,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
         continueCookView = findViewById(R.id.multi_work_start);
         cookDurationView = findViewById(R.id.multi_work_total);
         curCookInfoViewGroup = findViewById(R.id.multi_work_cur_info);
+        preTv = findViewById(R.id.multi_work_pre);
         cookChart = findViewById(R.id.cook_chart);
         initOptViewTag();
         setOnClickListener(R.id.multi_work_pause,R.id.multi_work_start);
@@ -118,8 +121,6 @@ public class MultiWorkActivity extends SteamBaseActivity {
                             updateViewInfo(steamOven);
                             break;
                         case SteamStateConstant.POWER_STATE_OFF:
-                            //goHome();
-
                             if(isPreHeat){
                                 goHome();
                             }else{
@@ -135,18 +136,6 @@ public class MultiWorkActivity extends SteamBaseActivity {
                 }
             }
         });
-
-//        MqttDirective.getInstance().getDirective().observe(this, s -> {
-//            switch (s - directive_offset){
-//                case DIRECTIVE_OFFSET_END:
-//                case DIRECTIVE_OFFSET_GO_HOME:
-//                    //goHome();
-//                    break;
-//                case DIRECTIVE_OFFSET_WORK_FINISH:
-//                    toCurveSavePage();
-//                    break;
-//            }
-//        });
     }
 
     /**
@@ -221,11 +210,6 @@ public class MultiWorkActivity extends SteamBaseActivity {
 
 
 
-
-
-
-
-
     /**
      * 获取剩余运行时间
      * @param steamOven
@@ -251,8 +235,6 @@ public class MultiWorkActivity extends SteamBaseActivity {
         }
         return totalTime;
     }
-
-
 
 
     /**
@@ -294,20 +276,12 @@ public class MultiWorkActivity extends SteamBaseActivity {
         for(int i = 0; i < CUR_ITEM_VIEW_COUNT;i++){
             ViewGroup itemGroup = optContentParentView.findViewWithTag(i+"");
             itemGroup.setTag(DATA_KEY,null);
-
-
-
             TextView temperatureView = itemGroup.findViewById(R.id.multi_item_temperature);
             temperatureView.setText("");
-
             TextView modelView = itemGroup.findViewById(R.id.multi_item_model);
             modelView.setText("");
-
-
             TextView durationView = itemGroup.findViewById(R.id.multi_item_duration);
             durationView.setText("");
-
-
         }
     }
 
@@ -320,7 +294,6 @@ public class MultiWorkActivity extends SteamBaseActivity {
             initOptContent();
             return;
         }
-
         int maxCount = multiSegments.size() >= CUR_ITEM_VIEW_COUNT ? CUR_ITEM_VIEW_COUNT : multiSegments.size();
         for(int i = 0; i < maxCount;i++){
             ViewGroup itemGroup = optContentParentView.findViewWithTag(i+"");
@@ -343,9 +316,14 @@ public class MultiWorkActivity extends SteamBaseActivity {
         view.setVisibility(isWork ? View.VISIBLE:View.INVISIBLE);
 
         TextView temperatureView = itemGroup.findViewById(R.id.multi_item_temperature);
-        temperatureView.setTextColor(textColor);
-        //String temperature =  multiSegmentBean.defTemp +"°c";
-        temperatureView.setText(TextSpanUtil.getSpan(multiSegmentBean.defTemp,Constant.UNIT_TEMP));
+        if(multiSegmentBean.steam != 0){
+            temperatureView.setVisibility(View.VISIBLE);
+            temperatureView.setText(SteamOvenSteamEnum.match(multiSegmentBean.steam)+"蒸汽");
+        }else{
+            temperatureView.setVisibility(View.GONE);
+            //temperatureView.setTextColor(textColor);
+            //temperatureView.setText(TextSpanUtil.getSpan(multiSegmentBean.defTemp,Constant.UNIT_TEMP));
+        }
 
         TextView modelView = itemGroup.findViewById(R.id.multi_item_model);
         modelView.setTextColor(textColor);
@@ -376,7 +354,9 @@ public class MultiWorkActivity extends SteamBaseActivity {
         if(steamOven != null){
             boolean isPreHeat = (steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT || steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT_PAUSE);
             if(isPreHeat){
-                cookDurationView.setText(R.string.steam_preheating);
+                //cookDurationView.setText(R.string.steam_preheating);
+                initPromptInfo(steamOven,false);
+                cookDurationView.setText(TextSpanUtil.getSpan(steamOven.curTemp,Constant.UNIT_TEMP));
             }else{
                 cookDurationView.setText( TextSpanUtil.getSpan(preTotalTime,Constant.UNIT_TIME_MIN));
             }
@@ -443,7 +423,6 @@ public class MultiWorkActivity extends SteamBaseActivity {
         }
     }
 
-
     private void backSettingPage(){
         Intent result = new Intent();
         result.putParcelableArrayListExtra(Constant.SEGMENT_DATA_FLAG, (ArrayList<? extends Parcelable>) multiSegments);
@@ -452,7 +431,6 @@ public class MultiWorkActivity extends SteamBaseActivity {
     }
 
     SteamCommonDialog endDialog;
-
     /**
      * 展示结束弹窗
      */
@@ -480,30 +458,43 @@ public class MultiWorkActivity extends SteamBaseActivity {
     private void setOptViewsState(SteamOven steamOven,boolean cookState,boolean isPre){
         pauseCookView.setVisibility(cookState?View.VISIBLE:View.INVISIBLE);
         continueCookView.setVisibility(cookState?View.INVISIBLE:View.VISIBLE);
-        curCookInfoViewGroup.setVisibility(cookState?View.INVISIBLE:View.VISIBLE);
+        //curCookInfoViewGroup.setVisibility(cookState?View.INVISIBLE:View.VISIBLE);
         if(cookState){
+            preTv.setVisibility(isPre?View.VISIBLE:View.INVISIBLE);
             if(isPre){
-                cookDurationView.setText(R.string.steam_preheating);
+                //cookDurationView.setText(R.string.steam_preheating);
+                initPromptInfo(steamOven,false);
+                cookDurationView.setText(TextSpanUtil.getSpan(steamOven.curTemp,Constant.UNIT_TEMP));
             }else{
+                curCookInfoViewGroup.setVisibility(View.INVISIBLE);
                 cookDurationView.setText(TextSpanUtil.getSpan(preTotalTime, Constant.UNIT_TIME_MIN));
             }
         }else{
+            preTv.setVisibility(View.INVISIBLE);
             cookDurationView.setText(R.string.steam_cook_in_pause);
             //设置当前段工作信息 - 后面的时间是否为剩余时长？
-            //SteamOven steamOven = getSteamOven();
             if(steamOven == null){
                 return;
             }
-            MultiSegment curSegment = MultiSegmentUtil.getCurSegment(steamOven, steamOven.curSectionNbr);
-            TextView  curModel = curCookInfoViewGroup.findViewById(R.id.multi_item_cur_model);
-            TextView  curTemp = curCookInfoViewGroup.findViewById(R.id.multi_item_cur_temperature);
-            TextView  curDuration = curCookInfoViewGroup.findViewById(R.id.multi_item_cur_duration);
-            curModel.setText(curSegment.model);
-            curTemp.setText(TextSpanUtil.getSpan(curSegment.defTemp,Constant.UNIT_TEMP));
-            curDuration.setText(TextSpanUtil.getSpan(curSegment.workRemaining,Constant.UNIT_TIME_MIN));
+            initPromptInfo(steamOven,true);
         }
     }
 
+    private void initPromptInfo(SteamOven steamOven,boolean showTime){
+        curCookInfoViewGroup.setVisibility(View.VISIBLE);
+        MultiSegment curSegment = MultiSegmentUtil.getCurSegment(steamOven, steamOven.curSectionNbr);
+        TextView  curModel = curCookInfoViewGroup.findViewById(R.id.multi_item_cur_model);
+        TextView  curTemp = curCookInfoViewGroup.findViewById(R.id.multi_item_cur_temperature);
+        TextView  curDuration = curCookInfoViewGroup.findViewById(R.id.multi_item_cur_duration);
+        curModel.setText(curSegment.model);
+        if(curSegment.steam != 0){
+            curTemp.setText(SteamOvenSteamEnum.match(curSegment.steam)+"蒸汽");
+        }else{
+            curTemp.setText(TextSpanUtil.getSpan(curSegment.defTemp,Constant.UNIT_TEMP));
+        }
+
+        curDuration.setText(TextSpanUtil.getSpan(curSegment.workRemaining,Constant.UNIT_TIME_MIN));
+    }
 
 
     @Override
@@ -529,8 +520,6 @@ public class MultiWorkActivity extends SteamBaseActivity {
         return false;
     }
 
-
-
     private void dealResult(int requestCode, Intent data){
 //        if(multiSegments.size() > requestCode){//修改当前历史
 //            MultiSegment resultData  = data.getParcelableExtra("resultData");
@@ -545,7 +534,6 @@ public class MultiWorkActivity extends SteamBaseActivity {
     }
 
     private long curveId = 0;
-
     private void showWorkEndDialog(){
         SteamCommonDialog steamCommonDialog = new SteamCommonDialog(this);
         steamCommonDialog.setContentText(R.string.steam_work_complete);
@@ -560,11 +548,9 @@ public class MultiWorkActivity extends SteamBaseActivity {
     }
 
 
-
     //数据集合
     private List entryList = new ArrayList<Entry>();
     private int maxYValue = 250;
-
     /**
      * 初始化LineChart
      */
@@ -574,7 +560,6 @@ public class MultiWorkActivity extends SteamBaseActivity {
         dm.setAxisLine(true, false);
         dm.setGridLine(false, false);
         dm.setAxisMaximum(maxYValue);
-
     }
 
     //从0开始

@@ -7,14 +7,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.manager.FunctionManager;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ToastInsUtils;
-import com.robam.common.utils.ToastUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.bean.FuntionBean;
@@ -32,7 +30,6 @@ import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.ui.dialog.SteamCommonDialog;
 import com.robam.steamoven.utils.SkipUtil;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -584,11 +581,21 @@ public class MultiActivity extends SteamBaseActivity {
 
     private void startWork(){
         for(int i = 0;i < multiSegments.size();i++){
-            if(!SteamCommandHelper.checkSteamState(this,getSteamOven(),multiSegments.get(i).code,true)){
+            if(toRemainPage(getSteamOven(),multiSegments.get(i).code)){
                 return;
             }
         }
         SteamCommandHelper.sendMultiWork(this,multiSegments,directive_offset+MsgKeys.setDeviceAttribute_Req);
+    }
+
+    private  boolean toRemainPage(SteamOven curDevice,int curMode){
+        boolean needWater = SteamModeEnum.needWater(curMode);//TODO(暂不考虑手动加湿)
+        int promptResId = SteamCommandHelper.getRunPromptResId(curDevice, curMode, needWater,true);
+        if(promptResId != -1){
+            showRemindPage(promptResId,needWater,curMode,true);
+            return true;
+        }
+        return false;
     }
 
 

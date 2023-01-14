@@ -2,45 +2,27 @@ package com.robam.steamoven.ui.pages;
 
 import android.content.Intent;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.serialport.helper.SerialPortHelper;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
-
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemClickListener;
-import com.clj.fastble.BleManager;
-import com.google.gson.Gson;
 import com.robam.common.manager.FunctionManager;
 import com.robam.common.ui.helper.PickerLayoutManager;
-import com.robam.common.utils.ImageUtils;
 import com.robam.common.utils.MMKVUtils;
-import com.robam.common.utils.StringUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBasePage;
 import com.robam.steamoven.bean.DeviceConfigurationFunctions;
 import com.robam.steamoven.bean.FuntionBean;
 import com.robam.steamoven.bean.ModeBean;
-import com.robam.steamoven.bean.SteamOven;
-import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.SteamConstant;
 import com.robam.steamoven.constant.SteamEnum;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.manager.DataInitManage;
-import com.robam.steamoven.manager.FuntionModeManage;
-import com.robam.steamoven.response.GetDeviceParamsRes;
 import com.robam.steamoven.ui.adapter.RvDotAdapter;
 import com.robam.steamoven.ui.adapter.RvMainFuntionAdapter;
-import com.robam.steamoven.utils.SteamDataUtil;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import pl.droidsonroids.gif.GifImageView;
@@ -77,31 +59,26 @@ public class HomePage extends SteamBasePage {
                 .setMaxItem(5)
                 .setScale(0.66f)
                 .setAlpha(false)
-                .setOnPickerListener(new PickerLayoutManager.OnPickerListener() {
-                    @Override
-                    public void onPicked(RecyclerView recyclerView, int position) {
-//                        rvMainFuntionAdapter.setIndex(position);
-                        setBackground(position);
-                        rvDotAdapter.setPickPosition(position);
-                        //rvMainFuntionAdapter.setPickPosition(position);
-                    }
-                })
+                .setOnPickerListener((recyclerView, position) -> {
+                    //rvMainFuntionAdapter.setIndex(position);
+                    setBackground(position);
+                    rvDotAdapter.setPickPosition(position);
+                    //rvMainFuntionAdapter.setPickPosition(position);
+                }).setOnSlideListener((recyclerView, position) -> rvDotAdapter.setPickPosition(position))
                 .build();
         rvMain.setLayoutManager(pickerLayoutManager);
         rvDot.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
         rvMainFuntionAdapter = new RvMainFuntionAdapter();
-        rvMainFuntionAdapter.setOnItemClickListener((adapter, view, position) -> {
-//                keyTone();
+        rvMainFuntionAdapter.setItemClick(functionBean -> {
             //scollToPosition(position);
             Intent intent = new Intent();
-            FuntionBean funtionBean = (FuntionBean) adapter.getItem(position);
-            intent.putExtra(SteamConstant.EXTRA_MODE_LIST, funtionBean.mode);
-            if (funtionBean.into == null || funtionBean.into.length() == 0) {
+            intent.putExtra(SteamConstant.EXTRA_MODE_LIST, functionBean.mode);
+            if (functionBean.into == null || functionBean.into.length() == 0) {
                 ToastUtils.showShort(getContext(), "功能还未实现，请等待版本更新");
                 return;
             }
-            intent.setClassName(getContext(), funtionBean.into);
-            HomeSteamOven.getInstance().funCode = (short) funtionBean.funtionCode;
+            intent.setClassName(getContext(), functionBean.into);
+            HomeSteamOven.getInstance().funCode = (short) functionBean.funtionCode;
             startActivity(intent);
         });
         rvMain.setAdapter(rvMainFuntionAdapter);

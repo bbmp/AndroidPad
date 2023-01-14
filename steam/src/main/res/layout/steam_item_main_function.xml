@@ -6,6 +6,7 @@
     android:layout_height="match_parent">
 
     <com.robam.common.ui.blurview.ShapeBlurView
+        android:id="@+id/tv_funtion_bg"
         android:layout_width="@dimen/dp_270"
         android:layout_height="@dimen/dp_270"
         android:layout_centerInParent="true"

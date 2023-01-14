@@ -4,6 +4,13 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.37"
+        android:layout_height="@dimen/dp_1"
+        android:layout_width="match_parent"/>
     <TextView
         android:id="@+id/tv_select"
         android:layout_width="@dimen/dp_250"
@@ -11,9 +18,21 @@
         android:gravity="center"
         android:textSize="@dimen/sp_80"
         android:textColor="@color/steam_white"
-        tools:text="蒸烤炸煎"
+        tools:text="蒸烤炸"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toTopOf="@id/guideline"
+        app:layout_constraintBottom_toBottomOf="@id/guideline"/>
+
+    <TextView
+        android:id="@+id/tv_select_remark"
+        android:layout_width="@dimen/dp_250"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="@dimen/sp_25"
+        android:textColor="@color/steam_white"
+        android:text="加湿"
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@id/tv_select"
+        app:layout_constraintLeft_toLeftOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

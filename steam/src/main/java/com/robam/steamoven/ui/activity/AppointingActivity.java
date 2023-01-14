@@ -61,7 +61,10 @@ public class AppointingActivity extends SteamBaseActivity {
 
     private int directive_offset = 15000000;
     private final static int DIRECTIVE_OFFSET_END = 40;
+    private final static int TO_WORK_WAIT_MAX_TIME = 10*1000;
     int tempPaddingTop;
+    private boolean isToWork = false;//是否点击立即立刻开始工作
+    private long toWorkTimeMil = 0;//点击立即开始工作的时间搓
 
     @Override
     protected int getLayoutId() {
@@ -106,7 +109,10 @@ public class AppointingActivity extends SteamBaseActivity {
                                 //toWorkPage();
                                 SkipUtil.toWorkPage(steamOven,AppointingActivity.this);
                             }else{
-                                goHome();
+                                //主动执行立即开始工作，等待5秒，在结束页面
+                                if(!isToWork || System.currentTimeMillis() - toWorkTimeMil > TO_WORK_WAIT_MAX_TIME){
+                                    goHome();
+                                }
                             }
                             break;
                         case SteamStateConstant.POWER_STATE_OFF:
@@ -156,7 +162,7 @@ public class AppointingActivity extends SteamBaseActivity {
         if(segment.code == SteamConstant.EXP){
             tvSteam.setVisibility(View.VISIBLE);
             tvSteam.setText(getSpanTemp(segment.defTemp+""));
-            defTemp.setPadding(defTemp.getPaddingLeft(),tempPaddingTop,defTemp.getPaddingRight(),defTemp.getPaddingBottom());
+            //defTemp.setPadding(defTemp.getPaddingLeft(),tempPaddingTop,defTemp.getPaddingRight(),defTemp.getPaddingBottom());
             defTemp.setText(getSpanTemp(segment.downTemp+""));
         }else{
             tvSteam.setVisibility(segment.steam != 0 ? View.VISIBLE:View.GONE);
@@ -202,6 +208,8 @@ public class AppointingActivity extends SteamBaseActivity {
                 return;
             }
             startWork();
+            isToWork = true;
+            toWorkTimeMil = System.currentTimeMillis();
         }
     }
 
