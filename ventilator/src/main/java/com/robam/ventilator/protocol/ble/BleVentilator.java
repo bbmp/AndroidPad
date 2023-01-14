@@ -483,10 +483,6 @@ public class BleVentilator {
                                                         device.bid = new String(biz_id);
 
                                                         device.bleType = ble_type;
-                                                        if (ble_type == 1)
-                                                            device.dc = IDeviceType.RRQZ;
-                                                        if (ble_type == 2)
-                                                            device.dc = IDeviceType.RZNG;
 
                                                         break;
                                                     }
@@ -537,7 +533,10 @@ public class BleVentilator {
                                                         device.status = Device.ONLINE;
                                                         device.queryNum = 0;
 //                                                        AccountInfo.getInstance().getGuid().setValue(device.guid);
-
+                                                        if (device.bleType == 1)
+                                                            device.dc = IDeviceType.RRQZ;
+                                                        if (device.bleType == 2)
+                                                            device.dc = IDeviceType.RZNG;
                                                         updateSubdevice(device);
                                                         //通知上线
                                                         HomeVentilator.getInstance().notifyOnline(new String(guid), new String(biz_id), 1);
