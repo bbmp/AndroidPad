@@ -53,6 +53,10 @@ public interface IPlat {
      * @return
      */
     String getMac();
+    /**
+     * 固件版本
+     */
+    String getFirmwareVersion();
 
     /**
      * 关闭状态栏

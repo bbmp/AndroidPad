@@ -116,7 +116,7 @@
         android:layout_marginTop="@dimen/dp_20"
         android:textColor="@color/ventilator_white"
         android:textSize="@dimen/sp_24"
-        android:text="官方售后微信"
+        android:text="官方售后服务"
         app:layout_constraintLeft_toLeftOf="@id/ventilator_guideline2"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_qrcode"

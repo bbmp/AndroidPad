@@ -68,6 +68,11 @@ public class TbangPlat implements IPlat{
     }
 
     @Override
+    public String getFirmwareVersion() {
+        return tbManager.getFirmwareVersion();
+    }
+
+    @Override
     public void screenOn() {
        tbManager.screenOn();
 //        tbManager.setBackLight(true);

@@ -55,7 +55,6 @@ public class HomeActivity extends BaseActivity {
         activity.finish();
     }
 
-    private BluetoothAdapter bluetoothAdapter;
 
     private static final String PASSWORD_LOGIN = "mobilePassword";
 
@@ -124,40 +123,6 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        //初始化
-        SerialVentilator.init_decoder();
-        //打开串口
-        SerialPortHelper.getInstance().openDevice(new SphResultCallback() {
-            @Override
-            public void onSendData(byte[] sendCom, int len) {
-            }
-
-            @Override
-            public void onReceiveData(byte[] data, int len) {
-                SerialVentilator.parseSerial(data, len);
-            }
-
-            @Override
-            public void onOpenSuccess() {
-
-                //开机
-                if (HomeVentilator.getInstance().startup == 0x00) {
-                    HomeVentilator.getInstance().openVentilator();
-                }
-
-            }
-
-            @Override
-            public void onOpenFailed() {
-                LogUtils.i("serial open failed" + Thread.currentThread().getName());
-            }
-        });
-        //打开蓝牙
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (!bluetoothAdapter.isEnabled())
-            checkPermissions();
-        //打开wifi
-        checkWifiPermmissions();
 
         //监听网络状态
         AccountInfo.getInstance().getConnect().observe(this, new Observer<Boolean>() {
@@ -201,63 +166,12 @@ public class HomeActivity extends BaseActivity {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            //启动定时服务
-            Intent intent = new Intent(this.getApplicationContext(), AlarmMqttService.class);
-            intent.setPackage(getPackageName());
-            startService(intent);
-            Intent bleIntent = new Intent(this.getApplicationContext(), AlarmBleService.class);
-            bleIntent.setPackage(getPackageName());
-            startService(bleIntent);
-            Intent venIntent = new Intent(this.getApplicationContext(), AlarmVentilatorService.class);
-            venIntent.setPackage(getPackageName());
-            startService(venIntent);
 
             SteamDataUtil.getSteamData(HomeActivity.this,"CQ928");//获取一体机数据
             SteamDataUtil.getDeviceErrorInfo(HomeActivity.this);//获取告警信息数据
         }).start();
     }
-    //请求蓝牙权限
-    private void checkPermissions() {
-        //请求权限
-        PermissionUtils.requestPermission(this, new PermissionUtils.OnPermissionListener() {
-            @Override
-            public void onSucceed() {
-                onPermissionGranted();
-            }
 
-            @Override
-            public void onFailed() {
-                //权限未给
-                LogUtils.e("requestPermission onFailed");
-            }
-        }, Manifest.permission.BLUETOOTH, Manifest.permission.ACCESS_FINE_LOCATION);
-    }
-    //请求wifi权限
-    private void checkWifiPermmissions() {
-        //
-        PermissionUtils.requestPermission(this, new PermissionUtils.OnPermissionListener() {
-            @Override
-            public void onSucceed() {
-                //打开wifi
-                WifiManager mWifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
-                VenWifiManager.openWifi(mWifiManager);
-            }
-
-            @Override
-            public void onFailed() {
-
-            }
-        }, Manifest.permission.CHANGE_WIFI_STATE);
-    }
-    //已授权
-    @SuppressLint("MissingPermission")
-    private void onPermissionGranted() {
-        try {
-            bluetoothAdapter.enable();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public void onBackPressed() {
