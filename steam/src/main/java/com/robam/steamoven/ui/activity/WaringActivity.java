@@ -18,7 +18,7 @@ import com.robam.steamoven.device.HomeSteamOven;
 public class WaringActivity extends SteamBaseActivity {
 
     private TextView titleTv,descTv;
-    private int fromFlag = 0;
+    public int fromFlag = 0;
     private String deviceGuid = "";
 
     public static final int FROM_VENTILATOR_FLAG = 1;//从烟机界面主动进入

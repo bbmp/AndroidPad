@@ -45,6 +45,8 @@ import com.robam.ventilator.ui.service.AlarmBleService;
 import com.robam.ventilator.ui.service.AlarmMqttService;
 import com.robam.ventilator.ui.service.AlarmVentilatorService;
 
+import java.lang.reflect.Field;
+
 //主页
 public class HomeActivity extends BaseActivity {
 
@@ -82,9 +84,27 @@ public class HomeActivity extends BaseActivity {
             public void onClick(View v) {
                 Activity activity = AppActivityManager.getInstance().getCurrentActivity();
                 //浮窗点击 快捷入口
+                String acName = activity.getClass().getName();
+                LogUtils.i("acName "+acName);
                 Intent intent = new Intent();
                 intent.setClass(activity, ShortcutActivity.class);
                 startActivity(intent);
+
+                //判断当前是否为WarningActivity,若是,则调用其Activity的finish方法
+                if(acName.contains("WaringActivity")){
+                    //获取其 WarringActivity 中 fromFlag 属性是否等于1
+                    Class<? extends Activity> aClass = activity.getClass();
+                    try {
+                        Field fromFlag = aClass.getDeclaredField("fromFlag");
+                        fromFlag.setAccessible(true);
+                        Object fromFlagValue = fromFlag.get(activity);
+                        if(fromFlagValue instanceof Integer && ((Integer) fromFlagValue).intValue() == 1){
+                            activity.finish();
+                        }
+                    } catch (NoSuchFieldException | SecurityException | IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         });
 

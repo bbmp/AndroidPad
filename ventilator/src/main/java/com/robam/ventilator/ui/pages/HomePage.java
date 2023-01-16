@@ -39,8 +39,10 @@ import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.ui.view.AudioWaveView;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.MMKVUtils;
+import com.robam.common.utils.ToastInsUtils;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.common.device.subdevice.Pan;
+import com.robam.dishwasher.constant.DishWasherState;
 import com.robam.dishwasher.constant.DishWasherWaringEnum;
 import com.robam.dishwasher.device.DishWasherAbstractControl;
 import com.robam.steamoven.bean.SteamOven;
@@ -429,6 +431,10 @@ public class HomePage extends VentilatorBasePage {
                         }
                     } else if(device instanceof DishWasher){
                         DishWasher dishWasher = (DishWasher) device;
+                        if(dishWasher.StoveLock == DishWasherState.LOCK){
+                            ToastInsUtils.showLong(getContext(),R.string.ventilator_child_lock);
+                            return;
+                        }
                         if(dishWasher.AppointmentRemainingTime > 0){//结束预约
                             DishWasherAbstractControl.getInstance().endAppoint(device.guid);
                         }else{
@@ -440,6 +446,10 @@ public class HomePage extends VentilatorBasePage {
 
                     }else if(device instanceof Cabinet){
                         Cabinet cabinet = (Cabinet) device;
+                        if(cabinet.isChildLock == 1){
+                            ToastInsUtils.showLong(getContext(),R.string.ventilator_child_lock);
+                            return;
+                        }
                         //if((cabinet.smartCruising == 1 || cabinet.pureCruising == 1) && cabinet.remainingModeWorkTime <= 0){//去往智能巡航页面
                         if(cabinet.smartCruising == 1 || cabinet.pureCruising == 1){//去往智能巡航页面
                             CabinetAbstractControl.getInstance().endSmartMode(device.guid);

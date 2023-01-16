@@ -17,7 +17,7 @@ public class WaringActivity extends DishWasherBaseActivity {
 
     private TextView titleTv,descTv;
 
-    private int fromFlag = 0;
+    public int fromFlag = 0;
 
     public static final int FROM_VENTILATOR_FLAG = 1;//从烟机界面主动进入
 
