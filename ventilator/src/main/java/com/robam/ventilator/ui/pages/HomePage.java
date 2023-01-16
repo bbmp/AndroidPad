@@ -47,6 +47,7 @@ import com.robam.dishwasher.constant.DishWasherWaringEnum;
 import com.robam.dishwasher.device.DishWasherAbstractControl;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.common.module.IPublicSteamApi;
+import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.SteamAbstractControl;
 import com.robam.common.device.subdevice.Stove;
@@ -865,12 +866,15 @@ public class HomePage extends VentilatorBasePage {
             String deviceTypeId = DeviceUtils.getDeviceTypeId(device.guid);
             DeviceErrorInfo deviceErrorInfo = DeviceWarnInfoManager.getInstance().getDeviceErrorInfo(IDeviceType.RZKY, deviceTypeId, device.faultId);
             if(deviceErrorInfo != null){
-                Intent intent = new Intent(getContext(), com.robam.steamoven.ui.activity.WaringActivity.class);
-                intent.putExtra(ComnConstant.WARING_FROM,1);
-                intent.putExtra(ComnConstant.WARING_CODE,device.faultId);
-                intent.putExtra(ComnConstant.WARING_GUID,device.guid);
-                startActivity(intent);
-                return true;
+                SteamOven steamOven = (SteamOven) device;
+                if(deviceErrorInfo.code != Constant.WARING_CODE_11 || (deviceErrorInfo.code == Constant.WARING_CODE_11 && steamOven.getResidueTotalTime() > 0)){
+                    Intent intent = new Intent(getContext(), com.robam.steamoven.ui.activity.WaringActivity.class);
+                    intent.putExtra(ComnConstant.WARING_FROM,1);
+                    intent.putExtra(ComnConstant.WARING_CODE,device.faultId);
+                    intent.putExtra(ComnConstant.WARING_GUID,device.guid);
+                    startActivity(intent);
+                    return true;
+                }
             }
         } else if (device instanceof Stove && IDeviceType.RRQZ.equals(device.dc)) {
             if (((Stove) device).leftAlarm != 0xff || ((Stove) device).rightAlarm != 0xff) {

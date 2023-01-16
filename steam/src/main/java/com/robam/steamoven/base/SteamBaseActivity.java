@@ -156,6 +156,9 @@ public abstract class SteamBaseActivity extends BaseActivity {
             if(deviceErrorInfo == null){
                 return false;
             }
+            if(deviceErrorInfo.code == Constant.WARING_CODE_11 && steamOven.getResidueTotalTime() <= 0){//WARING_CODE_11 是缺水状态，若剩余时间是0(即工作结束了)，不需要弹缺水告警
+                return false;
+            }
             Intent intent = new Intent(this, WaringActivity.class);
             intent.putExtra(ComnConstant.WARING_CODE,steamOven.faultId);
             startActivity(intent);

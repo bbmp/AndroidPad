@@ -59,6 +59,8 @@ public class HomeActivity extends BaseActivity {
 
 
     private static final String PASSWORD_LOGIN = "mobilePassword";
+    private static final String WAITING_AC_NAME = "WaringActivity";
+    private static final String WAITING_AC_FILE = "fromFlag";//告警页面属性；是否从烟机直接进入告警页面（1 - 是；0 -否）
 
 
     @Override
@@ -91,11 +93,11 @@ public class HomeActivity extends BaseActivity {
                 startActivity(intent);
 
                 //判断当前是否为WarningActivity,若是,则调用其Activity的finish方法
-                if(acName.contains("WaringActivity")){
+                if(acName.contains(WAITING_AC_NAME)){
                     //获取其 WarringActivity 中 fromFlag 属性是否等于1
                     Class<? extends Activity> aClass = activity.getClass();
                     try {
-                        Field fromFlag = aClass.getDeclaredField("fromFlag");
+                        Field fromFlag = aClass.getDeclaredField(WAITING_AC_FILE);
                         fromFlag.setAccessible(true);
                         Object fromFlagValue = fromFlag.get(activity);
                         if(fromFlagValue instanceof Integer && ((Integer) fromFlagValue).intValue() == 1){
@@ -187,7 +189,7 @@ public class HomeActivity extends BaseActivity {
                 e.printStackTrace();
             }
 
-            SteamDataUtil.getSteamData(HomeActivity.this,"CQ928");//获取一体机数据
+            SteamDataUtil.getSteamData(HomeActivity.this,IDeviceType.SERIES_STEAM);//获取一体机数据
             SteamDataUtil.getDeviceErrorInfo(HomeActivity.this);//获取告警信息数据
         }).start();
     }

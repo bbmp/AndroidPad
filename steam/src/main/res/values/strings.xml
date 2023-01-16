@@ -1176,11 +1176,11 @@
     <string name="steam_go_home">回到主页</string>
     <string name="steam_curve_exception_data">烹饪数据异常</string>
     <string name="steam_offline">产品已离线，请检查网络</string>
-    <string name="steam_close_door_prompt">门未关好，无法启动工作</string>
+    <string name="steam_close_door_prompt">门未关好，无法开启工作</string>
     <string name="steam_water_deficient">水箱缺水,请弹出水箱加水</string>
     <string name="steam_water_deficient_remain">水箱缺水,请弹出水箱加水</string>
     <string name="steam_model_select_data_prompt">缺少模式数据</string>
-    <string name="steam_water_box_prompt">水箱已弹出</string>
+    <string name="steam_water_box_prompt">水箱未就位，请将水箱放置于正确位置</string>
     <string name="steam_descaling_prompt">设备需要除垢后才能继续工作，请先除垢</string>
     <string name="steam_guid_prompt">未获取到设备信息，请稍后在试</string>
     <string name="steam_working_prompt">设备工作中</string>

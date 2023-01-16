@@ -33,6 +33,7 @@ import com.robam.dishwasher.constant.DishWasherState;
 import com.robam.dishwasher.constant.DishWasherWaringEnum;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.common.device.subdevice.Stove;
+import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.SteamModeEnum;
 import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.utils.SteamDataUtil;
@@ -370,11 +371,13 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
             String deviceTypeId = DeviceUtils.getDeviceTypeId(steamOven.guid);
             DeviceErrorInfo deviceErrorInfo = DeviceWarnInfoManager.getInstance().getDeviceErrorInfo(IDeviceType.RZKY, deviceTypeId, steamOven.faultId);
             if(deviceErrorInfo != null){
-                baseViewHolder.setVisible(R.id.layout_offline, true);
-                baseViewHolder.setText(R.id.tv_hint, R.string.ventilator_product_failure);
-                baseViewHolder.setGone(R.id.layout_work, true);
-                baseViewHolder.setVisible(R.id.btn_detail, true);
-                return;
+                if(deviceErrorInfo.code != Constant.WARING_CODE_11 || (deviceErrorInfo.code == Constant.WARING_CODE_11 && steamOven.getResidueTotalTime() > 0)){
+                    baseViewHolder.setVisible(R.id.layout_offline, true);
+                    baseViewHolder.setText(R.id.tv_hint, R.string.ventilator_product_failure);
+                    baseViewHolder.setGone(R.id.layout_work, true);
+                    baseViewHolder.setVisible(R.id.btn_detail, true);
+                    return;
+                }
             }
         }
         boolean isWork  = false;
@@ -426,7 +429,7 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
                     baseViewHolder.setText(R.id.btn_work, R.string.ventilator_start_cook);
                 }else{
                     baseViewHolder.setText(R.id.tv_time, DateUtil.secForMatTime3(getTotalTime(steamOven)) + "min");
-                    //baseViewHolder.setText(R.id.tv_time, DateUtil.secForMatTime3(steamOven.totalRemainSeconds) + "min");
+                    //baseViewHolder.setText(R.id.tv_time, getSpan(getTotalTime(steamOven),true));
                     if (steamOven.getWorkStatus() == 2 || steamOven.getWorkStatus() == 4) //预热中和工作中
                         baseViewHolder.setText(R.id.btn_work, R.string.ventilator_pause);
                     else if (steamOven.getWorkStatus() == 3 || steamOven.getWorkStatus() == 5) //暂停中

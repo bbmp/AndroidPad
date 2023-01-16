@@ -88,6 +88,9 @@ public class SteamDataUtil {
         if(steamOven.recipeId != 0){
             return getRecipeData(DeviceUtils.getDeviceTypeId(device.guid),steamOven.recipeId);
         }
+        if(steamOven.sectionNumber >= 2){
+            return "多段烹饪";
+        }
         return SteamModeEnum.match(steamOven.mode);
     }
 

@@ -159,7 +159,9 @@ public class MultiActivity extends SteamBaseActivity {
                 optContentParentView.getChildAt(i).findViewById(R.id.multi_item_del).setOnClickListener(this);//删除按钮
                 optContentParentView.getChildAt(i).setOnClickListener(view -> {
                     if(!checkSegmentState(view) && !isStart){
-                        Toast.makeText(getContext(),R.string.steam_work_multi_check_message,Toast.LENGTH_LONG).show();
+                        String segmentName = getSegmentName(multiSegments.size());
+                        ToastInsUtils.showLong(MultiActivity.this,"请先添加"+segmentName+"参数信息");
+                        //Toast.makeText(getContext(),R.string.steam_work_multi_check_message,Toast.LENGTH_LONG).show();
                         return;
                     }
                     int index = Integer.parseInt(view.getTag()+"");
@@ -221,16 +223,16 @@ public class MultiActivity extends SteamBaseActivity {
 
     private int getSectionResId(int index){
         switch (index){
-            case 0:
-                return R.string.steam_section_1;
             case 1:
                 return R.string.steam_section_2;
             case 2:
                 return R.string.steam_section_3;
             default:
-               return  -1;
+               return  R.string.steam_section_1;
         }
     }
+
+
 
 
 
@@ -589,7 +591,11 @@ public class MultiActivity extends SteamBaseActivity {
     }
 
     private  boolean toRemainPage(SteamOven curDevice,int curMode){
-        boolean needWater = SteamModeEnum.needWater(curMode);//TODO(暂不考虑手动加湿)
+        if(curDevice == null){
+            showRemindPage(R.string.steam_offline,false,-1,false);
+            return true;
+        }
+        boolean needWater = SteamModeEnum.needWater(curMode);
         int promptResId = SteamCommandHelper.getRunPromptResId(curDevice, curMode, needWater,true);
         if(promptResId != -1){
             showRemindPage(promptResId,needWater,curMode,true);

@@ -133,7 +133,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
                 //tab选中放大
                 View view = tab.getCustomView();
                 TextView textView = view.findViewById(R.id.tv_mode);
-                textView.setScaleX(1.1f);
+                //textView.setScaleX(1.0f);
                 textView.setScaleY(1.1f);
                 ImageView imageView = view.findViewById(R.id.iv_select);
                 imageView.setVisibility(View.VISIBLE);
@@ -534,6 +534,10 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
     }
 
     private  boolean toRemainPage(SteamOven steamOven){
+        if(steamOven == null){
+            showRemindPage(R.string.steam_offline,false,-1,false);
+            return true;
+        }
         boolean needWater = SteamModeEnum.needWater(curModeBean.code);//TODO(暂不考虑手动加湿)
         int promptResId = SteamCommandHelper.getRunPromptResId(steamOven, curModeBean.code, SteamModeEnum.needWater(curModeBean.code),true);
         if(promptResId != -1){

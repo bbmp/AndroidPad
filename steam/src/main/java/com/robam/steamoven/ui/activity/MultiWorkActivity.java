@@ -21,7 +21,9 @@ import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.bean.MultiSegment;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.Constant;
+import com.robam.steamoven.constant.QualityKeys;
 import com.robam.steamoven.constant.SteamConstant;
+import com.robam.steamoven.constant.SteamModeEnum;
 import com.robam.steamoven.constant.SteamOvenSteamEnum;
 import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
@@ -80,6 +82,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
     private int workMode;
     private boolean isPreHeat;
     private TextView preTv;
+    private View leftCenterView;
 
     @Override
     protected int getLayoutId() {
@@ -91,6 +94,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
         showLeft();
         showCenter();
         //showRightCenter();
+        leftCenterView = findViewById(R.id.ll_left_center);
         optContentParentView = findViewById(R.id.multi_work_model_list);
         pauseCookView = findViewById(R.id.multi_work_pause);
         continueCookView = findViewById(R.id.multi_work_start);
@@ -175,6 +179,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
                 setOptViewsState(steamOven,cookState,isPreHeat);
                 //改变段落数据显示状态
                 updateSegmentInfo(steamOven);
+                dealRationAndAddSteam(steamOven);
                 break;
             case SteamStateConstant.WORK_STATE_WORKING_FINISH:
                 //dealWorkFinish(steamOven);
@@ -317,10 +322,10 @@ public class MultiWorkActivity extends SteamBaseActivity {
 
         TextView temperatureView = itemGroup.findViewById(R.id.multi_item_temperature);
         if(multiSegmentBean.steam != 0){
-            temperatureView.setVisibility(View.VISIBLE);
+            temperatureView.setTextColor(textColor);
             temperatureView.setText(SteamOvenSteamEnum.match(multiSegmentBean.steam)+"蒸汽");
         }else{
-            temperatureView.setVisibility(View.GONE);
+            temperatureView.setText("");
             //temperatureView.setTextColor(textColor);
             //temperatureView.setText(TextSpanUtil.getSpan(multiSegmentBean.defTemp,Constant.UNIT_TEMP));
         }
@@ -365,6 +370,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
         }
         getCookingData(getSteamOven().guid);
         initLineChart();
+        dealRationAndAddSteam(steamOven);
     }
 
     /**
@@ -390,25 +396,18 @@ public class MultiWorkActivity extends SteamBaseActivity {
         if (id == R.id.ll_left) {
             showStopWorkDialog();
         }else if(id == R.id.multi_work_pause){//暂停工作
-            SteamOven steamOven = getSteamOven();
-            if(steamOven == null){
-                ToastInsUtils.showLong(this, R.string.steam_offline);
-                return;
-            }
-            if(!SteamCommandHelper.checkSteamState(this,steamOven,getSegmentModeCode(steamOven),false)){
-                return;
-            }
             SteamCommandHelper.sendWorkCtrCommand(false);
         }else if(id==R.id.multi_work_start){//继续工作
             SteamOven steamOven = getSteamOven();
-            if(steamOven == null){
-                ToastInsUtils.showLong(this, R.string.steam_offline);
-                return;
-            }
-            if(!SteamCommandHelper.checkSteamState(this,steamOven,getSegmentModeCode(steamOven),false)){
+            if(toRemainPageMulti(steamOven)){
                 return;
             }
             SteamCommandHelper.sendWorkCtrCommand(true);
+        }else if(id == R.id.ll_left_center){
+            SteamOven steamOven = getSteamOven();
+            if(steamOven != null){
+                SteamCommandHelper.sendSteamOrRotateCommand(QualityKeys.rotateSwitch, (short) (((int)steamOven.rotateSwitch) == 0?1:0),109);
+            }
         }
     }
 
@@ -481,19 +480,32 @@ public class MultiWorkActivity extends SteamBaseActivity {
     }
 
     private void initPromptInfo(SteamOven steamOven,boolean showTime){
+        if(steamOven == null){
+            return;
+        }
         curCookInfoViewGroup.setVisibility(View.VISIBLE);
         MultiSegment curSegment = MultiSegmentUtil.getCurSegment(steamOven, steamOven.curSectionNbr);
         TextView  curModel = curCookInfoViewGroup.findViewById(R.id.multi_item_cur_model);
+        TextView  steam = curCookInfoViewGroup.findViewById(R.id.multi_item_cur_steam);
         TextView  curTemp = curCookInfoViewGroup.findViewById(R.id.multi_item_cur_temperature);
         TextView  curDuration = curCookInfoViewGroup.findViewById(R.id.multi_item_cur_duration);
         curModel.setText(curSegment.model);
         if(curSegment.steam != 0){
-            curTemp.setText(SteamOvenSteamEnum.match(curSegment.steam)+"蒸汽");
+            steam.setVisibility(View.VISIBLE);
+            steam.setText(SteamOvenSteamEnum.match(curSegment.steam)+"蒸汽");
         }else{
-            curTemp.setText(TextSpanUtil.getSpan(curSegment.defTemp,Constant.UNIT_TEMP));
+            steam.setVisibility(View.GONE);
+        }
+        curTemp.setText(TextSpanUtil.getSpan(curSegment.defTemp,Constant.UNIT_TEMP));
+        if(showTime){
+            curDuration.setVisibility(View.VISIBLE);
+            int totalTime = getTotalTime(steamOven);
+            curDuration.setText(TextSpanUtil.getSpan(totalTime,Constant.UNIT_TIME_MIN));
+            //curDuration.setText(TextSpanUtil.getSpan(curSegment.workRemaining,Constant.UNIT_TIME_MIN));
+        }else{
+            curDuration.setVisibility(View.INVISIBLE);
         }
 
-        curDuration.setText(TextSpanUtil.getSpan(curSegment.workRemaining,Constant.UNIT_TIME_MIN));
     }
 
 
@@ -737,6 +749,45 @@ public class MultiWorkActivity extends SteamBaseActivity {
     }
 
     /**
+     * 处理显示旋转烤与手动加湿热按钮
+     * @param steamOven
+     */
+    private void dealRationAndAddSteam(SteamOven steamOven){
+        if(steamOven == null){
+            return;
+        }
+        int segmentModeCode = getSegmentModeCode(steamOven);
+        if(segmentModeCode != SteamConstant.EXP){
+            leftCenterView.setVisibility(View.VISIBLE);
+            leftCenterView.setOnClickListener(this);
+
+            setRotationView(steamOven.rotateSwitch == 1);
+        }else{
+            leftCenterView.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private ImageView iconView;
+    private TextView tvView;
+
+    /**
+     * 显示旋转烤View
+     * @param rotation 是否显示旋转烤
+     */
+    private void setRotationView(boolean rotation){
+        if(iconView == null){
+            iconView = findViewById(R.id.iv_left_center);
+            tvView = findViewById(R.id.tv_left_center);
+        }
+        if(iconView == null || tvView == null){
+            return;
+        }
+        iconView.setImageResource(rotation ? R.drawable.steam_ic_roate_checked : R.drawable.steam_ic_roate_uncheck);
+        tvView.setTextColor(getResources().getColor(rotation?R.color.steam_lock:R.color.steam_white70));
+    }
+
+
+    /**
      * 跳转到曲线保存界面
      */
     private void toCurveSavePage(){
@@ -817,4 +868,29 @@ public class MultiWorkActivity extends SteamBaseActivity {
         super.onResume();
         isPageHide = false;
     }
+
+    /**
+     * 检测工作条件，若不符合，则调整到提示页面并返回true，否则返回false
+     * @param curDevice
+     * @return
+     */
+    private  boolean toRemainPageMulti(SteamOven curDevice){
+        if(curDevice == null){
+            showRemindPage(R.string.steam_offline,false,-1,false);
+            return true;
+        }
+        int totalSection = curDevice.sectionNumber;
+        int startSection = curDevice.curSectionNbr;
+        for(int i = startSection;i < totalSection;i++){
+            int modeCode = curDevice.getModeCode(i);
+            boolean needWater = SteamModeEnum.needWater(curDevice.getModeCode(i));
+            int promptResId = SteamCommandHelper.getRunPromptResId(curDevice, modeCode, needWater,true);
+            if(promptResId != -1){
+                showRemindPage(promptResId,needWater,modeCode,false);
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

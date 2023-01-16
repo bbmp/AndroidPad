@@ -465,10 +465,10 @@ public class ModelWorkActivity extends SteamBaseActivity {
         if(showAddStream){
             if(outTime <= ADD_STEAM_MIN_TIME || isPreHeat){//预热或者工作剩余时间小于两分钟，不显示加湿
                 steamIv.setVisibility(View.INVISIBLE);
-                steamTv.setVisibility(steamOven.steamState == 1 ? View.VISIBLE : View.INVISIBLE);
+                steamTv.setVisibility((!isPause && steamOven.steamState != 2) ? View.VISIBLE : View.INVISIBLE);
             }else{
                 steamIv.setVisibility((isWorking && steamOven.steamState == 2) ? View.VISIBLE : View.INVISIBLE);
-                steamTv.setVisibility(steamOven.steamState != 2 ? View.VISIBLE : View.INVISIBLE);
+                steamTv.setVisibility((!isPause && steamOven.steamState != 2) ? View.VISIBLE : View.INVISIBLE);
             }
         }
         setDurationTv.setVisibility((!isPreHeat&&isWorking)?View.INVISIBLE:View.VISIBLE);
@@ -492,10 +492,10 @@ public class ModelWorkActivity extends SteamBaseActivity {
              //Toast.makeText(this,"缺少模式数据", Toast.LENGTH_LONG).show();
             return;
         }
-        initOtherViewState(multiSegments.get(0).code);
         recipeId = multiSegments.get(0).recipeId;
         workMode = multiSegments.get(0).code;
         multiSegments.get(0).workRemaining = multiSegments.get(0).workRemaining == 0 ? multiSegments.get(0).duration : multiSegments.get(0).workRemaining;
+        initOtherViewState(multiSegments.get(0).code);
         initViewInfo(multiSegments.get(0));
         initLineChart();
         SteamOven steamOven = getSteamOven();
@@ -537,37 +537,64 @@ public class ModelWorkActivity extends SteamBaseActivity {
             showStopWorkDialog();
         }else if(id == R.id.multi_work_pause){//暂停工作
             //updateViewsPreheat(getSteamOven(),true,true);
-            SteamOven steamOven = getSteamOven();
-            int code = 0;
-            if(steamOven != null){
-                code = steamOven.mode;
-            }
-//            if(!SteamCommandHelper.checkSteamState(this,steamOven,code,false)){
-//                return;
-//            }
             SteamCommandHelper.sendWorkCtrCommand(false);
         }else if(id==R.id.multi_work_start){//继续工作
-            //updateViewsPreheat(getSteamOven(),true,false);
-            SteamOven steamOven = getSteamOven();
-            int code = 0;
-            if(steamOven != null){
-                code = steamOven.mode;
-            }
-            if(!SteamCommandHelper.checkSteamState(this,steamOven,code,false)){
+            if(toRemainPage(getSteamOven())){
                 return;
             }
             SteamCommandHelper.sendWorkCtrCommand(true);
         }else if(id == R.id.multi_work_ic_steam){//加湿控制命令
-            SteamOven steamOven = getSteamOven();
-            int code = 0;
-            if(steamOven != null){
-                code = steamOven.mode;
-            }
-            if(!SteamCommandHelper.checkManuallyAddSteamState(this,steamOven,code)){
+            if(toRemainPageForAddSteam(getSteamOven())){
                 return;
             }
             SteamCommandHelper.sendSteamOrRotateCommand(QualityKeys.steamCtrl, (short) 1,DIRECTIVE_OFFSET_NONE);
         }
+    }
+
+    private  boolean toRemainPageForAddSteam(SteamOven steamOven){
+        if(steamOven == null){
+            showRemindPage(R.string.steam_offline,false,-1,false);
+            return true;
+        }
+        if(steamOven.recipeId != 0){
+            Boolean needWater = RecipeManager.getInstance().needWater(IDeviceType.SERIES_STEAM, steamOven.recipeId);
+            int promptResId = SteamCommandHelper.getRunPromptResId(steamOven, steamOven.mode, needWater,false);
+            if(promptResId != -1){
+                showRemindPage(promptResId,needWater,steamOven.mode,false);
+                return true;
+            }
+        }else{
+            boolean needWater = SteamModeEnum.isManuallyAddSteam(steamOven.mode);
+            int promptResId = SteamCommandHelper.getRunPromptResId(steamOven, steamOven.mode, needWater,false);
+            if(promptResId != -1){
+                showRemindPage(promptResId,needWater,steamOven.mode,false);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private  boolean toRemainPage(SteamOven steamOven){
+        if(steamOven == null){
+            showRemindPage(R.string.steam_offline,false,-1,false);
+            return true;
+        }
+        if(steamOven.recipeId != 0){
+            Boolean needWater = RecipeManager.getInstance().needWater(IDeviceType.SERIES_STEAM, steamOven.recipeId);
+            int promptResId = SteamCommandHelper.getRunPromptResId(steamOven, steamOven.mode, needWater,false);
+            if(promptResId != -1){
+                showRemindPage(promptResId,needWater,steamOven.mode,false);
+                return true;
+            }
+        }else{
+            boolean needWater = SteamModeEnum.needWater(steamOven.mode);//TODO(暂不考虑手动加湿)
+            int promptResId = SteamCommandHelper.getRunPromptResId(steamOven, steamOven.mode, SteamModeEnum.needWater(steamOven.mode),false);
+            if(promptResId != -1){
+                showRemindPage(promptResId,needWater,steamOven.mode,false);
+                return true;
+            }
+        }
+        return false;
     }
 
     SteamCommonDialog steamCommonDialog;
@@ -783,13 +810,13 @@ public class ModelWorkActivity extends SteamBaseActivity {
      * 跳转到曲线保存界面
      */
     private void toCurveSavePage(){
+        CurveDataUtil.initList((ArrayList<Entry>) entryList);
         dismissAllDialog();
         Intent intent = new Intent(this,CurveSaveActivity.class);
         intent.putExtra(Constant.CURVE_ID,curveId);
         intent.putExtra(Constant.CARVE_NAME,getCurveDefaultName(recipeId));
         startActivity(intent);
         finish();
-        CurveDataUtil.initList((ArrayList<Entry>) entryList);
     }
 
     /**

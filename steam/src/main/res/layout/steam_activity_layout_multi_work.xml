@@ -161,6 +161,15 @@
             tools:text="高温蒸"/>
 
         <TextView
+            android:id="@+id/multi_item_cur_steam"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/sp_40"
+            android:textSize="@dimen/sp_34"
+            android:textColor="@color/steam_mode_d9"
+            tools:text="中蒸汽"/>
+
+        <TextView
             android:id="@+id/multi_item_cur_temperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

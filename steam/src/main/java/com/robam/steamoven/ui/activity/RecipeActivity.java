@@ -161,7 +161,6 @@ public class RecipeActivity extends SteamBaseActivity {
 
     @Override
     protected void initData() {
-        //getLocalRecipe();
         String recipeData = RecipeManager.getInstance().getRecipeData();
         if(StringUtils.isNotBlank(recipeData)){
             showRecipe(recipeData);
@@ -184,7 +183,7 @@ public class RecipeActivity extends SteamBaseActivity {
         }else if(id == R.id.recipe_search_prompt_btn){
             etSearch.setText("");
             showRecipeCategory();
-            setSearchState(false);
+            setSearchState(false,false);
         }
     }
 
@@ -205,7 +204,7 @@ public class RecipeActivity extends SteamBaseActivity {
 
                         @Override
                         public void onFaild(String err) {
-
+                            //showRecipeCategory();
                         }
                     });
         }
@@ -216,7 +215,11 @@ public class RecipeActivity extends SteamBaseActivity {
             GetDeviceParamsRes getDeviceParamsRes = new Gson().fromJson(recipeData, GetDeviceParamsRes.class);
             if (null != getDeviceParamsRes && null != getDeviceParamsRes.modelMap){
                 setRecipeData(getDeviceParamsRes);
+            }else{
+                this.setSearchState(true,false);
             }
+        }else{
+            this.setSearchState(true,false);
         }
     }
 
@@ -237,24 +240,26 @@ public class RecipeActivity extends SteamBaseActivity {
     }
     //菜谱数据
     private void setRecipeData(GetDeviceParamsRes getDeviceParamsRes) {
+        if(getDeviceParamsRes == null || getDeviceParamsRes.modelMap == null || getDeviceParamsRes.modelMap.otherFunc == null){
+            this.setSearchState(true,false);
+            return;
+        }
         OtherFunc otherFunc = getDeviceParamsRes.modelMap.otherFunc;
-        if (null != otherFunc && null != otherFunc.deviceConfigurationFunctions) {
-            for (DeviceConfigurationFunctions deviceConfigurationFunctions: otherFunc.deviceConfigurationFunctions) {
-                if ("localCookbook".equals(deviceConfigurationFunctions.functionCode)) {
-                    if (null != deviceConfigurationFunctions.subView && null != deviceConfigurationFunctions.subView.modelMap) {
-                        SubViewModelMapSubView subViewModelMapSubView = deviceConfigurationFunctions.subView.modelMap.subView;
-                        if (null != subViewModelMapSubView && null != subViewModelMapSubView.deviceConfigurationFunctions) {
-                            for (DeviceConfigurationFunctions deviceConfigurationFunctions1: subViewModelMapSubView.deviceConfigurationFunctions) {
-                                if (!"ckno".equals(deviceConfigurationFunctions1.functionCode))
-                                    deviceConfigurationFunctionsList.add(deviceConfigurationFunctions1);
-                            }
+        for (DeviceConfigurationFunctions deviceConfigurationFunctions: otherFunc.deviceConfigurationFunctions) {
+            if ("localCookbook".equals(deviceConfigurationFunctions.functionCode)) {
+                if (null != deviceConfigurationFunctions.subView && null != deviceConfigurationFunctions.subView.modelMap) {
+                    SubViewModelMapSubView subViewModelMapSubView = deviceConfigurationFunctions.subView.modelMap.subView;
+                    if (null != subViewModelMapSubView && null != subViewModelMapSubView.deviceConfigurationFunctions) {
+                        for (DeviceConfigurationFunctions deviceConfigurationFunctions1: subViewModelMapSubView.deviceConfigurationFunctions) {
+                            if (!"ckno".equals(deviceConfigurationFunctions1.functionCode))
+                                deviceConfigurationFunctionsList.add(deviceConfigurationFunctions1);
                         }
                     }
-                    break;
                 }
+                break;
             }
         }
-        if(deviceConfigurationFunctionsList != null && deviceConfigurationFunctionsList.size() > 0){
+        if(deviceConfigurationFunctionsList.size() > 0){
             Collections.sort(deviceConfigurationFunctionsList, (t1, t2) -> {
                 String order = t1.functionParams;
                 String order2 = t2.functionParams;
@@ -279,7 +284,11 @@ public class RecipeActivity extends SteamBaseActivity {
         for (int i =0; i<deviceConfigurationFunctionsList.size(); i++) {
             DeviceConfigurationFunctions deviceConfigurationFunctions = deviceConfigurationFunctionsList.get(i);
             if(deviceConfigurationFunctions.functionName != null){
-                classifyList.add(deviceConfigurationFunctions.functionName.replace("菜谱",""));
+                if(deviceConfigurationFunctions.functionName.contains("水产品")){
+                    classifyList.add("水产");
+                }else{
+                    classifyList.add(deviceConfigurationFunctions.functionName.replace("菜谱",""));
+                }
             }else{
                 continue;
             }
@@ -368,7 +377,7 @@ public class RecipeActivity extends SteamBaseActivity {
         searchFragments.add(new WeakReference<>(recipeClassifyPage));
         noScrollViewPager.setAdapter(new RecipeClassifyPagerAdapter(getSupportFragmentManager(),searchFragments));
         noScrollViewPager.setOffscreenPageLimit(1);
-        this.setSearchState(resultList.size() == 0);
+        this.setSearchState(resultList.size() == 0,true);
         tabLayout.setVisibility(View.INVISIBLE);
     }
 
@@ -403,10 +412,10 @@ public class RecipeActivity extends SteamBaseActivity {
 
 
 
-    private void setSearchState(boolean showSearchPrompt){
+    private void setSearchState(boolean showSearchPrompt,boolean showBt){
         if(showSearchPrompt){
             searchPromptView.setVisibility(View.VISIBLE);
-            searchPromptBtn.setVisibility(View.VISIBLE);
+            searchPromptBtn.setVisibility(showBt?View.VISIBLE:View.INVISIBLE);
             tabLayout.setVisibility(View.INVISIBLE);
             noScrollViewPager.setVisibility(View.INVISIBLE);
         }else{

@@ -183,12 +183,9 @@ public class RecipeModeActivity extends SteamBaseActivity {
         if (view.getId() == R.id.ll_left) {
             finish();
         }else if(view.getId() == R.id.btn_start){
-//            if(!SteamCommandHelper.checkRecipeState(this,getSteamOven(),curMode.needWater == 1,true)){
+//            if(toRecipePage(getSteamOven(),curMode.needWater == 1,true)){
 //                return;
 //            }
-            if(!toRecipePage(getSteamOven(),curMode.needWater == 1,true)){
-                return;
-            }
             sendStartWorkCommand();
         }
     }

@@ -23,7 +23,8 @@ public class TextSpanUtil {
             if(sec != 0){
                 min += 1;
             }
-            String time = min+"min";//TimeUtils.secToHourMinUp(value);
+            String time = min+"min";
+            //String time = TimeUtils.secToHourMinUp(value);
             SpannableString spannableString = new SpannableString(time);
             int pos = time.indexOf(Constant.UNIT_TIME_H);
             if (pos >= 0)

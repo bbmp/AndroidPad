@@ -224,5 +224,26 @@ public enum SteamModeEnum {
         return needWater;
     }
 
+    /**
+     * 是否支持旋转烤
+     * @param modeCode
+     * @return
+     */
+    public static boolean isRation(int modeCode){
+        boolean supportRadio = (modeCode == SteamConstant.XIANNENZHENG
+                || modeCode == SteamConstant.GAOWENZHENG
+                || modeCode == SteamConstant.ZHIKONGZHENG
+                || modeCode == SteamConstant.BEIKAO
+                || modeCode == SteamConstant.FENGBEIKAO
+                || modeCode == SteamConstant.QIANGSHAOKAO
+                || modeCode == SteamConstant.KUAIRE
+                || modeCode == SteamConstant.FENGSHANKAO
+                || modeCode == SteamConstant.KONGQIZHA
+                || modeCode == SteamConstant.SHOUDONGJIASHIKAO
+                || modeCode == SteamConstant.JIASHIBEIKAO
+                || modeCode == SteamConstant.JIASHIFENGBEIKAO);
+        return supportRadio;
+    }
+
 
 }

@@ -13,6 +13,7 @@ import com.robam.common.utils.StringUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
 import com.robam.steamoven.bean.SteamOven;
+import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.device.HomeSteamOven;
 
 public class WaringActivity extends SteamBaseActivity {
@@ -38,6 +39,11 @@ public class WaringActivity extends SteamBaseActivity {
                     SteamOven steamOven = (SteamOven) device;
                     if(steamOven.faultId == 0){
                         finish();
+                    }else{
+                        //缺水需要处理
+                        if(steamOven.faultId == Constant.WARING_CODE_11 && steamOven.getResidueTotalTime() <= 0){
+                            finish();
+                        }
                     }
                 }
             }

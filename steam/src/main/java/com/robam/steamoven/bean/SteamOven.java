@@ -599,7 +599,7 @@ public class SteamOven extends Device {
      * @return
      */
     public int getCurModeCode(){
-        switch (this.sectionNumber){
+        switch (this.curSectionNbr){
             case 2:
                 return this.mode2;
             case 3:
@@ -608,6 +608,46 @@ public class SteamOven extends Device {
                 return this.mode;
         }
     }
+
+    /**
+     * 根据段数获取工作模式Code
+     * @param sectionNbr 多段段数
+     * @return
+     */
+    public int getModeCode(int sectionNbr){
+        switch (sectionNbr){
+            case 2:
+                return this.mode2;
+            case 3:
+                return this.mode3;
+            default:
+                return this.mode;
+        }
+    }
+
+    /**
+     * 获取剩余运行时间
+     * @return
+     */
+    public int getResidueTotalTime(){
+        int totalTime = 0;
+        int startIndex = curSectionNbr;
+        if(startIndex <= 0){
+            startIndex = 1;
+        }
+        for(int i = startIndex ; i <= 3;i++){
+            if(i == 1){
+                totalTime += restTimeH * 256 + restTime;//设置的工作时间 (秒)
+            }else if(i == 2){
+                totalTime += restTimeH2 * 256 + restTime2;//设置的工作时间 (秒)
+            }else if(i == 3){
+                totalTime += restTimeH3 * 256 + restTime3;//设置的工作时间 (秒)
+            }
+        }
+        return totalTime;
+    }
+
+
 
 
 }
