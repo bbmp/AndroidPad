@@ -10,8 +10,8 @@ object TextColorHelp {
     //假日模式时间颜色
     fun setHolidayTextColor(text: String, textView: TextView) {
         val dayEnd = text.indexOf("天")//第一个出现的位置
-        val timeStart = text.indexOf("每周固定")//第一个出现的位置
-        val timeEnd = text.indexOf("开启油烟机")//第一个出现的位置
+        val timeStart = text.indexOf("气时间为")//第一个出现的位置
+        val timeEnd = text.indexOf("，换气时长")//第一个出现的位置
 
         SpanUtils.with(textView)
             //天数颜色

@@ -138,8 +138,8 @@ public class CloudHelper {
         enqueue(iLife, entity, call, callback);
     }
     //检查版本
-    public static <T extends BaseResponse> void checkAppVersion(ILife iLife, String appType, String deviceType, Class<T> entity, final RetrofitCallback<T> callback) {
-        String json = new AppTypeReq(appType, deviceType).toString();
+    public static <T extends BaseResponse> void checkAppVersion(ILife iLife, String appType, String deviceType, String upgradeMode, Class<T> entity, final RetrofitCallback<T> callback) {
+        String json = new AppTypeReq(appType, deviceType, upgradeMode).toString();
         RequestBody requestBody =
                 RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
         Call<ResponseBody> call = svr.checkAppVersion(requestBody);

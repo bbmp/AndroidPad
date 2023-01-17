@@ -5,10 +5,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.robam.common.module.IPublicStoveApi;
 import com.robam.common.module.IPublicVentilatorApi;
 import com.robam.common.module.ModulePubliclHelper;
@@ -51,7 +54,9 @@ public class RecipeCookActivity extends StoveBaseActivity {
     private LinearLayoutManager linearLayoutManager;
 
     //暂停烹饪， 继续
-    private TextView tvPause, tvContinue, tvSwitch;
+    private TextView tvPause, tvContinue;
+    //菜谱名称
+    private TextView tvName;
     private int curStep = 0;
 
     private long mLastTime;
@@ -74,11 +79,11 @@ public class RecipeCookActivity extends StoveBaseActivity {
         }
         rvStep = findViewById(R.id.rv_step);
         ivRecipe = findViewById(R.id.iv_recipe);
+        tvName = findViewById(R.id.tv_recipe_name);
         tvFire = findViewById(R.id.tv_fire);
         tvAir = findViewById(R.id.tv_air);
         tvPause = findViewById(R.id.tv_pause_cook);
         tvContinue = findViewById(R.id.tv_continue_cook);
-        tvSwitch = findViewById(R.id.tv_switch_step);
         linearLayoutManager = new LinearLayoutManager(this);
         rvStep.setLayoutManager(linearLayoutManager);
         rvStep.addItemDecoration(new VerticalSpaceItemDecoration((int) getResources().getDimension(com.robam.common.R.dimen.dp_30)));
@@ -88,14 +93,27 @@ public class RecipeCookActivity extends StoveBaseActivity {
         ((SimpleItemAnimator)rvStep.getItemAnimator()).setSupportsChangeAnimations(false);
         setOnClickListener(R.id.ll_left, R.id.tv_pause_cook, R.id.tv_continue_cook);
         //双击事件
-        tvSwitch.setOnClickListener(new View.OnClickListener() {
+//        tvSwitch.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mLastTime = mCurTime;
+//                mCurTime = System.currentTimeMillis();
+//                if (mCurTime - mLastTime < 500) {
+//                    //切换步骤
+//                    nextStep();
+//                }
+//            }
+//        });
+        rvStep2Adapter.setOnItemChildClickListener(new OnItemChildClickListener() {
             @Override
-            public void onClick(View v) {
-                mLastTime = mCurTime;
-                mCurTime = System.currentTimeMillis();
-                if (mCurTime - mLastTime < 500) {
-                    //切换步骤
-                    nextStep();
+            public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
+                if (view.getId() == R.id.tv_switch_step) {
+                    mLastTime = mCurTime;
+                    mCurTime = System.currentTimeMillis();
+                    if (mCurTime - mLastTime < 500) {
+                        //切换步骤
+                        nextStep();
+                    }
                 }
             }
         });
@@ -105,8 +123,9 @@ public class RecipeCookActivity extends StoveBaseActivity {
     protected void initData() {
         if (null != stoveRecipeDetail) {
             //
-            tvSwitch.setVisibility(View.VISIBLE);
             tvPause.setVisibility(View.VISIBLE);
+            //名称
+            tvName.setText(stoveRecipeDetail.name);
 
             //步骤
             ArrayList<RecipeStep> recipeSteps = new ArrayList<>();
@@ -132,7 +151,12 @@ public class RecipeCookActivity extends StoveBaseActivity {
                     if (null != params.params) {
                         for (int i = 0; i < params.params.size(); i++) {
                             if (params.params.get(i).code.equals("fanGear")) {//烟机风量
-                                tvAir.setText("风量：" + params.params.get(i).valueName);
+                                if (params.params.get(i).value >= 1 && params.params.get(i).value <= 3)
+                                    tvAir.setText("风量：弱档");
+                                else if (params.params.get(i).value >= 4 && params.params.get(i).value <= 6)
+                                    tvAir.setText("风量：强档");
+                                else if (params.params.get(i).value >= 7 && params.params.get(i).value <= 9)
+                                    tvAir.setText("风量：爆炒档");
                                 //设置烟机风量
                                 IPublicVentilatorApi iPublicVentilatorApi = ModulePubliclHelper.getModulePublic(IPublicVentilatorApi.class, IPublicVentilatorApi.VENTILATOR_PUBLIC);
                                 if (null != iPublicVentilatorApi) {

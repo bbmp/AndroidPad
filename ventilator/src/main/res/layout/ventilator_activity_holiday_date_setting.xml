@@ -53,11 +53,11 @@
             android:textColor="#ffffffff"
             android:textSize="@dimen/sp_34" />
 
-        <com.robam.ventilator.ext.PickerTimeLayout
-            android:id="@+id/mPickerWeekLayout"
-            android:layout_width="@dimen/dp_220"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical" />
+<!--        <com.robam.ventilator.ext.PickerTimeLayout-->
+<!--            android:id="@+id/mPickerWeekLayout"-->
+<!--            android:layout_width="@dimen/dp_220"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="center_vertical" />-->
 
         <com.robam.ventilator.ext.PickerTimeLayout
             android:id="@+id/mPickerHourLayout"

@@ -58,6 +58,8 @@ public class CurveRestoreActivity extends PanBaseActivity {
     private TextView tvFire;
     //温度
     private TextView tvTemp;
+    //菜谱名
+    private TextView tvName;
 
     //曲线详情
     PanCurveDetail panCurveDetail;
@@ -105,6 +107,7 @@ public class CurveRestoreActivity extends PanBaseActivity {
             finish();
         rvStep = findViewById(R.id.rv_step);
 //        tvStop = findViewById(R.id.tv_stop_cook);
+        tvName = findViewById(R.id.tv_recipe_name);
         tvStep = findViewById(R.id.tv_cur_step);
         cookChart = findViewById(R.id.cook_chart);
         cookChart.setNoDataText(getResources().getString(R.string.pan_no_curve_data)); //没有数据时显示的文字
@@ -308,6 +311,7 @@ public class CurveRestoreActivity extends PanBaseActivity {
         };
         //第一个点
         try {
+            tvName.setText(panCurveDetail.name);
 //            if (params.containsKey("0")) {
 //                String[] data = params.get(curTime + "").split("-");
                 if (null != stove) {

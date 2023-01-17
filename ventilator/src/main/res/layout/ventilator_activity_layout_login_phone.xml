@@ -57,6 +57,7 @@
         app:layout_constraintRight_toRightOf="@id/ventilator_guideline3"
         android:textSize="@dimen/sp_32"
         android:inputType="phone"
+        android:imeOptions="actionDone"
         android:textColor="@color/ventilator_white"
         android:textColorHint="@color/ventilator_white_20"
         android:hint="@string/ventilator_input_phone_hint" />

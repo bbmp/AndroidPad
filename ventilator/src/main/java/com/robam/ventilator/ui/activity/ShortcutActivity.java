@@ -82,6 +82,7 @@ public class ShortcutActivity extends VentilatorBaseActivity {
 
     @Override
     protected void initView() {
+        showLeft();
         recyclerView = findViewById(R.id.rv_fun);
         rvDeviceWork = findViewById(R.id.rv_device_work);
         rvDevideOnline = findViewById(R.id.rv_device_online);
@@ -145,7 +146,6 @@ public class ShortcutActivity extends VentilatorBaseActivity {
         rvShortcutOnlineAdapter = new RvShortcutDeviceAdapter();
         rvDevideOnline.setAdapter(rvShortcutOnlineAdapter);
 
-        setOnClickListener(R.id.activity_short);
         //工作设备
         rvShortcutWorkAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
@@ -217,12 +217,6 @@ public class ShortcutActivity extends VentilatorBaseActivity {
         WindowsUtils.showPopupWindow();
     }
 
-    @Override
-    public void onClick(View view) {
-        int id = view.getId();
-        if (id == R.id.activity_short)
-            finish();
-    }
 
     private void getDeviceInfo(UserInfo userInfo) {
         List<Device> workList = new ArrayList<>();

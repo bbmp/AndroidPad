@@ -50,7 +50,7 @@ public class CurveRestoreActivity extends StoveBaseActivity {
     //从0开始
     private int curTime = 0;
     private float lastMark = 0; //最后点
-    private TextView tvFire, tvTemp, tvTime;
+    private TextView tvFire, tvTemp, tvTime, tvName;
     private LineChart cookChart;
     private DynamicLineChartManager dm;
     private Map<String, String> params = null;
@@ -82,6 +82,7 @@ public class CurveRestoreActivity extends StoveBaseActivity {
         tvFire = findViewById(R.id.tv_fire);
         tvTemp = findViewById(R.id.tv_temp);
         tvTime = findViewById(R.id.tv_time);
+        tvName = findViewById(R.id.tv_recipe_name);
         cookChart = findViewById(R.id.cook_chart);
         cookChart.setNoDataText(getResources().getString(R.string.stove_no_curve_data)); //没有数据时显示的文字
         setOnClickListener(R.id.ll_left);
@@ -223,7 +224,7 @@ public class CurveRestoreActivity extends StoveBaseActivity {
                 //曲线绘制
                 try {
                     curTime++;
-                    tvTime.setText(DateUtil.secForMatTime3(curTime) + "min");
+                    tvTime.setText(DateUtil.secForMatTime3((int) (lastMark - curTime)) + "min");
                     if ((curTime % 2) == 0) { //每隔2s查询
                         if (null != iPublicPanApi)
                             iPublicPanApi.queryAttribute(pan.guid); //查询锅状态
@@ -250,7 +251,8 @@ public class CurveRestoreActivity extends StoveBaseActivity {
         };
         //第一个点
         try {
-            tvTime.setText("1min");
+            tvName.setText(stoveCurveDetail.name);
+            tvTime.setText(DateUtil.secForMatTime3((int) lastMark) + "min");
 //            if (params.containsKey("0")) {
 //                String[] data = params.get("0").split("-");
                 if (null != stove) {

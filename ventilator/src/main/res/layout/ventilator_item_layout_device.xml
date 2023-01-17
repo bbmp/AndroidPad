@@ -47,14 +47,12 @@
         android:id="@+id/tv_model"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_8"
         android:textColor="@color/ventilator_white_50"
         android:textSize="@dimen/sp_24"
         android:maxLines="1"
         android:ellipsize="end"
-        app:layout_constraintTop_toTopOf="@id/tv_device_name"
-        app:layout_constraintBottom_toBottomOf="@id/tv_device_name"
-        app:layout_constraintLeft_toRightOf="@id/tv_device_name"
+        app:layout_constraintTop_toBottomOf="@id/tv_device_name"
+        app:layout_constraintLeft_toLeftOf="@id/tv_device_name"
         app:layout_constraintRight_toLeftOf="@id/view_line"/>
 
     <View
@@ -71,13 +69,13 @@
         android:id="@+id/iv_device"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/dp_24"
-        android:layout_marginBottom="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_30"
         android:layout_marginHorizontal="@dimen/dp_40"
-        android:scaleType="fitCenter"
+        android:scaleType="fitStart"
         app:layout_constraintLeft_toLeftOf="@id/view_board"
         app:layout_constraintRight_toRightOf="@id/view_line"
-        app:layout_constraintTop_toBottomOf="@id/tv_device_name"
+        app:layout_constraintTop_toBottomOf="@id/tv_model"
         app:layout_constraintBottom_toBottomOf="@id/view_board"/>
 
     <include

@@ -183,21 +183,7 @@ public class AlarmVentilatorService extends Service {
                 LiveDataBus.get().with(VentilatorConstant.OIL_CLEAN, Boolean.class).setValue(true);
             }
         }
-        //检查假日模式打开
-        if (MMKVUtils.getHoliday() && (HomeVentilator.getInstance().startup == (byte) 0x00) //关机状态下
-                && Math.abs(System.currentTimeMillis() - HomeVentilator.getInstance().fanStartTime) > 60000) {  //一分钟内不重复
-            String curWeek = DateUtil.getWeek();
-            String weekTime = MMKVUtils.getHolidayWeekTime(); //为了效率，不每次io
-            String week = weekTime.substring(0, 2);
 
-            if (curWeek.equals(week) && DateUtil.isNowTime(weekTime)) {
-                LogUtils.e("week " + week + " weekTime " + weekTime);
-                HomeVentilator.getInstance().startAutoCountDown(); //自动通风
-
-                return super.onStartCommand(intent, flags, startId);
-
-            }
-        }
         //超过天数未使用
         int holidayDay = Integer.parseInt(MMKVUtils.getHolidayDay());
         if (MMKVUtils.getHoliday()
@@ -206,7 +192,8 @@ public class AlarmVentilatorService extends Service {
                 && Math.abs(System.currentTimeMillis() - HomeVentilator.getInstance().fanStartTime) > 60000) {  //一分钟内不重复
             //自动通风
             LogUtils.e("holidayDay " + holidayDay);
-            if (DateUtil.isNowTime("周日14:00")) {
+            String weekTime = MMKVUtils.getHolidayWeekTime();
+            if (DateUtil.isNowTime(weekTime)) {
                 HomeVentilator.getInstance().startAutoCountDown(); //自动通风
 
                 return super.onStartCommand(intent, flags, startId);

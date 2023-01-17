@@ -22,6 +22,7 @@ public class RvStep2Adapter extends BaseQuickAdapter<RecipeStep, BaseViewHolder>
 
     public RvStep2Adapter() {
         super(R.layout.stove_item_recipe_step2);
+        addChildClickViewIds(R.id.tv_switch_step);
         curStep = 0;
     }
 
@@ -33,6 +34,7 @@ public class RvStep2Adapter extends BaseQuickAdapter<RecipeStep, BaseViewHolder>
     protected void convert(@NonNull BaseViewHolder baseViewHolder, RecipeStep recipeStep) {
         if (getItemPosition(recipeStep) == curStep) {
             baseViewHolder.setVisible(R.id.stove_group, true);
+            baseViewHolder.setVisible(R.id.tv_switch_step, true);
             TextView tvCurStep = baseViewHolder.getView(R.id.tv_cur_step);
             baseViewHolder.setText(R.id.tv_cur_step, String.format(getContext().getString(R.string.stove_cur_step), recipeStep.getNo()+"", getData().size()+""));
             baseViewHolder.setTextColorRes(R.id.tv_cur_step, R.color.stove_step);
@@ -51,6 +53,7 @@ public class RvStep2Adapter extends BaseQuickAdapter<RecipeStep, BaseViewHolder>
             baseViewHolder.setText(R.id.tv_step_des, String.format(getContext().getString(R.string.stove_recipe_step_des), recipeStep.getNo() + "", recipeStep.getDesc()));
         } else {
             baseViewHolder.setGone(R.id.stove_group, true);
+            baseViewHolder.setVisible(R.id.tv_switch_step, false);
             TextView tvCurStep = baseViewHolder.getView(R.id.tv_cur_step);
             baseViewHolder.setText(R.id.tv_cur_step, String.format(getContext().getString(R.string.stove_step2), recipeStep.getNo()+"", getData().size()+""));
             baseViewHolder.setTextColorRes(R.id.tv_cur_step, R.color.stove_white_50);
