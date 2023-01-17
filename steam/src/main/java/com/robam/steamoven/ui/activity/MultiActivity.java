@@ -158,6 +158,12 @@ public class MultiActivity extends SteamBaseActivity {
                 optContentParentView.getChildAt(i).findViewById(R.id.multi_item_del).setTag(indexTag);
                 optContentParentView.getChildAt(i).findViewById(R.id.multi_item_del).setOnClickListener(this);//删除按钮
                 optContentParentView.getChildAt(i).setOnClickListener(view -> {
+                    if(isDelState()){
+                        if(view.findViewById(R.id.multi_item_del).getVisibility() == View.VISIBLE){//删除状态
+                            showDealDialog(optContentParentView.findViewById(R.id.multi_item_del));
+                        }
+                        return;
+                    }
                     if(!checkSegmentState(view) && !isStart){
                         String segmentName = getSegmentName(multiSegments.size());
                         ToastInsUtils.showLong(MultiActivity.this,"请先添加"+segmentName+"参数信息");
