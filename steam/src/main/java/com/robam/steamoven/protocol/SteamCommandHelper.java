@@ -596,6 +596,9 @@ public class SteamCommandHelper {
 
 
     public static int getRemindPromptResId(SteamOven curDevice,boolean needWater){
+//        if(curDevice.doorState != 0 && (curDevice.mode != SteamConstant.CHUGOU || curDevice.mode != SteamConstant.GANZAO)){//门状态检测
+//            return R.string.steam_close_door_prompt;
+//        }
         if(needWater){
             if(curDevice.waterLevelState == 1){
                 return R.string.steam_water_deficient;
@@ -606,6 +609,26 @@ public class SteamCommandHelper {
             if(curDevice.wasteWaterLevel == 1){
                 return R.string.steam_waste_water;
             }
+            if(curDevice.wasteWaterBox != 0){
+                return R.string.steam_waste_water_out;
+            }
+        }
+        if(curDevice.waterBox != 0){
+            return R.string.steam_water_box_panel_prompt;
+        }
+        return 0;
+    }
+
+    public static int getRemindPromptResIdForAppoint(SteamOven curDevice,boolean needWater){
+        if(curDevice.doorState != 0 && (curDevice.mode != SteamConstant.CHUGOU || curDevice.mode != SteamConstant.GANZAO)){//门状态检测
+            return R.string.steam_close_door_prompt;
+        }
+        if(needWater){
+
+            if(curDevice.waterBoxState != 0){
+                return R.string.steam_water_box_prompt;
+            }
+
             if(curDevice.wasteWaterBox != 0){
                 return R.string.steam_waste_water_out;
             }

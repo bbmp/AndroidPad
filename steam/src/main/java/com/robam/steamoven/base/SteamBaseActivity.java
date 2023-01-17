@@ -171,7 +171,7 @@ public abstract class SteamBaseActivity extends BaseActivity {
     /**
      * 上一次提醒内容对应资源ID
      */
-    private int preRemindResId = -1;
+    protected int preRemindResId = -1;
 
     /**
      * 调整到提醒页面

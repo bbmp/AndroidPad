@@ -96,6 +96,9 @@ public class AppointingActivity extends SteamBaseActivity {
                     if(toWaringPage(steamOven)){
                         return;
                     }
+                    if(toRemandPageForAppoint(steamOven)){
+                        return;
+                    }
                     switch (steamOven.powerState){
                         case SteamStateConstant.POWER_STATE_AWAIT:
                         case SteamStateConstant.POWER_STATE_ON:
@@ -109,7 +112,7 @@ public class AppointingActivity extends SteamBaseActivity {
                                 //toWorkPage();
                                 SkipUtil.toWorkPage(steamOven,AppointingActivity.this);
                             }else{
-                                //主动执行立即开始工作，等待5秒，在结束页面
+                                //主动执行立即开始工作，等待10秒，在结束页面
                                 if(!isToWork || System.currentTimeMillis() - toWorkTimeMil > TO_WORK_WAIT_MAX_TIME){
                                     goHome();
                                 }
@@ -133,6 +136,26 @@ public class AppointingActivity extends SteamBaseActivity {
 //                    break;
 //            }
 //        });
+    }
+
+
+    /**
+     * 去往提醒页面
+     * @param steamOven
+     * @return
+     */
+    private boolean toRemandPageForAppoint(SteamOven steamOven){
+        boolean needWater = SteamModeEnum.needWater(steamOven.mode);
+        int remindResId = SteamCommandHelper.getRemindPromptResIdForAppoint(steamOven,needWater);
+        if(remindResId != 0 && preRemindResId != remindResId){
+            preRemindResId = remindResId;
+            Intent intent = new Intent(this, RemindActivity.class);
+            intent.putExtra(Constant.REMIND_BUS_CODE,remindResId);
+            intent.putExtra(Constant.REMIND_NEED_WATER,needWater);
+            startActivity(intent);
+            return true;
+        }
+        return false;
     }
 
     private void toWorkPage(){
@@ -253,6 +276,9 @@ public class AppointingActivity extends SteamBaseActivity {
      * @return
      */
     private String  getTimeStr(int remainingTime){
+        if(remainingTime <= 0){
+            return "00:00";
+        }
         int hour = remainingTime / 3600;
         int min = (remainingTime - hour * 3600)/60;
         int second = remainingTime%60;

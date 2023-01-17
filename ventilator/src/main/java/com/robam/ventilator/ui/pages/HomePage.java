@@ -48,6 +48,7 @@ import com.robam.dishwasher.device.DishWasherAbstractControl;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.common.module.IPublicSteamApi;
 import com.robam.steamoven.constant.Constant;
+import com.robam.steamoven.constant.SteamConstant;
 import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.SteamAbstractControl;
 import com.robam.common.device.subdevice.Stove;
@@ -419,6 +420,10 @@ public class HomePage extends VentilatorBasePage {
                     if (device instanceof SteamOven) {
                         SteamOven steamOven = (SteamOven) device;
                         if(steamOven.workState == SteamStateConstant.WORK_STATE_APPOINTMENT){
+                            if(steamOven.doorState != 0 && (steamOven.mode != SteamConstant.CHUGOU || steamOven.mode != SteamConstant.GANZAO)){//门状态检测
+                                ToastInsUtils.showLong(getContext(),R.string.ventilator_close_door_prompt);
+                                return;
+                            }
                             SteamAbstractControl.getInstance().startCookForAppoint(device.guid,steamOven);
                         }else{
                             if (steamOven.workStatus == 4 || steamOven.workStatus == 2)   //工作中和预热中
