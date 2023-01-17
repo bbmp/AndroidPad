@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import com.robam.common.manager.FunctionManager;
 import com.robam.common.ui.helper.PickerLayoutManager;
+import com.robam.common.utils.ClickUtils;
 import com.robam.common.utils.MMKVUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.steamoven.R;
@@ -71,6 +72,9 @@ public class HomePage extends SteamBasePage {
         rvMainFuntionAdapter = new RvMainFuntionAdapter();
         rvMainFuntionAdapter.setItemClick(functionBean -> {
             //scollToPosition(position);
+            if(ClickUtils.isFastClick()){
+                return;
+            }
             Intent intent = new Intent();
             intent.putExtra(SteamConstant.EXTRA_MODE_LIST, functionBean.mode);
             if (functionBean.into == null || functionBean.into.length() == 0) {

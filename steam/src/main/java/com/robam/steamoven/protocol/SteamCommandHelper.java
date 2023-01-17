@@ -620,9 +620,9 @@ public class SteamCommandHelper {
         if(curDevice == null || curDevice.status == Device.OFFLINE){
            return R.string.steam_offline;
         }
-        if(curDevice.powerState == SteamStateConstant.POWER_STATE_OFF){
-            return R.string.steam_power_off;
-        }
+//        if(curDevice.powerState == SteamStateConstant.POWER_STATE_OFF){
+//            return R.string.steam_power_off;
+//        }
         if(curDevice.doorState != 0 && (modeCode != SteamConstant.CHUGOU || modeCode != SteamConstant.GANZAO)){//门状态检测
             return R.string.steam_close_door_prompt;
         }

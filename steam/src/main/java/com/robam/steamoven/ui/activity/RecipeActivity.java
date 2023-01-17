@@ -161,12 +161,13 @@ public class RecipeActivity extends SteamBaseActivity {
 
     @Override
     protected void initData() {
-        String recipeData = RecipeManager.getInstance().getRecipeData();
-        if(StringUtils.isNotBlank(recipeData)){
-            showRecipe(recipeData);
-        }else{
-            loadRecipe();
-        }
+//        String recipeData = RecipeManager.getInstance().getRecipeData();
+//        if(StringUtils.isNotBlank(recipeData)){
+//            showRecipe(recipeData);
+//        }else{
+//            loadRecipe();
+//        }
+        loadRecipe();
 
     }
 
@@ -259,6 +260,10 @@ public class RecipeActivity extends SteamBaseActivity {
                 break;
             }
         }
+        if(deviceConfigurationFunctionsList == null || deviceConfigurationFunctionsList.size() == 0){
+            this.setSearchState(true,false);
+            return;
+        }
         if(deviceConfigurationFunctionsList.size() > 0){
             Collections.sort(deviceConfigurationFunctionsList, (t1, t2) -> {
                 String order = t1.functionParams;
@@ -292,6 +297,10 @@ public class RecipeActivity extends SteamBaseActivity {
             }else{
                 continue;
             }
+            if(classifyList == null || classifyList.size() == 0){
+                this.setSearchState(true,false);
+                return;
+            }
             //菜谱信息
             TabLayout.Tab tab = tabLayout.newTab();
             tab.setId(i);
@@ -314,7 +323,10 @@ public class RecipeActivity extends SteamBaseActivity {
 
             fragments.add(new WeakReference<>(recipeClassifyPage));
         }
-
+        if(fragments.size() == 0){
+            this.setSearchState(true,false);
+            return;
+        }
         //添加设置适配器
         noScrollViewPager.setAdapter(new RecipeClassifyPagerAdapter(getSupportFragmentManager(),fragments));
 
