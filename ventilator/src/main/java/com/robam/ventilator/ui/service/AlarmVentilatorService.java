@@ -80,21 +80,21 @@ public class AlarmVentilatorService extends Service {
                         String line = null;
                         long longTime = 0;
                         long downTime = 0;
-                        boolean consume = false;
+//                        boolean consume = false;
                         while (true) {
                             line = br.readLine();
 
                             if (null != line) { //熄屏状态
-                                if (line.startsWith("0001") && line.contains("00000001")) { //按下事件
-                                    if (System.currentTimeMillis() - downTime < 1000) {
-                                        consume = false; //后面的事件停止消费
-                                        continue;
-                                    }
-                                    downTime = System.currentTimeMillis();
-                                    consume = true;
-                                }
-                                if (!consume)
-                                    continue;
+//                                if (line.startsWith("0001") && line.contains("00000001")) { //按下事件
+//                                    if (System.currentTimeMillis() - downTime < 1000) {
+//                                        consume = false; //后面的事件停止消费
+//                                        continue;
+//                                    }
+//                                    downTime = System.currentTimeMillis();
+//                                    consume = true;
+//                                }
+//                                if (!consume)
+//                                    continue;
                                 if (line.contains("00a5")) { //左键
                                     if (line.contains("00000001")) {//down事件
                                         longTime = System.currentTimeMillis();
@@ -140,7 +140,7 @@ public class AlarmVentilatorService extends Service {
                                         }
                                     }
                                 }
-                                LogUtils.e("line = " + line);
+//                                LogUtils.e("line = " + line);
                             }
                         }
                     }

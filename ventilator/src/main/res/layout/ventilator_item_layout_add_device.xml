@@ -10,9 +10,9 @@
         android:id="@+id/view_board"
         android:layout_width="@dimen/dp_300"
         android:layout_height="match_parent"
-        android:layout_marginHorizontal="@dimen/dp_10"
         android:background="@drawable/ventilator_shape_border_bg"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 

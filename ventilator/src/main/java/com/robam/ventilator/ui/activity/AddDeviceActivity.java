@@ -13,6 +13,7 @@ import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.robam.cabinet.bean.Cabinet;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.UserInfo;
+import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
 import com.robam.dishwasher.bean.DishWasher;
 import com.robam.common.device.subdevice.Pan;
 import com.robam.steamoven.bean.SteamOven;
@@ -47,6 +48,7 @@ public class AddDeviceActivity extends VentilatorBaseActivity {
 
         rvDevice = findViewById(R.id.rv_device);
         rvDevice.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
+        rvDevice.addItemDecoration(new HorizontalSpaceItemDecoration((int)getResources().getDimension(com.robam.common.R.dimen.dp_10), (int)getResources().getDimension(com.robam.common.R.dimen.dp_50)));
         rvAddDeviceAdapter = new RvAddDeviceAdapter();
         rvDevice.setAdapter(rvAddDeviceAdapter);
 
