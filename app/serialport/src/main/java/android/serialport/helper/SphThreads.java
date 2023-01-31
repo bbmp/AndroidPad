@@ -148,7 +148,7 @@ public class SphThreads {
             byte[] bytes = new byte[maxSize];
             size = serialPort.getInputStream().read(bytes);
 
-//            LogUtils.e("read = " + StringUtils.bytes2Hex(bytes));
+            LogUtils.e("read = " + StringUtils.bytes2Hex(bytes));
             processingRecData(bytes, size);
 
 
@@ -163,7 +163,7 @@ public class SphThreads {
 
         try {
             byte[] commands = (byte[]) blockingQueue.take();
-//            LogUtils.e("write = " + StringUtils.bytes2Hex(commands));
+            LogUtils.e("write = " + StringUtils.bytes2Hex(commands));
             if (null != onResultCallback)
                 sendMessage(commands, commands.length, SENDCMD_WHAT);
             serialPort.getOutputStream().write(commands);

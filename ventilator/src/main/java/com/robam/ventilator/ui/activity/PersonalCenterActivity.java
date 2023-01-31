@@ -276,8 +276,8 @@ public class PersonalCenterActivity extends VentilatorBaseActivity {
         super.onClick(view);
         int id = view.getId();
         if (id == R.id.btn_exit_login) { //退出登录
-            if (TextUtils.isEmpty(tvPhone.getText())) //默认手机登录
-                startActivity(LoginPhoneActivity.class);
+            if (TextUtils.isEmpty(tvPhone.getText())) //默认二维码登录
+                startActivity(LoginQrcodeActivity.class);
             else
                 exitLogin();
         }

@@ -93,7 +93,7 @@
     <string name="ventilator_pause">暂停</string>
     <string name="ventilator_continue">继续</string>
     <string name="ventilator_low_battery">电量不足</string>
-    <string name="ventilator_holiday_desc_set">%s天未使用油烟机、自动开启换气（换气时间为14:00）\n每周固定 %s 开启油烟机3分钟自动换气</string>
+    <string name="ventilator_holiday_desc_set">%s天未使用油烟机，油烟机自动开启换气功能\n换气时间为%s，换气时长为3分钟</string>
     <string name="ventilator_shutdown_delay_set">油烟机将延迟%s分钟关机</string>
     <string name="ventilator_shutdown_now">立即关机</string>
     <string name="ventilator_relation">关联</string>
@@ -119,6 +119,7 @@
     <string name="ventilator_warning_e6_content">推杆电机故障</string>
     <string name="ventilator_appoint_finish">结束预约</string>
     <string name="ventilator_start_cook">开始烹饪</string>
+    <string name="ventilator_add_success">添加成功</string>
     <string name="ventilator_child_lock">设备童锁已开启，请先解锁</string>
     <string name="ventilator_close_door_prompt">门未关好，无法开启工作</string>
 </resources>

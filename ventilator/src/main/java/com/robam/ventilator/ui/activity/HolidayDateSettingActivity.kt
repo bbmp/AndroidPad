@@ -81,15 +81,15 @@ class HolidayDateSettingActivity : VentilatorBaseActivity() {
         }
 
         //周
-        binding.mPickerWeekLayout.apply {
-            setWeek()
-            setOnPickerListener { text, position ->
-                week = text
-                textChange(day)
-            }
-            //获取默认值的索引
-            scrollToPosition(week)
-        }
+//        binding.mPickerWeekLayout.apply {
+//            setWeek()
+//            setOnPickerListener { text, position ->
+//                week = text
+//                textChange(day)
+//            }
+//            //获取默认值的索引
+//            scrollToPosition(week)
+//        }
         //小时
         binding.mPickerHourLayout.apply {
             setNum(24)
@@ -121,7 +121,7 @@ class HolidayDateSettingActivity : VentilatorBaseActivity() {
             String.format(
                 getString(R.string.ventilator_holiday_desc_set),
                 day,
-                "$week$hour:$minute"
+                "$hour:$minute"
             ),
             binding.tvModeDesc
         )

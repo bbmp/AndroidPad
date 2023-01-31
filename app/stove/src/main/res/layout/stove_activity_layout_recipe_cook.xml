@@ -31,7 +31,17 @@
         app:layout_constraintRight_toRightOf="@id/pan_guideline5"
         app:layout_constraintTop_toBottomOf="@id/ll_title"
         app:common_riv_corner_radius="@dimen/dp_20"/>
-
+    <TextView
+        android:id="@+id/tv_recipe_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:textSize="@dimen/sp_40"
+        android:text=""
+        android:textColor="@color/stove_white"
+        app:layout_constraintBottom_toBottomOf="@id/iv_recipe"
+        app:layout_constraintLeft_toLeftOf="@id/iv_recipe"
+        app:layout_constraintRight_toRightOf="@id/iv_recipe"/>
     <TextView
         android:id="@+id/tv_fire"
         android:layout_width="wrap_content"
@@ -53,6 +63,16 @@
         app:layout_constraintBaseline_toBaselineOf="@id/tv_fire"
         app:layout_constraintRight_toRightOf="@id/iv_recipe"
         tools:text="风量"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/stove_step_hint"
+        android:layout_marginTop="@dimen/dp_10"
+        android:textSize="@dimen/sp_24"
+        android:textColor="@color/stove_white"
+        app:layout_constraintLeft_toLeftOf="@id/iv_recipe"
+        app:layout_constraintRight_toRightOf="@id/iv_recipe"
+        app:layout_constraintTop_toBottomOf="@id/tv_fire"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_step"
         android:layout_width="0dp"
@@ -64,20 +84,20 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ll_title"
         app:layout_constraintBottom_toBottomOf="parent"/>
-    <TextView
-        android:id="@+id/tv_switch_step"
-        android:layout_width="@dimen/dp_175"
-        android:layout_height="@dimen/dp_45"
-        android:layout_marginLeft="@dimen/dp_110"
-        android:layout_marginBottom="@dimen/dp_110"
-        android:background="@drawable/stove_shape_button_bg_cancel"
-        android:gravity="center"
-        android:text="@string/stove_switch_step"
-        android:textColor="@color/stove_white"
-        android:textSize="@dimen/sp_20"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="@id/pan_guideline5" />
+<!--    <TextView-->
+<!--        android:id="@+id/tv_switch_step"-->
+<!--        android:layout_width="@dimen/dp_175"-->
+<!--        android:layout_height="@dimen/dp_45"-->
+<!--        android:layout_marginLeft="@dimen/dp_110"-->
+<!--        android:layout_marginBottom="@dimen/dp_110"-->
+<!--        android:background="@drawable/stove_shape_button_bg_cancel"-->
+<!--        android:gravity="center"-->
+<!--        android:text="@string/stove_switch_step"-->
+<!--        android:textColor="@color/stove_white"-->
+<!--        android:textSize="@dimen/sp_20"-->
+<!--        android:visibility="gone"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintLeft_toLeftOf="@id/pan_guideline5" />-->
 
     <TextView
         android:id="@+id/tv_pause_cook"

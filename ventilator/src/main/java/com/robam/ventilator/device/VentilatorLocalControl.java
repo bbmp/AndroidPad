@@ -13,9 +13,11 @@ public class VentilatorLocalControl implements VentilatorFunction{
         byte[] data = SerialVentilator.shutDown();
         SerialPortHelper.getInstance().addCommands(data);
         if (HomeVentilator.getInstance().gear != (byte) 0xA0) {           //风机运行中，记录风机最后运行时间
-            long curTime = System.currentTimeMillis();
-            MMKVUtils.setFanOffTime(curTime);
-            HomeVentilator.getInstance().fanOffTime = curTime;
+//            long curTime = System.currentTimeMillis();
+//            MMKVUtils.setFanOffTime(curTime);
+//            HomeVentilator.getInstance().fanOffTime = curTime;
+            //记录运行时间
+            HomeVentilator.getInstance().fanRunTime(VentilatorConstant.FAN_GEAR_CLOSE);
         }
         HomeVentilator.getInstance().stopA6CountDown(); //停止爆炒档计时
         HomeVentilator.getInstance().stopLevelCountDown(); //停止弱档计时
@@ -67,9 +69,9 @@ public class VentilatorLocalControl implements VentilatorFunction{
         if (gear != (byte) 0xA0) {
             //记录运行时间
             HomeVentilator.getInstance().fanRunTime(VentilatorConstant.FAN_GEAR_CLOSE);
-            long curTime = System.currentTimeMillis();
-            MMKVUtils.setFanOffTime(curTime);//最后关风扇时间
-            HomeVentilator.getInstance().fanOffTime = curTime;
+//            long curTime = System.currentTimeMillis();
+//            MMKVUtils.setFanOffTime(curTime);//最后关风扇时间
+//            HomeVentilator.getInstance().fanOffTime = curTime;
         }
         HomeVentilator.getInstance().stopA6CountDown(); //停止爆炒档计时
         HomeVentilator.getInstance().stopLevelCountDown(); //停止弱档计时

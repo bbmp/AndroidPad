@@ -88,4 +88,14 @@ public class TbangPlat implements IPlat{
     public void closeNavBar() {
         tbManager.setNavBar(false);
     }
+
+    @Override
+    public boolean intallPackage(String packagePath) {
+        return tbManager.installPackage(packagePath);
+    }
+
+    @Override
+    public void deletePackage(String packagePath) {
+        tbManager.deletePackage(packagePath);
+    }
 }

@@ -55,6 +55,7 @@ public class RecipeActivity extends PanBaseActivity {
     protected void initView() {
         showLeft();
         showCenter();
+        showRightCenter();
 
         etSearch = findViewById(R.id.et_search);
         rvRecipe = findViewById(R.id.rv_recipe);

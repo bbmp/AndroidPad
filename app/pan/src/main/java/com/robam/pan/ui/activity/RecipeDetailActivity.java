@@ -72,6 +72,7 @@ public class RecipeDetailActivity extends PanBaseActivity {
         showLeft();
         showLeftCenter();
         showCenter();
+        showRightCenter();
 
         if (null != getIntent())
             recipeId = getIntent().getLongExtra(PanConstant.EXTRA_RECIPE_ID, 0);

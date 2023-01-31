@@ -80,21 +80,21 @@ public class AlarmVentilatorService extends Service {
                         String line = null;
                         long longTime = 0;
                         long downTime = 0;
-                        boolean consume = false;
+//                        boolean consume = false;
                         while (true) {
                             line = br.readLine();
 
                             if (null != line) { //熄屏状态
-                                if (line.startsWith("0001") && line.contains("00000001")) { //按下事件
-                                    if (System.currentTimeMillis() - downTime < 1000) {
-                                        consume = false; //后面的事件停止消费
-                                        continue;
-                                    }
-                                    downTime = System.currentTimeMillis();
-                                    consume = true;
-                                }
-                                if (!consume)
-                                    continue;
+//                                if (line.startsWith("0001") && line.contains("00000001")) { //按下事件
+//                                    if (System.currentTimeMillis() - downTime < 1000) {
+//                                        consume = false; //后面的事件停止消费
+//                                        continue;
+//                                    }
+//                                    downTime = System.currentTimeMillis();
+//                                    consume = true;
+//                                }
+//                                if (!consume)
+//                                    continue;
                                 if (line.contains("00a5")) { //左键
                                     if (line.contains("00000001")) {//down事件
                                         longTime = System.currentTimeMillis();
@@ -140,7 +140,7 @@ public class AlarmVentilatorService extends Service {
                                         }
                                     }
                                 }
-                                LogUtils.e("line = " + line);
+//                                LogUtils.e("line = " + line);
                             }
                         }
                     }
@@ -182,22 +182,10 @@ public class AlarmVentilatorService extends Service {
             if (runTime >= 60 * 60 * 60 * 1000) { //超过60小时
                 LiveDataBus.get().with(VentilatorConstant.OIL_CLEAN, Boolean.class).setValue(true);
             }
+            if (HomeVentilator.getInstance().gear != (byte) 0xA0) //风机开着
+                MMKVUtils.setFanRuntime(runTime + INTERVAL);
         }
-        //检查假日模式打开
-        if (MMKVUtils.getHoliday() && (HomeVentilator.getInstance().startup == (byte) 0x00) //关机状态下
-                && Math.abs(System.currentTimeMillis() - HomeVentilator.getInstance().fanStartTime) > 60000) {  //一分钟内不重复
-            String curWeek = DateUtil.getWeek();
-            String weekTime = MMKVUtils.getHolidayWeekTime(); //为了效率，不每次io
-            String week = weekTime.substring(0, 2);
 
-            if (curWeek.equals(week) && DateUtil.isNowTime(weekTime)) {
-                LogUtils.e("week " + week + " weekTime " + weekTime);
-                HomeVentilator.getInstance().startAutoCountDown(); //自动通风
-
-                return super.onStartCommand(intent, flags, startId);
-
-            }
-        }
         //超过天数未使用
         int holidayDay = Integer.parseInt(MMKVUtils.getHolidayDay());
         if (MMKVUtils.getHoliday()
@@ -206,7 +194,8 @@ public class AlarmVentilatorService extends Service {
                 && Math.abs(System.currentTimeMillis() - HomeVentilator.getInstance().fanStartTime) > 60000) {  //一分钟内不重复
             //自动通风
             LogUtils.e("holidayDay " + holidayDay);
-            if (DateUtil.isNowTime("周日14:00")) {
+            String weekTime = MMKVUtils.getHolidayWeekTime();
+            if (DateUtil.isNowTime(weekTime)) {
                 HomeVentilator.getInstance().startAutoCountDown(); //自动通风
 
                 return super.onStartCommand(intent, flags, startId);

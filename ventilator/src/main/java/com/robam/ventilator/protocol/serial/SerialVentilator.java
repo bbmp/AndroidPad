@@ -147,6 +147,8 @@ public class SerialVentilator {
         byte startup = (byte) 0x01;  //开机
         byte beep = (byte) 0x02;     //蜂鸣
 //        byte baffle = (byte) 0xA1; //风门挡板
+        HomeVentilator.getInstance().startup = startup;
+        HomeVentilator.getInstance().status = startup;
         byte[] payload = new byte[]{
                 startup,
                 HomeVentilator.getInstance().lightOn,
@@ -173,6 +175,10 @@ public class SerialVentilator {
         byte startup = (byte) 0x01;  //开机
         byte beep = (byte) 0x02;     //蜂鸣
         byte baffle = (byte) 0xA1; //风门挡板
+        HomeVentilator.getInstance().startup = startup;
+        HomeVentilator.getInstance().status = startup;
+        HomeVentilator.getInstance().baffle = baffle;
+        HomeVentilator.getInstance().gear = curgear;
         byte[] payload = new byte[]{
                 startup,
                 HomeVentilator.getInstance().lightOn,
@@ -202,6 +208,11 @@ public class SerialVentilator {
         byte gear = (byte) 0xA0;
         byte beep = (byte) 0x03;
         byte baffle = (byte) 0xA0;
+        HomeVentilator.getInstance().startup = startup;
+        HomeVentilator.getInstance().status = startup;
+        HomeVentilator.getInstance().lightOn = lightOn;
+        HomeVentilator.getInstance().gear = gear;
+        HomeVentilator.getInstance().baffle = baffle;
         byte[] payload = new byte[]{
                 startup,
                 lightOn,
@@ -230,6 +241,11 @@ public class SerialVentilator {
         byte gear = (byte) 0xA0;
         byte beep = (byte) 0x04;     //蜂鸣
         byte baffle = (byte) 0xA1; //打开风门挡板
+        HomeVentilator.getInstance().startup = startup;
+        HomeVentilator.getInstance().status = startup;
+        HomeVentilator.getInstance().lightOn = lightOn;
+        HomeVentilator.getInstance().gear = gear;
+        HomeVentilator.getInstance().baffle = baffle;
         byte[] payload = new byte[]{
                 startup,
                 lightOn,
@@ -258,6 +274,10 @@ public class SerialVentilator {
         byte gear = (byte) 0xA0;
         byte beep = (byte) 0x04;     //蜂鸣
         byte baffle = (byte) 0xA1; //风门挡板
+        HomeVentilator.getInstance().startup = startup;
+        HomeVentilator.getInstance().status = startup;
+        HomeVentilator.getInstance().lightOn = lightOn;
+        HomeVentilator.getInstance().gear = gear;
         byte[] payload = new byte[]{
                 startup,
                 lightOn,
@@ -283,6 +303,8 @@ public class SerialVentilator {
     //设置烟机状态
     public static byte[] setFanStatus(byte status) {
         byte startup = status;
+        HomeVentilator.getInstance().startup = startup;
+        HomeVentilator.getInstance().status = startup;
         byte[] payload = new byte[]{
                 startup,
                 HomeVentilator.getInstance().lightOn,
@@ -311,6 +333,7 @@ public class SerialVentilator {
     public static byte[] setLight(byte light, byte baffle){
         byte lightOn = light;
         byte beep = (byte) 0x04;
+        HomeVentilator.getInstance().lightOn = lightOn;
         byte[] payload = new byte[]{
                 HomeVentilator.getInstance().startup,
                 lightOn,
@@ -364,6 +387,8 @@ public class SerialVentilator {
         byte gear = curgear;
         byte beep = (byte) 0x04;     //蜂鸣
         byte baffle = (byte) 0xA1; //打开风门挡板
+        HomeVentilator.getInstance().gear = curgear;
+        HomeVentilator.getInstance().baffle = baffle;
         byte[] payload = new byte[]{
                 HomeVentilator.getInstance().startup,
                 HomeVentilator.getInstance().lightOn,
@@ -427,6 +452,8 @@ public class SerialVentilator {
             param6 = 0;
         MMKVUtils.setColorLamp(param6);
         byte baffle = (byte) 0xA1; //打开风门挡板
+        HomeVentilator.getInstance().lightOn = (byte) 0xA1;
+        HomeVentilator.getInstance().param6 = param6;
         byte[] payload = new byte[]{
                 HomeVentilator.getInstance().startup,
                 lightOn,
@@ -454,6 +481,7 @@ public class SerialVentilator {
     public static byte[] setSmart(byte smart) {
         byte param7 = smart;
         byte beep = (byte) 0x04;
+        HomeVentilator.getInstance().param7 = smart;
         byte[] payload = new byte[]{
                 HomeVentilator.getInstance().startup,
                 HomeVentilator.getInstance().lightOn,
@@ -579,21 +607,21 @@ public class SerialVentilator {
         switch (msgType) {
             //查询返回
             case MSG_TYPE_QUERY:
-                HomeVentilator.getInstance().startup = data[startupIndex - 1];
-                if (HomeVentilator.getInstance().status != VentilatorConstant.FAN_LOCK) // 非油网清洗状态
-                    HomeVentilator.getInstance().status  = data[startupIndex - 1]; //工作状态
-                HomeVentilator.getInstance().lightOn = data[lightOnIndex - 1];
-                HomeVentilator.getInstance().gear    = data[gearIndex    - 1];
+//                HomeVentilator.getInstance().startup = data[startupIndex - 1];
+//                if (HomeVentilator.getInstance().status != VentilatorConstant.FAN_LOCK) // 非油网清洗状态
+//                    HomeVentilator.getInstance().status  = data[startupIndex - 1]; //工作状态
+//                HomeVentilator.getInstance().lightOn = data[lightOnIndex - 1];
+//                HomeVentilator.getInstance().gear    = data[gearIndex    - 1];
                 HomeVentilator.getInstance().alarm   = data[beepIndex    - 1];
-                HomeVentilator.getInstance().baffle  = data[baffleIndex  - 1];
+//                HomeVentilator.getInstance().baffle  = data[baffleIndex  - 1];
                 HomeVentilator.getInstance().param1  = data[param1Index  - 1];
                 HomeVentilator.getInstance().param2  = data[param2Index  - 1];
                 HomeVentilator.getInstance().param3  = data[param3Index  - 1];
                 HomeVentilator.getInstance().param4  = data[param4Index  - 1];
                 HomeVentilator.getInstance().param5  = data[param5Index  - 1];
                 HomeVentilator.getInstance().baffle2 = data[baffle2Index - 1];
-                HomeVentilator.getInstance().param6  = data[param6Index  - 1];
-                HomeVentilator.getInstance().param7  = data[param7Index  - 1];
+//                HomeVentilator.getInstance().param6  = data[param6Index  - 1];
+//                HomeVentilator.getInstance().param7  = data[param7Index  - 1];
                 HomeVentilator.getInstance().param8  = data[param8Index  - 1];
                 HomeVentilator.getInstance().param9  = data[param9Index  - 1];
                 AccountInfo.getInstance().getGuid().setValue(Plat.getPlatform().getDeviceOnlySign());  //烟机更新
@@ -602,7 +630,8 @@ public class SerialVentilator {
             case MSG_TYPE_CONTROL:
                 //0x5A：成功；         0xA5：失败；
                 if (data[5] == MSG_SUCCESS) {
-                    SerialPortHelper.getInstance().addCommands(packQueryCmd()); //查询状态
+                    AccountInfo.getInstance().getGuid().setValue(Plat.getPlatform().getDeviceOnlySign());  //烟机更新
+//                    SerialPortHelper.getInstance().addCommands(packQueryCmd()); //查询状态
                 } else
                     LogUtils.e("failed");
                 break;
@@ -613,7 +642,7 @@ public class SerialVentilator {
 
     //包解析,解析串口收到的数据
     public static void parseSerial(byte[] data, int recLen) {
-        LogUtils.e(StringUtils.bytes2Hex(data));
+//        LogUtils.e(StringUtils.bytes2Hex(data));
         //数据为空
         if (null == data)
             return ;

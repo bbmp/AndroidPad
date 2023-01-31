@@ -82,6 +82,7 @@ public class ShortcutActivity extends VentilatorBaseActivity {
 
     @Override
     protected void initView() {
+        showLeft();
         recyclerView = findViewById(R.id.rv_fun);
         rvDeviceWork = findViewById(R.id.rv_device_work);
         rvDevideOnline = findViewById(R.id.rv_device_online);
@@ -99,15 +100,25 @@ public class ShortcutActivity extends VentilatorBaseActivity {
         rvDevideOnline.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
         rvShortcutFunAdapter = new RvShortcutFunAdapter(this);
         recyclerView.setAdapter(rvShortcutFunAdapter);
-        //烟机状态
-        if (HomeVentilator.getInstance().gear == (byte) 0xA1)
-            rvShortcutFunAdapter.setPickPosition(0);
-        else if (HomeVentilator.getInstance().gear == (byte) 0xA3)
-            rvShortcutFunAdapter.setPickPosition(1);
-        else if (HomeVentilator.getInstance().gear == (byte) 0xA6)
-            rvShortcutFunAdapter.setPickPosition(2);
-        else
-            rvShortcutFunAdapter.setPickPosition(-1);
+
+        //监听设备状态
+        AccountInfo.getInstance().getGuid().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                if (Plat.getPlatform().getDeviceOnlySign().equals(s) && null != rvShortcutFunAdapter) { //烟机更新
+                    //烟机状态
+                    if (HomeVentilator.getInstance().gear == (byte) 0xA1)
+                        rvShortcutFunAdapter.setPickPosition(0);
+                    else if (HomeVentilator.getInstance().gear == (byte) 0xA3)
+                        rvShortcutFunAdapter.setPickPosition(1);
+                    else if (HomeVentilator.getInstance().gear == (byte) 0xA6)
+                        rvShortcutFunAdapter.setPickPosition(2);
+                    else
+                        rvShortcutFunAdapter.setPickPosition(-1);
+                }
+            }
+        });
+        AccountInfo.getInstance().getGuid().setValue(Plat.getPlatform().getDeviceOnlySign());
     }
 
     @Override
@@ -123,16 +134,16 @@ public class ShortcutActivity extends VentilatorBaseActivity {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 if (position == rvShortcutFunAdapter.getPickPosition()) {//已经选中了
-                    rvShortcutFunAdapter.setPickPosition(-1);
+//                    rvShortcutFunAdapter.setPickPosition(-1);
                     VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_CLOSE);
                 } else if (position == 0) {
-                    rvShortcutFunAdapter.setPickPosition(0);
+//                    rvShortcutFunAdapter.setPickPosition(0);
                     VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_WEAK);
                 } else if (position == 1) {
-                    rvShortcutFunAdapter.setPickPosition(1);
+//                    rvShortcutFunAdapter.setPickPosition(1);
                     VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_MID);
                 } else if (position == 2) {
-                    rvShortcutFunAdapter.setPickPosition(2);
+//                    rvShortcutFunAdapter.setPickPosition(2);
                     VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_FRY);
                 }
 //                finish();
@@ -145,7 +156,6 @@ public class ShortcutActivity extends VentilatorBaseActivity {
         rvShortcutOnlineAdapter = new RvShortcutDeviceAdapter();
         rvDevideOnline.setAdapter(rvShortcutOnlineAdapter);
 
-        setOnClickListener(R.id.activity_short);
         //工作设备
         rvShortcutWorkAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
@@ -217,12 +227,6 @@ public class ShortcutActivity extends VentilatorBaseActivity {
         WindowsUtils.showPopupWindow();
     }
 
-    @Override
-    public void onClick(View view) {
-        int id = view.getId();
-        if (id == R.id.activity_short)
-            finish();
-    }
 
     private void getDeviceInfo(UserInfo userInfo) {
         List<Device> workList = new ArrayList<>();

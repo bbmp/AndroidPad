@@ -5,8 +5,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <TextView
         android:id="@+id/tv_fun_name"
-        android:layout_width="@dimen/dp_80"
-        android:layout_height="@dimen/dp_80"
+        android:layout_width="@dimen/dp_100"
+        android:layout_height="@dimen/dp_100"
         android:gravity="center"
         android:textColor="@color/ventilator_white"
         android:background="@drawable/ventilator_main_item_bg"
@@ -18,8 +18,8 @@
 
     <ImageView
         android:id="@+id/iv_fun"
-        android:layout_width="@dimen/dp_50"
-        android:layout_height="@dimen/dp_50"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
         app:layout_constraintLeft_toLeftOf="@id/tv_fun_name"
         app:layout_constraintRight_toRightOf="@id/tv_fun_name"
         app:layout_constraintTop_toTopOf="@id/tv_fun_name"

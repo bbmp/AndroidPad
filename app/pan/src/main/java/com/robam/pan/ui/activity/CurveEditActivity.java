@@ -20,6 +20,8 @@ public class CurveEditActivity extends PanBaseActivity {
     protected void initView() {
         showLeft();
         showCenter();
+        showRightCenter();
+
         tvCancel = findViewById(R.id.tv_cancel);
         tvOk = findViewById(R.id.tv_ok);
         editText = findViewById(R.id.et_curve_name);

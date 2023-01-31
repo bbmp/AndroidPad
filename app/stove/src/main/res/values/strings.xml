@@ -67,4 +67,5 @@
     <string name="stove_warning_e8_content">通讯异常</string>
     <string name="stove_warning_e9_content">点火板通讯异常</string>
     <string name="stove_warning_e10_content">明火自动翻炒锅掉线</string>
+    <string name="stove_step_hint">根据当前菜谱步骤自动调节</string>
 </resources>

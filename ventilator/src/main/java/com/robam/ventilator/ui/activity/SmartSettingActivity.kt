@@ -24,7 +24,6 @@ import com.robam.ventilator.base.VentilatorBaseActivity
 import com.robam.ventilator.constant.DialogConstant
 import com.robam.ventilator.constant.VentilatorConstant
 import com.robam.ventilator.databinding.VentilatorActivityLayoutSmartSettingBinding
-import com.robam.ventilator.databinding.VentilatorActivityShutdownDelaySettingBinding
 import com.robam.ventilator.device.HomeVentilator
 import com.robam.ventilator.factory.VentilatorDialogFactory
 import com.robam.ventilator.http.CloudHelper
@@ -232,7 +231,10 @@ class SmartSettingActivity : VentilatorBaseActivity() {
      * 数据填充
      */
     private fun addListData() {
-
+        val weekTime = MMKVUtils.getHolidayWeekTime()
+        var week = weekTime.substring(0, 2)
+        var hour = weekTime.substring(2, 4)
+        var minute = weekTime.substring(5, 7)
         mList.add(
             SmartSetBean(
                 true,
@@ -240,7 +242,7 @@ class SmartSettingActivity : VentilatorBaseActivity() {
                 String.format(
                     getString(R.string.ventilator_holiday_desc_set),
                     MMKVUtils.getHolidayDay(),
-                    MMKVUtils.getHolidayWeekTime()
+                    "$hour:$minute"
                 ),
                 MMKVUtils.getHoliday()
             )

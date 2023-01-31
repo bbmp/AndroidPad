@@ -546,9 +546,9 @@ public class HomeVentilator {
         long curTime = System.currentTimeMillis();
         if (gear == VentilatorConstant.FAN_GEAR_CLOSE) {//关挡位
             if (fanStartTime != 0) {
-                long runtime = MMKVUtils.getFanRuntime();
-                runtime = runtime + Math.abs(curTime - fanStartTime); //增加时间
-                MMKVUtils.setFanRuntime(runtime);
+//                long runtime = MMKVUtils.getFanRuntime();
+//                runtime = runtime + Math.abs(curTime - fanStartTime); //增加时间
+//                MMKVUtils.setFanRuntime(runtime);
                 fanStartTime = 0;
             }
             //记录风机最后运行时间
