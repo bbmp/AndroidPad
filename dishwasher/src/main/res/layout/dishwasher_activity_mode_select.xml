@@ -157,7 +157,7 @@
         android:layout_width="@dimen/dp_175"
         android:layout_height="@dimen/dp_56"
         android:layout_marginEnd="@dimen/dp_27"
-        android:textSize="@dimen/sp_30"
+        android:textSize="@dimen/sp_34"
         android:textColor="@color/dishwasher_white"
         android:gravity="center"
         android:background="@drawable/dishwasher_shape_button_bg_ok"

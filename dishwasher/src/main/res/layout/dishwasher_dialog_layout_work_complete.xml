@@ -25,7 +25,7 @@
         android:layout_marginTop="@dimen/dp_68"
         android:gravity="center"
         android:textColor="@color/dishwasher_white"
-        android:textSize="@dimen/sp_30"
+        android:textSize="@dimen/sp_34"
         android:text="@string/dishwasher_complete"
         android:background="@drawable/dishwasher_shape_button_bg_ok"
         app:layout_constraintLeft_toLeftOf="parent"
