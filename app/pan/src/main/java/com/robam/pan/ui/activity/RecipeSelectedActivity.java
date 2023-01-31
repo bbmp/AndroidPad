@@ -101,6 +101,7 @@ public class RecipeSelectedActivity extends PanBaseActivity {
     protected void initView() {
         showLeft();
         showCenter();
+        showRightCenter();
 
         if (null != getIntent()) {
             curveId = getIntent().getLongExtra(PanConstant.EXTRA_CURVE_ID, 0);

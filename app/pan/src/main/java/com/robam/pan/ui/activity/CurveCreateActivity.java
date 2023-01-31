@@ -93,6 +93,7 @@ public class CurveCreateActivity extends PanBaseActivity {
     protected void initView() {
         showLeft();
         showCenter();
+        showRightCenter();
 
         if (null != getIntent()) {
             stoveId = getIntent().getIntExtra(StoveConstant.EXTRA_STOVE_ID, IPublicStoveApi.STOVE_LEFT);

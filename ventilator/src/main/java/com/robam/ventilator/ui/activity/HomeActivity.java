@@ -52,7 +52,7 @@ public class HomeActivity extends BaseActivity {
         Intent intent = new Intent();
         intent.setClass(activity, HomeActivity.class);
         activity.startActivity(intent);
-        activity.finish();
+//        activity.finish();
     }
 
 

@@ -182,6 +182,8 @@ public class AlarmVentilatorService extends Service {
             if (runTime >= 60 * 60 * 60 * 1000) { //超过60小时
                 LiveDataBus.get().with(VentilatorConstant.OIL_CLEAN, Boolean.class).setValue(true);
             }
+            if (HomeVentilator.getInstance().gear != (byte) 0xA0) //风机开着
+                MMKVUtils.setFanRuntime(runTime + INTERVAL);
         }
 
         //超过天数未使用

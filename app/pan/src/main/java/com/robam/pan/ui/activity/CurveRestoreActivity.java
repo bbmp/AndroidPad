@@ -96,6 +96,8 @@ public class CurveRestoreActivity extends PanBaseActivity {
     protected void initView() {
         showLeft();
         showCenter();
+        showRightCenter();
+
         if (null != getIntent()) {
             orderNo = getIntent().getIntExtra(PanConstant.EXTRA_ORDER_ID, 0);
             favorite = getIntent().getBooleanExtra(PanConstant.EXTRA_FAVORITE, false);

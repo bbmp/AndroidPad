@@ -50,6 +50,11 @@ public class ElectricQuantityDialog extends BaseDialog {
     }
 
     @Override
+    public void setContentText(CharSequence contentStr) {
+        mContent.setText(contentStr);
+    }
+
+    @Override
     public void dismiss() {
         super.dismiss();
         if (null != banner)

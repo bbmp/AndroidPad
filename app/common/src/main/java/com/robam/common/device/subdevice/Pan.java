@@ -25,6 +25,8 @@ public class Pan extends Device {
     public int mode;
     //锅温度
     public float panTemp;
+    //锅电量
+    public int battery;
     //搅拌模式
     public int fryMode;
     //蓝牙设备
@@ -102,6 +104,8 @@ public class Pan extends Device {
                 orderNo = msg.optInt(PanConstant.pno);
             if (msg.has(PanConstant.recipeId))
                 recipeId = msg.optInt(PanConstant.recipeId);
+            if (msg.has(PanConstant.battery))
+                battery = msg.optInt(PanConstant.battery);
             return true;
         } else if (null != msg && msg.has(PanConstant.panParams)) { //设置锅参数返回
             int rc = msg.optInt(PanConstant.panParams);

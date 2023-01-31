@@ -43,6 +43,7 @@ public class FavoriteActivity extends PanBaseActivity {
     protected void initView() {
         showLeft();
         showCenter();
+        showRightCenter();
 
         group = findViewById(R.id.pan_group);
         rvRecipe = findViewById(R.id.rv_recipe);

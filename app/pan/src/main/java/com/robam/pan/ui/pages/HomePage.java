@@ -22,8 +22,10 @@ import com.robam.common.module.IPublicStoveApi;
 import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.constant.PanConstant;
 import com.robam.common.mqtt.MsgKeys;
+import com.robam.common.ui.dialog.IDialog;
 import com.robam.pan.bean.CurveStep;
 import com.robam.pan.bean.PanCurveDetail;
+import com.robam.pan.constant.DialogConstant;
 import com.robam.pan.device.HomePan;
 import com.robam.common.ui.view.MCountdownView;
 import com.robam.common.utils.ToastUtils;
@@ -32,6 +34,7 @@ import com.robam.pan.R;
 import com.robam.pan.base.PanBasePage;
 import com.robam.pan.bean.PanFunBean;
 import com.robam.pan.device.PanAbstractControl;
+import com.robam.pan.factory.PanDialogFactory;
 import com.robam.pan.http.CloudHelper;
 import com.robam.pan.response.GetCurveDetailRes;
 import com.robam.pan.ui.activity.CurveActivity;
@@ -50,13 +53,15 @@ public class HomePage extends PanBasePage {
     private RecyclerView rvMain;
     private RvMainFunctionAdapter rvMainFunctionAdapter;
     //快炒
-    private LinearLayout llQuick, llStir;
+    private LinearLayout llQuick, llStir, llRightCenter;
     //快炒
     private TextView tvQuick;
     //十秒翻炒
     private TextView tvStir;
     //油温提示
     private TextView tvTempHint;
+    //
+    private IDialog batteryDialog;
 
 
     @Override
@@ -67,9 +72,11 @@ public class HomePage extends PanBasePage {
     @Override
     protected void initView() {
         showCenter();
+        showRightCenter();
         rvMain = findViewById(R.id.rv_main);
         llQuick = findViewById(R.id.ll_quick_fry);
         llStir = findViewById(R.id.ll_stir_fry);
+        llRightCenter = findViewById(R.id.ll_right_center);
         tvQuick = findViewById(R.id.tv_quick);
         tvStir = findViewById(R.id.tv_stir);
         tvTempHint = findViewById(R.id.tv_temp);
@@ -93,7 +100,7 @@ public class HomePage extends PanBasePage {
 
         });
         rvMain.setAdapter(rvMainFunctionAdapter);
-        setOnClickListener(llQuick, llStir);
+        setOnClickListener(llQuick, llStir, llRightCenter);
         //监听锅状态
         AccountInfo.getInstance().getGuid().observe(this, new Observer<String>() {
             @Override
@@ -232,6 +239,26 @@ public class HomePage extends PanBasePage {
                 map.put(PanConstant.KEY6, new byte[] {PanConstant.MODE_CLOSE_FRY});
                 PanAbstractControl.getInstance().setInteractionParams(HomePan.getInstance().guid, map);
             }
+        } else if (id == R.id.ll_right_center) {
+            if (null == batteryDialog) {
+                batteryDialog = PanDialogFactory.createDialogByType(getContext(), DialogConstant.DIALOG_TYPE_ELECTRIC_QUANTITY);
+                batteryDialog.setCancelable(false);
+                batteryDialog.setListeners(new IDialog.DialogOnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                }, R.id.tv_ok);
+            }
+            for (Device device: AccountInfo.getInstance().deviceList) {
+                if (device instanceof Pan && IDeviceType.RZNG.equals(device.dc)) {
+                    Pan pan = (Pan) device;
+                    if (pan.battery >= 20)
+                        batteryDialog.setContentText("翻炒锅电量" + pan.battery + "%");
+                    break;
+                }
+            }
+            batteryDialog.show();
         }
     }
 
@@ -240,5 +267,7 @@ public class HomePage extends PanBasePage {
         super.onDestroy();
 //        if (null != tvStir)
 //            tvStir.stop();
+        if (null != batteryDialog && batteryDialog.isShow())
+            batteryDialog.dismiss();
     }
 }

@@ -48,6 +48,7 @@ public class RestoreCompleteActivity extends PanBaseActivity {
     @Override
     protected void initView() {
         showCenter();
+        showRightCenter();
 
         if (null != getIntent()) {
             panCurveDetail = (PanCurveDetail) getIntent().getSerializableExtra(PanConstant.EXTRA_CURVE_DETAIL);

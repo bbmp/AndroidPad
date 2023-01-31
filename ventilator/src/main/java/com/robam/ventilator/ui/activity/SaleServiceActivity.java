@@ -62,6 +62,33 @@ public class SaleServiceActivity extends VentilatorBaseActivity {
     protected void initData() {
         tvSysV.setText(BuildConfig.VERSION_NAME);
         tvModelV.setText(BuildConfig.MODEL);
+
+        checkFirmware();
+    }
+    //检查固件
+    private void checkFirmware() {
+        CloudHelper.checkAppVersion(this, "RKPAD", Plat.getPlatform().getDt(), "firmware", AppTypeRes.class, new RetrofitCallback<AppTypeRes>(){
+
+            @Override
+            public void onSuccess(AppTypeRes appTypeRes) {
+                if (null != appTypeRes && null != appTypeRes.ver && null != appTypeRes.ver.url) {
+                    LogUtils.e(appTypeRes.ver.url);
+                    versionUrl = appTypeRes.ver.url;
+                    String version = String.format(getString(R.string.ventilator_new_version), appTypeRes.ver.code + "");
+                    tvNewVersion.setVisibility(View.VISIBLE);
+                    tvNewVersion.setText(version);
+                } else
+                    checkApk();
+            }
+
+            @Override
+            public void onFaild(String err) {
+                checkApk();
+            }
+        });
+    }
+    //检查apk
+    private void checkApk() {
         CloudHelper.checkAppVersion(this, "RKPAD", Plat.getPlatform().getDt(), "apk", AppTypeRes.class, new RetrofitCallback<AppTypeRes>() {
             @Override
             public void onSuccess(AppTypeRes appTypeRes) {

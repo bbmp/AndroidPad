@@ -84,4 +84,16 @@ public interface IPlat {
     default void screenOff(){
 
     }
+    /**
+     * install firmware
+     */
+    default boolean intallPackage(String packagePath) {
+        return false;
+    }
+    /**
+     * 删除固件安装包
+     */
+    default void deletePackage(String packagePath) {
+
+    }
 }

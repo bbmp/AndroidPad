@@ -56,6 +56,7 @@ public class CurveSaveActivity extends PanBaseActivity {
     @Override
     protected void initView() {
         showCenter();
+        showRightCenter();
 
         tvCurveName = findViewById(R.id.tv_curve_name);
         cookChart = findViewById(R.id.cook_chart);

@@ -24,12 +24,12 @@ import com.robam.pan.manager.PanActivityManager;
 import com.robam.pan.ui.activity.CurveActivity;
 
 public abstract class PanBaseActivity extends BaseActivity {
-    private IDialog stoveDialog, panDialog;
+    private IDialog stoveDialog, panDialog, batteryDialog;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         PanActivityManager.getInstance().addActivity(this);
-        setOnClickListener(R.id.ll_left);
+        setOnClickListener(R.id.ll_left, R.id.ll_right_center);
     }
 
     public void showLeft() {
@@ -55,6 +55,30 @@ public abstract class PanBaseActivity extends BaseActivity {
         });
     }
 
+    public void showRightCenter() {
+        findViewById(R.id.ll_right_center).setVisibility(View.VISIBLE);
+        ImageView ivBattery = findViewById(R.id.iv_right_center);
+        TextView tvBattery = findViewById(R.id.tv_right_center);
+        tvBattery.setText(R.string.pan_battery);
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device instanceof Pan && IDeviceType.RZNG.equals(device.dc)) {
+                Pan pan = (Pan) device;
+                //电量
+                if (pan.battery < 20)
+                    ivBattery.setImageResource(R.drawable.pan_battery_20);
+                else if (pan.battery < 40)
+                    ivBattery.setImageResource(R.drawable.pan_battery_40);
+                else if (pan.battery < 60)
+                    ivBattery.setImageResource(R.drawable.pan_battery_60);
+                else if (pan.battery < 80)
+                    ivBattery.setImageResource(R.drawable.pan_battery_80);
+                else
+                    ivBattery.setImageResource(R.drawable.pan_battery_100);
+                break;
+            }
+        }
+    }
+
     public void showRight() {
         findViewById(R.id.ll_right).setVisibility(View.VISIBLE);
     }
@@ -73,6 +97,31 @@ public abstract class PanBaseActivity extends BaseActivity {
         int id = view.getId();
         if (id == R.id.ll_left)
             finish();
+        else if (id == R.id.ll_right_center) {
+            batteryHint();
+        }
+    }
+    //电量提示
+    protected void batteryHint() {
+        if (null == batteryDialog) {
+            batteryDialog = PanDialogFactory.createDialogByType(getContext(), DialogConstant.DIALOG_TYPE_ELECTRIC_QUANTITY);
+            batteryDialog.setCancelable(false);
+            batteryDialog.setListeners(new IDialog.DialogOnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            }, R.id.tv_ok);
+        }
+        for (Device device: AccountInfo.getInstance().deviceList) {
+            if (device instanceof Pan && IDeviceType.RZNG.equals(device.dc)) {
+                Pan pan = (Pan) device;
+                if (pan.battery >= 20)
+                    batteryDialog.setContentText("翻炒锅电量" + pan.battery + "%");
+                break;
+            }
+        }
+        batteryDialog.show();
     }
 
     @Override
@@ -83,6 +132,8 @@ public abstract class PanBaseActivity extends BaseActivity {
             panDialog.dismiss();
         if (null != stoveDialog && stoveDialog.isShow())
             stoveDialog.dismiss();
+        if (null != batteryDialog && batteryDialog.isShow())
+            batteryDialog.dismiss();
     }
     //检查锅是否工作中
     protected boolean isPanWorking() {

@@ -18,9 +18,9 @@ public class RvShortcutFunAdapter extends BaseQuickAdapter<VenFunBean, BaseViewH
 
     public void setPickPosition(int pickPosition) {
         if (this.pickPosition == pickPosition)
-            this.pickPosition = -1;
-        else
-            this.pickPosition = pickPosition;
+           return;
+
+        this.pickPosition = pickPosition;
         notifyDataSetChanged();
     }
 

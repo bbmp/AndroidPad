@@ -148,6 +148,7 @@ public class SerialVentilator {
         byte beep = (byte) 0x02;     //蜂鸣
 //        byte baffle = (byte) 0xA1; //风门挡板
         HomeVentilator.getInstance().startup = startup;
+        HomeVentilator.getInstance().status = startup;
         byte[] payload = new byte[]{
                 startup,
                 HomeVentilator.getInstance().lightOn,
@@ -175,7 +176,9 @@ public class SerialVentilator {
         byte beep = (byte) 0x02;     //蜂鸣
         byte baffle = (byte) 0xA1; //风门挡板
         HomeVentilator.getInstance().startup = startup;
+        HomeVentilator.getInstance().status = startup;
         HomeVentilator.getInstance().baffle = baffle;
+        HomeVentilator.getInstance().gear = curgear;
         byte[] payload = new byte[]{
                 startup,
                 HomeVentilator.getInstance().lightOn,
@@ -206,6 +209,7 @@ public class SerialVentilator {
         byte beep = (byte) 0x03;
         byte baffle = (byte) 0xA0;
         HomeVentilator.getInstance().startup = startup;
+        HomeVentilator.getInstance().status = startup;
         HomeVentilator.getInstance().lightOn = lightOn;
         HomeVentilator.getInstance().gear = gear;
         HomeVentilator.getInstance().baffle = baffle;
@@ -238,6 +242,7 @@ public class SerialVentilator {
         byte beep = (byte) 0x04;     //蜂鸣
         byte baffle = (byte) 0xA1; //打开风门挡板
         HomeVentilator.getInstance().startup = startup;
+        HomeVentilator.getInstance().status = startup;
         HomeVentilator.getInstance().lightOn = lightOn;
         HomeVentilator.getInstance().gear = gear;
         HomeVentilator.getInstance().baffle = baffle;
@@ -270,6 +275,7 @@ public class SerialVentilator {
         byte beep = (byte) 0x04;     //蜂鸣
         byte baffle = (byte) 0xA1; //风门挡板
         HomeVentilator.getInstance().startup = startup;
+        HomeVentilator.getInstance().status = startup;
         HomeVentilator.getInstance().lightOn = lightOn;
         HomeVentilator.getInstance().gear = gear;
         byte[] payload = new byte[]{
@@ -298,6 +304,7 @@ public class SerialVentilator {
     public static byte[] setFanStatus(byte status) {
         byte startup = status;
         HomeVentilator.getInstance().startup = startup;
+        HomeVentilator.getInstance().status = startup;
         byte[] payload = new byte[]{
                 startup,
                 HomeVentilator.getInstance().lightOn,
@@ -635,7 +642,7 @@ public class SerialVentilator {
 
     //包解析,解析串口收到的数据
     public static void parseSerial(byte[] data, int recLen) {
-        LogUtils.e(StringUtils.bytes2Hex(data));
+//        LogUtils.e(StringUtils.bytes2Hex(data));
         //数据为空
         if (null == data)
             return ;

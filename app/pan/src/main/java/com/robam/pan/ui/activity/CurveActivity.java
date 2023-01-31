@@ -67,6 +67,8 @@ public class CurveActivity extends PanBaseActivity {
     protected void initView() {
         showLeft();
         showCenter();
+        showRightCenter();
+
         tvRight = findViewById(R.id.tv_right);
         //
         tvRight.setText(R.string.pan_delete);
@@ -323,6 +325,8 @@ public class CurveActivity extends PanBaseActivity {
             allUnselect();
             rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_BACK);
             tvDelete.setVisibility(View.INVISIBLE);
+        } else if (id == R.id.ll_right_center) {
+            batteryHint();
         }
     }
 
