@@ -95,7 +95,7 @@ public class TbangPlat implements IPlat{
     }
 
     @Override
-    public void deletePackage(String packagePath) {
-        tbManager.deletePackage(packagePath);
+    public boolean verifyPackage(String packagePath) {
+        return tbManager.verifyPackage(packagePath);
     }
 }

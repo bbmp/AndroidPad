@@ -91,9 +91,9 @@ public interface IPlat {
         return false;
     }
     /**
-     * 删除固件安装包
+     * 校验固件安装包
      */
-    default void deletePackage(String packagePath) {
-
+    default boolean verifyPackage(String packagePath) {
+        return false;
     }
 }

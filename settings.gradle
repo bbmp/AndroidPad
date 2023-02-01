@@ -18,7 +18,7 @@ dependencyResolutionManagement {
         maven { url 'https://jitpack.io' }
     }
 }
-rootProject.name = "AndroidPad"
+rootProject.name = "ventilator"
 include ':app'
 include ':steam'
 include ':ventilator'

@@ -37,8 +37,8 @@ import retrofit2.Response;
 
 public class CloudHelper {
     private static final String APPLICATION_JSON_ACCEPT_APPLICATION_JSON = "application/json; Accept: application/json";
-    private static ICloudService svr = RetrofitClient.getInstance().createApi(ICloudService.class, HostServer.apiHost);
-    private static IDownloadService downloadService = RetrofitClient.getInstance().createDownApi(IDownloadService.class, HostServer.apiHost);
+    private static ICloudService svr = RetrofitClient.getInstance().createApi(ICloudService.class, HostServer.apiHostTest);
+    private static IDownloadService downloadService = RetrofitClient.getInstance().createDownApi(IDownloadService.class, HostServer.apiHostTest);
 
     //获取验证码
     public static <T extends BaseResponse> void getVerifyCode(ILife iLife, String phone, Class<T> entity,
@@ -146,19 +146,22 @@ public class CloudHelper {
         enqueue(iLife, entity, call, callback);
     }
     //下载文件
-    public static void downloadFile(Context context, String url, final DownloadListener listener) {
-
+    public static void downloadFile(ILife iLife, Context context, String url, String fileName, final DownloadListener listener) {
+        WeakReference<ILife> iLifeWeakReference = new WeakReference<>(iLife);
         Call<ResponseBody> responseBodyCall = downloadService.downloadFile(url);
         responseBodyCall.enqueue(new retrofit2.Callback<ResponseBody>() {
 
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                saveFile(response.body(), StorageUtils.getCachDir(context) , "temp.apk", listener);
+
+                saveFile(iLifeWeakReference.get(), response.body(), StorageUtils.getCachDir(context) , fileName, listener);
 
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
+                if (null == iLifeWeakReference.get() || iLifeWeakReference.get().isDestroyed())
+                    return;
                 listener.onFail("net failed");
             }
         });
@@ -179,7 +182,7 @@ public class CloudHelper {
         enqueue(iLife, entity, call, callback);
     }
 
-    private static void saveFile(ResponseBody responseBody, String destFileDir, String destFileName, DownloadListener downloadListener) {
+    private static void saveFile(ILife iLife, ResponseBody responseBody, String destFileDir, String destFileName, DownloadListener downloadListener) {
         InputStream is = null;
         byte[] buf = new byte[8192];
         int len = 0;
@@ -199,6 +202,9 @@ public class CloudHelper {
             fos = new FileOutputStream(file);
             int progress = 0;
             while ((len = is.read(buf)) != -1) {
+                if (null == iLife || iLife.isDestroyed())
+                    break;
+
                 sum += len;
                 fos.write(buf, 0, len);
 
@@ -210,10 +216,12 @@ public class CloudHelper {
             fos.flush();
 
             //下载完成，并返回保存的文件路径
-            downloadListener.onFinish(file.getAbsolutePath());
+            if (null != iLife && !iLife.isDestroyed())
+                downloadListener.onFinish(file.getAbsolutePath());
 
         } catch (IOException e) {
-            downloadListener.onFail("IOException");
+            if (null != iLife && !iLife.isDestroyed())
+                downloadListener.onFail("IOException");
         } finally {
             try {
                 if (is != null) is.close();

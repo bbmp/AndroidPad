@@ -1,5 +1,8 @@
 package com.robam.common.utils;
 
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
 
 import com.robam.common.IDeviceType;
@@ -69,5 +72,19 @@ public class DeviceUtils {
             e.printStackTrace();
         }
         return serial;
+    }
+    //获取包版本
+    public static String getVersionName(Context context){
+//获取包管理器
+        PackageManager pm = context.getPackageManager();
+//获取包信息
+        try {
+            PackageInfo packageInfo = pm.getPackageInfo(context.getPackageName(),0);
+//返回版本号
+            return packageInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return "1.0.0";
     }
 }

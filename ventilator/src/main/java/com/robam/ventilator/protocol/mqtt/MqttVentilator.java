@@ -168,8 +168,16 @@ public class MqttVentilator extends MqttPublic {
                             if (min >=1 && min <= 5) {//设置延时关机时间
 //                                MMKVUtils.setDelayShutdownTime(min + "");
                                 //延时关机倒计时
-                                if (HomeVentilator.getInstance().isStartUp() && !HomeVentilator.getInstance().isLock()) //非锁屏
-                                    HomeVentilator.getInstance().timeShutdown(min);
+                                if (HomeVentilator.getInstance().isStartUp() && !HomeVentilator.getInstance().isLock()) {//非锁屏
+                                    for (Device device: AccountInfo.getInstance().deviceList) {
+                                        if (msg.getGuid().equals(device.guid) && device instanceof Stove && IDeviceType.RRQZ.equals(device.dc)) {
+                                            Stove stove = (Stove) device;
+                                            if (stove.leftLevel == 0 && stove.rightLevel == 0) //关火状态延时关机
+                                                HomeVentilator.getInstance().timeShutdown(min);
+                                            break;
+                                        }
+                                    }
+                                }
                             }
                         }
                             break;
