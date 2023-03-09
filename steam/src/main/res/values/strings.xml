@@ -1069,7 +1069,7 @@
     <string name="steam_setting_renew_check">确认恢复出厂设置</string>
     <string name="steam_work_mode">%s  %s℃</string>
     <string name="steam_work_temp">%s℃</string>
-    <string name="steam_work_complete">烹饪结束，快来享受美食吧！</string>
+    <string name="steam_work_complete">烹饪结束，快来享受美食吧</string>
     <string name="steam_work_complete_add_time">加时</string>
     <string name="steam_work_complete_complete">完成</string>
     <string name="steam_carve_saving">保存曲线</string>
@@ -1097,7 +1097,9 @@
     <string name="steam_smart_hint">智能提醒</string>
     <string name="steam_cook_complete">烹饪结束</string>
     <string name="steam_ignore">忽略</string>
-    <string name="steam_finish_now">立即结束</string>
+    <string name="steam_finish_now">结束烹饪</string>
+    <string name="steam_aux_model_finish_now">结束工作</string>
+    <string name="steam_finish_appoint">结束预约</string>
     <string name="steam_cook_burnt">菜品快糊啦，请尽快结束烹饪。</string>
     <string name="steam_temp_message">%s模式不需要调节温度参数</string>
     <string name="steam_time_message">%s模式不需要调节时间参数</string>
@@ -1154,13 +1156,14 @@
     <string name="steam_select_all">全选</string>
     <string name="steam_qrcode">二维码</string>
     <string name="steam_material">食材</string>
-    <string name="steam_no_curve_data">没有曲线数据</string>
+    <string name="steam_no_curve_data">暂无曲线数据</string>
     <string name="steam_stop_cook_hint">确认结束当前烹饪?</string>
-    <string name="steam_delete_ok_content">确认删除该内容</string>
+    <string name="steam_delete_ok_content">是否确认删除</string>
     <string name="steam_cook_in_pause">暂停中</string>
-    <string name="steam_cook_start_prompt">至少需要设置两段才能开始烹饪</string>
+    <string name="steam_cook_start_prompt">添加第二段后可开始烹饪</string>
     <string name="steam_cook_setting_prompt">暂停烹饪后,可调整烹饪设置</string>
-    <string name="steam_work_multi_back_message">是否结束当前烹饪工作？</string>
+    <string name="steam_work_multi_back_message">确认结束当前烹饪工作</string>
+    <string name="steam_work_aux_back_message">确认结束当前工作</string>
     <string name="steam_work_multi_check_message">请设置前段内容</string>
     <string name="steam_stove_using">占用</string>
     <string name="steam_recipe_search_no_result">抱歉，未找到相关菜谱</string>
@@ -1196,7 +1199,7 @@
     <string name="steam_power_off">设备已关机</string>
     <string name="steam_start_appoint">开始预约</string>
     <string name="steam_recipe_json_parse_fail">菜谱数据异常,请稍后在试</string>
-    <string name="steam_end_appoint">是否结束当前预约工作</string>
+    <string name="steam_end_appoint">确认结束当前预约工作</string>
     <string name="steam_match_hint8">1.开启一体机。 \n2.在一体机上登录当前ROKI账户。 \n完成上述操作后点击下一步。</string>
     <string name="steam_need_water">设备缺水</string>
     <string name="steam_waste_water">废水箱已满，请即时清理</string>
@@ -1229,5 +1232,15 @@
     <string name="steam_waring_17">磁控管温度传感器故障</string>
     <string name="steam_waring_17_content">磁控管温度传感器故障，请关闭一体机并申请售后服务。</string>
     <string name="steam_curve_success">保存成功</string>
-    <string name="steam_water_box_panel_prompt">水箱面板已弹出</string>
+    <string name="steam_curve_info_error_prompt">查询曲线数据失败</string>
+    <string name="steam_curve_error">保存失败</string>
+    <string name="steam_water_box_panel_prompt">请关闭水箱后再开始工作</string>
+    <string name="steam_overtime_title">加时设置</string>
+    <string name="steam_no_user_info">缺少用户信息</string>
+    <string name="steam_curve_no_device">缺少烹饪信息</string>
+    <string name="steam_curve_del_prompt">确认删除该内容</string>
+    <string name="steam_curve_del_choice_prompt">请至少选中一个</string>
+    <string name="steam_curve_name_empty_prompt">请填写曲线名称</string>
+    <string name="steam_curve_no_data_prompt">暂无曲线数据</string>
+    <string name="steam_curve_not_work">工作时间不能少于一分钟</string>
 </resources>

@@ -177,7 +177,9 @@ public class RecipeActivity extends SteamBaseActivity {
         int id = view.getId();
         if (id == R.id.ll_left) {
             if(tabLayout.getVisibility() != View.VISIBLE){
+                etSearch.setText("");
                 showRecipeCategory();
+                setSearchState(false,false);
                 return;
             }
             finish();
@@ -198,8 +200,17 @@ public class RecipeActivity extends SteamBaseActivity {
                         @Override
                         public void onSuccess(GetDeviceParamsRes getDeviceParamsRes) {
                             if (null != getDeviceParamsRes && null != getDeviceParamsRes.modelMap) {
-                                new Thread(() -> RecipeManager.getInstance().setRecipeInfo(guidType, getDeviceParamsRes)).start();
-                                setRecipeData(getDeviceParamsRes);
+                                new Thread(() -> {
+                                    try{
+                                        RecipeManager.getInstance().setRecipeInfo(guidType, getDeviceParamsRes);
+                                        if(!isDestroyed()){
+                                            runOnUiThread(() -> setRecipeData(getDeviceParamsRes));
+                                        }
+                                    }catch (Throwable t){
+                                        t.printStackTrace();
+                                    }
+                                }).start();
+
                             }
                         }
 
@@ -315,6 +326,14 @@ public class RecipeActivity extends SteamBaseActivity {
             if (null != deviceConfigurationFunctions.subView && null != deviceConfigurationFunctions.subView.modelMap) {
                 SubViewModelMapSubView subViewModelMapSubView = deviceConfigurationFunctions.subView.modelMap.subView;
                 if (null != subViewModelMapSubView && null != subViewModelMapSubView.deviceConfigurationFunctions) {
+                    Collections.sort(subViewModelMapSubView.deviceConfigurationFunctions, (t1, t2) -> {
+                        String order = t1.functionCode;
+                        String order2 = t2.functionCode;
+                        if(StringUtils.isBlank(order) || StringUtils.isBlank(order2)){
+                            return 0;
+                        }
+                        return order.compareTo(order2);
+                    });
                     bundle.putInt("classify", i);
                     bundle.putParcelableArrayList(Constant.RECIPE_LIST_FLAG, (ArrayList<? extends Parcelable>) subViewModelMapSubView.deviceConfigurationFunctions);
                     recipeClassifyPage.setArguments(bundle);

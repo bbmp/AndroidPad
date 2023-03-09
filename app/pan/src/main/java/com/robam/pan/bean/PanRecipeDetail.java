@@ -11,17 +11,14 @@ public class PanRecipeDetail implements Serializable {
     //总时间
     public int needTime;
     //图片
-    public String imgSmall;
+    public String imgCover11;
     //步骤
-    public List<RecipeStep> steps;
+    public List<RecipeStep> stepRespDtoList;
     //食材分类
-    public MaterialClassify materials;
-    //曲线菜谱id
-    public long curveCookbookId;
-    //温度参数
-    public String temperatureCurveParams;
-    //电机参数
-    public String curveStageParams;
-    //曲线步骤
-    public List<CurveStep> curveStepDtoList;
+    public List<Material> materialDtoList;
+    //调味料
+    public List<Material> condimentDtoList;
+    //曲线数据
+    public CurveCookbook curveCookbookDto;
+
 }

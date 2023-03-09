@@ -1,6 +1,7 @@
 package com.robam.steamoven.ui.activity;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -11,14 +12,18 @@ import com.github.mikephil.charting.data.Entry;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.BaseResponse;
 import com.robam.common.bean.Device;
+import com.robam.common.bean.UserInfo;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.manager.DynamicLineChartManager;
 import com.robam.common.mqtt.MsgKeys;
+import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.StringUtils;
 import com.robam.common.utils.ToastInsUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
+import com.robam.steamoven.bean.CookingCurveQueryRes;
+import com.robam.steamoven.bean.CurveData;
 import com.robam.steamoven.bean.CurveStep;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.Constant;
@@ -31,6 +36,8 @@ import com.robam.steamoven.response.GetCurveDetailRes;
 import com.robam.steamoven.ui.dialog.SteamCommonDialog;
 import com.robam.steamoven.utils.CurveDataUtil;
 import com.robam.steamoven.utils.SkipUtil;
+import com.robam.steamoven.utils.TempAxisValueFormatter;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
@@ -68,8 +75,10 @@ public class CurveSaveActivity extends SteamBaseActivity {
     //曲线ID
     private long curveId;
 
-    private GetCurveDetailRes curveDetailRes;
+    private CookingCurveQueryRes curveDetailRes;
     private String promptText;
+    private String deviceGuid;
+    private int needTime;
 
 
     @Override
@@ -128,7 +137,9 @@ public class CurveSaveActivity extends SteamBaseActivity {
         dm.setAxisLine(true, false);
         dm.setGridLine(false, false);
         dm.setAxisMaximum(maxYValue+50);
+        dm.setYAxiFormat(new TempAxisValueFormatter(0));
         dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.steam_chart), entryList, true, false);
+        cookChart.setTouchEnabled(false);
         cookChart.notifyDataSetChanged();
     }
 
@@ -139,7 +150,7 @@ public class CurveSaveActivity extends SteamBaseActivity {
      * @param getDeviceParamsRes
      * @throws JSONException
      */
-    private void parserCureData(GetCurveDetailRes getDeviceParamsRes) throws JSONException {
+    private void parserCureData(CookingCurveQueryRes getDeviceParamsRes) throws JSONException {
         this.curveDetailRes = getDeviceParamsRes;
         if(getDeviceParamsRes == null){
             ToastInsUtils.showLong(this,R.string.steam_curve_no_data);
@@ -147,14 +158,14 @@ public class CurveSaveActivity extends SteamBaseActivity {
             initLineChart();
             return;
         }
-        if(getDeviceParamsRes != null && (getDeviceParamsRes.payload == null || getDeviceParamsRes.payload.temperatureCurveParams == null)){
+        if(getDeviceParamsRes != null && (getDeviceParamsRes.data == null || getDeviceParamsRes.data.temperatureCurveParams == null)){
             //ToastUtils.showLong(this,R.string.steam_curve_no_data);
             //cookChart.setNoDataText(getString(R.string.steam_curve_no_data));
             //initLineChart();
             initCurveData();
             return;
         }
-        JSONObject jsonObject = new JSONObject(getDeviceParamsRes.payload.temperatureCurveParams);
+        JSONObject jsonObject = new JSONObject(getDeviceParamsRes.data.temperatureCurveParams);
         Iterator<String> keys = jsonObject.keys();
         if(keys == null || !keys.hasNext()){
             //ToastUtils.showLong(this,R.string.steam_curve_no_data);
@@ -175,6 +186,9 @@ public class CurveSaveActivity extends SteamBaseActivity {
             }
             Entry entry = new Entry(Integer.parseInt(key),Integer.parseInt(temp.trim()));
             entryList.add(entry);
+        }
+        if(entryList != null && entryList.size() > 0){
+            needTime = (int) (entryList.get(entryList.size() - 1).getX() - entryList.get(0).getY());
         }
         if(entryList.size() <= 2){
             entryList.clear();
@@ -198,6 +212,7 @@ public class CurveSaveActivity extends SteamBaseActivity {
     protected void initData() {
         //获取上一个页面传递过来的参数
         curveId = getIntent().getLongExtra(Constant.CURVE_ID,0);
+        deviceGuid = getIntent().getStringExtra(Constant.DEVICE_GUID);
         SteamOven steamOven = getSteamOven();
         if(steamOven == null){
             Toast.makeText(this,"缺少模式数据",Toast.LENGTH_LONG).show();
@@ -207,6 +222,7 @@ public class CurveSaveActivity extends SteamBaseActivity {
         if(StringUtils.isNotBlank(promptText)){
             finishTv.setText(promptText);
         }
+        stopCreate();
         //initCurveData();
         if(curveId == 0){
             getCurveByGuid(getSteamOven().guid);
@@ -214,6 +230,25 @@ public class CurveSaveActivity extends SteamBaseActivity {
             getCurveById();
         }
 
+    }
+
+    //通知云端停止记录
+    private void stopCreate() {
+        //通知后台结束
+        if(curveId == 0){
+            return;
+        }
+        CloudHelper.updateCurveState(this, curveId, 4, BaseResponse.class, new RetrofitCallback<BaseResponse>() {
+            @Override
+            public void onSuccess(BaseResponse baseResponse) {
+                LogUtils.i("updateCurveState " + baseResponse.msg);
+            }
+
+            @Override
+            public void onFaild(String err) {
+
+            }
+        });
     }
 
     private void initCurveData(){
@@ -251,41 +286,33 @@ public class CurveSaveActivity extends SteamBaseActivity {
     }
 
     long timestamp = System.currentTimeMillis();
-    private void saveCurve(){
-        curveDetailRes.payload.userId = AccountInfo.getInstance().getUserString();
-        curveDetailRes.payload.name = finishTv.getText().toString();
-        curveDetailRes.payload.deviceGuid = getSteamOven().guid;
-        curveDetailRes.payload.stepList = getCurveStepList();
-        if(curveDetailRes.payload.gmtCreate != 0){
-            curveDetailRes.payload.needTime = (int) ((timestamp - curveDetailRes.payload.gmtCreate)/1000) +"";
-        }
-
-        CloudHelper.saveCurveData(this,  curveDetailRes.payload, BaseResponse.class, new RetrofitCallback<BaseResponse>() {
-            @Override
-            public void onSuccess(BaseResponse getCurveDetailRes) {
-                saveCurveStep();
-            }
-
-            @Override
-            public void onFaild(String err) {
-
-            }
-        });
-    }
 
     private void saveCurveStep(){
-        if(curveDetailRes == null){
-            ToastInsUtils.showLong(CurveSaveActivity.this,R.string.steam_curve_no_data);
+        if(StringUtils.isEmpty(finishTv.getText().toString())){
+            ToastInsUtils.showLong(CurveSaveActivity.this,R.string.steam_curve_name_empty_prompt);
             return;
         }
-        curveDetailRes.payload.userId = AccountInfo.getInstance().getUserString();
-        curveDetailRes.payload.name = finishTv.getText().toString();
-        curveDetailRes.payload.deviceGuid = getSteamOven().guid;
-        curveDetailRes.payload.stepList = getCurveStepList();
-        if(curveDetailRes.payload.gmtCreate != 0){
-            curveDetailRes.payload.needTime = (int) ((timestamp - curveDetailRes.payload.gmtCreate)/1000) +"";
+        if(curveDetailRes == null || curveDetailRes.data == null){
+            ToastInsUtils.showLong(CurveSaveActivity.this,R.string.steam_curve_no_device);
+            return;
         }
-        CloudHelper.saveCurveStepData(this, curveDetailRes.payload, BaseResponse.class, new RetrofitCallback<BaseResponse>() {
+        UserInfo userInfo = AccountInfo.getInstance().getUser().getValue();
+        if(userInfo == null){
+            ToastInsUtils.showLong(CurveSaveActivity.this,R.string.steam_no_user_info);
+            return;
+        }
+//        curveDetailRes.payload.userId = userInfo.id + "";
+//        curveDetailRes.payload.name = finishTv.getText().toString().trim();
+//        curveDetailRes.payload.deviceGuid = getSteamOven().guid;
+//        curveDetailRes.payload.stepList = getCurveStepList();
+//        if(curveDetailRes.data.gmtCreate != 0){
+//            curveDetailRes.data.needTime = (int) ((timestamp - curveDetailRes.payload.gmtCreate)/1000) +"";
+//        }
+        curveDetailRes.data.curveStepList = getCurveStepList();
+        curveDetailRes.data.deviceGuid = deviceGuid;
+        curveDetailRes.data.name = finishTv.getText().toString().trim();
+        curveDetailRes.data.needTime = needTime;
+        CloudHelper.saveCurveStepData(this, userInfo.id,curveDetailRes.data, BaseResponse.class, new RetrofitCallback<BaseResponse>() {
             @Override
             public void onSuccess(BaseResponse baseResponse) {
                 ToastInsUtils.showLong(CurveSaveActivity.this,R.string.steam_curve_success);
@@ -301,21 +328,21 @@ public class CurveSaveActivity extends SteamBaseActivity {
 
 
 
-    private  List<CurveStep> getCurveStepList(){
-        List<CurveStep> curveSteps = new ArrayList<>();
+    private  List<CurveData.CurveStepListDTO> getCurveStepList(){
+        List<CurveData.CurveStepListDTO> curveSteps = new ArrayList<>();
         if(entryList.size() <= 2){
             return curveSteps;
         }
-        CurveStep startStep = new CurveStep();
+        CurveData.CurveStepListDTO startStep = new CurveData.CurveStepListDTO();
         startStep.markTemp = (int) ((Entry)entryList.get(0)).getY();
         startStep.markTime = (int)((Entry)entryList.get(0)).getX() +"";
         startStep.markName = "开始工作";
         startStep.status = 1;
         curveSteps.add(startStep);
 
-        CurveStep endStep = new CurveStep();
-        endStep.markTemp = (int) ((Entry)entryList.get(0)).getY();
-        endStep.markTime = (int)((Entry)entryList.get(0)).getX() +"";
+        CurveData.CurveStepListDTO endStep = new CurveData.CurveStepListDTO();
+        endStep.markTemp = (int) ((Entry)entryList.get(entryList.size() -1)).getY();
+        endStep.markTime = (int)((Entry)entryList.get(entryList.size() -1)).getX() +"";
         endStep.markName = "结束工作";
         endStep.status = 1;
         curveSteps.add(endStep);
@@ -368,9 +395,9 @@ public class CurveSaveActivity extends SteamBaseActivity {
 
     //获取曲线详情
     private void getCurveById() {
-        CloudHelper.getCurvebookDetail(this, curveId, GetCurveDetailRes.class, new RetrofitCallback<GetCurveDetailRes>() {
+        CloudHelper.getCurvebookDetail(this, curveId, CookingCurveQueryRes.class, new RetrofitCallback<CookingCurveQueryRes>() {
             @Override
-            public void onSuccess(GetCurveDetailRes getCurveDetailRes) {
+            public void onSuccess(CookingCurveQueryRes getCurveDetailRes) {
                 try {
                     parserCureData(getCurveDetailRes);
                 } catch (JSONException e) {
@@ -387,10 +414,10 @@ public class CurveSaveActivity extends SteamBaseActivity {
 
     protected void getCurveByGuid(final String guid) {
         //mGuid 暂时写死241
-        CloudHelper.getCurveBookForDevice(this, guid, GetCurveDetailRes.class,
-                new RetrofitCallback<GetCurveDetailRes>() {
+        CloudHelper.getCurveBookForDevice(this, guid, CookingCurveQueryRes.class,
+                new RetrofitCallback<CookingCurveQueryRes>() {
                     @Override
-                    public void onSuccess(GetCurveDetailRes getDeviceParamsRes) {
+                    public void onSuccess(CookingCurveQueryRes getDeviceParamsRes) {
                         try {
                             parserCureData(getDeviceParamsRes);
                         } catch (JSONException e) {

@@ -128,13 +128,13 @@ public class CurveSelectedActivity extends StoveBaseActivity {
         CloudHelper.getCurvebookDetail(this, curveid, "", GetCurveDetailRes.class, new RetrofitCallback<GetCurveDetailRes>() {
             @Override
             public void onSuccess(GetCurveDetailRes getCurveDetailRes) {
-                if (null != getCurveDetailRes && null != getCurveDetailRes.payload) {
-                    stoveCurveDetail = getCurveDetailRes.payload;
+                if (null != getCurveDetailRes && null != getCurveDetailRes.data) {
+                    stoveCurveDetail = getCurveDetailRes.data;
                     tvCurveName.setText(stoveCurveDetail.name);
 
                     List<CurveStep> curveSteps = new ArrayList<>();
-                    if (null != stoveCurveDetail.stepList) {
-                        curveSteps.addAll(stoveCurveDetail.stepList);
+                    if (null != stoveCurveDetail.curveStepList) {
+                        curveSteps.addAll(stoveCurveDetail.curveStepList);
                         tvStartCook.setVisibility(View.VISIBLE);
                     }
                     rvStep3Adapter.setList(curveSteps);
@@ -178,6 +178,7 @@ public class CurveSelectedActivity extends StoveBaseActivity {
             selectStoveDialog.setListeners(new IDialog.DialogOnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    selectStoveDialog.dismiss();
                     int id = v.getId();
                     if (id == R.id.view_left) {
 
@@ -283,7 +284,7 @@ public class CurveSelectedActivity extends StoveBaseActivity {
         if (id == R.id.tv_start_cook) {
             //选择炉头
             if (null == stoveCurveDetail || null == stoveCurveDetail.temperatureCurveParams || null == stoveCurveDetail.curveStageParams) {
-                ToastUtils.showShort(this, R.string.stove_no_curve_data);
+                ToastUtils.showShort(getApplicationContext(), R.string.stove_no_curve_data);
                 return;
             }
             selectStove();
@@ -344,7 +345,7 @@ public class CurveSelectedActivity extends StoveBaseActivity {
             dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.stove_chart), entryList, true, false);
             cookChart.notifyDataSetChanged();
             //绘制步骤标记
-            List<CurveStep> stepList = stoveCurveDetail.stepList;
+            List<CurveStep> stepList = stoveCurveDetail.curveStepList;
             if (null != stepList) {
                 MarkViewStep mv = new MarkViewStep(this, cookChart.getXAxis().getValueFormatter());
                 mv.setChartView(cookChart);

@@ -3,9 +3,11 @@ package com.robam.steamoven.ui.activity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Parcelable;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.github.mikephil.charting.charts.LineChart;
@@ -23,8 +25,11 @@ import com.robam.common.ui.helper.VerticalSpaceItemDecoration;
 import com.robam.common.ui.view.MarkViewStep;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.StringUtils;
+import com.robam.common.utils.ToastInsUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
+import com.robam.steamoven.bean.CookingCurveQueryRes;
+import com.robam.steamoven.bean.CurveData;
 import com.robam.steamoven.bean.CurveStep;
 import com.robam.steamoven.bean.MultiSegment;
 import com.robam.steamoven.bean.SteamCurveDetail;
@@ -38,7 +43,11 @@ import com.robam.steamoven.http.CloudHelper;
 import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.response.GetCurveDetailRes;
 import com.robam.steamoven.ui.adapter.RvStep3Adapter;
+import com.robam.steamoven.utils.MqttSignal;
 import com.robam.steamoven.utils.MultiSegmentUtil;
+import com.robam.steamoven.utils.SkipUtil;
+import com.robam.steamoven.utils.SteamPageData;
+import com.robam.steamoven.utils.TempAxisValueFormatter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,7 +59,7 @@ import java.util.Map;
 
 //曲线选中进入
 public class CurveSelectedActivity extends SteamBaseActivity {
-    private long curveid;
+    private long curveId;
     //曲线步骤
     private RvStep3Adapter rvStep3Adapter;
 
@@ -60,13 +69,15 @@ public class CurveSelectedActivity extends SteamBaseActivity {
     //开始烹饪
     private TextView tvStartCook;
     //曲线详情
-    private SteamCurveDetail steamCurveDetail;
+    private CurveData steamCurveDetail;
     //
     private LineChart cookChart;
 
     private DynamicLineChartManager dm;
 
     private int directive_offset = 17100000;
+
+    private MqttSignal mqttSignal;
 
     @Override
     protected int getLayoutId() {
@@ -79,12 +90,14 @@ public class CurveSelectedActivity extends SteamBaseActivity {
         showCenter();
 
         if (null != getIntent())
-            curveid = getIntent().getLongExtra(SteamConstant.EXTRA_CURVE_ID, -1);
+            curveId = getIntent().getLongExtra(SteamConstant.EXTRA_CURVE_ID, -1);
         rvStep = findViewById(R.id.rv_step);
         tvCurveName = findViewById(R.id.tv_recipe_name);
+        tvCurveName.setOnClickListener(this);
+        findViewById(R.id.name_change_opt).setOnClickListener(this);
         tvStartCook = findViewById(R.id.tv_start_cook);
         cookChart = findViewById(R.id.cook_chart);
-        cookChart.setNoDataText(getResources().getString(R.string.steam_no_curve_data)); //没有数据时显示的文字
+        cookChart.setNoDataText(""); //没有数据时显示的文字
 
         //步骤
         rvStep.setLayoutManager(new LinearLayoutManager(this));
@@ -111,20 +124,37 @@ public class CurveSelectedActivity extends SteamBaseActivity {
                     if(toWaringPage(steamOven)){
                         return;
                     }
+                    if(toOffLinePage(steamOven)){
+                        return;
+                    }
                     switch (steamOven.powerState){
                         case SteamStateConstant.POWER_STATE_AWAIT:
                         case SteamStateConstant.POWER_STATE_ON:
                         case SteamStateConstant.POWER_STATE_TROUBLE:
-                            toWorkPage(steamOven);
+                            toWorkPage2(steamOven);
                             break;
                         case SteamStateConstant.POWER_STATE_OFF:
                             break;
                     }
-
-
                 }
             }
         });
+
+        SteamPageData.getInstance().getBsData().observe(this,bsData->{
+            if(bsData == null){
+                return;
+            }
+            if(StringUtils.isNotEmpty(bsData.content)){
+                tvCurveName.setText(bsData.content);
+            }
+        });
+    }
+
+    private void toWorkPage2(SteamOven steamOven){
+        if(steamOven.mode == 0){
+            return;
+        }
+        SkipUtil.toWorkPage(steamOven,this);
     }
 
     /**
@@ -206,16 +236,17 @@ public class CurveSelectedActivity extends SteamBaseActivity {
     @Override
     protected void initData() {
         getCurveDetail();
+        mqttSignal = new MqttSignal();
     }
 
     //曲线详情
     private void getCurveDetail() {
-        CloudHelper.getCurvebookDetail(this, curveid, GetCurveDetailRes.class, new RetrofitCallback<GetCurveDetailRes>() {
+        CloudHelper.getCurvebookDetail(this, curveId, CookingCurveQueryRes.class, new RetrofitCallback<CookingCurveQueryRes>() {
             @Override
-            public void onSuccess(GetCurveDetailRes getCurveDetailRes) {
-                if (null != getCurveDetailRes && null != getCurveDetailRes.payload) {
-                    steamCurveDetail = getCurveDetailRes.payload;
-                    tvCurveName.setText(steamCurveDetail.name);
+            public void onSuccess(CookingCurveQueryRes getCurveDetailRes) {
+                if (null != getCurveDetailRes && null != getCurveDetailRes.data) {
+                    steamCurveDetail = getCurveDetailRes.data;
+                    tvCurveName.setText(steamCurveDetail.name+"");
                     //绘制曲线
                     drawCurve(steamCurveDetail);
                 }
@@ -236,35 +267,58 @@ public class CurveSelectedActivity extends SteamBaseActivity {
             sendWorkCommand();
         } else if (id == R.id.ll_left) { //返回
             finish();
+        }else if(id == R.id.name_change_opt){
+            goNameChangePage();
+        }else if(id == R.id.tv_recipe_name){
+            goNameChangePage();
         }
 
     }
 
-    private void toRestorePage(){
-        //曲线还原
-        Intent intent = new Intent();
-        if (null != steamCurveDetail){
-            intent.putExtra(SteamConstant.EXTRA_CURVE_DETAIL, steamCurveDetail);
+    private void goNameChangePage(){
+        if(steamCurveDetail == null || steamCurveDetail.curveCookbookId == 0){
+            ToastInsUtils.showLong(this,R.string.steam_curve_info_error_prompt);
+            return;
         }
-        intent.setClass(this, CurveRestoreActivity.class);
+        Intent intent = new Intent(this,CurveNameChangeActivity.class);
+        intent.putExtra(SteamConstant.EXTRA_CURVE_ID,steamCurveDetail.curveCookbookId);
         startActivity(intent);
-        finish();
     }
+
+
+//    private void toRestorePage(){
+//        //曲线还原
+//        Intent intent = new Intent();
+//        if (null != steamCurveDetail){
+//            intent.putExtra(SteamConstant.EXTRA_CURVE_DETAIL, steamCurveDetail);
+//        }
+//        intent.setClass(this, CurveRestoreActivity.class);
+//        startActivity(intent);
+//        finish();
+//    }
 
 
     /**
      * 去往工作页面
      */
     private void sendWorkCommand(){
+        if(steamCurveDetail == null || steamCurveDetail.curveCookbookId == 0){
+            ToastInsUtils.showLong(this,R.string.steam_curve_info_error_prompt);
+            return;
+        }
         List<MultiSegment> multiSegment = getMultiSegment();
         if(multiSegment == null || multiSegment.size() == 0){
             Toast.makeText(this,R.string.steam_curve_exception_data,Toast.LENGTH_LONG).show();
             finish();
         }
         for(int i = 0;i < multiSegment.size();i++){
-            if(!SteamCommandHelper.checkSteamState(this,getSteamOven(),multiSegment.get(i).code,true)){
+            if(toRemainPage(getSteamOven(),multiSegment.get(i).code)){
                 return;
             }
+        }
+        if(steamCurveDetail.needTime < 60){
+            ToastInsUtils.showLong(this,R.string.steam_curve_not_work);
+            return;
         }
         if(multiSegment.size() >= 2){
             SteamCommandHelper.sendMultiWork(this,multiSegment,directive_offset+ MsgKeys.setDeviceAttribute_Req);
@@ -319,14 +373,17 @@ public class CurveSelectedActivity extends SteamBaseActivity {
     }
 
     //曲线绘制
-    private void drawCurve(SteamCurveDetail steamCurveDetail) {
-        Map<String, String> params = null;
+    private void drawCurve(CurveData steamCurveDetail) {
         try {
-            String[] data = new String[3];
-            params = new Gson().fromJson(steamCurveDetail.temperatureCurveParams, new TypeToken<LinkedHashMap<String, String>>(){}.getType());
+            if(steamCurveDetail == null || StringUtils.isEmpty(steamCurveDetail.temperatureCurveParams)){
+                cookChart.setNoDataText(getResources().getString(R.string.steam_no_curve_data));
+                cookChart.requestLayout();
+                return;
+            }
+            Map<String, String> params = new Gson().fromJson(steamCurveDetail.temperatureCurveParams, new TypeToken<LinkedHashMap<String, String>>(){}.getType());
             ArrayList<Entry> entryList = new ArrayList<>();
             for (Map.Entry<String, String> entry : params.entrySet()) {
-                data = entry.getValue().split("-");
+                String[] data = entry.getValue().split("-");
                 entryList.add(new Entry(Float.parseFloat(entry.getKey()), Float.parseFloat(data[0]))); //时间和温度
             }
 
@@ -334,7 +391,12 @@ public class CurveSelectedActivity extends SteamBaseActivity {
             dm.setLabelCount(5, 5);
             dm.setAxisLine(true, false);
             dm.setGridLine(false, false);
+            dm.setYAxiFormat(new TempAxisValueFormatter(0));
             dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.steam_chart), entryList, true, false);
+            cookChart.setTouchEnabled(false);
+            if(entryList.size() == 0){
+                cookChart.setNoDataText(getResources().getString(R.string.steam_no_curve_data));
+            }
             cookChart.notifyDataSetChanged();
             //绘制步骤标记
 //            List<CurveStep> stepList = steamCurveDetail.stepList;
@@ -356,9 +418,39 @@ public class CurveSelectedActivity extends SteamBaseActivity {
 //            tvTime.setText("时间：" + TimeUtils.secToMinSecond(steamCurveDetail.needTime));
         } catch (Exception e) {
             LogUtils.e(e.getMessage());
-            params = null;
         }
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mqttSignal.pageHide();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mqttSignal.pageShow();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mqttSignal.clear();
+    }
+
+    private  boolean toRemainPage(SteamOven steamOven,int curModelCode){
+        if(steamOven == null){
+            showRemindPage(R.string.steam_offline,false,-1,false,false);
+            return true;
+        }
+        boolean needWater = SteamModeEnum.needWater(curModelCode);
+        int promptResId = SteamCommandHelper.getRunPromptResId(steamOven, curModelCode, SteamModeEnum.needWater(curModelCode),true);
+        if(promptResId != -1){
+            showRemindPage(promptResId,needWater,curModelCode,true,false);
+            return true;
+        }
+        return false;
+    }
 
 }

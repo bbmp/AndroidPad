@@ -71,9 +71,14 @@ public class MultiSegmentUtil {
         segment.curTemp = steamOven.curTemp;
         segment.defTemp = steamOven.setUpTemp;
         segment.downTemp = steamOven.setDownTemp;
-        int setTime = steamOven.setTimeH * 256 + steamOven.setTime;
-        segment.duration = setTime/60 + (setTime%60 == 0 ? 0 : 1);
 
+        if(steamOven.recipeId != 0){
+            int total = steamOven.getResidueTotalTime();
+            segment.duration = total/60 + (total%60 == 0 ? 0 : 1);
+        }else{
+            int setTime = steamOven.setTimeH * 256 + steamOven.setTime;
+            segment.duration = setTime/60 + (setTime%60 == 0 ? 0 : 1);
+        }
         int outTime = steamOven.restTimeH * 256 + steamOven.restTime;
         int restTimeF = (int) Math.floor(((outTime + 59f) / 60f));//剩余工作时间
         segment.workRemaining =restTimeF*60;

@@ -4,6 +4,6 @@ import com.robam.common.bean.BaseResponse;
 import com.robam.stove.bean.StoveRecipeDetail;
 
 public class GetRecipeDetailRes extends BaseResponse {
-    public StoveRecipeDetail cookbook;
+    public StoveRecipeDetail data;
 
 }

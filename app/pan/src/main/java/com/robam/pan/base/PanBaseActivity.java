@@ -50,7 +50,7 @@ public abstract class PanBaseActivity extends BaseActivity {
                 if (aBoolean)
                     ivWifi.setVisibility(View.VISIBLE);
                 else
-                    ivWifi.setVisibility(View.INVISIBLE);
+                    ivWifi.setVisibility(View.GONE);
             }
         });
     }
@@ -141,7 +141,7 @@ public abstract class PanBaseActivity extends BaseActivity {
             if (device.dc.equals(IDeviceType.RZNG) && device instanceof Pan) {
                 Pan pan = (Pan) device;
                 if (pan.mode != 0) {//工作中
-                    ToastUtils.showShort(this, R.string.pan_pan_working);
+                    ToastUtils.showShort(getApplicationContext(), R.string.pan_pan_working);
                     return true;
                 }
             }

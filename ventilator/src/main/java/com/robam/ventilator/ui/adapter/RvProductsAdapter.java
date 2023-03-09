@@ -36,6 +36,7 @@ import com.robam.common.device.subdevice.Stove;
 import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.SteamModeEnum;
 import com.robam.steamoven.constant.SteamStateConstant;
+import com.robam.steamoven.manager.RecipeManager;
 import com.robam.steamoven.utils.SteamDataUtil;
 import com.robam.ventilator.R;
 
@@ -371,7 +372,32 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
             String deviceTypeId = DeviceUtils.getDeviceTypeId(steamOven.guid);
             DeviceErrorInfo deviceErrorInfo = DeviceWarnInfoManager.getInstance().getDeviceErrorInfo(IDeviceType.RZKY, deviceTypeId, steamOven.faultId);
             if(deviceErrorInfo != null){
-                if(deviceErrorInfo.code != Constant.WARING_CODE_11 || (deviceErrorInfo.code == Constant.WARING_CODE_11 && steamOven.getResidueTotalTime() > 0)){
+                if(deviceErrorInfo.code == Constant.WARING_CODE_11){//缺少，需要在工作中才显示
+                    if(steamOven.powerState != SteamStateConstant.POWER_STATE_OFF &&
+                            (steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT ||
+                                    steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT_PAUSE ||
+                                    steamOven.workState == SteamStateConstant.WORK_STATE_WORKING ||
+                                    steamOven.workState == SteamStateConstant.WORK_STATE_WORKING_PAUSE ||
+                                    steamOven.workState == SteamStateConstant.WORK_STATE_APPOINTMENT)){
+                        boolean needWater;
+                        if(steamOven.recipeId != 0){
+                            needWater = RecipeManager.getInstance().needWater(IDeviceType.SERIES_STEAM, steamOven.recipeId);
+                        }else{
+                            needWater = SteamModeEnum.needWater(steamOven.mode);
+                            if(!needWater && steamOven.steam != 0){
+                                needWater = SteamModeEnum.isManuallyAddSteam(steamOven.mode);
+                            }
+                        }
+                        if(needWater){
+                            baseViewHolder.setVisible(R.id.layout_offline, true);
+                            baseViewHolder.setGone(R.id.layout_work, true);
+                            baseViewHolder.setGone(R.id.btn_detail, true);
+                            baseViewHolder.setText(R.id.tv_hint,"产品缺水");
+                            return;
+                        }
+                    }
+                }
+                if(deviceErrorInfo.code != Constant.WARING_CODE_11){
                     baseViewHolder.setVisible(R.id.layout_offline, true);
                     baseViewHolder.setText(R.id.tv_hint, R.string.ventilator_product_failure);
                     baseViewHolder.setGone(R.id.layout_work, true);
@@ -428,7 +454,7 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
                     baseViewHolder.setText(R.id.tv_time, getStartTimePrompt(steamOven.orderLeftTime,steamOven.dc));
                     baseViewHolder.setText(R.id.btn_work, R.string.ventilator_start_cook);
                 }else{
-                    baseViewHolder.setText(R.id.tv_time, DateUtil.secForMatTime3(getTotalTime(steamOven)) + "min");
+                    baseViewHolder.setText(R.id.tv_time, DateUtil.secForMatTime3(steamOven.getResidueTotalTime()) + "min");
                     //baseViewHolder.setText(R.id.tv_time, getSpan(getTotalTime(steamOven),true));
                     if (steamOven.getWorkStatus() == 2 || steamOven.getWorkStatus() == 4) //预热中和工作中
                         baseViewHolder.setText(R.id.btn_work, R.string.ventilator_pause);
@@ -593,31 +619,7 @@ public class RvProductsAdapter extends BaseQuickAdapter<Device, BaseViewHolder> 
      */
     private long preSteamTimeMil;
 
-    /**
-     * 获取剩余运行时间
-     * @param steamOven
-     * @return
-     */
-    private int getTotalTime(SteamOven steamOven){
-        if(steamOven == null){
-            return 0;
-        }
-        int totalTime = 0;
-        int startIndex = steamOven.curSectionNbr;
-        if(startIndex <= 0){
-            startIndex = 1;
-        }
-        for(int i = startIndex ; i <= 3;i++){
-            if(i == 1){
-                totalTime += steamOven.restTimeH * 256 + steamOven.restTime;//设置的工作时间 (秒)
-            }else if(i == 2){
-                totalTime += steamOven.restTimeH2 * 256 + steamOven.restTime2;//设置的工作时间 (秒)
-            }else if(i == 3){
-                totalTime += steamOven.restTimeH3 * 256 + steamOven.restTime3;//设置的工作时间 (秒)
-            }
-        }
-        return totalTime;
-    }
+
 
     private final int max_error_dur = 60*1000;//1分钟
 

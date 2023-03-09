@@ -7,8 +7,17 @@ import android.os.Build;
 
 import com.robam.common.IDeviceType;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.charset.Charset;
 
 public class DeviceUtils {
     public final static int VENDOR_LENGTH = 0;
@@ -86,5 +95,107 @@ public class DeviceUtils {
             e.printStackTrace();
         }
         return "1.0.0";
+    }
+    //检查包名安装
+    public static boolean isAppInstalled(Context context, String packageName) {
+        PackageInfo packageInfo = null;
+        try {
+            packageInfo = context.getPackageManager().getPackageInfo(packageName, 0);
+        } catch (PackageManager.NameNotFoundException e) {
+
+        }
+        if (null == packageInfo)
+            return false;
+        return true;
+    }
+    /**
+     * 拷贝assets文件
+     */
+    public static boolean copyFileIfNeed(Context context, String srcFilePath, String desFilePath) {
+
+        File desFile = new File(desFilePath);
+        try {
+            if (desFile.exists()) {
+                desFile.delete();
+            }
+
+            desFile.createNewFile();
+            InputStream in = context.getApplicationContext().getAssets().open(srcFilePath);
+            if (in == null) {
+
+                return false;
+            }
+
+            OutputStream out = new FileOutputStream(desFile);
+            byte[] buffer = new byte[4096];
+            int n;
+            int sum = 0;
+            while ((n = in.read(buffer)) > 0) {
+                sum += n;
+
+                out.write(buffer, 0, n);
+                out.flush();
+            }
+
+            in.close();
+            in = null;
+            out.close();
+            out = null;
+        } catch (IOException e) {
+
+            desFile.delete();
+
+            return false;
+        }
+
+        return true;
+    }
+    //静默安装
+    public static boolean installSilent(String path) {
+        boolean result = false;
+        BufferedReader es = null;
+        DataOutputStream os = null;
+
+        try {
+            Process process = Runtime.getRuntime().exec("su");
+            os = new DataOutputStream(process.getOutputStream());
+
+            String command = "pm install -r " + path + "\n";
+            os.write(command.getBytes(Charset.forName("utf-8")));
+            os.flush();
+            os.writeBytes("exit\n");
+            os.flush();
+
+            process.waitFor();
+            es = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+
+            String line;
+            StringBuilder builder = new StringBuilder();
+            while ((line = es.readLine()) != null) {
+                builder.append(line);
+            }
+
+        /* Installation is considered a Failure if the result contains
+            the Failure character, or a success if it is not.
+             */
+            if (!builder.toString().contains("Failure")) {
+                result = true;
+            }
+        } catch (Exception e) {
+
+        } finally {
+            try {
+                if (os != null) {
+                    os.close();
+                }
+                if (es != null) {
+                    es.close();
+                }
+            } catch (IOException e) {
+
+            }
+        }
+
+        return result;
     }
 }

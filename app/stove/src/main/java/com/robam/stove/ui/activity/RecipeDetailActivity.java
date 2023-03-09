@@ -175,12 +175,14 @@ public class RecipeDetailActivity extends StoveBaseActivity {
 
     //获取菜谱详情
     private void getRecipeDetail() {
-        CloudHelper.getRecipeDetail(this, recipeId, "1", "1", GetRecipeDetailRes.class, new RetrofitCallback<GetRecipeDetailRes>() {
+        UserInfo userInfo = AccountInfo.getInstance().getUser().getValue();
+        CloudHelper.getRecipeDetail(this, (userInfo != null) ? userInfo.id:0, recipeId, GetRecipeDetailRes.class, new RetrofitCallback<GetRecipeDetailRes>() {
             @Override
             public void onSuccess(GetRecipeDetailRes getRecipeDetailRes) {
-                if (null != getRecipeDetailRes && null != getRecipeDetailRes.cookbook)
-                    stoveRecipeDetail = getRecipeDetailRes.cookbook;
-                    setData(getRecipeDetailRes.cookbook);
+                if (null != getRecipeDetailRes && null != getRecipeDetailRes.data) {
+                    stoveRecipeDetail = getRecipeDetailRes.data;
+                    setData(getRecipeDetailRes.data);
+                }
             }
 
             @Override
@@ -201,23 +203,23 @@ public class RecipeDetailActivity extends StoveBaseActivity {
         //时间
         ivTime.setImageResource(R.drawable.stove_time);
         //图片
-        ImageUtils.loadImage(this, stoveRecipeDetail.imgSmall, maskOption, ivRecipe);
+        ImageUtils.loadImage(this, stoveRecipeDetail.imgCover11, maskOption, ivRecipe);
         //名字
         tvRecipeName.setText(stoveRecipeDetail.name);
         //时长
         tvTime.setText("时间   " + stoveRecipeDetail.needTime / 60 + "min");
         //食材
         List<Material> materials = new ArrayList<>();
-        if (null != stoveRecipeDetail.materials && null != stoveRecipeDetail.materials.main)
-            materials.addAll(stoveRecipeDetail.materials.main);
+        if (null != stoveRecipeDetail.materialDtoList)
+            materials.addAll(stoveRecipeDetail.materialDtoList);
 
-        if (null != stoveRecipeDetail.materials && null != stoveRecipeDetail.materials.accessory)
-            materials.addAll(stoveRecipeDetail.materials.accessory);
+        if (null != stoveRecipeDetail.condimentDtoList)
+            materials.addAll(stoveRecipeDetail.condimentDtoList);
         rvMaterialAdapter.setList(materials);
         //步骤
         ArrayList<RecipeStep> recipeSteps = new ArrayList<>();
-        if (null != stoveRecipeDetail.steps) {
-            recipeSteps.addAll(stoveRecipeDetail.steps);
+        if (null != stoveRecipeDetail.stepRespDtoList) {
+            recipeSteps.addAll(stoveRecipeDetail.stepRespDtoList);
         }
         rvStepAdapter.setList(recipeSteps);
     }

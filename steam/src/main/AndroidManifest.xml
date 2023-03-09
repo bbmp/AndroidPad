@@ -6,6 +6,12 @@
     <application>
 
         <activity
+            android:name=".ui.activity.CurveNameChangeActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape"/>
+
+        <activity
             android:name=".ui.activity.RemindActivity"
             android:exported="false"
             android:launchMode="singleTop"
@@ -78,10 +84,6 @@
             android:name=".ui.activity.CurveRestoreActivity"
             android:exported="false"
             android:screenOrientation="landscape"/>
-        <activity
-            android:name=".ui.activity.WorkActivity"
-            android:exported="false"
-            android:screenOrientation="landscape" />
         <activity
             android:name=".ui.activity.RecipeDetailActivity"
             android:exported="false"

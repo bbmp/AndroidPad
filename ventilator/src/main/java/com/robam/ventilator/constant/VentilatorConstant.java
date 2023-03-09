@@ -21,6 +21,7 @@ public class VentilatorConstant {
     public final static String EXTRA_MODEL = "model";// 设备类型
     public final static String EXTRA_CLASSNAME = "classname";//当前activity classname
     public final static String EXTRA_WARNING_CODE = "warning_code";
+    public final static String EXTRA_POWERON = "poweron";
 
     //告警信息
     public final static int DEVICE_WARING_E0 = 0;
@@ -67,9 +68,25 @@ public class VentilatorConstant {
     public final static String DEVICE_GUID = "device_guid";
     public final static String DEVICE_BIZ = "device_biz"; //业务编吗
     public final static String DEVICE_STATUS = "device_status";
+
+    public final static String DEVICE_BLE = "device_ble";
     public final static String KEYS = "keys";
     public final static String FAN_STEAM = "fan_steam";//烟蒸烤联动开关
     public final static String FAN_STEAM_GEAR = "fan_steam_gear";//烟蒸烤自动匹配风量
+    public final static String TERMINAL_TYPE = "terminal_type";//控制端类型
+    public final static String EVENT_CODE = "event_code";//事件编码
+    public final static String EVENT_VALUE = "event_value"; //事件值
+    public static final String USER = "user";
+
+    //事件类型
+    public static final int EVENT_SWITCH = 10;//开关机
+    public static final int EVENT_TIMING = 11; //定时调整
+    public static final int EVENT_GEAR   = 12; //挡位调整
+    public static final int EVENT_LIGHT  = 13; //灯光开关
+    public static final int EVENT_CLEAN  = 14; //清洗提示
+    public static final int EVENT_LOCK   = 15; //清洗锁定
+    public static final int EVENT_TIMING_FINISH = 16; //定时完成
+
     //livedata
     //智能设置
     public final static String SMART_SET = "smartset";
@@ -77,4 +94,5 @@ public class VentilatorConstant {
     public final static String OIL_CLEAN = "oilclean";
     public final static String DT = "dt"; //设备类型
     public final static String VENTILATOR_USER = "ventilator_user";//更新烟机用户
+    public final static String CLOSE_VENTILATOR = "close_ventilator"; //烟机关机
 }

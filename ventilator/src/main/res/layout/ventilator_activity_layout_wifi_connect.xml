@@ -62,7 +62,7 @@
         android:textSize="@dimen/sp_32"
         app:layout_constraintLeft_toRightOf="@id/guideline4"
         app:layout_constraintTop_toBottomOf="@id/tv_network"
-        app:layout_constraintBottom_toTopOf="@id/btn_join"/>
+        app:layout_constraintBottom_toTopOf="@id/tv_pwd_error"/>
 
 
     <com.robam.common.ui.view.PasswordEditText
@@ -74,16 +74,30 @@
         android:singleLine="true"
         android:textColor="@color/ventilator_white"
         android:layout_marginRight="@dimen/dp_10"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         app:layout_constraintBaseline_toBaselineOf="@id/tv_password"
         app:layout_constraintLeft_toRightOf="@id/tv_password"
         app:layout_constraintRight_toRightOf="@id/guideline5"/>
-
+    <TextView
+        android:id="@+id/tv_pwd_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_24"
+        android:layout_marginTop="@dimen/dp_10"
+        android:textColor="@color/ventilator_color_error_password"
+        android:text="@string/ventilator_error_password"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toLeftOf="@id/guideline4"
+        app:layout_constraintRight_toRightOf="@id/guideline5"
+        app:layout_constraintTop_toBottomOf="@id/tv_password"
+        app:layout_constraintBottom_toTopOf="@id/btn_join"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_join"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_56"
-        android:layout_marginTop="@dimen/dp_58"
+        android:layout_marginTop="@dimen/dp_20"
         android:text="@string/ventilator_join"
         android:textSize="@dimen/sp_30"
         android:textColor="@color/ventilator_white"
@@ -91,7 +105,7 @@
         android:background="@drawable/ventilator_shape_button_ok_bg"
         app:layout_constraintLeft_toLeftOf="@id/guideline4"
         app:layout_constraintRight_toRightOf="@id/guideline5"
-        app:layout_constraintTop_toBottomOf="@id/tv_password"
+        app:layout_constraintTop_toBottomOf="@id/tv_pwd_error"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <androidx.constraintlayout.widget.Guideline

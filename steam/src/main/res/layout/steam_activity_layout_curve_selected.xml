@@ -60,12 +60,27 @@
         android:id="@+id/tv_recipe_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:maxLength="10"
+        android:maxWidth="@dimen/dp_400"
+        android:singleLine="true"
         android:textSize="@dimen/sp_48"
         android:layout_marginTop="@dimen/dp_60"
         android:layout_marginLeft="@dimen/dp_30"
         android:textColor="@color/steam_white"
         app:layout_constraintLeft_toLeftOf="@id/steam_guideline4"
         app:layout_constraintTop_toBottomOf="@id/ll_title"/>
+
+    <View
+        android:id="@+id/name_change_opt"
+        android:background="@drawable/steam_ic_editor"
+        app:layout_constraintLeft_toRightOf="@id/tv_recipe_name"
+        app:layout_constraintTop_toTopOf="@id/tv_recipe_name"
+        app:layout_constraintBottom_toBottomOf="@id/tv_recipe_name"
+        android:layout_marginLeft="@dimen/dp_24"
+        android:visibility="visible"
+        android:layout_height="@dimen/dp_48"
+        android:layout_width="@dimen/dp_48"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_step"
         android:layout_width="0dp"

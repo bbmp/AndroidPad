@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.steamoven.R;
@@ -17,6 +18,7 @@ import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.SteamModeEnum;
 import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
+import com.robam.steamoven.manager.RecipeManager;
 import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.ui.dialog.SteamCommonDialog;
 import com.robam.steamoven.utils.TextSpanUtil;
@@ -29,8 +31,9 @@ public class AuxModelWorkActivity extends SteamBaseActivity {
     private TextView promptTvInd1,promptTvInd2,promptTvInd3;
     private TextView promptText;
     private TextView sureTv;
+    private TextView mPauseTv;
     private TextView progressPromptTv;
-    private ProgressBar progressBar1,progressBar2,progressBar3;
+    private ProgressBar progressBar1,progressBar2;
     private int curTemp = 0;
     private boolean isProgress = false;
     private  TextView modelNameTv,modelTimeTv,modelTempTv;
@@ -55,7 +58,7 @@ public class AuxModelWorkActivity extends SteamBaseActivity {
         promptParentView = findViewById(R.id.descaling_prompt_parent);
         promptTvInd1 = findViewById(R.id.descaling_index_1);
         promptTvInd2 = findViewById(R.id.descaling_index_2);
-        promptTvInd3 = findViewById(R.id.descaling_index_3);
+        //promptTvInd3 = findViewById(R.id.descaling_index_3);
         promptText = findViewById(R.id.descaling_text_prompt);
         sureTv = findViewById(R.id.btn_start);
 
@@ -63,7 +66,7 @@ public class AuxModelWorkActivity extends SteamBaseActivity {
         progressPromptTv = findViewById(R.id.descaling_segment_prompt);
         progressBar1 = findViewById(R.id.descaling_progress_1);
         progressBar2 = findViewById(R.id.descaling_progress_2);
-        progressBar3 = findViewById(R.id.descaling_progress_3);
+        //progressBar3 = findViewById(R.id.descaling_progress_3);
 
         modelNameTv = findViewById(R.id.aux_work_model_name);
         modelTimeTv = findViewById(R.id.aux_work_model_time);
@@ -71,6 +74,7 @@ public class AuxModelWorkActivity extends SteamBaseActivity {
 
         pauseIv = findViewById(R.id.aux_work_model_pause);
         reStartIv = findViewById(R.id.aux_work_model_restart);
+        mPauseTv = findViewById(R.id.aux_work_model_pause_tv);
 
         setOnClickListener(R.id.btn_start,R.id.aux_work_model_pause,R.id.aux_work_model_restart);
 
@@ -131,44 +135,41 @@ public class AuxModelWorkActivity extends SteamBaseActivity {
                 if(steamOven.mode != 0){
                     curModeCode = steamOven.mode;
                 }
+                boolean isPause = (steamOven.workState == SteamStateConstant.WORK_STATE_WORKING_PAUSE);
                 if(steamOven.mode != SteamModeEnum.CHUGOU.getMode()){
-                    boolean isPause = (steamOven.workState == SteamStateConstant.WORK_STATE_WORKING_PAUSE);
                     pauseIv.setVisibility(isPause?View.INVISIBLE:View.VISIBLE);
                     reStartIv.setVisibility(isPause?View.VISIBLE:View.INVISIBLE);
                     modelNameTv.setVisibility(View.VISIBLE);
                     modelTempTv.setVisibility(View.VISIBLE);
                     modelTimeTv.setVisibility(View.VISIBLE);
-                    if(isPause){
-                        modelTimeTv.setText(R.string.steam_cook_in_pause);
-                    }else{
-                        int restTime = steamOven.restTimeH * 256 + steamOven.restTime;
-                        isWorkFinish = restTime < LAST_EDN_FLAG ? true:false;
-                        modelTimeTv.setText(TextSpanUtil.getSpan(restTime,Constant.UNIT_TIME_MIN));
-                    }
+                    int restTime = steamOven.restTimeH * 256 + steamOven.restTime;
+                    isWorkFinish = restTime < LAST_EDN_FLAG ? true:false;
+                    modelTimeTv.setText(TextSpanUtil.getSpan(restTime,Constant.UNIT_TIME_MIN));
+                    mPauseTv.setVisibility(View.INVISIBLE);
                     return;
                 }
                 pauseIv.setVisibility(View.INVISIBLE);
-                reStartIv.setVisibility(View.INVISIBLE);
-                progressPromptTv.setText(getProgressTitle(steamOven.chugouType));
+                reStartIv.setVisibility(isPause ? View.VISIBLE:View.INVISIBLE);
+                progressPromptTv.setText(getProgressTitle(steamOven.chugouType,isPause));
                 setProgressIndex(steamOven.chugouType,true);
                 modelNameTv.setVisibility(View.INVISIBLE);
                 modelTimeTv.setVisibility(View.INVISIBLE);
                 modelTempTv.setVisibility(View.INVISIBLE);
+                mPauseTv.setVisibility(isPause?View.VISIBLE:View.INVISIBLE);
+                isWorkFinish = true;//除垢不能结束,默认均是工作完成（用于页面跳转）
                 break;
 
         }
     }
 
-    private String getProgressTitle(int index){
+    private String getProgressTitle(int index,boolean isPause){
         switch (index){
             case 1:
-                return "第一阶段";
+                return isPause ? "第一阶段 暂停中" : "第一阶段";
             case 2:
-                return "第二阶段";
-            case 3:
-                return "第三阶段";
+                return isPause ? "第二阶段 暂停中" :"第二阶段";
         }
-        return null;
+        return isPause ? "第二阶段 暂停中" :"第二阶段";
     }
 
     private void toWorkCompletePage(){
@@ -196,10 +197,9 @@ public class AuxModelWorkActivity extends SteamBaseActivity {
                 }else if(i == 2){
                     progressBar1.setProgress(100);
                     progressBar2.setProgress(50);
-                }else if(i == 3){
+                }else{
                     progressBar1.setProgress(100);
-                    progressBar2.setProgress(100);
-                    progressBar3.setProgress(50);
+                    progressBar2.setProgress(50);
                 }
             }
         }else{
@@ -208,15 +208,15 @@ public class AuxModelWorkActivity extends SteamBaseActivity {
             if(curTemp ==1){
                 promptTvInd1.setBackgroundResource(R.drawable.steam_indicator_selected_blue);
                 promptTvInd2.setBackground(null);
-                promptTvInd3.setBackground(null);
+                //setBackground(null);
             }else if(curTemp ==2){
                 promptTvInd1.setBackground(null);
                 promptTvInd2.setBackgroundResource(R.drawable.steam_indicator_selected_blue);
-                promptTvInd3.setBackground(null);
-            }else if(curTemp == 3){
+                //promptTvInd3.setBackground(null);
+            }else{
                 promptTvInd1.setBackground(null);
-                promptTvInd2.setBackground(null);
-                promptTvInd3.setBackgroundResource(R.drawable.steam_indicator_selected_blue);
+                promptTvInd2.setBackgroundResource(R.drawable.steam_indicator_selected_blue);
+                //promptTvInd3.setBackgroundResource(R.drawable.steam_indicator_selected_blue);
             }
         }
 
@@ -228,7 +228,12 @@ public class AuxModelWorkActivity extends SteamBaseActivity {
         segment = getIntent().getParcelableExtra(Constant.SEGMENT_DATA_FLAG);
         modelNameTv.setText(SteamModeEnum.match(segment.code));
         modelTimeTv.setText(TextSpanUtil.getSpan(segment.duration*60,Constant.UNIT_TIME_MIN));
-        modelTempTv.setText(TextSpanUtil.getSpan(segment.defTemp,Constant.UNIT_TEMP));
+        if(SteamModeEnum.isFixedTemp(segment.code)){
+            modelTempTv.setVisibility(View.GONE);
+        }else{
+            modelTempTv.setText(TextSpanUtil.getSpan(segment.defTemp,Constant.UNIT_TEMP));
+        }
+
         if(segment.code == SteamModeEnum.CHUGOU.getMode()){
             pauseIv.setVisibility(View.INVISIBLE);
             reStartIv.setVisibility(View.INVISIBLE);
@@ -253,14 +258,18 @@ public class AuxModelWorkActivity extends SteamBaseActivity {
         }else if(id == R.id.aux_work_model_pause){
             SteamCommandHelper.sendWorkCtrCommand(false);
         }else if(id == R.id.aux_work_model_restart){
+            if(toRemainPage(getSteamOven())){
+                return;
+            }
             SteamCommandHelper.sendWorkCtrCommand(true);
         }
     }
 
     public void showEndDialog(){
         SteamCommonDialog endDialog = new SteamCommonDialog(this);
-        endDialog.setContentText("是否结束"+SteamModeEnum.match(segment.code));
-        endDialog.setOKText(R.string.steam_common_confirm);
+        //endDialog.setContentText("是否结束"+SteamModeEnum.match(segment.code));
+        endDialog.setContentText(R.string.steam_work_aux_back_message);
+        endDialog.setOKText(R.string.steam_aux_model_finish_now);
         endDialog.setCancelText(R.string.steam_common_cancel);
         endDialog.setListeners(v -> {
             endDialog.dismiss();
@@ -270,6 +279,20 @@ public class AuxModelWorkActivity extends SteamBaseActivity {
             }
         },R.id.tv_ok,R.id.tv_cancel);
         endDialog.show();
+    }
+
+    private  boolean toRemainPage(SteamOven steamOven){
+        if(steamOven == null){
+            showRemindPage(R.string.steam_offline,false,-1,false,false);
+            return true;
+        }
+        boolean needWater = SteamModeEnum.needWater(steamOven.mode);
+        int promptResId = SteamCommandHelper.getRunPromptResId(steamOven, steamOven.mode, needWater,false);
+        if(promptResId != -1){
+            showRemindPage(promptResId,needWater,steamOven.mode,false,false);
+            return true;
+        }
+        return false;
     }
 
 }

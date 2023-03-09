@@ -22,6 +22,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.robam.common.ui.view.SwitchButton;
 import com.robam.common.utils.PermissionUtils;
+import com.robam.common.utils.PreferenceUtils;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
 import com.robam.common.bean.AccountInfo;
@@ -43,6 +44,8 @@ public class WifiSettingActivity extends VentilatorBaseActivity {
     private SwipeRefreshLayout swipeRefreshLayout;
     //是否首次进入
     private boolean first = false;
+    //是否上电
+    private boolean powerOn = false;
 
     @Override
     protected int getLayoutId() {
@@ -58,6 +61,7 @@ public class WifiSettingActivity extends VentilatorBaseActivity {
         Bundle bundle = getIntent().getExtras();
         if (null != bundle) {
             first = bundle.getBoolean(VentilatorConstant.EXTRA_FIRST, false);
+            powerOn = bundle.getBoolean(VentilatorConstant.EXTRA_POWERON, false);
             if (first) {
                 HomeVentilator.getInstance().registerWifiReceiver(this.getApplicationContext());
                 //打开wifi
@@ -204,6 +208,18 @@ public class WifiSettingActivity extends VentilatorBaseActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        //关机
+        if (powerOn) {
+            HomeVentilator.getInstance().closeVentilator(false); //上电不需要回首页
+            //开始慢闪
+            HomeVentilator.getInstance().startFlash();
+            powerOn = false;
+        }
+    }
+
+    @Override
     public void onClick(View view) {
         super.onClick(view);
         int id = view.getId();
@@ -213,11 +229,12 @@ public class WifiSettingActivity extends VentilatorBaseActivity {
                 HomeActivity.start(this);
             else {
                 //login
-                Intent intent = new Intent(WifiSettingActivity.this, LoginPhoneActivity.class);
+                Intent intent = new Intent(WifiSettingActivity.this, LoginQrcodeActivity.class);
                 intent.putExtra(VentilatorConstant.EXTRA_FIRST, first);
                 startActivity(intent);
                 finish();
             }
+            PreferenceUtils.setBool(getApplicationContext(), VentilatorConstant.EXTRA_FIRST, true);
         }
     }
 

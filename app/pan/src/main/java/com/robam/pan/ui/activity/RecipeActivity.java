@@ -94,7 +94,7 @@ public class RecipeActivity extends PanBaseActivity {
                         rvRecipeAdapter.setNewInstance(new ArrayList<>());
                         searchResult(text);
                     } else {
-                        ToastUtils.showShort(RecipeActivity.this, R.string.pan_input_empty);
+                        ToastUtils.showShort(getApplicationContext(), R.string.pan_input_empty);
                     }
                     return false;
                 }

@@ -106,7 +106,7 @@ public class PanBluetoothControl implements PanFunction{
                             .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
                             .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                             .build();
-
+                    msg.putOpt(PanConstant.bleVer, device.bleVer);
                     Map<String, String> mapPanCurve = new Gson().fromJson(smartPanCurveParams, new TypeToken<LinkedHashMap<String, String>>(){}.getType());
 
                     JSONArray jsonArray = new JSONArray();
@@ -147,7 +147,7 @@ public class PanBluetoothControl implements PanFunction{
                             .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
                             .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                             .build();
-
+                    msg.putOpt(PanConstant.bleVer, device.bleVer);
                     Map<String, String> mapPanCurve = new Gson().fromJson(smartPanCurveParams, new TypeToken<LinkedHashMap<String, String>>(){}.getType());
 
                     JSONArray jsonArray = new JSONArray();
@@ -205,7 +205,10 @@ public class PanBluetoothControl implements PanFunction{
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.putOpt(PanConstant.key, i); //第几步
                         jsonObject.putOpt(PanConstant.control, ParamsHasGearList.get(i).control); //控制方式
-                        jsonObject.putOpt(PanConstant.level, ParamsHasGearList.get(i).gear); //灶具挡位
+                        if (ParamsHasGearList.get(i).gear < 1)
+                            jsonObject.putOpt(PanConstant.level, 1);
+                        else
+                            jsonObject.putOpt(PanConstant.level, ParamsHasGearList.get(i).gear); //灶具挡位
                         jsonObject.putOpt(PanConstant.stepTemp, ParamsHasGearList.get(i).temp); //标记温度
                         jsonObject.putOpt(PanConstant.stepTime, ParamsHasGearList.get(i).time - ParamsHasGearList.get(i - 1).time); //步骤时间
                         jsonArray.put(jsonObject);
@@ -252,7 +255,10 @@ public class PanBluetoothControl implements PanFunction{
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.putOpt(PanConstant.key, i); //第几步
                         jsonObject.putOpt(PanConstant.control, ParamsHasGearList.get(i).control); //控制方式
-                        jsonObject.putOpt(PanConstant.level, ParamsHasGearList.get(i).gear); //灶具挡位
+                        if (ParamsHasGearList.get(i).gear < 1)
+                            jsonObject.putOpt(PanConstant.level, 1);
+                        else
+                            jsonObject.putOpt(PanConstant.level, ParamsHasGearList.get(i).gear); //灶具挡位
                         jsonObject.putOpt(PanConstant.stepTemp, ParamsHasGearList.get(i).temp); //标记温度
                         jsonObject.putOpt(PanConstant.stepTime, ParamsHasGearList.get(i).time - ParamsHasGearList.get(i - 1).time); //步骤时间
                         jsonArray.put(jsonObject);

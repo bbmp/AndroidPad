@@ -6,5 +6,5 @@ import com.robam.steamoven.bean.SteamCurveDetail;
 import java.util.List;
 
 public class GetCurveCookbooksRes extends BaseResponse {
-    public List<SteamCurveDetail> payload;
+    public List<SteamCurveDetail> data;
 }

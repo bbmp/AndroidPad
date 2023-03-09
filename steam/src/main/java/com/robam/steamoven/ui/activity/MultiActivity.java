@@ -29,6 +29,7 @@ import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.ui.dialog.SteamCommonDialog;
+import com.robam.steamoven.utils.MqttSignal;
 import com.robam.steamoven.utils.SkipUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,6 +61,7 @@ public class MultiActivity extends SteamBaseActivity {
     private boolean isStart = false;
 
     private int directive_offset = 16000000;
+    private MqttSignal mqttSignal;
 
 
     @Override
@@ -388,6 +390,7 @@ public class MultiActivity extends SteamBaseActivity {
             setTotalDuration();
             initStartBtnState();
         }
+        mqttSignal = new MqttSignal();
     }
 
     @Override
@@ -408,6 +411,10 @@ public class MultiActivity extends SteamBaseActivity {
             showDealDialog(view);
         }else if(id == R.id.btn_start){
             //toWorkAc();
+            if(multiSegments.size() < 2){
+                ToastInsUtils.showLong(this,R.string.steam_cook_start_prompt);
+                return;
+            }
             startWork();
         }
     }
@@ -526,7 +533,9 @@ public class MultiActivity extends SteamBaseActivity {
             if(requestCode == START_WORK_CODE){//多段模式进入暂停模式，此时需要更新页面状态与数据
                 dealWorkBack(data);
             }else{
-                dealResult(requestCode,data);
+                if(requestCode != Constant.REMIND_REQUEST_CODE){
+                    dealResult(requestCode,data);
+                }
             }
 
         }
@@ -598,17 +607,33 @@ public class MultiActivity extends SteamBaseActivity {
 
     private  boolean toRemainPage(SteamOven curDevice,int curMode){
         if(curDevice == null){
-            showRemindPage(R.string.steam_offline,false,-1,false);
+            showRemindPage(R.string.steam_offline,false,-1,false,false);
             return true;
         }
         boolean needWater = SteamModeEnum.needWater(curMode);
         int promptResId = SteamCommandHelper.getRunPromptResId(curDevice, curMode, needWater,true);
         if(promptResId != -1){
-            showRemindPage(promptResId,needWater,curMode,true);
+            showRemindPage(promptResId,needWater,curMode,true,false);
             return true;
         }
         return false;
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mqttSignal.pageHide();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mqttSignal.pageShow();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mqttSignal.clear();
+    }
 }

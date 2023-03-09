@@ -42,6 +42,9 @@ public abstract class SteamBaseActivity extends BaseActivity {
 //        findViewById(R.id.iv_float).setVisibility(View.VISIBLE);
 //    }
 
+    private long addStreamTimeMil;
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -156,7 +159,7 @@ public abstract class SteamBaseActivity extends BaseActivity {
             if(deviceErrorInfo == null){
                 return false;
             }
-            if(deviceErrorInfo.code == Constant.WARING_CODE_11 && steamOven.getResidueTotalTime() <= 0){//WARING_CODE_11 是缺水状态，若剩余时间是0(即工作结束了)，不需要弹缺水告警
+            if(deviceErrorInfo.code == Constant.WARING_CODE_11){//WARING_CODE_11 是缺水状态,无需告警弹窗
                 return false;
             }
             Intent intent = new Intent(this, WaringActivity.class);
@@ -171,7 +174,7 @@ public abstract class SteamBaseActivity extends BaseActivity {
     /**
      * 上一次提醒内容对应资源ID
      */
-    protected int preRemindResId = -1;
+    protected int preRemindResId = 0;
 
     /**
      * 调整到提醒页面
@@ -183,7 +186,17 @@ public abstract class SteamBaseActivity extends BaseActivity {
         if(curDevice.recipeId != 0){
             needWater = RecipeManager.getInstance().needWater(IDeviceType.SERIES_STEAM, curDevice.recipeId);
         }else{
-            needWater = SteamModeEnum.needWater(curDevice.mode) || SteamModeEnum.isManuallyAddSteam(curDevice.mode);
+            needWater = SteamModeEnum.needWater(curDevice.mode);
+            if((!needWater && curDevice.steam != 0)){
+                needWater = SteamModeEnum.isManuallyAddSteam(curDevice.mode);
+            }
+            if(!needWater){
+                //手动加湿，缺水后steam状态会恢复，此时steam的值是0，需要判断是否执行过手动加湿
+                long ddSteamTimMil = addStreamTimeMil;
+                if(ddSteamTimMil!= 0 && SteamModeEnum.isManuallyAddSteam(curDevice.mode) && (ddSteamTimMil - System.currentTimeMillis()) <= 15000){
+                    needWater = true;
+                }
+            }
         }
         return this.toRemandPage(curDevice,needWater);
     }
@@ -200,8 +213,13 @@ public abstract class SteamBaseActivity extends BaseActivity {
             Intent intent = new Intent(this, RemindActivity.class);
             intent.putExtra(Constant.REMIND_BUS_CODE,remindResId);
             intent.putExtra(Constant.REMIND_NEED_WATER,needWater);
-            startActivity(intent);
+            intent.putExtra(Constant.REMIND_NEED_AUTO_CLOSE,true);
+            startActivityForResult(intent,Constant.REMIND_REQUEST_CODE);
             return true;
+        }else{
+            /*if(remindResId == 0){//无提醒后，清空上次提醒记录（为了二次提醒）
+                preRemindResId  = 0;
+            }*/
         }
         return false;
     }
@@ -227,16 +245,21 @@ public abstract class SteamBaseActivity extends BaseActivity {
         return false;
     }
 
-    public void showRemindPage(int remindResId,boolean needWater,int modeCode,boolean needCheckDescale){
+    public void showRemindPage(int remindResId,boolean needWater,int modeCode,boolean needCheckDescale,boolean needAuthClose){
         Intent intent = new Intent(this, RemindActivity.class);
         intent.putExtra(Constant.REMIND_BUS_CODE,remindResId);
         intent.putExtra(Constant.REMIND_NEED_WATER,needWater);
         intent.putExtra(Constant.REMIND_NEED_Descale,needCheckDescale);
         intent.putExtra(Constant.REMIND_MODE_CODE,modeCode);
-        startActivity(intent);
+        intent.putExtra(Constant.REMIND_NEED_AUTO_CLOSE,needAuthClose);
+        startActivityForResult(intent,Constant.REMIND_REQUEST_CODE);
     }
 
+    public void clearPreRemindResId(){
+        this.preRemindResId = 0;
+    }
 
-
-
+    public void setAddStreamTimeMil(long addStreamTimeMil) {
+        this.addStreamTimeMil = addStreamTimeMil;
+    }
 }

@@ -91,6 +91,8 @@ public class CurveSaveActivity extends PanBaseActivity {
                     @Override
                     public void onSuccess(BaseResponse baseResponse) {
                         ToastUtils.showShort(getApplicationContext(), R.string.pan_save_success);
+                        //回到首页
+                        startActivity(MainActivity.class);
                     }
 
                     @Override
@@ -118,7 +120,7 @@ public class CurveSaveActivity extends PanBaseActivity {
                 public void onClick(View v) {
                     //校验输入是否为空
                     if (TextUtils.isEmpty(editText.getText())) {
-                        ToastUtils.showShort(CurveSaveActivity.this, R.string.pan_input_empty);
+                        ToastUtils.showShort(getApplicationContext(), R.string.pan_input_empty);
                         return;
                     }
                     tvCurveName.setText(editText.getText());

@@ -61,6 +61,6 @@ public class RvModeAdapter extends BaseQuickAdapter<ModeBean, BaseViewHolder> {
     @Override
     protected void convert(@NonNull BaseViewHolder baseViewHolder, ModeBean modeBean) {
         baseViewHolder.setText(R.id.tv_select, modeBean.name);
-        baseViewHolder.getView(R.id.tv_select_remark).setVisibility(modeBean.funCode == 4 ? View.VISIBLE:View.INVISIBLE);
+        baseViewHolder.getView(R.id.tv_select_remark).setVisibility(modeBean.funCode == 4 ? View.VISIBLE:View.GONE);
     }
 }

@@ -11,11 +11,12 @@ public class StoveRecipeDetail implements Serializable {
     //总时间
     public int needTime;
     //图片
-    public String imgSmall;
+    public String imgCover11;
     //步骤
-    public List<RecipeStep> steps;
+    public List<RecipeStep> stepRespDtoList;
     //食材分类
-    public MaterialClassify materials;
-
+    public List<Material> materialDtoList;
+    //调味料
+    public List<Material> condimentDtoList;
 
 }

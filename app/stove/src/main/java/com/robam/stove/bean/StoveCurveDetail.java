@@ -23,7 +23,7 @@ public class StoveCurveDetail implements Serializable {
     //
     public int needTime;
     //步骤
-    public List<CurveStep> stepList;
+    public List<CurveStep> curveStepList;
     //设备参数
     public String deviceParams;
     //是否选中,用于显示

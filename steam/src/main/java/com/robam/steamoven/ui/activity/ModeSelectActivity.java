@@ -1,6 +1,7 @@
 package com.robam.steamoven.ui.activity;
 
 import android.content.Intent;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
+
+import com.github.mikephil.charting.data.Entry;
 import com.google.android.material.tabs.TabLayout;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
@@ -45,6 +48,7 @@ import com.robam.steamoven.ui.pages.SteamSelectPage;
 import com.robam.steamoven.ui.pages.TempSelectPage;
 import com.robam.steamoven.ui.pages.TimeSelectPage;
 import com.robam.steamoven.utils.ModelUtil;
+import com.robam.steamoven.utils.MqttSignal;
 import com.robam.steamoven.utils.SkipUtil;
 import java.lang.ref.WeakReference;
 import java.text.ParseException;
@@ -94,6 +98,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
     private TabLayout.Tab preSelectTab = null;
     private int sectionResId;
     private TextView btStart;
+    private MqttSignal mqttSignal;
 
 
     @Override
@@ -109,6 +114,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
         tabLayout = findViewById(R.id.tabLayout);
         noScrollViewPager = findViewById(R.id.pager);
         tabLayout.setSelectedTabIndicatorHeight(0);
+        initStartBtnBackground(false);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -138,6 +144,13 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
                 ImageView imageView = view.findViewById(R.id.iv_select);
                 imageView.setVisibility(View.VISIBLE);
                 noScrollViewPager.setCurrentItem(tab.getId(), false);
+                //更新Button按钮
+                if(tab.getId() == 2 && curModeBean != null && curModeBean.code == SteamConstant.BAOWEN){
+                    initStartBtnBackground(true);
+                }else{
+                    boolean modelParamIsFix = SteamModeEnum.isModelParamIsFix(curModeBean.code) || tab.getId() == 4;
+                    initStartBtnBackground(modelParamIsFix);
+                }
             }
 
             @Override
@@ -180,6 +193,7 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
     }
 
 
+
     /**
      * 去往工作页面
      * @param steamOven
@@ -211,11 +225,11 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
                 if (tab.getId() == 2) {
                     isClickAble = modeBean.maxTemp != modeBean.minTemp;
                     //promptResId = R.string.steam_temp_prompt;
-                    promptText = SteamModeEnum.match(modeCode)+"不需要调节温度参数";
+                    promptText = SteamModeEnum.match(modeCode)+"模式不需要调节温度参数";
                 } else if (tab.getId() == 4) {
                     isClickAble = modeBean.maxTime != modeBean.minTime;
                     //promptResId = R.string.steam_time_prompt;
-                    promptText = SteamModeEnum.match(modeCode)+"不需要调节时间参数";
+                    promptText = SteamModeEnum.match(modeCode)+"模式不需要调节时间参数";
                 }
                 if(!isClickAble && promptText != null){
                     ToastInsUtils.showLong(ModeSelectActivity.this,promptText);
@@ -402,10 +416,8 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
         if(needSetResult){
             ((TextView)findViewById(R.id.btn_start)).setText(R.string.steam_sure);
         }
-        SteamOven steamOven = getSteamOven();
-        if(steamOven != null){
-            SteamAbstractControl.getInstance().queryAttribute(steamOven.guid);
-        }
+        mqttSignal = new MqttSignal();
+        mqttSignal.startLoop();
     }
 
     private void initCurModelList(){
@@ -535,13 +547,13 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
 
     private  boolean toRemainPage(SteamOven steamOven){
         if(steamOven == null){
-            showRemindPage(R.string.steam_offline,false,-1,false);
+            showRemindPage(R.string.steam_offline,false,-1,false,false);
             return true;
         }
-        boolean needWater = SteamModeEnum.needWater(curModeBean.code);//TODO(暂不考虑手动加湿)
+        boolean needWater = SteamModeEnum.needWater(curModeBean.code);
         int promptResId = SteamCommandHelper.getRunPromptResId(steamOven, curModeBean.code, SteamModeEnum.needWater(curModeBean.code),true);
         if(promptResId != -1){
-            showRemindPage(promptResId,needWater,curModeBean.code,true);
+            showRemindPage(promptResId,needWater,curModeBean.code,true,false);
             return true;
         }
         return false;
@@ -779,6 +791,9 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
         if (modeTab != null) {
             //模式变更，温度和时间值也要变更
             initTimeParams(mode);
+            //更新Button按钮
+            boolean modelParamIsFix = SteamModeEnum.isModelParamIsFix(mode);
+            initStartBtnBackground(modelParamIsFix);
         }
     }
 
@@ -912,5 +927,28 @@ public class ModeSelectActivity extends SteamBaseActivity implements IModeSelect
         if(timer !=  null){
             timer.cancel();
         }
+        mqttSignal.clear();
     }
+
+    /**
+     * 设置开始按钮背景
+     * @param select
+     */
+    private void initStartBtnBackground(boolean select){
+        btStart.setBackgroundResource(select ? R.drawable.steam_shape_button_selected:R.drawable.steam_shape_button_bg_cancel);//R.drawable.steam_shape_button_unselected
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mqttSignal.pageShow();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mqttSignal.pageHide();
+    }
+
+
 }

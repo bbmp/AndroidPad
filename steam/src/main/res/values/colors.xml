@@ -40,8 +40,9 @@
 
     <color name="steam_common_select_button_cancel1">#A6FFFFFF</color>
     <color name="steam_common_select_button_cancel2">#55FFFFFF</color>
-    <color name="steam_chart">#FF3D00</color>
-    <color name="steam_chart_multi">#66FF3D00</color>
+    <color name="steam_chart">#ff72AFFF</color>
+    <color name="steam_chart_multi">#6672AFFF</color>
+    <color name="steam_chart_smooth">#2272AFFF</color>
     <color name="steam_message_color">#FFEA94</color>
     <color name="steam_white90">#E6FFFFFF</color>
     <color name="steam_black5">#0D000000</color>

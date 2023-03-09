@@ -28,7 +28,7 @@
     <EditText
         android:id="@+id/et_search"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:gravity="center"
         android:paddingHorizontal="@dimen/dp_8"
         android:includeFontPadding="false"

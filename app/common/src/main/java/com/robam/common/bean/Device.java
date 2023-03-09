@@ -89,6 +89,9 @@ public class Device {
     //内部设备类型(1B)+内部设备编码(3B)
     @Expose
     public String int_guid;
+    //蓝牙版本
+    @Expose
+    public int bleVer;
 
     //设备名称
     @Expose

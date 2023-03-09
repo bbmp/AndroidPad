@@ -23,7 +23,7 @@ import java.util.Arrays;
  * 灶具
  */
 public class Stove extends Device {
-
+    public int msgId;
     //蓝牙设备
     public BleDevice bleDevice;
     //蓝牙特征符
@@ -72,7 +72,7 @@ public class Stove extends Device {
     /**
      * 左灶工作模式
      */
-    public int leftWorkMode;
+    public int leftWorkMode = -1;
     //左灶工作状态
     public int leftStatus;
 
@@ -82,15 +82,19 @@ public class Stove extends Device {
      */
     public int leftTimeHours;//剩余秒数
     //左灶工作温度
-    public float leftWorkTemp;
+    public float leftWorkTemp = -1;
     //左灶
     public int leftStove;
     //
     public int leftAlarm = 255;
+
+    public int leftSetTime = -1;
+
+    public String leftRecipe;
     /**
      * 右灶工作模式
      */
-    public int rightWorkMode;
+    public int rightWorkMode = -1;
 
     public int rightStatus;
 
@@ -100,11 +104,15 @@ public class Stove extends Device {
      */
     public int rightTimeHours;
     //右灶工作温度
-    public float rightWorkTemp;
+    public float rightWorkTemp = -1;
     //右灶
     public int rightStove;
     //
     public int rightAlarm = 255;
+
+    public int rightSetTime = -1;
+
+    public String rightRecipe;
 
     @Override
     public boolean onMsgReceived(MqttMsg msg) {
@@ -139,6 +147,15 @@ public class Stove extends Device {
         if (null != msg && null != msg.opt(StoveConstant.stoveNum)) {
             queryNum = 0; //查询超过一次无响应离线
             status = Device.ONLINE;
+            leftRecipe = null;
+            rightRecipe = null;
+            leftWorkTemp = -1;
+            rightWorkTemp = -1;
+            leftSetTime = -1;
+            rightSetTime = -1;
+            leftWorkMode = -1;
+            rightWorkMode = -1;
+
             if (msg.has(StoveConstant.lockStatus))
                 lockStatus = msg.optInt(StoveConstant.lockStatus);
             if (msg.has(StoveConstant.leftStatus))
@@ -153,6 +170,10 @@ public class Stove extends Device {
                 leftWorkTemp = (float) msg.opt(StoveConstant.leftTemp);
             if (msg.has(StoveConstant.leftMode))
                 leftWorkMode = msg.optInt(StoveConstant.leftMode);
+            if (msg.has(StoveConstant.leftSetTime))
+                leftSetTime = msg.optInt(StoveConstant.leftSetTime);
+            if (msg.has(StoveConstant.leftRecipe))
+                leftRecipe = msg.optString(StoveConstant.leftRecipe);
 
             if (msg.has(StoveConstant.rightStatus))
                 rightStatus = msg.optInt(StoveConstant.rightStatus);
@@ -166,7 +187,15 @@ public class Stove extends Device {
                 rightWorkTemp = (float) msg.opt(StoveConstant.rightTemp);
             if (msg.has(StoveConstant.rightMode))
                 rightWorkMode = msg.optInt(StoveConstant.rightMode);
+            if (msg.has(StoveConstant.rightSetTime))
+                rightSetTime = msg.optInt(StoveConstant.rightSetTime);
+            if (msg.has(StoveConstant.rightRecipe))
+                rightRecipe = msg.optString(StoveConstant.rightRecipe);
             return true;
+        } else if (null != msg && msg.has(StoveConstant.interaction)) { //设置互动参数返回
+            int rc = msg.optInt(StoveConstant.interaction);
+            if (rc == 0)
+                msgId = MsgKeys.setStoveInteraction_Res;
         }
         return false;
     }

@@ -111,14 +111,14 @@ public class HomeStove {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        if (null == stoveRecipeDetail.steps || curStep >= stoveRecipeDetail.steps.size()) {
+                        if (null == stoveRecipeDetail.stepRespDtoList || curStep >= stoveRecipeDetail.stepRespDtoList.size()) {
                             //工作结束
                             //提示烹饪完成
                             if (null != weakReference.get())
                                 weakReference.get().workComplete(stoveId);
                             return;
                         }
-                        RecipeStep recipeStep = stoveRecipeDetail.steps.get(curStep);
+                        RecipeStep recipeStep = stoveRecipeDetail.stepRespDtoList.get(curStep);
 
                         if (recipeStep.needTime > 0) {
                             recipeStep.elapsedTime++;
@@ -145,43 +145,39 @@ public class HomeStove {
     }
 
     private void setData(StoveRecipeDetail stoveRecipeDetail, int curStep, int stoveId, WeakReference<CookCallback> weakReference) {
-        if (curStep >= stoveRecipeDetail.steps.size())
+        if (curStep >= stoveRecipeDetail.stepRespDtoList.size())
             return;
-        RecipeStep recipeStep = stoveRecipeDetail.steps.get(curStep);
+        RecipeStep recipeStep = stoveRecipeDetail.stepRespDtoList.get(curStep);
         //图片
         if (null != weakReference.get())
             weakReference.get().loadImage(recipeStep.image);
 
-        if (null != recipeStep.params && recipeStep.params.size() > 0) {
-            for (StepParams params: recipeStep.params) {
-                if (HomeStove.getInstance().getDp().equals(params.platCode)) {
+        if (null != recipeStep && null != recipeStep.devicePlatformStrList) {
+            if (recipeStep.devicePlatformStrList.contains(HomeStove.getInstance().getDp())) {
 
-                    if (null != params.params) {
-                        for (int i = 0; i < params.params.size(); i++) {
-                            if (params.params.get(i).code.equals("fanGear")) {//烟机风量
-                                if (null != weakReference.get())
-                                    weakReference.get().setFan("风量：" + params.params.get(i).valueName);
-                                //设置烟机风量
-                                IPublicVentilatorApi iPublicVentilatorApi = ModulePubliclHelper.getModulePublic(IPublicVentilatorApi.class, IPublicVentilatorApi.VENTILATOR_PUBLIC);
-                                if (null != iPublicVentilatorApi) {
-                                    if (params.params.get(i).value >= 1 && params.params.get(i).value <= 3)
-                                        iPublicVentilatorApi.setFanGear(1); //弱档
-                                    else if (params.params.get(i).value >= 4 && params.params.get(i).value <= 6)
-                                        iPublicVentilatorApi.setFanGear(3); //强档
-                                    else if (params.params.get(i).value >= 7 && params.params.get(i).value <= 9)
-                                        iPublicVentilatorApi.setFanGear(6); //强档
-                                }
-                            }
-                            if (params.params.get(i).code.equals("stoveGear")) {//炉头
-                                if (null != weakReference.get())
-                                    weakReference.get().setGear("火力：" + params.params.get(i).valueName);
-                                //设置灶具挡位
-                                StoveAbstractControl.getInstance().setLevel(HomeStove.getInstance().guid, stoveId, 0x01, params.params.get(i).value, (int) stoveRecipeDetail.id, recipeStep.no);
-                            }
-                        }
-                    }
+                //烟机风量
+                if (null != weakReference.get())
+                    weakReference.get().setFan("风量：" + recipeStep.fanGear);
+                //设置烟机风量
+                IPublicVentilatorApi iPublicVentilatorApi = ModulePubliclHelper.getModulePublic(IPublicVentilatorApi.class, IPublicVentilatorApi.VENTILATOR_PUBLIC);
+                if (null != iPublicVentilatorApi) {
+                    if (recipeStep.fanGear >= 1 && recipeStep.fanGear <= 3)
+                        iPublicVentilatorApi.setFanGear(1); //弱档
+                    else if (recipeStep.fanGear >= 4 && recipeStep.fanGear <= 6)
+                        iPublicVentilatorApi.setFanGear(3); //强档
+                    else if (recipeStep.fanGear >= 7 && recipeStep.fanGear <= 9)
+                        iPublicVentilatorApi.setFanGear(6); //强档
                 }
+
+                //炉头
+                if (null != weakReference.get())
+                    weakReference.get().setGear("火力：" + recipeStep.stoveGear);
+                //设置灶具挡位
+                StoveAbstractControl.getInstance().setLevel(HomeStove.getInstance().guid, stoveId, 0x01, recipeStep.stoveGear, (int) stoveRecipeDetail.id, recipeStep.no);
+
+
             }
+
         }
     }
 }

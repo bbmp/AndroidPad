@@ -38,7 +38,7 @@
         android:id="@+id/tv_match_hint"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_32"
+        android:textSize="@dimen/sp_34"
         android:text="@string/cabinet_match_hint1"
         android:textColor="@color/cabinet_color_f6"
         android:layout_marginLeft="@dimen/dp_77"

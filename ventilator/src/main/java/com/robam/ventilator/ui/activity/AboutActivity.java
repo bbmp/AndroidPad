@@ -11,6 +11,7 @@ import com.robam.common.device.Plat;
 import com.robam.common.ui.activity.BaseActivity;
 import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.ToastUtils;
+import com.robam.common.utils.WindowsUtils;
 import com.robam.ventilator.BuildConfig;
 import com.robam.ventilator.R;
 import com.robam.ventilator.base.VentilatorBaseActivity;
@@ -98,9 +99,9 @@ public class AboutActivity extends VentilatorBaseActivity {
     private void goHome() {
         ComponentName componetName = new ComponentName(
 //这个是另外一个应用程序的包名
-                "com.android.launcher3",
+                "com.ayst.factorytest",
 //这个参数是要启动的Activity
-                "com.android.launcher3.uioverrides.QuickstepLauncher");
+                "com.ayst.factorytest.MainActivity");
 
         Intent intent = new Intent();
         intent.setComponent(componetName);
@@ -112,5 +113,17 @@ public class AboutActivity extends VentilatorBaseActivity {
         int id = view.getId();
         if (id == R.id.ll_left)
             finish();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        WindowsUtils.showPopupWindow();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        WindowsUtils.hidePopupWindow();
     }
 }

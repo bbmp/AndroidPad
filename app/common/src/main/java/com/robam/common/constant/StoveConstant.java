@@ -7,6 +7,9 @@ public class StoveConstant {
     public final static int FUN_RECIPE = 3;
     public final static int FUN_TIMING = 4;
 
+    public final static int KEY1 = 1;//曲线创作设置
+    public final static int start = 1;
+    public final static int stop = 0;
     //模式
     public final static int MODE_STEW = 1;   //炖煮
     public final static int MODE_STEAM = 2; //清蒸
@@ -48,6 +51,7 @@ public class StoveConstant {
     public final static String leftTime = "left_time";//剩余秒数
     public final static String leftSetTime = "left_set_time";//左灶设置时间
     public final static String leftAlarm = "left_alarm";//报警状态
+    public final static String leftRecipe = "left_recipe"; //左灶菜谱
     public final static String rightStatus = "right_status";
     public final static String rightMode = "right_mode"; //工作模式
     public final static String rightLevel = "right_level";
@@ -55,6 +59,7 @@ public class StoveConstant {
     public final static String rightTime = "right_time";//剩余秒数
     public final static String rightSetTime = "right_set_time";//右灶设置时间
     public final static String rightAlarm = "right_alarm";//
+    public final static String rightRecipe = "right_recipe";//右灶菜谱
     public final static String workStatus = "work_status";
     public final static String timingtime = "timing_time"; //定时时间
     public final static String lockStatus = "lock_status";//锁状态
@@ -64,6 +69,10 @@ public class StoveConstant {
     public final static String setMode = "set_mode";// 设定模式
     public final static String stepTemp = "step_temp";//温度
     public final static String stepTime = "step_time";//时间
+    public final static String key = "key";//
+    public final static String length = "length";
+    public final static String value = "value";
+    public final static String interaction = "interaction";//互动参数
 
     //炉头状态
     public static final int STOVE_CLOSE = 0;

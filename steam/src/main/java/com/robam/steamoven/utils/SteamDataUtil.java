@@ -9,6 +9,7 @@ import com.robam.common.http.ILife;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.manager.DeviceWarnInfoManager;
 import com.robam.common.utils.DeviceUtils;
+import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.StringUtils;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.SteamModeEnum;
@@ -127,9 +128,11 @@ public class SteamDataUtil {
                 new RetrofitCallback<GetDeviceParamsRes>() {
                     @Override
                     public void onSuccess(GetDeviceParamsRes getDeviceParamsRes) {
+                        LogUtils.i("Thread getSteamData " + Thread.currentThread().getId());
                         if (null != getDeviceParamsRes && null != getDeviceParamsRes.modelMap){
                             //SteamDataUtil.saveSteam(guidType,new Gson().toJson(getDeviceParamsRes, GetDeviceParamsRes.class));
-                            RecipeManager.getInstance().setRecipeInfo(guidType,getDeviceParamsRes);
+                            new Thread(() -> RecipeManager.getInstance().setRecipeInfo(guidType,getDeviceParamsRes)).start();
+                            //RecipeManager.getInstance().setRecipeInfo(guidType,getDeviceParamsRes);
                         }
                     }
 
@@ -149,7 +152,9 @@ public class SteamDataUtil {
                 new RetrofitCallback<GetDeviceErrorRes>() {
                     @Override
                     public void onSuccess(GetDeviceErrorRes deviceErrorRes) {
+                        LogUtils.i("Thread getDeviceErrorInfo " + Thread.currentThread().getId());
                         if(StringUtils.isNotBlank(deviceErrorRes.url)){//设备告警文件链接
+                            //new Thread(() -> DeviceWarnInfoManager.getInstance().downFile(deviceErrorRes.url)).start();
                             DeviceWarnInfoManager.getInstance().downFile(deviceErrorRes.url);
                         }
                     }

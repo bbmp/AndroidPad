@@ -26,7 +26,7 @@ public abstract class StoveBasePage extends HeadPage {
                 if (aBoolean)
                     ivWifi.setVisibility(View.VISIBLE);
                 else
-                    ivWifi.setVisibility(View.INVISIBLE);
+                    ivWifi.setVisibility(View.GONE);
             }
         });
     }

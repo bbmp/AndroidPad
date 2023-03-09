@@ -161,21 +161,9 @@ public class BlueToothManager {
         }
     }
 
-    public static void setMtu(BleDevice bleDevice) {
+    public static void setMtu(BleDevice bleDevice, BleMtuChangedCallback bleMtuChangedCallback) {
         try {
-            BleManager.getInstance().setMtu(bleDevice, 200, new BleMtuChangedCallback() {
-                @Override
-                public void onSetMTUFailure(BleException exception) {
-                    // 设置MTU失败
-                    LogUtils.e("设置MTU失败");
-                }
-
-                @Override
-                public void onMtuChanged(int mtu) {
-                    // 设置MTU成功，并获得当前设备传输支持的MTU值
-                    LogUtils.e("设置MTU成功mtu:" + mtu);
-                }
-            });
+            BleManager.getInstance().setMtu(bleDevice, 250, bleMtuChangedCallback);
         } catch (Exception e) {
             e.printStackTrace();
         }

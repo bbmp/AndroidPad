@@ -1,5 +1,7 @@
 package com.robam.ventilator.http;
 
+import java.util.Map;
+
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -8,6 +10,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.HeaderMap;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -28,6 +31,9 @@ public interface ICloudService {
     String getDevices = "/rest/dms/api/device/get";
     //获取二维码
 //    String getCode = "/rest/gateway/api/auth/scan/key";
+    String getCode = "/rest/gateway/api/auth/v2/account/login";
+    //access_token登录
+    String loginCode = "/rest/ums/api/v2/user/get/oauth";
 
     String getLoginStatus = "/rest/gateway/api/auth/scan/login";
     //扫码登录
@@ -72,6 +78,12 @@ public interface ICloudService {
     @GET(getLoginStatus)
     @Headers({"CONNECT_TIMEOUT:30000", "READ_TIMEOUT:60000", "WRITE_TIMEOUT:60000"})
     Call<ResponseBody> getLoginStatus(@Query("key") String key);
+
+    @POST(getCode)
+    Call<ResponseBody> getCode(@HeaderMap Map<String, String> headers, @Body RequestBody body);
+
+    @GET(loginCode)
+    Call<ResponseBody> loginCode(@HeaderMap Map<String, String> headers);
 
     @POST(login)
     @Headers("Content-Type: application/json")

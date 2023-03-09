@@ -18,5 +18,6 @@
     <color name="ventilator_progress_bg">#FF666666</color>
     <color name="ventilator_blur_overlay_color">#33ffffff</color>
     <color name="ventilator_blur_border_color">#4dffffff</color>
+    <color name="ventilator_color_error_password">#FF4848</color>
 
 </resources>

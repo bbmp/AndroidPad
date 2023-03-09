@@ -509,19 +509,20 @@ public class SteamOven extends Device {
         int key = msg.getID();
         if (key==MsgKeys.getDeviceAttribute_Rep){
             this.powerState = (short) msg.optInt(SteamConstant.powerState);
-            this.workState = (short) msg.optInt(SteamConstant.workState);
+            this.powerCtrl = (short) msg.optInt(SteamConstant.powerCtrl);
+            this.workState =  msg.optInt(SteamConstant.workState);
             this.orderLeftTime= msg.optInt(SteamConstant.orderLeftTime);
-            this.faultId = (short) msg.optInt(SteamConstant.faultCode);//SteamFaultCode
+            this.faultId = msg.optInt(SteamConstant.faultCode);//SteamFaultCode
             this.rotateSwitch = (short) msg.optInt(SteamConstant.rotateSwitch);
-            this.waterBoxState = (short) msg.optInt(SteamConstant.waterBoxState);
+            this.waterBoxState =  msg.optInt(SteamConstant.waterBoxState);
             this.waterLevelState = (short) msg.optInt(SteamConstant.waterLevelState);
-            this.doorState = (short) msg.optInt(SteamConstant.doorState);
+            this.doorState =  msg.optInt(SteamConstant.doorState);
             this.steamState = (short) msg.optInt(SteamConstant.steamState);
-            this.recipeId = (short) msg.optInt(SteamConstant.recipeId);
-            this.recipeSetMinutes = (short) msg.optInt(SteamConstant.recipeSetMinutes);
+            this.recipeId =  msg.optInt(SteamConstant.recipeId);
+            this.recipeSetMinutes =  msg.optInt(SteamConstant.recipeSetMinutes);
             this.curTemp = (short) msg.optInt(SteamConstant.curTemp);
             this.curTemp2 = (short) msg.optInt(SteamConstant.curTemp2);
-            this.totalRemainSeconds = (short) msg.optInt(SteamConstant.totalRemainSeconds);
+            this.totalRemainSeconds =  msg.optInt(SteamConstant.totalRemainSeconds);
             //this.totalRemainSecondsH = (short) msg.optInt(SteamConstant.totalRemainSeconds2);
             this.totalRemain = msg.optInt(SteamConstant.totalRemain);
             this.descaleFlag = (short) msg.optInt(SteamConstant.descaleFlag);
@@ -530,7 +531,7 @@ public class SteamOven extends Device {
             this.waterBox = (short)msg.optInt(SteamConstant.waterBox);
 
             this.chugouType = (short) msg.optInt(SteamConstant.chugouType);
-            this.curSectionNbr = (short) msg.optInt(SteamConstant.curSectionNbr);
+            this.curSectionNbr =  msg.optInt(SteamConstant.curSectionNbr);
             this.sectionNumber = (short) msg.optInt(SteamConstant.sectionNumber);
             workStatus = workState;
             //this.curSteamTotalHours = (short) msg.optInt(SteamConstant.curSteamTotalHours);
@@ -562,35 +563,35 @@ public class SteamOven extends Device {
 //                this.steam = (short) msg.optInt(SteamConstant.steam + curSectionNbr);
 //            }
 
-            this.mode = (short) msg.optInt(SteamConstant.mode);
-            this.setUpTemp = (short) msg.optInt(SteamConstant.setUpTemp);
-            this.setDownTemp = (short) msg.optInt(SteamConstant.setDownTemp);
-            this.setTime = (short) msg.optInt(SteamConstant.setTime);
+            this.mode =  msg.optInt(SteamConstant.mode);
+            this.setUpTemp =  msg.optInt(SteamConstant.setUpTemp);
+            this.setDownTemp =  msg.optInt(SteamConstant.setDownTemp);
+            this.setTime = msg.optInt(SteamConstant.setTime);
             //this.setTimeH = (short) msg.optInt(SteamConstant.setTimeH);
-            this.restTime = (short) msg.optInt(SteamConstant.restTime);
+            this.restTime =  msg.optInt(SteamConstant.restTime);
             //this.restTimeH = (short) msg.optInt(SteamConstant.restTimeH);
-            this.steam = (short) msg.optInt(SteamConstant.steam);
+            this.steam =  msg.optInt(SteamConstant.steam);
 
-            this.mode2 = (short) msg.optInt(SteamConstant.mode2);
-            this.setUpTemp2 = (short) msg.optInt(SteamConstant.setUpTemp2 );
-            this.setDownTemp2 = (short) msg.optInt(SteamConstant.setDownTemp2 );
-            this.setTime2 = (short) msg.optInt(SteamConstant.setTime2);
+            this.mode2 =  msg.optInt(SteamConstant.mode2);
+            this.setUpTemp2 =  msg.optInt(SteamConstant.setUpTemp2 );
+            this.setDownTemp2 =  msg.optInt(SteamConstant.setDownTemp2 );
+            this.setTime2 =  msg.optInt(SteamConstant.setTime2);
             //this.setTimeH2 = (short) msg.optInt(SteamConstant.setTimeH2 );
-            this.restTime2 = (short) msg.optInt(SteamConstant.restTime2);
-            this.restTimeH2 = (short) msg.optInt(SteamConstant.restTimeH2);
-            this.steam2 = (short) msg.optInt(SteamConstant.steam2);
+            this.restTime2 = msg.optInt(SteamConstant.restTime2);
+            this.restTimeH2 =  msg.optInt(SteamConstant.restTimeH2);
+            this.steam2 =  msg.optInt(SteamConstant.steam2);
 
-            this.mode3 = (short) msg.optInt(SteamConstant.mode3);
-            this.setUpTemp3 = (short) msg.optInt(SteamConstant.setUpTemp3);
-            this.setDownTemp3 = (short) msg.optInt(SteamConstant.setDownTemp3);
-            this.setTime3 = (short) msg.optInt(SteamConstant.setTime3);
+            this.mode3 =  msg.optInt(SteamConstant.mode3);
+            this.setUpTemp3 =  msg.optInt(SteamConstant.setUpTemp3);
+            this.setDownTemp3 =  msg.optInt(SteamConstant.setDownTemp3);
+            this.setTime3 =  msg.optInt(SteamConstant.setTime3);
             //this.setTimeH3 = (short) msg.optInt(SteamConstant.setTimeH3);
-            this.restTime3 = (short) msg.optInt(SteamConstant.restTime3);
+            this.restTime3 =  msg.optInt(SteamConstant.restTime3);
             //this.restTimeH3 = (short) msg.optInt(SteamConstant.restTimeH3);
-            this.steam3 = (short) msg.optInt(SteamConstant.steam3);
+            this.steam3 =  msg.optInt(SteamConstant.steam3);
             //onStatusChanged();
         }else if (key==MsgKeys.getDeviceAlarmEventReport){
-            this.faultId = (short) msg.optInt(SteamConstant.faultCode);
+            this.faultId =  msg.optInt(SteamConstant.faultCode);
         }
     }
 
@@ -635,14 +636,23 @@ public class SteamOven extends Device {
         if(startIndex <= 0){
             startIndex = 1;
         }
-        for(int i = startIndex ; i <= 3;i++){
-            if(i == 1){
-                totalTime += restTimeH * 256 + restTime;//设置的工作时间 (秒)
-            }else if(i == 2){
-                totalTime += restTimeH2 * 256 + restTime2;//设置的工作时间 (秒)
-            }else if(i == 3){
-                totalTime += restTimeH3 * 256 + restTime3;//设置的工作时间 (秒)
+        int totalIndex = sectionNumber > 3 ? 3 : sectionNumber;
+        if(totalIndex <= 0){
+            totalIndex = 1;
+        }
+        boolean isMulti = sectionNumber >= 2 || recipeId != 0;
+        if(isMulti){
+            for(int i = startIndex ; i <= totalIndex;i++){
+                if(i == 1){
+                    totalTime += restTimeH * 256 + restTime;//设置的工作时间 (秒)
+                }else if(i == 2){
+                    totalTime += restTimeH2 * 256 + restTime2;//设置的工作时间 (秒)
+                }else if(i == 3){
+                    totalTime += restTimeH3 * 256 + restTime3;//设置的工作时间 (秒)
+                }
             }
+        }else{
+            totalTime += restTimeH * 256 + restTime;//设置的工作时间 (秒)
         }
         return totalTime;
     }

@@ -9,8 +9,8 @@ android {
         applicationId "com.robam.androidpad"
         minSdk build_versions.min_sdk
         targetSdk build_versions.target_sdk
-        versionCode 1
-        versionName "1.0.0"
+        versionCode 102
+        versionName "1.0.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         flavorDimensions "versionCode"
@@ -93,7 +93,8 @@ dependencies {
     //权限申请
     implementation "com.github.tbruyelle:rxpermissions:$versions.rxpermissions"
     //蓝牙
-    implementation "com.github.Jasonchenlijian:FastBle:$versions.FastBle"
+//    implementation "com.github.Jasonchenlijian:FastBle:$versions.FastBle"
+    implementation project(path: ':app:FastBleLib')
     implementation "io.reactivex.rxjava3:rxjava:$versions.rxjava"
     implementation "io.reactivex.rxjava3:rxandroid:$versions.rxandroid"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$versions.lifecycle_livedata_ktx"

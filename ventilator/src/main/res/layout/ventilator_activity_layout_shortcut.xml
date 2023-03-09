@@ -51,7 +51,7 @@
             android:layout_marginBottom="@dimen/dp_5"
             android:text="工作"
             android:textColor="@color/ventilator_white_50"
-            android:textSize="@dimen/sp_20"
+            android:textSize="@dimen/sp_28"
             app:layout_constraintLeft_toRightOf="@id/iv_work"
             app:layout_constraintBottom_toTopOf="@id/ventilator_guideline" />
 
@@ -82,7 +82,7 @@
             android:layout_marginBottom="@dimen/dp_5"
             android:text="在线"
             android:textColor="@color/ventilator_white_50"
-            android:textSize="@dimen/sp_20"
+            android:textSize="@dimen/sp_28"
             app:layout_constraintBottom_toTopOf="@id/ventilator_guideline"
             app:layout_constraintLeft_toRightOf="@id/iv_online" />
 

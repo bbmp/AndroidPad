@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.serialport.helper.SerialPortHelper;
 import android.serialport.helper.SphResultCallback;
@@ -25,10 +26,12 @@ import com.robam.common.http.RetrofitCallback;
 import com.robam.common.manager.AppActivityManager;
 import com.robam.common.mqtt.MqttManager;
 import com.robam.common.ui.activity.BaseActivity;
+import com.robam.common.utils.DeviceUtils;
 import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.MMKVUtils;
 import com.robam.common.utils.NetworkUtils;
 import com.robam.common.utils.PermissionUtils;
+import com.robam.common.utils.StorageUtils;
 import com.robam.common.utils.ToastUtils;
 import com.robam.common.utils.WindowsUtils;
 import com.robam.steamoven.utils.SteamDataUtil;
@@ -45,6 +48,7 @@ import com.robam.ventilator.ui.service.AlarmBleService;
 import com.robam.ventilator.ui.service.AlarmMqttService;
 import com.robam.ventilator.ui.service.AlarmVentilatorService;
 
+import java.io.File;
 import java.lang.reflect.Field;
 
 //主页
@@ -54,14 +58,25 @@ public class HomeActivity extends BaseActivity {
         Intent intent = new Intent();
         intent.setClass(activity, HomeActivity.class);
         activity.startActivity(intent);
-//        activity.finish();
+        activity.finish();
+    }
+    //上电跳转
+    public static void powerStart(Activity activity) {
+        Intent intent = new Intent();
+        intent.putExtra(VentilatorConstant.EXTRA_POWERON, true);
+        intent.setClass(activity, HomeActivity.class);
+        activity.startActivity(intent);
+        activity.finish();
     }
 
+    private BluetoothAdapter bluetoothAdapter;
 
     private static final String PASSWORD_LOGIN = "mobilePassword";
     private static final String WAITING_AC_NAME = "WaringActivity";
     private static final String WAITING_AC_FILE = "fromFlag";//告警页面属性；是否从烟机直接进入告警页面（1 - 是；0 -否）
 
+    //是否上电
+    private boolean powerOn = false;
 
     @Override
     protected int getLayoutId() {
@@ -70,6 +85,10 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+        Bundle bundle = getIntent().getExtras();
+        if (null != bundle) {
+            powerOn = bundle.getBoolean(VentilatorConstant.EXTRA_POWERON, false);
+        }
         //注册wifi广播
         HomeVentilator.getInstance().registerWifiReceiver(this.getApplicationContext());
         if (Build.VERSION.SDK_INT >= 23) {
@@ -122,6 +141,14 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        //关机
+        if (powerOn) {
+            HomeVentilator.getInstance().closeVentilator(false); //上电不需要回首页
+            //开始慢闪
+            HomeVentilator.getInstance().startFlash();
+            powerOn = false;
+        }
+
         WindowsUtils.hidePopupWindow();
         Runtime r = Runtime.getRuntime();
 
@@ -145,6 +172,12 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected void initData() {
+        //打开蓝牙
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (!bluetoothAdapter.isEnabled())
+            checkPermissions();
+        //打开wifi
+        checkWifiPermmissions();
 
         //监听网络状态
         AccountInfo.getInstance().getConnect().observe(this, new Observer<Boolean>() {
@@ -164,12 +197,7 @@ public class HomeActivity extends BaseActivity {
 
                         }
                     }
-                    //自动设置时间
-                    try {
-                        Settings.Global.putString(
-                                getContentResolver(),
-                                Settings.Global.AUTO_TIME,"1");
-                    } catch (Exception e) {}
+                    HomeVentilator.getInstance().autoSetTime(HomeActivity.this);
                 }
                 else {
                     //断网
@@ -188,12 +216,69 @@ public class HomeActivity extends BaseActivity {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
+            //启动定时服务
+            Intent intent = new Intent(getContext().getApplicationContext(), AlarmMqttService.class);
+            intent.setPackage(getContext().getPackageName());
+            getContext().startService(intent);
+            Intent bleIntent = new Intent(getContext().getApplicationContext(), AlarmBleService.class);
+            bleIntent.setPackage(getContext().getPackageName());
+            getContext().startService(bleIntent);
+            Intent venIntent = new Intent(getContext().getApplicationContext(), AlarmVentilatorService.class);
+            venIntent.setPackage(getContext().getPackageName());
+            getContext().startService(venIntent);
+            //更新服务
+            if (!DeviceUtils.isAppInstalled(getContext(), "com.robam.update")) {
+                DeviceUtils.copyFileIfNeed(getContext(), "UpdateService.apk", StorageUtils.getDataDir() + File.separator + "UpdateService.apk");
+                DeviceUtils.installSilent(StorageUtils.getDataDir() + File.separator + "UpdateService.apk");
+            }
             SteamDataUtil.getSteamData(HomeActivity.this,IDeviceType.SERIES_STEAM);//获取一体机数据
             SteamDataUtil.getDeviceErrorInfo(HomeActivity.this);//获取告警信息数据
         }).start();
+        LogUtils.i("Thread HomeActivity " + Thread.currentThread().getId());
     }
 
+    //请求蓝牙权限
+    private void checkPermissions() {
+        //请求权限
+        PermissionUtils.requestPermission(this, new PermissionUtils.OnPermissionListener() {
+            @Override
+            public void onSucceed() {
+                onPermissionGranted();
+            }
+
+            @Override
+            public void onFailed() {
+                //权限未给
+                LogUtils.e("requestPermission onFailed");
+            }
+        }, Manifest.permission.BLUETOOTH, Manifest.permission.ACCESS_FINE_LOCATION);
+    }
+    //请求wifi权限
+    private void checkWifiPermmissions() {
+        //
+        PermissionUtils.requestPermission(this, new PermissionUtils.OnPermissionListener() {
+            @Override
+            public void onSucceed() {
+                //打开wifi
+                WifiManager mWifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+                VenWifiManager.openWifi(mWifiManager);
+            }
+
+            @Override
+            public void onFailed() {
+
+            }
+        }, Manifest.permission.CHANGE_WIFI_STATE);
+    }
+    //已授权
+    @SuppressLint("MissingPermission")
+    private void onPermissionGranted() {
+        try {
+            bluetoothAdapter.enable();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void onBackPressed() {

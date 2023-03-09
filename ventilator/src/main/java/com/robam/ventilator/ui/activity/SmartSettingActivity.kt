@@ -377,7 +377,7 @@ class SmartSettingActivity : VentilatorBaseActivity() {
 
     override fun initData() {
         //设备名字
-        binding.tvDeviceName.text = "油烟机" + BuildConfig.MODEL
+        binding.tvDeviceName.text = "油烟机"
 
         binding.btReset.setOnClickListener {
             //恢复初始提示

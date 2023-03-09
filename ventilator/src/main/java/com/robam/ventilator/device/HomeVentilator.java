@@ -8,7 +8,9 @@ import android.net.wifi.WifiManager;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings;
 import android.serialport.helper.SerialPortHelper;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -17,12 +19,17 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.gson.Gson;
 import com.robam.common.IDeviceType;
+import com.robam.common.ITerminalType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.RTopic;
 import com.robam.common.constant.ComnConstant;
 import com.robam.common.device.Plat;
 import com.robam.common.manager.AppActivityManager;
+import com.robam.common.manager.BlueToothManager;
+import com.robam.common.manager.LiveDataBus;
+import com.robam.common.module.IPublicPanApi;
+import com.robam.common.module.IPublicStoveApi;
 import com.robam.common.module.IPublicVentilatorApi;
 import com.robam.common.module.ModulePubliclHelper;
 import com.robam.common.mqtt.MqttManager;
@@ -49,10 +56,12 @@ import com.robam.ventilator.ui.dialog.DelayCloseDialog;
 import com.robam.ventilator.ui.receiver.VentilatorReceiver;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -90,6 +99,7 @@ public class HomeVentilator {
     private Runnable runA6CountDown = new Runnable() {
         @Override
         public void run() {
+
             //爆炒档倒计时
             int a6CountTime = 0;
             isStopA6CountDown = false;
@@ -101,7 +111,7 @@ public class HomeVentilator {
                 } catch (Exception e) {}
                 a6CountTime++;
                 LogUtils.e("a6CountTime = " + a6CountTime);
-                if (a6CountTime >= 1760) {
+                if (a6CountTime >= 1740) {
                     //切换到高档
                     VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_MID);
                     return;
@@ -168,7 +178,7 @@ public class HomeVentilator {
 
                 if (autoCountTime >= 1800) { //3分钟
                     //关闭烟机
-                    closeVentilator();
+                    closeVentilator(true);
                     return;
                 }
             }
@@ -273,6 +283,7 @@ public class HomeVentilator {
                     jsonObject.putOpt(VentilatorConstant.DEVICE_GUID, guid);
                     jsonObject.putOpt(VentilatorConstant.DEVICE_BIZ, biz);
                     jsonObject.putOpt(VentilatorConstant.DEVICE_STATUS, status);
+                    jsonObject.putOpt(VentilatorConstant.DEVICE_BLE, device.bleVer);
                     jsonArray.put(jsonObject);
                 } else if ((device instanceof Pan && IDeviceType.RZNG.equals(device.dc))
                         || (device instanceof Stove && IDeviceType.RRQZ.equals(device.dc))) { //其他存在的子设备
@@ -280,6 +291,7 @@ public class HomeVentilator {
                     jsonObject.putOpt(VentilatorConstant.DEVICE_GUID, device.guid);
                     jsonObject.putOpt(VentilatorConstant.DEVICE_BIZ, device.bid);
                     jsonObject.putOpt(VentilatorConstant.DEVICE_STATUS, device.status);
+                    jsonObject.putOpt(VentilatorConstant.DEVICE_BLE, device.bleVer);
                     jsonArray.put(jsonObject);
                 }
             }
@@ -301,6 +313,7 @@ public class HomeVentilator {
                 jsonObject.putOpt(VentilatorConstant.DEVICE_GUID, device.guid);
                 jsonObject.putOpt(VentilatorConstant.DEVICE_BIZ, device.bid);
                 jsonObject.putOpt(VentilatorConstant.DEVICE_STATUS, device.status);
+                jsonObject.putOpt(VentilatorConstant.DEVICE_BLE, device.bleVer);
                 jsonArray.put(jsonObject);
             }
         }
@@ -315,6 +328,7 @@ public class HomeVentilator {
                         jsonObject.putOpt(VentilatorConstant.DEVICE_GUID, subDevice.guid);
                         jsonObject.putOpt(VentilatorConstant.DEVICE_BIZ, subDevice.bid);
                         jsonObject.putOpt(VentilatorConstant.DEVICE_STATUS, subDevice.status);
+                        jsonObject.putOpt(VentilatorConstant.DEVICE_BLE, subDevice.bleVer);
                         jsonArray.put(jsonObject);
                     }
                 }
@@ -346,11 +360,11 @@ public class HomeVentilator {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        closeVentilator();
+                        closeVentilator(true);
                     }
                 }, 2000);
             } else
-                closeVentilator();
+                closeVentilator(true);
             return;
         }
 
@@ -380,7 +394,7 @@ public class HomeVentilator {
                 @Override
                 public void onClick(View v) {
                     if (v.getId() == R.id.tv_ok) { //立即关机
-                        closeVentilator();
+                        closeVentilator(true);
                     }
                     cancleDelayShutDown();
                 }
@@ -400,7 +414,7 @@ public class HomeVentilator {
                     if (currentSecond <= 0) {
                         cancleDelayShutDown();
                         //关机
-                        closeVentilator();
+                        closeVentilator(true);
                     }
                 }
             });
@@ -418,7 +432,7 @@ public class HomeVentilator {
                 @Override
                 public void onClick(View v) {
                     if (v.getId() == R.id.tv_ok) { //立即关机
-                        closeVentilator();
+                        closeVentilator(true);
                     }
                     cancleDelayShutDown();
                 }
@@ -440,9 +454,10 @@ public class HomeVentilator {
                     delayCloseDialog.tvCountdown.setText(DateUtil.secToTime(currentSecond) + "后关机");
                     delayCloseDialog.setContentText(DateUtil.secToTime(currentSecond));
                     if (currentSecond <= 0) {
-                        cancleDelayShutDown();
                         //关机
-                        closeVentilator();
+                        closeVentilator(true);
+
+                        cancleDelayShutDown();
                     }
                 }
             });
@@ -454,10 +469,10 @@ public class HomeVentilator {
         } else {
             if (!isLink) { //主动关机
                 //关机
-                closeVentilator();
+                closeVentilator(true);
 
-                if (null != delayCloseDialog)
-                    delayCloseDialog.tvCountdown.stop();
+//                if (null != delayCloseDialog)
+//                    delayCloseDialog.tvCountdown.stop();
                 cancleDelayShutDown();
             }
         }
@@ -482,7 +497,7 @@ public class HomeVentilator {
         cancleDelayShutDown();
     }
     //关闭烟机
-    public void closeVentilator() {
+    public void closeVentilator(boolean toHome) {
         //关机
         Plat.getPlatform().screenOff(); //熄灭ping
         Plat.getPlatform().closePowerLamp();//关灯
@@ -490,11 +505,13 @@ public class HomeVentilator {
         VentilatorAbstractControl.getInstance().shutDown();
 
         Activity activity = AppActivityManager.getInstance().getCurrentActivity();
-        if (null != activity) {
+        if (null != activity && toHome) {
             Intent intent = new Intent();
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             intent.setClass(activity, HomeActivity.class); //回首页
             activity.startActivity(intent);
+
+            LiveDataBus.get().with(VentilatorConstant.CLOSE_VENTILATOR, Boolean.class).setValue(true);
         }
         HomeDishWasher.getInstance().isNoLongerRemind = false;
 //        activity = AppActivityManager.getInstance().getCurrentActivity();
@@ -581,6 +598,8 @@ public class HomeVentilator {
                         Plat.getPlatform().closeWaterLamp();
                         //取消油网清洗
                         status = startup;
+                        //上报
+                        HomeVentilator.getInstance().eventReport(ITerminalType.PAD, AccountInfo.getInstance().getUserString(), VentilatorConstant.EVENT_LOCK, 1);
                         return true;
                     }
                 });
@@ -608,6 +627,7 @@ public class HomeVentilator {
             filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);//监听wifi是开关变化的状态
             filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);//监听wifi连接状态
             filter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);//监听wifi列表变化（开启一个热点或者关闭一个热点）
+            filter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
             filter.addAction(Intent.ACTION_TIME_CHANGED); //时间变化
             context.registerReceiver(ventilatorReceiver, filter);
         }
@@ -642,5 +662,133 @@ public class HomeVentilator {
             }
         }
         return subDevices;
+    }
+
+    //慢闪倒计时
+    private ThreadPoolExecutor flashCountDown = new ThreadPoolExecutor(1, 1, 0, TimeUnit.SECONDS, new SynchronousQueue<>(),
+            new ThreadPoolExecutor.DiscardPolicy());//无法重复提交
+
+    public void startFlash() {
+        flashCountDown.execute(new Runnable() {
+            @Override
+            public void run() {
+                int flashTime = 0;
+                while (flashTime < 180) {
+                    if (isStartUp())
+                        break;
+                    Plat.getPlatform().openPowerLamp();
+                    try {
+                        Thread.sleep(500);
+                    } catch (Exception e) {
+                    }
+                    if (isStartUp())
+                        break;
+                    Plat.getPlatform().closePowerLamp();
+                    try {
+                        Thread.sleep(500);
+                    } catch (Exception e) {
+                    }
+                    flashTime++;
+                }
+            }
+        });
+    }
+
+    //烟机事件上报
+    public void eventReport(int terminal, String user, int event, int value) {
+        try {
+            MqttMsg msg = new MqttMsg.Builder()
+                    .setMsgId(MsgKeys.SetFanEvent_Req)
+                    .setGuid(Plat.getPlatform().getDeviceOnlySign())
+                    .setTopic(new RTopic(RTopic.TOPIC_BROADCAST, DeviceUtils.getDeviceTypeId(Plat.getPlatform().getDeviceOnlySign()),
+                            DeviceUtils.getDeviceNumber(Plat.getPlatform().getDeviceOnlySign())))
+                    .build();
+            msg.putOpt(VentilatorConstant.TERMINAL_TYPE, terminal);
+            msg.putOpt(VentilatorConstant.EVENT_CODE, event);
+            msg.putOpt(VentilatorConstant.EVENT_VALUE, value);
+            msg.putOpt(VentilatorConstant.USER, user);
+            MqttManager.getInstance().publish(msg, VentilatorFactory.getProtocol());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    //解绑子设备
+    public void unbindSubDevice(String guid) {
+        if (!TextUtils.isEmpty(guid)) {
+            for (Device device : AccountInfo.getInstance().deviceList) {
+                if (IDeviceType.RRQZ.equals(device.dc) && guid.equals(device.guid)) {  //解绑子设备
+
+                    //断开灶
+                    IPublicStoveApi iPublicStoveApi = ModulePubliclHelper.getModulePublic(IPublicStoveApi.class, IPublicStoveApi.STOVE_PUBLIC);
+                    if (null != iPublicStoveApi)
+                        iPublicStoveApi.disConnectBle(device.guid);
+                    //删除
+                    deleteSubdevice(device);
+                    //上报
+                    notifyOnline(device.guid, device.bid, -1);
+                    //重新获取设备列表
+                    AccountInfo.getInstance().getUser().setValue(AccountInfo.getInstance().getUser().getValue());
+                    return;
+                } else if (IDeviceType.RZNG.equals(device.dc) && guid.equals(device.guid)) {
+                    //断开锅
+                    IPublicPanApi iPublicPanApi = ModulePubliclHelper.getModulePublic(IPublicPanApi.class, IPublicPanApi.PAN_PUBLIC);
+                    if (null != iPublicPanApi)
+                        iPublicPanApi.disConnectBle(device.guid);
+                    //删除
+                    deleteSubdevice(device);
+                    //上报
+                    notifyOnline(device.guid, device.bid, -1);
+                    //重新获取设备列表
+                    AccountInfo.getInstance().getUser().setValue(AccountInfo.getInstance().getUser().getValue());
+                    return;
+                }
+            }
+        }
+    }
+    //删除子设备
+    public void deleteSubdevice(Device device) {
+        Set<String> subDevices = MMKVUtils.getSubDevice();
+        if (null != subDevices) {
+            Iterator<String> iterator = subDevices.iterator();
+            while (iterator.hasNext()) {
+                String json = iterator.next();
+                Device subDevice = new Gson().fromJson(json, Device.class);
+                if ((device.guid != null && device.guid.equals(subDevice.guid))
+                        || (device.mac != null && device.mac.equals(subDevice.mac))) {
+                    iterator.remove();//已经有记录 删除
+
+                    deleteDevice(device);
+                    break;
+                }
+            }
+            //写回去
+            MMKVUtils.setSubDevice(subDevices);
+        }
+    }
+    //从列表中删除设备
+    public void deleteDevice(Device curDevice) {
+
+        for (Device device: AccountInfo.getInstance().deviceList) {
+
+            if (curDevice.guid.equals(device.guid)) {
+                AccountInfo.getInstance().deviceList.remove(device);
+
+                if (device instanceof Pan) {
+                    BlueToothManager.disConnect(((Pan) device).bleDevice); //断开蓝牙
+                } else if (device instanceof Stove) {
+                    BlueToothManager.disConnect(((Stove) device).bleDevice);
+                }
+                MqttManager.getInstance().unSubscribe(device.dc, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)); //取消订阅
+                break;
+            }
+        }
+    }
+    public void autoSetTime(Context context) {
+        //自动设置时间
+        try {
+            Settings.Global.putString(
+                    context.getContentResolver(),
+                    Settings.Global.AUTO_TIME,"1");
+        } catch (Exception e) {}
     }
 }

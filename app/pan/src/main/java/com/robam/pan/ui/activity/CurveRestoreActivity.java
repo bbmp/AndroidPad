@@ -203,9 +203,9 @@ public class CurveRestoreActivity extends PanBaseActivity {
                 LogUtils.e(e.getMessage());
                 params = null;
             }
-            if (null != panCurveDetail.stepList) {
+            if (null != panCurveDetail.curveStepList) {
                 ArrayList<CurveStep> curveSteps = new ArrayList<>();
-                curveSteps.addAll(panCurveDetail.stepList);
+                curveSteps.addAll(panCurveDetail.curveStepList);
                 //处理时长
                 int i = 0;
                 for (i=0; i<curveSteps.size() - 1; i++) {
@@ -261,7 +261,8 @@ public class CurveRestoreActivity extends PanBaseActivity {
                         return;
                     }
 
-                    PanAbstractControl.getInstance().queryAttribute(pan.guid); //查询锅状态
+//                    PanAbstractControl.getInstance().queryAttribute(pan.guid); //查询锅状态
+                    setInteraction();
                     mHandler.postDelayed(runnable, 1000L);
                     return;
                 }

@@ -19,8 +19,8 @@ import java.util.List;
 public class RvCurveAdapter extends BaseQuickAdapter<SteamCurveDetail, BaseViewHolder> {
     private RequestOptions maskOption = new RequestOptions()
             .centerCrop()
-            .placeholder(R.drawable.steam_recipe_img_bg) //预加载图片
-            .error(R.drawable.steam_recipe_img_bg) //加载失败图片
+            .placeholder(R.drawable.steam_recipe_img_bg) //预加载图片 steam_recipe_img_bg
+            .error(R.drawable.steam_recipe_img_bg) //加载失败图片 steam_recipe_img_bg
             .priority(Priority.HIGH) //优先级
             .skipMemoryCache(true)
             .format(DecodeFormat.PREFER_RGB_565)

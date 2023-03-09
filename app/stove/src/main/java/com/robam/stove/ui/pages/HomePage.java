@@ -187,12 +187,12 @@ public class HomePage extends StoveBasePage {
         CloudHelper.getCurvebookDetail(this, 0, panGuid, GetCurveDetailRes.class, new RetrofitCallback<GetCurveDetailRes>() {
             @Override
             public void onSuccess(GetCurveDetailRes getCurveDetailRes) {
-                if (null != getCurveDetailRes && null != getCurveDetailRes.payload) {
-                    StoveCurveDetail stoveCurveDetail = getCurveDetailRes.payload;
+                if (null != getCurveDetailRes && null != getCurveDetailRes.data) {
+                    StoveCurveDetail stoveCurveDetail = getCurveDetailRes.data;
 
                     List<CurveStep> curveSteps = new ArrayList<>();
-                    if (null != stoveCurveDetail.stepList) {
-                        curveSteps.addAll(stoveCurveDetail.stepList);
+                    if (null != stoveCurveDetail.curveStepList) {
+                        curveSteps.addAll(stoveCurveDetail.curveStepList);
                     }
                     //继续创建曲线
                     if (null != stoveCurveDetail.temperatureCurveParams) {
@@ -345,19 +345,19 @@ public class HomePage extends StoveBasePage {
             startActivity(intent);
         } else if (id == R.id.ll_left_stove) {
             if (HomeStove.getInstance().isStoveOffline()) {
-                ToastUtils.showShort(getContext(), R.string.stove_offline);
+                ToastUtils.showShort(getContext().getApplicationContext(), R.string.stove_offline);
                 return;
             }
             stopCook(IPublicStoveApi.STOVE_LEFT);
         } else if (id == R.id.ll_right_stove) {
             if (HomeStove.getInstance().isStoveOffline()) {
-                ToastUtils.showShort(getContext(), R.string.stove_offline);
+                ToastUtils.showShort(getContext().getApplicationContext(), R.string.stove_offline);
                 return;
             }
             stopCook(IPublicStoveApi.STOVE_RIGHT);
         } else if (id == R.id.iv_lock) {
             if (HomeStove.getInstance().isStoveOffline()) {
-                ToastUtils.showShort(getContext(), R.string.stove_offline);
+                ToastUtils.showShort(getContext().getApplicationContext(), R.string.stove_offline);
                 return;
             }
             //锁屏提示

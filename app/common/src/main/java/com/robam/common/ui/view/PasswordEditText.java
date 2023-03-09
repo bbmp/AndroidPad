@@ -58,13 +58,15 @@ public final class PasswordEditText extends RegexEditText
         mCurrentDrawable = mVisibleDrawable;
 
         // 密码不可见
-        addInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        addInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
         if (getInputRegex() == null) {
             // 密码输入规则
             setInputRegex(REGEX_NONNULL);
         }
 
         setDrawableVisible(false);
+        // 密码不可见
+        setTransformationMethod(PasswordTransformationMethod.getInstance());
         super.setOnTouchListener(this);
         super.setOnFocusChangeListener(this);
         super.addTextChangedListener(this);

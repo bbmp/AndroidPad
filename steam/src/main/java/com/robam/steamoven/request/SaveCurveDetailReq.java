@@ -1,6 +1,7 @@
 package com.robam.steamoven.request;
 
 import com.google.gson.Gson;
+import com.robam.steamoven.bean.CurveData;
 import com.robam.steamoven.bean.CurveStep;
 import com.robam.steamoven.bean.SteamCurveDetail;
 
@@ -16,7 +17,7 @@ public class SaveCurveDetailReq {
     //
     public String needTime;
     //步骤
-    public List<CurveStep> stepList;
+    public List<CurveData.CurveStepListDTO> curveStepList;
     //设备参数
     public String deviceParams;
     //是否选中,用于显示
@@ -34,7 +35,7 @@ public class SaveCurveDetailReq {
         this.curveCookbookId = payload.curveCookbookId;
         this.name = payload.name;
         this.needTime = payload.needTime;
-        this.stepList = payload.stepList;
+        this.curveStepList = payload.curveStepList;
         this.deviceParams = payload.deviceParams;
         this.userId = payload.userId;
         this.deviceGuid = payload.deviceGuid;

@@ -1,38 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
+    android:layout_gravity="center"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.37"
-        android:layout_height="@dimen/dp_1"
-        android:layout_width="match_parent"/>
-    <TextView
-        android:id="@+id/tv_select"
-        android:layout_width="@dimen/dp_250"
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="@dimen/sp_80"
-        android:textColor="@color/steam_white"
-        tools:text="蒸烤炸"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@id/guideline"
-        app:layout_constraintBottom_toBottomOf="@id/guideline"/>
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tv_select"
+            android:layout_width="@dimen/dp_250"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="@dimen/sp_80"
+            android:textColor="@color/steam_white"
+            tools:text="蒸烤炸"/>
 
-    <TextView
-        android:id="@+id/tv_select_remark"
-        android:layout_width="@dimen/dp_250"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="@dimen/sp_25"
-        android:textColor="@color/steam_white"
-        android:text="加湿"
-        android:visibility="visible"
-        app:layout_constraintTop_toBottomOf="@id/tv_select"
-        app:layout_constraintLeft_toLeftOf="parent"/>
+        <TextView
+            android:id="@+id/tv_select_remark"
+            android:layout_width="@dimen/dp_250"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="@dimen/sp_25"
+            android:textColor="@color/steam_white"
+            android:text="加湿"
+            android:visibility="visible"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+</FrameLayout>

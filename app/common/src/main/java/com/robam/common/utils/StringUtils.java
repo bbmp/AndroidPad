@@ -31,8 +31,29 @@ public abstract class StringUtils {
         return true;
     }
 
+
+
+
+
     public static boolean isNotBlank(String str) {
         return !StringUtils.isBlank(str);
+    }
+
+
+    /**
+     * 是否为null或者空字符串（"     "）
+     * @param str
+     * @return
+     */
+    public static boolean isEmpty(String str) {
+        if (str == null || str.trim().length() == 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isNotEmpty(String str) {
+        return !isEmpty(str);
     }
 
     /**

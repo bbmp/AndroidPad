@@ -29,6 +29,7 @@ import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.factory.DishWasherDialogFactory;
 import com.robam.dishwasher.util.DishWasherCommandHelper;
 import com.robam.dishwasher.util.DishWasherModelUtil;
+import com.robam.dishwasher.util.MqttSignal;
 import com.robam.dishwasher.util.TimeDisplayUtil;
 
 import java.util.Calendar;
@@ -56,6 +57,8 @@ public class AppointingActivity extends DishWasherBaseActivity {
     private DishWasherModeBean modeBean = null;
 
     private StringBuffer buffer = new StringBuffer();
+
+    private MqttSignal mqttSignal;
 
     public int directive_offset = 30000;
 
@@ -227,7 +230,8 @@ public class AppointingActivity extends DishWasherBaseActivity {
             tvAppointmentHint.setText(startTimePoint(HomeDishWasher.getInstance().orderWorkTime));
             tvModeAux.setText(DishWasherAuxEnum.match(modeBean.auxCode));
         }
-
+        mqttSignal = new MqttSignal();
+        mqttSignal.startLoop();
     }
 
     private void setCountDownTime(String appointTime) {
@@ -313,5 +317,23 @@ public class AppointingActivity extends DishWasherBaseActivity {
         if (pos >= 0)
             spannableString.setSpan(new RelativeSizeSpan(0.5f), pos, pos + 3, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return spannableString;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mqttSignal.pageShow();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mqttSignal.pageHide();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mqttSignal.clear();
     }
 }

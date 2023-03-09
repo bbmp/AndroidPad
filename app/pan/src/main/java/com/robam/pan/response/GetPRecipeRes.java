@@ -7,5 +7,5 @@ import java.util.List;
 
 //获取p档菜谱
 public class GetPRecipeRes extends BaseResponse {
-    public List<PPanRecipe> datas;
+    public List<PPanRecipe> data;
 }

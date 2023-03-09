@@ -184,6 +184,9 @@ public interface MsgKeys {
 
     short setStoveInteraction_Req = 175; //设置灶具智能互动
 
+    short setStoveInteraction_Res = 176; //设置灶具智能互动回复
+    short setStoveInteractionStatus_Req = 177; //设置灶具智能互动状态
+
     /**
      * 一体机状态查询
      */
@@ -343,6 +346,10 @@ public interface MsgKeys {
      * 设置智能互动模式（应答）
      */
     short SetSmartConfig_Rep = 147;
+    /**
+     * 烟机事件上报
+     */
+    short SetFanEvent_Req = 148;
 
     /**
      * 设置油烟机重置油杯定时工作（请求）
@@ -368,6 +375,8 @@ public interface MsgKeys {
     short PanReportStatistics_Req = 170;
     //外部命令烟机互动
     short setFanInteraction_Req = 171;
+    //外部命令烟机互动回复
+    short setFanInteraction_Res = 172;
     /**
      * 设置油烟机重置油杯定时工作（应答）
      */

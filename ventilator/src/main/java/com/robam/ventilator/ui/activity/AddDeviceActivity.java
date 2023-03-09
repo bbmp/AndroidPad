@@ -62,7 +62,7 @@ public class AddDeviceActivity extends VentilatorBaseActivity {
                     if (!IDeviceType.RRQZ.equals(device.dc) &&
                             !IDeviceType.RZNG.equals(device.dc)) {
                         if (null == AccountInfo.getInstance().getUser().getValue()) {
-                            startActivity(LoginPhoneActivity.class);
+                            startActivity(LoginQrcodeActivity.class);
                             return;
                         }
                     }

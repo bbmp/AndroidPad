@@ -56,6 +56,12 @@ public class HomeSteamOven {
      */
     public int workHours;
 
+
+    /**
+     * 手动加湿毫秒值
+     */
+    //public long addStreamTimeMil;
+
     /**
      * 是否离线
      * @return

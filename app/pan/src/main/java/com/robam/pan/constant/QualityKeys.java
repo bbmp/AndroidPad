@@ -20,4 +20,8 @@ public interface QualityKeys {
     int key9 = 9; //菜谱炉头
 
     int key10 = 10; //设置运行秒数
+
+    int key11 = 11; //电机旋转参数
+
+    int key12 = 12; //正在使用的炉头
 }

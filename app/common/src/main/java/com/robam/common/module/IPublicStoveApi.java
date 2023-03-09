@@ -4,6 +4,8 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.robam.common.mqtt.IProtocol;
 
+import java.util.Map;
+
 //灶具对外接口
 public interface IPublicStoveApi extends IPublicApi {
     String STOVE_HOME = "com.robam.stove.ui.activity.MainActivity";
@@ -18,4 +20,6 @@ public interface IPublicStoveApi extends IPublicApi {
     void queryAttribute(String targetGuid);
     //断开蓝牙
     void disConnectBle(String targetGuid);
+    //设置灶具互动参数
+    void setStoveInteraction(String targetGuid, int stoveId, Map params);
 }

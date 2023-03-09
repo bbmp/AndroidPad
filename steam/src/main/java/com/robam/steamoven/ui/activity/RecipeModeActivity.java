@@ -21,6 +21,7 @@ import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.ui.adapter.RvTimeAdapter;
+import com.robam.steamoven.utils.MqttSignal;
 import com.robam.steamoven.utils.SkipUtil;
 
 import java.util.ArrayList;
@@ -51,6 +52,8 @@ public class RecipeModeActivity extends SteamBaseActivity {
     private long recipeId;
 
     public static final int SEND_START_WORK = 111;
+
+    private MqttSignal mqttSignal;
 
 
     @Override
@@ -136,6 +139,8 @@ public class RecipeModeActivity extends SteamBaseActivity {
         rvTimeAdapter = new RvTimeAdapter(1);
         rvSelect.setAdapter(rvTimeAdapter);
         updateTimeTab(curMode);
+        mqttSignal = new MqttSignal();
+        mqttSignal.startLoop();
     }
 
     /**
@@ -193,7 +198,7 @@ public class RecipeModeActivity extends SteamBaseActivity {
     private  boolean toRecipePage(SteamOven curDevice, boolean needWater, boolean needCheckDescale){
         int promptResId = SteamCommandHelper.getRunPromptResId(curDevice, curDevice.mode,needWater,needCheckDescale);
         if(promptResId != -1){
-            showRemindPage(promptResId,needWater, curDevice.mode,needCheckDescale);
+            showRemindPage(promptResId,needWater, curDevice.mode,needCheckDescale,false);
             return true;
         }
         return false;
@@ -226,5 +231,23 @@ public class RecipeModeActivity extends SteamBaseActivity {
         segment.defTemp = Integer.parseInt(tvTime.getText().toString());
         segment.workRemaining = Integer.parseInt(tvTime.getText().toString()) * 60;
         return segment;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mqttSignal.pageHide();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mqttSignal.pageShow();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mqttSignal.clear();
     }
 }

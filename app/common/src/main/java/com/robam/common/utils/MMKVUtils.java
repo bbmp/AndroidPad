@@ -294,7 +294,7 @@ public class MMKVUtils {
     //获取智感恒吸状态
     public static boolean getSmartSet() {
         MMKV mmkv = MMKV.defaultMMKV();
-        return mmkv.decodeBool(SMART_SET, false);
+        return mmkv.decodeBool(SMART_SET, true);
     }
     //获取冷暖光设置
     public static int getColorLamp() {

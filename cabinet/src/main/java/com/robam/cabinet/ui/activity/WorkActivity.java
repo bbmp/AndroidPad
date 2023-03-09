@@ -18,6 +18,7 @@ import com.robam.cabinet.constant.DialogConstant;
 import com.robam.cabinet.device.HomeCabinet;
 import com.robam.cabinet.factory.CabinetDialogFactory;
 import com.robam.cabinet.util.CabinetCommonHelper;
+import com.robam.cabinet.util.MqttSignal;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.bean.MqttDirective;
@@ -50,6 +51,7 @@ public class WorkActivity extends CabinetBaseActivity {
     private WorkModeBean workModeBean;
     private int workModeCode;
     private static int FINISH_DIALOG_MIN_TIME = 3 * 60 * 1000;
+    private MqttSignal mqttSignal;
 
 
 
@@ -132,6 +134,8 @@ public class WorkActivity extends CabinetBaseActivity {
         tvMode.setText(CabinetEnum.match(workModeBean.code));
         //工作时长
         updateWorkTime(workModeBean.modelSurplusTime);
+        mqttSignal = new MqttSignal();
+        mqttSignal.startLoop();
         //setCountDownTime();
     }
 
@@ -291,9 +295,22 @@ public class WorkActivity extends CabinetBaseActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        mqttSignal.pageShow();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mqttSignal.pageHide();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
        this.dismissFinishDialog();
+       mqttSignal.clear();
     }
 
 

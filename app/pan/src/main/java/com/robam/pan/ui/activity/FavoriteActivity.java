@@ -74,9 +74,8 @@ public class FavoriteActivity extends PanBaseActivity {
 
     //获取我的最爱菜谱
     private void getPotPCookPage() {
-        UserInfo info = AccountInfo.getInstance().getUser().getValue();
         //传入设备guid
-        CloudHelper.getPotPCookPage(this, HomePan.getInstance().guid, (info != null) ? info.id:0, GetPRecipeRes.class, new RetrofitCallback<GetPRecipeRes>() {
+        CloudHelper.getPotPCookPage(this, HomePan.getInstance().guid, "", GetPRecipeRes.class, new RetrofitCallback<GetPRecipeRes>() {
             @Override
             public void onSuccess(GetPRecipeRes getPRecipeRes) {
                 setData(getPRecipeRes);
@@ -90,10 +89,10 @@ public class FavoriteActivity extends PanBaseActivity {
     }
     //设置p档菜谱列表
     private void setData(GetPRecipeRes getPRecipeRes) {
-        if (null != getPRecipeRes && null != getPRecipeRes.datas) {
+        if (null != getPRecipeRes && null != getPRecipeRes.data) {
             List<PanRecipe> panRecipes = new ArrayList<>();
             //转成正常菜谱显示
-            for (PPanRecipe pPanRecipe: getPRecipeRes.datas) {
+            for (PPanRecipe pPanRecipe: getPRecipeRes.data) {
                 if (pPanRecipe.isSent) //已下发
                     panRecipes.add(new PanRecipe(pPanRecipe.orderNo, pPanRecipe.cookbookId, pPanRecipe.cookbookImgCover, pPanRecipe.cookbookName, pPanRecipe.curveCookbookId));
             }

@@ -2,6 +2,7 @@ package com.robam.stove.device;
 
 
 import java.util.List;
+import java.util.Map;
 
 //灶具功能，灶属于子设备
 public interface StoveFunction {
@@ -25,7 +26,7 @@ public interface StoveFunction {
     //锅上报转发给灶
     void setStoveParams(int cmd, byte[] payload);
     //设置灶具智能互动
-    void setStoveInteraction(String targetGuid, int stoveId);
+    void setStoveInteraction(String targetGuid, int stoveId, Map params);
     //远程控制命令
     void remoteControl(String targetGuid, byte[] payload);
     //断开蓝牙

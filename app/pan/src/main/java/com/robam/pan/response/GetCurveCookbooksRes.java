@@ -6,5 +6,5 @@ import com.robam.pan.bean.PanCurveDetail;
 import java.util.List;
 
 public class GetCurveCookbooksRes extends BaseResponse {
-    public List<PanCurveDetail> payload;
+    public List<PanCurveDetail> data;
 }

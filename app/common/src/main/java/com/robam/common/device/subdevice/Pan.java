@@ -22,13 +22,27 @@ public class Pan extends Device {
     //系统状态
     public int sysytemStatus;
     //工作模式
-    public int mode;
+    public int mode = -1;
+    //本地记录状态
+    public int localStatus = -1;
+    //运行秒数
+    public int runTime = -1;
+    //设置秒数
+    public int setTime = -1;
+    //电机参数
+    public String electricParams;
+    //绑定炉头id
+    public int bindStoveId = -1;
+    //运行炉头id
+    public int runStoveId = -1;
     //锅温度
     public float panTemp;
     //锅电量
-    public int battery;
+    public int battery = -1;
     //搅拌模式
-    public int fryMode;
+    public int fryMode = -1;
+    //锅盖状态
+    public int lidStatus = -1;
     //蓝牙设备
     public BleDevice bleDevice;
     //蓝牙特征符
@@ -36,9 +50,9 @@ public class Pan extends Device {
     //蓝牙解析
     public BleDecoder bleDecoder;
     //p档序号
-    public int orderNo;
+    public int orderNo = -1;
     //菜谱id
-    public int recipeId;
+    public int recipeId = -1;
     //烟锅联动开关
     public int fanPan;
 
@@ -62,7 +76,7 @@ public class Pan extends Device {
 
     @Override
     public boolean onMsgReceived(MqttMsg msg) {
-        if (null != msg && msg.getID() != MsgKeys.GetPotTemp_Req) { //非远程查询
+        if (null != msg && msg.getID() != MsgKeys.GetPotTemp_Req && msg.getID() != BleDecoder.CMD_COOKER_SET_INT) { //非远程查询
             byte[] mqtt_data = msg.getBytes();
             String send_guid = msg.getGuid();
             int cmd_id = ByteUtils.toInt(mqtt_data[BleDecoder.GUID_LEN]);
@@ -96,16 +110,42 @@ public class Pan extends Device {
             status = Device.ONLINE;
             panTemp = (float) msg.opt(PanConstant.temp);
             sysytemStatus = msg.optInt(PanConstant.systemStatus);
+            fryMode = -1;
+            lidStatus = -1;
+            orderNo = -1;
+            recipeId = -1;
+            battery = -1;
+            mode = -1;
+            localStatus = -1;
+            runTime = -1;
+            bindStoveId = -1;
+            setTime = -1;
+            electricParams = null;
+            runStoveId = -1;
             if (msg.has(PanConstant.fryMode))
                 fryMode = msg.optInt(PanConstant.fryMode);
-            if (msg.has(PanConstant.mode))
-                mode = msg.optInt(PanConstant.mode);
+            if (msg.has(PanConstant.lidStatus))
+                lidStatus = msg.optInt(PanConstant.lidStatus);
             if (msg.has(PanConstant.pno))
                 orderNo = msg.optInt(PanConstant.pno);
             if (msg.has(PanConstant.recipeId))
                 recipeId = msg.optInt(PanConstant.recipeId);
             if (msg.has(PanConstant.battery))
                 battery = msg.optInt(PanConstant.battery);
+            if (msg.has(PanConstant.mode))
+                mode = msg.optInt(PanConstant.mode);
+            if (msg.has(PanConstant.localStatus))
+                localStatus = msg.optInt(PanConstant.localStatus);
+            if (msg.has(PanConstant.runTime))
+                runTime = msg.optInt(PanConstant.runTime);
+            if (msg.has(PanConstant.bindStoveId))
+                bindStoveId = msg.optInt(PanConstant.bindStoveId);
+            if (msg.has(PanConstant.setTime))
+                setTime = msg.optInt(PanConstant.setTime);
+            if (msg.has(PanConstant.electricParams))
+                electricParams = msg.optString(PanConstant.electricParams);
+            if (msg.has(PanConstant.runStoveId))
+                runStoveId = msg.optInt(PanConstant.runStoveId);
             return true;
         } else if (null != msg && msg.has(PanConstant.panParams)) { //设置锅参数返回
             int rc = msg.optInt(PanConstant.panParams);

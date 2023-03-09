@@ -20,6 +20,7 @@ import com.google.gson.reflect.TypeToken;
 import com.robam.common.IDeviceType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
+import com.robam.common.bean.UserInfo;
 import com.robam.common.constant.StoveConstant;
 import com.robam.common.device.subdevice.Stove;
 import com.robam.common.http.RetrofitCallback;
@@ -171,7 +172,7 @@ public class RecipeSelectedActivity extends PanBaseActivity {
             //检测锅和灶是否连接
             //选择炉头
             if (null == panCurveDetail || null == panCurveDetail.temperatureCurveParams || null == panCurveDetail.curveStageParams) {
-                ToastUtils.showShort(this, R.string.pan_no_curve_data);
+                ToastUtils.showShort(getApplicationContext(), R.string.pan_no_curve_data);
                 return;
             }
             selectStove();
@@ -205,6 +206,7 @@ public class RecipeSelectedActivity extends PanBaseActivity {
             selectStoveDialog.setListeners(new IDialog.DialogOnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    selectStoveDialog.dismiss();
                     int id = v.getId();
                     if (id == R.id.view_left) {
 
@@ -341,11 +343,12 @@ public class RecipeSelectedActivity extends PanBaseActivity {
 
     //获取菜谱详情
     private void getRecipeDetail() {
-        CloudHelper.getRecipeDetail(this, recipeId, "1", "1", GetRecipeDetailRes.class, new RetrofitCallback<GetRecipeDetailRes>() {
+        UserInfo userInfo = AccountInfo.getInstance().getUser().getValue();
+        CloudHelper.getRecipeDetail(this, (userInfo != null) ? userInfo.id:0, recipeId, GetRecipeDetailRes.class, new RetrofitCallback<GetRecipeDetailRes>() {
             @Override
             public void onSuccess(GetRecipeDetailRes getRecipeDetailRes) {
-                if (null != getRecipeDetailRes && null != getRecipeDetailRes.cookbook) {
-                    curveId = getRecipeDetailRes.cookbook.curveCookbookId; //曲线id
+                if (null != getRecipeDetailRes && null != getRecipeDetailRes.data && null != getRecipeDetailRes.data.curveCookbookDto) {
+                    curveId = getRecipeDetailRes.data.curveCookbookDto.curveCookbookId; //曲线id
                     if (curveId != 0)
                         getCurveDetail(); //获取曲线详情
                 }
@@ -363,14 +366,14 @@ public class RecipeSelectedActivity extends PanBaseActivity {
         CloudHelper.getCurvebookDetail(this, curveId, "", GetCurveDetailRes.class, new RetrofitCallback<GetCurveDetailRes>() {
             @Override
             public void onSuccess(GetCurveDetailRes getCurveDetailRes) {
-                if (null != getCurveDetailRes && null != getCurveDetailRes.payload) {
-                    panCurveDetail = getCurveDetailRes.payload;
+                if (null != getCurveDetailRes && null != getCurveDetailRes.data) {
+                    panCurveDetail = getCurveDetailRes.data;
                     //这里用了曲线名
                     tvRecipeName.setText(panCurveDetail.name);
 
                     List<CurveStep> curveSteps = new ArrayList<>();
-                    if (null != panCurveDetail.stepList) {
-                        curveSteps.addAll(panCurveDetail.stepList);
+                    if (null != panCurveDetail.curveStepList) {
+                        curveSteps.addAll(panCurveDetail.curveStepList);
                         tvStartCook.setVisibility(View.VISIBLE);
                     }
                     rvStep3Adapter.setList(curveSteps);
@@ -424,7 +427,7 @@ public class RecipeSelectedActivity extends PanBaseActivity {
             dm.initLineDataSet("烹饪曲线", getResources().getColor(R.color.pan_chart), entryList, true, false);
             cookChart.notifyDataSetChanged();
             //绘制步骤标记
-            List<CurveStep> stepList = panCurveDetail.stepList;
+            List<CurveStep> stepList = panCurveDetail.curveStepList;
             if (null != stepList) {
                 MarkViewStep mv = new MarkViewStep(this, cookChart.getXAxis().getValueFormatter());
                 mv.setChartView(cookChart);

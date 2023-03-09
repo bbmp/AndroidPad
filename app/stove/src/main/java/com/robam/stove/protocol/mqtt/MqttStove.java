@@ -1,5 +1,7 @@
 package com.robam.stove.protocol.mqtt;
 
+import android.text.TextUtils;
+
 import com.robam.common.ITerminalType;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
@@ -24,6 +26,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 
 //灶具mqtt实现
 public class MqttStove extends MqttPublic {
@@ -47,7 +50,9 @@ public class MqttStove extends MqttPublic {
             case MsgKeys.SetStoveStatus_Req: //设置灶具状态
             case MsgKeys.SetStoveLevel_Req: //设置挡位
             case MsgKeys.SetStoveShutdown_Req: //定时设置
-            case MsgKeys.setStoveInteraction_Req: {  //设置灶具智能互动
+            case MsgKeys.setStoveMode_Req: //设置灶具定温烹饪
+            case MsgKeys.setStoveInteraction_Req: //设置灶具智能互动
+            case MsgKeys.setStoveInteractionStatus_Req:{  //设置灶具智能互动状态
                 String curGuid = msg.getrTopic().getDeviceType() + msg.getrTopic().getSignNum(); //当前设备guid
                 StoveAbstractControl.getInstance().remoteControl(curGuid, payload);
             }
@@ -56,6 +61,7 @@ public class MqttStove extends MqttPublic {
     }
     @Override
     protected void onDecodeMsg(MqttMsg msg, byte[] payload, int offset) throws Exception {
+        //处理本机消息
         switch (msg.getID()) {
             case BleDecoder.EVENT_IH_POWER_CHANGED_INT: { //灶具挡位变化
                 int maxLevel = MsgUtils.getByte(payload[offset++]); //最大挡位值
@@ -110,11 +116,13 @@ public class MqttStove extends MqttPublic {
                     int length = MsgUtils.getByte(payload[offset++]);
                     switch (key) {
                         case 'A': //左灶菜谱
-                            MsgUtils.getString(payload, offset, 3);
+                            String leftRecipe = MsgUtils.getString(payload, offset, 3);
+                            msg.putOpt(StoveConstant.leftRecipe, leftRecipe);
                             offset += 3;
                             break;
                         case 'B': //右灶菜谱
-                            MsgUtils.getString(payload, offset, 3);
+                            String rightRecipe = MsgUtils.getString(payload, offset, 3);
+                            msg.putOpt(StoveConstant.rightRecipe, rightRecipe);
                             offset += 3;
                             break;
                         case 'E': {//左灶温度
@@ -159,6 +167,10 @@ public class MqttStove extends MqttPublic {
                 }
             }
                 break;
+            case MsgKeys.setStoveInteraction_Res: //设置灶具互动参数回复
+                int rc = MsgUtils.getByte(payload[offset++]);
+                msg.putOpt(StoveConstant.interaction, rc);
+                break;
 
         }
         decodeMsg(msg, payload, offset);
@@ -181,7 +193,81 @@ public class MqttStove extends MqttPublic {
                         buf.put((byte) stove.rightLevel);// 功率等级
                         buf.putShort((short) stove.rightTimeHours); //定时剩余秒数
                         buf.put((byte) stove.rightAlarm);// 报警状态
-                        buf.put((byte) 0x00); //参数个数
+
+                        JSONArray jsonArray = new JSONArray();
+                        try {
+                            if (!TextUtils.isEmpty(stove.leftRecipe)) {
+                                JSONObject jsonObject = new JSONObject();
+                                jsonObject.put(StoveConstant.key, 'A');
+                                jsonObject.put(StoveConstant.length, 3);
+                                jsonObject.put(StoveConstant.value, stove.leftRecipe);
+                                jsonArray.put(jsonObject);
+                            }
+                            if (!TextUtils.isEmpty(stove.rightRecipe)) {
+                                JSONObject jsonObject = new JSONObject();
+                                jsonObject.put(StoveConstant.key, 'B');
+                                jsonObject.put(StoveConstant.length, 3);
+                                jsonObject.put(StoveConstant.value, stove.rightRecipe);
+                                jsonArray.put(jsonObject);
+                            }
+                            if (stove.leftWorkTemp != -1) {
+                                JSONObject jsonObject = new JSONObject();
+                                jsonObject.put(StoveConstant.key, 'E');
+                                jsonObject.put(StoveConstant.length, 4);
+                                jsonObject.put(StoveConstant.value, stove.leftWorkTemp);
+                                jsonArray.put(jsonObject);
+                            }
+                            if (stove.rightWorkTemp != -1) {
+                                JSONObject jsonObject = new JSONObject();
+                                jsonObject.put(StoveConstant.key, 'F');
+                                jsonObject.put(StoveConstant.length, 4);
+                                jsonObject.put(StoveConstant.value, stove.rightWorkTemp);
+                                jsonArray.put(jsonObject);
+                            }
+                            if (stove.leftSetTime != -1) {
+                                JSONObject jsonObject = new JSONObject();
+                                jsonObject.put(StoveConstant.key, 'I');
+                                jsonObject.put(StoveConstant.length, 2);
+                                jsonObject.put(StoveConstant.value, stove.leftSetTime);
+                                jsonArray.put(jsonObject);
+                            }
+                            if (stove.rightSetTime != -1) {
+                                JSONObject jsonObject = new JSONObject();
+                                jsonObject.put(StoveConstant.key, 'J');
+                                jsonObject.put(StoveConstant.length, 2);
+                                jsonObject.put(StoveConstant.value, stove.rightSetTime);
+                                jsonArray.put(jsonObject);
+                            }
+                            if (stove.leftWorkMode != -1) {
+                                JSONObject jsonObject = new JSONObject();
+                                jsonObject.put(StoveConstant.key, 'K');
+                                jsonObject.put(StoveConstant.length, 1);
+                                jsonObject.put(StoveConstant.value, stove.leftWorkMode);
+                                jsonArray.put(jsonObject);
+                            }
+                            if (stove.rightWorkMode != -1) {
+                                JSONObject jsonObject = new JSONObject();
+                                jsonObject.put(StoveConstant.key, 'L');
+                                jsonObject.put(StoveConstant.length, 1);
+                                jsonObject.put(StoveConstant.value, stove.rightWorkMode);
+                                jsonArray.put(jsonObject);
+                            }
+                        } catch (Exception e) {}
+                        buf.put((byte) jsonArray.length()); //参数个数
+                        for (int i = 0; i<jsonArray.length(); i++) {
+                            JSONObject jsonObject = jsonArray.optJSONObject(i);
+                            buf.put((byte) jsonObject.optInt(StoveConstant.key));
+                            int len = jsonObject.optInt(StoveConstant.length);
+                            buf.put((byte) len);
+                            if (len == 1)
+                                buf.put((byte) jsonObject.optInt(StoveConstant.value));
+                            else if (len == 2)
+                                buf.putShort((short) jsonObject.optInt(StoveConstant.value));
+                            else if (len == 4) {
+                                buf.putInt(jsonObject.optInt(StoveConstant.value));
+                            } else
+                                buf.put(jsonObject.optString(StoveConstant.value).getBytes(StandardCharsets.UTF_8));
+                        }
                         break;
                     }
                 }
@@ -269,10 +355,15 @@ public class MqttStove extends MqttPublic {
                 //控制端类型
                 buf.put((byte) ITerminalType.PAD);
                 buf.put((byte) msg.optInt(StoveConstant.stoveId)); //炉头id
-                buf.put((byte) 0x01); //参数个数
-                buf.put((byte) 0x01); //key 开启曲线创作
-                buf.put((byte) 1);// len
-                buf.put((byte) 0x01);//
+                JSONArray jsonArray = msg.optJSONArray(StoveConstant.interaction);
+                buf.put((byte) jsonArray.length());//参数个数
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.optJSONObject(i);
+                    buf.put((byte) jsonObject.optInt(StoveConstant.key)); //key
+                    byte[] value = (byte[]) jsonObject.opt(StoveConstant.value);
+                    buf.put((byte) value.length);
+                    buf.put(value);
+                }
                 break;
         }
         encodeMsg(buf, msg);

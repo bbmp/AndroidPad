@@ -57,6 +57,7 @@ public class WorkCompleteActivity extends SteamBaseActivity {
 
     @Override
     protected void initView() {
+        showCenter();
         mCancelTv = findViewById(R.id.tv_cancel);
         mOkTv = findViewById(R.id.tv_ok);
         mContent = findViewById(R.id.tv_work_content);
@@ -141,6 +142,9 @@ public class WorkCompleteActivity extends SteamBaseActivity {
         Intent intent = new Intent(this,CurveSaveActivity.class);
         intent.putExtra(Constant.CURVE_ID,curveId);
         intent.putExtra(Constant.CARVE_NAME,curveDefaultName+"");
+        SteamOven steamOven = getSteamOven();
+        String guid = steamOven == null ? "":steamOven.guid;
+        intent.putExtra(Constant.DEVICE_GUID,guid);
         startActivity(intent);
         finish();
     }
@@ -188,9 +192,6 @@ public class WorkCompleteActivity extends SteamBaseActivity {
         if(timeDialog != null && timeDialog.isShow()){
             timeDialog.dismiss();
         }
-        if(timeDialog != null && timeDialog.isShow()){
-            timeDialog.dismiss();
-        }
     }
 
 
@@ -203,9 +204,8 @@ public class WorkCompleteActivity extends SteamBaseActivity {
             return;
         }
         timeDialog = new SteamOverTimeDialog(this);
-        timeDialog.setContentText(R.string.steam_work_complete_add_time);
         timeDialog.setCancelable(false);
-        timeDialog.setOKText(R.string.steam_sure);
+        timeDialog.setOKText(R.string.steam_work_continue);
         timeDialog.setData();
         timeDialog.setListeners(v -> {
             if(v.getId() == R.id.tv_ok){//确认加时

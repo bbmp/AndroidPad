@@ -199,8 +199,8 @@ public class CurveActivity extends PanBaseActivity {
         panCurveDetails.clear();
         panCurveDetails.add(0, new PanCurveDetail("创作烹饪曲线"));
         //需过滤掉其他曲线,锅和灶一起
-        if (null != getCurveCookbooksRes && null != getCurveCookbooksRes.payload) {
-            for (PanCurveDetail panCurveDetail : getCurveCookbooksRes.payload) {
+        if (null != getCurveCookbooksRes && null != getCurveCookbooksRes.data) {
+            for (PanCurveDetail panCurveDetail : getCurveCookbooksRes.data) {
                 if (null != panCurveDetail.deviceParams && (/*panCurveDetail.deviceParams.contains(IDeviceType.RRQZ) ||*/
                         panCurveDetail.deviceParams.contains(IDeviceType.RZNG)))
                     panCurveDetails.add(panCurveDetail);
@@ -234,6 +234,7 @@ public class CurveActivity extends PanBaseActivity {
             selectStoveDialog.setListeners(new IDialog.DialogOnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    selectStoveDialog.dismiss();
                     int id = v.getId();
                     if (id == R.id.view_left) {
                         openFire(IPublicStoveApi.STOVE_LEFT); //左灶

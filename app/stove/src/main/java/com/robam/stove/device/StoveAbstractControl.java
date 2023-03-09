@@ -2,6 +2,7 @@ package com.robam.stove.device;
 
 
 import java.util.List;
+import java.util.Map;
 
 public class StoveAbstractControl implements StoveFunction{
     private StoveFunction function;
@@ -66,8 +67,8 @@ public class StoveAbstractControl implements StoveFunction{
     }
 
     @Override
-    public void setStoveInteraction(String targetGuid, int stoveId) {
-        function.setStoveInteraction(targetGuid, stoveId);
+    public void setStoveInteraction(String targetGuid, int stoveId, Map params) {
+        function.setStoveInteraction(targetGuid, stoveId, params);
     }
 
     @Override

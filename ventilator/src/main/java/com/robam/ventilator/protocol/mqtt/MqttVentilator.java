@@ -54,16 +54,17 @@ public class MqttVentilator extends MqttPublic {
                     if (msg.getGuid().equals(device.guid) && device instanceof Pan && IDeviceType.RZNG.equals(device.dc)) {
                         Pan pan = (Pan) device;
                         int fanPan = (pan.fanPan & 0x02) >> 1;//烟锅联动开关
-                        if (fanPan == 1 && HomeVentilator.getInstance().isLock()) //烟锅联动未开 或锁屏状态
-                            return;
-                    }
-                }
-                if (HomeVentilator.getInstance().gear == (byte) 0xA0) { //不工作
-                    if (HomeVentilator.getInstance().startup == (byte) 0x00) { //先开机
+                        if (fanPan == 1 && !HomeVentilator.getInstance().isLock()) {//烟锅联动开 非锁屏状态
+                            if (HomeVentilator.getInstance().gear == (byte) 0xA0) { //不工作
+                                if (HomeVentilator.getInstance().startup == (byte) 0x00) { //先开机
 
-                        HomeVentilator.getInstance().openVentilatorGear(VentilatorConstant.FAN_GEAR_FRY);
-                    } else
-                        VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_FRY);
+                                    HomeVentilator.getInstance().openVentilatorGear(VentilatorConstant.FAN_GEAR_FRY);
+                                } else
+                                    VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_FRY);
+                            }
+                            break;
+                        }
+                    }
                 }
                 break;
             case BleDecoder.EVENT_POT_TEMPERATURE_OV: //防干烧预警 锅温280以上且烟锅联动开启
@@ -71,31 +72,32 @@ public class MqttVentilator extends MqttPublic {
                     if (msg.getGuid().equals(device.guid) && device instanceof Pan && IDeviceType.RZNG.equals(device.dc)) {
                         Pan pan = (Pan) device;
                         int fanPan = (pan.fanPan & 0x02) >> 1;//烟锅联动开关
-                        if (fanPan == 1 && HomeVentilator.getInstance().isLock()) //烟锅联动未开 或锁屏状态
-                            return;
+                        if (fanPan == 1 && !HomeVentilator.getInstance().isLock()) {//烟锅联动开 非锁屏状态
+                            //关闭灶具
+                            StoveAbstractControl.getInstance().setAttribute(HomeStove.getInstance().guid, IPublicStoveApi.STOVE_LEFT, 0x00, StoveConstant.STOVE_CLOSE);
+                            StoveAbstractControl.getInstance().setAttribute(HomeStove.getInstance().guid, IPublicStoveApi.STOVE_RIGHT, 0x00, StoveConstant.STOVE_CLOSE);
+                            break;
+                        }
                     }
                 }
-                //关闭灶具
-                StoveAbstractControl.getInstance().setAttribute(HomeStove.getInstance().guid, IPublicStoveApi.STOVE_LEFT, 0x00, StoveConstant.STOVE_CLOSE);
-                StoveAbstractControl.getInstance().setAttribute(HomeStove.getInstance().guid, IPublicStoveApi.STOVE_RIGHT, 0x00, StoveConstant.STOVE_CLOSE);
                 break;
             case BleDecoder.EVENT_POT_LINK_2_RH://烟锅联动锅温50以上，烟机未开且烟锅联动开启
                 for (Device device: AccountInfo.getInstance().deviceList) {
                     if (msg.getGuid().equals(device.guid) && device instanceof Pan && IDeviceType.RZNG.equals(device.dc)) {
                         Pan pan = (Pan) device;
                         int fanPan = (pan.fanPan & 0x02) >> 1;//烟锅联动开关
-                        if (fanPan == 1 && HomeVentilator.getInstance().isLock()) //烟锅联动未开 或锁屏状态
-                            return;
+                        if (fanPan == 1 && !HomeVentilator.getInstance().isLock()) {//烟锅联动开 非锁屏状态
+                            //烟机开2挡
+                            if (HomeVentilator.getInstance().gear == (byte) 0xA0) { //不工作
+                                if (HomeVentilator.getInstance().startup == (byte) 0x00) { //先开机
+
+                                    HomeVentilator.getInstance().openVentilatorGear(VentilatorConstant.FAN_GEAR_MID);
+                                } else
+                                    VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_MID);
+                            }
+                            break;
+                        }
                     }
-                }
-
-                //烟机开2挡
-                if (HomeVentilator.getInstance().gear == (byte) 0xA0) { //不工作
-                    if (HomeVentilator.getInstance().startup == (byte) 0x00) { //先开机
-
-                        HomeVentilator.getInstance().openVentilatorGear(VentilatorConstant.FAN_GEAR_MID);
-                    } else
-                        VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_MID);
                 }
                 break;
             case BleDecoder.CMD_RH_SET_INT: //内部远程烟机交互
@@ -170,9 +172,9 @@ public class MqttVentilator extends MqttPublic {
                                 //延时关机倒计时
                                 if (HomeVentilator.getInstance().isStartUp() && !HomeVentilator.getInstance().isLock()) {//非锁屏
                                     for (Device device: AccountInfo.getInstance().deviceList) {
-                                        if (msg.getGuid().equals(device.guid) && device instanceof Stove && IDeviceType.RRQZ.equals(device.dc)) {
+                                        if (device instanceof Stove && IDeviceType.RRQZ.equals(device.dc)) {
                                             Stove stove = (Stove) device;
-                                            if (stove.leftLevel == 0 && stove.rightLevel == 0) //关火状态延时关机
+                                            if (stove.leftLevel == 0 && stove.rightLevel == 0 && MMKVUtils.getFanStove()) //关火状态延时关机
                                                 HomeVentilator.getInstance().timeShutdown(min);
                                             break;
                                         }
@@ -257,7 +259,7 @@ public class MqttVentilator extends MqttPublic {
                         String biz = jsonObject.optString(VentilatorConstant.DEVICE_BIZ);
                         buf.put((byte) biz.length());
                         buf.put(biz.getBytes());
-                        buf.put((byte) 0);
+                        buf.put((byte) jsonObject.optInt(VentilatorConstant.DEVICE_BLE));
                         buf.put((byte) 0);
                         buf.put((byte) jsonObject.optInt(VentilatorConstant.DEVICE_STATUS));
                     }
@@ -323,6 +325,7 @@ public class MqttVentilator extends MqttPublic {
                 buf.putShort((short) HomeVentilator.getInstance().remainTime);
 
                 break;
+            case MsgKeys.RemoveChildDevice_Rep: //删除子设备
             case MsgKeys.SetFanStatus_Rep: //设置烟机应答
                 buf.put((byte) 0); //rc
                 break;
@@ -341,6 +344,13 @@ public class MqttVentilator extends MqttPublic {
             case MsgKeys.SetFanTimeWork_Rep: //设置定时工作响应
                 buf.put((byte) 0);
                 break;
+            case MsgKeys.SetFanEvent_Req: //烟机事件上报
+                buf.put((byte) msg.optInt(VentilatorConstant.TERMINAL_TYPE));    //控制端类型
+                buf.put((byte) msg.optInt(VentilatorConstant.EVENT_CODE)); //事件编吗
+                buf.put((byte) msg.optInt(VentilatorConstant.EVENT_VALUE)); //事件值
+                buf.put(msg.optString(VentilatorConstant.USER).getBytes()); //用户
+                buf.put((byte) 0); //参数个数
+                break;
             case MsgKeys.SetFanStatusCompose_Req: //设置烟机状态组合回复
                 if (null != msg.optJSONArray(VentilatorConstant.KEYS)) {
                     JSONArray jsonArray = msg.optJSONArray(VentilatorConstant.KEYS);
@@ -350,6 +360,8 @@ public class MqttVentilator extends MqttPublic {
                         buf.put((byte) 0x00);
                     }
                 }
+                break;
+            case MsgKeys.setFanInteraction_Res: //联动响应
                 break;
         }
     }
@@ -388,6 +400,18 @@ public class MqttVentilator extends MqttPublic {
                     }
                 }
                 break;
+                case MsgKeys.RemoveChildDevice_Req: {//删除子设备
+                    String guid = ByteUtils.toString(payload, offset, 17);
+                    HomeVentilator.getInstance().unbindSubDevice(guid);
+                    MqttMsg newMsg = new MqttMsg.Builder()
+                            .setMsgId(MsgKeys.RemoveChildDevice_Rep)
+                            .setGuid(Plat.getPlatform().getDeviceOnlySign())
+                            .setDt(Plat.getPlatform().getDt())
+                            .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(msg.getGuid()), DeviceUtils.getDeviceNumber(msg.getGuid())))
+                            .build();
+                    MqttManager.getInstance().publish(newMsg, VentilatorFactory.getProtocol());
+                }
+                    break;
                 case MsgKeys.GetSmartConfig_Req: { //读取智能互动模式
                     //控制端类型
                     short terminalType = ByteUtils.toShort(payload[offset++]);
@@ -423,7 +447,7 @@ public class MqttVentilator extends MqttPublic {
                         case 0: //关机
                             HomeVentilator.getInstance().cancleDelayShutDown();
                             if (HomeVentilator.getInstance().isStartUp() && !HomeVentilator.getInstance().isLock()) //非锁屏
-                                HomeVentilator.getInstance().closeVentilator();
+                                HomeVentilator.getInstance().closeVentilator(true);
                             break;
                         case 1: //开机
                             if (!HomeVentilator.getInstance().isStartUp())
@@ -673,7 +697,7 @@ public class MqttVentilator extends MqttPublic {
                     MqttManager.getInstance().publish(newMsg, VentilatorFactory.getProtocol());
                 }
                     break;
-                case MsgKeys.setFanInteraction_Req: {//外部命令请求烟机互动 烟蒸烤联动
+                case MsgKeys.setFanInteraction_Req: {//云端请求外部命令请求烟机互动 烟蒸烤联动
                     //属性个数
                     short attributeNum = ByteUtils.toShort(payload[offset++]);
                     while (attributeNum > 0) {
@@ -683,34 +707,44 @@ public class MqttVentilator extends MqttPublic {
                         switch (key) {
                             case 1:
                                 int gear = MsgUtils.getByte(payload[offset++]); //请求联动挡位
-                                for (Device device: AccountInfo.getInstance().deviceList) {
-                                    if (msg.getGuid().equals(device.guid) && device instanceof SteamOven) {
-                                        if (MMKVUtils.getFanSteam() && MMKVUtils.getFanSteamGear() && HomeVentilator.getInstance().isLock()) {//烟蒸烤联动打开和自动匹配风量打开 非锁屏
-                                            if (HomeVentilator.getInstance().startup == (byte) 0x00) { //先开机
+                                if (!HomeVentilator.getInstance().isLock()) {//烟蒸烤联动打开和自动匹配风量打开 非锁屏
+                                    if (HomeVentilator.getInstance().startup == (byte) 0x00) { //先开机
 
-                                                HomeVentilator.getInstance().openVentilatorGear(gear);
-                                            } else {
-                                                //请求联动，只升不降
-                                                int curGear = VentilatorConstant.FAN_GEAR_CLOSE; //当前挡位
-                                                if (HomeVentilator.getInstance().gear == (byte) 0xA1)
-                                                    curGear = VentilatorConstant.FAN_GEAR_WEAK;
-                                                else if (HomeVentilator.getInstance().gear == (byte) 0xA3)
-                                                    curGear = VentilatorConstant.FAN_GEAR_MID;
-                                                else if (HomeVentilator.getInstance().gear == (byte) 0xA6)
-                                                    curGear = VentilatorConstant.FAN_GEAR_FRY;
-                                                if (gear > curGear)
-                                                    VentilatorAbstractControl.getInstance().setFanGear(gear);
+                                        HomeVentilator.getInstance().openVentilatorGear(gear);
+                                    } else {
+                                        //请求联动，只升不降
+                                        int curGear = VentilatorConstant.FAN_GEAR_CLOSE; //当前挡位
+                                        if (HomeVentilator.getInstance().gear == (byte) 0xA1)
+                                            curGear = VentilatorConstant.FAN_GEAR_WEAK;
+                                        else if (HomeVentilator.getInstance().gear == (byte) 0xA3)
+                                            curGear = VentilatorConstant.FAN_GEAR_MID;
+                                        else if (HomeVentilator.getInstance().gear == (byte) 0xA6)
+                                            curGear = VentilatorConstant.FAN_GEAR_FRY;
+                                        if (gear > curGear)
+                                            VentilatorAbstractControl.getInstance().setFanGear(gear);
+                                    }
+                                }
+
+                                break;
+                            case 2:
+                                int min = 0;
+                                min = MsgUtils.getByte(payload[offset++]); //请求定时关机时间
+                                if (min == 0xff)
+                                    min = Integer.parseInt(MMKVUtils.getDelayShutdownTime()); //延时时间
+                                if (min >=1 && min <= 5) { //设置延时关机时间
+                                    //MMKVUtils.setDelayShutdownTime(min + "");
+                                    //延时关机倒计时
+                                    if (HomeVentilator.getInstance().isStartUp() && !HomeVentilator.getInstance().isLock()) {//非锁屏
+                                        for (Device device: AccountInfo.getInstance().deviceList) {
+                                            if (device instanceof Stove && IDeviceType.RRQZ.equals(device.dc)) {
+                                                Stove stove = (Stove) device;
+                                                if (stove.leftLevel == 0 && stove.rightLevel == 0 && MMKVUtils.getFanStove()) //关火状态延时关机
+                                                    HomeVentilator.getInstance().timeShutdown(min);
+                                                break;
                                             }
                                         }
                                     }
                                 }
-                                    break;
-                            case 2:
-                                int min = 0;
-                                min = MsgUtils.getByte(payload[offset++]); //请求定时关机时间
-
-                                if (min >=1 && min <= 5) //设置延时关机时间
-                                    MMKVUtils.setDelayShutdownTime(min + "");
                                 break;
                         }
                     }

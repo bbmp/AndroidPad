@@ -26,6 +26,7 @@ import com.robam.common.device.subdevice.Pan;
 import com.robam.common.device.subdevice.Stove;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.manager.DynamicLineChartManager;
+import com.robam.common.manager.LiveDataBus;
 import com.robam.common.module.IPublicStoveApi;
 import com.robam.common.module.IPublicVentilatorApi;
 import com.robam.common.module.ModulePubliclHelper;
@@ -107,6 +108,13 @@ public class CurveCreateActivity extends PanBaseActivity {
         cookChart = findViewById(R.id.cook_chart);
         cookChart.setNoDataText(getResources().getString(R.string.pan_no_curve_data)); //没有数据时显示的文字
         setOnClickListener(R.id.ll_left, R.id.iv_stop_create);
+        LiveDataBus.get().with(PanConstant.ADD_STEP, Boolean.class).observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean)
+                    addStep();
+            }
+        });
     }
 
     @Override
@@ -288,9 +296,9 @@ public class CurveCreateActivity extends PanBaseActivity {
                 }
             });
             //绘制步骤标记
-            if (null != panCurveDetail.stepList) {
+            if (null != panCurveDetail.curveStepList) {
 
-                for (CurveStep step : panCurveDetail.stepList) {
+                for (CurveStep step : panCurveDetail.curveStepList) {
                     Entry entry = new Entry(Float.parseFloat(step.markTime), step.markTemp);
                     stepList.add(entry);
                     highlights.add(0, new Highlight(entry.getX(), entry.getY(), 1, highlights.size())); //第二条线highlight,加前面
@@ -316,6 +324,15 @@ public class CurveCreateActivity extends PanBaseActivity {
         params.put(PanConstant.KEY5, new byte[] {(byte) stoveId}); //更换炉头id
         PanAbstractControl.getInstance().setInteractionParams(pan.guid, params);
     }
+    //175设置灶具智能互动
+    private void setStoveInteraction() {
+        //启动记录
+        stove.msgId = MsgKeys.setStoveInteraction_Req;
+        Map params = new HashMap();
+        params.put(StoveConstant.KEY1, new byte[] {(byte) StoveConstant.start});
+        if (null != iPublicStoveApi)
+            iPublicStoveApi.setStoveInteraction(stove.guid, stoveId, params);
+    }
 
     private void createCurveStart() {
         //创建曲线记录开始请求
@@ -325,9 +342,11 @@ public class CurveCreateActivity extends PanBaseActivity {
                 if (null != createCurveStartRes && createCurveStartRes.rc == 0) {
                     tvTimeUnit.setVisibility(View.VISIBLE);
                     ivStop.setVisibility(View.VISIBLE);
-                    curveId = createCurveStartRes.payload;
+                    curveId = createCurveStartRes.data;
                     //设置互动参数
                     setInteraction();
+                    //设置灶具互动参数
+                    setStoveInteraction();
 
                     startCreate();
                 }
@@ -362,13 +381,17 @@ public class CurveCreateActivity extends PanBaseActivity {
                     mHandler.postDelayed(runnable, 1000L);
                     return;
                 }
+                if (stove.msgId == MsgKeys.setStoveInteraction_Req) {
+                    setStoveInteraction(); //设置灶具互动参数
+                }
                 if (pan.mode != 1) {
                     if (curTime > 0) { //锅停止工作
                         //跳转保存
                         saveCurve(true);
                         return;
                     }
-                    PanAbstractControl.getInstance().queryAttribute(pan.guid); //查询锅状态
+//                    PanAbstractControl.getInstance().queryAttribute(pan.guid); //查询锅状态
+                    setInteraction();
                     mHandler.postDelayed(runnable, 1000L);
                     return;
                 }
@@ -473,6 +496,8 @@ public class CurveCreateActivity extends PanBaseActivity {
     }
 
     private void addStep() {
+        if (entryList.size() < 1)
+            return;
         Entry entry = entryList.get(entryList.size() - 1); //最后一个点
         stepList.add(entry);
         highlights.add(0, new Highlight(entry.getX(), entry.getY(), 1, highlights.size())); //第二条线highlight,加前面
@@ -485,6 +510,21 @@ public class CurveCreateActivity extends PanBaseActivity {
 
         //更新标记步骤
         CloudHelper.cookingCurveMarkStep(this, curveId, curveSteps, BaseResponse.class, new RetrofitCallback<BaseResponse>() {
+            @Override
+            public void onSuccess(BaseResponse baseResponse) {
+
+            }
+
+            @Override
+            public void onFaild(String err) {
+
+            }
+        });
+    }
+    //通知云端停止记录
+    private void stopCreate() {
+        //通知后台结束
+        CloudHelper.updateCurveState(this, curveId, 4, BaseResponse.class, new RetrofitCallback<BaseResponse>() {
             @Override
             public void onSuccess(BaseResponse baseResponse) {
 
@@ -534,6 +574,8 @@ public class CurveCreateActivity extends PanBaseActivity {
         }
         //结束步骤
         addStep();
+        //停止记录
+        stopCreate();
         //保存曲线
         Intent intent = new Intent();
         intent.putExtra(PanConstant.EXTRA_CURVE_ID, curveId);

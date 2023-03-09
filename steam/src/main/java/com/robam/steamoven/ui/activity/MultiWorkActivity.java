@@ -18,6 +18,7 @@ import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.ToastInsUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
+import com.robam.steamoven.bean.CookingCurveQueryRes;
 import com.robam.steamoven.bean.MultiSegment;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.Constant;
@@ -198,7 +199,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
         }
         for(int i = maxCount; i < CUR_ITEM_VIEW_COUNT;i++){
             ViewGroup itemGroup = optContentParentView.findViewWithTag(i+"");
-            itemGroup.setVisibility(View.INVISIBLE);
+            itemGroup.setVisibility(View.GONE);
         }
         switch (steamOven.sectionNumber){
             case 0:
@@ -224,7 +225,8 @@ public class MultiWorkActivity extends SteamBaseActivity {
         if(steamOven == null){
             return 0;
         }
-        int totalTime = 0;
+        return steamOven.getResidueTotalTime();
+       /* int totalTime = 0;
         int startIndex = steamOven.curSectionNbr;
         if(startIndex <= 0){
             startIndex = 1;
@@ -238,7 +240,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
                 totalTime += steamOven.restTimeH3 * 256 + steamOven.restTime3;//设置的工作时间 (秒)
             }
         }
-        return totalTime;
+        return totalTime;*/
     }
 
 
@@ -306,7 +308,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
         }
         for(int i = maxCount; i < CUR_ITEM_VIEW_COUNT;i++){
             ViewGroup itemGroup = optContentParentView.findViewWithTag(i+"");
-            itemGroup.setVisibility(View.INVISIBLE);
+            itemGroup.setVisibility(View.GONE);
         }
     }
 
@@ -368,9 +370,11 @@ public class MultiWorkActivity extends SteamBaseActivity {
         }else{
             cookDurationView.setText(TextSpanUtil.getSpan(preTotalTime,Constant.UNIT_TIME_MIN));
         }
-        getCookingData(getSteamOven().guid);
+        if(steamOven != null){
+            getCookingData(steamOven.guid);
+            dealRationAndAddSteam(steamOven);
+        }
         initLineChart();
-        dealRationAndAddSteam(steamOven);
     }
 
     /**
@@ -514,10 +518,17 @@ public class MultiWorkActivity extends SteamBaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         LogUtils.e("MultiActivity onActivityResult " + resultCode);
         if(resultCode == RESULT_OK){
+            if(requestCode == Constant.REMIND_REQUEST_CODE){
+                boolean change = data.getBooleanExtra(Constant.REMIND_ID_CHANGE, false);
+                if(change){
+                    clearPreRemindResId();
+                }
+                return;
+            }
             if(requestCode == WORK_COMPLETE_CODE){
                 return;
             }
-            dealResult(requestCode,data);
+            //dealResult(requestCode,data);
             //setDelBtnState(multiSegments.size() > 0 ? true:false);
         }
     }
@@ -572,6 +583,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
         dm.setAxisLine(true, false);
         dm.setGridLine(false, false);
         dm.setAxisMaximum(maxYValue);
+        dm.setAxiEnable(false);//不显示X轴
     }
 
     //从0开始
@@ -600,9 +612,10 @@ public class MultiWorkActivity extends SteamBaseActivity {
                 mHandler.postDelayed(runnable, 2000L);
                 return;
             }
-            if(isPageHide){
+            /*if(isPageHide){//弹出告警页面时，存在仍在继续工作的可能，所以需要根据状态来判定是否继续显示曲线
+                mHandler.postDelayed(runnable, 2000L);
                 return;
-            }
+            }*/
 
             SteamAbstractControl.getInstance().queryAttribute(steamOven.guid); //查询一体机状态
             curTime += 2;
@@ -628,14 +641,14 @@ public class MultiWorkActivity extends SteamBaseActivity {
     private Handler dataHandler = new Handler();
     private int errorCount = 0;
     protected void getCookingData(final String guid) {
-        CloudHelper.getCurveBookForDevice(this, guid, GetCurveDetailRes.class,
-                new RetrofitCallback<GetCurveDetailRes>() {
+        CloudHelper.getCurveBookForDevice(this, guid, CookingCurveQueryRes.class,
+                new RetrofitCallback<CookingCurveQueryRes>() {
                     @Override
-                    public void onSuccess(GetCurveDetailRes getDeviceParamsRes) {
+                    public void onSuccess(CookingCurveQueryRes getDeviceParamsRes) {
                         dataHandler.removeCallbacksAndMessages(null);
-                        if(errorCount <= 2 && !isDestroyed() && (getDeviceParamsRes == null || getDeviceParamsRes.payload == null)){
-                            errorCount++;
-                            dataHandler.postDelayed(()->{getCookingData(guid);},1000);
+                        if(!isDestroyed() && (getDeviceParamsRes == null || getDeviceParamsRes.data == null)){
+                            //errorCount++;
+                            dataHandler.postDelayed(()->{getCookingData(guid);},2000);
                             return;
                         }
                         try {
@@ -649,7 +662,12 @@ public class MultiWorkActivity extends SteamBaseActivity {
                     @Override
                     public void onFaild(String err) {
                         //initLineChart();
-                        startCreateCurve();
+                        //startCreateCurve();
+                        dataHandler.removeCallbacksAndMessages(null);
+                        if(!isDestroyed()){
+                            dataHandler.postDelayed(()->{getCookingData(guid);},2000);
+                            return;
+                        }
                     }
                 });
     }
@@ -659,18 +677,18 @@ public class MultiWorkActivity extends SteamBaseActivity {
      * @param getDeviceParamsRes
      * @throws JSONException
      */
-    private void parserCureData(GetCurveDetailRes getDeviceParamsRes) throws JSONException {
-        if(getDeviceParamsRes != null && getDeviceParamsRes.payload != null){
-            curveId = getDeviceParamsRes.payload.curveCookbookId;
+    private void parserCureData(CookingCurveQueryRes getDeviceParamsRes) throws JSONException {
+        if(getDeviceParamsRes != null && getDeviceParamsRes.data != null){
+            curveId = getDeviceParamsRes.data.curveCookbookId;
         }
-        if(getDeviceParamsRes == null || getDeviceParamsRes.payload == null || getDeviceParamsRes.payload.temperatureCurveParams == null){
+        if(getDeviceParamsRes == null || getDeviceParamsRes.data == null || getDeviceParamsRes.data.temperatureCurveParams == null){
             //initLineChart();
             initStartTimerAndList();
             startCreateCurve();
             return;
         }
 
-        JSONObject jsonObject = new JSONObject(getDeviceParamsRes.payload.temperatureCurveParams);
+        JSONObject jsonObject = new JSONObject(getDeviceParamsRes.data.temperatureCurveParams);
         Iterator<String> keys = jsonObject.keys();
         if(keys == null || !keys.hasNext()){
             //initLineChart();
@@ -795,6 +813,9 @@ public class MultiWorkActivity extends SteamBaseActivity {
         Intent intent = new Intent(this,CurveSaveActivity.class);
         intent.putExtra(Constant.CURVE_ID,curveId);
         intent.putExtra(Constant.CARVE_NAME,"多段模式");
+        SteamOven steamOven = getSteamOven();
+        String guid = steamOven == null ? "":steamOven.guid;
+        intent.putExtra(Constant.DEVICE_GUID,guid);
         startActivity(intent);
         finish();
     }
@@ -876,7 +897,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
      */
     private  boolean toRemainPageMulti(SteamOven curDevice){
         if(curDevice == null){
-            showRemindPage(R.string.steam_offline,false,-1,false);
+            showRemindPage(R.string.steam_offline,false,-1,false,false);
             return true;
         }
         int totalSection = curDevice.sectionNumber;
@@ -886,7 +907,7 @@ public class MultiWorkActivity extends SteamBaseActivity {
             boolean needWater = SteamModeEnum.needWater(curDevice.getModeCode(i));
             int promptResId = SteamCommandHelper.getRunPromptResId(curDevice, modeCode, needWater,true);
             if(promptResId != -1){
-                showRemindPage(promptResId,needWater,modeCode,false);
+                showRemindPage(promptResId,needWater,modeCode,false,false);
                 return true;
             }
         }

@@ -6,8 +6,11 @@ import com.robam.common.http.ILife;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.http.RetrofitClient;
 import com.robam.common.utils.LogUtils;
+import com.robam.steamoven.bean.CurveData;
 import com.robam.steamoven.bean.SteamCurveDetail;
 import com.robam.steamoven.constant.HostServer;
+import com.robam.steamoven.request.CurveSaveReq;
+import com.robam.steamoven.request.CurveUpdateReq;
 import com.robam.steamoven.request.GetCurveDetailReq;
 import com.robam.steamoven.request.GetCurveReq;
 import com.robam.steamoven.request.GetDeviceParamsReq;
@@ -37,7 +40,7 @@ public class CloudHelper {
     }
     //删除曲线
     public static <T extends BaseResponse> void delCurve(ILife iLife, long userid, long curveid, Class<T> entity, final RetrofitCallback<T> callback) {
-        Call<ResponseBody> call = svr.delCurve(userid, curveid);
+        Call<ResponseBody> call = svr.delCurve(curveid,userid);
         enqueue(iLife, entity, call, callback);
     }
     //获取设备参数
@@ -85,16 +88,16 @@ public class CloudHelper {
         enqueue(iLife, entity, call, callback);
     }
 
-    public static <T extends BaseResponse> void saveCurveData(ILife iLife, SteamCurveDetail payLoad, Class<T> entity, final RetrofitCallback<T> callback) {
-        String json = new SaveCurveDetailReq(payLoad).toString();
-        RequestBody requestBody =
-                RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
-        Call<ResponseBody> call = svr.saveCurveData(requestBody);
-        enqueue(iLife, entity, call, callback);
-    }
+//    public static <T extends BaseResponse> void saveCurveData(ILife iLife, SteamCurveDetail payLoad, Class<T> entity, final RetrofitCallback<T> callback) {
+//        String json = new SaveCurveDetailReq(payLoad).toString();
+//        RequestBody requestBody =
+//                RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
+//        Call<ResponseBody> call = svr.saveCurveData(requestBody);
+//        enqueue(iLife, entity, call, callback);
+//    }
 
-    public static <T extends BaseResponse> void saveCurveStepData(ILife iLife, SteamCurveDetail payLoad, Class<T> entity, final RetrofitCallback<T> callback) {
-        String json = new SaveCurveDetailReq(payLoad).toString();
+    public static <T extends BaseResponse> void saveCurveStepData(ILife iLife, long userId, CurveData curveData, Class<T> entity, final RetrofitCallback<T> callback) {
+        String json = new CurveSaveReq(userId,curveData).toString();
         RequestBody requestBody =
                 RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
         Call<ResponseBody> call = svr.saveCurveStepData(requestBody);
@@ -150,5 +153,14 @@ public class CloudHelper {
                     callback.onFaild(throwable.toString());
             }
         });
+    }
+
+    //更新曲线状态
+    public static <T extends BaseResponse> void updateCurveState(ILife iLife, long curveId, int state, Class<T> entity, final RetrofitCallback<T> callback) {
+        String json = new CurveUpdateReq(curveId, state).toString();
+        RequestBody requestBody =
+                RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
+        Call<ResponseBody> call = svr.updateCurveState(requestBody);
+        enqueue(iLife, entity, call, callback);
     }
 }

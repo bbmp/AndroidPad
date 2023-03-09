@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Handler;
+import android.util.Base64;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -22,7 +23,19 @@ import com.robam.ventilator.http.CloudHelper;
 import com.robam.ventilator.response.GetLoginStatusRes;
 import com.robam.ventilator.response.GetUserInfoRes;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
 public class LoginQrcodeActivity extends VentilatorBaseActivity {
     private ImageView ivQrcode;
@@ -94,12 +107,42 @@ public class LoginQrcodeActivity extends VentilatorBaseActivity {
     private void getQrCode() {
         String preUuid = UUID.randomUUID().toString();
 
-        final Bitmap imgBit = QrUtils.create2DCode("UUID-LOGIN" + preUuid, (int)getResources().getDimension(com.robam.common.R.dimen.dp_194),
+        final Bitmap imgBit = QrUtils.create2DCode("UUID-LOGINtoken" + preUuid, (int)getResources().getDimension(com.robam.common.R.dimen.dp_194),
                 (int)getResources().getDimension(com.robam.common.R.dimen.dp_194), Color.WHITE);
         if (ivQrcode != null) {
             ivQrcode.setImageBitmap(imgBit);
         }
-        getLoginStatus(preUuid);
+        getLoginStatus2("token" + preUuid);
+    }
+    /**
+     * 扫码登录
+     */
+    private void getLoginStatus2(String key) {
+        long timeStamp = System.currentTimeMillis(); //时间戳
+        // 表单请求参数
+        Map<String, String> requestParameters = new HashMap();
+        requestParameters.put("key", key);
+        requestParameters.put("appType", "RKPAD");
+        requestParameters.put("loginType", "9");
+
+        CloudHelper.getCode(this, "roki_yyj_client", "y37vjf992ym0od06ud8nnhmq", timeStamp + "", timeStamp + "",
+                signString(timeStamp, requestParameters), key, "RKPAD", "9", GetLoginStatusRes.class, new RetrofitCallback<GetLoginStatusRes>() {
+            @Override
+            public void onSuccess(GetLoginStatusRes getLoginStatusRes) {
+                if (null != getLoginStatusRes) {
+                    GetLoginStatusRes.Payload payLoad = getLoginStatusRes.payload;
+                    if (null != payLoad) {
+                        String access_token = payLoad.access_token;
+                        toLoginCode(access_token);
+                    }
+                }
+            }
+
+            @Override
+            public void onFaild(String err) {
+                LogUtils.e("getLoginStatus" + err);
+            }
+        });
     }
 
     /**
@@ -127,6 +170,75 @@ public class LoginQrcodeActivity extends VentilatorBaseActivity {
             }
         });
 
+    }
+    //签名逻辑
+    private String signString(long timeStamp, Map<String, String> requestParameters) {
+        try {
+            String appId = "roki_yyj_client"; //由系统分配
+            String appKey = "y37vjf992ym0od06ud8nnhmq"; //由系统分配
+
+            String nonce = timeStamp + ""; // 随即数
+            String appSecret = "1761771d5d80ceaf0d19df6b12ccc23cefff91e0"; // 有系统分配与appKey成对出现
+
+            Map<String, String> treeMap = new TreeMap<>(requestParameters);
+            treeMap.put("appId", appId);
+            treeMap.put("appKey", appKey);
+            treeMap.put("timestamp", timeStamp + "");
+            treeMap.put("nonce", nonce);
+
+            Iterator<Map.Entry<String, String>> iterator = treeMap.entrySet().iterator();
+            StringBuilder stringToSign = new StringBuilder();
+            while (iterator.hasNext()) {
+                Map.Entry<String, String> next = iterator.next();
+                stringToSign.append(next.getKey()).append(next.getValue());
+            }
+            stringToSign.append(appSecret);
+            Mac mac = Mac.getInstance("HmacSHA256");
+            mac.init(new SecretKeySpec(appSecret.getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
+            byte[] signData = mac.doFinal(stringToSign.toString().getBytes(StandardCharsets.UTF_8));
+            // 最终签名结果，后续请求需放⼊请求头中(sign)
+            String signD = URLEncoder.encode(Base64.encodeToString(signData, Base64.NO_WRAP), "UTF-8");
+            return signD;
+        } catch (Exception e) {}
+        return "";
+    }
+    //获取用户信息
+    private void toLoginCode(String access_token) {
+        long timeStamp = System.currentTimeMillis(); //时间戳
+        // 表单请求参数
+        Map<String, String> requestParameters = new HashMap();
+//        requestParameters.put("access_token", access_token);
+
+        CloudHelper.loginCode(this, "roki_yyj_client", "y37vjf992ym0od06ud8nnhmq", timeStamp+"", timeStamp +"", signString(timeStamp, requestParameters),
+                access_token, GetUserInfoRes.class, new RetrofitCallback<GetUserInfoRes>() {
+            @Override
+            public void onSuccess(GetUserInfoRes getUserInfoRes) {
+                if (null != getUserInfoRes && null != getUserInfoRes.getUser()) {
+                    UserInfo info = getUserInfoRes.getUser();
+                    info.loginType = QRCODE_LOGIN;
+//                    info.password = password;
+                    String userJson = new Gson().toJson(info);
+                    //保存用户信息及登录状态
+                    MMKVUtils.login(true);
+                    MMKVUtils.setUser(userJson);
+                    //登录成功
+                    AccountInfo.getInstance().getUser().setValue(info);
+                    //跳转到首页
+                    if (first)
+                        HomeActivity.start(LoginQrcodeActivity.this);
+                    finish();
+                    //绑定设备
+//                    bindDevice(getUserInfoRes.getUser().id);
+                } else {
+                    ToastUtils.showShort(LoginQrcodeActivity.this, R.string.ventilator_request_failed);
+                }
+            }
+
+            @Override
+            public void onFaild(String err) {
+                LogUtils.e("toLogin" + err);
+            }
+        });
     }
     //获取用户信息
     private void toLogin(String account, String password) {

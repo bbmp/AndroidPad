@@ -171,7 +171,7 @@ public class DeviceUserPage extends VentilatorBasePage {
             if (null != iPublicStoveApi)
                 iPublicStoveApi.disConnectBle(device.guid);
             //删除
-            deleteSubdevice(device);
+            HomeVentilator.getInstance().deleteSubdevice(device);
             //上报
             HomeVentilator.getInstance().notifyOnline(device.guid, device.bid, -1);
             //重新获取设备列表
@@ -183,7 +183,7 @@ public class DeviceUserPage extends VentilatorBasePage {
             if (null != iPublicPanApi)
                 iPublicPanApi.disConnectBle(device.guid);
             //删除
-            deleteSubdevice(device);
+            HomeVentilator.getInstance().deleteSubdevice(device);
             //上报
             HomeVentilator.getInstance().notifyOnline(device.guid, device.bid, -1);
             //重新获取设备列表
@@ -195,7 +195,7 @@ public class DeviceUserPage extends VentilatorBasePage {
             public void onSuccess(BaseResponse baseResponse) {
                 if (null != baseResponse) {
                     //解绑成功
-                    deleteDevice(device);
+                    HomeVentilator.getInstance().deleteDevice(device);
                     //重新获取设备列表
 //                    AccountInfo.getInstance().getGuid().setValue(device.guid);
                     AccountInfo.getInstance().getUser().setValue(AccountInfo.getInstance().getUser().getValue());
@@ -228,43 +228,5 @@ public class DeviceUserPage extends VentilatorBasePage {
         iDialog.setCancelable(false);
         iDialog.setContentText("GUID" + device.guid);
         iDialog.show();
-    }
-    //删除子设备
-    private void deleteSubdevice(Device device) {
-        Set<String> subDevices = MMKVUtils.getSubDevice();
-        if (null != subDevices) {
-            Iterator<String> iterator = subDevices.iterator();
-            while (iterator.hasNext()) {
-                String json = iterator.next();
-                Device subDevice = new Gson().fromJson(json, Device.class);
-                if ((device.guid != null && device.guid.equals(subDevice.guid))
-                        || (device.mac != null && device.mac.equals(subDevice.mac))) {
-                    iterator.remove();//已经有记录 删除
-
-                    deleteDevice(device);
-                    break;
-                }
-            }
-            //写回去
-            MMKVUtils.setSubDevice(subDevices);
-        }
-    }
-    //从列表中删除设备
-    private void deleteDevice(Device curDevice) {
-
-        for (Device device: AccountInfo.getInstance().deviceList) {
-
-            if (curDevice.guid.equals(device.guid)) {
-                AccountInfo.getInstance().deviceList.remove(device);
-
-                if (device instanceof Pan) {
-                    BlueToothManager.disConnect(((Pan) device).bleDevice); //断开蓝牙
-                } else if (device instanceof Stove) {
-                    BlueToothManager.disConnect(((Stove) device).bleDevice);
-                }
-                MqttManager.getInstance().unSubscribe(device.dc, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)); //取消订阅
-                break;
-            }
-        }
     }
 }

@@ -111,7 +111,7 @@ public class RestoreCompleteActivity extends PanBaseActivity {
                 entryList.add(new Entry(i, Float.parseFloat(data[0]))); //时间和温度
                 i += 2;
             }
-            List<CurveStep> stepList = panCurveDetail.stepList;
+            List<CurveStep> stepList = panCurveDetail.curveStepList;
             ArrayList<Entry> appointList = new ArrayList<>();
             if (null != stepList) {
                 for (CurveStep curveStep: stepList) {

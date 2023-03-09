@@ -135,7 +135,7 @@ public class HomePage extends PanBasePage {
                         else if (pan.panTemp > 240 && pan.panTemp <= 280)
                             tvTempHint.setText(getString(R.string.pan_oil_temp) + pan.panTemp + getString(R.string.pan_oil_temp_hint3));
                         else
-                            tvTempHint.setText(getString(R.string.pan_oil_temp) + pan.panTemp + R.string.pan_oil_temp_hint4);
+                            tvTempHint.setText(getString(R.string.pan_oil_temp) + pan.panTemp + getString(R.string.pan_oil_temp_hint4));
                         break;
                     }
                 }
@@ -167,12 +167,12 @@ public class HomePage extends PanBasePage {
         CloudHelper.getCurvebookDetail(this, 0, HomePan.getInstance().guid, GetCurveDetailRes.class, new RetrofitCallback<GetCurveDetailRes>() {
             @Override
             public void onSuccess(GetCurveDetailRes getCurveDetailRes) {
-                if (null != getCurveDetailRes && null != getCurveDetailRes.payload) {
-                    PanCurveDetail panCurveDetail = getCurveDetailRes.payload;
+                if (null != getCurveDetailRes && null != getCurveDetailRes.data) {
+                    PanCurveDetail panCurveDetail = getCurveDetailRes.data;
 
                     List<CurveStep> curveSteps = new ArrayList<>();
-                    if (null != panCurveDetail.stepList) {
-                        curveSteps.addAll(panCurveDetail.stepList);
+                    if (null != panCurveDetail.curveStepList) {
+                        curveSteps.addAll(panCurveDetail.curveStepList);
                     }
                     //继续创建曲线
                     if (null != panCurveDetail.temperatureCurveParams) {
@@ -195,7 +195,7 @@ public class HomePage extends PanBasePage {
         int id = view.getId();
         if (id == R.id.ll_quick_fry) {
             if (HomePan.getInstance().isPanOffline()) {
-                ToastUtils.showShort(getContext(), R.string.pan_offline);
+                ToastUtils.showShort(getContext().getApplicationContext(), R.string.pan_offline);
                 return;
             }
             if (!llQuick.isSelected()) {
@@ -218,7 +218,7 @@ public class HomePage extends PanBasePage {
             }
         } else if (id == R.id.ll_stir_fry) {
             if (HomePan.getInstance().isPanOffline()) {
-                ToastUtils.showShort(getContext(), R.string.pan_offline);
+                ToastUtils.showShort(getContext().getApplicationContext(), R.string.pan_offline);
                 return;
             }
             if (!llStir.isSelected()) {

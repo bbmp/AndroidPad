@@ -201,8 +201,8 @@ public class CurveActivity extends StoveBaseActivity {
         stoveCurveDetails.clear();
         stoveCurveDetails.add(0, new StoveCurveDetail("创作烹饪曲线"));
         //需过滤掉其他曲线,锅和灶一起
-        if (null != getCurveCookbooksRes && null != getCurveCookbooksRes.payload) {
-            for (StoveCurveDetail stoveCurveDetail : getCurveCookbooksRes.payload) {
+        if (null != getCurveCookbooksRes && null != getCurveCookbooksRes.data) {
+            for (StoveCurveDetail stoveCurveDetail : getCurveCookbooksRes.data) {
                 if (null != stoveCurveDetail.deviceParams && (/*stoveCurveDetail.deviceParams.contains(IDeviceType.RRQZ) ||*/
                         stoveCurveDetail.deviceParams.contains(IDeviceType.RZNG)))
                     stoveCurveDetails.add(stoveCurveDetail);
@@ -236,6 +236,7 @@ public class CurveActivity extends StoveBaseActivity {
             selectStoveDialog.setListeners(new IDialog.DialogOnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    selectStoveDialog.dismiss();
                     int id = v.getId();
                     if (id == R.id.view_left) {
                         openFire(IPublicStoveApi.STOVE_LEFT); //左灶

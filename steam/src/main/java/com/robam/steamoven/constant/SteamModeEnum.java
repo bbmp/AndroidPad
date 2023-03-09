@@ -245,5 +245,38 @@ public enum SteamModeEnum {
         return supportRadio;
     }
 
+    /**
+     * 是否温度不可调节
+     * @return
+     */
+    public static boolean isFixedTemp(int modeCode){
+        if(SteamConstant.GANZAO == modeCode ||
+                SteamConstant.SHAJUN == modeCode ||
+                SteamConstant.QINGJIE == modeCode ){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 模式的时间与温度均不可调节
+     * @param modeCode
+     * @return
+     */
+    public static boolean isModelParamIsFix(int modeCode){
+        if(SteamConstant.GANZAO == modeCode ||
+                SteamConstant.SHAJUN == modeCode ||
+                SteamConstant.QINGJIE == modeCode ){
+            return true;
+        }
+        return false;
+    }
+
+
+
+
+
+
+
 
 }

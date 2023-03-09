@@ -36,6 +36,7 @@ import com.robam.dishwasher.factory.DishWasherDialogFactory;
 import com.robam.dishwasher.ui.dialog.DiashWasherCommonDialog;
 import com.robam.dishwasher.util.DishWasherCommandHelper;
 import com.robam.dishwasher.util.DishWasherModelUtil;
+import com.robam.dishwasher.util.MqttSignal;
 
 import java.util.List;
 import java.util.Map;
@@ -70,6 +71,10 @@ public class WorkActivity extends DishWasherBaseActivity {
     private boolean isNoLongerRemind = false;
 
     public static final int MAX_PROGRESS = 97;
+
+    private MqttSignal mqttSignal;
+
+
 
 
     //private Group huanqiGroup,progressGroup;
@@ -187,6 +192,8 @@ public class WorkActivity extends DishWasherBaseActivity {
             }
             cpgBar.setProgress(progress);
         }
+        mqttSignal = new MqttSignal();
+        mqttSignal.startLoop();
     }
 
     private void setModelTextState(int code,int workModeState){
@@ -290,6 +297,18 @@ public class WorkActivity extends DishWasherBaseActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        mqttSignal.pageShow();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mqttSignal.pageHide();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         if(commonDialog != null && commonDialog.isShow()){
@@ -298,6 +317,7 @@ public class WorkActivity extends DishWasherBaseActivity {
         if(iDialog != null && iDialog.isShow()){
             iDialog.dismiss();
         }
+       mqttSignal.clear();
     }
 
     //工作中 - 需更新时间

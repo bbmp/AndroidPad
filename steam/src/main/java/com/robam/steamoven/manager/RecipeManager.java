@@ -4,6 +4,7 @@ package com.robam.steamoven.manager;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.StringUtils;
 import com.robam.steamoven.bean.DeviceConfigurationFunctions;
 import com.robam.steamoven.bean.OtherFunc;
@@ -42,13 +43,15 @@ public class RecipeManager {
     }
 
     public void setRecipeInfo(String guidType, GetDeviceParamsRes getDeviceParamsRes){
-        String recipeData = new Gson().toJson(getDeviceParamsRes, GetDeviceParamsRes.class);
+        String recipeData = new Gson().toJson(getDeviceParamsRes);
         setRecipeData(recipeData);
         SteamDataUtil.saveSteam(guidType,recipeData);
-        Map<Long, String> integerStringMap = recipeName.get(guidType);
-        if(integerStringMap == null){
-            recipeName.put(guidType,new HashMap<>());
-            needWaterMap.put(guidType,new HashMap<>());
+        synchronized (RecipeManager.class){
+            Map<Long, String> integerStringMap = recipeName.get(guidType);
+            if(integerStringMap == null){
+                recipeName.put(guidType,new HashMap<>());
+                needWaterMap.put(guidType,new HashMap<>());
+            }
         }
         initRecipeInfo(getDeviceParamsRes,recipeName.get(guidType),needWaterMap.get(guidType));
     }

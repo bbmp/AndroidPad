@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/steam_ic_bg"
+    android:focusable = "true"
+    android:focusableInTouchMode = "true"
+    tools:context=".ui.activity.CurveNameChangeActivity">
+    <include
+        android:id="@+id/ll_title"
+        layout="@layout/steam_view_layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <EditText
+        android:id="@+id/tv_recipe_name_change"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:maxLength="10"
+        android:singleLine="true"
+        android:textSize="@dimen/sp_36"
+        android:layout_marginLeft="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_60"
+        android:textColor="@color/steam_white"
+        android:textCursorDrawable="@null"
+        android:background="@null"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/steam_guideline1"
+        app:layout_constraintTop_toBottomOf="@id/ll_title"/>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_1"
+        android:maxLength="10"
+        android:background="@color/steam_common_button_disable_color"
+        android:layout_marginLeft="@dimen/dp_32"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="@dimen/dp_4"
+        app:layout_constraintRight_toLeftOf="@id/steam_guideline1"
+        app:layout_constraintTop_toBottomOf="@id/tv_recipe_name_change"/>
+
+
+    <TextView
+        android:id="@+id/change_cancel"
+        android:layout_width="@dimen/dp_175"
+        android:layout_height="@dimen/dp_56"
+        android:background="@drawable/steam_shape_button_unselected"
+        android:gravity="center"
+        android:text="@string/steam_common_cancel"
+        android:textColor="@color/steam_white"
+        android:textSize="@dimen/sp_30"
+        app:layout_constraintLeft_toRightOf="@id/steam_guideline1"
+        app:layout_constraintRight_toLeftOf="@id/steam_guideline2"
+        app:layout_constraintTop_toTopOf="@id/tv_recipe_name_change"
+        app:layout_constraintBottom_toBottomOf="@id/tv_recipe_name_change"/>
+
+
+    <TextView
+        android:id="@+id/change_ok"
+        android:layout_width="@dimen/dp_175"
+        android:layout_height="@dimen/dp_56"
+        android:background="@drawable/steam_shape_button_bg_ok"
+        android:gravity="center"
+        android:text="@string/steam_multi_confirm"
+        android:textColor="@color/steam_white"
+        android:textSize="@dimen/sp_30"
+        app:layout_constraintLeft_toRightOf="@id/steam_guideline2"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_recipe_name_change"
+        app:layout_constraintBottom_toBottomOf="@id/tv_recipe_name_change"/>
+
+
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/steam_guideline1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.55" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/steam_guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.78" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

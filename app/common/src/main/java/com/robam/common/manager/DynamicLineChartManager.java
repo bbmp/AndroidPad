@@ -413,5 +413,22 @@ public class DynamicLineChartManager {
         lineChart.invalidate();
     }
 
+    /**
+     * 设置X轴是否显示
+     * @param enable
+     */
+    public void setAxiEnable(boolean enable){
+        if(xAxis != null){
+            xAxis.setEnabled(enable);
+        }
+    }
+
+    public void setYAxiFormat(IAxisValueFormatter iAxisValueFormatter){
+        if(yAxis != null){
+            yAxis.setValueFormatter(iAxisValueFormatter);
+        }
+    }
+
+
 }
 

@@ -15,6 +15,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/tv_recipe"
         app:layout_constraintVertical_chainStyle="packed"/>
+
+    <com.robam.steamoven.ui.view.CurveView
+        android:id="@+id/iv_recipe_curveView"
+        android:layout_width="@dimen/dp_286"
+        android:layout_height="@dimen/dp_226"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tv_recipe"
+        app:layout_constraintVertical_chainStyle="packed"/>
+
     <ImageView
         android:id="@+id/iv_select"
         android:layout_width="@dimen/dp_38"
@@ -25,6 +35,7 @@
         android:src="@drawable/steam_shape_delete_selector"
         app:layout_constraintBottom_toBottomOf="@id/iv_recipe"
         app:layout_constraintLeft_toLeftOf="@id/iv_recipe"/>
+
 
     <TextView
         android:id="@+id/tv_recipe"

@@ -34,23 +34,33 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.925" />
-
     <TextView
         android:id="@+id/tv_device_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="5068S"
+        android:textSize="@dimen/sp_32"
+        android:text="油烟机"
         android:textColor="@color/ventilator_white"
-        android:textSize="@dimen/sp_28"
         app:layout_constraintBottom_toBottomOf="@id/bt_reset"
         app:layout_constraintLeft_toLeftOf="@id/ventilator_guideline4"
-        app:layout_constraintTop_toTopOf="@id/bt_reset" />
+        app:layout_constraintTop_toTopOf="@id/bt_reset"/>
+    <TextView
+        android:id="@+id/tv_model"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_5"
+        android:text="5068S"
+        android:textSize="@dimen/sp_32"
+        android:textColor="@color/ventilator_white_50"
+        app:layout_constraintLeft_toRightOf="@id/tv_device_name"
+        app:layout_constraintTop_toTopOf="@id/tv_device_name"
+        app:layout_constraintBottom_toBottomOf="@id/tv_device_name"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/bt_reset"
         android:layout_width="@dimen/dp_175"
         android:layout_height="@dimen/dp_56"
-        android:layout_marginTop="@dimen/dp_50"
+        android:layout_marginTop="@dimen/dp_40"
         android:background="@drawable/ventilator_shape_button_ok_bg"
         android:gravity="center"
         android:text="@string/ventilator_reset_start"
@@ -64,7 +74,7 @@
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
         android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginBottom="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_20"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_height="0dp"
         app:layout_constraintLeft_toRightOf="@+id/ventilator_guideline4"

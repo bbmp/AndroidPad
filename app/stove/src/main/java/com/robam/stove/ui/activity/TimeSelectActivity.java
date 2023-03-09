@@ -140,7 +140,7 @@ public class TimeSelectActivity extends StoveBaseActivity {
     private void selectStove() {
         //检查灶是否连接
         if (HomeStove.getInstance().isStoveOffline()) {
-            ToastUtils.showShort(this, R.string.stove_offline);
+            ToastUtils.showShort(getApplicationContext(), R.string.stove_offline);
             return;
         }
         //炉头选择提示

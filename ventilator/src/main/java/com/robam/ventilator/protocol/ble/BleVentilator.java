@@ -14,6 +14,8 @@ import androidx.annotation.NonNull;
 
 import com.clj.fastble.BleManager;
 import com.clj.fastble.callback.BleGattCallback;
+import com.clj.fastble.callback.BleIndicateCallback;
+import com.clj.fastble.callback.BleMtuChangedCallback;
 import com.clj.fastble.callback.BleNotifyCallback;
 import com.clj.fastble.callback.BleScanCallback;
 import com.clj.fastble.callback.BleWriteCallback;
@@ -50,6 +52,7 @@ import com.robam.ventilator.device.VentilatorFactory;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -70,6 +73,7 @@ public class BleVentilator {
     private static final int MSG_DELAY_DISCONNECT = 1;
     private static final int MSG_QUERY_FANPAN = 2; //烟锅联动查询
     private static final int MSG_QUERY_STOVEATTRIBUTE = 3;//查询灶具状态
+    private static final int MSG_QUERY_PANATTRIBUTE = 4; //查询锅状态
 
     public interface BleCallBack {
         void onScanFinished();
@@ -129,6 +133,23 @@ public class BleVentilator {
         for (Device device: AccountInfo.getInstance().deviceList) {
             if (device.dc.equals("unknown"))
                 AccountInfo.getInstance().deviceList.remove(device);
+        }
+        //清除本地
+        boolean delete = false;
+        Set<String> subDevices = MMKVUtils.getSubDevice();
+        if (null != subDevices) {
+            Iterator<String> iterator = subDevices.iterator();
+            while (iterator.hasNext()) {
+                String json = iterator.next();
+                Device subDevice = new Gson().fromJson(json, Device.class);
+                if ("unknown".equals(subDevice.dc)) {
+                    iterator.remove();
+                    delete = true;
+                }
+            }
+            //写回去
+            if (delete)
+                MMKVUtils.setSubDevice(subDevices);
         }
     }
     //开始扫描
@@ -197,12 +218,11 @@ public class BleVentilator {
             @Override
             public void onConnectSuccess(BleDevice bleDevice, BluetoothGatt gatt, int status) {
                 LogUtils.e("onConnectSuccess " + bleDevice.getName());
-                //设置mtu
-//                BlueToothManager.setMtu(bleDevice);
+
                 //连接成功
                 addSubDevice(model, bleDevice);
-
-                getBuletoothGatt(bleDevice);
+                //设置mtu
+                setMTU(bleDevice);
 
                 if (null != bleCallBackWeakReference && null != bleCallBackWeakReference.get())
                     bleCallBackWeakReference.get().onConnectSuccess();
@@ -240,6 +260,22 @@ public class BleVentilator {
             }
         });
     }
+
+    private static void setMTU(BleDevice bleDevice) {
+        BlueToothManager.setMtu(bleDevice, new BleMtuChangedCallback() {
+            @Override
+            public void onSetMTUFailure(BleException exception) {
+                getBuletoothGatt(bleDevice);
+            }
+
+            @Override
+            public void onMtuChanged(int mtu) {
+                LogUtils.e("onMtuChanged " + mtu);
+                getBuletoothGatt(bleDevice);
+            }
+        });
+    }
+
     //添加子设备到设备列表
     public static void addSubDevice(String model, BleDevice bleDevice) {
         LogUtils.e("bleDevice mac " + bleDevice.getMac());
@@ -385,11 +421,37 @@ public class BleVentilator {
                         if (charaProp == BluetoothGattCharacteristic.PROPERTY_NOTIFY) {
                             notify(bleDevice, characteristic);
                         }
+                    } else if (uuid.toString().contains("fff5")) { //indicate
+                        int charaProp = characteristic.getProperties();
+                        LogUtils.e("uuid " + uuid);
+//                        if (charaProp == BluetoothGattCharacteristic.PROPERTY_INDICATE) {
+//                            indicate(bleDevice, characteristic);
+//                        }
                     }
                 }
                 break;
             }
         }
+    }
+    //
+    private static void indicate(BleDevice bleDevice, BluetoothGattCharacteristic characteristic) {
+        BlueToothManager.indicate(bleDevice, characteristic,
+                new BleIndicateCallback() {
+                    @Override
+                    public void onIndicateSuccess() {
+                        LogUtils.e("onIndicateSuccess");
+                    }
+
+                    @Override
+                    public void onIndicateFailure(BleException exception) {
+                        LogUtils.e("onIndicateFailure");
+                    }
+
+                    @Override
+                    public void onCharacteristicChanged(byte[] data) {
+                        LogUtils.e("mac " + bleDevice.getMac() + " onCharacteristicChanged " + StringUtils.bytes2Hex(data));
+                    }
+                });
     }
 
     //订阅通知
@@ -402,6 +464,7 @@ public class BleVentilator {
 
                         // 打开通知操作成功（UI线程）
                         LogUtils.e("onNotifySuccess");
+//                        BlueToothManager.setMtu(bleDevice);
                     }
 
                     @Override
@@ -448,6 +511,7 @@ public class BleVentilator {
                             switch(ByteUtils.toInt(ret2[BleDecoder.DECODE_CMD_ID_OFFSET])) {
                                 case BleDecoder.CMD_PAIRING_REQUEST_INT://设备应用层请求配对
                                     int biz_len = ByteUtils.toInt(ret2[11]);
+                                    resp_payload = new Byte[] {BleDecoder.RC_FAIL, 0, 0, 0, 0};
                                     if(ret2.length >= BleDecoder.DECODE_PAYLOAD_OFFSET + 5 + 1 + 3 + 1 + 12) {
                                         if(ret2.length < BleDecoder.DECODE_PAYLOAD_OFFSET + 5 + 1 + 3 + 1  + biz_len + 12) {
                                             response = false;
@@ -458,6 +522,7 @@ public class BleVentilator {
                                             int ble_type;//蓝牙产品品类
                                             System.arraycopy(ret2, BleDecoder.DECODE_PAYLOAD_OFFSET, guid,0,  5);//得到设备业务类型
                                             System.arraycopy(ret2, BleDecoder.DECODE_PAYLOAD_OFFSET + 5, int_guid, 0, 1 + 3);
+                                            System.arraycopy(BleDecoder.byteArraysToByteArrays(int_guid), 0, resp_payload, 1, 1 + 3);
                                             System.arraycopy(ret2, BleDecoder.DECODE_PAYLOAD_OFFSET + 5 + 1 + 3 + 1, biz_id, 0, biz_len);
                                             System.arraycopy(ret2, BleDecoder.DECODE_PAYLOAD_OFFSET + 5 + 1 + 3 + 1 + biz_len, guid, 5, 12);
                                             ble_type = ByteUtils.toInt(ret2[BleDecoder.DECODE_PAYLOAD_OFFSET + 5 + 1 + 3 + 1 + biz_len + 12]);
@@ -493,7 +558,6 @@ public class BleVentilator {
                                     } else {
                                         response = false;
                                     }
-                                    resp_payload = new Byte[] {BleDecoder.RC_FAIL, 0, 0, 0, 0};
                                     if(response) {
                                         resp_payload[0] = BleDecoder.RC_SUCCESS;
                                     }
@@ -537,6 +601,7 @@ public class BleVentilator {
                                                             device.dc = IDeviceType.RRQZ;
                                                         if (device.bleType == 2)
                                                             device.dc = IDeviceType.RZNG;
+                                                        device.bleVer = version; //蓝牙版本
                                                         updateSubdevice(device);
                                                         //通知上线
                                                         HomeVentilator.getInstance().notifyOnline(new String(guid), new String(biz_id), 1);
@@ -603,6 +668,7 @@ public class BleVentilator {
                                 case BleDecoder.EVENT_IH_POWER_CHANGED_INT://灶具挡位变化
                                 case BleDecoder.RESP_GET_POT_STATUS_INT://烟机查询锅状态返回
                                 case BleDecoder.CMD_COOKER_STATUS_RES: //烟机查询灶状态返回
+                                case BleDecoder.CMD_COOKER_INTERACTION_RES: //设置灶具互动参数回复
 
                                     for (Device device: AccountInfo.getInstance().deviceList) {
                                         if (bleDevice.getMac().equals(device.mac)) {
@@ -698,6 +764,13 @@ public class BleVentilator {
                                     String target_guid = device.guid;
                                     String topic = "/b/" + target_guid.substring(0, 5) + "/" + target_guid.substring(5);
                                     ble_mqtt_publish(topic, device.guid, ret2);
+
+                                    switch(ByteUtils.toInt(ret2[BleDecoder.DECODE_CMD_ID_OFFSET])) {
+                                        case BleDecoder.CMD_COOKER_CLOUD_INT: {
+                                            VentilatorFactory.getTransmitApi().decode(topic, ble_make_external_mqtt(target_guid, ret2)); //发到锅解析打点
+                                        }
+                                            break;
+                                    }
                                     break;
                                 }
                             }
@@ -766,7 +839,6 @@ public class BleVentilator {
             MMKVUtils.setSubDevice(subDevices);
         }
     }
-
     //更新本地子设备信息
     public static void updateSubdevice(Device device) {
         Set<String> subDevices = MMKVUtils.getSubDevice();
@@ -861,7 +933,12 @@ public class BleVentilator {
             } else if (null != msg && msg.arg1 == MSG_QUERY_STOVEATTRIBUTE) {
                 IPublicStoveApi iPublicStoveApi = ModulePubliclHelper.getModulePublic(IPublicStoveApi.class,
                         IPublicStoveApi.STOVE_PUBLIC);
-                iPublicStoveApi.queryAttribute((String) msg.obj);
+                if (null != iPublicStoveApi)
+                    iPublicStoveApi.queryAttribute((String) msg.obj);
+            } else if (null != msg && msg.arg1 == MSG_QUERY_PANATTRIBUTE) {
+                IPublicPanApi iPublicPanApi = ModulePubliclHelper.getModulePublic(IPublicPanApi.class, IPublicPanApi.PAN_PUBLIC);
+                if (null != iPublicPanApi)
+                    iPublicPanApi.queryAttribute((String) msg.obj);
             }
         }
     };

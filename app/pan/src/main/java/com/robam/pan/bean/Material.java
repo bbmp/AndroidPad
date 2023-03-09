@@ -3,14 +3,14 @@ package com.robam.pan.bean;
 import java.io.Serializable;
 
 public class Material implements Serializable {
-    public String name;
+    public String materialName;
     //重量
     public String standardWeight;
     //单位
-    public String standardUnit;
+    public String standardUnitName;
 
     public String getName() {
-        return name;
+        return materialName;
     }
 
     public String getStandardWeight() {
@@ -18,6 +18,6 @@ public class Material implements Serializable {
     }
 
     public String getStandardUnit() {
-        return standardUnit;
+        return standardUnitName;
     }
 }

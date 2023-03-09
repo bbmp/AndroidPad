@@ -26,6 +26,7 @@ import com.robam.cabinet.constant.CabinetWaringEnum;
 import com.robam.cabinet.device.CabinetAbstractControl;
 import com.robam.cabinet.util.CabinetCommonHelper;
 import com.robam.common.IDeviceType;
+import com.robam.common.ITerminalType;
 import com.robam.common.bean.BaseResponse;
 import com.robam.common.bean.DeviceErrorInfo;
 import com.robam.common.constant.ComnConstant;
@@ -49,6 +50,7 @@ import com.robam.steamoven.bean.SteamOven;
 import com.robam.common.module.IPublicSteamApi;
 import com.robam.steamoven.constant.Constant;
 import com.robam.steamoven.constant.SteamConstant;
+import com.robam.steamoven.constant.SteamModeEnum;
 import com.robam.steamoven.constant.SteamStateConstant;
 import com.robam.steamoven.device.SteamAbstractControl;
 import com.robam.common.device.subdevice.Stove;
@@ -286,16 +288,24 @@ public class HomePage extends VentilatorBasePage {
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 if (position == 0) { //锁屏清洗提示
                     lockClean();
+                    //上报
+                    HomeVentilator.getInstance().eventReport(ITerminalType.PAD, AccountInfo.getInstance().getUserString(), VentilatorConstant.EVENT_LOCK, 0);
                 } else { //挡位选择
                     if (position == rvFunctionAdapter.getPickPosition()) {//已经选中了
                         position = -1;
                         VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_CLOSE);
                     } else if (position == 1) {
                         VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_WEAK);
+                        //上报
+                        HomeVentilator.getInstance().eventReport(ITerminalType.PAD, AccountInfo.getInstance().getUserString(), VentilatorConstant.EVENT_GEAR, VentilatorConstant.FAN_GEAR_WEAK);
                     } else if (position == 2) {
                         VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_MID);
+                        //上报
+                        HomeVentilator.getInstance().eventReport(ITerminalType.PAD, AccountInfo.getInstance().getUserString(), VentilatorConstant.EVENT_GEAR, VentilatorConstant.FAN_GEAR_MID);
                     } else if (position == 3) {
                         VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_FRY);
+                        //上报
+                        HomeVentilator.getInstance().eventReport(ITerminalType.PAD, AccountInfo.getInstance().getUserString(), VentilatorConstant.EVENT_GEAR, VentilatorConstant.FAN_GEAR_FRY);
                     }
                     HomeVentilator.getInstance().autoWeak = false;
                 }
@@ -420,7 +430,7 @@ public class HomePage extends VentilatorBasePage {
                     if (device instanceof SteamOven) {
                         SteamOven steamOven = (SteamOven) device;
                         if(steamOven.workState == SteamStateConstant.WORK_STATE_APPOINTMENT){
-                            if(steamOven.doorState != 0 && (steamOven.mode != SteamConstant.CHUGOU || steamOven.mode != SteamConstant.GANZAO)){//门状态检测
+                            if(steamOven.doorState != 0 && steamOven.mode != SteamConstant.CHUGOU && steamOven.mode != SteamConstant.GANZAO){//门状态检测
                                 ToastInsUtils.showLong(getContext(),R.string.ventilator_close_door_prompt);
                                 return;
                             }
@@ -564,6 +574,18 @@ public class HomePage extends VentilatorBasePage {
                     autoOilClean();
             }
         });
+        //烟机关机
+        LiveDataBus.get().with(VentilatorConstant.CLOSE_VENTILATOR, Boolean.class).observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean) {
+                    if (null != drawerLayout && drawerLayout.isDrawerOpen(Gravity.LEFT))
+                        drawerLayout.closeDrawer(Gravity.LEFT);
+                    if (null != drawerLayout && drawerLayout.isDrawerOpen(Gravity.RIGHT))
+                        drawerLayout.closeDrawer(Gravity.RIGHT);
+                }
+            }
+        });
     }
     //系统设置列表
     private void settingFunList() {
@@ -575,9 +597,9 @@ public class HomePage extends VentilatorBasePage {
             settingList.add(new VenFunBean(3, "时间设置", "", -1, "com.robam.ventilator.ui.activity.DateSettingActivity"));
         settingList.add(new VenFunBean(4, "屏幕亮度", "", -1, "com.robam.ventilator.ui.activity.ScreenBrightnessActivity"));
         settingList.add(new VenFunBean(5, "智能设置", "", -1, "com.robam.ventilator.ui.activity.SmartSettingActivity"));
-        settingList.add(new VenFunBean(6, "关于售后", "", -1, "com.robam.ventilator.ui.activity.SaleServiceActivity"));
-        settingList.add(new VenFunBean(7, "关于产品", "", -1, "com.robam.ventilator.ui.activity.AboutActivity"));
-        settingList.add(new VenFunBean(8, "恢复出厂", "", -1, "com.robam.ventilator.ui.activity.ResetActivity"));
+        settingList.add(new VenFunBean(6, "关于产品", "", -1, "com.robam.ventilator.ui.activity.SaleServiceActivity"));
+//        settingList.add(new VenFunBean(7, "关于产品", "", -1, "com.robam.ventilator.ui.activity.AboutActivity"));
+        settingList.add(new VenFunBean(7, "恢复出厂", "", -1, "com.robam.ventilator.ui.activity.ResetActivity"));
 
         settingAdapter.setList(settingList);
     }
@@ -795,6 +817,8 @@ public class HomePage extends VentilatorBasePage {
                     MMKVUtils.setFanRuntime(0);
                 }
             }, R.id.tv_cancel, R.id.tv_ok);
+            //上报
+            HomeVentilator.getInstance().eventReport(ITerminalType.PAD, AccountInfo.getInstance().getUserString(), VentilatorConstant.EVENT_CLEAN, 0);
         }
         oilClean.show();
 
@@ -846,7 +870,7 @@ public class HomePage extends VentilatorBasePage {
      * @return
      */
     private boolean toWaringPage(Device device){
-        if(device.status == Device.OFFLINE){
+        if(device == null || device.status == Device.OFFLINE){
             return false;
         }
         if(device instanceof DishWasher){
@@ -872,7 +896,33 @@ public class HomePage extends VentilatorBasePage {
             DeviceErrorInfo deviceErrorInfo = DeviceWarnInfoManager.getInstance().getDeviceErrorInfo(IDeviceType.RZKY, deviceTypeId, device.faultId);
             if(deviceErrorInfo != null){
                 SteamOven steamOven = (SteamOven) device;
-                if(deviceErrorInfo.code != Constant.WARING_CODE_11 || (deviceErrorInfo.code == Constant.WARING_CODE_11 && steamOven.getResidueTotalTime() > 0)){
+                if(deviceErrorInfo.code == Constant.WARING_CODE_11){//缺水，需要在工作中才显示
+                    if(steamOven.powerState != SteamStateConstant.POWER_STATE_OFF &&
+                            (steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT ||
+                                    steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT_PAUSE ||
+                                    steamOven.workState == SteamStateConstant.WORK_STATE_WORKING ||
+                                    steamOven.workState == SteamStateConstant.WORK_STATE_WORKING_PAUSE ||
+                                    steamOven.workState == SteamStateConstant.WORK_STATE_APPOINTMENT)){
+                        Intent intent = new Intent(getContext(), com.robam.steamoven.ui.activity.WaringActivity.class);
+                        boolean needWater;
+                        if(steamOven.recipeId != 0){
+                            needWater = RecipeManager.getInstance().needWater(IDeviceType.SERIES_STEAM, steamOven.recipeId);
+                        }else{
+                            needWater = SteamModeEnum.needWater(steamOven.mode);
+                            if(!needWater && steamOven.steam != 0){
+                                needWater = SteamModeEnum.isManuallyAddSteam(steamOven.mode);
+                            }
+                        }
+                        if(needWater){
+                            intent.putExtra(ComnConstant.WARING_FROM,1);
+                            intent.putExtra(ComnConstant.WARING_CODE,device.faultId);
+                            intent.putExtra(ComnConstant.WARING_GUID,device.guid);
+                            startActivity(intent);
+                            return true;
+                        }
+                    }
+                }
+                if(deviceErrorInfo.code != Constant.WARING_CODE_11){
                     Intent intent = new Intent(getContext(), com.robam.steamoven.ui.activity.WaringActivity.class);
                     intent.putExtra(ComnConstant.WARING_FROM,1);
                     intent.putExtra(ComnConstant.WARING_CODE,device.faultId);

@@ -13,18 +13,15 @@ import com.robam.cabinet.bean.WorkModeBean;
 import com.robam.cabinet.constant.CabinetConstant;
 import com.robam.cabinet.constant.CabinetEnum;
 import com.robam.cabinet.constant.Constant;
-import com.robam.cabinet.constant.EventConstant;
 import com.robam.cabinet.device.HomeCabinet;
 import com.robam.cabinet.ui.adapter.RvTimeAdapter;
 import com.robam.cabinet.util.CabinetCommonHelper;
+import com.robam.cabinet.util.MqttSignal;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
-import com.robam.common.bean.MqttDirective;
 import com.robam.common.mqtt.MsgKeys;
 import com.robam.common.ui.helper.PickerLayoutManager;
 import com.robam.common.utils.ClickUtils;
-import com.robam.common.utils.LogUtils;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,6 +39,7 @@ public class ModeSelectActivity extends CabinetBaseActivity {
     public int directive_offset = 30000;
     public static   final int  POWER_ON_OFFSET=  300;
     private TextView btStart;
+    private MqttSignal mqttSignal;
 
     @Override
     protected int getLayoutId() {
@@ -154,6 +152,8 @@ public class ModeSelectActivity extends CabinetBaseActivity {
             //工作时长
             HomeCabinet.getInstance().workHours = Integer.parseInt(lists.get(0));
         }
+        mqttSignal = new MqttSignal();
+        mqttSignal.startLoop();
     }
 
     @Override
@@ -270,5 +270,23 @@ public class ModeSelectActivity extends CabinetBaseActivity {
             }
             return timeDur;
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mqttSignal.pageShow();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mqttSignal.pageHide();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mqttSignal.clear();
     }
 }

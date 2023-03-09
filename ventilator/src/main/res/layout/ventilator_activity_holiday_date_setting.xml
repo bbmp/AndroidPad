@@ -108,7 +108,7 @@
             android:layout_marginRight="@dimen/dp_27"
             android:background="@drawable/cabinet_shape_button_bg_cancel"
             android:gravity="center"
-            android:text="@string/cabinet_cancel"
+            android:text="@string/ventilator_cancel"
             android:textColor="@color/cabinet_white"
             android:textSize="@dimen/sp_30" />
 
@@ -119,7 +119,7 @@
             android:layout_marginRight="@dimen/dp_40"
             android:background="@drawable/ventilator_shape_button_bg_ok"
             android:gravity="center"
-            android:text="@string/pan_ok"
+            android:text="@string/ventilator_ok"
             android:textColor="@color/ventilator_white"
             android:textSize="@dimen/sp_30" />
     </androidx.appcompat.widget.LinearLayoutCompat>

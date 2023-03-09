@@ -562,7 +562,7 @@ public class SteamCommandHelper {
     public static boolean checkSteamState(Context context, SteamOven curDevice,int modeCode,boolean needCheckDescale){
         boolean state = true;
         //int promptResId = getRunPromptResId(curDevice, modeCode, SteamModeEnum.needWater(modeCode)||SteamModeEnum.isManuallyAddSteam(modeCode),needCheckDescale);
-        int promptResId = getRunPromptResId(curDevice, modeCode, SteamModeEnum.needWater(modeCode),needCheckDescale);//TODO(暂不考虑手动加湿)
+        int promptResId = getRunPromptResId(curDevice, modeCode, SteamModeEnum.needWater(modeCode),needCheckDescale);
         if(promptResId != -1){
             if(needShowPrompt()){
                 ToastInsUtils.showLong(context,promptResId);
@@ -596,7 +596,7 @@ public class SteamCommandHelper {
 
 
     public static int getRemindPromptResId(SteamOven curDevice,boolean needWater){
-//        if(curDevice.doorState != 0 && (curDevice.mode != SteamConstant.CHUGOU || curDevice.mode != SteamConstant.GANZAO)){//门状态检测
+//        if(curDevice.doorState != 0 && curDevice.mode != SteamConstant.CHUGOU && curDevice.mode != SteamConstant.GANZAO){//门状态检测
 //            return R.string.steam_close_door_prompt;
 //        }
         if(needWater){
@@ -620,7 +620,7 @@ public class SteamCommandHelper {
     }
 
     public static int getRemindPromptResIdForAppoint(SteamOven curDevice,boolean needWater){
-        if(curDevice.doorState != 0 && (curDevice.mode != SteamConstant.CHUGOU || curDevice.mode != SteamConstant.GANZAO)){//门状态检测
+        if(curDevice.doorState != 0 && curDevice.mode != SteamConstant.CHUGOU && curDevice.mode != SteamConstant.GANZAO){//门状态检测
             return R.string.steam_close_door_prompt;
         }
         if(needWater){
@@ -643,10 +643,13 @@ public class SteamCommandHelper {
         if(curDevice == null || curDevice.status == Device.OFFLINE){
            return R.string.steam_offline;
         }
-//        if(curDevice.powerState == SteamStateConstant.POWER_STATE_OFF){
-//            return R.string.steam_power_off;
-//        }
-        if(curDevice.doorState != 0 && (modeCode != SteamConstant.CHUGOU || modeCode != SteamConstant.GANZAO)){//门状态检测
+        /*if(curDevice.powerCtrl == SteamStateConstant.POWER_CTRL_OFF){//curDevice.powerState == SteamStateConstant.POWER_STATE_OFF
+            return R.string.steam_power_off;
+        }*/
+        /*if(curDevice.powerState == SteamStateConstant.POWER_STATE_OFF){//curDevice.powerState == SteamStateConstant.POWER_STATE_OFF
+            return R.string.steam_power_off;
+        }*/
+        if(curDevice.doorState != 0 && modeCode != SteamConstant.CHUGOU && modeCode != SteamConstant.GANZAO){//门状态检测
             return R.string.steam_close_door_prompt;
         }
         if(needWater){

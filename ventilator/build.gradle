@@ -20,13 +20,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "String", "MODEL", "\"CXW-260-5068S\""
-            buildConfigField "String", "VERSION_NAME", "\"V1.0.0\""
-            buildConfigField "int", "VERSION_CODE", "1"
         }
         debug {
             buildConfigField "String", "MODEL", "\"CXW-260-5068S\""
-            buildConfigField "String", "VERSION_NAME", "\"V1.0.0\""
-            buildConfigField "int", "VERSION_CODE", "1"
         }
     }
     compileOptions {
@@ -62,7 +58,8 @@ dependencies {
     //Mqtt集成
     api "org.eclipse.paho:org.eclipse.paho.client.mqttv3:$versions.org_eclipse_paho_client_mqttv3"
     api "org.eclipse.paho:org.eclipse.paho.android.service:$versions.org_eclipse_paho_android_service"
-    api "com.github.Jasonchenlijian:FastBle:$versions.FastBle"
+//    api "com.github.Jasonchenlijian:FastBle:$versions.FastBle"
+    api project(path: ':app:FastBleLib')
     // 腾讯 MMKV：https://github.com/Tencent/MMKV
     api "com.tencent:mmkv-static:$versions.mmkv"
 

@@ -2,6 +2,7 @@ package com.robam.common.manager;
 
 import com.robam.common.bean.DeviceErrorInfo;
 import com.robam.common.utils.CurveUtils;
+import com.robam.common.utils.LogUtils;
 import com.robam.common.utils.StringUtils;
 import com.tencent.mmkv.MMKV;
 import org.json.JSONException;
@@ -128,6 +129,7 @@ public class DeviceWarnInfoManager {
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
+                    LogUtils.i("Thread downFile " + Thread.currentThread().getId());
                     String content = response.body().string();
                     saveDeviceErrorInfo(content);
                     if(StringUtils.isNotBlank(content)){

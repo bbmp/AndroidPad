@@ -30,6 +30,7 @@ import com.robam.steamoven.device.HomeSteamOven;
 import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.ui.dialog.SteamCommonDialog;
 import com.robam.steamoven.utils.SkipUtil;
+import com.robam.steamoven.utils.TextSpanUtil;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -96,9 +97,6 @@ public class AppointingActivity extends SteamBaseActivity {
                     if(toWaringPage(steamOven)){
                         return;
                     }
-                    if(toRemandPageForAppoint(steamOven)){
-                        return;
-                    }
                     switch (steamOven.powerState){
                         case SteamStateConstant.POWER_STATE_AWAIT:
                         case SteamStateConstant.POWER_STATE_ON:
@@ -108,13 +106,22 @@ public class AppointingActivity extends SteamBaseActivity {
                             }else if(steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT ||
                                     steamOven.workState == SteamStateConstant.WORK_STATE_PREHEAT_PAUSE  ||
                                     steamOven.workState == SteamStateConstant.WORK_STATE_WORKING ||
-                                    steamOven.workState == SteamStateConstant.WORK_STATE_WORKING ){
+                                    steamOven.workState == SteamStateConstant.WORK_STATE_WORKING_PAUSE ){
                                 //toWorkPage();
+                                if(toRemandPageForAppoint(steamOven)){
+                                    return;
+                                }
                                 SkipUtil.toWorkPage(steamOven,AppointingActivity.this);
                             }else{
+                                if(toRemandPageForAppoint(steamOven)){
+                                    return;
+                                }
+                                SkipUtil.toWorkPage(steamOven,AppointingActivity.this);
                                 //主动执行立即开始工作，等待10秒，在结束页面
-                                if(!isToWork || System.currentTimeMillis() - toWorkTimeMil > TO_WORK_WAIT_MAX_TIME){
+                                if(isToWork && System.currentTimeMillis() - toWorkTimeMil > TO_WORK_WAIT_MAX_TIME){
                                     goHome();
+                                }else{
+                                    finish();
                                 }
                             }
                             break;
@@ -152,6 +159,7 @@ public class AppointingActivity extends SteamBaseActivity {
             Intent intent = new Intent(this, RemindActivity.class);
             intent.putExtra(Constant.REMIND_BUS_CODE,remindResId);
             intent.putExtra(Constant.REMIND_NEED_WATER,needWater);
+            intent.putExtra(Constant.REMIND_NEED_AUTO_CLOSE,true);
             startActivity(intent);
             return true;
         }
@@ -190,7 +198,7 @@ public class AppointingActivity extends SteamBaseActivity {
         }else{
             tvSteam.setVisibility(segment.steam != 0 ? View.VISIBLE:View.GONE);
             if(segment.steam != 0){
-                defTemp.setPadding(defTemp.getPaddingLeft(),tempPaddingTop,defTemp.getPaddingRight(),defTemp.getPaddingBottom());
+                //defTemp.setPadding(defTemp.getPaddingLeft(),tempPaddingTop,defTemp.getPaddingRight(),defTemp.getPaddingBottom());
                 tvSteam.setText(SteamOvenSteamEnum.match(segment.steam)+"蒸汽");
             }
             defTemp.setText(getSpanTemp(segment.defTemp+""));
@@ -221,15 +229,18 @@ public class AppointingActivity extends SteamBaseActivity {
     @Override
     public void onClick(View view) {
         super.onClick(view);
-        LogUtils.i("AppointingActivity onClick ...");
+        //LogUtils.i("AppointingActivity onClick ...");
         int id = view.getId();
         if (id == R.id.ll_left) {
             //结束倒计时
             showFinishAppointDialog();
         } else if (id == R.id.iv_start) {
-            if(!SteamCommandHelper.checkSteamState(this,getSteamOven(),segment.code,true)){
+            if(toRemainPage(getSteamOven(),segment.code,false)){
                 return;
             }
+//            if(!SteamCommandHelper.checkSteamState(this,getSteamOven(),segment.code,true)){
+//                return;
+//            }
             startWork();
             isToWork = true;
             toWorkTimeMil = System.currentTimeMillis();
@@ -242,7 +253,7 @@ public class AppointingActivity extends SteamBaseActivity {
     private void showFinishAppointDialog(){
         SteamCommonDialog steamCommonDialog = new SteamCommonDialog(this);
         steamCommonDialog.setContentText(R.string.steam_end_appoint);
-        steamCommonDialog.setOKText(R.string.steam_finish_now);
+        steamCommonDialog.setOKText(R.string.steam_finish_appoint);
         steamCommonDialog.setListeners(v -> {
             steamCommonDialog.dismiss();
             if(v.getId() == R.id.tv_ok){
@@ -312,6 +323,7 @@ public class AppointingActivity extends SteamBaseActivity {
         }
     }
 
+    //TextSpanUtil.getSpan(segment.duration,Constant.UNIT_TIME_MIN)
     private SpannableString getSpanTemp(String temp){
         SpannableString spannableString = new SpannableString(temp+Constant.UNIT_TEMP);
         SuperscriptSpan superscriptSpan = new SuperscriptSpan();
@@ -321,6 +333,7 @@ public class AppointingActivity extends SteamBaseActivity {
     }
 
     private SpannableString getSpan(int remainTime){
+      /*  TextSpanUtil.getSpan(segment.duration,Constant.UNIT_TIME_MIN)
         String time = TimeUtils.secToHourMinUp(remainTime);
         SpannableString spannableString = new SpannableString(time);
         int pos = time.indexOf("h");
@@ -329,6 +342,21 @@ public class AppointingActivity extends SteamBaseActivity {
         pos = time.indexOf("min");
         if (pos >= 0)
             spannableString.setSpan(new RelativeSizeSpan(0.5f), pos, pos + 3, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        return spannableString;
+        return spannableString;*/
+        return TextSpanUtil.getSpan(remainTime,Constant.UNIT_TIME_MIN);
+    }
+
+    private  boolean toRemainPage(SteamOven steamOven,int curModelCode,boolean needAuthClose){
+        if(steamOven == null){
+            showRemindPage(R.string.steam_offline,false,-1,false,needAuthClose);
+            return true;
+        }
+        boolean needWater = SteamModeEnum.needWater(curModelCode);
+        int promptResId = SteamCommandHelper.getRunPromptResId(steamOven, curModelCode, SteamModeEnum.needWater(curModelCode),needAuthClose);
+        if(promptResId != -1){
+            showRemindPage(promptResId,needWater,curModelCode,true,needAuthClose);
+            return true;
+        }
+        return false;
     }
 }

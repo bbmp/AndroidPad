@@ -2,6 +2,7 @@ package com.robam.steamoven.ui.activity;
 
 import android.content.Intent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,8 +20,12 @@ import com.robam.common.bean.Device;
 import com.robam.common.bean.UserInfo;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
+import com.robam.common.utils.DeviceUtils;
+import com.robam.common.utils.StringUtils;
+import com.robam.common.utils.ToastUtils;
 import com.robam.steamoven.R;
 import com.robam.steamoven.base.SteamBaseActivity;
+import com.robam.steamoven.bean.CurveData;
 import com.robam.steamoven.bean.SteamCurveDetail;
 import com.robam.steamoven.bean.SteamOven;
 import com.robam.steamoven.constant.SteamConstant;
@@ -30,7 +35,9 @@ import com.robam.steamoven.http.CloudHelper;
 import com.robam.steamoven.protocol.SteamCommandHelper;
 import com.robam.steamoven.response.GetCurveCookbooksRes;
 import com.robam.steamoven.ui.adapter.RvCurveAdapter;
+import com.robam.steamoven.ui.dialog.SteamCommonDialog;
 import com.robam.steamoven.utils.SkipUtil;
+import com.robam.steamoven.utils.SteamPageData;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -54,7 +61,7 @@ public class CurveActivity extends SteamBaseActivity {
     protected void initView() {
         showLeft();
         showCenter();
-        showRight();
+        //showRight();
         //showRightCenter();
         tvRight = findViewById(R.id.tv_right);
         tvRight.setText(R.string.steam_delete);
@@ -70,6 +77,32 @@ public class CurveActivity extends SteamBaseActivity {
 
         rvCurveAdapter.setOnItemClickListener((adapter, view, position) -> {
             //删除状态不响应
+            if (rvCurveAdapter.getStatus() == RvCurveAdapter.STATUS_DELETE){
+                SteamCurveDetail steamCurveDetail = (SteamCurveDetail) adapter.getItem(position);
+                steamCurveDetail.setSelected(!steamCurveDetail.isSelected());
+                if (isAll()) {
+                    ivRight.setImageResource(R.drawable.steam_selected);
+                    rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_ALL);
+                    ivRight.setImageResource(R.drawable.steam_selected);
+                }else{
+                    rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_DELETE);
+                    ivRight.setImageResource(R.drawable.steam_unselected);
+                }
+                rvCurveAdapter.notifyDataSetChanged();
+                return;
+            }
+            if(rvCurveAdapter.getStatus() == RvCurveAdapter.STATUS_ALL){
+                SteamCurveDetail steamCurveDetail = (SteamCurveDetail) adapter.getItem(position);
+                steamCurveDetail.setSelected(!steamCurveDetail.isSelected());
+                if(!steamCurveDetail.isSelected()){
+                    rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_DELETE);
+                    ivRight.setImageResource(R.drawable.steam_unselected);
+                }else{
+                    ivRight.setImageResource(R.drawable.steam_selected);
+                }
+                rvCurveAdapter.notifyDataSetChanged();
+                return;
+            }
             if (rvCurveAdapter.getStatus() != RvCurveAdapter.STATUS_BACK)
                 return;
             //曲线选中页
@@ -89,15 +122,18 @@ public class CurveActivity extends SteamBaseActivity {
                     steamCurveDetail.setSelected(false);
                     ivRight.setImageResource(R.drawable.steam_unselected);
                     rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_DELETE);
+                    ivRight.setImageResource(R.drawable.steam_unselected);
                 } else if (rvCurveAdapter.getStatus() == RvCurveAdapter.STATUS_DELETE) {
                     steamCurveDetail.setSelected(!steamCurveDetail.isSelected());
                     //检测是否全选
                     if (isAll()) {
                         ivRight.setImageResource(R.drawable.steam_selected);
                         rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_ALL);
-                    }
-                    else
+                        ivRight.setImageResource(R.drawable.steam_selected);
+                    }else{
                         rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_DELETE);
+                        ivRight.setImageResource(R.drawable.steam_unselected);
+                    }
                 }
             }
         });
@@ -131,18 +167,33 @@ public class CurveActivity extends SteamBaseActivity {
                 }
             }
         });
+
+        SteamPageData.getInstance().getBsData().observe(this, bsData->{
+            if(bsData == null){
+                return;
+            }
+            if(StringUtils.isNotEmpty(bsData.content) && bsData.bsCode != 0 && rvCurveAdapter != null){
+                List<SteamCurveDetail> data = rvCurveAdapter.getData();
+                if(data != null){
+                    for(SteamCurveDetail curveDetail : data){
+                        if(curveDetail.curveCookbookId == bsData.bsCode){
+                            curveDetail.name = bsData.content;
+                            rvCurveAdapter.notifyDataSetChanged();
+                            break;
+                        }
+                    }
+                }
+            }
+        });
     }
 
     @Override
     protected void initData() {
-        AccountInfo.getInstance().getUser().observe(this, new Observer<UserInfo>() {
-            @Override
-            public void onChanged(UserInfo userInfo) {
-                if (null != userInfo)
-                    getCurveList(userInfo);
-                else
-                    setData(null);
-            }
+        AccountInfo.getInstance().getUser().observe(this, userInfo -> {
+            if (null != userInfo)
+                getCurveList(userInfo);
+            else
+                setData(null);
         });
     }
 
@@ -160,24 +211,26 @@ public class CurveActivity extends SteamBaseActivity {
                         setData(null);
                     }
                 });
-
     }
 
     //设置烹饪曲线
     private void setData(GetCurveCookbooksRes getCurveCookbooksRes) {
         steamCurveDetails.clear();
         //需过滤掉其他曲线
-        if (null != getCurveCookbooksRes && null != getCurveCookbooksRes.payload) {
-            for (SteamCurveDetail steamCurveDetail : getCurveCookbooksRes.payload) {
-                if (steamCurveDetail.deviceParams.contains(IDeviceType.RZKY))
+        if (null != getCurveCookbooksRes && null != getCurveCookbooksRes.data) {
+            for (SteamCurveDetail steamCurveDetail : getCurveCookbooksRes.data) {
+                if (steamCurveDetail.deviceParams != null && steamCurveDetail.deviceParams.contains(IDeviceType.RZKY) && steamCurveDetail.deviceParams.contains(IDeviceType.SERIES_STEAM)){
                     steamCurveDetails.add(steamCurveDetail);
+                }
             }
         }
 
         rvCurveAdapter.setList(steamCurveDetails);
         //是否显示删除
-        if (steamCurveDetails.size() > 1) {
+        if (steamCurveDetails.size() >= 1) {
             showRight();
+        }else{
+            hideRight();
         }
     }
 
@@ -217,17 +270,24 @@ public class CurveActivity extends SteamBaseActivity {
             } else
                 finish();
         } else if (id == R.id.tv_delete) {
-            //确认删除
-            delete();
-            //设置非删除状态
-            if (steamCurveDetails.size() <= 1)
-                hideRight();
-            tvRight.setText(R.string.steam_delete);
-            ivRight.setImageResource(R.drawable.steam_delete);
-
-            allUnselect();
-            rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_BACK);
-            tvDelete.setVisibility(View.INVISIBLE);
+            if(rvCurveAdapter == null){
+                ToastUtils.showLong(this,R.string.steam_curve_no_data_prompt);
+                return;
+            }
+            boolean hasSelected = false;
+            List<SteamCurveDetail> data = rvCurveAdapter.getData();
+            if(data != null){
+                for(SteamCurveDetail curveDetail : data){
+                    if(curveDetail.isSelected()){
+                        hasSelected = true;
+                    }
+                }
+            }
+            if(!hasSelected){
+                ToastUtils.showLong(this,R.string.steam_curve_del_choice_prompt);
+                return;
+            }
+            showDelDialog();
         }
     }
     //全选
@@ -253,7 +313,6 @@ public class CurveActivity extends SteamBaseActivity {
     //删除
     private void delete() {
         UserInfo info = AccountInfo.getInstance().getUser().getValue();
-
         Iterator<SteamCurveDetail> iterator = steamCurveDetails.iterator();
         while (iterator.hasNext()) {
             SteamCurveDetail steamCurveDetail = iterator.next();
@@ -278,4 +337,38 @@ public class CurveActivity extends SteamBaseActivity {
         rvCurveAdapter.setList(steamCurveDetails);
         rvCurveAdapter.notifyDataSetChanged();
     }
+
+    SteamCommonDialog delDialog;
+    private void showDelDialog(){
+        delDialog = new SteamCommonDialog(this);
+        delDialog.setContentText(R.string.steam_curve_del_prompt);
+        delDialog.setOKText(R.string.steam_title_delete);
+        delDialog.setListeners(v -> {
+            delDialog.dismiss();
+            if(v.getId() == R.id.tv_ok){
+                //确认删除
+                delete();
+                //设置非删除状态
+                if (steamCurveDetails.size() < 1)
+                    hideRight();
+                tvRight.setText(R.string.steam_delete);
+                ivRight.setImageResource(R.drawable.steam_delete);
+
+                allUnselect();
+                rvCurveAdapter.setStatus(RvCurveAdapter.STATUS_BACK);
+                tvDelete.setVisibility(View.INVISIBLE);
+            }
+        },R.id.tv_cancel,R.id.tv_ok);
+        delDialog.show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(delDialog != null && delDialog.isShow()){
+            delDialog.dismiss();
+        }
+        SteamPageData.getInstance().getBsData().setValue(null);
+    }
+
 }

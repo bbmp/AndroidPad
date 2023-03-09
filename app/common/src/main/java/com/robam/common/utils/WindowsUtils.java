@@ -168,6 +168,7 @@ public class WindowsUtils {
                 null);
 
         ivFloat = view.findViewById(R.id.iv_float);
+        ivFloat.setAlpha(0.5f);
         ivFloat.setOnClickListener(listener);
 
         ivFloat.setOnTouchListener(new View.OnTouchListener() {
@@ -200,6 +201,7 @@ public class WindowsUtils {
                         lastY = event.getRawY();
 
                         drag = false;
+                        ivFloat.setAlpha(1.0f);
 
                         break;
 
@@ -237,6 +239,7 @@ public class WindowsUtils {
                         break;
 
                     case MotionEvent.ACTION_UP:
+                        ivFloat.setAlpha(0.5f);
                         if (drag)  //如果是拖动拦截
                             return true;
                         break;

@@ -2,6 +2,7 @@ package com.robam.pan.ui.activity;
 
 import androidx.constraintlayout.widget.Group;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.graphics.Bitmap;
@@ -18,6 +19,8 @@ import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.UserInfo;
 import com.robam.common.http.RetrofitCallback;
 import com.robam.common.ui.helper.GridSpaceItemDecoration;
+import com.robam.common.ui.helper.HorizontalSpaceItemDecoration;
+import com.robam.common.ui.helper.VerticalSpaceItemDecoration;
 import com.robam.common.utils.ImageUtils;
 import com.robam.common.utils.QrUtils;
 import com.robam.pan.R;
@@ -35,6 +38,8 @@ import java.util.List;
 
 public class RecipeDetailActivity extends PanBaseActivity {
     private RecyclerView rvMaterial;
+
+    private RecyclerView rvCondiment;
     private Group group1, group2;
     private TextView tvQrcode, tvMaterial;
     //菜谱图片
@@ -46,6 +51,8 @@ public class RecipeDetailActivity extends PanBaseActivity {
     //时长
     private TextView tvTime;
     private RvMaterialAdapter rvMaterialAdapter;
+
+    private RvMaterialAdapter rvCondimentAdapter;
     private RequestOptions maskOption = new RequestOptions()
             .centerCrop()
             .placeholder(R.drawable.pan_main_item_bg) //预加载图片
@@ -77,6 +84,7 @@ public class RecipeDetailActivity extends PanBaseActivity {
         if (null != getIntent())
             recipeId = getIntent().getLongExtra(PanConstant.EXTRA_RECIPE_ID, 0);
         rvMaterial = findViewById(R.id.rv_material);
+        rvCondiment = findViewById(R.id.rv_condiment);
         group1 = findViewById(R.id.pan_group1);
         group2 = findViewById(R.id.pan_group2);
         tvRecipeName = findViewById(R.id.tv_recipe_name);
@@ -86,10 +94,13 @@ public class RecipeDetailActivity extends PanBaseActivity {
         tvMaterial = findViewById(R.id.tv_material);
         ivQrcode = findViewById(R.id.iv_qrcode);// 二维码
         ivRecipe = findViewById(R.id.iv_recipe_img);
-        rvMaterial.setLayoutManager(new GridLayoutManager(this, 2));
-        rvMaterial.addItemDecoration(new GridSpaceItemDecoration((int) getResources().getDimension(com.robam.common.R.dimen.dp_126)));
+        rvMaterial.setLayoutManager(new LinearLayoutManager(this));
+        rvCondiment.setLayoutManager(new LinearLayoutManager(this));
+//        rvMaterial.addItemDecoration(new VerticalSpaceItemDecoration());
         rvMaterialAdapter = new RvMaterialAdapter();
+        rvCondimentAdapter = new RvMaterialAdapter();
         rvMaterial.setAdapter(rvMaterialAdapter);
+        rvCondiment.setAdapter(rvCondimentAdapter);
         setOnClickListener(R.id.ll_left_center, R.id.tv_qrcode, R.id.tv_material);
     }
 
@@ -126,11 +137,12 @@ public class RecipeDetailActivity extends PanBaseActivity {
 
     //获取菜谱详情
     private void getRecipeDetail() {
-        CloudHelper.getRecipeDetail(this, recipeId, "1", "1", GetRecipeDetailRes.class, new RetrofitCallback<GetRecipeDetailRes>() {
+        UserInfo userInfo = AccountInfo.getInstance().getUser().getValue();
+        CloudHelper.getRecipeDetail(this, (userInfo != null) ? userInfo.id:0, recipeId, GetRecipeDetailRes.class, new RetrofitCallback<GetRecipeDetailRes>() {
             @Override
             public void onSuccess(GetRecipeDetailRes getRecipeDetailRes) {
-                if (null != getRecipeDetailRes && null != getRecipeDetailRes.cookbook)
-                    setData(getRecipeDetailRes.cookbook);
+                if (null != getRecipeDetailRes && null != getRecipeDetailRes.data)
+                    setData(getRecipeDetailRes.data);
             }
 
             @Override
@@ -151,19 +163,22 @@ public class RecipeDetailActivity extends PanBaseActivity {
         //时间
         ivTime.setImageResource(R.drawable.pan_time);
         //图片
-        ImageUtils.loadImage(this, panRecipeDetail.imgSmall, maskOption, ivRecipe);
+        ImageUtils.loadImage(this, panRecipeDetail.imgCover11, maskOption, ivRecipe);
         //名字
         tvRecipeName.setText(panRecipeDetail.name);
         //时长
         tvTime.setText("时间   " + panRecipeDetail.needTime / 60 + "min");
         //食材
         List<Material> materials = new ArrayList<>();
-        if (null != panRecipeDetail.materials && null != panRecipeDetail.materials.main)
-            materials.addAll(panRecipeDetail.materials.main);
+        if (null != panRecipeDetail.materialDtoList) {
+//            materials.addAll(panRecipeDetail.materialDtoList);
+            rvMaterialAdapter.setList(panRecipeDetail.materialDtoList);
+        }
 
-        if (null != panRecipeDetail.materials && null != panRecipeDetail.materials.accessory)
-            materials.addAll(panRecipeDetail.materials.accessory);
-        rvMaterialAdapter.setList(materials);
+        if (null != panRecipeDetail.condimentDtoList) {
+//            materials.addAll(panRecipeDetail.condimentDtoList);
+            rvCondimentAdapter.setList(panRecipeDetail.condimentDtoList);
+        }
 
     }
 }

@@ -2,8 +2,10 @@ package com.robam.ventilator.ui.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Paint;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -25,23 +27,33 @@ import com.robam.ventilator.device.HomeVentilator;
 import com.robam.ventilator.factory.VentilatorDialogFactory;
 import com.robam.ventilator.http.CloudHelper;
 import com.robam.ventilator.response.AppTypeRes;
+import com.robam.ventilator.ui.dialog.UpdateDialog;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class SaleServiceActivity extends VentilatorBaseActivity {
+    private TextView tvSys;
     private TextView tvSysV;
     private TextView tvModelV;
     private TextView tvNewVersion;
     private String versionUrl;
-    private IDialog updateDialog, progressDialog;
+    private IDialog updateDialog;
+    private UpdateDialog progressDialog;
     int curProgress = 0;
     String FIRMWARE = "firmware";
     String APK = "apk";
     private String updateMode = FIRMWARE;
+    private int COUNT = 5;
+    private long DURATION = 3* 1000;
+    private long[] mHits = new long[COUNT];
+
+    private long[] mBuildTime = new long[COUNT];
 
     @Override
     protected int getLayoutId() {
@@ -53,6 +65,7 @@ public class SaleServiceActivity extends VentilatorBaseActivity {
         showLeft();
         showCenter();
         findViewById(R.id.tc_center).setVisibility(View.GONE);
+        tvSys = findViewById(R.id.tv_sys);
         tvSysV = findViewById(R.id.tv_sys_v);
         tvModelV = findViewById(R.id.tv_model_v);
         tvNewVersion = findViewById(R.id.tv_newVersion);
@@ -60,17 +73,61 @@ public class SaleServiceActivity extends VentilatorBaseActivity {
         tvNewVersion.getPaint().setAntiAlias(true);//抗锯齿
         TextView tvCenter = findViewById(R.id.tv_center);
         tvCenter.setVisibility(View.VISIBLE);
-        tvCenter.setText(R.string.ventilator_about_saleservice);
+        tvCenter.setText(R.string.ventilator_about_product);
         setOnClickListener(R.id.ll_left, R.id.tv_newVersion);
     }
 
     @Override
     protected void initData() {
-        tvSysV.setText(BuildConfig.VERSION_NAME);
+//        try {
+//            String app_ver = getPackageManager().getPackageInfo(this.getPackageName(), 0).versionName;
+//            tvSysV.setText(app_ver);
+//        } catch (Exception e) {}
+        tvSysV.setText(Plat.getPlatform().getFirmwareVersion());
+
         tvModelV.setText(BuildConfig.MODEL);
+        tvSys.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.arraycopy(mBuildTime, 1, mBuildTime, 0, mBuildTime.length - 1);
+                mBuildTime[mBuildTime.length - 1] = System.currentTimeMillis();
+                if (mBuildTime[0] >= (System.currentTimeMillis() - DURATION)) {
+                    long[] hits = new long[COUNT];
+                    System.arraycopy(hits, 0, mBuildTime, 0, mBuildTime.length);
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    Date date = new Date(Build.TIME);
+                    ToastUtils.showLong(getApplicationContext(), simpleDateFormat.format(date));
+                }
+            }
+        });
+        tvSysV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);
+                mHits[mHits.length - 1] = System.currentTimeMillis();
+                if (mHits[0] >= (System.currentTimeMillis() - DURATION)) {
+                    long[] hits = new long[COUNT];
+                    System.arraycopy(hits, 0, mHits, 0, mHits.length);
+                    goHome();
+                }
+            }
+        });
 
         checkFirmware();
     }
+    //进入工程测试
+    private void goHome() {
+        ComponentName componetName = new ComponentName(
+//这个是另外一个应用程序的包名
+                "com.ayst.factorytest",
+//这个参数是要启动的Activity
+                "com.ayst.factorytest.MainActivity");
+
+        Intent intent = new Intent();
+        intent.setComponent(componetName);
+        startActivity(intent);
+    }
+
     //检查固件
     private void checkFirmware() {
         CloudHelper.checkAppVersion(this, "RKPAD", Plat.getPlatform().getDt(), FIRMWARE, AppTypeRes.class, new RetrofitCallback<AppTypeRes>(){
@@ -145,8 +202,7 @@ public class SaleServiceActivity extends VentilatorBaseActivity {
         @Override
         public void run() {
             if (null != progressDialog) {
-                ProgressBar progressBar = progressDialog.getRootView().findViewById(R.id.sbr_progress);
-                progressBar.setProgress(curProgress);
+                progressDialog.setProgress(curProgress);
             }
         }
     };
@@ -239,16 +295,25 @@ public class SaleServiceActivity extends VentilatorBaseActivity {
                                     }
                                 } else {
                                     //静默安装
-                                    if (installSilent(path)) {
-                                        //安装成功，重启应用
-                                        Intent intent = new Intent();
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        intent.setClassName(getApplicationContext(), "com.robam.androidpad.MainActivity");
-                                        startActivity(intent);
+                                    ComponentName componetName = new ComponentName(
+                                            //这个是另外一个应用程序的包名
+                                            "com.robam.update",
+                                            //这个参数是要启动的Activity
+                                            "com.robam.update.UpdateService");
 
-                                        android.os.Process.killProcess(android.os.Process.myPid());
-                                        System.exit(10);
-                                    }
+                                    Intent intent = new Intent();
+                                    intent.setComponent(componetName);
+                                    startService(intent);
+//                                    if (installSilent(path)) {
+                                        //安装成功，重启应用
+//                                        Intent intent = new Intent();
+//                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                                        intent.setClassName(getApplicationContext(), "com.robam.androidpad.MainActivity");
+//                                        startActivity(intent);
+//
+//                                        android.os.Process.killProcess(android.os.Process.myPid());
+//                                        System.exit(10);
+//                                    }
                                 }
                             }
 
@@ -275,9 +340,11 @@ public class SaleServiceActivity extends VentilatorBaseActivity {
 
     private void showProressDialog() {
         if (null == progressDialog) {
-            progressDialog = VentilatorDialogFactory.createDialogByType(getContext(), DialogConstant.DIALOG_UPDATE_VERSION);
+            progressDialog = new UpdateDialog(getContext());
             progressDialog.setCancelable(false);
         }
+        //初始进度
+        progressDialog.setProgress(0);
         progressDialog.show();
     }
 

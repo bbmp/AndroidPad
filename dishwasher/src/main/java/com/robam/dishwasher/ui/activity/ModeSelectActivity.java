@@ -30,6 +30,8 @@ import com.robam.dishwasher.constant.DishWasherState;
 import com.robam.dishwasher.device.HomeDishWasher;
 import com.robam.dishwasher.util.DishWasherCommandHelper;
 import com.robam.dishwasher.util.DishWasherModelUtil;
+import com.robam.dishwasher.util.MqttSignal;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -52,6 +54,7 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
     public int directive_offset = 10000;
     public static final int START_P = 22;
     private TextView btStart;
+    private MqttSignal mqttSignal;
 
     @Override
     protected int getLayoutId() {
@@ -267,6 +270,8 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
                 hideRight();
             }
         }
+        mqttSignal = new MqttSignal();
+        mqttSignal.startLoop();
     }
 
     //模式参数设置
@@ -500,11 +505,24 @@ public class ModeSelectActivity extends DishWasherBaseActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        mqttSignal.pageShow();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mqttSignal.pageHide();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         if(timer !=  null){
             timer.cancel();
         }
+        mqttSignal.clear();
     }
 
     /**

@@ -13,7 +13,6 @@ public class CurveDataUtil {
         entryList.addAll(list);
     }
 
-
     public static List getEntryList() {
         return entryList;
     }

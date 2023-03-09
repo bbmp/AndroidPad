@@ -19,6 +19,7 @@ import com.robam.cabinet.device.HomeCabinet;
 import com.robam.cabinet.factory.CabinetDialogFactory;
 import com.robam.cabinet.util.CabinetAppointmentUtil;
 import com.robam.cabinet.util.CabinetCommonHelper;
+import com.robam.cabinet.util.MqttSignal;
 import com.robam.common.bean.AccountInfo;
 import com.robam.common.bean.Device;
 import com.robam.common.mqtt.MsgKeys;
@@ -52,6 +53,8 @@ public class AppointingActivity extends CabinetBaseActivity {
     public int directive_offset = 1400000;
 
     private final int max_error_dur = 60*1000;//1分钟
+
+    private MqttSignal mqttSignal;
 
     @Override
     protected int getLayoutId() {
@@ -105,6 +108,8 @@ public class AppointingActivity extends CabinetBaseActivity {
                 }
             }
         });
+        mqttSignal = new MqttSignal();
+        mqttSignal.startLoop();
        /* MqttDirective.getInstance().getDirective().observe(this, s->{
             if(s != EventConstant.WARING_CODE_NONE){
                 showWaring(s);
@@ -264,11 +269,24 @@ public class AppointingActivity extends CabinetBaseActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        mqttSignal.pageShow();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mqttSignal.pageHide();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         if(finishDialog != null && finishDialog.isShow()){
             finishDialog.dismiss();
         }
+        mqttSignal.clear();
     }
 
 }

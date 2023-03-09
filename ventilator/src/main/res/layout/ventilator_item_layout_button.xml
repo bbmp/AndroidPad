@@ -27,7 +27,7 @@
     <View
         android:id="@+id/view_bottom"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_28"
+        android:layout_height="@dimen/dp_45"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_add_product"

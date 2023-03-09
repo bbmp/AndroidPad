@@ -129,8 +129,8 @@ public class RecipeCookActivity extends StoveBaseActivity {
 
             //步骤
             ArrayList<RecipeStep> recipeSteps = new ArrayList<>();
-            if (null != stoveRecipeDetail.steps) {
-                recipeSteps.addAll(stoveRecipeDetail.steps);
+            if (null != stoveRecipeDetail.stepRespDtoList) {
+                recipeSteps.addAll(stoveRecipeDetail.stepRespDtoList);
                 setData();
             }
             rvStep2Adapter.setList(recipeSteps);
@@ -139,43 +139,38 @@ public class RecipeCookActivity extends StoveBaseActivity {
     }
     //设置烟机 风量和火力
     private void setData() {
-        if (curStep >= stoveRecipeDetail.steps.size())
+        if (curStep >= stoveRecipeDetail.stepRespDtoList.size())
             return;
-        RecipeStep recipeStep = stoveRecipeDetail.steps.get(curStep);
+        RecipeStep recipeStep = stoveRecipeDetail.stepRespDtoList.get(curStep);
         //图片
         ImageUtils.loadImage(this, recipeStep.image, ivRecipe);
-        if (null != recipeStep.params && recipeStep.params.size() > 0) {
-            for (StepParams params: recipeStep.params) {
-                if (HomeStove.getInstance().getDp().equals(params.platCode)) {
+        if (null != recipeStep && null != recipeStep.devicePlatformStrList) {
 
-                    if (null != params.params) {
-                        for (int i = 0; i < params.params.size(); i++) {
-                            if (params.params.get(i).code.equals("fanGear")) {//烟机风量
-                                if (params.params.get(i).value >= 1 && params.params.get(i).value <= 3)
-                                    tvAir.setText("风量：弱档");
-                                else if (params.params.get(i).value >= 4 && params.params.get(i).value <= 6)
-                                    tvAir.setText("风量：强档");
-                                else if (params.params.get(i).value >= 7 && params.params.get(i).value <= 9)
-                                    tvAir.setText("风量：爆炒档");
-                                //设置烟机风量
-                                IPublicVentilatorApi iPublicVentilatorApi = ModulePubliclHelper.getModulePublic(IPublicVentilatorApi.class, IPublicVentilatorApi.VENTILATOR_PUBLIC);
-                                if (null != iPublicVentilatorApi) {
-                                    if (params.params.get(i).value >= 1 && params.params.get(i).value <= 3)
-                                        iPublicVentilatorApi.setFanGear(1); //弱档
-                                    else if (params.params.get(i).value >= 4 && params.params.get(i).value <= 6)
-                                        iPublicVentilatorApi.setFanGear(3); //强档
-                                    else if (params.params.get(i).value >= 7 && params.params.get(i).value <= 9)
-                                        iPublicVentilatorApi.setFanGear(6); //强档
-                                }
-                            }
-                            if (params.params.get(i).code.equals("stoveGear")) {//炉头
-                                tvFire.setText("火力：" + params.params.get(i).valueName);
-                                //设置灶具挡位
-                                StoveAbstractControl.getInstance().setLevel(HomeStove.getInstance().guid, stoveId, 0x01, params.params.get(i).value, (int) stoveRecipeDetail.id, recipeStep.no);
-                            }
-                        }
-                    }
+            if (recipeStep.devicePlatformStrList.contains(HomeStove.getInstance().getDp())) {
+
+                //烟机风量
+                if (recipeStep.fanGear >= 1 && recipeStep.fanGear <= 3)
+                    tvAir.setText("风量：弱档");
+                else if (recipeStep.fanGear >= 4 && recipeStep.fanGear <= 6)
+                    tvAir.setText("风量：强档");
+                else if (recipeStep.fanGear >= 7 &&recipeStep.fanGear <= 9)
+                    tvAir.setText("风量：爆炒档");
+                //设置烟机风量
+                IPublicVentilatorApi iPublicVentilatorApi = ModulePubliclHelper.getModulePublic(IPublicVentilatorApi.class, IPublicVentilatorApi.VENTILATOR_PUBLIC);
+                if (null != iPublicVentilatorApi) {
+                    if (recipeStep.fanGear >= 1 && recipeStep.fanGear <= 3)
+                        iPublicVentilatorApi.setFanGear(1); //弱档
+                    else if (recipeStep.fanGear >= 4 && recipeStep.fanGear <= 6)
+                        iPublicVentilatorApi.setFanGear(3); //强档
+                    else if (recipeStep.fanGear >= 7 && recipeStep.fanGear <= 9)
+                        iPublicVentilatorApi.setFanGear(6); //强档
                 }
+
+                //炉头
+                tvFire.setText("火力：" + recipeStep.stoveGear);
+                //设置灶具挡位
+                StoveAbstractControl.getInstance().setLevel(HomeStove.getInstance().guid, stoveId, 0x01, recipeStep.stoveGear, (int) stoveRecipeDetail.id, recipeStep.no);
+
             }
         }
     }
@@ -198,21 +193,16 @@ public class RecipeCookActivity extends StoveBaseActivity {
             tvPause.setVisibility(View.VISIBLE);
             tvContinue.setVisibility(View.GONE);
             //设置灶具挡位
-            if (curStep >= stoveRecipeDetail.steps.size())
+            if (curStep >= stoveRecipeDetail.stepRespDtoList.size())
                 return;
-            RecipeStep recipeStep = stoveRecipeDetail.steps.get(curStep);
+            RecipeStep recipeStep = stoveRecipeDetail.stepRespDtoList.get(curStep);
 
-            if (null != recipeStep.params && recipeStep.params.size() > 0) {
-                StepParams params = recipeStep.params.get(0);//取首個
-                if (null != params.params) {
-                    for (int i = 0; i<params.params.size(); i++) {
-                        if (params.params.get(i).code.equals("stoveGear")) {//炉头
-                            tvFire.setText("火力：" + params.params.get(i).valueName);
-                            //设置灶具挡位
-                            StoveAbstractControl.getInstance().setLevel(HomeStove.getInstance().guid, (byte) stoveId, (byte) 0x01, (byte) params.params.get(i).value, (int) stoveRecipeDetail.id, recipeStep.no);
-                        }
-                    }
-                }
+            if (null != recipeStep) {
+                //炉头
+                tvFire.setText("火力：" + recipeStep.stoveGear);
+                //设置灶具挡位
+                StoveAbstractControl.getInstance().setLevel(HomeStove.getInstance().guid, (byte) stoveId, (byte) 0x01, (byte) recipeStep.stoveGear, (int) stoveRecipeDetail.id, recipeStep.no);
+
             }
 
         } else if (id == R.id.ll_left) {

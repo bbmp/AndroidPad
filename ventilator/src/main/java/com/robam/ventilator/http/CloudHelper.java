@@ -28,8 +28,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
 
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -37,8 +40,8 @@ import retrofit2.Response;
 
 public class CloudHelper {
     private static final String APPLICATION_JSON_ACCEPT_APPLICATION_JSON = "application/json; Accept: application/json";
-    private static ICloudService svr = RetrofitClient.getInstance().createApi(ICloudService.class, HostServer.apiHostTest);
-    private static IDownloadService downloadService = RetrofitClient.getInstance().createDownApi(IDownloadService.class, HostServer.apiHostTest);
+    private static ICloudService svr = RetrofitClient.getInstance().createApi(ICloudService.class, HostServer.apiHost);
+    private static IDownloadService downloadService = RetrofitClient.getInstance().createDownApi(IDownloadService.class, HostServer.apiHost);
 
     //获取验证码
     public static <T extends BaseResponse> void getVerifyCode(ILife iLife, String phone, Class<T> entity,
@@ -113,6 +116,37 @@ public class CloudHelper {
         enqueue(iLife, entity, call, callback);
     }
     //二维码登录
+    public static <T extends BaseResponse> void getCode(ILife iLife, String appid, String appkey, String timestamp, String nonce, String sign,
+                                                        String key, String appType, String loginType, Class<T> entity, final RetrofitCallback<T> callback) {
+        String json = new LoginQrcodeReq(key, appType, loginType).toString();
+        RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                .addFormDataPart("key",key)
+                .addFormDataPart("appType",appType)
+                .addFormDataPart("loginType", loginType)
+                .build();
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("appId", appid);
+        headers.put("appKey", appkey);
+        headers.put("timestamp", timestamp);
+        headers.put("nonce", nonce);
+        headers.put("sign", sign);
+        Call<ResponseBody> call = svr.getCode(headers, requestBody);
+        enqueue(iLife, entity, call, callback);
+    }
+    //access_token
+    public static <T extends BaseResponse> void loginCode(ILife iLife, String appid, String appkey, String timestamp, String nonce, String sign, String access_token,
+                                                          Class<T> entity, final RetrofitCallback<T> callback) {
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("appId", appid);
+        headers.put("appKey", appkey);
+        headers.put("timestamp", timestamp);
+        headers.put("nonce", nonce);
+        headers.put("sign", sign);
+        headers.put("access_token", access_token);
+        Call<ResponseBody> call = svr.loginCode(headers);
+        enqueue(iLife, entity, call, callback);
+    }
+    //二维码登录
     public static <T extends BaseResponse> void loginQrcode(ILife iLife, String account, String pwd, Class<T> entity, final RetrofitCallback<T> callback) {
         String json = new LoginQrcodeReq(account, pwd).toString();
         RequestBody requestBody =
@@ -154,7 +188,7 @@ public class CloudHelper {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-                saveFile(iLifeWeakReference.get(), response.body(), StorageUtils.getCachDir(context) , fileName, listener);
+                saveFile(iLifeWeakReference.get(), response.body(), StorageUtils.getDataDir() , fileName, listener);
 
             }
 
@@ -273,7 +307,7 @@ public class CloudHelper {
                         } catch (Exception jsonException) {
                             jsonException.printStackTrace();
                         }
-                        callback.onFaild("");
+                        callback.onFaild("数据异常");
                     }
                 }
             }
@@ -284,7 +318,7 @@ public class CloudHelper {
                     return;
                 }
                 if (null != callback)
-                    callback.onFaild(throwable.toString());
+                    callback.onFaild("网络异常");
             }
         });
     }

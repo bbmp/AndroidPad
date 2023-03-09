@@ -89,7 +89,7 @@ public abstract class StoveBaseActivity extends BaseActivity {
                 if (aBoolean)
                     ivWifi.setVisibility(View.VISIBLE);
                 else
-                    ivWifi.setVisibility(View.INVISIBLE);
+                    ivWifi.setVisibility(View.GONE);
             }
         });
     }
@@ -116,7 +116,7 @@ public abstract class StoveBaseActivity extends BaseActivity {
         int id = view.getId();
         if (id == R.id.ll_right_center) {//童锁处理
             if (HomeStove.getInstance().isStoveOffline()) {
-                ToastUtils.showShort(this, R.string.stove_offline);
+                ToastUtils.showShort(getApplicationContext(), R.string.stove_offline);
                 return;
             }
             affirmLock();
@@ -135,7 +135,7 @@ public abstract class StoveBaseActivity extends BaseActivity {
                 public void onClick(View v) {
                     if (v.getId() == R.id.tv_ok) {
                         if (HomeStove.getInstance().isStoveOffline()) {
-                            ToastUtils.showShort(StoveBaseActivity.this, R.string.stove_offline);
+                            ToastUtils.showShort(getApplicationContext(), R.string.stove_offline);
                             return;
                         }
 
@@ -157,7 +157,7 @@ public abstract class StoveBaseActivity extends BaseActivity {
             ilockDialog.getRootView().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ToastUtils.showShort(getContext(), R.string.stove_unlock_hint);
+                    ToastUtils.showShort(getApplicationContext(), R.string.stove_unlock_hint);
                 }
             });
             LinearLayout linearLayout = ilockDialog.getRootView().findViewById(R.id.ll_right_center);
@@ -200,7 +200,7 @@ public abstract class StoveBaseActivity extends BaseActivity {
             if (device.dc.equals(IDeviceType.RZNG) && device instanceof Pan) {
                 Pan pan = (Pan) device;
                 if (pan.mode != 0) {//工作中
-                    ToastUtils.showShort(this, R.string.stove_pan_working);
+                    ToastUtils.showShort(getApplicationContext(), R.string.stove_pan_working);
                     return true;
                 }
             }

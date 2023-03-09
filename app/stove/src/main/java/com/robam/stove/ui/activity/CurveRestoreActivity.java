@@ -209,7 +209,8 @@ public class CurveRestoreActivity extends StoveBaseActivity {
                         return;
                     }
 
-                    iPublicPanApi.queryAttribute(pan.guid); //查询锅状态
+                    setInteraction();
+//                    iPublicPanApi.queryAttribute(pan.guid); //查询锅状态
                     mHandler.postDelayed(runnable, 1000L);
                     return;
                 }

@@ -115,7 +115,6 @@
             android:layout_width="@dimen/dp_175"
             android:layout_height="@dimen/dp_56"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
             android:background="@drawable/steam_shape_button_unselected"
             android:gravity="center"
             android:text="@string/steam_start"

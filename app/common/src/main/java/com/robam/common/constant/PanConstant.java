@@ -14,6 +14,8 @@ public class PanConstant {
     public static final String EXTRA_FAVORITE = "favorite";
     public static final String EXTRA_ORDER_ID = "order_id";//我的最爱菜谱序号
 
+    public static final String ADD_STEP = "add_step";
+
     public final static int MSG_PRECIPE = 0; //P档菜谱
     public final static int MSG_CURVE_RESTORE = 1; //曲线还原
 
@@ -56,6 +58,10 @@ public class PanConstant {
     public final static String lidStatus = "lid_status";//锅盖状态
     public final static String battery = "battery"; //电量
     public final static String mode = "mode";//工作模式
+    public final static String localStatus = "local_status"; //本地记录状态
+    public final static String bindStoveId = "bind_stoveid"; //绑定炉头
+    public final static String electricParams = "electric_params"; //电机参数
+    public final static String runStoveId = "run_stoveid"; //运行炉头
     public final static String runTime = "run_time"; //运行时间
     public final static String setTime = "set_time"; //设置时间
     public final static String fryMode = "fry_mode";//电机模式
@@ -63,7 +69,9 @@ public class PanConstant {
     public final static String panParams = "panparams"; //设置锅参数
     public final static String stoveParams = "stoveParams"; //设置灶参数
     public final static String key = "key";//
+    public final static String length = "length";
     public final static String value = "value";
     public final static String fanpan = "fan_pan";//烟锅联动状态
+    public final static String bleVer = "ble_ver";//蓝牙版本
 
 }

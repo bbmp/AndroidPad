@@ -51,6 +51,8 @@
         android:id="@+id/sb_auto_set"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/dp_10"
+        android:paddingVertical="@dimen/dp_10"
         android:layout_marginEnd="@dimen/dp_64"
         android:checked="true"
         app:layout_constraintBottom_toBottomOf="@id/view_board"

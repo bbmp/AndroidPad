@@ -11,7 +11,6 @@ import com.robam.common.bean.Device;
 import com.robam.common.bean.RTopic;
 import com.robam.common.ble.BleDecoder;
 import com.robam.common.device.Plat;
-import com.robam.common.device.subdevice.Pan;
 import com.robam.common.manager.BlueToothManager;
 import com.robam.common.mqtt.MqttMsg;
 import com.robam.common.mqtt.MsgKeys;
@@ -27,7 +26,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 //灶具现在只有蓝牙控制
 public class StoveBluetoothControl implements StoveFunction{
@@ -312,7 +313,7 @@ public class StoveBluetoothControl implements StoveFunction{
     }
 
     @Override
-    public void setStoveInteraction(String targetGuid, int stoveId) {
+    public void setStoveInteraction(String targetGuid, int stoveId, Map params) {
         try {
             for (Device device : AccountInfo.getInstance().deviceList) {
                 if (device instanceof Stove && null != device.guid && device.guid.equals(targetGuid)) { //
@@ -322,6 +323,17 @@ public class StoveBluetoothControl implements StoveFunction{
                             .setGuid(Plat.getPlatform().getDeviceOnlySign()) //源guid
                             .setTopic(new RTopic(RTopic.TOPIC_UNICAST, DeviceUtils.getDeviceTypeId(device.guid), DeviceUtils.getDeviceNumber(device.guid)))
                             .build();
+                    msg.putOpt(StoveConstant.stoveId, stoveId);
+                    Iterator iterator = params.entrySet().iterator();
+                    JSONArray jsonArray = new JSONArray();
+                    while (iterator.hasNext()) {
+                        Map.Entry entry = (Map.Entry) iterator.next();
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.putOpt(StoveConstant.key, entry.getKey());
+                        jsonObject.putOpt(StoveConstant.value, entry.getValue());
+                        jsonArray.put(jsonObject);
+                    }
+                    msg.putOpt(StoveConstant.interaction, jsonArray);
                     //打包payload
                     byte[] mqtt_data = StoveFactory.getProtocol().encode(msg);
 

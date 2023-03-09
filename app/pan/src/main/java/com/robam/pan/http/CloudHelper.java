@@ -14,6 +14,7 @@ import com.robam.pan.constant.HostServer;
 import com.robam.pan.request.CookingCurveMarkStepReq;
 import com.robam.pan.request.CreateCurveStartReq;
 import com.robam.pan.request.CurveSaveReq;
+import com.robam.pan.request.CurveUpdateReq;
 import com.robam.pan.request.GetCurveDetailReq;
 import com.robam.pan.request.GetRecipeDetailReq;
 import com.robam.pan.request.GetRecipesByDeviceReq;
@@ -44,12 +45,9 @@ public class CloudHelper {
         enqueue(iLife, entity, call, callback);
     }
     //获取菜谱详情
-    public static <T extends BaseResponse> void getRecipeDetail(ILife iLife, long cookid, String entranceCode, String needStepsInfo,
+    public static <T extends BaseResponse> void getRecipeDetail(ILife iLife, long userId, long cookid,
                                                                 Class<T> entity, final RetrofitCallback<T> callback) {
-        String json = new GetRecipeDetailReq(cookid, entranceCode, needStepsInfo).toString();
-        RequestBody requestBody =
-                RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
-        Call<ResponseBody> call = svr.getRecipeDetail(requestBody);
+        Call<ResponseBody> call = svr.getRecipeDetail(userId, cookid);
         enqueue(iLife, entity, call, callback);
     }
     //菜谱搜索
@@ -102,12 +100,12 @@ public class CloudHelper {
     }
     //删除曲线
     public static <T extends BaseResponse> void delCurve(ILife iLife, long userid, long curveid, Class<T> entity, final RetrofitCallback<T> callback) {
-        Call<ResponseBody> call = svr.delCurve(userid, curveid);
+        Call<ResponseBody> call = svr.delCurve(curveid, userid);
         enqueue(iLife, entity, call, callback);
     }
     //获取我的最爱
-    public static <T extends BaseResponse> void getPotPCookPage(ILife iLife, String guid, long userId, Class<T> entity, final RetrofitCallback<T> callback) {
-        Call<ResponseBody> call = svr.getPotPCookPage(guid, userId, 0, 100);
+    public static <T extends BaseResponse> void getPotPCookPage(ILife iLife, String guid, String cookName, Class<T> entity, final RetrofitCallback<T> callback) {
+        Call<ResponseBody> call = svr.getPotPCookPage(guid, cookName, 0, 100);
         enqueue(iLife, entity, call, callback);
     }
     //获取曲线列表
@@ -120,10 +118,18 @@ public class CloudHelper {
     }
     //创建曲线开始记录
     public static <T extends BaseResponse> void createCurveStart(ILife iLife, long userId, String guid, int stoveId, Class<T> entity, final RetrofitCallback<T> callback) {
-        String json = new CreateCurveStartReq(userId, guid, stoveId).toString();
+        String json = new CreateCurveStartReq(guid, stoveId).toString();
         RequestBody requestBody =
                 RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
         Call<ResponseBody> call = svr.createCurveStart(requestBody);
+        enqueue(iLife, entity, call, callback);
+    }
+    //更新曲线状态
+    public static <T extends BaseResponse> void updateCurveState(ILife iLife, long curveId, int state, Class<T> entity, final RetrofitCallback<T> callback) {
+        String json = new CurveUpdateReq(curveId, state).toString();
+        RequestBody requestBody =
+                RequestBody.create(MediaType.parse(APPLICATION_JSON_ACCEPT_APPLICATION_JSON), json);
+        Call<ResponseBody> call = svr.updateCurveState(requestBody);
         enqueue(iLife, entity, call, callback);
     }
     //曲线保存

@@ -2,6 +2,7 @@ package com.robam.ventilator.ui.dialog;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.robam.common.ui.dialog.BaseDialog;
@@ -11,6 +12,7 @@ import com.robam.ventilator.R;
 
 public class UpdateDialog extends BaseDialog {
     private TextView tvUpdate;
+    private ProgressBar progressBar;
 
     public UpdateDialog(Context context) {
         super(context);
@@ -20,6 +22,7 @@ public class UpdateDialog extends BaseDialog {
     protected void initView() {
         rootView = LayoutInflater.from(mContext).inflate(R.layout.ventilator_dialog_layout_update, null);
         tvUpdate = rootView.findViewById(R.id.tv_updating);
+        progressBar = rootView.findViewById(R.id.sbr_progress);
 
         if (mDialog == null) {
             mDialog = new FullDialog(mContext, rootView);
@@ -38,5 +41,9 @@ public class UpdateDialog extends BaseDialog {
         super.dismiss();
         //显示浮窗
         WindowsUtils.showPopupWindow();
+    }
+
+    public void setProgress(int progress) {
+        progressBar.setProgress(progress);
     }
 }

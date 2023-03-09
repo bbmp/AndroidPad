@@ -1,14 +1,21 @@
 package com.robam.common.utils;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.robam.common.R;
 
 public class ToastUtils {
 
+    public static final String EMPTY = "    ";
     public static void showThrowable(Context cx, Throwable t) {
         if (t != null)
             showShort(cx, t.getMessage());
@@ -45,8 +52,18 @@ public class ToastUtils {
         if (TextUtils.isEmpty(msg))
             return;
 
-        Toast toast = Toast.makeText(cx, msg, duration);
+        Toast toast = Toast.makeText(cx, EMPTY+msg+EMPTY, duration);
         toast.setGravity(Gravity.CENTER,0,0);
+        View toastView = toast.getView();
+        if(toastView != null){
+            toastView.setBackgroundResource(R.drawable.common_black_round_rect);
+            if(toastView instanceof ViewGroup){
+                View child = ((ViewGroup) toastView).getChildAt(0);
+                if(child != null && child instanceof TextView){
+                    ((TextView) child).setTextColor(Color.WHITE);
+                }
+            }
+        }
         toast.show();
 
     }

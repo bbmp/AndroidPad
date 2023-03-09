@@ -57,5 +57,6 @@ dependencies {
     // 腾讯 MMKV：https://github.com/Tencent/MMKV
     api "com.tencent:mmkv-static:$versions.mmkv"
     api "com.google.zxing:core:$versions.zxing_core"
-    api "com.github.Jasonchenlijian:FastBle:$versions.FastBle"
+//    api "com.github.Jasonchenlijian:FastBle:$versions.FastBle"
+    api project(path: ':app:FastBleLib')
 }

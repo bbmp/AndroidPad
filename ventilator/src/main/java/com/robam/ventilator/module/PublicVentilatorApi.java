@@ -19,6 +19,7 @@ import com.robam.ventilator.device.HomeVentilator;
 import com.robam.ventilator.device.VentilatorAbstractControl;
 import com.robam.ventilator.protocol.serial.SerialVentilator;
 import com.robam.ventilator.ui.activity.LoginPhoneActivity;
+import com.robam.ventilator.ui.activity.LoginQrcodeActivity;
 import com.robam.ventilator.ui.activity.MatchNetworkActivity;
 import com.robam.ventilator.ui.service.AlarmBleService;
 import com.robam.ventilator.ui.service.AlarmMqttService;
@@ -62,7 +63,7 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
     @Override
     public void startLogin(Context context) {
         //调用手机登录
-        context.startActivity(new Intent(context, LoginPhoneActivity.class));
+        context.startActivity(new Intent(context, LoginQrcodeActivity.class));
     }
 
     @Override
@@ -132,7 +133,7 @@ public class PublicVentilatorApi implements IPublicVentilatorApi {
                         if (!isStartUp()) {
 
                             HomeVentilator.getInstance().openVentilatorGear(VentilatorConstant.FAN_GEAR_MID); //开机并设置挡位
-                        } else if (HomeVentilator.getInstance().gear != (byte) 0x06) //非爆操档
+                        } else if (HomeVentilator.getInstance().gear != (byte) 0xA6) //非爆操档
                             VentilatorAbstractControl.getInstance().setFanGear(VentilatorConstant.FAN_GEAR_MID);
                     }
                     if (stove.leftStatus == 0 && leftLevel != 0) //如果不是工作状态，改成工作状态

@@ -10,5 +10,7 @@ public class GetLoginStatusRes extends BaseResponse {
         public String password;
         //密码
         public String account;
+        //
+        public String access_token;
     }
 }

@@ -105,6 +105,7 @@
         android:src="@drawable/steam_ic_pause"
         app:layout_constraintTop_toTopOf="@id/guideline"
         app:layout_constraintBottom_toBottomOf="@id/guideline"
+        android:layout_marginLeft="@dimen/dp_30"
         app:layout_constraintLeft_toRightOf="@id/model_work_prompt"
         app:layout_constraintRight_toRightOf="parent" />
 
@@ -138,6 +139,7 @@
         android:layout_width="@dimen/dp_112"
         android:layout_height="@dimen/dp_112"
         android:src="@drawable/steam_ic_start_blue"
+        android:layout_marginLeft="@dimen/dp_30"
         app:layout_constraintBottom_toBottomOf="@id/guideline"
         app:layout_constraintTop_toTopOf="@id/guideline"
         app:layout_constraintLeft_toRightOf="@id/multi_work_total"
@@ -168,7 +170,7 @@
             android:id="@+id/multi_item_cur_steam"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/sp_25"
+            android:layout_marginLeft="@dimen/sp_20"
             android:textColor="@color/steam_white_65"
             android:textSize="@dimen/sp_40"
             tools:text="中蒸汽" />
@@ -177,7 +179,7 @@
             android:id="@+id/multi_item_cur_temperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/sp_25"
+            android:layout_marginLeft="@dimen/sp_20"
             android:textSize="@dimen/sp_40"
             android:textColor="@color/steam_white_65"
             tools:text="100"/>
@@ -198,7 +200,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_40"
-            android:layout_marginLeft="@dimen/sp_25"
+            android:layout_marginLeft="@dimen/sp_20"
             android:textColor="@color/steam_white_65"
             tools:text="20"/>
 

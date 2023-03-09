@@ -107,6 +107,8 @@
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.23" />
 
+
+
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline2"
             android:layout_width="@dimen/dp_10"
@@ -114,12 +116,19 @@
             android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.5" />
 
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline3"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5"
+            android:layout_height="@dimen/dp_1"
+            android:layout_width="match_parent"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/steam_descaling"
             android:textColor="@color/steam_white_65"
-            android:textSize="@dimen/sp_40"
+            android:textSize="@dimen/sp_48"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toLeftOf="@id/guideline"
             app:layout_constraintTop_toTopOf="parent" />
@@ -143,7 +152,7 @@
             android:layout_height="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_32"
             android:layout_marginRight="@dimen/dp_18"
-            android:progressDrawable="@drawable/steam_progress_2"
+            android:progressDrawable="@drawable/steam_progress_1"
             app:layout_constraintRight_toLeftOf="@id/descaling_progress_2"
             app:layout_constraintTop_toBottomOf="@id/guideline2" />
 
@@ -153,23 +162,24 @@
             android:layout_width="@dimen/dp_174"
             android:layout_height="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_32"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            android:progressDrawable="@drawable/steam_progress_2"
+            android:layout_marginLeft="@dimen/dp_9"
+            app:layout_constraintLeft_toRightOf="@id/guideline3"
+            android:progressDrawable="@drawable/steam_progress_3"
             app:layout_constraintTop_toBottomOf="@id/guideline2" />
 
-        <ProgressBar
+       <!-- <ProgressBar
             android:id="@+id/descaling_progress_3"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="@dimen/dp_174"
             android:layout_height="@dimen/dp_10"
             android:layout_marginLeft="@dimen/dp_18"
             android:layout_marginTop="@dimen/dp_32"
+            android:visibility="gone"
             android:progressDrawable="@drawable/steam_progress_3"
             app:layout_constraintLeft_toRightOf="@id/descaling_progress_2"
             app:layout_constraintTop_toBottomOf="@id/guideline2">
 
-        </ProgressBar>
+        </ProgressBar>-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -179,6 +189,8 @@
         app:layout_constraintGuide_percent="0.5"
         android:layout_height="@dimen/dp_1"
         android:layout_width="match_parent"/>
+
+
 
     <TextView
         android:id="@+id/aux_work_model_time"
@@ -193,10 +205,23 @@
         tools:text="22min"/>
 
     <TextView
+        android:id="@+id/aux_work_model_pause_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_32"
+        android:textColor="@color/steam_white"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toLeftOf="@id/aux_work_model_time"
+        app:layout_constraintRight_toRightOf="@id/aux_work_model_time"
+        app:layout_constraintTop_toBottomOf="@id/aux_work_model_time"
+        android:layout_marginTop="@dimen/dp_15"
+        android:text="@string/steam_cook_in_pause"/>
+
+    <TextView
         android:id="@+id/aux_work_model_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_40"
+        android:textSize="@dimen/sp_48"
         android:textColor="@color/common_white65"
         app:layout_constraintRight_toLeftOf="@id/aux_work_model_time"
         android:layout_marginRight="@dimen/dp_104"
@@ -220,8 +245,8 @@
 
     <ImageView
         android:id="@+id/aux_work_model_pause"
-        android:layout_width="@dimen/dp_60"
-        android:layout_height="@dimen/dp_60"
+        android:layout_width="@dimen/dp_75"
+        android:layout_height="@dimen/dp_75"
         android:visibility="visible"
         android:src="@drawable/steam_work_pause"
         app:layout_constraintRight_toRightOf="parent"
@@ -231,8 +256,8 @@
 
     <ImageView
         android:id="@+id/aux_work_model_restart"
-        android:layout_width="@dimen/dp_60"
-        android:layout_height="@dimen/dp_60"
+        android:layout_width="@dimen/dp_75"
+        android:layout_height="@dimen/dp_75"
         android:visibility="invisible"
         android:src="@drawable/steam_ic_start_blue"
         app:layout_constraintRight_toRightOf="parent"

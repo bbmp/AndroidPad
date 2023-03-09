@@ -41,6 +41,7 @@ public class WifiConnectActivity extends VentilatorBaseActivity {
             String ssid = bundle.getString(VentilatorConstant.EXTRA_WIFI_SSID);
             tvName.setText(ssid);
             etPassword.setText(MMKVUtils.getWifiPwd(ssid));
+            etPassword.requestFocus();
         }
         setOnClickListener(R.id.btn_join);
     }

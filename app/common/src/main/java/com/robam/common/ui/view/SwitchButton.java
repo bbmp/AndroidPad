@@ -118,7 +118,7 @@ public final class SwitchButton extends View {
         switch (MeasureSpec.getMode(widthMeasureSpec)) {
             case MeasureSpec.AT_MOST:
             case MeasureSpec.UNSPECIFIED:
-                widthMeasureSpec = MeasureSpec.makeMeasureSpec((int) (getResources().getDimension(R.dimen.dp_56) + getPaddingLeft() + getPaddingRight()), MeasureSpec.EXACTLY);
+                widthMeasureSpec = MeasureSpec.makeMeasureSpec((int) (getResources().getDimension(R.dimen.dp_70) + getPaddingLeft() + getPaddingRight()), MeasureSpec.EXACTLY);
                 break;
             case MeasureSpec.EXACTLY:
             default:

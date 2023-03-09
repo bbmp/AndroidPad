@@ -6,5 +6,5 @@ import com.robam.stove.bean.StoveCurveDetail;
 import java.util.List;
 
 public class GetCurveCookbooksRes extends BaseResponse {
-    public List<StoveCurveDetail> payload;
+    public List<StoveCurveDetail> data;
 }

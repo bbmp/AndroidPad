@@ -76,6 +76,10 @@ public class VentilatorReceiver extends BroadcastReceiver {
             LogUtils.e("时间变化");
             //防止自动关机
             HomeVentilator.getInstance().updateOperationTime();
+        } else if (WifiManager.SUPPLICANT_STATE_CHANGED_ACTION.equals(intent.getAction())) {
+            if (WifiManager.ERROR_AUTHENTICATING == intent.getIntExtra(WifiManager.EXTRA_SUPPLICANT_ERROR, 123)) {
+                LogUtils.e("密码错误");
+            }
         }
     }
 }

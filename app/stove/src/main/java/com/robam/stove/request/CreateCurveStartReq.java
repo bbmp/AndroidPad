@@ -2,7 +2,7 @@ package com.robam.stove.request;
 
 import com.google.gson.Gson;
 
-public class CreateCurveStartReq extends GetUserReq{
+public class CreateCurveStartReq {
     private int id;
     private String deviceGuid;
     private int headId;
@@ -11,8 +11,7 @@ public class CreateCurveStartReq extends GetUserReq{
     public String setTemp;
     public String setTime;
 
-    public CreateCurveStartReq(long userId, String guid, int stoveId) {
-        super(userId);
+    public CreateCurveStartReq(String guid, int stoveId) {
         this.deviceGuid = guid;
         this.id = 0;
         this.headId = stoveId;

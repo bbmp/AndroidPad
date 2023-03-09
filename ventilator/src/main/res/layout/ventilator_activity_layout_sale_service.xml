@@ -48,7 +48,7 @@
         app:layout_constraintTop_toBottomOf="@id/tv_model"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="@id/ventilator_guideline"
-        android:text="@string/ventilator_app_version"
+        android:text="@string/ventilator_sys_version"
         android:textSize="@dimen/sp_34"
         android:textColor="@color/ventilator_white"/>
 

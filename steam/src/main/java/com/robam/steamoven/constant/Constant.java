@@ -115,6 +115,7 @@ public interface Constant {
     String RECIPE_MODEL_RULE = "recipe_model_rule";
 
     String CURVE_ID = "curve_id";
+    String DEVICE_GUID = "device_guid";
 
     String WORK_FROM = "work_from";
 
@@ -131,9 +132,13 @@ public interface Constant {
 
     String REMIND_NEED_Descale = "remind_need_descale";
 
+    String REMIND_NEED_AUTO_CLOSE = "remind_need_auto_close";
+
     String REMIND_NEED_WATER = "remind_need_water";
 
     String REMIND_RECIPE_ID = "remind_recipe_id";
+
+    String REMIND_ID_CHANGE = "remind_id_change";
 
     /**
      * 菜谱id
@@ -154,6 +159,8 @@ public interface Constant {
     int WARING_CODE_14  = 14;//按键板温度过高
     int WARING_CODE_16  = 16;//变频板通讯故障
     int WARING_CODE_17  = 17;//磁控管温度传感器故障
+
+    int REMIND_REQUEST_CODE  = 1267;
 
 
 }
